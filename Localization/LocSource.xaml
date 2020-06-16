@@ -11,6 +11,7 @@
     <sys:String x:Key="LOCHowLongToBeatMainStory">Main story</sys:String>
     <sys:String x:Key="LOCHowLongToBeatMainExtra">Main + extra</sys:String>
     <sys:String x:Key="LOCHowLongToBeatCompletionist">Completionist</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatPlaytime">Playtime</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatSelect">Select</sys:String>
     <sys:String x:Key="LOCHowLongToBeatCancel">Cancel</sys:String>

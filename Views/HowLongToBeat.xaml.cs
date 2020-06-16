@@ -21,6 +21,8 @@ namespace HowLongToBeat.Views
         public string MaintExtraFormat { get; set; }
         public string CompletionistFormat { get; set; }
 
+        public string PlaytimeFormat { get; set; }
+
         public HowLongToBeat(HltbDataUser data, Game game, IPlayniteAPI PlayniteApi)
         {
             InitializeComponent();
@@ -30,6 +32,8 @@ namespace HowLongToBeat.Views
             MainStoryFormat = data.GameHltbData.MainStoryFormat;
             MaintExtraFormat = data.GameHltbData.MaintExtraFormat;
             CompletionistFormat = data.GameHltbData.CompletionistFormat;
+
+            PlaytimeFormat = (int)TimeSpan.FromSeconds(game.Playtime).TotalHours + "h " + TimeSpan.FromSeconds(game.Playtime).ToString(@"mm") + "min";
 
 
 
