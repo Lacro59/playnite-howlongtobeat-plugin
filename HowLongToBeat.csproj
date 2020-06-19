@@ -87,6 +87,9 @@
     <Compile Include="Views\HowLongToBeat.xaml.cs">
       <DependentUpon>HowLongToBeat.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Interfaces\HltbProgressBar.xaml.cs">
+      <DependentUpon>HltbProgressBar.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="extension.yaml">
@@ -118,6 +121,10 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <Page Include="Views\HowLongToBeat.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Interfaces\HltbProgressBar.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

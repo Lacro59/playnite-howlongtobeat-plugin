@@ -1,12 +1,12 @@
 ﻿using HowLongToBeat.Models;
 using HowLongToBeat.Services;
+using HowLongToBeat.Views.Interfaces;
 using Playnite.Controls;
 using Playnite.SDK;
 using Playnite.SDK.Models;
 using PluginCommon;
 using System;
 using System.Diagnostics;
-using System.Windows.Media.Imaging;
 
 namespace HowLongToBeat.Views
 {
@@ -43,44 +43,9 @@ namespace HowLongToBeat.Views
 
             PlaytimeFormat = (int)TimeSpan.FromSeconds(game.Playtime).TotalHours + "h " + TimeSpan.FromSeconds(game.Playtime).ToString(@"mm") + "min";
 
-            long MaxValue = gameData.GameHltbData.Completionist;
-            long MaxHltb = gameData.GameHltbData.Completionist;
-            if (gameData.GameHltbData.Completionist != 0)
-            {
-                if (game.Playtime > gameData.GameHltbData.Completionist)
-                {
-                    MaxValue = game.Playtime;
-                }
-            }
-            else
-            {
-                MaxValue = gameData.GameHltbData.MaintExtra;
-                MaxHltb = gameData.GameHltbData.MaintExtra;
-                if (game.Playtime > gameData.GameHltbData.MaintExtra)
-                {
-                    MaxValue = game.Playtime;
-                }
-            }
 
-            // Limit MaxValue when playtime is more than MaxHltb
-            long MaxPercent = (long)Math.Ceiling((double)(10 * MaxHltb / 100));
-            if (MaxValue > MaxHltb + MaxPercent)
-            {
-                MaxValue = MaxHltb + MaxPercent;
-            }
-
-            ProgressMainStory.Value = gameData.GameHltbData.MainStory;
-            ProgressMainStory.Maximum = MaxValue;
-
-            ProgressMainExtra.Value = gameData.GameHltbData.MaintExtra;
-            ProgressMainExtra.Maximum = MaxValue;
-
-            ProgressCompletionist.Value = gameData.GameHltbData.Completionist;
-            ProgressCompletionist.Maximum = MaxValue;
-
-            SliderPlaytime.Value = game.Playtime;
-            SliderPlaytime.Maximum = MaxValue;
-
+            HltbProgressBar.Children.Add(new HltbProgressBar(game.Playtime, gameData));
+            HltbProgressBar.UpdateLayout();
 
 
             // Set Binding data

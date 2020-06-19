@@ -17,7 +17,7 @@ namespace HowLongToBeat.Services
 
         private string FileGameData { get; set; }
 
-        public HowLongToBeatData(Game game, string PluginUserDataPath)
+        public HowLongToBeatData(Game game, string PluginUserDataPath, bool mustFind = true)
         {
             string PluginDatabasePath = PluginUserDataPath + "\\howlongtobeat";
 
@@ -37,19 +37,22 @@ namespace HowLongToBeat.Services
             }
             else
             {
-                // Create data
-                logger.Debug("HowLongToBeat - Create data");
-
-                List<HltbData> dataSearch = new HowLongToBeatClient().Search(game.Name);
-                new HowLongToBeatSelect(dataSearch, FileGameData).ShowDialog();
-
-                if (File.Exists(FileGameData))
+                if (mustFind)
                 {
-                    data = JsonConvert.DeserializeObject<HltbDataUser>(File.ReadAllText(FileGameData));
-                }
-                else
-                {
+                    // Create data
+                    logger.Debug("HowLongToBeat - Create data");
 
+                    List<HltbData> dataSearch = new HowLongToBeatClient().Search(game.Name);
+                    new HowLongToBeatSelect(dataSearch, FileGameData).ShowDialog();
+
+                    if (File.Exists(FileGameData))
+                    {
+                        data = JsonConvert.DeserializeObject<HltbDataUser>(File.ReadAllText(FileGameData));
+                    }
+                    else
+                    {
+
+                    }
                 }
             }
         }

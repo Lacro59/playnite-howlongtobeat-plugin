@@ -3,6 +3,13 @@
                     xmlns:sys="clr-namespace:System;assembly=mscorlib">
 
     <!--  
+    HowLongToBeatSettingsView
+    -->
+
+    <sys:String x:Key="LOCHowLongToBeatIntegration">Intégration dans l'interface (expérimental)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationInDescription">Intégration dans la description du jeu</sys:String>
+
+    <!--  
     HowLongToBeatSelect
     -->
 
