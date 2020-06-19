@@ -1,4 +1,5 @@
-﻿using HowLongToBeat.Services;
+﻿using HowLongToBeat.Models;
+using HowLongToBeat.Services;
 using HowLongToBeat.Views;
 using HowLongToBeat.Views.Interfaces;
 using Playnite.SDK;
@@ -68,76 +69,77 @@ namespace HowLongToBeat
             {
                 GameSelected = args.NewValue[0];
 
-                // Search parent game description
-                if (PART_ElemDescription == null)
-                {
-                    foreach (StackPanel sp in Tools.FindVisualChildren<StackPanel>(Application.Current.MainWindow))
-                    {
-                        if (sp.Name == "PART_ElemDescription")
-                        {
-                            PART_ElemDescription = sp;
-                            break;
-                        }
-                    }
-                }
-
-                if (args.NewValue != null && settings.enableIntegrationInDescription)
+                if (args.NewValue != null)
                 {
                     if (args.NewValue.Count == 1)
                     {
                         try
                         {
                             Game SelectedGame = args.NewValue[0];
-
                             HowLongToBeatData data = new HowLongToBeatData(GameSelected, this.GetPluginUserDataPath(), false);
 
-                            DockPanel dpParent = (DockPanel)(PART_ElemDescription).Parent;
-
-                            // Delete
-                            StackPanel PART_Hltb = (StackPanel)LogicalTreeHelper.FindLogicalNode(dpParent, "PART_Hltb");
-                            if (PART_Hltb != null)
+                            // Auto integration
+                            if (settings.enableIntegrationInDescription)
                             {
-                                logger.Debug("HowLongToBeat - Delete old PART_Hltb");
-                                dpParent.Children.Remove(PART_Hltb);
+                                // Search parent game description
+                                if (PART_ElemDescription == null)
+                                {
+                                    foreach (StackPanel sp in Tools.FindVisualChildren<StackPanel>(Application.Current.MainWindow))
+                                    {
+                                        if (sp.Name == "PART_ElemDescription")
+                                        {
+                                            PART_ElemDescription = sp;
+                                            break;
+                                        }
+                                    }
+                                }
+
+                                // Delete
+                                StackPanel PART_Hltb = (StackPanel)LogicalTreeHelper.FindLogicalNode(PART_ElemDescription, "PART_Hltb");
+                                if (PART_Hltb != null)
+                                {
+                                    PART_ElemDescription.Children.Remove(PART_Hltb);
+                                }
+
+                                if (data.GetData() != null)
+                                {
+                                    // Create 
+                                    StackPanel spHltb = CreateHltb(SelectedGame.Playtime, data.GetData());
+
+                                    // Add
+                                    PART_ElemDescription.Children.Insert(0, spHltb);
+                                    PART_ElemDescription.UpdateLayout();
+
+                                    PART_ElemDescription.Orientation = Orientation.Vertical;
+                                    PART_ElemDescription.UpdateLayout();
+                                }
                             }
+                            // Custom theme
                             else
                             {
-                                logger.Debug("HowLongToBeat - No delete old PART_Hltb");
-                            }
+                                // Search custom element
+                                foreach (StackPanel sp in Tools.FindVisualChildren<StackPanel>(Application.Current.MainWindow))
+                                {
+                                    if (sp.Name == "PART_hltbProgressBar")
+                                    {
+                                        if (data.GetData() != null)
+                                        {
+                                            // Create 
+                                            StackPanel spHltb = CreateHltb(SelectedGame.Playtime, data.GetData());
 
-
-                            if (data.GetData() != null)
-                            {
-                                // Create 
-                                StackPanel spHltb = new StackPanel();
-                                spHltb.Name = "PART_Hltb";
-                                spHltb.Orientation = Orientation.Vertical;
-
-                                TextBlock tbHltb = new TextBlock();
-                                tbHltb.Name = "PART_tbHltb";
-                                tbHltb.Text = SelectedGame.Name;//resources.GetString("LOCSucessStoryAchievements");
-                                tbHltb.Style = (Style)resources.GetResource("BaseTextBlockStyle");
-                                
-                                Separator hltbsep = new Separator();
-                                hltbsep.Name = "PART_hltbsep";
-                                hltbsep.Background = (Brush)resources.GetResource("PanelSeparatorBrush");
-
-                                UserControl hltbProgressBar = new HltbProgressBar(SelectedGame.Playtime, data.GetData());
-                                hltbProgressBar.Name = "PART_hltbProgressBar";
-
-                                spHltb.Children.Add(tbHltb);
-                                spHltb.Children.Add(hltbsep);
-                                spHltb.Children.Add(hltbProgressBar);
-                                spHltb.UpdateLayout();
-
-
-                                // Add
-                                int index = dpParent.Children.Count - 1;
-                                dpParent.Children.Insert(index, spHltb);
-                                dpParent.UpdateLayout();
-
-                                PART_ElemDescription.Orientation = Orientation.Vertical;
-                                PART_ElemDescription.UpdateLayout();
+                                            // Clear & add
+                                            sp.Children.Clear();
+                                            sp.Children.Add(spHltb);
+                                            sp.UpdateLayout();
+                                        }
+                                        else
+                                        {
+                                            sp.Children.Clear();
+                                            sp.UpdateLayout();
+                                        }
+                                        break;
+                                    }
+                                }
                             }
                         }
                         catch (Exception ex)
@@ -155,6 +157,40 @@ namespace HowLongToBeat
                 string FileName = new StackTrace(ex, true).GetFrame(0).GetFileName();
                 logger.Error(ex, $"HowLongToBeat [{FileName} {LineNumber}] - OnGameSelected() ");
             }
+        }
+
+        /// <summary>
+        /// Create the StackPanel with the ProgressBar.
+        /// </summary>
+        /// <param name="Playtime"></param>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        private StackPanel CreateHltb (long Playtime, HltbDataUser data)
+        {
+            StackPanel spHltb = new StackPanel();
+            spHltb.Name = "PART_Hltb";
+            spHltb.Orientation = Orientation.Vertical;
+
+            TextBlock tbHltb = new TextBlock();
+            tbHltb.Name = "PART_tbHltb";
+            tbHltb.Text = resources.GetString("LOCHowLongToBeatTitle");
+            tbHltb.Style = (Style)resources.GetResource("BaseTextBlockStyle");
+            tbHltb.Margin = new Thickness(0, 15, 0, 10);
+
+            Separator hltbsep = new Separator();
+            hltbsep.Name = "PART_hltbsep";
+            hltbsep.Background = (Brush)resources.GetResource("PanelSeparatorBrush");
+
+            UserControl hltbProgressBar = new HltbProgressBar(Playtime, data);
+            hltbProgressBar.Name = "PART_hltbProgressBar";
+            hltbProgressBar.Margin = new Thickness(0, 5, 0, 5);
+
+            spHltb.Children.Add(tbHltb);
+            spHltb.Children.Add(hltbsep);
+            spHltb.Children.Add(hltbProgressBar);
+            spHltb.UpdateLayout();
+
+            return spHltb;
         }
 
         public override void OnGameInstalled(Game game)

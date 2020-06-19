@@ -30,5 +30,11 @@
     -->
 
     <sys:String x:Key="LOCHowLongToBeatProgression">Progression</sys:String>
+
+    <!--  
+    MainView
+    -->
+
+    <sys:String x:Key="LOCHowLongToBeatTitle">How long to beat</sys:String>
     
 </ResourceDictionary>
