@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace HowLongToBeat.Views
 {
@@ -42,6 +43,11 @@ namespace HowLongToBeat.Views
             Close();
         }
 
+        /// <summary>
+        /// Valid the selection.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ButtonSelect_Click(object sender, RoutedEventArgs e)
         {
             HltbData Item = (HltbData)lbSelectable.SelectedItem;
@@ -56,16 +62,74 @@ namespace HowLongToBeat.Views
             Close();
         }
 
+        /// <summary>
+        /// Deblock validation button after a selection.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void LbSelectable_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
             ButtonSelect.IsEnabled = true;
         }
 
+        /// <summary>
+        /// Search element by name.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ButtonSearch_Click(object sender, RoutedEventArgs e)
         {
             List<HltbData> dataSearch = new HowLongToBeatClient().Search(SearchElement.Text);
             lbSelectable.ItemsSource = dataSearch;
             lbSelectable.UpdateLayout();
+        }
+
+        /// <summary>
+        /// Show or not the ToolTip.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void TextBlock_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            string Text = ((TextBlock)sender).Text;
+            TextBlock textBlock = (TextBlock)sender;
+
+            Typeface typeface = new Typeface(
+                textBlock.FontFamily,
+                textBlock.FontStyle,
+                textBlock.FontWeight,
+                textBlock.FontStretch);
+
+            FormattedText formattedText = new FormattedText(
+                textBlock.Text,
+                System.Threading.Thread.CurrentThread.CurrentCulture,
+                textBlock.FlowDirection,
+                typeface,
+                textBlock.FontSize,
+                textBlock.Foreground,
+                VisualTreeHelper.GetDpi(this).PixelsPerDip);
+
+            if (formattedText.Width > textBlock.DesiredSize.Width)
+            {
+                ((ToolTip)((TextBlock)sender).ToolTip).Visibility = Visibility.Visible;
+            }
+            else
+            {
+                ((ToolTip)((TextBlock)sender).ToolTip).Visibility = Visibility.Hidden;
+            }
+        }
+
+        /// <summary>
+        /// Valid search by enter key.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void SearchElement_KeyUp(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key == System.Windows.Input.Key.Enter)
+            {
+                ButtonSearch_Click(null, null);
+            }
         }
     }
 }

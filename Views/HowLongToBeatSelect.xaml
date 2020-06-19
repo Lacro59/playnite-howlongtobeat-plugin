@@ -33,7 +33,12 @@
                             </Grid.RowDefinitions>
 
                             <Grid Grid.Row="0">
-                                <TextBlock x:Name="HltbName" Text="{Binding Name}" FontWeight="Bold" FontSize="18"></TextBlock>
+                                <TextBlock x:Name="HltbName" Text="{Binding Name}" FontWeight="Bold" FontSize="18" 
+                                           TextTrimming="CharacterEllipsis" MouseEnter="TextBlock_MouseEnter">
+                                    <TextBlock.ToolTip>
+                                        <ToolTip Content="{Binding Name}"></ToolTip>
+                                    </TextBlock.ToolTip>
+                                </TextBlock>
                             </Grid>
 
                             <Grid Grid.Row="1">
@@ -70,7 +75,7 @@
                 <ColumnDefinition Width="150" />
             </Grid.ColumnDefinitions>
 
-            <TextBox Grid.Column="0" Name="SearchElement"></TextBox>
+            <TextBox Grid.Column="0" Name="SearchElement" KeyUp="SearchElement_KeyUp"></TextBox>
             <Button Grid.Column="3" Content="{DynamicResource LOCHowLongToBeatSearch}" Click="ButtonSearch_Click"></Button>
         </Grid>
         
