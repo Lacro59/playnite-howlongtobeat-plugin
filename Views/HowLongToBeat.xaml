@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             mc:Ignorable="d" Height="500" Width="800" Background="{DynamicResource WindowBackgourndBrush}"
+             mc:Ignorable="d" Height="350" Width="700" Background="{DynamicResource WindowBackgourndBrush}"
              Title="HowLongToBeat"              
              d:DesignStyle="{StaticResource WindowDesignStyle}"
              Style="{DynamicResource StandardWindowStyle}"
@@ -26,6 +26,7 @@
 
                     <Grid Grid.Column="0">
                         <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="50" />
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
@@ -37,17 +38,20 @@
                             <RowDefinition Height="30" />
                         </Grid.RowDefinitions>
 
-                        <TextBlock Grid.Column="0" Grid.Row="0" Text="{DynamicResource LOCHowLongToBeatMainStory}" Foreground="{DynamicResource TextBrush}" FontSize="16"></TextBlock>
-                        <TextBlock Grid.Column="1" Grid.Row="0" Text="{Binding MainStoryFormat}" Foreground="{DynamicResource TextBrush}" FontSize="16" HorizontalAlignment="Center"></TextBlock>
+                        <StackPanel Grid.Column="0" Grid.Row="0" Background="DarkCyan" Width="25" Height="25"></StackPanel>
+                        <TextBlock Grid.Column="1" Grid.Row="0" Text="{DynamicResource LOCHowLongToBeatMainStory}" Foreground="{DynamicResource TextBrush}" FontSize="16" VerticalAlignment="Center"></TextBlock>
+                        <TextBlock Grid.Column="2" Grid.Row="0" Text="{Binding MainStoryFormat}" Foreground="{DynamicResource TextBrush}" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
 
-                        <TextBlock Grid.Column="0" Grid.Row="1" Text="{DynamicResource LOCHowLongToBeatMainExtra}" Foreground="{DynamicResource TextBrush}" FontSize="16"></TextBlock>
-                        <TextBlock Grid.Column="1" Grid.Row="1" Text="{Binding MaintExtraFormat}" Foreground="{DynamicResource TextBrush}" FontSize="16" HorizontalAlignment="Center"></TextBlock>
+                        <StackPanel Grid.Column="0" Grid.Row="1" Background="RoyalBlue" Width="25" Height="25"></StackPanel>
+                        <TextBlock Grid.Column="1" Grid.Row="1" Text="{DynamicResource LOCHowLongToBeatMainExtra}" Foreground="{DynamicResource TextBrush}" FontSize="16" VerticalAlignment="Center"></TextBlock>
+                        <TextBlock Grid.Column="2" Grid.Row="1" Text="{Binding MaintExtraFormat}" Foreground="{DynamicResource TextBrush}" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
 
-                        <TextBlock Grid.Column="0" Grid.Row="2" Text="{DynamicResource LOCHowLongToBeatCompletionist}" Foreground="{DynamicResource TextBrush}" FontSize="16"></TextBlock>
-                        <TextBlock Grid.Column="1" Grid.Row="2" Text="{Binding CompletionistFormat}" Foreground="{DynamicResource TextBrush}" FontSize="16" HorizontalAlignment="Center"></TextBlock>
+                        <StackPanel Grid.Column="0" Grid.Row="2" Background="ForestGreen" Width="25" Height="25"></StackPanel>
+                        <TextBlock Grid.Column="1" Grid.Row="2" Text="{DynamicResource LOCHowLongToBeatCompletionist}" Foreground="{DynamicResource TextBrush}" FontSize="16" VerticalAlignment="Center"></TextBlock>
+                        <TextBlock Grid.Column="2" Grid.Row="2" Text="{Binding CompletionistFormat}" Foreground="{DynamicResource TextBrush}" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
 
-                        <TextBlock Grid.Column="0" Grid.Row="3" Text="{DynamicResource LOCHowLongToBeatPlaytime}" Foreground="{DynamicResource TextBrush}" FontSize="16"></TextBlock>
-                        <TextBlock Grid.Column="1" Grid.Row="3" Text="{Binding PlaytimeFormat}" Foreground="{DynamicResource TextBrush}" FontSize="16" HorizontalAlignment="Center"></TextBlock>
+                        <TextBlock Grid.Column="1" Grid.Row="3" Text="{DynamicResource LOCHowLongToBeatPlaytime}" Foreground="{DynamicResource TextBrush}" FontSize="16" VerticalAlignment="Center"></TextBlock>
+                        <TextBlock Grid.Column="2" Grid.Row="3" Text="{Binding PlaytimeFormat}" Foreground="{DynamicResource TextBrush}" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
                     </Grid>
 
                     <StackPanel Grid.Column="1" Orientation="Vertical">
@@ -61,31 +65,6 @@
         <DockPanel DockPanel.Dock="Bottom" Margin="0,10,0,0">
             <TextBlock DockPanel.Dock="Top" FontSize="24" FontWeight="Bold" Text="{DynamicResource LOCHowLongToBeatProgression}" Foreground="{DynamicResource TextBrush}" Margin="0,0,0,10" HorizontalAlignment="Center"></TextBlock>
 
-            <StackPanel DockPanel.Dock="Bottom">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-
-                    <StackPanel Grid.Column="0" Height="40" Orientation="Horizontal">
-                        <StackPanel Background="DarkCyan" Width="40" Margin="0,0,20,0"></StackPanel>
-                        <TextBlock Text="{DynamicResource LOCHowLongToBeatMainStory}" Foreground="{DynamicResource TextBrush}" FontSize="16" VerticalAlignment="Center"></TextBlock>
-                    </StackPanel>
-
-                    <StackPanel Grid.Column="1" Height="40" Orientation="Horizontal">
-                        <StackPanel Background="RoyalBlue" Width="40" Margin="0,0,20,0"></StackPanel>
-                        <TextBlock Text="{DynamicResource LOCHowLongToBeatMainExtra}" Foreground="{DynamicResource TextBrush}" FontSize="16" VerticalAlignment="Center"></TextBlock>
-                    </StackPanel>
-
-                    <StackPanel Grid.Column="2" Height="40" Orientation="Horizontal">
-                        <StackPanel Background="ForestGreen" Width="40" Margin="0,0,20,0"></StackPanel>
-                        <TextBlock Text="{DynamicResource LOCHowLongToBeatCompletionist}" Foreground="{DynamicResource TextBrush}" FontSize="16" VerticalAlignment="Center"></TextBlock>
-                    </StackPanel>
-                </Grid>
-            </StackPanel>
-            
             <StackPanel DockPanel.Dock="Bottom">
                 <ProgressBar Name="ProgressCompletionist" Height="40" Value="90" Maximum="90" Background="Transparent"
                              Foreground="ForestGreen" Margin="0,0,0,-40"/>

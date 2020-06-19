@@ -3,9 +3,9 @@ using HowLongToBeat.Views;
 using Newtonsoft.Json;
 using Playnite.SDK;
 using Playnite.SDK.Models;
-using System;
 using System.Collections.Generic;
 using System.IO;
+
 
 namespace HowLongToBeat.Services
 {
