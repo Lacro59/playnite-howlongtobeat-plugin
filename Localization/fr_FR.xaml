@@ -13,6 +13,8 @@
     <sys:String x:Key="LOCHowLongToBeatCompletionist">Complétiste</sys:String>
     <sys:String x:Key="LOCHowLongToBeatPlaytime">Temps de jeu</sys:String>
 
+    <sys:String x:Key="LOCHowLongToBeatSearch">Rechercher</sys:String>
+
     <sys:String x:Key="LOCHowLongToBeatSelect">Sélectionner</sys:String>
     <sys:String x:Key="LOCHowLongToBeatCancel">Annuler</sys:String>
 

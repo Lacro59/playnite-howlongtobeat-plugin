@@ -47,7 +47,7 @@ namespace HowLongToBeat
                         HowLongToBeatData data = new HowLongToBeatData(GameSelected, this.GetPluginUserDataPath());
                         if (data.GetData() != null)
                         {
-                            new Views.HowLongToBeat(data.GetData(), GameSelected, PlayniteApi).ShowDialog();
+                            new Views.HowLongToBeat(data, GameSelected, PlayniteApi).ShowDialog();
                         }
                     })
             };

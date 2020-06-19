@@ -1,9 +1,11 @@
 ﻿using HowLongToBeat.Models;
+using HowLongToBeat.Services;
 using Playnite.Controls;
 using Playnite.SDK;
 using Playnite.SDK.Models;
 using PluginCommon;
 using System;
+using System.Diagnostics;
 using System.Windows.Media.Imaging;
 
 namespace HowLongToBeat.Views
@@ -23,44 +25,48 @@ namespace HowLongToBeat.Views
 
         public string PlaytimeFormat { get; set; }
 
-        public HowLongToBeat(HltbDataUser data, Game game, IPlayniteAPI PlayniteApi)
+        private HowLongToBeatData data { get; set; }
+
+        public HowLongToBeat(HowLongToBeatData data, Game game, IPlayniteAPI PlayniteApi)
         {
+            this.data = data;
+
             InitializeComponent();
+
+            HltbDataUser gameData = data.GetData();
 
             CoverImage = PlayniteApi.Database.GetFullFilePath(game.CoverImage);
             GameName = game.Name;
-            MainStoryFormat = data.GameHltbData.MainStoryFormat;
-            MaintExtraFormat = data.GameHltbData.MaintExtraFormat;
-            CompletionistFormat = data.GameHltbData.CompletionistFormat;
+            MainStoryFormat = gameData.GameHltbData.MainStoryFormat;
+            MaintExtraFormat = gameData.GameHltbData.MaintExtraFormat;
+            CompletionistFormat = gameData.GameHltbData.CompletionistFormat;
 
             PlaytimeFormat = (int)TimeSpan.FromSeconds(game.Playtime).TotalHours + "h " + TimeSpan.FromSeconds(game.Playtime).ToString(@"mm") + "min";
 
-
-
-            long MaxValue = data.GameHltbData.Completionist;
-            if (data.GameHltbData.Completionist != 0)
+            long MaxValue = gameData.GameHltbData.Completionist;
+            if (gameData.GameHltbData.Completionist != 0)
             {
-                if (game.Playtime > data.GameHltbData.Completionist)
+                if (game.Playtime > gameData.GameHltbData.Completionist)
                 {
                     MaxValue = game.Playtime;
                 }
             }
             else
             {
-                MaxValue = data.GameHltbData.MaintExtra;
-                if (game.Playtime > data.GameHltbData.MaintExtra)
+                MaxValue = gameData.GameHltbData.MaintExtra;
+                if (game.Playtime > gameData.GameHltbData.MaintExtra)
                 {
                     MaxValue = game.Playtime;
                 }
             }
 
-            ProgressMainStory.Value = data.GameHltbData.MainStory;
+            ProgressMainStory.Value = gameData.GameHltbData.MainStory;
             ProgressMainStory.Maximum = MaxValue;
 
-            ProgressMainExtra.Value = data.GameHltbData.MaintExtra;
+            ProgressMainExtra.Value = gameData.GameHltbData.MaintExtra;
             ProgressMainExtra.Maximum = MaxValue;
 
-            ProgressCompletionist.Value = data.GameHltbData.Completionist;
+            ProgressCompletionist.Value = gameData.GameHltbData.Completionist;
             ProgressCompletionist.Maximum = MaxValue;
 
             SliderPlaytime.Value = game.Playtime;
@@ -75,6 +81,20 @@ namespace HowLongToBeat.Views
         private void DockPanel_Loaded(object sender, System.Windows.RoutedEventArgs e)
         {
             Tools.DesactivePlayniteWindowControl(this);
+        }
+
+        private void ButtonWeb_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            if (data.GetData().GameHltbData.Url != "")
+            {
+                Process.Start(data.GetData().GameHltbData.Url);
+            }
+        }
+
+        private void ButtonDelete_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            data.RemoveData();
+            this.Close();
         }
     }
 }

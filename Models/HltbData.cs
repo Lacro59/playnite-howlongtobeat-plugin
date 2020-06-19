@@ -8,6 +8,7 @@ namespace HowLongToBeat.Models
         public string Name { get; set; }
         public int Id { get; set; }
         public string UrlImg { get; set; }
+        public string Url { get; set; } = "";
         public long MainStory { get; set; }
         [JsonIgnore]
         public string MainStoryFormat

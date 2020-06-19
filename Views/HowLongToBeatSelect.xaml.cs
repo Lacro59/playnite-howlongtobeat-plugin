@@ -1,4 +1,5 @@
 ﻿using HowLongToBeat.Models;
+using HowLongToBeat.Services;
 using Newtonsoft.Json;
 using Playnite.Controls;
 using Playnite.SDK;
@@ -60,6 +61,11 @@ namespace HowLongToBeat.Views
             ButtonSelect.IsEnabled = true;
         }
 
-
+        private void ButtonSearch_Click(object sender, RoutedEventArgs e)
+        {
+            List<HltbData> dataSearch = new HowLongToBeatClient().Search(SearchElement.Text);
+            lbSelectable.ItemsSource = dataSearch;
+            lbSelectable.UpdateLayout();
+        }
     }
 }

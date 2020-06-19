@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace HowLongToBeat.Services
 {
-    class HowLongToBeatClient
+    public class HowLongToBeatClient
     {
         private static readonly ILogger logger = LogManager.GetLogger();
 
@@ -124,6 +124,7 @@ namespace HowLongToBeat.Services
                     string Name = "";
                     int Id = 0;
                     string UrlImg = "";
+                    string Url = "";
                     long MainStory = 0;
                     long MaintExtra = 0;
                     long Completionist = 0;
@@ -135,6 +136,7 @@ namespace HowLongToBeat.Services
                         Name = ElementA.GetAttribute("title");
                         Id = int.Parse(ElementA.GetAttribute("href").Replace("game?id=", ""));
                         UrlImg = ElementImg.GetAttribute("src");
+                        Url = UrlBase + ElementA.GetAttribute("href");
 
                         var ElementDetails = SearchElement.QuerySelector(".search_list_details_block");
                         var Details = ElementDetails.QuerySelectorAll(".search_list_tidbit");
@@ -163,6 +165,7 @@ namespace HowLongToBeat.Services
                             Name = Name,
                             Id = Id,
                             UrlImg = UrlImg,
+                            Url = Url,
                             MainStory = MainStory,
                             MaintExtra = MaintExtra,
                             Completionist = Completionist

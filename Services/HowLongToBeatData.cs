@@ -3,17 +3,19 @@ using HowLongToBeat.Views;
 using Newtonsoft.Json;
 using Playnite.SDK;
 using Playnite.SDK.Models;
+using System;
 using System.Collections.Generic;
 using System.IO;
 
 namespace HowLongToBeat.Services
 {
-    class HowLongToBeatData
+    public class HowLongToBeatData
     {
         private static readonly ILogger logger = LogManager.GetLogger();
 
         private HltbDataUser data { get; set; }
 
+        private string FileGameData { get; set; }
 
         public HowLongToBeatData(Game game, string PluginUserDataPath)
         {
@@ -24,7 +26,7 @@ namespace HowLongToBeat.Services
                 Directory.CreateDirectory(PluginDatabasePath);
             }
 
-            string FileGameData = PluginDatabasePath + "\\" + game.Id.ToString() + ".json";
+            FileGameData = PluginDatabasePath + "\\" + game.Id.ToString() + ".json";
 
             if (File.Exists(FileGameData))
             {
@@ -57,5 +59,12 @@ namespace HowLongToBeat.Services
             return data;
         }
 
+        public void RemoveData()
+        {
+            if (File.Exists(FileGameData))
+            {
+                File.Delete(FileGameData);
+            }
+        }
     }
 }

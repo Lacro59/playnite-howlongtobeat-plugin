@@ -17,31 +17,43 @@
 
             <StackPanel DockPanel.Dock="Right" Margin="20,0,0,0">
                 <TextBlock Text="{Binding GameName}" Margin="0,0,0,20" FontSize="24" FontWeight="Bold" Foreground="{DynamicResource TextBrush}"></TextBlock>
-                
+
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="100" />
                     </Grid.ColumnDefinitions>
 
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="30" />
-                        <RowDefinition Height="30" />
-                        <RowDefinition Height="30" />
-                        <RowDefinition Height="30" />
-                    </Grid.RowDefinitions>
+                    <Grid Grid.Column="0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
 
-                    <TextBlock Grid.Column="0" Grid.Row="0" Text="{DynamicResource LOCHowLongToBeatMainStory}" Foreground="{DynamicResource TextBrush}" FontSize="16"></TextBlock>
-                    <TextBlock Grid.Column="1" Grid.Row="0" Text="{Binding MainStoryFormat}" Foreground="{DynamicResource TextBrush}" FontSize="16" HorizontalAlignment="Center"></TextBlock>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="30" />
+                            <RowDefinition Height="30" />
+                            <RowDefinition Height="30" />
+                            <RowDefinition Height="30" />
+                        </Grid.RowDefinitions>
 
-                    <TextBlock Grid.Column="0" Grid.Row="1" Text="{DynamicResource LOCHowLongToBeatMainExtra}" Foreground="{DynamicResource TextBrush}" FontSize="16"></TextBlock>
-                    <TextBlock Grid.Column="1" Grid.Row="1" Text="{Binding MaintExtraFormat}" Foreground="{DynamicResource TextBrush}" FontSize="16" HorizontalAlignment="Center"></TextBlock>
+                        <TextBlock Grid.Column="0" Grid.Row="0" Text="{DynamicResource LOCHowLongToBeatMainStory}" Foreground="{DynamicResource TextBrush}" FontSize="16"></TextBlock>
+                        <TextBlock Grid.Column="1" Grid.Row="0" Text="{Binding MainStoryFormat}" Foreground="{DynamicResource TextBrush}" FontSize="16" HorizontalAlignment="Center"></TextBlock>
 
-                    <TextBlock Grid.Column="0" Grid.Row="2" Text="{DynamicResource LOCHowLongToBeatCompletionist}" Foreground="{DynamicResource TextBrush}" FontSize="16"></TextBlock>
-                    <TextBlock Grid.Column="1" Grid.Row="2" Text="{Binding CompletionistFormat}" Foreground="{DynamicResource TextBrush}" FontSize="16" HorizontalAlignment="Center"></TextBlock>
+                        <TextBlock Grid.Column="0" Grid.Row="1" Text="{DynamicResource LOCHowLongToBeatMainExtra}" Foreground="{DynamicResource TextBrush}" FontSize="16"></TextBlock>
+                        <TextBlock Grid.Column="1" Grid.Row="1" Text="{Binding MaintExtraFormat}" Foreground="{DynamicResource TextBrush}" FontSize="16" HorizontalAlignment="Center"></TextBlock>
 
-                    <TextBlock Grid.Column="0" Grid.Row="3" Text="{DynamicResource LOCHowLongToBeatPlaytime}" Foreground="{DynamicResource TextBrush}" FontSize="16"></TextBlock>
-                    <TextBlock Grid.Column="1" Grid.Row="3" Text="{Binding PlaytimeFormat}" Foreground="{DynamicResource TextBrush}" FontSize="16" HorizontalAlignment="Center"></TextBlock>
+                        <TextBlock Grid.Column="0" Grid.Row="2" Text="{DynamicResource LOCHowLongToBeatCompletionist}" Foreground="{DynamicResource TextBrush}" FontSize="16"></TextBlock>
+                        <TextBlock Grid.Column="1" Grid.Row="2" Text="{Binding CompletionistFormat}" Foreground="{DynamicResource TextBrush}" FontSize="16" HorizontalAlignment="Center"></TextBlock>
+
+                        <TextBlock Grid.Column="0" Grid.Row="3" Text="{DynamicResource LOCHowLongToBeatPlaytime}" Foreground="{DynamicResource TextBrush}" FontSize="16"></TextBlock>
+                        <TextBlock Grid.Column="1" Grid.Row="3" Text="{Binding PlaytimeFormat}" Foreground="{DynamicResource TextBrush}" FontSize="16" HorizontalAlignment="Center"></TextBlock>
+                    </Grid>
+
+                    <StackPanel Grid.Column="1" Orientation="Vertical">
+                        <Button Content="Web" Margin="0,0,0,10" Click="ButtonWeb_Click"></Button>
+                        <Button Content="Delete" Click="ButtonDelete_Click"></Button>
+                    </StackPanel>
                 </Grid>
             </StackPanel>
         </DockPanel>
