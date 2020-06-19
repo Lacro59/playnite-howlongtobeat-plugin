@@ -38,9 +38,20 @@ namespace HowLongToBeat.Views
 
 
             long MaxValue = data.GameHltbData.Completionist;
-            if (game.Playtime > data.GameHltbData.Completionist)
+            if (data.GameHltbData.Completionist != 0)
             {
-                MaxValue = game.Playtime;
+                if (game.Playtime > data.GameHltbData.Completionist)
+                {
+                    MaxValue = game.Playtime;
+                }
+            }
+            else
+            {
+                MaxValue = data.GameHltbData.MaintExtra;
+                if (game.Playtime > data.GameHltbData.MaintExtra)
+                {
+                    MaxValue = game.Playtime;
+                }
             }
 
             ProgressMainStory.Value = data.GameHltbData.MainStory;

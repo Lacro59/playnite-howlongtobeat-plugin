@@ -49,13 +49,13 @@
                                 </Grid.RowDefinitions>
 
                                 <TextBlock Grid.Column="0" Grid.Row="0" Text="{DynamicResource LOCHowLongToBeatMainStory}"></TextBlock>
-                                <TextBlock Grid.Column="1" Grid.Row="0" x:Name="HltbMainStory" Text="{Binding MainStoryFormat}"></TextBlock>
+                                <TextBlock Grid.Column="1" Grid.Row="0" x:Name="HltbMainStory" Text="{Binding MainStoryFormat}" HorizontalAlignment="Center"></TextBlock>
 
                                 <TextBlock Grid.Column="0" Grid.Row="1" Text="{DynamicResource LOCHowLongToBeatMainExtra}"></TextBlock>
-                                <TextBlock Grid.Column="1" Grid.Row="1" x:Name="HltbMainExtra" Text="{Binding MaintExtraFormat}"></TextBlock>
+                                <TextBlock Grid.Column="1" Grid.Row="1" x:Name="HltbMainExtra" Text="{Binding MaintExtraFormat}" HorizontalAlignment="Center"></TextBlock>
 
                                 <TextBlock Grid.Column="0" Grid.Row="2" Text="{DynamicResource LOCHowLongToBeatCompletionist}"></TextBlock>
-                                <TextBlock Grid.Column="1" Grid.Row="2" x:Name="HltbCompletionist" Text="{Binding CompletionistFormat}"></TextBlock>
+                                <TextBlock Grid.Column="1" Grid.Row="2" x:Name="HltbCompletionist" Text="{Binding CompletionistFormat}" HorizontalAlignment="Center"></TextBlock>
                             </Grid>
                         </Grid>
                     </Grid>

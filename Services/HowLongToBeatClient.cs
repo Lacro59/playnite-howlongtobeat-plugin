@@ -6,6 +6,7 @@ using Playnite.SDK;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -85,21 +86,21 @@ namespace HowLongToBeat.Services
             if (Time.IndexOf("Hours") > -1)
             {
                 Time = Time.Replace("Hours", "");
-                Time = Time.Replace("&#189;", ",5");
-                Time = Time.Replace("½", ",5");
+                Time = Time.Replace("&#189;", ".5");
+                Time = Time.Replace("½", ".5");
                 Time = Time.Trim();
 
-                return (long)(double.Parse(Time) * 3600);
+                return (long)(Convert.ToDouble(Time, new NumberFormatInfo { NumberGroupSeparator = "." }) * 3600);
             }
 
             if (Time.IndexOf("Mins") > -1)
             {
                 Time = Time.Replace("Mins", "");
-                Time = Time.Replace("&#189;", ",5");
-                Time = Time.Replace("½", ",5");
+                Time = Time.Replace("&#189;", ".5");
+                Time = Time.Replace("½", ".5");
                 Time = Time.Trim();
 
-                return (long)(double.Parse(Time) * 60);
+                return (long)(Convert.ToDouble(Time, new NumberFormatInfo { NumberGroupSeparator = "." }) * 60);
             }
 
             return 0;

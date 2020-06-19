@@ -14,6 +14,10 @@ namespace HowLongToBeat.Models
         {
             get
             {
+                if (MainStory == 0)
+                {
+                    return "--";
+                }
                 return (int)TimeSpan.FromSeconds(MainStory).TotalHours + "h " + TimeSpan.FromSeconds(MainStory).ToString(@"mm") + "min";
             }
         }
@@ -23,6 +27,10 @@ namespace HowLongToBeat.Models
         {
             get
             {
+                if (MaintExtra == 0)
+                {
+                    return "--";
+                }
                 return (int)TimeSpan.FromSeconds(MaintExtra).TotalHours + "h " + TimeSpan.FromSeconds(MaintExtra).ToString(@"mm") + "min";
             }
         }
@@ -32,6 +40,10 @@ namespace HowLongToBeat.Models
         {
             get
             {
+                if (Completionist == 0)
+                {
+                    return "--";
+                }
                 return (int)TimeSpan.FromSeconds(Completionist).TotalHours + "h " + TimeSpan.FromSeconds(Completionist).ToString(@"mm") + "min";
             }
         }
