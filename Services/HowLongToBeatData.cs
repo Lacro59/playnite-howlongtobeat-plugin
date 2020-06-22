@@ -31,7 +31,7 @@ namespace HowLongToBeat.Services
             if (File.Exists(FileGameData))
             {
                 // Load data
-                logger.Debug("HowLongToBeat - Load data");
+                logger.Info("HowLongToBeat - Load data");
 
                 data = JsonConvert.DeserializeObject<HltbDataUser>(File.ReadAllText(FileGameData));
             }

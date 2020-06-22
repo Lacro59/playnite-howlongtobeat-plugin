@@ -101,7 +101,7 @@ namespace HowLongToBeat
             {
                 HowLongToBeatData data = new HowLongToBeatData(GameSelected, this.GetPluginUserDataPath(), false);
 
-                if (settings.enableIntegrationButton)
+                if (settings.EnableIntegrationButton)
                 {
                     // Search parent action buttons
                     if (PART_ActionButtons == null)
@@ -136,7 +136,7 @@ namespace HowLongToBeat
                 }
 
                 // Auto integration
-                if (settings.enableIntegrationInDescription)
+                if (settings.EnableIntegrationInDescription)
                 {
                     // Search game description
                     if (PART_ElemDescription == null)
@@ -176,7 +176,6 @@ namespace HowLongToBeat
                             {
                                 PART_ElemDescription.Children.Add(spHltb);
                             }
-                            PART_ElemDescription.UpdateLayout();
 
                             PART_ElemDescription.UpdateLayout();
                         }
@@ -188,7 +187,7 @@ namespace HowLongToBeat
                 }
 
                 // Custom theme
-                if (settings.enableIntegrationInCustomTheme)
+                if (settings.EnableIntegrationInCustomTheme)
                 {
                     // Search custom element
                     foreach (StackPanel sp in Tools.FindVisualChildren<StackPanel>(Application.Current.MainWindow))
@@ -210,7 +209,6 @@ namespace HowLongToBeat
                                 sp.Children.Clear();
                                 sp.UpdateLayout();
                             }
-                            break;
                         }
 
                         if (sp.Name == "PART_hltbProgressBar")
@@ -230,7 +228,6 @@ namespace HowLongToBeat
                                 sp.Children.Clear();
                                 sp.UpdateLayout();
                             }
-                            break;
                         }
                     }
                 }

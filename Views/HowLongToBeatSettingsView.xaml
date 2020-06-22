@@ -9,23 +9,23 @@
     <StackPanel Margin="20">
 
         <Label Content="{DynamicResource LOCHowLongToBeatIntegration}" FontSize="18" />
-        <Separator Margin="0,0,0,20" />
+        <Separator Margin="0,0,0,10" />
 
-        <CheckBox IsChecked="{Binding enableIntegrationButton}" Name="HltB_IntegrationButton">
+        <CheckBox IsChecked="{Binding EnableIntegrationButton}" Name="HltB_IntegrationButton">
             <Label Content="{DynamicResource LOCHowLongToBeatIntegrationButton}" />
         </CheckBox>
 
-        <CheckBox IsChecked="{Binding enableIntegrationInDescription}" Name="HltB_IntegrationInDescription" Margin="0,5,0,0" Click="Checkbox_Click">
+        <CheckBox IsChecked="{Binding EnableIntegrationInDescription}" Name="HltB_IntegrationInDescription" Margin="0,5,0,0" Click="Checkbox_Click">
             <Label Content="{DynamicResource LOCHowLongToBeatIntegrationInDescription}" />
         </CheckBox>
-        <CheckBox IsChecked="{Binding IntegrationShowTitle}" Margin="45,5,0,0" IsEnabled="{Binding ElementName=IntegrationInDescription, Path=IsChecked}">
-            <Label Content="{DynamicResource LOCHowLongToBeatIntegrationShowTitle}" />
-        </CheckBox>
-        <CheckBox IsChecked="{Binding IntegrationTopGameDetails}" Margin="45,5,0,0" IsEnabled="{Binding ElementName=IntegrationInDescription, Path=IsChecked}">
+        <CheckBox IsChecked="{Binding IntegrationTopGameDetails}" Margin="30,5,0,0" IsEnabled="{Binding ElementName=IntegrationInDescription, Path=IsChecked}">
             <Label Content="{DynamicResource LOCHowLongToBeatIntegrationTopGameDetails}" />
         </CheckBox>
+        <CheckBox IsChecked="{Binding IntegrationShowTitle}" Margin="30,5,0,0" IsEnabled="{Binding ElementName=IntegrationInDescription, Path=IsChecked}">
+            <Label Content="{DynamicResource LOCHowLongToBeatIntegrationShowTitle}" />
+        </CheckBox>
 
-        <CheckBox IsChecked="{Binding enableIntegrationInCustomTheme}" Margin="0,5,0,0" Name="HltB_IntegrationInCustomTheme" Click="Checkbox_Click">
+        <CheckBox IsChecked="{Binding EnableIntegrationInCustomTheme}" Margin="0,5,0,0" Name="HltB_IntegrationInCustomTheme" Click="Checkbox_Click">
             <Label Content="{DynamicResource LOCHowLongToBeatIntegrationInCustomTheme}" />
         </CheckBox>
 
