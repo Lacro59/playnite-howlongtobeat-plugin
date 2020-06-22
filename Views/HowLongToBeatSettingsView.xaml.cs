@@ -11,9 +11,19 @@ namespace HowLongToBeat.Views
             InitializeComponent();
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void Checkbox_Click(object sender, RoutedEventArgs e)
         {
+            CheckBox cb = (CheckBox)sender;
 
+            if ((cb.Name == "HltB_IntegrationInDescription") && (bool)cb.IsChecked)
+            {
+                HltB_IntegrationInCustomTheme.IsChecked = false;
+            }
+
+            if ((cb.Name == "HltB_IntegrationInCustomTheme") && (bool)cb.IsChecked)
+            {
+                HltB_IntegrationInDescription.IsChecked = false;
+            }
         }
     }
 }

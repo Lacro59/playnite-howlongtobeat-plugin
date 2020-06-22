@@ -1,10 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Playnite.SDK;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace HowLongToBeat
 {
@@ -12,7 +9,11 @@ namespace HowLongToBeat
     {
         private readonly HowLongToBeat plugin;
 
+        public bool enableIntegrationButton { get; set; } = false;
         public bool enableIntegrationInDescription { get; set; } = false;
+        public bool IntegrationShowTitle { get; set; } = true;
+        public bool IntegrationTopGameDetails { get; set; } = true;
+        public bool enableIntegrationInCustomTheme { get; set; } = false;
 
         // Playnite serializes settings object to a JSON object and saves it as text file.
         // If you want to exclude some property from being saved then use `JsonIgnore` ignore attribute.

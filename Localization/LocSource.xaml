@@ -7,7 +7,11 @@
     -->
 
     <sys:String x:Key="LOCHowLongToBeatIntegration">Interface integration (experimental)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationButton">Add button</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationInDescription">Integration on game description</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationShowTitle">Show title</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationTopGameDetails">Integration above game description</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationInCustomTheme">Custom theme integration (if integrated)</sys:String>
 
     <!--  
     HowLongToBeatSelect
