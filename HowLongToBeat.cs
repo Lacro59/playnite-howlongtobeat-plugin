@@ -161,10 +161,11 @@ namespace HowLongToBeat
                         {
                             Button HltbButton = new Button();
                             HltbButton.Name = "PART_HltbButton";
+                            HltbButton.FontFamily = new FontFamily(new Uri("pack://application:,,,/HowLongToBeat;component/Resources/"), "./#font");
                             HltbButton.Height = 40;
                             HltbButton.Margin = new Thickness(10, 0, 0, 0);
                             HltbButton.Click += HltbButton_Click;
-                            HltbButton.Content = "H";
+                            HltbButton.Content = TransformIcon.Get("HowLongToBeat");
 
                             PART_ActionButtons.Children.Add(HltbButton);
                             PART_ActionButtons.UpdateLayout();
