@@ -2,7 +2,6 @@
 using HowLongToBeat.Services;
 using HowLongToBeat.Views;
 using HowLongToBeat.Views.Interfaces;
-using Playnite.Controls;
 using Playnite.SDK;
 using Playnite.SDK.Events;
 using Playnite.SDK.Models;
@@ -16,6 +15,7 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+
 
 namespace HowLongToBeat
 {
@@ -41,6 +41,12 @@ namespace HowLongToBeat
             PluginCommon.Localization.SetPluginLanguage(pluginFolder, api.Paths.ConfigurationPath);
             // Add common in application ressource.
             PluginCommon.Common.Load(pluginFolder);
+
+
+            if (settings.EnableIntegrationInCustomTheme)
+            {
+                EventManager.RegisterClassHandler(typeof(Button), Button.ClickEvent, new RoutedEventHandler(ButtonHltb_ClickEvent));
+            }
         }
 
         public override IEnumerable<ExtensionFunction> GetFunctions()
@@ -62,10 +68,38 @@ namespace HowLongToBeat
             };
         }
 
+
         #region Interface integration
         private Game GameSelected { get; set; }
         private StackPanel PART_ActionButtons = null;
         private StackPanel PART_ElemDescription = null;
+
+        /// <summary>
+        /// Button event for call plugin view in custom theme.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ButtonHltb_ClickEvent(object sender, RoutedEventArgs e)
+        {
+            string ButtonName = "";
+
+            try
+            {
+                ButtonName = ((Button)sender).Name;
+
+                if (ButtonName == "PART_HltbCustomButton")
+                {
+                    HltbButton_Click(sender, e);
+                }
+            }
+            catch (Exception ex)
+
+            {
+                var LineNumber = new StackTrace(ex, true).GetFrame(0).GetFileLineNumber();
+                string FileName = new StackTrace(ex, true).GetFrame(0).GetFileName();
+                logger.Error(ex, $"HowLongToBeat [{FileName} {LineNumber}] - On {ButtonName} ");
+            }
+        }
 
         public override void OnGameSelected(GameSelectionEventArgs args)
         {
@@ -95,6 +129,9 @@ namespace HowLongToBeat
             }
         }
 
+        /// <summary>
+        /// Integration plugin interface in application.
+        /// </summary>
         private void Integration()
         {
             try
