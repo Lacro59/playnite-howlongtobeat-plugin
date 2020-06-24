@@ -11,7 +11,7 @@
     <sys:String x:Key="LOCHowLongToBeatIntegrationInDescription">Intégration dans la description du jeu</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationShowTitle">Afficher le titre</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationTopGameDetails">Intégrer au dessus de la description du jeu</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationInCustomTheme">Intgération dans les thèmes personnalisés (si intégré)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationInCustomTheme">Intégration dans les thèmes personnalisés (si intégré)</sys:String>
 
     <!--  
     HowLongToBeatSelect
