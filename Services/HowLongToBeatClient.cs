@@ -125,9 +125,17 @@ namespace HowLongToBeat.Services
                     int Id = 0;
                     string UrlImg = "";
                     string Url = "";
+
                     long MainStory = 0;
-                    long MaintExtra = 0;
+                    long MainExtra = 0;
                     long Completionist = 0;
+                    long Solo = 0;
+                    long CoOp = 0;
+                    long Vs = 0;
+
+                    bool IsMainStory = true;
+                    bool IsMainExtra = true;
+                    bool IsCompletionist = true;
 
                     foreach (var SearchElement in htmlDocument.QuerySelectorAll("li.back_darkish"))
                     {
@@ -140,26 +148,71 @@ namespace HowLongToBeat.Services
 
                         var ElementDetails = SearchElement.QuerySelector(".search_list_details_block");
                         var Details = ElementDetails.QuerySelectorAll(".search_list_tidbit");
+                        if (Details.Length == 0)
+                        {
+                            Details = ElementDetails.QuerySelectorAll("div");
+                        }
                         int iElement = 0;
+
                         foreach (var El in Details)
                         {
                             switch (iElement)
                             {
+                                case 0:
+                                    IsMainStory = (El.InnerHtml == "Main Story");
+                                    break;
                                 case 1:
-                                    MainStory = ConvertStringToLong(El.InnerHtml);
+                                    if (El.InnerHtml != "")
+                                    {
+                                        if (IsMainStory)
+                                        {
+                                            MainStory = ConvertStringToLong(El.InnerHtml);
+                                        }
+                                        else
+                                        {
+                                            Solo = ConvertStringToLong(El.InnerHtml);
+                                        }
+                                    }
                                     break;
 
+                                case 2:
+                                    IsMainExtra = (El.InnerHtml == "Main + Extra");
+                                    break;
                                 case 3:
-                                    MaintExtra = ConvertStringToLong(El.InnerHtml);
+                                    if (El.InnerHtml != "")
+                                    {
+                                        if (IsMainExtra)
+                                        {
+                                            MainExtra = ConvertStringToLong(El.InnerHtml);
+                                        }
+                                        else
+                                        {
+                                            CoOp = ConvertStringToLong(El.InnerHtml);
+                                        }
+                                    }
                                     break;
 
+                                case 4:
+                                    IsCompletionist = (El.InnerHtml == "Completionist");
+                                    break;
                                 case 5:
-                                    Completionist = ConvertStringToLong(El.InnerHtml);
+                                    if (El.InnerHtml != "")
+                                    {
+                                        if (IsCompletionist)
+                                        {
+                                            Completionist = ConvertStringToLong(El.InnerHtml);
+                                        }
+                                        else
+                                        {
+                                            Vs = ConvertStringToLong(El.InnerHtml);
+                                        }
+                                    }
                                     break;
                             }
                             iElement += 1;
                         }
 
+                        //logger.Debug($"Name: {Name} - MainStory: {MainStory} - MainExtra: {MainExtra} - Completionist: {Completionist} - Solo: {Solo} - CoOp: {CoOp} - Vs: {Vs}");
                         ReturnData.Add(new HltbData
                         {
                             Name = Name,
@@ -167,8 +220,11 @@ namespace HowLongToBeat.Services
                             UrlImg = UrlImg,
                             Url = Url,
                             MainStory = MainStory,
-                            MaintExtra = MaintExtra,
-                            Completionist = Completionist
+                            MainExtra = MainExtra,
+                            Completionist = Completionist,
+                            Solo = Solo,
+                            CoOp = CoOp,
+                            Vs = Vs
                         });
                     }
                 }

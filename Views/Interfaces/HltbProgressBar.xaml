@@ -7,19 +7,19 @@
              mc:Ignorable="d">
 
     <StackPanel>
-        <ProgressBar Name="ProgressCompletionist" Height="40" Value="90" Maximum="90" Background="Transparent"
+        <ProgressBar Name="ProgressHltb_El3" Height="40" Value="90" Maximum="90" Background="Transparent"
                              Foreground="ForestGreen" Margin="0,0,0,-40">
             <!--ProgressBar.ToolTip>
                 <ToolTip Name="CompletionistToolTip" />
             </ProgressBar.ToolTip-->
         </ProgressBar>
-        <ProgressBar Name="ProgressMainExtra" Height="40" Value="40" Maximum="90" Background="Transparent" 
+        <ProgressBar Name="ProgressHltb_El2" Height="40" Value="40" Maximum="90" Background="Transparent" 
                              Foreground="RoyalBlue" Margin="0,0,0,-40">
             <!--ProgressBar.ToolTip>
                 <ToolTip Name="MainExtraToolTip" />
             </ProgressBar.ToolTip-->
         </ProgressBar>
-        <ProgressBar Name="ProgressMainStory" Height="40" Value="20" Maximum="90" Background="Transparent"
+        <ProgressBar Name="ProgressHltb_El1" Height="40" Value="20" Maximum="90" Background="Transparent"
                              Foreground="DarkCyan" Margin="0,0,0,-40">
             <!--ProgressBar.ToolTip>
                 <ToolTip Name="MainStoryToolTip" />

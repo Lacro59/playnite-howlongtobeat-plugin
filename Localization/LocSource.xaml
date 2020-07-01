@@ -22,6 +22,11 @@
     <sys:String x:Key="LOCHowLongToBeatMainStory">Main story</sys:String>
     <sys:String x:Key="LOCHowLongToBeatMainExtra">Main + extra</sys:String>
     <sys:String x:Key="LOCHowLongToBeatCompletionist">Completionist</sys:String>
+
+    <sys:String x:Key="LOCHowLongToBeatSolo">Solo</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatCoOp">Co-Op</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatVs">Vs</sys:String>
+    
     <sys:String x:Key="LOCHowLongToBeatPlaytime">Playtime</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatSearch">Search</sys:String>

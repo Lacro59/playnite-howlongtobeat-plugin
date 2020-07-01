@@ -16,12 +16,10 @@ namespace HowLongToBeat.Views
     public partial class HowLongToBeat : WindowBase
     {
         private static readonly ILogger logger = LogManager.GetLogger();
+        private static IResourceProvider resources = new ResourceProvider();
 
         public string CoverImage { get; set; }
         public string GameName { get; set; }
-        public string MainStoryFormat { get; set; }
-        public string MaintExtraFormat { get; set; }
-        public string CompletionistFormat { get; set; }
 
         public string PlaytimeFormat { get; set; }
 
@@ -37,9 +35,53 @@ namespace HowLongToBeat.Views
 
             CoverImage = PlayniteApi.Database.GetFullFilePath(game.CoverImage);
             GameName = game.Name;
-            MainStoryFormat = gameData.GameHltbData.MainStoryFormat;
-            MaintExtraFormat = gameData.GameHltbData.MaintExtraFormat;
-            CompletionistFormat = gameData.GameHltbData.CompletionistFormat;
+
+
+            int ElIndicator = 0;
+
+            Hltb_El1.Visibility = System.Windows.Visibility.Hidden;
+            Hltb_El1_Color.Visibility = System.Windows.Visibility.Hidden;
+            Hltb_El2.Visibility = System.Windows.Visibility.Hidden;
+            Hltb_El2_Color.Visibility = System.Windows.Visibility.Hidden;
+            Hltb_El3.Visibility = System.Windows.Visibility.Hidden;
+            Hltb_El3_Color.Visibility = System.Windows.Visibility.Hidden;
+
+            if (gameData.GameHltbData.MainStory != 0)
+            {
+                ElIndicator += 1;
+                SetDataInView(ElIndicator, resources.GetString("LOCHowLongToBeatMainStory"), gameData.GameHltbData.MainStoryFormat);
+            }
+
+            if (gameData.GameHltbData.MainExtra != 0)
+            {
+                ElIndicator += 1;
+                SetDataInView(ElIndicator, resources.GetString("LOCHowLongToBeatMainExtra"), gameData.GameHltbData.MainExtraFormat);
+            }
+
+            if (gameData.GameHltbData.Completionist != 0)
+            {
+                ElIndicator += 1;
+                SetDataInView(ElIndicator, resources.GetString("LOCHowLongToBeatCompletionist"), gameData.GameHltbData.CompletionistFormat);
+            }
+
+            if (gameData.GameHltbData.Solo != 0)
+            {
+                ElIndicator += 1;
+                SetDataInView(ElIndicator, resources.GetString("LOCHowLongToBeatSolo"), gameData.GameHltbData.SoloFormat);
+            }
+
+            if (gameData.GameHltbData.CoOp != 0)
+            {
+                ElIndicator += 1;
+                SetDataInView(ElIndicator, resources.GetString("LOCHowLongToBeatCoOp"), gameData.GameHltbData.CoOpFormat);
+            }
+
+            if (gameData.GameHltbData.Vs != 0)
+            {
+                ElIndicator += 1;
+                SetDataInView(ElIndicator, resources.GetString("LOCHowLongToBeatVs"), gameData.GameHltbData.VsFormat);
+            }
+
 
             PlaytimeFormat = (int)TimeSpan.FromSeconds(game.Playtime).TotalHours + "h " + TimeSpan.FromSeconds(game.Playtime).ToString(@"mm") + "min";
 
@@ -50,6 +92,33 @@ namespace HowLongToBeat.Views
 
             // Set Binding data
             DataContext = this;
+        }
+
+        private void SetDataInView(int ElIndicator, string ElText, string ElData)
+        {
+            switch (ElIndicator)
+            {
+                case 1:
+                    Hltb_El1.Text = ElText;
+                    Hltb_El1_Data.Text = ElData;
+                    Hltb_El1.Visibility = System.Windows.Visibility.Visible;
+                    Hltb_El1_Color.Visibility = System.Windows.Visibility.Visible;
+                    break;
+
+                case 2:
+                    Hltb_El2.Text = ElText;
+                    Hltb_El2_Data.Text = ElData;
+                    Hltb_El2.Visibility = System.Windows.Visibility.Visible;
+                    Hltb_El2_Color.Visibility = System.Windows.Visibility.Visible;
+                    break;
+
+                case 3:
+                    Hltb_El3.Text = ElText;
+                    Hltb_El3_Data.Text = ElData;
+                    Hltb_El3.Visibility = System.Windows.Visibility.Visible;
+                    Hltb_El3_Color.Visibility = System.Windows.Visibility.Visible;
+                    break;
+            }
         }
 
         private void DockPanel_Loaded(object sender, System.Windows.RoutedEventArgs e)

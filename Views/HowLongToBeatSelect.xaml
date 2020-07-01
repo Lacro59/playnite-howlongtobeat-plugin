@@ -3,11 +3,16 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:localPlugin="clr-namespace:PluginCommon;assembly=PluginCommon"
              mc:Ignorable="d" Height="500" Width="500" Background="{DynamicResource WindowBackgourndBrush}"
              Title="{DynamicResource LOCHowLongToBeatSelection}"              
              d:DesignStyle="{StaticResource WindowDesignStyle}"
              Style="{DynamicResource StandardWindowStyle}"
              ResizeMode="NoResize" WindowStartupLocation="CenterScreen" WindowStyle="None">
+
+    <WindowBase.Resources>
+        <localPlugin:VisibilityZeroConverter x:Key="VisibilityZeroConverter" />
+    </WindowBase.Resources>
 
     <StackPanel Margin="10, 10, 10, 10" Name="SelectableContent">
         <ListBox x:Name="lbSelectable" Height="370" Loaded="LbSelectable_Loaded" SelectionChanged="LbSelectable_SelectionChanged"
@@ -48,19 +53,32 @@
                                 </Grid.ColumnDefinitions>
 
                                 <Grid.RowDefinitions>
-                                    <RowDefinition Height="*" />
-                                    <RowDefinition Height="*" />
-                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="auto" />
+                                    <RowDefinition Height="auto" />
+                                    <RowDefinition Height="auto" />
+                                    <RowDefinition Height="auto" />
+                                    <RowDefinition Height="auto" />
+                                    <RowDefinition Height="auto" />
+                                    <RowDefinition Height="auto" />
                                 </Grid.RowDefinitions>
 
-                                <TextBlock Grid.Column="0" Grid.Row="0" Text="{DynamicResource LOCHowLongToBeatMainStory}"></TextBlock>
-                                <TextBlock Grid.Column="1" Grid.Row="0" x:Name="HltbMainStory" Text="{Binding MainStoryFormat}" HorizontalAlignment="Center"></TextBlock>
+                                <TextBlock MinHeight="25" Grid.Column="0" Grid.Row="0" Text="{DynamicResource LOCHowLongToBeatMainStory}" Visibility="{Binding MainStory, Converter={StaticResource VisibilityZeroConverter}, ConverterParameter=1}"></TextBlock>
+                                <TextBlock MinHeight="25" Grid.Column="1" Grid.Row="0" Text="{Binding MainStoryFormat}" HorizontalAlignment="Center" Visibility="{Binding MainStory, Converter={StaticResource VisibilityZeroConverter}, ConverterParameter=1}"></TextBlock>
 
-                                <TextBlock Grid.Column="0" Grid.Row="1" Text="{DynamicResource LOCHowLongToBeatMainExtra}"></TextBlock>
-                                <TextBlock Grid.Column="1" Grid.Row="1" x:Name="HltbMainExtra" Text="{Binding MaintExtraFormat}" HorizontalAlignment="Center"></TextBlock>
+                                <TextBlock MinHeight="25" Grid.Column="0" Grid.Row="1" Text="{DynamicResource LOCHowLongToBeatMainExtra}" Visibility="{Binding MainExtra, Converter={StaticResource VisibilityZeroConverter}, ConverterParameter=1}"></TextBlock>
+                                <TextBlock MinHeight="25" Grid.Column="1" Grid.Row="1" Text="{Binding MainExtraFormat}" HorizontalAlignment="Center" Visibility="{Binding MainExtra, Converter={StaticResource VisibilityZeroConverter}, ConverterParameter=1}"></TextBlock>
 
-                                <TextBlock Grid.Column="0" Grid.Row="2" Text="{DynamicResource LOCHowLongToBeatCompletionist}"></TextBlock>
-                                <TextBlock Grid.Column="1" Grid.Row="2" x:Name="HltbCompletionist" Text="{Binding CompletionistFormat}" HorizontalAlignment="Center"></TextBlock>
+                                <TextBlock MinHeight="25" Grid.Column="0" Grid.Row="2" Text="{DynamicResource LOCHowLongToBeatCompletionist}" Visibility="{Binding Completionist, Converter={StaticResource VisibilityZeroConverter}, ConverterParameter=1}"></TextBlock>
+                                <TextBlock MinHeight="25" Grid.Column="1" Grid.Row="2" Text="{Binding CompletionistFormat}" HorizontalAlignment="Center" Visibility="{Binding Completionist, Converter={StaticResource VisibilityZeroConverter}, ConverterParameter=1}"></TextBlock>
+
+                                <TextBlock MinHeight="25" Grid.Column="0" Grid.Row="3" Text="{DynamicResource LOCHowLongToBeatSolo}" Visibility="{Binding Solo, Converter={StaticResource VisibilityZeroConverter}, ConverterParameter=1}"></TextBlock>
+                                <TextBlock MinHeight="25" Grid.Column="1" Grid.Row="3" Text="{Binding SoloFormat}" HorizontalAlignment="Center" Visibility="{Binding Solo, Converter={StaticResource VisibilityZeroConverter}, ConverterParameter=1}"></TextBlock>
+
+                                <TextBlock MinHeight="25" Grid.Column="0" Grid.Row="4" Text="{DynamicResource LOCHowLongToBeatCoOp}" Visibility="{Binding CoOp, Converter={StaticResource VisibilityZeroConverter}, ConverterParameter=1}"></TextBlock>
+                                <TextBlock MinHeight="25" Grid.Column="1" Grid.Row="4" Text="{Binding CoOpFormat}" HorizontalAlignment="Center" Visibility="{Binding CoOp, Converter={StaticResource VisibilityZeroConverter}, ConverterParameter=1}"></TextBlock>
+
+                                <TextBlock MinHeight="25" Grid.Column="0" Grid.Row="5" Text="{DynamicResource LOCHowLongToBeatVs}" Visibility="{Binding Vs, Converter={StaticResource VisibilityZeroConverter}, ConverterParameter=1}"></TextBlock>
+                                <TextBlock MinHeight="25" Grid.Column="1" Grid.Row="5" Text="{Binding VsFormat}" HorizontalAlignment="Center" Visibility="{Binding Vs, Converter={StaticResource VisibilityZeroConverter}, ConverterParameter=1}"></TextBlock>
                             </Grid>
                         </Grid>
                     </Grid>

@@ -14,39 +14,77 @@ namespace HowLongToBeat.Views.Interfaces
         {
             InitializeComponent();
 
-            // Time format
-            string MainStoryFormat = gameData.GameHltbData.MainStoryFormat;
-            string MaintExtraFormat = gameData.GameHltbData.MaintExtraFormat;
-            string CompletionistFormat = gameData.GameHltbData.CompletionistFormat;
 
-            string PlaytimeFormat = (int)TimeSpan.FromSeconds(Playtime).TotalHours + "h " + TimeSpan.FromSeconds(Playtime).ToString(@"mm") + "min";
+            int ElIndicator = 0;
+            long MaxValue = 0;
+            long MaxHltb = 0;
 
-            // TODO Slider is on top
-            //MainStoryToolTip.Content = MainStoryFormat;
-            //MainExtraToolTip.Content = MaintExtraFormat;
-            //CompletionistToolTip.Content = CompletionistFormat;
-
-            //PlaytimeToolTip.Content = PlaytimeFormat;
-
-
-
-            long MaxValue = gameData.GameHltbData.Completionist;
-            long MaxHltb = gameData.GameHltbData.Completionist;
-            if (gameData.GameHltbData.Completionist != 0)
+            if (gameData.GameHltbData.MainStory != 0)
             {
-                if (Playtime > gameData.GameHltbData.Completionist)
+                ElIndicator += 1;
+                SetDataInView(ElIndicator, gameData.GameHltbData.MainStory);
+                if (MaxValue < gameData.GameHltbData.MainStory)
                 {
-                    MaxValue = Playtime;
+                    MaxValue = gameData.GameHltbData.MainStory;
                 }
             }
-            else
+
+            if (gameData.GameHltbData.MainExtra != 0)
             {
-                MaxValue = gameData.GameHltbData.MaintExtra;
-                MaxHltb = gameData.GameHltbData.MaintExtra;
-                if (Playtime > gameData.GameHltbData.MaintExtra)
+                ElIndicator += 1;
+                SetDataInView(ElIndicator, gameData.GameHltbData.MainExtra);
+                if (MaxValue < gameData.GameHltbData.MainExtra)
                 {
-                    MaxValue = Playtime;
+                    MaxValue = gameData.GameHltbData.MainExtra;
                 }
+            }
+
+            if (gameData.GameHltbData.Completionist != 0)
+            {
+                ElIndicator += 1;
+                SetDataInView(ElIndicator, gameData.GameHltbData.Completionist);
+                if (MaxValue < gameData.GameHltbData.Completionist)
+                {
+                    MaxValue = gameData.GameHltbData.Completionist;
+                }
+            }
+
+            if (gameData.GameHltbData.Solo != 0)
+            {
+                ElIndicator += 1;
+                SetDataInView(ElIndicator, gameData.GameHltbData.Solo);
+                if (MaxValue < gameData.GameHltbData.Solo)
+                {
+                    MaxValue = gameData.GameHltbData.Solo;
+                }
+            }
+
+            if (gameData.GameHltbData.CoOp != 0)
+            {
+                ElIndicator += 1;
+                SetDataInView(ElIndicator, gameData.GameHltbData.CoOp);
+                if (MaxValue < gameData.GameHltbData.CoOp)
+                {
+                    MaxValue = gameData.GameHltbData.CoOp;
+                }
+            }
+
+            if (gameData.GameHltbData.Vs != 0)
+            {
+                ElIndicator += 1;
+                SetDataInView(ElIndicator, gameData.GameHltbData.Vs);
+                if (MaxValue < gameData.GameHltbData.Vs)
+                {
+                    MaxValue = gameData.GameHltbData.Vs;
+                }
+            }
+
+
+
+            MaxHltb = MaxValue;
+            if (Playtime > MaxValue)
+            {
+                MaxValue = Playtime;
             }
 
 
@@ -59,14 +97,9 @@ namespace HowLongToBeat.Views.Interfaces
 
 
             // Add data
-            ProgressMainStory.Value = gameData.GameHltbData.MainStory;
-            ProgressMainStory.Maximum = MaxValue;
-
-            ProgressMainExtra.Value = gameData.GameHltbData.MaintExtra;
-            ProgressMainExtra.Maximum = MaxValue;
-
-            ProgressCompletionist.Value = gameData.GameHltbData.Completionist;
-            ProgressCompletionist.Maximum = MaxValue;
+            ProgressHltb_El1.Maximum = MaxValue;
+            ProgressHltb_El2.Maximum = MaxValue;
+            ProgressHltb_El3.Maximum = MaxValue;
 
             SliderPlaytime.Value = Playtime;
             SliderPlaytime.Maximum = MaxValue;
@@ -74,6 +107,24 @@ namespace HowLongToBeat.Views.Interfaces
 
             // Set Binding data
             DataContext = this;
+        }
+
+        private void SetDataInView(int ElIndicator, long ElValue)
+        {
+            switch (ElIndicator)
+            {
+                case 1:
+                    ProgressHltb_El1.Value = ElValue;
+                    break;
+
+                case 2:
+                    ProgressHltb_El2.Value = ElValue;
+                    break;
+
+                case 3:
+                    ProgressHltb_El3.Value = ElValue;
+                    break;
+            }
         }
     }
 }
