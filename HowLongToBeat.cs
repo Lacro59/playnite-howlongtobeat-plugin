@@ -25,8 +25,9 @@ namespace HowLongToBeat
         private static IResourceProvider resources = new ResourceProvider();
 
         private HowLongToBeatSettings settings { get; set; }
-
         public override Guid Id { get; } = Guid.Parse("e08cd51f-9c9a-4ee3-a094-fde03b55492f");
+
+        private readonly IntegrationUI ui = new IntegrationUI();
 
 
         public HowLongToBeat(IPlayniteAPI api) : base(api)
@@ -45,7 +46,7 @@ namespace HowLongToBeat
 
             if (settings.EnableIntegrationInCustomTheme)
             {
-                EventManager.RegisterClassHandler(typeof(Button), Button.ClickEvent, new RoutedEventHandler(ButtonHltb_ClickEvent));
+                EventManager.RegisterClassHandler(typeof(Button), Button.ClickEvent, new RoutedEventHandler(OnCustomThemeButtonClick));
             }
         }
 
@@ -71,15 +72,13 @@ namespace HowLongToBeat
 
         #region Interface integration
         private Game GameSelected { get; set; }
-        private StackPanel PART_ActionButtons = null;
-        private StackPanel PART_ElemDescription = null;
 
         /// <summary>
         /// Button event for call plugin view in custom theme.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void ButtonHltb_ClickEvent(object sender, RoutedEventArgs e)
+        private void OnCustomThemeButtonClick(object sender, RoutedEventArgs e)
         {
             string ButtonName = "";
 
@@ -89,7 +88,7 @@ namespace HowLongToBeat
 
                 if (ButtonName == "PART_HltbCustomButton")
                 {
-                    HltbButton_Click(sender, e);
+                    OnBtGameSelectedActionBarClick(sender, e);
                 }
             }
             catch (Exception ex)
@@ -120,7 +119,7 @@ namespace HowLongToBeat
             }
         }
 
-        private void HltbButton_Click(object sender, RoutedEventArgs e)
+        private void OnBtGameSelectedActionBarClick(object sender, RoutedEventArgs e)
         {
             HowLongToBeatData data = new HowLongToBeatData(GameSelected, this.GetPluginUserDataPath());
             if (data.GetData() != null)
@@ -136,138 +135,47 @@ namespace HowLongToBeat
         {
             try
             {
+                // Delete
+                logger.Info("SuccessStory - Delete");
+                //ui.RemoveButtonInGameSelectedActionBarButtonOrToggleButton("PART_HltbButton");
+                ui.RemoveElementInGameSelectedDescription("PART_HltbProgressBarIntegration");
+                ui.ClearElementInCustomTheme("PART_hltbProgressBarWithTitle");
+                ui.ClearElementInCustomTheme("PART_hltbProgressBar");
+
+
                 HowLongToBeatData data = new HowLongToBeatData(GameSelected, this.GetPluginUserDataPath(), false);
+
 
                 if (settings.EnableIntegrationButton)
                 {
-                    // Search parent action buttons
-                    if (PART_ActionButtons == null)
-                    {
-                        foreach (Button bt in Tools.FindVisualChildren<Button>(Application.Current.MainWindow))
-                        {
-                            if (bt.Name == "PART_ButtonEditGame")
-                            {
-                                PART_ActionButtons = (StackPanel)bt.Parent;
-                                break;
-                            }
-                        }
-                    }
+                    Button HltbButton = new Button();
+                    HltbButton.Name = "PART_HltbButton";
+                    HltbButton.FontFamily = new FontFamily(new Uri("pack://application:,,,/HowLongToBeat;component/Resources/"), "./#font");
+                    HltbButton.Margin = new Thickness(10, 0, 0, 0);
+                    HltbButton.Click += OnBtGameSelectedActionBarClick;
+                    HltbButton.Content = TransformIcon.Get("HowLongToBeat");
 
-                    // Adding button
-                    if (PART_ActionButtons != null)
-                    {
-                        Button PART_HltbButton = (Button)LogicalTreeHelper.FindLogicalNode(PART_ActionButtons, "PART_HltbButton");
-                        if (PART_HltbButton == null)
-                        {
-                            Button HltbButton = new Button();
-                            HltbButton.Name = "PART_HltbButton";
-                            HltbButton.FontFamily = new FontFamily(new Uri("pack://application:,,,/HowLongToBeat;component/Resources/"), "./#font");
-                            HltbButton.Height = 40;
-                            HltbButton.Margin = new Thickness(10, 0, 0, 0);
-                            HltbButton.Click += HltbButton_Click;
-                            HltbButton.Content = TransformIcon.Get("HowLongToBeat");
-
-                            PART_ActionButtons.Children.Add(HltbButton);
-                            PART_ActionButtons.UpdateLayout();
-                        }
-                    }
+                    ui.AddButtonInGameSelectedActionBarButtonOrToggleButton(HltbButton);
                 }
 
                 // Auto integration
                 if (settings.EnableIntegrationInDescription)
                 {
-                    // Search game description
-                    if (PART_ElemDescription == null)
-                    {
-                        foreach (StackPanel sp in Tools.FindVisualChildren<StackPanel>(Application.Current.MainWindow))
-                        {
-                            if (sp.Name == "PART_ElemDescription")
-                            {
-                                PART_ElemDescription = sp;
-                                break;
-                            }
-                        }
-                    }
+                    StackPanel spHltb = CreateHltb(GameSelected.Playtime, data.GetData(), settings.IntegrationShowTitle);
+                    spHltb.Name = "PART_HltbProgressBarIntegration";
 
-                    // Adding control
-                    if (PART_ElemDescription != null)
-                    {
-                        // Delete old
-                        StackPanel PART_HltbProgressBarIntegration = (StackPanel)LogicalTreeHelper.FindLogicalNode(PART_ElemDescription, "PART_HltbProgressBarIntegration");
-                        if (PART_HltbProgressBarIntegration != null)
-                        {
-                            PART_ElemDescription.Children.Remove(PART_HltbProgressBarIntegration);
-                        }
-
-                        if (data.GetData() != null)
-                        {
-                            // Create 
-                            StackPanel spHltb = CreateHltb(GameSelected.Playtime, data.GetData(), settings.IntegrationShowTitle);
-                            spHltb.Name = "PART_HltbProgressBarIntegration";
-
-                            // Add
-                            if (settings.IntegrationTopGameDetails)
-                            {
-                                PART_ElemDescription.Children.Insert(0, spHltb);
-                            }
-                            else
-                            {
-                                PART_ElemDescription.Children.Add(spHltb);
-                            }
-
-                            PART_ElemDescription.UpdateLayout();
-                        }
-                    }
-                    else
-                    {
-                        logger.Error($"HowLongToBeat - PART_ElemDescription not found. ");
-                    }
+                    ui.AddElementInGameSelectedDescription(spHltb, settings.IntegrationTopGameDetails);
                 }
 
                 // Custom theme
                 if (settings.EnableIntegrationInCustomTheme)
                 {
-                    // Search custom element
-                    foreach (StackPanel sp in Tools.FindVisualChildren<StackPanel>(Application.Current.MainWindow))
-                    {
-                        if (sp.Name == "PART_hltbProgressBarWithTitle")
-                        {
-                            if (data.GetData() != null)
-                            {
-                                // Create 
-                                StackPanel spHltb = CreateHltb(GameSelected.Playtime, data.GetData(), true);
+                    // Create 
+                    StackPanel spHltb = CreateHltb(GameSelected.Playtime, data.GetData(), true);
+                    UserControl hltbProgressBar = new HltbProgressBar(GameSelected.Playtime, data.GetData());
 
-                                // Clear & add
-                                sp.Children.Clear();
-                                sp.Children.Add(spHltb);
-                                sp.UpdateLayout();
-                            }
-                            else
-                            {
-                                sp.Children.Clear();
-                                sp.UpdateLayout();
-                            }
-                        }
-
-                        if (sp.Name == "PART_hltbProgressBar")
-                        {
-                            if (data.GetData() != null)
-                            {
-                                // Create 
-                                UserControl hltbProgressBar = new HltbProgressBar(GameSelected.Playtime, data.GetData());
-
-                                // Clear & add
-                                sp.Children.Clear();
-                                sp.Children.Add(hltbProgressBar);
-                                sp.UpdateLayout();
-                            }
-                            else
-                            {
-                                sp.Children.Clear();
-                                sp.UpdateLayout();
-                            }
-                        }
-                    }
+                    ui.AddElementInCustomTheme(spHltb, "PART_hltbProgressBarWithTitle");
+                    ui.AddElementInCustomTheme(hltbProgressBar, "PART_hltbProgressBar");
                 }
             }
             catch (Exception ex)
