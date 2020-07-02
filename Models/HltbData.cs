@@ -1,11 +1,14 @@
 ﻿using Newtonsoft.Json;
+using Playnite.Converters;
 using System;
-
+using System.Globalization;
 
 namespace HowLongToBeat.Models
 {
     public class HltbData
     {
+        private LongToTimePlayedConverter converter = new LongToTimePlayedConverter();
+
         public string Name { get; set; }
         public int Id { get; set; }
         public string UrlImg { get; set; }
@@ -20,7 +23,7 @@ namespace HowLongToBeat.Models
                 {
                     return "--";
                 }
-                return (int)TimeSpan.FromSeconds(MainStory).TotalHours + "h " + TimeSpan.FromSeconds(MainStory).ToString(@"mm") + "min";
+                return (string)converter.Convert((long)MainStory, null, null, CultureInfo.CurrentCulture);
             }
         }
         public long MainExtra { get; set; }
@@ -33,7 +36,7 @@ namespace HowLongToBeat.Models
                 {
                     return "--";
                 }
-                return (int)TimeSpan.FromSeconds(MainExtra).TotalHours + "h " + TimeSpan.FromSeconds(MainExtra).ToString(@"mm") + "min";
+                return (string)converter.Convert((long)MainExtra, null, null, CultureInfo.CurrentCulture);
             }
         }
         public long Completionist { get; set; }
@@ -46,7 +49,7 @@ namespace HowLongToBeat.Models
                 {
                     return "--";
                 }
-                return (int)TimeSpan.FromSeconds(Completionist).TotalHours + "h " + TimeSpan.FromSeconds(Completionist).ToString(@"mm") + "min";
+                return (string)converter.Convert((long)Completionist, null, null, CultureInfo.CurrentCulture);
             }
         }
 
@@ -61,7 +64,7 @@ namespace HowLongToBeat.Models
                 {
                     return "--";
                 }
-                return (int)TimeSpan.FromSeconds(Solo).TotalHours + "h " + TimeSpan.FromSeconds(Solo).ToString(@"mm") + "min";
+                return (string)converter.Convert((long)Solo, null, null, CultureInfo.CurrentCulture);
             }
         }
         public long CoOp { get; set; } = 0;
@@ -74,7 +77,7 @@ namespace HowLongToBeat.Models
                 {
                     return "--";
                 }
-                return (int)TimeSpan.FromSeconds(CoOp).TotalHours + "h " + TimeSpan.FromSeconds(CoOp).ToString(@"mm") + "min";
+                return (string)converter.Convert((long)CoOp, null, null, CultureInfo.CurrentCulture);
             }
         }
         public long Vs { get; set; } = 0;
@@ -87,7 +90,7 @@ namespace HowLongToBeat.Models
                 {
                     return "--";
                 }
-                return (int)TimeSpan.FromSeconds(Vs).TotalHours + "h " + TimeSpan.FromSeconds(Vs).ToString(@"mm") + "min";
+                return (string)converter.Convert((long)Vs, null, null, CultureInfo.CurrentCulture);
             }
         }
     }

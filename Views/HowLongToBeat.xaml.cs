@@ -2,11 +2,13 @@
 using HowLongToBeat.Services;
 using HowLongToBeat.Views.Interfaces;
 using Playnite.Controls;
+using Playnite.Converters;
 using Playnite.SDK;
 using Playnite.SDK.Models;
 using PluginCommon;
 using System;
 using System.Diagnostics;
+using System.Globalization;
 
 namespace HowLongToBeat.Views
 {
@@ -83,7 +85,8 @@ namespace HowLongToBeat.Views
             }
 
 
-            PlaytimeFormat = (int)TimeSpan.FromSeconds(game.Playtime).TotalHours + "h " + TimeSpan.FromSeconds(game.Playtime).ToString(@"mm") + "min";
+            LongToTimePlayedConverter converter = new LongToTimePlayedConverter();
+            PlaytimeFormat = (string)converter.Convert((long)game.Playtime, null, null, CultureInfo.CurrentCulture);
 
 
             HltbProgressBar.Children.Add(new HltbProgressBar(game.Playtime, gameData));
