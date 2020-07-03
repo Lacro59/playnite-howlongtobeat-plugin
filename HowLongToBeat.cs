@@ -161,10 +161,13 @@ namespace HowLongToBeat
                 // Auto integration
                 if (settings.EnableIntegrationInDescription)
                 {
-                    StackPanel spHltb = CreateHltb(GameSelected.Playtime, data.GetData(), settings.IntegrationShowTitle);
-                    spHltb.Name = "PART_HltbProgressBarIntegration";
+                    if (data.GetData() != null)
+                    {
+                        StackPanel spHltb = CreateHltb(GameSelected.Playtime, data.GetData(), settings.IntegrationShowTitle);
+                        spHltb.Name = "PART_HltbProgressBarIntegration";
 
-                    ui.AddElementInGameSelectedDescription(spHltb, settings.IntegrationTopGameDetails);
+                        ui.AddElementInGameSelectedDescription(spHltb, settings.IntegrationTopGameDetails);
+                    }
                 }
 
                 // Custom theme
