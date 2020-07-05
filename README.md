@@ -1,5 +1,5 @@
 # playnite-howlongtobeat-plugin
-Generic plugin for [Playnite](https://playnite.
+Generic plugin for [Playnite](https://playnite).
 This plugin get [How Long To Beat](https://howlongtobeat.com/) in application database. 
 
 More information here: https://playnite.link/forum/thread-309.html
