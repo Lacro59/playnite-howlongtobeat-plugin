@@ -6,9 +6,11 @@ using Playnite.Converters;
 using Playnite.SDK;
 using Playnite.SDK.Models;
 using PluginCommon;
-using System;
+using System.Windows;
 using System.Diagnostics;
 using System.Globalization;
+using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace HowLongToBeat.Views
 {
@@ -141,6 +143,36 @@ namespace HowLongToBeat.Views
         {
             data.RemoveData();
             this.Close();
+        }
+
+        private void TextBlock_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            string Text = ((TextBlock)sender).Text;
+            TextBlock textBlock = (TextBlock)sender;
+
+            Typeface typeface = new Typeface(
+                textBlock.FontFamily,
+                textBlock.FontStyle,
+                textBlock.FontWeight,
+                textBlock.FontStretch);
+
+            FormattedText formattedText = new FormattedText(
+                textBlock.Text,
+                System.Threading.Thread.CurrentThread.CurrentCulture,
+                textBlock.FlowDirection,
+                typeface,
+                textBlock.FontSize,
+                textBlock.Foreground,
+                VisualTreeHelper.GetDpi(this).PixelsPerDip);
+
+            if (formattedText.Width > textBlock.DesiredSize.Width)
+            {
+                ((ToolTip)((TextBlock)sender).ToolTip).Visibility = Visibility.Visible;
+            }
+            else
+            {
+                ((ToolTip)((TextBlock)sender).ToolTip).Visibility = Visibility.Hidden;
+            }
         }
     }
 }

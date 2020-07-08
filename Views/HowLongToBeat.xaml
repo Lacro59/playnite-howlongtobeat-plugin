@@ -16,7 +16,12 @@
             <Image DockPanel.Dock="Left" Source="{Binding CoverImage}" Width="200" Height="200" Stretch="Uniform"></Image>
 
             <StackPanel DockPanel.Dock="Right" Margin="20,0,0,0">
-                <TextBlock Text="{Binding GameName}" Margin="0,0,0,20" FontSize="24" FontWeight="Bold" Foreground="{DynamicResource TextBrush}"></TextBlock>
+                <TextBlock Text="{Binding GameName}" Margin="0,0,0,20" FontSize="24" FontWeight="Bold" Foreground="{DynamicResource TextBrush}"                                           
+                           TextTrimming="CharacterEllipsis" MouseEnter="TextBlock_MouseEnter">
+                    <TextBlock.ToolTip>
+                        <ToolTip Content="{Binding GameName}"></ToolTip>
+                    </TextBlock.ToolTip>
+                </TextBlock>
 
                 <Grid>
                     <Grid.ColumnDefinitions>
