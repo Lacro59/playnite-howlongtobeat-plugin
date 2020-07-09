@@ -136,8 +136,8 @@ namespace HowLongToBeat
             try
             {
                 // Delete
-                logger.Info("SuccessStory - Delete");
-                //ui.RemoveButtonInGameSelectedActionBarButtonOrToggleButton("PART_HltbButton");
+                logger.Info("HowLongToBeat - Delete");
+                ui.RemoveButtonInGameSelectedActionBarButtonOrToggleButton("PART_HltbButton");
                 ui.RemoveElementInGameSelectedDescription("PART_HltbProgressBarIntegration");
                 ui.ClearElementInCustomTheme("PART_hltbProgressBarWithTitle");
                 ui.ClearElementInCustomTheme("PART_hltbProgressBar");
