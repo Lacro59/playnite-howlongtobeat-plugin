@@ -1,5 +1,6 @@
 ﻿using HowLongToBeat.Models;
 using System;
+using System.Windows;
 using System.Windows.Controls;
 
 
@@ -87,6 +88,12 @@ namespace HowLongToBeat.Views.Interfaces
             if (Playtime > MaxValue)
             {
                 MaxValue = Playtime;
+                SliderPlaytime.Margin = new Thickness(-10, 5, -3, 0);
+            }
+
+            if (Playtime < 69)
+            {
+                SliderPlaytime.Margin = new Thickness(-3, 5, -10, 0);
             }
 
 

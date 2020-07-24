@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:HowLongToBeat.Views.Interfaces"
-             mc:Ignorable="d">
+             mc:Ignorable="d" MinWidth="200">
 
     <StackPanel>
         <ProgressBar Name="ProgressHltb_El3" Height="40" Value="90" Maximum="90" Background="Transparent"
@@ -27,7 +27,7 @@
         </ProgressBar>
 
         <StackPanel Height="40">
-            <Slider Name="SliderPlaytime" Value="40" Maximum="90" Margin="0,5,0,0">
+            <Slider x:Name="SliderPlaytime" Value="30" Maximum="90" Margin="-10,5,-10,0">
                 <Slider.Style>
                     <Style TargetType="{x:Type Slider}" BasedOn="{StaticResource BaseStyle}">
                         <Setter Property="SnapsToDevicePixels" Value="True" />
@@ -46,7 +46,7 @@
                                  SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"  Fill="{DynamicResource GlyphBrush}" />
                                         <Track Grid.Row="1" x:Name="PART_Track">
                                             <Track.Thumb>
-                                                <Thumb Width="25" Height="30"/>
+                                                <Thumb Width="20" Height="30"/>
                                             </Track.Thumb>
                                             <Track.DecreaseRepeatButton>
                                                 <RepeatButton Style="{StaticResource SliderTrackButton}"
