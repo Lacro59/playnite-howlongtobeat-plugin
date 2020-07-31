@@ -9,6 +9,8 @@ namespace HowLongToBeat
     {
         private readonly HowLongToBeat plugin;
 
+        public bool EnableCheckVersion { get; set; } = true;
+
         public bool EnableIntegrationButton { get; set; } = false;
         public bool EnableIntegrationInDescription { get; set; } = false;
         public bool IntegrationShowTitle { get; set; } = true;
@@ -36,6 +38,8 @@ namespace HowLongToBeat
             // LoadPluginSettings returns null if not saved data is available.
             if (savedSettings != null)
             {
+                EnableCheckVersion = savedSettings.EnableCheckVersion;
+
                 EnableIntegrationButton = savedSettings.EnableIntegrationButton;
                 EnableIntegrationInDescription = savedSettings.EnableIntegrationInDescription;
                 IntegrationShowTitle = savedSettings.IntegrationShowTitle;

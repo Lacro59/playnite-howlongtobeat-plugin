@@ -43,6 +43,17 @@ namespace HowLongToBeat
             // Add common in application ressource.
             PluginCommon.Common.Load(pluginFolder);
 
+            // Check version
+            if (settings.EnableCheckVersion)
+            {
+                CheckVersion cv = new CheckVersion();
+
+                if (cv.Check("HowLongToBeat", pluginFolder))
+                {
+                    cv.ShowNotification(api, "HowLongToBeat - " + resources.GetString("LOCUpdaterWindowTitle"));
+                }
+            }
+
 
             if (settings.EnableIntegrationInCustomTheme)
             {
