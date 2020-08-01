@@ -1,0 +1,49 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+
+    <!--  
+    HowLongToBeatSettingsView
+    -->
+
+    <sys:String x:Key="LOCHowLongToBeatIntegration">Integracja interfejsu (eksperymentalna)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationButton">Dodaj przycisk</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationInDescription">Integracja z opisem gry</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationShowTitle">Wyświetlaj tytuł</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationTopGameDetails">Integracja nad opisem gry</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationInCustomTheme">Integracja z niestandardowym motywem (jeśli jest zintegrowany)</sys:String>
+
+    <!--  
+    HowLongToBeatSelect
+    -->
+
+    <sys:String x:Key="LOCHowLongToBeatSelection">Wybór HowLongToBeat</sys:String>
+    
+    <sys:String x:Key="LOCHowLongToBeatMainStory">Główny wątek</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatMainExtra">Główny + dodatki</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatCompletionist">Pełne ukończenie</sys:String>
+
+    <sys:String x:Key="LOCHowLongToBeatSolo">Solo</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatCoOp">Co-Op</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatVs">Vs</sys:String>
+    
+    <sys:String x:Key="LOCHowLongToBeatPlaytime">Czas gry</sys:String>
+
+    <sys:String x:Key="LOCHowLongToBeatSearch">Szukaj</sys:String>
+
+    <sys:String x:Key="LOCHowLongToBeatSelect">Wybierz</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatCancel">Anuluj</sys:String>
+
+    <!--  
+    HowLongToBeat
+    -->
+
+    <sys:String x:Key="LOCHowLongToBeatProgression">Postęp</sys:String>
+
+    <!--  
+    MainView
+    -->
+
+    <sys:String x:Key="LOCHowLongToBeatTitle">Jak długo trwa przejście</sys:String>
+    
+</ResourceDictionary>
