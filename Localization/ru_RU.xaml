@@ -22,6 +22,11 @@
     <sys:String x:Key="LOCHowLongToBeatMainStory">Основной сюжет</sys:String>
     <sys:String x:Key="LOCHowLongToBeatMainExtra">Сюжет + доп. задания</sys:String>
     <sys:String x:Key="LOCHowLongToBeatCompletionist">100% прохождение</sys:String>
+
+    <sys:String x:Key="LOCHowLongToBeatSolo">Одиночная игра</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatCoOp">Кооператив</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatVs">PVP</sys:String>
+    
     <sys:String x:Key="LOCHowLongToBeatPlaytime">Сыграно</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatSearch">Найти</sys:String>
