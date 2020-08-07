@@ -71,11 +71,18 @@ namespace HowLongToBeat
                     {
                         // Add code to be execute when user invokes this menu entry.
 
-                        HowLongToBeatData data = new HowLongToBeatData(GameSelected, this.GetPluginUserDataPath());
-                        if (data.GetData() != null)
+                        try {
+                            HowLongToBeatData data = new HowLongToBeatData(GameSelected, this.GetPluginUserDataPath());
+                            if (data.GetData() != null)
+                            {
+                                Integration();
+                                new Views.HowLongToBeat(data, GameSelected, PlayniteApi).ShowDialog();
+                            }
+                        }
+                        catch (Exception ex)
                         {
-                            Integration();
-                            new Views.HowLongToBeat(data, GameSelected, PlayniteApi).ShowDialog();
+                            Common.LogError(ex, "HowLongToBeat", "Error to load data");
+                            PlayniteApi.Dialogs.ShowErrorMessage("Error to load data", "HowLongToBeat");
                         }
                     })
             };
@@ -155,8 +162,15 @@ namespace HowLongToBeat
                 ui.ClearElementInCustomTheme("PART_hltbProgressBar");
 
 
-                HowLongToBeatData data = new HowLongToBeatData(GameSelected, this.GetPluginUserDataPath(), false);
-
+                try
+                {
+                    HowLongToBeatData data = new HowLongToBeatData(GameSelected, this.GetPluginUserDataPath(), false);
+                }
+                catch (Exception ex)
+                {
+                    Common.LogError(ex, "HowLongToBeat", "Error to load data");
+                    PlayniteApi.Dialogs.ShowErrorMessage("Error to load data", "HowLongToBeat");
+                }
 
                 if (settings.EnableIntegrationButton)
                 {
