@@ -126,17 +126,6 @@ namespace HowLongToBeat.Services
                     string UrlImg = "";
                     string Url = "";
 
-                    long MainStory = 0;
-                    long MainExtra = 0;
-                    long Completionist = 0;
-                    long Solo = 0;
-                    long CoOp = 0;
-                    long Vs = 0;
-
-                    bool IsMainStory = true;
-                    bool IsMainExtra = true;
-                    bool IsCompletionist = true;
-
                     foreach (var SearchElement in htmlDocument.QuerySelectorAll("li.back_darkish"))
                     {
                         var ElementA = SearchElement.QuerySelector(".search_list_image a");
@@ -152,63 +141,61 @@ namespace HowLongToBeat.Services
                         {
                             Details = ElementDetails.QuerySelectorAll("div");
                         }
-                        int iElement = 0;
 
+                        long MainStory = 0;
+                        long MainExtra = 0;
+                        long Completionist = 0;
+                        long Solo = 0;
+                        long CoOp = 0;
+                        long Vs = 0;
+
+                        bool IsMainStory = true;
+                        bool IsMainExtra = true;
+                        bool IsCompletionist = true;
+                        bool IsCoOp = true;
+                        bool IsVs = true;
+                        bool IsSolo = true;
+
+                        int iElement = 0;
                         foreach (var El in Details)
                         {
-                            switch (iElement)
+                            if (iElement % 2 == 0)
                             {
-                                case 0:
-                                    IsMainStory = (El.InnerHtml == "Main Story");
-                                    break;
-                                case 1:
-                                    if (El.InnerHtml != "")
-                                    {
-                                        if (IsMainStory)
-                                        {
-                                            MainStory = ConvertStringToLong(El.InnerHtml);
-                                        }
-                                        else
-                                        {
-                                            Solo = ConvertStringToLong(El.InnerHtml);
-                                        }
-                                    }
-                                    break;
-
-                                case 2:
-                                    IsMainExtra = (El.InnerHtml == "Main + Extra");
-                                    break;
-                                case 3:
-                                    if (El.InnerHtml != "")
-                                    {
-                                        if (IsMainExtra)
-                                        {
-                                            MainExtra = ConvertStringToLong(El.InnerHtml);
-                                        }
-                                        else
-                                        {
-                                            CoOp = ConvertStringToLong(El.InnerHtml);
-                                        }
-                                    }
-                                    break;
-
-                                case 4:
-                                    IsCompletionist = (El.InnerHtml == "Completionist");
-                                    break;
-                                case 5:
-                                    if (El.InnerHtml != "")
-                                    {
-                                        if (IsCompletionist)
-                                        {
-                                            Completionist = ConvertStringToLong(El.InnerHtml);
-                                        }
-                                        else
-                                        {
-                                            Vs = ConvertStringToLong(El.InnerHtml);
-                                        }
-                                    }
-                                    break;
+                                IsMainStory = (El.InnerHtml == "Main Story");
+                                IsMainExtra = (El.InnerHtml == "Main + Extra");
+                                IsCompletionist = (El.InnerHtml == "Completionist");
+                                IsCoOp = (El.InnerHtml == "Co-Op");
+                                IsVs = (El.InnerHtml == "Vs.");
+                                IsSolo = (El.InnerHtml == "Solo");
                             }
+                            else
+                            {
+                                if (IsMainStory)
+                                {
+                                    MainStory = ConvertStringToLong(El.InnerHtml);
+                                }
+                                if (IsMainExtra)
+                                {
+                                    MainExtra = ConvertStringToLong(El.InnerHtml);
+                                }
+                                if (IsCompletionist)
+                                {
+                                    Completionist = ConvertStringToLong(El.InnerHtml);
+                                }
+                                if (IsCoOp)
+                                {
+                                    CoOp = ConvertStringToLong(El.InnerHtml);
+                                }
+                                if (IsVs)
+                                {
+                                    Vs = ConvertStringToLong(El.InnerHtml);
+                                }
+                                if (IsSolo)
+                                {
+                                    Solo = ConvertStringToLong(El.InnerHtml);
+                                }
+                            }
+
                             iElement += 1;
                         }
 
