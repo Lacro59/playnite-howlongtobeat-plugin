@@ -161,10 +161,10 @@ namespace HowLongToBeat
                 ui.ClearElementInCustomTheme("PART_hltbProgressBarWithTitle");
                 ui.ClearElementInCustomTheme("PART_hltbProgressBar");
 
-
+                HowLongToBeatData data = null;
                 try
                 {
-                    HowLongToBeatData data = new HowLongToBeatData(GameSelected, this.GetPluginUserDataPath(), false);
+                    data = new HowLongToBeatData(GameSelected, this.GetPluginUserDataPath(), false);
                 }
                 catch (Exception ex)
                 {

@@ -43,7 +43,7 @@ namespace HowLongToBeat.Services
                     logger.Debug("HowLongToBeat - Create data");
 
                     List<HltbData> dataSearch = new HowLongToBeatClient().Search(game.Name);
-                    new HowLongToBeatSelect(dataSearch, FileGameData).ShowDialog();
+                    new HowLongToBeatSelect(dataSearch, FileGameData, game.Name).ShowDialog();
 
                     if (File.Exists(FileGameData))
                     {
