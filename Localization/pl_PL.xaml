@@ -6,6 +6,8 @@
     HowLongToBeatSettingsView
     -->
 
+    <sys:String x:Key="LOCHowLongToBeatAddTagDescription">Add tag with "Main Story" / "Solo" time.</sys:String>
+
     <sys:String x:Key="LOCHowLongToBeatIntegration">Integracja interfejsu (eksperymentalna)</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationButton">Dodaj przycisk</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationInDescription">Integracja z opisem gry</sys:String>
@@ -39,6 +41,19 @@
     -->
 
     <sys:String x:Key="LOCHowLongToBeatProgression">Postęp</sys:String>
+
+    <sys:String x:Key="LOCHowLongToBeat1to5">1 do 5 godzin</sys:String>
+    <sys:String x:Key="LOCHowLongToBeat5to10">5 do 10 godzin</sys:String>
+    <sys:String x:Key="LOCHowLongToBeat10to20">10 do 20 godzin</sys:String>
+    <sys:String x:Key="LOCHowLongToBeat20to30">20 do 30 godzin</sys:String>
+    <sys:String x:Key="LOCHowLongToBeat30to40">30 do 40 godzin</sys:String>
+    <sys:String x:Key="LOCHowLongToBeat40to50">40 do 50 godzin</sys:String>
+    <sys:String x:Key="LOCHowLongToBeat50to60">50 do 60 godzin</sys:String>
+    <sys:String x:Key="LOCHowLongToBeat60to70">60 do 70 godzin</sys:String>
+    <sys:String x:Key="LOCHowLongToBeat70to80">70 do 80 godzin</sys:String>
+    <sys:String x:Key="LOCHowLongToBeat80to90">80 do 90 godzin</sys:String>
+    <sys:String x:Key="LOCHowLongToBeat90to100">90 do 100 godzin</sys:String>
+    <sys:String x:Key="LOCHowLongToBeat100plus">More 100 hours</sys:String>
 
     <!--  
     MainView

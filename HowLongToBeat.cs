@@ -72,7 +72,7 @@ namespace HowLongToBeat
                         // Add code to be execute when user invokes this menu entry.
 
                         try {
-                            HowLongToBeatData data = new HowLongToBeatData(GameSelected, this.GetPluginUserDataPath());
+                            HowLongToBeatData data = new HowLongToBeatData(GameSelected, this.GetPluginUserDataPath(), PlayniteApi, settings.EnableTag);
                             if (data.GetData() != null)
                             {
                                 Integration();
@@ -139,11 +139,19 @@ namespace HowLongToBeat
 
         private void OnBtGameSelectedActionBarClick(object sender, RoutedEventArgs e)
         {
-            HowLongToBeatData data = new HowLongToBeatData(GameSelected, this.GetPluginUserDataPath());
-            if (data.GetData() != null)
+            try
             {
-                Integration();
-                new Views.HowLongToBeat(data, GameSelected, PlayniteApi).ShowDialog();
+                HowLongToBeatData data = new HowLongToBeatData(GameSelected, this.GetPluginUserDataPath(), PlayniteApi, settings.EnableTag);
+                if (data.GetData() != null)
+                {
+                    Integration();
+                    new Views.HowLongToBeat(data, GameSelected, PlayniteApi).ShowDialog();
+                }
+            }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, "HowLongToBeat", "Error to load data");
+                PlayniteApi.Dialogs.ShowErrorMessage("Error to load data", "HowLongToBeat");
             }
         }
 
@@ -164,7 +172,7 @@ namespace HowLongToBeat
                 HowLongToBeatData data = null;
                 try
                 {
-                    data = new HowLongToBeatData(GameSelected, this.GetPluginUserDataPath(), false);
+                    data = new HowLongToBeatData(GameSelected, this.GetPluginUserDataPath(), PlayniteApi, settings.EnableTag, false);
                 }
                 catch (Exception ex)
                 {
@@ -303,7 +311,7 @@ namespace HowLongToBeat
 
         public override UserControl GetSettingsView(bool firstRunSettings)
         {
-            return new HowLongToBeatSettingsView();
+            return new HowLongToBeatSettingsView(PlayniteApi, this.GetPluginUserDataPath());
         }
     }
 }
