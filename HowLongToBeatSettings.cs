@@ -1,9 +1,6 @@
-﻿using HowLongToBeat.Services;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Playnite.SDK;
-using Playnite.SDK.Models;
 using System.Collections.Generic;
-
 
 namespace HowLongToBeat
 {

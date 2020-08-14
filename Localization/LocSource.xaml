@@ -6,9 +6,9 @@
     HowLongToBeatSettingsView
     -->
 
-    <sys:String x:Key="LOCHowLongToBeatAddTagDescription">Add tag with "Main Story" / "Solo" time.</sys:String>
-    
-    <sys:String x:Key="LOCHowLongToBeatIntegration">Interface integration (experimental)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAddTagDescription">Tag with "Main Story" / "Solo" time.</sys:String>
+
+    <sys:String x:Key="LOCHowLongToBeatIntegration">Interface integration</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationButton">Add button</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationInDescription">Integration on game description</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationShowTitle">Show title</sys:String>
