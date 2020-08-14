@@ -6,7 +6,7 @@
     HowLongToBeatSettingsView
     -->
 
-    <sys:String x:Key="LOCHowLongToBeatAddTagDescription">Add tag with "Main Story" / "Solo" time.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAddTagDescription">Dodaj tag z czasem "Głównego wątku" / "Solo".</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatIntegration">Integracja interfejsu (eksperymentalna)</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationButton">Dodaj przycisk</sys:String>
@@ -53,7 +53,7 @@
     <sys:String x:Key="LOCHowLongToBeat70to80">70 do 80 godzin</sys:String>
     <sys:String x:Key="LOCHowLongToBeat80to90">80 do 90 godzin</sys:String>
     <sys:String x:Key="LOCHowLongToBeat90to100">90 do 100 godzin</sys:String>
-    <sys:String x:Key="LOCHowLongToBeat100plus">More 100 hours</sys:String>
+    <sys:String x:Key="LOCHowLongToBeat100plus">100+ godzin</sys:String>
 
     <!--  
     MainView
