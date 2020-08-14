@@ -43,6 +43,17 @@ namespace HowLongToBeat
             // Add common in application ressource.
             PluginCommon.Common.Load(pluginFolder);
 
+            // Check version
+            if (settings.EnableCheckVersion)
+            {
+                CheckVersion cv = new CheckVersion();
+
+                if (cv.Check("HowLongToBeat", pluginFolder))
+                {
+                    cv.ShowNotification(api, "HowLongToBeat - " + resources.GetString("LOCUpdaterWindowTitle"));
+                }
+            }
+
 
             if (settings.EnableIntegrationInCustomTheme)
             {
@@ -60,10 +71,18 @@ namespace HowLongToBeat
                     {
                         // Add code to be execute when user invokes this menu entry.
 
-                        HowLongToBeatData data = new HowLongToBeatData(GameSelected, this.GetPluginUserDataPath());
-                        if (data.GetData() != null)
+                        try {
+                            HowLongToBeatData data = new HowLongToBeatData(GameSelected, this.GetPluginUserDataPath(), PlayniteApi, settings.EnableTag);
+                            if (data.GetData() != null)
+                            {
+                                Integration();
+                                new Views.HowLongToBeat(data, GameSelected, PlayniteApi).ShowDialog();
+                            }
+                        }
+                        catch (Exception ex)
                         {
-                            new Views.HowLongToBeat(data, GameSelected, PlayniteApi).ShowDialog();
+                            Common.LogError(ex, "HowLongToBeat", "Error to load data");
+                            PlayniteApi.Dialogs.ShowErrorMessage("Error to load data", "HowLongToBeat");
                         }
                     })
             };
@@ -107,7 +126,6 @@ namespace HowLongToBeat
                 if (args.NewValue != null && args.NewValue.Count == 1)
                 {
                     GameSelected = args.NewValue[0];
-
                     Integration();
                 }
             }
@@ -121,10 +139,19 @@ namespace HowLongToBeat
 
         private void OnBtGameSelectedActionBarClick(object sender, RoutedEventArgs e)
         {
-            HowLongToBeatData data = new HowLongToBeatData(GameSelected, this.GetPluginUserDataPath());
-            if (data.GetData() != null)
+            try
             {
-                new Views.HowLongToBeat(data, GameSelected, PlayniteApi).ShowDialog();
+                HowLongToBeatData data = new HowLongToBeatData(GameSelected, this.GetPluginUserDataPath(), PlayniteApi, settings.EnableTag);
+                if (data.GetData() != null)
+                {
+                    Integration();
+                    new Views.HowLongToBeat(data, GameSelected, PlayniteApi).ShowDialog();
+                }
+            }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, "HowLongToBeat", "Error to load data");
+                PlayniteApi.Dialogs.ShowErrorMessage("Error to load data", "HowLongToBeat");
             }
         }
 
@@ -142,9 +169,16 @@ namespace HowLongToBeat
                 ui.ClearElementInCustomTheme("PART_hltbProgressBarWithTitle");
                 ui.ClearElementInCustomTheme("PART_hltbProgressBar");
 
-
-                HowLongToBeatData data = new HowLongToBeatData(GameSelected, this.GetPluginUserDataPath(), false);
-
+                HowLongToBeatData data = null;
+                try
+                {
+                    data = new HowLongToBeatData(GameSelected, this.GetPluginUserDataPath(), PlayniteApi, settings.EnableTag, false);
+                }
+                catch (Exception ex)
+                {
+                    Common.LogError(ex, "HowLongToBeat", "Error to load data");
+                    PlayniteApi.Dialogs.ShowErrorMessage("Error to load data", "HowLongToBeat");
+                }
 
                 if (settings.EnableIntegrationButton)
                 {
@@ -277,7 +311,7 @@ namespace HowLongToBeat
 
         public override UserControl GetSettingsView(bool firstRunSettings)
         {
-            return new HowLongToBeatSettingsView();
+            return new HowLongToBeatSettingsView(PlayniteApi, this.GetPluginUserDataPath());
         }
     }
 }

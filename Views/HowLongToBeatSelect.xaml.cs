@@ -22,11 +22,13 @@ namespace HowLongToBeat.Views
 
         private string FileGameData;
 
-        public HowLongToBeatSelect(List<HltbData> data, string FileGameData)
+        public HowLongToBeatSelect(List<HltbData> data, string FileGameData, string GameName)
         {
             this.FileGameData = FileGameData;
 
             InitializeComponent();
+
+            SearchElement.Text = GameName;
 
             lbSelectable.ItemsSource = data;
 
@@ -68,7 +70,7 @@ namespace HowLongToBeat.Views
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void LbSelectable_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        private void LbSelectable_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             ButtonSelect.IsEnabled = true;
         }

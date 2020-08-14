@@ -8,7 +8,32 @@
     
     <StackPanel Margin="20">
 
-        <Label Content="{DynamicResource LOCHowLongToBeatIntegration}" FontSize="18" />
+        <Label Content="HowLongToBeat" FontSize="18" />
+        <Separator Margin="0,0,0,10" />
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="10" />
+                <ColumnDefinition Width="auto" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="28" />
+            </Grid.RowDefinitions>
+
+            <CheckBox IsChecked="{Binding EnableTag}" Grid.Column="0" VerticalAlignment="Center">
+                <Label Content="{DynamicResource LOCHowLongToBeatAddTagDescription}" />
+            </CheckBox>
+            
+            <StackPanel Grid.Column="2" Orientation="Horizontal">
+                <Button Content="{DynamicResource LOCAddTitle}" Margin="0,0,10,0" IsEnabled="{Binding EnableTag}" VerticalAlignment="Center" Click="ButtonAdd_Click"/>
+                <Button Content="{DynamicResource LOCRemoveTitle}" VerticalAlignment="Center" Click="ButtonRemove_Click"/>
+            </StackPanel>
+        </Grid>
+
+
+
+        <Label Content="{DynamicResource LOCHowLongToBeatIntegration}" FontSize="18" Margin="0,20,0,0" />
         <Separator Margin="0,0,0,10" />
 
         <CheckBox IsChecked="{Binding EnableIntegrationButton}" Name="HltB_IntegrationButton">

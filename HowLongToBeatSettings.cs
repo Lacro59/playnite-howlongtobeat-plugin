@@ -2,12 +2,15 @@
 using Playnite.SDK;
 using System.Collections.Generic;
 
-
 namespace HowLongToBeat
 {
     public class HowLongToBeatSettings : ISettings
     {
         private readonly HowLongToBeat plugin;
+
+        public bool EnableCheckVersion { get; set; } = true;
+
+        public bool EnableTag { get; set; } = false;
 
         public bool EnableIntegrationButton { get; set; } = false;
         public bool EnableIntegrationInDescription { get; set; } = false;
@@ -36,6 +39,10 @@ namespace HowLongToBeat
             // LoadPluginSettings returns null if not saved data is available.
             if (savedSettings != null)
             {
+                EnableCheckVersion = savedSettings.EnableCheckVersion;
+
+                EnableTag = savedSettings.EnableTag;
+
                 EnableIntegrationButton = savedSettings.EnableIntegrationButton;
                 EnableIntegrationInDescription = savedSettings.EnableIntegrationInDescription;
                 IntegrationShowTitle = savedSettings.IntegrationShowTitle;
