@@ -169,6 +169,22 @@ namespace HowLongToBeat
                 ui.ClearElementInCustomTheme("PART_hltbProgressBarWithTitle");
                 ui.ClearElementInCustomTheme("PART_hltbProgressBar");
 
+                // Reset resources
+                List<ResourcesList> resourcesLists = new List<ResourcesList>();
+                resourcesLists.Add(new ResourcesList { Key = "Htlb_MainStory", Value = "0" });
+                resourcesLists.Add(new ResourcesList { Key = "Htlb_MainStoryFormat", Value = "" });
+                resourcesLists.Add(new ResourcesList { Key = "Htlb_MainExtra", Value = "0" });
+                resourcesLists.Add(new ResourcesList { Key = "Htlb_MainExtraFormat", Value = "" });
+                resourcesLists.Add(new ResourcesList { Key = "Htlb_Completionist", Value = "0" });
+                resourcesLists.Add(new ResourcesList { Key = "Htlb_CompletionistFormat", Value = "" });
+                resourcesLists.Add(new ResourcesList { Key = "Htlb_Solo", Value = "0" });
+                resourcesLists.Add(new ResourcesList { Key = "Htlb_SoloFormat", Value = "" });
+                resourcesLists.Add(new ResourcesList { Key = "Htlb_CoOp", Value = "0" });
+                resourcesLists.Add(new ResourcesList { Key = "Htlb_CoOpFormat", Value = "" });
+                resourcesLists.Add(new ResourcesList { Key = "Htlb_Vs", Value = "0" });
+                resourcesLists.Add(new ResourcesList { Key = "Htlb_VsFormat", Value = "" });
+                ui.AddResources(resourcesLists);
+
                 HowLongToBeatData data = null;
                 try
                 {
@@ -191,6 +207,22 @@ namespace HowLongToBeat
 
                     ui.AddButtonInGameSelectedActionBarButtonOrToggleButton(HltbButton);
                 }
+
+                // Add resources
+                resourcesLists = new List<ResourcesList>();
+                resourcesLists.Add(new ResourcesList { Key = "Htlb_MainStory", Value = data.GetData().GameHltbData.MainStory.ToString() });
+                resourcesLists.Add(new ResourcesList { Key = "Htlb_MainStoryFormat", Value = data.GetData().GameHltbData.MainStoryFormat });
+                resourcesLists.Add(new ResourcesList { Key = "Htlb_MainExtra", Value = data.GetData().GameHltbData.MainExtra.ToString() });
+                resourcesLists.Add(new ResourcesList { Key = "Htlb_MainExtraFormat", Value = data.GetData().GameHltbData.MainExtraFormat });
+                resourcesLists.Add(new ResourcesList { Key = "Htlb_Completionist", Value = data.GetData().GameHltbData.Completionist.ToString() });
+                resourcesLists.Add(new ResourcesList { Key = "Htlb_CompletionistFormat", Value = data.GetData().GameHltbData.CompletionistFormat });
+                resourcesLists.Add(new ResourcesList { Key = "Htlb_Solo", Value = data.GetData().GameHltbData.Solo.ToString() });
+                resourcesLists.Add(new ResourcesList { Key = "Htlb_SoloFormat", Value = data.GetData().GameHltbData.SoloFormat });
+                resourcesLists.Add(new ResourcesList { Key = "Htlb_CoOp", Value = data.GetData().GameHltbData.CoOp.ToString() });
+                resourcesLists.Add(new ResourcesList { Key = "Htlb_CoOpFormat", Value = data.GetData().GameHltbData.CoOpFormat });
+                resourcesLists.Add(new ResourcesList { Key = "Htlb_Vs", Value = data.GetData().GameHltbData.Vs.ToString() });
+                resourcesLists.Add(new ResourcesList { Key = "Htlb_VsFormat", Value = data.GetData().GameHltbData.VsFormat });
+                ui.AddResources(resourcesLists);
 
                 // Auto integration
                 if (settings.EnableIntegrationInDescription)
