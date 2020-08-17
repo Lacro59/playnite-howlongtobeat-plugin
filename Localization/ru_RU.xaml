@@ -6,7 +6,7 @@
     HowLongToBeatSettingsView
     -->
 
-    <sys:String x:Key="LOCHowLongToBeatAddTagDescription">Tag with "Main Story" / "Solo" time.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAddTagDescription">Тэг со временем "основного сюжета" / "одиночной игры".</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatIntegration">Интеграция в интерфейс</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationButton">Добавить кнопку</sys:String>
@@ -53,7 +53,7 @@
     <sys:String x:Key="LOCHowLongToBeat70to80">От 70 до 80 часов</sys:String>
     <sys:String x:Key="LOCHowLongToBeat80to90">От 80 до 90 часов</sys:String>
     <sys:String x:Key="LOCHowLongToBeat90to100">От 90 до 100 часов</sys:String>
-    <sys:String x:Key="LOCHowLongToBeat100plus">More 100 hours</sys:String>
+    <sys:String x:Key="LOCHowLongToBeat100plus">Больше 100 часов</sys:String>
 
     <!--
     MainView
