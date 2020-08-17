@@ -18,14 +18,19 @@
                 <ColumnDefinition Width="auto" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition Height="28" />
+                <RowDefinition Height="30" />
+                <RowDefinition Height="30" />
             </Grid.RowDefinitions>
 
-            <CheckBox IsChecked="{Binding EnableTag}" Grid.Column="0" VerticalAlignment="Center">
+            <CheckBox Grid.Row="0" IsChecked="{Binding ShowHltbImg}" Grid.Column="0" VerticalAlignment="Center">
+                <Label Content="{DynamicResource LOCHowLongToBeatShowHltbImage}" />
+            </CheckBox>
+
+            <CheckBox Grid.Row="1"  IsChecked="{Binding EnableTag}" Grid.Column="0" VerticalAlignment="Center">
                 <Label Content="{DynamicResource LOCHowLongToBeatAddTagDescription}" />
             </CheckBox>
-            
-            <StackPanel Grid.Column="2" Orientation="Horizontal">
+
+            <StackPanel  Grid.Row="1" Grid.Column="2" Orientation="Horizontal">
                 <Button Content="{DynamicResource LOCAddTitle}" Margin="0,0,10,0" IsEnabled="{Binding EnableTag}" VerticalAlignment="Center" Click="ButtonAdd_Click"/>
                 <Button Content="{DynamicResource LOCRemoveTitle}" VerticalAlignment="Center" Click="ButtonRemove_Click"/>
             </StackPanel>

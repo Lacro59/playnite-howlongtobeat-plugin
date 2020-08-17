@@ -76,7 +76,7 @@ namespace HowLongToBeat
                             if (data.GetData() != null)
                             {
                                 Integration();
-                                new Views.HowLongToBeat(data, GameSelected, PlayniteApi).ShowDialog();
+                                new Views.HowLongToBeat(data, GameSelected, PlayniteApi, settings).ShowDialog();
                             }
                         }
                         catch (Exception ex)
@@ -145,7 +145,7 @@ namespace HowLongToBeat
                 if (data.GetData() != null)
                 {
                     Integration();
-                    new Views.HowLongToBeat(data, GameSelected, PlayniteApi).ShowDialog();
+                    new Views.HowLongToBeat(data, GameSelected, PlayniteApi, settings).ShowDialog();
                 }
             }
             catch (Exception ex)
@@ -158,10 +158,15 @@ namespace HowLongToBeat
         /// <summary>
         /// Integration plugin interface in application.
         /// </summary>
-        private void Integration()
+        private void Integration(Game game = null)
         {
             try
             {
+                if (game != null)
+                {
+                    GameSelected = game;
+                }
+
                 // Delete
                 logger.Info("HowLongToBeat - Delete");
                 ui.RemoveButtonInGameSelectedActionBarButtonOrToggleButton("PART_HltbButton");
@@ -313,7 +318,8 @@ namespace HowLongToBeat
         {
             // Add code to be executed when game is preparing to be started.
 
-            Integration();
+            game.Playtime += elapsedSeconds;
+            Integration(game);
         }
 
         public override void OnGameUninstalled(Game game)

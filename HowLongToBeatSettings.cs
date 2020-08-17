@@ -12,6 +12,8 @@ namespace HowLongToBeat
 
         public bool EnableTag { get; set; } = false;
 
+        public bool ShowHltbImg { get; set; } = true;
+
         public bool EnableIntegrationButton { get; set; } = false;
         public bool EnableIntegrationInDescription { get; set; } = false;
         public bool IntegrationShowTitle { get; set; } = true;
@@ -42,6 +44,8 @@ namespace HowLongToBeat
                 EnableCheckVersion = savedSettings.EnableCheckVersion;
 
                 EnableTag = savedSettings.EnableTag;
+
+                ShowHltbImg = savedSettings.ShowHltbImg;
 
                 EnableIntegrationButton = savedSettings.EnableIntegrationButton;
                 EnableIntegrationInDescription = savedSettings.EnableIntegrationInDescription;

@@ -29,7 +29,7 @@ namespace HowLongToBeat.Views
 
         private HowLongToBeatData data { get; set; }
 
-        public HowLongToBeat(HowLongToBeatData data, Game game, IPlayniteAPI PlayniteApi)
+        public HowLongToBeat(HowLongToBeatData data, Game game, IPlayniteAPI PlayniteApi, HowLongToBeatSettings settings)
         {
             this.data = data;
 
@@ -37,7 +37,18 @@ namespace HowLongToBeat.Views
 
             HltbDataUser gameData = data.GetData();
 
-            CoverImage = PlayniteApi.Database.GetFullFilePath(game.CoverImage);
+            if (string.IsNullOrEmpty(game.CoverImage))
+            {
+                CoverImage = gameData.GameHltbData.UrlImg;
+            }
+            else
+            {
+                CoverImage = gameData.GameHltbData.UrlImg;
+                if (!settings.ShowHltbImg)
+                {
+                    CoverImage = PlayniteApi.Database.GetFullFilePath(game.CoverImage);
+                }
+            }
             GameName = game.Name;
 
 

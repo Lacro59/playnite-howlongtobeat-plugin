@@ -6,7 +6,8 @@
     HowLongToBeatSettingsView
     -->
 
-    <sys:String x:Key="LOCHowLongToBeatAddTagDescription">Tag with "Main Story" / "Solo" time.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAddTagDescription">Tag with "Main Story" / "Solo" time</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatShowHltbImage">Show How Long To Beat cover image</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatIntegration">Integração com a Interface</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationButton">Adicionar botão</sys:String>

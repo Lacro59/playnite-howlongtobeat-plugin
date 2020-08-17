@@ -7,6 +7,7 @@
     -->
 
     <sys:String x:Key="LOCHowLongToBeatAddTagDescription">Etiquette avec le temps "Main Story" / "Solo"</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatShowHltbImage">Afficher l'image de couverture de How Long To Beat</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatIntegration">Intégration dans l'interface</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationButton">Ajouter un bouton</sys:String>
