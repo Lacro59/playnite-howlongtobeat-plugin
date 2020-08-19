@@ -1,8 +1,9 @@
 ﻿using HowLongToBeat.Models;
+using Playnite.SDK;
 using System;
 using System.Windows;
 using System.Windows.Controls;
-
+using System.Windows.Controls.Primitives;
 
 namespace HowLongToBeat.Views.Interfaces
 {
@@ -11,6 +12,8 @@ namespace HowLongToBeat.Views.Interfaces
     /// </summary>
     public partial class HltbProgressBar : UserControl
     {
+        private static readonly ILogger logger = LogManager.GetLogger();
+
         public HltbProgressBar(long Playtime, HltbDataUser gameData)
         {
             InitializeComponent();
@@ -134,6 +137,22 @@ namespace HowLongToBeat.Views.Interfaces
                     ProgressHltb_El3.Value = ElValue;
                     break;
             }
+        }
+
+        private void StackPanel_Loaded(object sender, RoutedEventArgs e)
+        {
+            var parent = ((FrameworkElement)((FrameworkElement)((FrameworkElement)sender).Parent).Parent);
+
+            logger.Debug($"parent.ActualHeight - {parent.ActualHeight}");
+            logger.Debug($"parent.Height - {parent.Height}");
+
+            if (!double.IsNaN(parent.Height))
+            {
+                ((FrameworkElement)sender).Height = parent.Height;
+            }
+            
+            var track = (Track)SliderPlaytime.Template.FindName("PART_Track", SliderPlaytime);
+            track.Height = ((FrameworkElement)sender).Height - 4;
         }
     }
 }
