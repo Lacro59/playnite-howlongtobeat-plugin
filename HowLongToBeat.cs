@@ -146,7 +146,7 @@ namespace HowLongToBeat
             catch (Exception ex)
             {
                 Common.LogError(ex, "HowLongToBeat", "Error to load data");
-                PlayniteApi.Dialogs.ShowErrorMessage("Error to load data", "HowLongToBeat");
+                PlayniteApi.Dialogs.ShowErrorMessage(resources.GetString("LOCDatabaseErroTitle"), "HowLongToBeat");
             }
         }
 
@@ -160,7 +160,7 @@ namespace HowLongToBeat
             catch (Exception ex)
             {
                 Common.LogError(ex, "HowLongToBeat", "Error to load data");
-                PlayniteApi.Dialogs.ShowErrorMessage("Error to load data", "HowLongToBeat");
+                PlayniteApi.Dialogs.ShowErrorMessage(resources.GetString("LOCDatabaseErroTitle"), "HowLongToBeat");
             }
 
             return data;
@@ -254,7 +254,7 @@ namespace HowLongToBeat
                             {
                                 // Create 
                                 StackPanel spHltb = CreateHltb(GameSelected.Playtime, data.GetData(), true);
-                                UserControl hltbProgressBar = new HltbProgressBar(GameSelected.Playtime, data.GetData());
+                                UserControl hltbProgressBar = new HltbProgressBar(GameSelected.Playtime, data.GetData(), settings);
 
                                 ui.AddElementInCustomTheme(spHltb, "PART_hltbProgressBarWithTitle");
                                 ui.AddElementInCustomTheme(hltbProgressBar, "PART_hltbProgressBar");
@@ -293,7 +293,7 @@ namespace HowLongToBeat
                 hltbsep.Background = (Brush)resources.GetResource("PanelSeparatorBrush");
             }
 
-            UserControl hltbProgressBar = new HltbProgressBar(Playtime, data);
+            UserControl hltbProgressBar = new HltbProgressBar(Playtime, data, settings);
             hltbProgressBar.Name = "PART_hltbProgressBar";
             hltbProgressBar.Margin = new Thickness(0, 5, 0, 5);
 

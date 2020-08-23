@@ -1,9 +1,11 @@
 ﻿using HowLongToBeat.Models;
 using Playnite.SDK;
 using System;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Shapes;
 
 namespace HowLongToBeat.Views.Interfaces
 {
@@ -14,21 +16,97 @@ namespace HowLongToBeat.Views.Interfaces
     {
         private static readonly ILogger logger = LogManager.GetLogger();
 
-        public HltbProgressBar(long Playtime, HltbDataUser gameData)
+        private HltbDataUser gameData;
+        private long Playtime;
+        private HowLongToBeatSettings settings;
+
+
+        public HltbProgressBar(long Playtime, HltbDataUser gameData, HowLongToBeatSettings settings)
         {
             InitializeComponent();
 
+            this.gameData = gameData;
+            this.Playtime = Playtime;
+            this.settings = settings;
 
+            // Set Binding data
+            DataContext = this;
+        }
+
+        private void SetDataInView(int ElIndicator, long ElValue, string ElFormat)
+        {
+            Decorator indicator = null;
+            Rectangle track = null;
+            switch (ElIndicator)
+            {
+                case 1:
+                    ProgressHltb_El1.Value = ElValue;
+
+                    if (settings.ProgressBarShowToolTip)
+                    {
+                        indicator = (Decorator)ProgressHltb_El1.Template.FindName("PART_Indicator", ProgressHltb_El1);
+                        track = (Rectangle)ProgressHltb_El1.Template.FindName("PART_Track", ProgressHltb_El1);
+                        spHltb_El1.Width = indicator.Width;
+                        tpHltb_El1.Content = ElFormat;
+
+                        if (track.Width == indicator.Width)
+                        {
+                            spHltb_El1.Width = track.ActualWidth;
+                        }
+                    }
+                    break;
+
+                case 2:
+                    ProgressHltb_El2.Value = ElValue;
+
+                    if (settings.ProgressBarShowToolTip)
+                    {
+                        indicator = (Decorator)ProgressHltb_El2.Template.FindName("PART_Indicator", ProgressHltb_El2);
+                        spHltb_El2.Width = indicator.Width - spHltb_El1.Width;
+                        tpHltb_El2.Content = ElFormat;
+                    }
+                    break;
+
+                case 3:
+                    ProgressHltb_El3.Value = ElValue;
+
+                    if (settings.ProgressBarShowToolTip)
+                    {
+                        indicator = (Decorator)ProgressHltb_El3.Template.FindName("PART_Indicator", ProgressHltb_El3);
+                        spHltb_El3.Width = indicator.Width - spHltb_El2.Width - spHltb_El1.Width;
+                        tpHltb_El3.Content = ElFormat;
+                    }
+                    break;
+            }
+        }
+
+        private void Grid_Loaded(object sender, RoutedEventArgs e)
+        {
+            // Define height & width
+            var parent = ((FrameworkElement)((FrameworkElement)((FrameworkElement)sender).Parent).Parent);
+
+            if (!double.IsNaN(parent.Height))
+            {
+                ((FrameworkElement)sender).Height = parent.Height;
+            }
+
+            if (!double.IsNaN(parent.Width))
+            {
+                ((FrameworkElement)sender).Width = parent.Width;
+            }
+
+
+            // Definied data value in different component.
             int ElIndicator = 0;
             long MaxValue = 0;
             long MaxHltb = 0;
-
+            List<ListProgressBar> listProgressBars = new List<ListProgressBar>();
             if (gameData != null)
             {
                 if (gameData.GameHltbData.MainStory != 0)
                 {
                     ElIndicator += 1;
-                    SetDataInView(ElIndicator, gameData.GameHltbData.MainStory);
+                    listProgressBars.Add(new ListProgressBar { Indicator = ElIndicator, Value = gameData.GameHltbData.MainStory, Format = gameData.GameHltbData.MainStoryFormat });
                     if (MaxValue < gameData.GameHltbData.MainStory)
                     {
                         MaxValue = gameData.GameHltbData.MainStory;
@@ -38,7 +116,7 @@ namespace HowLongToBeat.Views.Interfaces
                 if (gameData.GameHltbData.MainExtra != 0)
                 {
                     ElIndicator += 1;
-                    SetDataInView(ElIndicator, gameData.GameHltbData.MainExtra);
+                    listProgressBars.Add(new ListProgressBar { Indicator = ElIndicator, Value = gameData.GameHltbData.MainExtra, Format = gameData.GameHltbData.MainExtraFormat });
                     if (MaxValue < gameData.GameHltbData.MainExtra)
                     {
                         MaxValue = gameData.GameHltbData.MainExtra;
@@ -48,7 +126,7 @@ namespace HowLongToBeat.Views.Interfaces
                 if (gameData.GameHltbData.Completionist != 0)
                 {
                     ElIndicator += 1;
-                    SetDataInView(ElIndicator, gameData.GameHltbData.Completionist);
+                    listProgressBars.Add(new ListProgressBar { Indicator = ElIndicator, Value = gameData.GameHltbData.Completionist, Format = gameData.GameHltbData.CompletionistFormat });
                     if (MaxValue < gameData.GameHltbData.Completionist)
                     {
                         MaxValue = gameData.GameHltbData.Completionist;
@@ -58,7 +136,7 @@ namespace HowLongToBeat.Views.Interfaces
                 if (gameData.GameHltbData.Solo != 0)
                 {
                     ElIndicator += 1;
-                    SetDataInView(ElIndicator, gameData.GameHltbData.Solo);
+                    listProgressBars.Add(new ListProgressBar { Indicator = ElIndicator, Value = gameData.GameHltbData.Solo, Format = gameData.GameHltbData.SoloFormat });
                     if (MaxValue < gameData.GameHltbData.Solo)
                     {
                         MaxValue = gameData.GameHltbData.Solo;
@@ -68,7 +146,7 @@ namespace HowLongToBeat.Views.Interfaces
                 if (gameData.GameHltbData.CoOp != 0)
                 {
                     ElIndicator += 1;
-                    SetDataInView(ElIndicator, gameData.GameHltbData.CoOp);
+                    listProgressBars.Add(new ListProgressBar { Indicator = ElIndicator, Value = gameData.GameHltbData.CoOp, Format = gameData.GameHltbData.CoOpFormat });
                     if (MaxValue < gameData.GameHltbData.CoOp)
                     {
                         MaxValue = gameData.GameHltbData.CoOp;
@@ -78,7 +156,7 @@ namespace HowLongToBeat.Views.Interfaces
                 if (gameData.GameHltbData.Vs != 0)
                 {
                     ElIndicator += 1;
-                    SetDataInView(ElIndicator, gameData.GameHltbData.Vs);
+                    listProgressBars.Add(new ListProgressBar { Indicator = ElIndicator, Value = gameData.GameHltbData.Vs, Format = gameData.GameHltbData.VsFormat });
                     if (MaxValue < gameData.GameHltbData.Vs)
                     {
                         MaxValue = gameData.GameHltbData.Vs;
@@ -86,19 +164,18 @@ namespace HowLongToBeat.Views.Interfaces
                 }
             }
 
-
+            // Define the maxvalue for progressbar & slider
             MaxHltb = MaxValue;
             if (Playtime > MaxValue)
             {
                 MaxValue = Playtime;
-                SliderPlaytime.Margin = new Thickness(-10, 5, -3, 0);
             }
 
-            if (Playtime < 69)
+            // Adjust position tracker
+            if (Playtime > 69)
             {
-                SliderPlaytime.Margin = new Thickness(-3, 5, -10, 0);
+                SliderPlaytime.Margin = new Thickness(-8,0,-3,0);
             }
-
 
             // Limit MaxValue when playtime is more than MaxHltb
             long MaxPercent = (long)Math.Ceiling((double)(10 * MaxHltb / 100));
@@ -116,43 +193,20 @@ namespace HowLongToBeat.Views.Interfaces
             SliderPlaytime.Value = Playtime;
             SliderPlaytime.Maximum = MaxValue;
 
-
-            // Set Binding data
-            DataContext = this;
-        }
-
-        private void SetDataInView(int ElIndicator, long ElValue)
-        {
-            switch (ElIndicator)
+            foreach(var listProgressBar in listProgressBars)
             {
-                case 1:
-                    ProgressHltb_El1.Value = ElValue;
-                    break;
-
-                case 2:
-                    ProgressHltb_El2.Value = ElValue;
-                    break;
-
-                case 3:
-                    ProgressHltb_El3.Value = ElValue;
-                    break;
+                SetDataInView(listProgressBar.Indicator, listProgressBar.Value, listProgressBar.Format);
             }
+
+
+            SliderPlaytime.UpdateLayout();
         }
+    }
 
-        private void StackPanel_Loaded(object sender, RoutedEventArgs e)
-        {
-            var parent = ((FrameworkElement)((FrameworkElement)((FrameworkElement)sender).Parent).Parent);
-
-            logger.Debug($"parent.ActualHeight - {parent.ActualHeight}");
-            logger.Debug($"parent.Height - {parent.Height}");
-
-            if (!double.IsNaN(parent.Height))
-            {
-                ((FrameworkElement)sender).Height = parent.Height;
-            }
-            
-            var track = (Track)SliderPlaytime.Template.FindName("PART_Track", SliderPlaytime);
-            track.Height = ((FrameworkElement)sender).Height - 4;
-        }
+    public class ListProgressBar
+    {
+        public int Indicator { get; set; }
+        public long Value { get; set; }
+        public string Format { get; set; }
     }
 }

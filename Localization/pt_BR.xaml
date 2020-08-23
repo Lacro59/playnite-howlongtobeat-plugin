@@ -16,6 +16,8 @@
     <sys:String x:Key="LOCHowLongToBeatIntegrationTopGameDetails">Integração acima da descrição do jogo</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationInCustomTheme">Integração de temas personalizados (se integrado)</sys:String>
 
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">Show tooltip with time in progress bar</sys:String>
+
     <!--  
     HowLongToBeatSelect
     -->

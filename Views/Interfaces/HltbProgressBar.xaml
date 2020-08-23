@@ -4,29 +4,25 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:HowLongToBeat.Views.Interfaces"
-             mc:Ignorable="d" MinWidth="200">
+             mc:Ignorable="d" 
+             Width="{Binding ElementName=PART_HltbProgressBar_Contener, Path=Width}"
+             Height="{Binding ElementName=PART_HltbProgressBar_Contener, Path=Height}">
 
-    <Grid Loaded="StackPanel_Loaded" Name="PART_HltbProgressBar_Contener" Height="40">
-        <ProgressBar Name="ProgressHltb_El3" Height="{Binding ElementName=PART_HltbProgressBar_Contener, Path=Height}" Value="90" Maximum="90" Background="Transparent"
-                             Foreground="ForestGreen">
-            <!--ProgressBar.ToolTip>
-                <ToolTip Name="CompletionistToolTip" />
-            </ProgressBar.ToolTip-->
-        </ProgressBar>
-        <ProgressBar Name="ProgressHltb_El2" Height="{Binding ElementName=PART_HltbProgressBar_Contener, Path=Height}" Value="40" Maximum="90" Background="Transparent" 
-                             Foreground="RoyalBlue">
-            <!--ProgressBar.ToolTip>
-                <ToolTip Name="MainExtraToolTip" />
-            </ProgressBar.ToolTip-->
-        </ProgressBar>
-        <ProgressBar Name="ProgressHltb_El1" Height="{Binding ElementName=PART_HltbProgressBar_Contener, Path=Height}" Value="20" Maximum="90" Background="Transparent"
-                             Foreground="DarkCyan">
-            <!--ProgressBar.ToolTip>
-                <ToolTip Name="MainStoryToolTip" />
-            </ProgressBar.ToolTip-->
+    <Grid Loaded="Grid_Loaded" Name="PART_HltbProgressBar_Contener" Height="40" MinWidth="200">
+        <ProgressBar Name="ProgressHltb_El3" Height="{Binding ElementName=PART_HltbProgressBar_Contener, Path=Height}" Value="90" 
+                     Maximum="90" Background="Transparent" Foreground="ForestGreen">
         </ProgressBar>
 
-        <Slider Name="SliderPlaytime" Value="30" Maximum="90" Height="{Binding ElementName=PART_HltbProgressBar_Contener, Path=Height}" Margin="-10,0,-10,0">
+        <ProgressBar Name="ProgressHltb_El2" Height="{Binding ElementName=PART_HltbProgressBar_Contener, Path=Height}" Value="40" 
+                     Maximum="90" Background="Transparent" Foreground="RoyalBlue">
+        </ProgressBar>
+        <ProgressBar Name="ProgressHltb_El1" Height="{Binding ElementName=PART_HltbProgressBar_Contener, Path=Height}" Value="20" 
+                     Maximum="90" Background="Transparent" Foreground="DarkCyan">
+        </ProgressBar>
+
+        <Slider Name="SliderPlaytime" Value="20" Maximum="90" Margin="-4,0,-3,0"
+                Width="{Binding ElementName=PART_HltbProgressBar_Contener, Path=Width}"
+                Height="{Binding ElementName=PART_HltbProgressBar_Contener, Path=Height}">
             <Slider.Style>
                 <Style TargetType="{x:Type Slider}" BasedOn="{StaticResource BaseStyle}">
                     <Setter Property="SnapsToDevicePixels" Value="True" />
@@ -38,11 +34,11 @@
                                 <Grid Name="GridRoot">
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="2" />
-                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="*" />
                                         <RowDefinition Height="2" />
                                     </Grid.RowDefinitions>
                                     <TickBar x:Name="TopTick" Visibility="Hidden" Placement="Top" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"  Fill="{DynamicResource GlyphBrush}" />
-                                    <Track Grid.Row="1" Name="PART_Track" Height="36">
+                                    <Track Grid.Row="1" Name="PART_Track">
                                         <Track.Thumb>
                                             <Thumb Name="SliderPlaytimeThumb" Width="20" />
                                         </Track.Thumb>
@@ -90,6 +86,24 @@
                     <ToolTip Name="PlaytimeToolTip" />
                 </Slider.ToolTip-->
         </Slider>
+
+        <StackPanel Orientation="Horizontal">
+            <StackPanel Name="spHltb_El1" Height="{Binding ElementName=PART_HltbProgressBar_Contener, Path=Height}" Width="0" Background="Transparent">
+                <StackPanel.ToolTip>
+                    <ToolTip Name="tpHltb_El1" />
+                </StackPanel.ToolTip>
+            </StackPanel>
+            <StackPanel Name="spHltb_El2" Height="{Binding ElementName=PART_HltbProgressBar_Contener, Path=Height}" Width="0" Background="Transparent">
+                <StackPanel.ToolTip>
+                    <ToolTip Name="tpHltb_El2" />
+                </StackPanel.ToolTip>
+            </StackPanel>
+            <StackPanel Name="spHltb_El3" Height="{Binding ElementName=PART_HltbProgressBar_Contener, Path=Height}" Width="0" Background="Transparent">
+                <StackPanel.ToolTip>
+                    <ToolTip Name="tpHltb_El3" />
+                </StackPanel.ToolTip>
+            </StackPanel>
+        </StackPanel>
     </Grid>
 
 </UserControl>

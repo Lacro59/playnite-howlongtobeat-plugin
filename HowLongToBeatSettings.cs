@@ -20,6 +20,8 @@ namespace HowLongToBeat
         public bool IntegrationTopGameDetails { get; set; } = true;
         public bool EnableIntegrationInCustomTheme { get; set; } = false;
 
+        public bool ProgressBarShowToolTip { get; set; } = true;
+
         // Playnite serializes settings object to a JSON object and saves it as text file.
         // If you want to exclude some property from being saved then use `JsonIgnore` ignore attribute.
         [JsonIgnore]
@@ -52,6 +54,8 @@ namespace HowLongToBeat
                 IntegrationShowTitle = savedSettings.IntegrationShowTitle;
                 IntegrationTopGameDetails = savedSettings.IntegrationTopGameDetails;
                 EnableIntegrationInCustomTheme = savedSettings.EnableIntegrationInCustomTheme;
+
+                ProgressBarShowToolTip = savedSettings.ProgressBarShowToolTip;
             }
         }
 

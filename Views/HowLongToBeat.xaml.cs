@@ -102,7 +102,7 @@ namespace HowLongToBeat.Views
             PlaytimeFormat = (string)converter.Convert((long)game.Playtime, null, null, CultureInfo.CurrentCulture);
 
 
-            HltbProgressBar.Children.Add(new HltbProgressBar(game.Playtime, gameData));
+            HltbProgressBar.Children.Add(new HltbProgressBar(game.Playtime, gameData, settings));
             HltbProgressBar.UpdateLayout();
 
 
