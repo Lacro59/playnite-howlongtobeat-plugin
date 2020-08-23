@@ -7,7 +7,7 @@
     -->
 
     <sys:String x:Key="LOCHowLongToBeatAddTagDescription">Тэг со временем "основного сюжета" / "одиночной игры"</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatShowHltbImage">Show How Long To Beat cover image</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatShowHltbImage">Показывать обложки с сайта How Long To Beat</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatIntegration">Интеграция в интерфейс</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationButton">Добавить кнопку</sys:String>
@@ -17,10 +17,10 @@
     <sys:String x:Key="LOCHowLongToBeatIntegrationInCustomTheme">Интеграция в нестандартные темы (если поддерживается темой)</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">Показывать подсказки на шкале прогресса</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTime">Show time with progress bar</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeAbove">Above</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeInterior">Interior</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeBelow">Below</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTime">Показывать время на шкале прогресса</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeAbove">Над шкалой</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeInterior">Внутри шкалы</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeBelow">Под шкалой</sys:String>
 
     <!--
     HowLongToBeatSelect
@@ -35,7 +35,7 @@
     <sys:String x:Key="LOCHowLongToBeatSolo">Одиночная игра</sys:String>
     <sys:String x:Key="LOCHowLongToBeatCoOp">Кооператив</sys:String>
     <sys:String x:Key="LOCHowLongToBeatVs">PVP</sys:String>
-    
+
     <sys:String x:Key="LOCHowLongToBeatPlaytime">Сыграно</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatSearch">Найти</sys:String>
