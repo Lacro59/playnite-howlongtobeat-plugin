@@ -7,7 +7,7 @@
     -->
 
     <sys:String x:Key="LOCHowLongToBeatAddTagDescription">Тэг со временем "основного сюжета" / "одиночной игры"</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatShowHltbImage">Show How Long To Beat cover image</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatShowHltbImage">Показывать обложки с сайта How Long To Beat</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatIntegration">Интеграция в интерфейс</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationButton">Добавить кнопку</sys:String>
@@ -16,7 +16,7 @@
     <sys:String x:Key="LOCHowLongToBeatIntegrationTopGameDetails">Показывать над описанием игры</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationInCustomTheme">Интеграция в нестандартные темы (если поддерживается темой)</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">Show tooltip with time in progress bar</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">Показывать подсказки на шкале прогресса</sys:String>
 
     <!--
     HowLongToBeatSelect
@@ -31,7 +31,7 @@
     <sys:String x:Key="LOCHowLongToBeatSolo">Одиночная игра</sys:String>
     <sys:String x:Key="LOCHowLongToBeatCoOp">Кооператив</sys:String>
     <sys:String x:Key="LOCHowLongToBeatVs">PVP</sys:String>
-    
+
     <sys:String x:Key="LOCHowLongToBeatPlaytime">Сыграно</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatSearch">Найти</sys:String>
