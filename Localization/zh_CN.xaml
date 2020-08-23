@@ -7,6 +7,7 @@
     -->
 
     <sys:String x:Key="LOCHowLongToBeatAddTagDescription">加上“主线”或者“单人”标签。</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatShowHltbImage">Show How Long To Beat cover image</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatIntegration">界面集成</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationButton">添加按钮</sys:String>
@@ -14,6 +15,12 @@
     <sys:String x:Key="LOCHowLongToBeatIntegrationShowTitle">显示标题</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationTopGameDetails">在其他描述之上</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationInCustomTheme">自定义主题集成（如被集成）</sys:String>
+
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">Show tooltip with time in progress bar</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTime">Show time with progress bar</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeAbove">Above</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeInterior">Interior</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeBelow">Below</sys:String>
 
     <!--  
     HowLongToBeatSelect

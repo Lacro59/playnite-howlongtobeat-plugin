@@ -20,6 +20,8 @@ namespace HowLongToBeat.Views.Interfaces
         private long Playtime;
         private HowLongToBeatSettings settings;
 
+        public bool ShowToolTip { get; set; }
+        public bool ShowTime { get; set; }
 
         public HltbProgressBar(long Playtime, HltbDataUser gameData, HowLongToBeatSettings settings)
         {
@@ -28,6 +30,9 @@ namespace HowLongToBeat.Views.Interfaces
             this.gameData = gameData;
             this.Playtime = Playtime;
             this.settings = settings;
+
+            ShowToolTip = settings.ProgressBarShowToolTip;
+            ShowTime = settings.ProgressBarShowTime;
 
             // Set Binding data
             DataContext = this;
@@ -42,40 +47,46 @@ namespace HowLongToBeat.Views.Interfaces
                 case 1:
                     ProgressHltb_El1.Value = ElValue;
 
-                    if (settings.ProgressBarShowToolTip)
-                    {
-                        indicator = (Decorator)ProgressHltb_El1.Template.FindName("PART_Indicator", ProgressHltb_El1);
-                        track = (Rectangle)ProgressHltb_El1.Template.FindName("PART_Track", ProgressHltb_El1);
-                        spHltb_El1.Width = indicator.Width;
-                        tpHltb_El1.Content = ElFormat;
+                    indicator = (Decorator)ProgressHltb_El1.Template.FindName("PART_Indicator", ProgressHltb_El1);
+                    track = (Rectangle)ProgressHltb_El1.Template.FindName("PART_Track", ProgressHltb_El1);
 
-                        if (track.Width == indicator.Width)
-                        {
-                            spHltb_El1.Width = track.ActualWidth;
-                        }
+                    // ToolTip
+                    spHltb_El1.Width = indicator.Width;
+                    tpHltb_El1.Content = ElFormat;
+
+                    if (track.Width == indicator.Width)
+                    {
+                        spHltb_El1.Width = track.ActualWidth;
                     }
+
+                    // Time
+                    spHltbTime_El1.Content = ElFormat;
                     break;
 
                 case 2:
                     ProgressHltb_El2.Value = ElValue;
 
-                    if (settings.ProgressBarShowToolTip)
-                    {
-                        indicator = (Decorator)ProgressHltb_El2.Template.FindName("PART_Indicator", ProgressHltb_El2);
-                        spHltb_El2.Width = indicator.Width - spHltb_El1.Width;
-                        tpHltb_El2.Content = ElFormat;
-                    }
+                    indicator = (Decorator)ProgressHltb_El2.Template.FindName("PART_Indicator", ProgressHltb_El2);
+
+                    // ToolTip
+                    spHltb_El2.Width = indicator.Width - spHltb_El1.Width;
+                    tpHltb_El2.Content = ElFormat;
+
+                    // Time
+                    spHltbTime_El2.Content = ElFormat;
                     break;
 
                 case 3:
                     ProgressHltb_El3.Value = ElValue;
 
-                    if (settings.ProgressBarShowToolTip)
-                    {
-                        indicator = (Decorator)ProgressHltb_El3.Template.FindName("PART_Indicator", ProgressHltb_El3);
-                        spHltb_El3.Width = indicator.Width - spHltb_El2.Width - spHltb_El1.Width;
-                        tpHltb_El3.Content = ElFormat;
-                    }
+                    indicator = (Decorator)ProgressHltb_El3.Template.FindName("PART_Indicator", ProgressHltb_El3);
+
+                    // ToolTip
+                    spHltb_El3.Width = indicator.Width - spHltb_El2.Width - spHltb_El1.Width;
+                    tpHltb_El3.Content = ElFormat;
+
+                    // Time
+                    spHltbTime_El3.Content = ElFormat;
                     break;
             }
         }
@@ -83,7 +94,7 @@ namespace HowLongToBeat.Views.Interfaces
         private void Grid_Loaded(object sender, RoutedEventArgs e)
         {
             // Define height & width
-            var parent = ((FrameworkElement)((FrameworkElement)((FrameworkElement)sender).Parent).Parent);
+            var parent = ((FrameworkElement)((FrameworkElement)((FrameworkElement)((FrameworkElement)sender).Parent).Parent).Parent);
 
             if (!double.IsNaN(parent.Height))
             {
@@ -93,6 +104,25 @@ namespace HowLongToBeat.Views.Interfaces
             if (!double.IsNaN(parent.Width))
             {
                 ((FrameworkElement)sender).Width = parent.Width;
+            }
+
+            if (settings.ProgressBarShowTime)
+            {
+                ((FrameworkElement)sender).Height = ((FrameworkElement)sender).Height - spShowTime.Height;
+            }
+            else
+            {
+                spShowTime.Height = 0;
+            }
+
+            if (settings.ProgressBarShowTimeAbove)
+            {
+                Grid.SetRow(spShowTime, 0);
+                Grid.SetRow(PART_HltbProgressBar_Contener, 1);
+            }
+            if (settings.ProgressBarShowTimeInterior)
+            {
+                Grid.SetRow(spShowTime, 0);
             }
 
 
@@ -174,7 +204,7 @@ namespace HowLongToBeat.Views.Interfaces
             // Adjust position tracker
             if (Playtime > 69)
             {
-                SliderPlaytime.Margin = new Thickness(-8,0,-3,0);
+                SliderPlaytime.Margin = new Thickness(-8, 0, -3, 0);
             }
 
             // Limit MaxValue when playtime is more than MaxHltb
@@ -193,7 +223,7 @@ namespace HowLongToBeat.Views.Interfaces
             SliderPlaytime.Value = Playtime;
             SliderPlaytime.Maximum = MaxValue;
 
-            foreach(var listProgressBar in listProgressBars)
+            foreach (var listProgressBar in listProgressBars)
             {
                 SetDataInView(listProgressBar.Indicator, listProgressBar.Value, listProgressBar.Format);
             }
