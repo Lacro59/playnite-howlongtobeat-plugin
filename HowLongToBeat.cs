@@ -225,17 +225,17 @@ namespace HowLongToBeat
                             // Add resources
                             resourcesLists = new List<ResourcesList>();
                             resourcesLists.Add(new ResourcesList { Key = "Htlb_HasData", Value = data.hasData });
-                            resourcesLists.Add(new ResourcesList { Key = "Htlb_MainStory", Value = data.GetData().GameHltbData.MainStory.ToString() });
+                            resourcesLists.Add(new ResourcesList { Key = "Htlb_MainStory", Value = data.GetData().GameHltbData.MainStory });
                             resourcesLists.Add(new ResourcesList { Key = "Htlb_MainStoryFormat", Value = data.GetData().GameHltbData.MainStoryFormat });
-                            resourcesLists.Add(new ResourcesList { Key = "Htlb_MainExtra", Value = data.GetData().GameHltbData.MainExtra.ToString() });
+                            resourcesLists.Add(new ResourcesList { Key = "Htlb_MainExtra", Value = data.GetData().GameHltbData.MainExtra });
                             resourcesLists.Add(new ResourcesList { Key = "Htlb_MainExtraFormat", Value = data.GetData().GameHltbData.MainExtraFormat });
-                            resourcesLists.Add(new ResourcesList { Key = "Htlb_Completionist", Value = data.GetData().GameHltbData.Completionist.ToString() });
+                            resourcesLists.Add(new ResourcesList { Key = "Htlb_Completionist", Value = data.GetData().GameHltbData.Completionist });
                             resourcesLists.Add(new ResourcesList { Key = "Htlb_CompletionistFormat", Value = data.GetData().GameHltbData.CompletionistFormat });
-                            resourcesLists.Add(new ResourcesList { Key = "Htlb_Solo", Value = data.GetData().GameHltbData.Solo.ToString() });
+                            resourcesLists.Add(new ResourcesList { Key = "Htlb_Solo", Value = data.GetData().GameHltbData.Solo });
                             resourcesLists.Add(new ResourcesList { Key = "Htlb_SoloFormat", Value = data.GetData().GameHltbData.SoloFormat });
-                            resourcesLists.Add(new ResourcesList { Key = "Htlb_CoOp", Value = data.GetData().GameHltbData.CoOp.ToString() });
+                            resourcesLists.Add(new ResourcesList { Key = "Htlb_CoOp", Value = data.GetData().GameHltbData.CoOp });
                             resourcesLists.Add(new ResourcesList { Key = "Htlb_CoOpFormat", Value = data.GetData().GameHltbData.CoOpFormat });
-                            resourcesLists.Add(new ResourcesList { Key = "Htlb_Vs", Value = data.GetData().GameHltbData.Vs.ToString() });
+                            resourcesLists.Add(new ResourcesList { Key = "Htlb_Vs", Value = data.GetData().GameHltbData.Vs });
                             resourcesLists.Add(new ResourcesList { Key = "Htlb_VsFormat", Value = data.GetData().GameHltbData.VsFormat });
                             ui.AddResources(resourcesLists);
 
