@@ -187,6 +187,7 @@ namespace HowLongToBeat
 
                 // Reset resources
                 List<ResourcesList> resourcesLists = new List<ResourcesList>();
+                resourcesLists.Add(new ResourcesList { Key = "Htlb_HasData", Value = false });
                 resourcesLists.Add(new ResourcesList { Key = "Htlb_MainStory", Value = "0" });
                 resourcesLists.Add(new ResourcesList { Key = "Htlb_MainStoryFormat", Value = "" });
                 resourcesLists.Add(new ResourcesList { Key = "Htlb_MainExtra", Value = "0" });
@@ -223,6 +224,7 @@ namespace HowLongToBeat
 
                             // Add resources
                             resourcesLists = new List<ResourcesList>();
+                            resourcesLists.Add(new ResourcesList { Key = "Htlb_HasData", Value = data.hasData });
                             resourcesLists.Add(new ResourcesList { Key = "Htlb_MainStory", Value = data.GetData().GameHltbData.MainStory.ToString() });
                             resourcesLists.Add(new ResourcesList { Key = "Htlb_MainStoryFormat", Value = data.GetData().GameHltbData.MainStoryFormat });
                             resourcesLists.Add(new ResourcesList { Key = "Htlb_MainExtra", Value = data.GetData().GameHltbData.MainExtra.ToString() });

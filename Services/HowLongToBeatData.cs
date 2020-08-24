@@ -16,6 +16,7 @@ namespace HowLongToBeat.Services
         private static IResourceProvider resources = new ResourceProvider();
 
         private HltbDataUser data { get; set; }
+        public readonly bool hasData = false;
 
         private string FileGameData { get; set; }
 
@@ -58,7 +59,10 @@ namespace HowLongToBeat.Services
                 }
             }
 
-            AddTag(data, game, PlayniteApi, EnableTag);
+            if (data != null && data != new HltbDataUser())
+            {
+                hasData = true;
+            }
         }
 
         public void AddTag(HltbDataUser data, Game game, IPlayniteAPI PlayniteApi, bool EnableTag)
