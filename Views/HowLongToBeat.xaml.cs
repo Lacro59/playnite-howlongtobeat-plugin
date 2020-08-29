@@ -29,6 +29,7 @@ namespace HowLongToBeat.Views
 
         private HowLongToBeatData data { get; set; }
 
+
         public HowLongToBeat(HowLongToBeatData data, Game game, IPlayniteAPI PlayniteApi, HowLongToBeatSettings settings)
         {
             this.data = data;
@@ -54,12 +55,12 @@ namespace HowLongToBeat.Views
 
             int ElIndicator = 0;
 
-            Hltb_El1.Visibility = System.Windows.Visibility.Hidden;
-            Hltb_El1_Color.Visibility = System.Windows.Visibility.Hidden;
-            Hltb_El2.Visibility = System.Windows.Visibility.Hidden;
-            Hltb_El2_Color.Visibility = System.Windows.Visibility.Hidden;
-            Hltb_El3.Visibility = System.Windows.Visibility.Hidden;
-            Hltb_El3_Color.Visibility = System.Windows.Visibility.Hidden;
+            Hltb_El1.Visibility = Visibility.Hidden;
+            Hltb_El1_Color.Visibility = Visibility.Hidden;
+            Hltb_El2.Visibility = Visibility.Hidden;
+            Hltb_El2_Color.Visibility = Visibility.Hidden;
+            Hltb_El3.Visibility = Visibility.Hidden;
+            Hltb_El3_Color.Visibility = Visibility.Hidden;
 
             if (gameData.GameHltbData.MainStory != 0)
             {

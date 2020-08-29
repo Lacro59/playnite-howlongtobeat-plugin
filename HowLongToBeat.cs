@@ -311,6 +311,7 @@ namespace HowLongToBeat
         }
         #endregion
 
+
         public override void OnGameInstalled(Game game)
         {
             // Add code to be executed when game is finished installing.
