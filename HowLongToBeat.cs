@@ -188,17 +188,17 @@ namespace HowLongToBeat
                 // Reset resources
                 List<ResourcesList> resourcesLists = new List<ResourcesList>();
                 resourcesLists.Add(new ResourcesList { Key = "Htlb_HasData", Value = false });
-                resourcesLists.Add(new ResourcesList { Key = "Htlb_MainStory", Value = "0" });
+                resourcesLists.Add(new ResourcesList { Key = "Htlb_MainStory", Value = 0 });
                 resourcesLists.Add(new ResourcesList { Key = "Htlb_MainStoryFormat", Value = "" });
-                resourcesLists.Add(new ResourcesList { Key = "Htlb_MainExtra", Value = "0" });
+                resourcesLists.Add(new ResourcesList { Key = "Htlb_MainExtra", Value = 0 });
                 resourcesLists.Add(new ResourcesList { Key = "Htlb_MainExtraFormat", Value = "" });
-                resourcesLists.Add(new ResourcesList { Key = "Htlb_Completionist", Value = "0" });
+                resourcesLists.Add(new ResourcesList { Key = "Htlb_Completionist", Value = 0 });
                 resourcesLists.Add(new ResourcesList { Key = "Htlb_CompletionistFormat", Value = "" });
-                resourcesLists.Add(new ResourcesList { Key = "Htlb_Solo", Value = "0" });
+                resourcesLists.Add(new ResourcesList { Key = "Htlb_Solo", Value = 0 });
                 resourcesLists.Add(new ResourcesList { Key = "Htlb_SoloFormat", Value = "" });
-                resourcesLists.Add(new ResourcesList { Key = "Htlb_CoOp", Value = "0" });
+                resourcesLists.Add(new ResourcesList { Key = "Htlb_CoOp", Value = 0 });
                 resourcesLists.Add(new ResourcesList { Key = "Htlb_CoOpFormat", Value = "" });
-                resourcesLists.Add(new ResourcesList { Key = "Htlb_Vs", Value = "0" });
+                resourcesLists.Add(new ResourcesList { Key = "Htlb_Vs", Value = 0 });
                 resourcesLists.Add(new ResourcesList { Key = "Htlb_VsFormat", Value = "" });
                 ui.AddResources(resourcesLists);
 
