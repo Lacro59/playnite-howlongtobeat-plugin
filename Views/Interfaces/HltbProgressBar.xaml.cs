@@ -1,5 +1,6 @@
 ﻿using HowLongToBeat.Models;
 using Playnite.SDK;
+using PluginCommon;
 using System;
 using System.Collections.Generic;
 using System.Windows;
@@ -42,52 +43,60 @@ namespace HowLongToBeat.Views.Interfaces
         {
             Decorator indicator = null;
             Rectangle track = null;
-            switch (ElIndicator)
+
+            try
             {
-                case 1:
-                    ProgressHltb_El1.Value = ElValue;
+                switch (ElIndicator)
+                {
+                    case 1:
+                        ProgressHltb_El1.Value = ElValue;
 
-                    indicator = (Decorator)ProgressHltb_El1.Template.FindName("PART_Indicator", ProgressHltb_El1);
-                    track = (Rectangle)ProgressHltb_El1.Template.FindName("PART_Track", ProgressHltb_El1);
+                        indicator = (Decorator)ProgressHltb_El1.Template.FindName("PART_Indicator", ProgressHltb_El1);
+                        track = (Rectangle)ProgressHltb_El1.Template.FindName("PART_Track", ProgressHltb_El1);
 
-                    // ToolTip
-                    spHltb_El1.Width = indicator.Width;
-                    tpHltb_El1.Content = ElFormat;
+                        // ToolTip
+                        spHltb_El1.Width = indicator.Width;
+                        tpHltb_El1.Content = ElFormat;
 
-                    if (track.Width == indicator.Width)
-                    {
-                        spHltb_El1.Width = track.ActualWidth;
-                    }
+                        if (track.Width == indicator.Width)
+                        {
+                            spHltb_El1.Width = track.ActualWidth;
+                        }
 
-                    // Time
-                    spHltbTime_El1.Content = ElFormat;
-                    break;
+                        // Time
+                        spHltbTime_El1.Content = ElFormat;
+                        break;
 
-                case 2:
-                    ProgressHltb_El2.Value = ElValue;
+                    case 2:
+                        ProgressHltb_El2.Value = ElValue;
 
-                    indicator = (Decorator)ProgressHltb_El2.Template.FindName("PART_Indicator", ProgressHltb_El2);
+                        indicator = (Decorator)ProgressHltb_El2.Template.FindName("PART_Indicator", ProgressHltb_El2);
 
-                    // ToolTip
-                    spHltb_El2.Width = indicator.Width - spHltb_El1.Width;
-                    tpHltb_El2.Content = ElFormat;
+                        // ToolTip
+                        spHltb_El2.Width = indicator.Width - spHltb_El1.Width;
+                        tpHltb_El2.Content = ElFormat;
 
-                    // Time
-                    spHltbTime_El2.Content = ElFormat;
-                    break;
+                        // Time
+                        spHltbTime_El2.Content = ElFormat;
+                        break;
 
-                case 3:
-                    ProgressHltb_El3.Value = ElValue;
+                    case 3:
+                        ProgressHltb_El3.Value = ElValue;
 
-                    indicator = (Decorator)ProgressHltb_El3.Template.FindName("PART_Indicator", ProgressHltb_El3);
+                        indicator = (Decorator)ProgressHltb_El3.Template.FindName("PART_Indicator", ProgressHltb_El3);
 
-                    // ToolTip
-                    spHltb_El3.Width = indicator.Width - spHltb_El2.Width - spHltb_El1.Width;
-                    tpHltb_El3.Content = ElFormat;
+                        // ToolTip
+                        spHltb_El3.Width = indicator.Width - spHltb_El2.Width - spHltb_El1.Width;
+                        tpHltb_El3.Content = ElFormat;
 
-                    // Time
-                    spHltbTime_El3.Content = ElFormat;
-                    break;
+                        // Time
+                        spHltbTime_El3.Content = ElFormat;
+                        break;
+                }
+            }
+            catch(Exception ex)
+            {
+                Common.LogError(ex, "HowLongToBeat", $"Error on SetDataInView({ElIndicator}, {ElValue}, {ElFormat})");
             }
         }
 
