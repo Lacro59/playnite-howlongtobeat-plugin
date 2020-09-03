@@ -6,6 +6,8 @@
     HowLongToBeatSettingsView
     -->
 
+    <sys:String x:Key="LOCHowLongToBeatProgressBarTag">Traitement en cours...</sys:String>
+
     <sys:String x:Key="LOCHowLongToBeatAddTagDescription">Etiquette avec le temps "Main Story" / "Solo"</sys:String>
     <sys:String x:Key="LOCHowLongToBeatShowHltbImage">Afficher l'image de couverture de How Long To Beat</sys:String>
 

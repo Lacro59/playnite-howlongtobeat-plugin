@@ -2,6 +2,8 @@
 using Playnite.SDK;
 using Playnite.SDK.Models;
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -13,11 +15,17 @@ namespace HowLongToBeat.Views
         private IPlayniteAPI PlayniteApi;
         private string PluginUserDataPath;
 
+        private CancellationTokenSource tokenSource;
+        private CancellationToken ct;
+
         public HowLongToBeatSettingsView(IPlayniteAPI PlayniteApi, string PluginUserDataPath)
         {
             this.PlayniteApi = PlayniteApi;
             this.PluginUserDataPath = PluginUserDataPath;
             InitializeComponent();
+
+            DataLoad.Visibility = Visibility.Collapsed;
+            spSettings.Visibility = Visibility.Visible;
         }
 
         private void Checkbox_Click(object sender, RoutedEventArgs e)
@@ -37,30 +45,85 @@ namespace HowLongToBeat.Views
 
         private void ButtonAdd_Click(object sender, RoutedEventArgs e)
         {
-            foreach(Game game in PlayniteApi.Database.Games)
+            pbDataLoad.IsIndeterminate = true;
+
+            DataLoad.Visibility = Visibility.Visible;
+            spSettings.Visibility = Visibility.Hidden;
+
+            tokenSource = new CancellationTokenSource();
+            ct = tokenSource.Token;
+
+            var taskSystem = Task.Run(() =>
             {
-                try
+                ct.ThrowIfCancellationRequested();
+
+                foreach (Game game in PlayniteApi.Database.Games)
                 {
-                    HowLongToBeatData data = new HowLongToBeatData(game, PluginUserDataPath, PlayniteApi, true, false);
+                    try
+                    {
+                        HowLongToBeatData data = new HowLongToBeatData(game, PluginUserDataPath, PlayniteApi, true, false);
+                    }
+                    catch (Exception ex)
+                    {
+                    }
+
+                    if (ct.IsCancellationRequested)
+                    {
+                        ct.ThrowIfCancellationRequested();
+                    }
                 }
-                catch (Exception ex)
-                {
-                }
-            }
+            }, tokenSource.Token)
+            .ContinueWith(antecedent =>
+            {
+                Application.Current.Dispatcher.Invoke(new Action(() => {
+                    DataLoad.Visibility = Visibility.Collapsed;
+                    spSettings.Visibility = Visibility.Visible;
+                }));
+            });
         }
 
         private void ButtonRemove_Click(object sender, RoutedEventArgs e)
         {
-            foreach (Game game in PlayniteApi.Database.Games)
+            pbDataLoad.IsIndeterminate = true;
+
+            DataLoad.Visibility = Visibility.Visible;
+            spSettings.Visibility = Visibility.Hidden;
+
+            tokenSource = new CancellationTokenSource();
+            ct = tokenSource.Token;
+
+            var taskSystem = Task.Run(() =>
             {
-                try
+                ct.ThrowIfCancellationRequested();
+
+                foreach (Game game in PlayniteApi.Database.Games)
                 {
-                    HowLongToBeatData data = new HowLongToBeatData(game, PluginUserDataPath, PlayniteApi, false, false);
+                    try
+                    {
+                        HowLongToBeatData data = new HowLongToBeatData(game, PluginUserDataPath, PlayniteApi, false, false);
+                    }
+                    catch (Exception ex)
+                    {
+                    }
+
+                    if (ct.IsCancellationRequested)
+                    {
+                        ct.ThrowIfCancellationRequested();
+                    }
                 }
-                catch (Exception ex)
-                {
-                }
-            }
+            }, tokenSource.Token)
+            .ContinueWith(antecedent =>
+            {
+                Application.Current.Dispatcher.Invoke(new Action(() => {
+                    DataLoad.Visibility = Visibility.Collapsed;
+                    spSettings.Visibility = Visibility.Visible;
+                }));
+            });
+        }
+
+        private void ButtonCancelTask_Click(object sender, RoutedEventArgs e)
+        {
+            tokenSource.Cancel();
         }
     }
 }
