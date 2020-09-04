@@ -6,10 +6,10 @@
     HowLongToBeatSettingsView
     -->
 
-    <sys:String x:Key="LOCHowLongToBeatProgressBarTag">Treatment in progress...</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatProgressBarTag">处理进度…</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatAddTagDescription">加上“主线”或者“单人”标签。</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatShowHltbImage">Show How Long To Beat cover image</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatShowHltbImage">显示通关时长How Long To Beat的封面图片</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatIntegration">界面集成</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationButton">添加按钮</sys:String>
@@ -18,11 +18,11 @@
     <sys:String x:Key="LOCHowLongToBeatIntegrationTopGameDetails">在其他描述之上</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationInCustomTheme">自定义主题集成（如被集成）</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">Show tooltip with time in progress bar</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTime">Show time with progress bar</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeAbove">Above</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeInterior">Interior</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeBelow">Below</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">鼠标在进度条上时显示时间</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTime">在进度条上显示时间</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeAbove">上部</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeInterior">内部</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeBelow">下部</sys:String>
 
     <!--  
     HowLongToBeatSelect
