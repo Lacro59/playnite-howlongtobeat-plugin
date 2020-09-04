@@ -4,30 +4,33 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:HowLongToBeat.Views.Interfaces"
-             mc:Ignorable="d" MinWidth="200">
+             mc:Ignorable="d">
 
-    <StackPanel>
-        <ProgressBar Name="ProgressHltb_El3" Height="40" Value="90" Maximum="90" Background="Transparent"
-                             Foreground="ForestGreen" Margin="0,0,0,-40">
-            <!--ProgressBar.ToolTip>
-                <ToolTip Name="CompletionistToolTip" />
-            </ProgressBar.ToolTip-->
-        </ProgressBar>
-        <ProgressBar Name="ProgressHltb_El2" Height="40" Value="40" Maximum="90" Background="Transparent" 
-                             Foreground="RoyalBlue" Margin="0,0,0,-40">
-            <!--ProgressBar.ToolTip>
-                <ToolTip Name="MainExtraToolTip" />
-            </ProgressBar.ToolTip-->
-        </ProgressBar>
-        <ProgressBar Name="ProgressHltb_El1" Height="40" Value="20" Maximum="90" Background="Transparent"
-                             Foreground="DarkCyan" Margin="0,0,0,-40">
-            <!--ProgressBar.ToolTip>
-                <ToolTip Name="MainStoryToolTip" />
-            </ProgressBar.ToolTip-->
-        </ProgressBar>
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+    </UserControl.Resources>
 
-        <StackPanel Height="40">
-            <Slider x:Name="SliderPlaytime" Value="30" Maximum="90" Margin="-10,5,-10,0">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+        </Grid.RowDefinitions>
+    
+        <Grid Grid.Row="0" Loaded="Grid_Loaded" Name="PART_HltbProgressBar_Contener" Height="40" MinWidth="200">
+            <ProgressBar Name="ProgressHltb_El3" Height="{Binding ElementName=PART_HltbProgressBar_Contener, Path=Height}" Value="90" 
+                         Maximum="90" Background="Transparent" Foreground="ForestGreen">
+            </ProgressBar>
+
+            <ProgressBar Name="ProgressHltb_El2" Height="{Binding ElementName=PART_HltbProgressBar_Contener, Path=Height}" Value="40" 
+                         Maximum="90" Background="Transparent" Foreground="RoyalBlue">
+            </ProgressBar>
+            <ProgressBar Name="ProgressHltb_El1" Height="{Binding ElementName=PART_HltbProgressBar_Contener, Path=Height}" Value="20" 
+                         Maximum="90" Background="Transparent" Foreground="DarkCyan">
+            </ProgressBar>
+
+            <Slider Name="SliderPlaytime" Value="20" Maximum="90" Margin="-4,0,-3,0"
+                    Width="{Binding ElementName=PART_HltbProgressBar_Contener, Path=Width}"
+                    Height="{Binding ElementName=PART_HltbProgressBar_Contener, Path=Height}">
                 <Slider.Style>
                     <Style TargetType="{x:Type Slider}" BasedOn="{StaticResource BaseStyle}">
                         <Setter Property="SnapsToDevicePixels" Value="True" />
@@ -36,29 +39,27 @@
                         <Setter Property="Template">
                             <Setter.Value>
                                 <ControlTemplate TargetType="{x:Type Slider}">
-                                    <Grid x:Name="GridRoot">
+                                    <Grid Name="GridRoot">
                                         <Grid.RowDefinitions>
-                                            <RowDefinition Height="Auto" />
-                                            <RowDefinition Height="Auto" MinHeight="{TemplateBinding MinHeight}" />
-                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="2" />
+                                            <RowDefinition Height="*" />
+                                            <RowDefinition Height="2" />
                                         </Grid.RowDefinitions>
-                                        <TickBar x:Name="TopTick" Visibility="Collapsed" Height="4" Placement="Top"
-                                 SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"  Fill="{DynamicResource GlyphBrush}" />
-                                        <Track Grid.Row="1" x:Name="PART_Track">
+                                        <TickBar x:Name="TopTick" Visibility="Hidden" Placement="Top" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"  Fill="{DynamicResource GlyphBrush}" />
+                                        <Track Grid.Row="1" Name="PART_Track">
                                             <Track.Thumb>
-                                                <Thumb Width="20" Height="30"/>
+                                                <Thumb Name="SliderPlaytimeThumb" Width="20" />
                                             </Track.Thumb>
                                             <Track.DecreaseRepeatButton>
                                                 <RepeatButton Style="{StaticResource SliderTrackButton}"
-                                              Command="Slider.DecreaseLarge" />
+                                                  Command="Slider.DecreaseLarge" />
                                             </Track.DecreaseRepeatButton>
                                             <Track.IncreaseRepeatButton>
                                                 <RepeatButton Style="{StaticResource SliderTrackButton}"
-                                              Command="Slider.IncreaseLarge" />
+                                                  Command="Slider.IncreaseLarge" />
                                             </Track.IncreaseRepeatButton>
                                         </Track>
-                                        <TickBar x:Name="BottomTick" Visibility="Collapsed" Grid.Row="2" Height="4" Placement="Bottom"
-                                 SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" Fill="{TemplateBinding Foreground}" />
+                                        <TickBar Name="BottomTick" Visibility="Hidden" Grid.Row="2" Placement="Bottom" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" Fill="{TemplateBinding Foreground}" />
                                     </Grid>
                                     <ControlTemplate.Triggers>
                                         <Trigger Property="IsFocused" Value="True">
@@ -90,10 +91,39 @@
                 </Slider.Style>
 
                 <!--Slider.ToolTip>
-                    <ToolTip Name="PlaytimeToolTip" />
-                </Slider.ToolTip-->
+                        <ToolTip Name="PlaytimeToolTip" />
+                    </Slider.ToolTip-->
             </Slider>
-        </StackPanel>
-    </StackPanel>
 
+            <StackPanel Orientation="Horizontal" Visibility="{Binding ShowToolTip, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <StackPanel Name="spHltb_El1" Height="{Binding ElementName=PART_HltbProgressBar_Contener, Path=Height}" Width="0" Background="Transparent">
+                    <StackPanel.ToolTip>
+                        <ToolTip Name="tpHltb_El1" />
+                    </StackPanel.ToolTip>
+                </StackPanel>
+                <StackPanel Name="spHltb_El2" Height="{Binding ElementName=PART_HltbProgressBar_Contener, Path=Height}" Width="0" Background="Transparent">
+                    <StackPanel.ToolTip>
+                        <ToolTip Name="tpHltb_El2" />
+                    </StackPanel.ToolTip>
+                </StackPanel>
+                <StackPanel Name="spHltb_El3" Height="{Binding ElementName=PART_HltbProgressBar_Contener, Path=Height}" Width="0" Background="Transparent">
+                    <StackPanel.ToolTip>
+                        <ToolTip Name="tpHltb_El3" />
+                    </StackPanel.ToolTip>
+                </StackPanel>
+            </StackPanel>
+        </Grid>
+
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Height="12" Name="spShowTime">
+            <StackPanel Width="{Binding ElementName=spHltb_El1, Path=Width}">
+                <Label Name="spHltbTime_El1" Content="02h02" FontSize="10" HorizontalAlignment="Center"/>
+            </StackPanel>
+            <StackPanel Width="{Binding ElementName=spHltb_El2, Path=Width}">
+                <Label Name="spHltbTime_El2" Content="02h02" FontSize="10" HorizontalAlignment="Center"/>
+            </StackPanel>
+            <StackPanel Width="{Binding ElementName=spHltb_El3, Path=Width}">
+                <Label Name="spHltbTime_El3" Content="02h02" FontSize="10" HorizontalAlignment="Center"/>
+            </StackPanel>
+        </StackPanel>
+    </Grid>
 </UserControl>

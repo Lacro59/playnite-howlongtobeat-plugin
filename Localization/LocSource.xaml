@@ -6,6 +6,8 @@
     HowLongToBeatSettingsView
     -->
 
+    <sys:String x:Key="LOCHowLongToBeatProgressBarTag">Treatment in progress...</sys:String>
+    
     <sys:String x:Key="LOCHowLongToBeatAddTagDescription">Tag with "Main Story" / "Solo" time</sys:String>
     <sys:String x:Key="LOCHowLongToBeatShowHltbImage">Show How Long To Beat cover image</sys:String>
 
@@ -15,6 +17,12 @@
     <sys:String x:Key="LOCHowLongToBeatIntegrationShowTitle">Show title</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationTopGameDetails">Integration above game description</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationInCustomTheme">Custom theme integration (if integrated)</sys:String>
+
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">Show tooltip with time in progress bar</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTime">Show time with progress bar</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeAbove">Above</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeInterior">Interior</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeBelow">Below</sys:String>
 
     <!--  
     HowLongToBeatSelect

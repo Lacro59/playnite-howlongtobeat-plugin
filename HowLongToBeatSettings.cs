@@ -13,12 +13,18 @@ namespace HowLongToBeat
         public bool EnableTag { get; set; } = false;
 
         public bool ShowHltbImg { get; set; } = true;
-
+        
         public bool EnableIntegrationButton { get; set; } = false;
         public bool EnableIntegrationInDescription { get; set; } = false;
         public bool IntegrationShowTitle { get; set; } = true;
         public bool IntegrationTopGameDetails { get; set; } = true;
         public bool EnableIntegrationInCustomTheme { get; set; } = false;
+
+        public bool ProgressBarShowToolTip { get; set; } = true;
+        public bool ProgressBarShowTime { get; set; } = false;
+        public bool ProgressBarShowTimeAbove { get; set; } = false;
+        public bool ProgressBarShowTimeInterior { get; set; } = true;
+        public bool ProgressBarShowTimeBelow { get; set; } = false;
 
         // Playnite serializes settings object to a JSON object and saves it as text file.
         // If you want to exclude some property from being saved then use `JsonIgnore` ignore attribute.
@@ -52,6 +58,12 @@ namespace HowLongToBeat
                 IntegrationShowTitle = savedSettings.IntegrationShowTitle;
                 IntegrationTopGameDetails = savedSettings.IntegrationTopGameDetails;
                 EnableIntegrationInCustomTheme = savedSettings.EnableIntegrationInCustomTheme;
+
+                ProgressBarShowToolTip = savedSettings.ProgressBarShowToolTip;
+                ProgressBarShowTime = savedSettings.ProgressBarShowTime;
+                ProgressBarShowTimeAbove = savedSettings.ProgressBarShowTimeAbove;
+                ProgressBarShowTimeInterior = savedSettings.ProgressBarShowTimeInterior;
+                ProgressBarShowTimeBelow = savedSettings.ProgressBarShowTimeBelow;
             }
         }
 
