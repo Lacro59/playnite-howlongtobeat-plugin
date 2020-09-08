@@ -7,7 +7,7 @@
     -->
 
     <sys:String x:Key="LOCHowLongToBeatProgressBarTag">Обработка...</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatProgressBar">Added {0} - Already added {1} - Not added {2}</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatProgressBar">Добавлено {0} - Добавлено ранее {1} - Не добавлено {2}</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatAddTagDescription">Тэг со временем "основного сюжета" / "одиночной игры"</sys:String>
     <sys:String x:Key="LOCHowLongToBeatShowHltbImage">Показывать обложки с сайта How Long To Beat</sys:String>
@@ -25,9 +25,9 @@
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeInterior">Внутри шкалы</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeBelow">Под шкалой</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatAutoData">Download datas</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAutoAccept">Automatic accept when only a game is find</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatShowWhenMismatch">Show the selection view when there is more a game found</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoData">Загрузка данных</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoAccept">Автоматически подтверждать если найдено только одно совпадение</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatShowWhenMismatch">Показывать окно выбора если найдено несколько совпадений</sys:String>
 
     <!--
     HowLongToBeatSelect
