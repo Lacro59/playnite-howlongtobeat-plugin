@@ -29,7 +29,7 @@ namespace HowLongToBeat
 
         private readonly IntegrationUI ui = new IntegrationUI();
 
-
+        
         public HowLongToBeat(IPlayniteAPI api) : base(api)
         {
             settings = new HowLongToBeatSettings(this);
@@ -89,7 +89,7 @@ namespace HowLongToBeat
         }
 
 
-        #region Interface integration
+#region Interface integration
         private Game GameSelected { get; set; }
 
         /// <summary>
@@ -126,9 +126,7 @@ namespace HowLongToBeat
             }
             catch (Exception ex)
             {
-                var LineNumber = new StackTrace(ex, true).GetFrame(0).GetFileLineNumber();
-                string FileName = new StackTrace(ex, true).GetFrame(0).GetFileName();
-                logger.Error(ex, $"HowLongToBeat [{FileName} {LineNumber}] - OnGameSelected() ");
+                Common.LogError(ex, "HowLongToBeat", $"Error on OnGameSelected()");
             }
         }
 
@@ -155,7 +153,7 @@ namespace HowLongToBeat
             HowLongToBeatData HltbGameData = null;
             try
             {
-                HltbGameData = new HowLongToBeatData(GameSelected, this.GetPluginUserDataPath(), PlayniteApi);
+                HltbGameData = new HowLongToBeatData(GameSelected, this.GetPluginUserDataPath(), PlayniteApi, false);
             }
             catch (Exception ex)
             {
@@ -212,18 +210,6 @@ namespace HowLongToBeat
                         {
                             if (HltbGameData.hasData)
                             {
-                                if (settings.EnableIntegrationButton)
-                                {
-                                    Button HltbButton = new Button();
-                                    HltbButton.Name = "PART_HltbButton";
-                                    HltbButton.FontFamily = new FontFamily(new Uri("pack://application:,,,/HowLongToBeat;component/Resources/"), "./#font");
-                                    HltbButton.Margin = new Thickness(10, 0, 0, 0);
-                                    HltbButton.Click += OnBtGameSelectedActionBarClick;
-                                    HltbButton.Content = TransformIcon.Get("HowLongToBeat");
-
-                                    ui.AddButtonInGameSelectedActionBarButtonOrToggleButton(HltbButton);
-                                }
-
                                 // Add resources
                                 resourcesLists = new List<ResourcesList>();
                                 resourcesLists.Add(new ResourcesList { Key = "Htlb_HasData", Value = HltbGameData.hasData });
@@ -240,6 +226,20 @@ namespace HowLongToBeat
                                 resourcesLists.Add(new ResourcesList { Key = "Htlb_Vs", Value = HltbGameData.GetData().GameHltbData.Vs });
                                 resourcesLists.Add(new ResourcesList { Key = "Htlb_VsFormat", Value = HltbGameData.GetData().GameHltbData.VsFormat });
                                 ui.AddResources(resourcesLists);
+
+                                // Add button in action bar
+                                if (settings.EnableIntegrationButton)
+                                {
+                                    Button HltbButton = new Button();
+                                    HltbButton.Name = "PART_HltbButton";
+                                    HltbButton.FontFamily = new FontFamily(new Uri("pack://application:,,,/HowLongToBeat;component/Resources/"), "./#font");
+                                    HltbButton.Margin = new Thickness(10, 0, 0, 0);
+                                    HltbButton.Click += OnBtGameSelectedActionBarClick;
+                                    HltbButton.Content = TransformIcon.Get("HowLongToBeat");
+
+                                    ui.AddButtonInGameSelectedActionBarButtonOrToggleButton(HltbButton);
+                                }
+
 
                                 // Auto integration
                                 if (settings.EnableIntegrationInDescription)
@@ -266,9 +266,7 @@ namespace HowLongToBeat
             }
             catch (Exception ex)
             {
-                var LineNumber = new StackTrace(ex, true).GetFrame(0).GetFileLineNumber();
-                string FileName = new StackTrace(ex, true).GetFrame(0).GetFileName();
-                logger.Error(ex, $"HowLongToBeat [{FileName} {LineNumber}] - Impossible integration ");
+                Common.LogError(ex, "HowLongToBeat", "Impossible integration");
             }
         }
 
@@ -309,7 +307,7 @@ namespace HowLongToBeat
 
             return spHltb;
         }
-        #endregion
+#endregion
 
 
         public override void OnGameInstalled(Game game)

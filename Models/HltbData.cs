@@ -1,6 +1,5 @@
 ﻿using Newtonsoft.Json;
 using Playnite.Converters;
-using System;
 using System.Globalization;
 
 namespace HowLongToBeat.Models
@@ -13,6 +12,7 @@ namespace HowLongToBeat.Models
         public int Id { get; set; }
         public string UrlImg { get; set; }
         public string Url { get; set; } = "";
+
         public long MainStory { get; set; }
         [JsonIgnore]
         public string MainStoryFormat

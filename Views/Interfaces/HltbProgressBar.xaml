@@ -89,10 +89,6 @@
                         </Setter>
                     </Style>
                 </Slider.Style>
-
-                <!--Slider.ToolTip>
-                        <ToolTip Name="PlaytimeToolTip" />
-                    </Slider.ToolTip-->
             </Slider>
 
             <StackPanel Orientation="Horizontal" Visibility="{Binding ShowToolTip, Converter={StaticResource BooleanToVisibilityConverter}}">
