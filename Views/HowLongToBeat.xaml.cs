@@ -24,6 +24,7 @@ namespace HowLongToBeat.Views
 
         public string CoverImage { get; set; }
         public string GameName { get; set; }
+        public string HltbName { get; set; }
 
         public string PlaytimeFormat { get; set; }
 
@@ -51,6 +52,7 @@ namespace HowLongToBeat.Views
                 }
             }
             GameName = game.Name;
+            HltbName = resources.GetString("LOCSourceLabel") + ": " + gameData.GameHltbData.Name;
 
 
             int ElIndicator = 0;

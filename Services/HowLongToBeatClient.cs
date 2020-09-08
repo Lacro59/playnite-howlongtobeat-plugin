@@ -195,7 +195,6 @@ namespace HowLongToBeat.Services
                             iElement += 1;
                         }
 
-                        //logger.Debug($"Name: {Name} - MainStory: {MainStory} - MainExtra: {MainExtra} - Completionist: {Completionist} - Solo: {Solo} - CoOp: {CoOp} - Vs: {Vs}");
                         ReturnData.Add(new HltbData
                         {
                             Name = Name,

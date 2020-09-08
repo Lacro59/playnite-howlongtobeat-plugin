@@ -7,6 +7,7 @@
     -->
 
     <sys:String x:Key="LOCHowLongToBeatProgressBarTag">Traitement en cours...</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatProgressBar">Ajouté(s) {0} - Déjà ajouté(s) {1} - Non ajouté(s) {2}</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatAddTagDescription">Etiquette avec le temps "Main Story" / "Solo"</sys:String>
     <sys:String x:Key="LOCHowLongToBeatShowHltbImage">Afficher l'image de couverture de How Long To Beat</sys:String>
@@ -23,6 +24,10 @@
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeAbove">Au dessus</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeInterior">Intérieur</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeBelow">En dessous</sys:String>
+
+    <sys:String x:Key="LOCHowLongToBeatAutoData">Télécharger les données</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoAccept">Automatiquement accepter lorsqu'il n'y a qu'un jeu trouvé</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatShowWhenMismatch">Voir la fenêtre de sélection lorsqu'il y a plus d'un jeu trouvé</sys:String>
 
     <!--  
     HowLongToBeatSelect
@@ -68,6 +73,7 @@
     MainView
     -->
 
+    <sys:String x:Key="LOCHowLongToBeat">HowLongToBeat</sys:String>
     <sys:String x:Key="LOCHowLongToBeatTitle">How long to beat</sys:String>
     
 </ResourceDictionary>

@@ -66,13 +66,13 @@ namespace HowLongToBeat
             return new List<ExtensionFunction>
             {
                 new ExtensionFunction(
-                    "HowLongToBeat",
+                    resources.GetString("LOCHowLongToBeat"),
                     () =>
                     {
                         // Add code to be execute when user invokes this menu entry.
 
                         try {
-                            HowLongToBeatData data = new HowLongToBeatData(GameSelected, this.GetPluginUserDataPath(), PlayniteApi, settings.EnableTag);
+                            HowLongToBeatData data = new HowLongToBeatData(GameSelected, this.GetPluginUserDataPath(), PlayniteApi);
                             if (data.GetData() != null)
                             {
                                 new Views.HowLongToBeat(data, GameSelected, PlayniteApi, settings).ShowDialog();
@@ -136,7 +136,7 @@ namespace HowLongToBeat
         {
             try
             {
-                HowLongToBeatData data = new HowLongToBeatData(GameSelected, this.GetPluginUserDataPath(), PlayniteApi, settings.EnableTag);
+                HowLongToBeatData data = new HowLongToBeatData(GameSelected, this.GetPluginUserDataPath(), PlayniteApi);
                 if (data.GetData() != null)
                 {
                     new Views.HowLongToBeat(data, GameSelected, PlayniteApi, settings).ShowDialog();
@@ -152,10 +152,10 @@ namespace HowLongToBeat
 
         private async Task<HowLongToBeatData> LoadData(IPlayniteAPI PlayniteApi, string PluginUserDataPath, HowLongToBeatSettings settings)
         {
-            HowLongToBeatData data = null;
+            HowLongToBeatData HltbGameData = null;
             try
             {
-                data = new HowLongToBeatData(GameSelected, this.GetPluginUserDataPath(), PlayniteApi, settings.EnableTag, false);
+                HltbGameData = new HowLongToBeatData(GameSelected, this.GetPluginUserDataPath(), PlayniteApi);
             }
             catch (Exception ex)
             {
@@ -163,7 +163,7 @@ namespace HowLongToBeat
                 PlayniteApi.Dialogs.ShowErrorMessage(resources.GetString("LOCDatabaseErroTitle"), "HowLongToBeat");
             }
 
-            return data;
+            return HltbGameData;
         }
 
         /// <summary>
@@ -179,7 +179,7 @@ namespace HowLongToBeat
                 }
 
                 // Delete
-                logger.Info("HowLongToBeat - Delete");
+                logger.Info("HowLongToBeat - Delete integeration");
                 ui.RemoveButtonInGameSelectedActionBarButtonOrToggleButton("PART_HltbButton");
                 ui.RemoveElementInGameSelectedDescription("PART_HltbProgressBarIntegration");
                 ui.ClearElementInCustomTheme("PART_hltbProgressBarWithTitle");
@@ -206,60 +206,60 @@ namespace HowLongToBeat
                 var taskIntegration = Task.Run(() => LoadData(PlayniteApi, this.GetPluginUserDataPath(), settings))
                     .ContinueWith(antecedent =>
                     {
-                        HowLongToBeatData data = antecedent.Result;
+                        HowLongToBeatData HltbGameData = antecedent.Result;
 
                         Application.Current.Dispatcher.Invoke(new Action(() =>
                         {
-                            if (settings.EnableIntegrationButton)
+                            if (HltbGameData.hasData)
                             {
-                                Button HltbButton = new Button();
-                                HltbButton.Name = "PART_HltbButton";
-                                HltbButton.FontFamily = new FontFamily(new Uri("pack://application:,,,/HowLongToBeat;component/Resources/"), "./#font");
-                                HltbButton.Margin = new Thickness(10, 0, 0, 0);
-                                HltbButton.Click += OnBtGameSelectedActionBarClick;
-                                HltbButton.Content = TransformIcon.Get("HowLongToBeat");
-
-                                ui.AddButtonInGameSelectedActionBarButtonOrToggleButton(HltbButton);
-                            }
-
-                            // Add resources
-                            resourcesLists = new List<ResourcesList>();
-                            resourcesLists.Add(new ResourcesList { Key = "Htlb_HasData", Value = data.hasData });
-                            resourcesLists.Add(new ResourcesList { Key = "Htlb_MainStory", Value = data.GetData().GameHltbData.MainStory });
-                            resourcesLists.Add(new ResourcesList { Key = "Htlb_MainStoryFormat", Value = data.GetData().GameHltbData.MainStoryFormat });
-                            resourcesLists.Add(new ResourcesList { Key = "Htlb_MainExtra", Value = data.GetData().GameHltbData.MainExtra });
-                            resourcesLists.Add(new ResourcesList { Key = "Htlb_MainExtraFormat", Value = data.GetData().GameHltbData.MainExtraFormat });
-                            resourcesLists.Add(new ResourcesList { Key = "Htlb_Completionist", Value = data.GetData().GameHltbData.Completionist });
-                            resourcesLists.Add(new ResourcesList { Key = "Htlb_CompletionistFormat", Value = data.GetData().GameHltbData.CompletionistFormat });
-                            resourcesLists.Add(new ResourcesList { Key = "Htlb_Solo", Value = data.GetData().GameHltbData.Solo });
-                            resourcesLists.Add(new ResourcesList { Key = "Htlb_SoloFormat", Value = data.GetData().GameHltbData.SoloFormat });
-                            resourcesLists.Add(new ResourcesList { Key = "Htlb_CoOp", Value = data.GetData().GameHltbData.CoOp });
-                            resourcesLists.Add(new ResourcesList { Key = "Htlb_CoOpFormat", Value = data.GetData().GameHltbData.CoOpFormat });
-                            resourcesLists.Add(new ResourcesList { Key = "Htlb_Vs", Value = data.GetData().GameHltbData.Vs });
-                            resourcesLists.Add(new ResourcesList { Key = "Htlb_VsFormat", Value = data.GetData().GameHltbData.VsFormat });
-                            ui.AddResources(resourcesLists);
-
-                            // Auto integration
-                            if (settings.EnableIntegrationInDescription)
-                            {
-                                if (data.GetData() != null)
+                                if (settings.EnableIntegrationButton)
                                 {
-                                    StackPanel spHltb = CreateHltb(GameSelected.Playtime, data.GetData(), settings.IntegrationShowTitle);
+                                    Button HltbButton = new Button();
+                                    HltbButton.Name = "PART_HltbButton";
+                                    HltbButton.FontFamily = new FontFamily(new Uri("pack://application:,,,/HowLongToBeat;component/Resources/"), "./#font");
+                                    HltbButton.Margin = new Thickness(10, 0, 0, 0);
+                                    HltbButton.Click += OnBtGameSelectedActionBarClick;
+                                    HltbButton.Content = TransformIcon.Get("HowLongToBeat");
+
+                                    ui.AddButtonInGameSelectedActionBarButtonOrToggleButton(HltbButton);
+                                }
+
+                                // Add resources
+                                resourcesLists = new List<ResourcesList>();
+                                resourcesLists.Add(new ResourcesList { Key = "Htlb_HasData", Value = HltbGameData.hasData });
+                                resourcesLists.Add(new ResourcesList { Key = "Htlb_MainStory", Value = HltbGameData.GetData().GameHltbData.MainStory });
+                                resourcesLists.Add(new ResourcesList { Key = "Htlb_MainStoryFormat", Value = HltbGameData.GetData().GameHltbData.MainStoryFormat });
+                                resourcesLists.Add(new ResourcesList { Key = "Htlb_MainExtra", Value = HltbGameData.GetData().GameHltbData.MainExtra });
+                                resourcesLists.Add(new ResourcesList { Key = "Htlb_MainExtraFormat", Value = HltbGameData.GetData().GameHltbData.MainExtraFormat });
+                                resourcesLists.Add(new ResourcesList { Key = "Htlb_Completionist", Value = HltbGameData.GetData().GameHltbData.Completionist });
+                                resourcesLists.Add(new ResourcesList { Key = "Htlb_CompletionistFormat", Value = HltbGameData.GetData().GameHltbData.CompletionistFormat });
+                                resourcesLists.Add(new ResourcesList { Key = "Htlb_Solo", Value = HltbGameData.GetData().GameHltbData.Solo });
+                                resourcesLists.Add(new ResourcesList { Key = "Htlb_SoloFormat", Value = HltbGameData.GetData().GameHltbData.SoloFormat });
+                                resourcesLists.Add(new ResourcesList { Key = "Htlb_CoOp", Value = HltbGameData.GetData().GameHltbData.CoOp });
+                                resourcesLists.Add(new ResourcesList { Key = "Htlb_CoOpFormat", Value = HltbGameData.GetData().GameHltbData.CoOpFormat });
+                                resourcesLists.Add(new ResourcesList { Key = "Htlb_Vs", Value = HltbGameData.GetData().GameHltbData.Vs });
+                                resourcesLists.Add(new ResourcesList { Key = "Htlb_VsFormat", Value = HltbGameData.GetData().GameHltbData.VsFormat });
+                                ui.AddResources(resourcesLists);
+
+                                // Auto integration
+                                if (settings.EnableIntegrationInDescription)
+                                {
+                                    StackPanel spHltb = CreateHltb(GameSelected.Playtime, HltbGameData.GetData(), settings.IntegrationShowTitle);
                                     spHltb.Name = "PART_HltbProgressBarIntegration";
 
                                     ui.AddElementInGameSelectedDescription(spHltb, settings.IntegrationTopGameDetails);
                                 }
-                            }
 
-                            // Custom theme
-                            if (settings.EnableIntegrationInCustomTheme)
-                            {
-                                // Create 
-                                StackPanel spHltb = CreateHltb(GameSelected.Playtime, data.GetData(), true);
-                                UserControl hltbProgressBar = new HltbProgressBar(GameSelected.Playtime, data.GetData(), settings);
+                                // Custom theme
+                                if (settings.EnableIntegrationInCustomTheme)
+                                {
+                                    // Create 
+                                    StackPanel spHltb = CreateHltb(GameSelected.Playtime, HltbGameData.GetData(), true);
+                                    UserControl hltbProgressBar = new HltbProgressBar(GameSelected.Playtime, HltbGameData.GetData(), settings);
 
-                                ui.AddElementInCustomTheme(spHltb, "PART_hltbProgressBarWithTitle");
-                                ui.AddElementInCustomTheme(hltbProgressBar, "PART_hltbProgressBar");
+                                    ui.AddElementInCustomTheme(spHltb, "PART_hltbProgressBarWithTitle");
+                                    ui.AddElementInCustomTheme(hltbProgressBar, "PART_hltbProgressBar");
+                                }
                             }
                         }));
                     });

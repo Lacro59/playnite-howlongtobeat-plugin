@@ -7,6 +7,7 @@
     -->
 
     <sys:String x:Key="LOCHowLongToBeatProgressBarTag">处理进度…</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatProgressBar">Added {0} - Already added {1} - Not added {2}</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatAddTagDescription">加上“主线”或者“单人”标签。</sys:String>
     <sys:String x:Key="LOCHowLongToBeatShowHltbImage">显示通关时长How Long To Beat的封面图片</sys:String>
@@ -23,6 +24,10 @@
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeAbove">上部</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeInterior">内部</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeBelow">下部</sys:String>
+
+    <sys:String x:Key="LOCHowLongToBeatAutoData">Download datas</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoAccept">Automatic accept when only a game is find</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatShowWhenMismatch">Show the selection view when there is more a game found</sys:String>
 
     <!--  
     HowLongToBeatSelect
@@ -68,6 +73,7 @@
     MainView
     -->
 
+    <sys:String x:Key="LOCHowLongToBeat">HowLongToBeat</sys:String>
     <sys:String x:Key="LOCHowLongToBeatTitle">通关时长How long to beat</sys:String>
     
 </ResourceDictionary>
