@@ -330,8 +330,7 @@ namespace HowLongToBeat
         public override void OnGameStopped(Game game, long elapsedSeconds)
         {
             // Add code to be executed when game is preparing to be started.
-
-            game.Playtime += elapsedSeconds;
+            
             Integration(game);
         }
 
