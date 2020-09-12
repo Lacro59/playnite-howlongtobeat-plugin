@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 
 
@@ -28,12 +29,22 @@ namespace HowLongToBeat.Views
 
             InitializeComponent();
 
+            this.PreviewKeyDown += new KeyEventHandler(HandleEsc);
+
             SearchElement.Text = GameName;
 
             lbSelectable.ItemsSource = data;
 
             // Set Binding data
             DataContext = this;
+        }
+
+        private void HandleEsc(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Escape)
+            {
+                Close();
+            }
         }
 
         private void LbSelectable_Loaded(object sender, RoutedEventArgs e)

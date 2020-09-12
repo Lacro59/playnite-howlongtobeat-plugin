@@ -11,6 +11,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Input;
 
 namespace HowLongToBeat.Views
 {
@@ -36,6 +37,8 @@ namespace HowLongToBeat.Views
             this.data = data;
 
             InitializeComponent();
+
+            this.PreviewKeyDown += new KeyEventHandler(HandleEsc);
 
             HltbDataUser gameData = data.GetData();
 
@@ -111,6 +114,14 @@ namespace HowLongToBeat.Views
 
             // Set Binding data
             DataContext = this;
+        }
+
+        private void HandleEsc(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Escape)
+            {
+                Close();
+            }
         }
 
         private void SetDataInView(int ElIndicator, string ElText, string ElData)
