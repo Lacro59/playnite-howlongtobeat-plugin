@@ -7,7 +7,6 @@ using PluginCommon;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Threading;
 
 namespace HowLongToBeat.Services
 {
@@ -227,6 +226,10 @@ namespace HowLongToBeat.Services
                     {
                         hltbTime = data.GameHltbData.Solo;
                     }
+                    else if (data.GameHltbData.Vs != 0)
+                    {
+                        hltbTime = data.GameHltbData.Vs;
+                    }
 
                     // Add tag
                     if (hltbTime != 0)
@@ -360,13 +363,20 @@ namespace HowLongToBeat.Services
             File.WriteAllText(FileGameData, JsonConvert.SerializeObject(SavData));
         }
 
-        public static void ClearAllData(string PluginUserDataPath)
+        public static void ClearAllData(string PluginUserDataPath, IPlayniteAPI PlayniteApi)
         {
-            string PluginDatabasePath = PluginUserDataPath + "\\howlongtobeat";
-            if (Directory.Exists(PluginDatabasePath))
+            string PluginDirectory = PluginUserDataPath + "\\howlongtobeat\\";
+            if (Directory.Exists(PluginDirectory))
             {
-                Directory.Delete(PluginDatabasePath, true);
-                Directory.CreateDirectory(PluginDatabasePath);
+                try
+                {
+                    Directory.Delete(PluginDirectory, true);
+                    Directory.CreateDirectory(PluginDirectory);
+                }
+                catch
+                {
+                    PlayniteApi.Dialogs.ShowErrorMessage(resources.GetString("LOCSystemCheckerErrorRemove"), "HowLongToBeat error");
+                }
             }
         }
     }

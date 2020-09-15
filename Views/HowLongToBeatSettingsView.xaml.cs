@@ -231,7 +231,7 @@ namespace HowLongToBeat.Views
             {
                 ct.ThrowIfCancellationRequested();
 
-                HowLongToBeatData.ClearAllData(PluginUserDataPath);
+                HowLongToBeatData.ClearAllData(PluginUserDataPath, PlayniteApi);
 
                 foreach (Game game in PlayniteApi.Database.Games)
                 {

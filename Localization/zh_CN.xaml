@@ -9,7 +9,7 @@
     <sys:String x:Key="LOCHowLongToBeatProgressBarTag">处理进度…</sys:String>
     <sys:String x:Key="LOCHowLongToBeatProgressBar">Added {0} - Already added {1} - Not added {2}</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatAddTagDescription">加上“主线”或者“单人”标签。</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAddTagDescription">加上“主线”或者“单人”标签。(Main + Extra / Vs if missing)</sys:String>
     <sys:String x:Key="LOCHowLongToBeatShowHltbImage">显示通关时长How Long To Beat的封面图片</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatIntegration">界面集成</sys:String>

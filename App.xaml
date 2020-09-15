@@ -45,7 +45,6 @@
 
                 <!--PluginCommon-->
                 <ResourceDictionary Source="Resources/LiveChartsCommon/Common.xaml" />
-                
                 <!--Plugin default localization-->
                 <ResourceDictionary Source="Localization/LocSource.xaml" />
             </ResourceDictionary.MergedDictionaries>

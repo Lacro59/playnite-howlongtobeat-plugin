@@ -9,7 +9,7 @@
     <sys:String x:Key="LOCHowLongToBeatProgressBarTag">Traitement en cours...</sys:String>
     <sys:String x:Key="LOCHowLongToBeatProgressBar">Ajouté(s) {0} - Déjà ajouté(s) {1} - Non ajouté(s) {2}</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatAddTagDescription">Etiquette avec le temps "Main Story" / "Solo"</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAddTagDescription">Etiquette avec le temps "Main Story" / "Solo" (Main + Extra / Vs si absent)</sys:String>
     <sys:String x:Key="LOCHowLongToBeatShowHltbImage">Afficher l'image de couverture de How Long To Beat</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatIntegration">Intégration dans l'interface</sys:String>

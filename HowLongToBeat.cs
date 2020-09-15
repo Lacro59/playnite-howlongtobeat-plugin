@@ -74,8 +74,20 @@ namespace HowLongToBeat
                             HowLongToBeatData data = new HowLongToBeatData(GameSelected, this.GetPluginUserDataPath(), PlayniteApi);
                             if (data.hasData)
                             {
+                                if (settings.EnableTag)
+                                {
+                                    data.AddTag();
+                                }
+
                                 new Views.HowLongToBeat(data, GameSelected, PlayniteApi, settings).ShowDialog();
-                                Integration();
+                                try
+                                {
+                                    Integration();
+                                }
+                                catch(Exception ex)
+                                {
+                                    Common.LogError(ex, "HowLongToBeat", $"Error on Integration");
+                                }
                             }
                         }
                         catch (Exception ex)
@@ -120,7 +132,14 @@ namespace HowLongToBeat
                 if (args.NewValue != null && args.NewValue.Count == 1)
                 {
                     GameSelected = args.NewValue[0];
-                    Integration();
+                    try
+                    {
+                        Integration();
+                    }
+                    catch(Exception ex)
+                    {
+                        Common.LogError(ex, "HowLongToBeat", $"Error on Integration");
+                    }
                 }
             }
             catch (Exception ex)
@@ -136,8 +155,20 @@ namespace HowLongToBeat
                 HowLongToBeatData data = new HowLongToBeatData(GameSelected, this.GetPluginUserDataPath(), PlayniteApi);
                 if (data.GetData() != null)
                 {
+                    if (settings.EnableTag)
+                    {
+                        data.AddTag();
+                    }
+
                     new Views.HowLongToBeat(data, GameSelected, PlayniteApi, settings).ShowDialog();
-                    Integration();
+                    try
+                    {
+                        Integration();
+                    }
+                    catch (Exception ex)
+                    {
+                        Common.LogError(ex, "HowLongToBeat", $"Error on Integration");
+                    }
                 }
             }
             catch (Exception ex)
@@ -206,6 +237,11 @@ namespace HowLongToBeat
                     .ContinueWith(antecedent =>
                     {
                         HowLongToBeatData HltbGameData = antecedent.Result;
+
+                        if (settings.EnableTag)
+                        {
+                            HltbGameData.AddTag();
+                        }
 
                         Application.Current.Dispatcher.Invoke(new Action(() =>
                         {
@@ -328,8 +364,15 @@ namespace HowLongToBeat
         public override void OnGameStopped(Game game, long elapsedSeconds)
         {
             // Add code to be executed when game is preparing to be started.
-            
-            Integration(game);
+
+            try
+            {
+                Integration(game);
+            }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, "HowLongToBeat", $"Error on Integration");
+            }
         }
 
         public override void OnGameUninstalled(Game game)

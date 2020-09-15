@@ -9,7 +9,7 @@
     <sys:String x:Key="LOCHowLongToBeatProgressBarTag">Обработка...</sys:String>
     <sys:String x:Key="LOCHowLongToBeatProgressBar">Добавлено {0} - Добавлено ранее {1} - Не добавлено {2}</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatAddTagDescription">Тэг со временем "основного сюжета" / "одиночной игры"</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAddTagDescription">Тэг со временем "основного сюжета" / "одиночной игры" (Main + Extra / Vs if missing)</sys:String>
     <sys:String x:Key="LOCHowLongToBeatShowHltbImage">Показывать обложки с сайта How Long To Beat</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatIntegration">Интеграция в интерфейс</sys:String>
