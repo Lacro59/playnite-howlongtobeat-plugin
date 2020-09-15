@@ -19,6 +19,7 @@
     <sys:String x:Key="LOCHowLongToBeatIntegrationTopGameDetails">在其他描述之上</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationInCustomTheme">自定义主题集成（如被集成）</sys:String>
 
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarOptions">Progress bar options</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">鼠标在进度条上时显示时间</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTime">在进度条上显示时间</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeAbove">上部</sys:String>

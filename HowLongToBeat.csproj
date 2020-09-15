@@ -44,11 +44,6 @@
       <HintPath>Resources\PlayniteResources\Playnite.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Playnite.Common, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>Resources\PlayniteResources\Playnite.Common.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="Playnite.SDK, Version=5.2.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>packages\PlayniteSDK.5.2.0\lib\net462\Playnite.SDK.dll</HintPath>
       <Private>False</Private>
@@ -303,7 +298,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\PlayniteResources\Playnite.Common.dll" />
     <None Include="Resources\PlayniteResources\Playnite.dll" />
   </ItemGroup>
   <ItemGroup>

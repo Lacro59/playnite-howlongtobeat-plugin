@@ -19,6 +19,7 @@
     <sys:String x:Key="LOCHowLongToBeatIntegrationTopGameDetails">Integration above game description</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationInCustomTheme">Custom theme integration (if integrated)</sys:String>
 
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarOptions">Progress bar options</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">Show tooltip with time in progress bar</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTime">Show time with progress bar</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeAbove">Above</sys:String>

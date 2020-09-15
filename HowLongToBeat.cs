@@ -9,7 +9,6 @@ using Playnite.SDK.Plugins;
 using PluginCommon;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -73,7 +72,7 @@ namespace HowLongToBeat
 
                         try {
                             HowLongToBeatData data = new HowLongToBeatData(GameSelected, this.GetPluginUserDataPath(), PlayniteApi);
-                            if (data.GetData() != null)
+                            if (data.hasData)
                             {
                                 new Views.HowLongToBeat(data, GameSelected, PlayniteApi, settings).ShowDialog();
                                 Integration();
@@ -89,7 +88,7 @@ namespace HowLongToBeat
         }
 
 
-#region Interface integration
+        #region Interface integration
         private Game GameSelected { get; set; }
 
         /// <summary>
@@ -99,7 +98,7 @@ namespace HowLongToBeat
         /// <param name="e"></param>
         private void OnCustomThemeButtonClick(object sender, RoutedEventArgs e)
         {
-            string ButtonName = "";
+            string ButtonName = string.Empty;
             try
             {
                 ButtonName = ((Button)sender).Name;
@@ -148,7 +147,7 @@ namespace HowLongToBeat
             }
         }
 
-        private async Task<HowLongToBeatData> LoadData(IPlayniteAPI PlayniteApi, string PluginUserDataPath, HowLongToBeatSettings settings)
+        private HowLongToBeatData LoadData(IPlayniteAPI PlayniteApi, string PluginUserDataPath, HowLongToBeatSettings settings)
         {
             HowLongToBeatData HltbGameData = null;
             try
@@ -187,17 +186,19 @@ namespace HowLongToBeat
                 List<ResourcesList> resourcesLists = new List<ResourcesList>();
                 resourcesLists.Add(new ResourcesList { Key = "Htlb_HasData", Value = false });
                 resourcesLists.Add(new ResourcesList { Key = "Htlb_MainStory", Value = 0 });
-                resourcesLists.Add(new ResourcesList { Key = "Htlb_MainStoryFormat", Value = "" });
+                resourcesLists.Add(new ResourcesList { Key = "Htlb_MainStoryFormat", Value = string.Empty });
                 resourcesLists.Add(new ResourcesList { Key = "Htlb_MainExtra", Value = 0 });
-                resourcesLists.Add(new ResourcesList { Key = "Htlb_MainExtraFormat", Value = "" });
+                resourcesLists.Add(new ResourcesList { Key = "Htlb_MainExtraFormat", Value = string.Empty });
                 resourcesLists.Add(new ResourcesList { Key = "Htlb_Completionist", Value = 0 });
-                resourcesLists.Add(new ResourcesList { Key = "Htlb_CompletionistFormat", Value = "" });
+                resourcesLists.Add(new ResourcesList { Key = "Htlb_CompletionistFormat", Value = string.Empty });
                 resourcesLists.Add(new ResourcesList { Key = "Htlb_Solo", Value = 0 });
-                resourcesLists.Add(new ResourcesList { Key = "Htlb_SoloFormat", Value = "" });
+                resourcesLists.Add(new ResourcesList { Key = "Htlb_SoloFormat", Value = string.Empty });
                 resourcesLists.Add(new ResourcesList { Key = "Htlb_CoOp", Value = 0 });
-                resourcesLists.Add(new ResourcesList { Key = "Htlb_CoOpFormat", Value = "" });
+                resourcesLists.Add(new ResourcesList { Key = "Htlb_CoOpFormat", Value = string.Empty });
                 resourcesLists.Add(new ResourcesList { Key = "Htlb_Vs", Value = 0 });
-                resourcesLists.Add(new ResourcesList { Key = "Htlb_VsFormat", Value = "" });
+                resourcesLists.Add(new ResourcesList { Key = "Htlb_VsFormat", Value = string.Empty });
+
+                resourcesLists.Add(new ResourcesList { Key = "Htlb_EnableIntegrationInCustomTheme", Value = settings.EnableIntegrationInCustomTheme });
                 ui.AddResources(resourcesLists);
 
 
@@ -208,6 +209,19 @@ namespace HowLongToBeat
 
                         Application.Current.Dispatcher.Invoke(new Action(() =>
                         {
+                            // Add button in action bar
+                            if (settings.EnableIntegrationButton)
+                            {
+                                Button HltbButton = new Button();
+                                HltbButton.Name = "PART_HltbButton";
+                                HltbButton.FontFamily = new FontFamily(new Uri("pack://application:,,,/HowLongToBeat;component/Resources/"), "./#font");
+                                HltbButton.Margin = new Thickness(10, 0, 0, 0);
+                                HltbButton.Click += OnBtGameSelectedActionBarClick;
+                                HltbButton.Content = TransformIcon.Get("HowLongToBeat");
+
+                                ui.AddButtonInGameSelectedActionBarButtonOrToggleButton(HltbButton);
+                            }
+
                             if (HltbGameData.hasData)
                             {
                                 // Add resources
@@ -226,20 +240,6 @@ namespace HowLongToBeat
                                 resourcesLists.Add(new ResourcesList { Key = "Htlb_Vs", Value = HltbGameData.GetData().GameHltbData.Vs });
                                 resourcesLists.Add(new ResourcesList { Key = "Htlb_VsFormat", Value = HltbGameData.GetData().GameHltbData.VsFormat });
                                 ui.AddResources(resourcesLists);
-
-                                // Add button in action bar
-                                if (settings.EnableIntegrationButton)
-                                {
-                                    Button HltbButton = new Button();
-                                    HltbButton.Name = "PART_HltbButton";
-                                    HltbButton.FontFamily = new FontFamily(new Uri("pack://application:,,,/HowLongToBeat;component/Resources/"), "./#font");
-                                    HltbButton.Margin = new Thickness(10, 0, 0, 0);
-                                    HltbButton.Click += OnBtGameSelectedActionBarClick;
-                                    HltbButton.Content = TransformIcon.Get("HowLongToBeat");
-
-                                    ui.AddButtonInGameSelectedActionBarButtonOrToggleButton(HltbButton);
-                                }
-
 
                                 // Auto integration
                                 if (settings.EnableIntegrationInDescription)
@@ -307,7 +307,7 @@ namespace HowLongToBeat
 
             return spHltb;
         }
-#endregion
+        #endregion
 
 
         public override void OnGameInstalled(Game game)

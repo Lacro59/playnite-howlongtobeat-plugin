@@ -62,6 +62,7 @@ namespace HowLongToBeat.Services
                     }
                     else
                     {
+                        data = null;
                     }
                 }
             }

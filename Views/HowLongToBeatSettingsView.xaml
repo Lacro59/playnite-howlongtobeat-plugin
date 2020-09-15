@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             mc:Ignorable="d" d:DesignHeight="400" d:DesignWidth="600">
+             mc:Ignorable="d">
 
     <TabControl Margin="20" Name="tcSettings">
         <TabItem Header="{DynamicResource LOCHowLongToBeat}">
@@ -34,8 +34,8 @@
                             <RowDefinition Height="auto" />
                             <RowDefinition Height="30" />
                             <RowDefinition Height="30" />
-                            <RowDefinition Height="30" />
-                            <RowDefinition Height="30" />
+                            <RowDefinition Height="35" />
+                            <RowDefinition Height="35" />
                         </Grid.RowDefinitions>
 
                         <CheckBox Grid.Row="0" IsChecked="{Binding ShowHltbImg}" Grid.Column="0" VerticalAlignment="Center">
@@ -65,8 +65,8 @@
                             <Label Content="{DynamicResource LOCHowLongToBeatShowWhenMismatch}" />
                         </CheckBox>
 
-                        <Button Grid.Row="5" Grid.Column="3" Name="btAddData" Content="{DynamicResource LOCDownloadLabel}" Click="BtAddData_Click"/>
-                        <Button Grid.Row="6" Grid.Column="3" Name="btRemoveData" Content="{DynamicResource LOCClearAll}" Click="BtRemoveData_Click"/>
+                        <Button Grid.Row="5" Grid.Column="3" Name="btAddData" Content="{DynamicResource LOCDownloadLabel}" Click="BtAddData_Click" VerticalAlignment="Center" />
+                        <Button Grid.Row="6" Grid.Column="3" Name="btRemoveData" Content="{DynamicResource LOCClearAll}" Click="BtRemoveData_Click" VerticalAlignment="Center "/>
                     </Grid>
                 </StackPanel>
             </Grid>
@@ -92,152 +92,155 @@
                     <Label Content="{DynamicResource LOCHowLongToBeatIntegrationInCustomTheme}" />
                 </CheckBox>
 
-
-                <CheckBox IsChecked="{Binding ProgressBarShowToolTip}" Margin="0,5,0,0" Name="HltB_IntegrationProgressBarShowToolTip">
-                    <CheckBox.Style>
-                        <Style TargetType="CheckBox" BasedOn="{StaticResource BaseStyle}">
-                            <Setter Property="SnapsToDevicePixels" Value="True" />
-                            <Setter Property="Background" Value="{DynamicResource ControlBackgroundBrush}" />
-                            <Setter Property="Foreground" Value="{DynamicResource TextBrush}" />
-                            <Setter Property="BorderBrush" Value="{DynamicResource NormalBorderBrush}" />
-                            <Setter Property="BorderThickness" Value="{DynamicResource ControlBorderThickness}" />
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate TargetType="{x:Type CheckBox}">
-                                        <Border Background="{TemplateBinding Background}"
+                <GroupBox Header="{DynamicResource LOCHowLongToBeatIntegrationProgressBarOptions}" Margin="0,10,0,0">
+                    <StackPanel>
+                        <CheckBox IsChecked="{Binding ProgressBarShowToolTip}" Margin="0,5,0,0" Name="HltB_IntegrationProgressBarShowToolTip">
+                            <CheckBox.Style>
+                                <Style TargetType="CheckBox" BasedOn="{StaticResource BaseStyle}">
+                                    <Setter Property="SnapsToDevicePixels" Value="True" />
+                                    <Setter Property="Background" Value="{DynamicResource ControlBackgroundBrush}" />
+                                    <Setter Property="Foreground" Value="{DynamicResource TextBrush}" />
+                                    <Setter Property="BorderBrush" Value="{DynamicResource NormalBorderBrush}" />
+                                    <Setter Property="BorderThickness" Value="{DynamicResource ControlBorderThickness}" />
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="{x:Type CheckBox}">
+                                                <Border Background="{TemplateBinding Background}"
                             Padding="{TemplateBinding Padding}">
-                                            <StackPanel Orientation="Horizontal">
-                                                <Border x:Name="BulletBorder" CornerRadius="{DynamicResource ControlCornerRadius}"
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <Border x:Name="BulletBorder" CornerRadius="{DynamicResource ControlCornerRadius}"
                                     BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}"
                                     Style="{DynamicResource HighlightBorder}" >
-                                                    <Grid Width="18" Height="18" Background="{DynamicResource NormalBrushDark}">
-                                                        <Viewbox x:Name="CheckIcon" Visibility="Collapsed">
-                                                            <TextBlock Text="b" FontFamily="Marlett" Foreground="{DynamicResource GlyphBrush}"
+                                                            <Grid Width="18" Height="18" Background="{DynamicResource NormalBrushDark}">
+                                                                <Viewbox x:Name="CheckIcon" Visibility="Collapsed">
+                                                                    <TextBlock Text="b" FontFamily="Marlett" Foreground="{DynamicResource GlyphBrush}"
                                                     HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                                        </Viewbox>
-                                                        <Viewbox x:Name="IndeterminateIcon" Visibility="Collapsed" Margin="2">
-                                                            <TextBlock Text="g" FontFamily="Marlett" Foreground="{DynamicResource GlyphBrush}"
+                                                                </Viewbox>
+                                                                <Viewbox x:Name="IndeterminateIcon" Visibility="Collapsed" Margin="2">
+                                                                    <TextBlock Text="g" FontFamily="Marlett" Foreground="{DynamicResource GlyphBrush}"
                                                     HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                                        </Viewbox>
-                                                    </Grid>
+                                                                </Viewbox>
+                                                            </Grid>
+                                                        </Border>
+                                                        <ContentPresenter RecognizesAccessKey="True" Margin="5,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Left" />
+                                                    </StackPanel>
                                                 </Border>
-                                                <ContentPresenter RecognizesAccessKey="True" Margin="5,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Left" />
-                                            </StackPanel>
-                                        </Border>
-                                        <ControlTemplate.Triggers>
-                                            <MultiTrigger>
-                                                <MultiTrigger.Conditions>
-                                                    <Condition Property="IsChecked" Value="{x:Null}" />
-                                                    <Condition Property="IsThreeState" Value="True" />
-                                                </MultiTrigger.Conditions>
-                                                <Setter Property="Visibility" Value="Visible" TargetName="IndeterminateIcon"/>
-                                            </MultiTrigger>
-                                            <Trigger Property="IsChecked" Value="True">
-                                                <Setter Property="Visibility" Value="Visible" TargetName="CheckIcon" />
-                                            </Trigger>
-                                            <Trigger Property="IsMouseOver" Value="True">
-                                                <Setter Property="BorderBrush" Value="{DynamicResource GlyphBrush}" TargetName="BulletBorder" />
-                                            </Trigger>
-                                            <Trigger Property="IsFocused" Value="True">
-                                                <Setter Property="BorderBrush" Value="{DynamicResource GlyphBrush}" TargetName="BulletBorder" />
-                                            </Trigger>
-                                        </ControlTemplate.Triggers>
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                            <Setter Property="IsEnabled" Value="False"/>
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding ElementName=HltB_IntegrationInCustomTheme, Path=IsChecked}" Value="True">
-                                    <Setter Property="IsEnabled" Value="True"/>
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding ElementName=HltB_IntegrationInDescription, Path=IsChecked}" Value="True">
-                                    <Setter Property="IsEnabled" Value="True"/>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </CheckBox.Style>
+                                                <ControlTemplate.Triggers>
+                                                    <MultiTrigger>
+                                                        <MultiTrigger.Conditions>
+                                                            <Condition Property="IsChecked" Value="{x:Null}" />
+                                                            <Condition Property="IsThreeState" Value="True" />
+                                                        </MultiTrigger.Conditions>
+                                                        <Setter Property="Visibility" Value="Visible" TargetName="IndeterminateIcon"/>
+                                                    </MultiTrigger>
+                                                    <Trigger Property="IsChecked" Value="True">
+                                                        <Setter Property="Visibility" Value="Visible" TargetName="CheckIcon" />
+                                                    </Trigger>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter Property="BorderBrush" Value="{DynamicResource GlyphBrush}" TargetName="BulletBorder" />
+                                                    </Trigger>
+                                                    <Trigger Property="IsFocused" Value="True">
+                                                        <Setter Property="BorderBrush" Value="{DynamicResource GlyphBrush}" TargetName="BulletBorder" />
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                    <Setter Property="IsEnabled" Value="False"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding ElementName=HltB_IntegrationInCustomTheme, Path=IsChecked}" Value="True">
+                                            <Setter Property="IsEnabled" Value="True"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding ElementName=HltB_IntegrationInDescription, Path=IsChecked}" Value="True">
+                                            <Setter Property="IsEnabled" Value="True"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </CheckBox.Style>
 
-                    <Label Content="{DynamicResource LOCHowLongToBeatIntegrationProgressBarShowToolTip}" />
-                </CheckBox>
+                            <Label Content="{DynamicResource LOCHowLongToBeatIntegrationProgressBarShowToolTip}" />
+                        </CheckBox>
 
-                <CheckBox IsChecked="{Binding ProgressBarShowTime}" Margin="0,5,0,0" Name="HltB_IntegrationProgressBarShowTime">
-                    <CheckBox.Style>
-                        <Style TargetType="CheckBox" BasedOn="{StaticResource BaseStyle}">
-                            <Setter Property="SnapsToDevicePixels" Value="True" />
-                            <Setter Property="Background" Value="{DynamicResource ControlBackgroundBrush}" />
-                            <Setter Property="Foreground" Value="{DynamicResource TextBrush}" />
-                            <Setter Property="BorderBrush" Value="{DynamicResource NormalBorderBrush}" />
-                            <Setter Property="BorderThickness" Value="{DynamicResource ControlBorderThickness}" />
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate TargetType="{x:Type CheckBox}">
-                                        <Border Background="{TemplateBinding Background}"
+                        <CheckBox IsChecked="{Binding ProgressBarShowTime}" Margin="0,5,0,0" Name="HltB_IntegrationProgressBarShowTime">
+                            <CheckBox.Style>
+                                <Style TargetType="CheckBox" BasedOn="{StaticResource BaseStyle}">
+                                    <Setter Property="SnapsToDevicePixels" Value="True" />
+                                    <Setter Property="Background" Value="{DynamicResource ControlBackgroundBrush}" />
+                                    <Setter Property="Foreground" Value="{DynamicResource TextBrush}" />
+                                    <Setter Property="BorderBrush" Value="{DynamicResource NormalBorderBrush}" />
+                                    <Setter Property="BorderThickness" Value="{DynamicResource ControlBorderThickness}" />
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="{x:Type CheckBox}">
+                                                <Border Background="{TemplateBinding Background}"
                             Padding="{TemplateBinding Padding}">
-                                            <StackPanel Orientation="Horizontal">
-                                                <Border x:Name="BulletBorder" CornerRadius="{DynamicResource ControlCornerRadius}"
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <Border x:Name="BulletBorder" CornerRadius="{DynamicResource ControlCornerRadius}"
                                     BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}"
                                     Style="{DynamicResource HighlightBorder}" >
-                                                    <Grid Width="18" Height="18" Background="{DynamicResource NormalBrushDark}">
-                                                        <Viewbox x:Name="CheckIcon" Visibility="Collapsed">
-                                                            <TextBlock Text="b" FontFamily="Marlett" Foreground="{DynamicResource GlyphBrush}"
+                                                            <Grid Width="18" Height="18" Background="{DynamicResource NormalBrushDark}">
+                                                                <Viewbox x:Name="CheckIcon" Visibility="Collapsed">
+                                                                    <TextBlock Text="b" FontFamily="Marlett" Foreground="{DynamicResource GlyphBrush}"
                                                     HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                                        </Viewbox>
-                                                        <Viewbox x:Name="IndeterminateIcon" Visibility="Collapsed" Margin="2">
-                                                            <TextBlock Text="g" FontFamily="Marlett" Foreground="{DynamicResource GlyphBrush}"
+                                                                </Viewbox>
+                                                                <Viewbox x:Name="IndeterminateIcon" Visibility="Collapsed" Margin="2">
+                                                                    <TextBlock Text="g" FontFamily="Marlett" Foreground="{DynamicResource GlyphBrush}"
                                                     HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                                        </Viewbox>
-                                                    </Grid>
+                                                                </Viewbox>
+                                                            </Grid>
+                                                        </Border>
+                                                        <ContentPresenter RecognizesAccessKey="True" Margin="5,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Left" />
+                                                    </StackPanel>
                                                 </Border>
-                                                <ContentPresenter RecognizesAccessKey="True" Margin="5,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Left" />
-                                            </StackPanel>
-                                        </Border>
-                                        <ControlTemplate.Triggers>
-                                            <MultiTrigger>
-                                                <MultiTrigger.Conditions>
-                                                    <Condition Property="IsChecked" Value="{x:Null}" />
-                                                    <Condition Property="IsThreeState" Value="True" />
-                                                </MultiTrigger.Conditions>
-                                                <Setter Property="Visibility" Value="Visible" TargetName="IndeterminateIcon"/>
-                                            </MultiTrigger>
-                                            <Trigger Property="IsChecked" Value="True">
-                                                <Setter Property="Visibility" Value="Visible" TargetName="CheckIcon" />
-                                            </Trigger>
-                                            <Trigger Property="IsMouseOver" Value="True">
-                                                <Setter Property="BorderBrush" Value="{DynamicResource GlyphBrush}" TargetName="BulletBorder" />
-                                            </Trigger>
-                                            <Trigger Property="IsFocused" Value="True">
-                                                <Setter Property="BorderBrush" Value="{DynamicResource GlyphBrush}" TargetName="BulletBorder" />
-                                            </Trigger>
-                                        </ControlTemplate.Triggers>
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                            <Setter Property="IsEnabled" Value="False"/>
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding ElementName=HltB_IntegrationInCustomTheme, Path=IsChecked}" Value="True">
-                                    <Setter Property="IsEnabled" Value="True"/>
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding ElementName=HltB_IntegrationInDescription, Path=IsChecked}" Value="True">
-                                    <Setter Property="IsEnabled" Value="True"/>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </CheckBox.Style>
+                                                <ControlTemplate.Triggers>
+                                                    <MultiTrigger>
+                                                        <MultiTrigger.Conditions>
+                                                            <Condition Property="IsChecked" Value="{x:Null}" />
+                                                            <Condition Property="IsThreeState" Value="True" />
+                                                        </MultiTrigger.Conditions>
+                                                        <Setter Property="Visibility" Value="Visible" TargetName="IndeterminateIcon"/>
+                                                    </MultiTrigger>
+                                                    <Trigger Property="IsChecked" Value="True">
+                                                        <Setter Property="Visibility" Value="Visible" TargetName="CheckIcon" />
+                                                    </Trigger>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter Property="BorderBrush" Value="{DynamicResource GlyphBrush}" TargetName="BulletBorder" />
+                                                    </Trigger>
+                                                    <Trigger Property="IsFocused" Value="True">
+                                                        <Setter Property="BorderBrush" Value="{DynamicResource GlyphBrush}" TargetName="BulletBorder" />
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                    <Setter Property="IsEnabled" Value="False"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding ElementName=HltB_IntegrationInCustomTheme, Path=IsChecked}" Value="True">
+                                            <Setter Property="IsEnabled" Value="True"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding ElementName=HltB_IntegrationInDescription, Path=IsChecked}" Value="True">
+                                            <Setter Property="IsEnabled" Value="True"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </CheckBox.Style>
 
-                    <Label Content="{DynamicResource LOCHowLongToBeatIntegrationProgressBarShowTime}" />
-                </CheckBox>
+                            <Label Content="{DynamicResource LOCHowLongToBeatIntegrationProgressBarShowTime}" />
+                        </CheckBox>
 
-                <Grid Margin="30,5,0,0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
+                        <Grid Margin="30,5,0,0" IsEnabled="{Binding ElementName=HltB_IntegrationProgressBarShowTime, Path=IsChecked}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
 
-                    <RadioButton Grid.Column="0" GroupName="A" Content="{DynamicResource LOCHowLongToBeatIntegrationProgressBarShowTimeAbove}" IsChecked="{Binding ProgressBarShowTimeAbove}" />
-                    <RadioButton Grid.Column="1" GroupName="A" Content="{DynamicResource LOCHowLongToBeatIntegrationProgressBarShowTimeInterior}" IsChecked="{Binding ProgressBarShowTimeInterior}" />
-                    <RadioButton Grid.Column="2" GroupName="A" Content="{DynamicResource LOCHowLongToBeatIntegrationProgressBarShowTimeBelow}" IsChecked="{Binding ProgressBarShowTimeBelow}" />
-                </Grid>
+                            <RadioButton Grid.Column="0" GroupName="A" Content="{DynamicResource LOCHowLongToBeatIntegrationProgressBarShowTimeAbove}" IsChecked="{Binding ProgressBarShowTimeAbove}" />
+                            <RadioButton Grid.Column="1" GroupName="A" Content="{DynamicResource LOCHowLongToBeatIntegrationProgressBarShowTimeInterior}" IsChecked="{Binding ProgressBarShowTimeInterior}" />
+                            <RadioButton Grid.Column="2" GroupName="A" Content="{DynamicResource LOCHowLongToBeatIntegrationProgressBarShowTimeBelow}" IsChecked="{Binding ProgressBarShowTimeBelow}" />
+                        </Grid>
+                    </StackPanel>
+                </GroupBox>
             </StackPanel>
         </TabItem>
     </TabControl>
