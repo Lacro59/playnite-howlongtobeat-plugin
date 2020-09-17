@@ -38,19 +38,23 @@ namespace HowLongToBeat.Services
 
             FileGameData = PluginDatabasePath + "\\" + game.Id.ToString() + ".json";
 
+            // Load data
             if (File.Exists(FileGameData))
             {
-                // Load data
-                logger.Info($"HowLongToBeat - Load data for {game.Name}");
+#if DEBUG
+                logger.Debug($"HowLongToBeat - Load data for {game.Name}");
+#endif
 
                 data = JsonConvert.DeserializeObject<HltbDataUser>(File.ReadAllText(FileGameData));
             }
             else
             {
+                // Search data
                 if (mustFind)
                 {
-                    // Search data
-                    logger.Info($"HowLongToBeat - Search data for {game.Name}");
+#if DEBUG  
+                    logger.Debug($"HowLongToBeat - Search data for {game.Name}");
+#endif
 
                     List<HltbData> dataSearch = new HowLongToBeatClient().Search(game.Name);
                     new HowLongToBeatSelect(dataSearch, FileGameData, game.Name).ShowDialog();
@@ -77,28 +81,42 @@ namespace HowLongToBeat.Services
         {
             RemoveTag();
 
-            List<Tag> HltbTags = GetTagId(_PlayniteApi);
-
-            if (data != null && data != new HltbDataUser())
+            try
             {
-                List<Guid> tagIds = SetListHltbTag(_PlayniteApi, data);
+                List<Tag> HltbTags = GetTagId(_PlayniteApi);
 
-                if (tagIds.Count > 0)
+                if (data != null && data != new HltbDataUser())
                 {
-                    _game.TagIds = tagIds;
-                }
+                    List<Guid> tagIds = SetListHltbTag(_PlayniteApi, data);
 
-                _PlayniteApi.Database.Games.Update(_game);
+                    if (tagIds.Count > 0)
+                    {
+                        _game.TagIds = tagIds;
+                    }
+
+                    _PlayniteApi.Database.Games.Update(_game);
+                }
+            }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, "HowLongToBeat", $"Tag insert error with {_game.Name}");
             }
         }
 
         public void RemoveTag()
         {
-            List<Tag> HltbTags = GetTagId(_PlayniteApi);
-            foreach (Tag tag in HltbTags)
+            try
             {
-                _game.TagIds.Remove(tag.Id);
-                _PlayniteApi.Database.Games.Update(_game);
+                List<Tag> HltbTags = GetTagId(_PlayniteApi);
+                foreach (Tag tag in HltbTags)
+                {
+                    _game.TagIds.Remove(tag.Id);
+                    _PlayniteApi.Database.Games.Update(_game);
+                }
+            }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, "HowLongToBeat", $"Tag remove error with {_game.Name}");
             }
         }
 
@@ -121,75 +139,13 @@ namespace HowLongToBeat.Services
         }
 
 
-
         private static List<Tag> GetTagId(IPlayniteAPI PlayniteApi)
         {
-            // Tags id
             List<Tag> HltbTags = new List<Tag>();
-            foreach (Tag tag in PlayniteApi.Database.Tags)
-            {
-                if (tag.Name.IndexOf("[HLTB]") > -1)
-                {
-                    HltbTags.Add(tag);
-                }
-            }
 
-            // Add missing tags in database
-            if (HltbTags.Count < 13)
+            try
             {
-                if (HltbTags.Find(x => x.Name == $"[HLTB] {resources.GetString("LOCPLaytimeLessThenAnHour")}") == null)
-                {
-                    PlayniteApi.Database.Tags.Add(new Tag { Name = $"[HLTB] {resources.GetString("LOCPLaytimeLessThenAnHour")}" });
-                }
-                if (HltbTags.Find(x => x.Name == $"[HLTB] {resources.GetString("LOCHowLongToBeat1to5")}") == null)
-                {
-                    PlayniteApi.Database.Tags.Add(new Tag { Name = $"[HLTB] {resources.GetString("LOCHowLongToBeat1to5")}" });
-                }
-                if (HltbTags.Find(x => x.Name == $"[HLTB] {resources.GetString("LOCHowLongToBeat5to10")}") == null)
-                {
-                    PlayniteApi.Database.Tags.Add(new Tag { Name = $"[HLTB] {resources.GetString("LOCHowLongToBeat5to10")}" });
-                }
-                if (HltbTags.Find(x => x.Name == $"[HLTB] {resources.GetString("LOCHowLongToBeat10to20")}") == null)
-                {
-                    PlayniteApi.Database.Tags.Add(new Tag { Name = $"[HLTB] {resources.GetString("LOCHowLongToBeat10to20")}" });
-                }
-                if (HltbTags.Find(x => x.Name == $"[HLTB] {resources.GetString("LOCHowLongToBeat20to30")}") == null)
-                {
-                    PlayniteApi.Database.Tags.Add(new Tag { Name = $"[HLTB] {resources.GetString("LOCHowLongToBeat20to30")}" });
-                }
-                if (HltbTags.Find(x => x.Name == $"[HLTB] {resources.GetString("LOCHowLongToBeat30to40")}") == null)
-                {
-                    PlayniteApi.Database.Tags.Add(new Tag { Name = $"[HLTB] {resources.GetString("LOCHowLongToBeat30to40")}" });
-                }
-                if (HltbTags.Find(x => x.Name == $"[HLTB] {resources.GetString("LOCHowLongToBeat40to50")}") == null)
-                {
-                    PlayniteApi.Database.Tags.Add(new Tag { Name = $"[HLTB] {resources.GetString("LOCHowLongToBeat40to50")}" });
-                }
-                if (HltbTags.Find(x => x.Name == $"[HLTB] {resources.GetString("LOCHowLongToBeat50to60")}") == null)
-                {
-                    PlayniteApi.Database.Tags.Add(new Tag { Name = $"[HLTB] {resources.GetString("LOCHowLongToBeat50to60")}" });
-                }
-                if (HltbTags.Find(x => x.Name == $"[HLTB] {resources.GetString("LOCHowLongToBeat60to70")}") == null)
-                {
-                    PlayniteApi.Database.Tags.Add(new Tag { Name = $"[HLTB] {resources.GetString("LOCHowLongToBeat60to70")}" });
-                }
-                if (HltbTags.Find(x => x.Name == $"[HLTB] {resources.GetString("LOCHowLongToBeat70to80")}") == null)
-                {
-                    PlayniteApi.Database.Tags.Add(new Tag { Name = $"[HLTB] {resources.GetString("LOCHowLongToBeat70to80")}" });
-                }
-                if (HltbTags.Find(x => x.Name == $"[HLTB] {resources.GetString("LOCHowLongToBeat80to90")}") == null)
-                {
-                    PlayniteApi.Database.Tags.Add(new Tag { Name = $"[HLTB] {resources.GetString("LOCHowLongToBeat80to90")}" });
-                }
-                if (HltbTags.Find(x => x.Name == $"[HLTB] {resources.GetString("LOCHowLongToBeat90to100")}") == null)
-                {
-                    PlayniteApi.Database.Tags.Add(new Tag { Name = $"[HLTB] {resources.GetString("LOCHowLongToBeat90to100")}" });
-                }
-                if (HltbTags.Find(x => x.Name == $"[HLTB] {resources.GetString("LOCHowLongToBeat100plus")}") == null)
-                {
-                    PlayniteApi.Database.Tags.Add(new Tag { Name = $"[HLTB] {resources.GetString("LOCHowLongToBeat100plus")}" });
-                }
-
+                // Tags id
                 foreach (Tag tag in PlayniteApi.Database.Tags)
                 {
                     if (tag.Name.IndexOf("[HLTB]") > -1)
@@ -197,11 +153,79 @@ namespace HowLongToBeat.Services
                         HltbTags.Add(tag);
                     }
                 }
+
+                // Add missing tags in database
+                if (HltbTags.Count < 13)
+                {
+                    if (HltbTags.Find(x => x.Name == $"[HLTB] {resources.GetString("LOCPLaytimeLessThenAnHour")}") == null)
+                    {
+                        PlayniteApi.Database.Tags.Add(new Tag { Name = $"[HLTB] {resources.GetString("LOCPLaytimeLessThenAnHour")}" });
+                    }
+                    if (HltbTags.Find(x => x.Name == $"[HLTB] {resources.GetString("LOCHowLongToBeat1to5")}") == null)
+                    {
+                        PlayniteApi.Database.Tags.Add(new Tag { Name = $"[HLTB] {resources.GetString("LOCHowLongToBeat1to5")}" });
+                    }
+                    if (HltbTags.Find(x => x.Name == $"[HLTB] {resources.GetString("LOCHowLongToBeat5to10")}") == null)
+                    {
+                        PlayniteApi.Database.Tags.Add(new Tag { Name = $"[HLTB] {resources.GetString("LOCHowLongToBeat5to10")}" });
+                    }
+                    if (HltbTags.Find(x => x.Name == $"[HLTB] {resources.GetString("LOCHowLongToBeat10to20")}") == null)
+                    {
+                        PlayniteApi.Database.Tags.Add(new Tag { Name = $"[HLTB] {resources.GetString("LOCHowLongToBeat10to20")}" });
+                    }
+                    if (HltbTags.Find(x => x.Name == $"[HLTB] {resources.GetString("LOCHowLongToBeat20to30")}") == null)
+                    {
+                        PlayniteApi.Database.Tags.Add(new Tag { Name = $"[HLTB] {resources.GetString("LOCHowLongToBeat20to30")}" });
+                    }
+                    if (HltbTags.Find(x => x.Name == $"[HLTB] {resources.GetString("LOCHowLongToBeat30to40")}") == null)
+                    {
+                        PlayniteApi.Database.Tags.Add(new Tag { Name = $"[HLTB] {resources.GetString("LOCHowLongToBeat30to40")}" });
+                    }
+                    if (HltbTags.Find(x => x.Name == $"[HLTB] {resources.GetString("LOCHowLongToBeat40to50")}") == null)
+                    {
+                        PlayniteApi.Database.Tags.Add(new Tag { Name = $"[HLTB] {resources.GetString("LOCHowLongToBeat40to50")}" });
+                    }
+                    if (HltbTags.Find(x => x.Name == $"[HLTB] {resources.GetString("LOCHowLongToBeat50to60")}") == null)
+                    {
+                        PlayniteApi.Database.Tags.Add(new Tag { Name = $"[HLTB] {resources.GetString("LOCHowLongToBeat50to60")}" });
+                    }
+                    if (HltbTags.Find(x => x.Name == $"[HLTB] {resources.GetString("LOCHowLongToBeat60to70")}") == null)
+                    {
+                        PlayniteApi.Database.Tags.Add(new Tag { Name = $"[HLTB] {resources.GetString("LOCHowLongToBeat60to70")}" });
+                    }
+                    if (HltbTags.Find(x => x.Name == $"[HLTB] {resources.GetString("LOCHowLongToBeat70to80")}") == null)
+                    {
+                        PlayniteApi.Database.Tags.Add(new Tag { Name = $"[HLTB] {resources.GetString("LOCHowLongToBeat70to80")}" });
+                    }
+                    if (HltbTags.Find(x => x.Name == $"[HLTB] {resources.GetString("LOCHowLongToBeat80to90")}") == null)
+                    {
+                        PlayniteApi.Database.Tags.Add(new Tag { Name = $"[HLTB] {resources.GetString("LOCHowLongToBeat80to90")}" });
+                    }
+                    if (HltbTags.Find(x => x.Name == $"[HLTB] {resources.GetString("LOCHowLongToBeat90to100")}") == null)
+                    {
+                        PlayniteApi.Database.Tags.Add(new Tag { Name = $"[HLTB] {resources.GetString("LOCHowLongToBeat90to100")}" });
+                    }
+                    if (HltbTags.Find(x => x.Name == $"[HLTB] {resources.GetString("LOCHowLongToBeat100plus")}") == null)
+                    {
+                        PlayniteApi.Database.Tags.Add(new Tag { Name = $"[HLTB] {resources.GetString("LOCHowLongToBeat100plus")}" });
+                    }
+
+                    foreach (Tag tag in PlayniteApi.Database.Tags)
+                    {
+                        if (tag.Name.IndexOf("[HLTB]") > -1)
+                        {
+                            HltbTags.Add(tag);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, "HowLongToBeat", $"Error on GetTagId()");
             }
 
             return HltbTags;
         }
-
 
         private static List<Guid> SetListHltbTag(IPlayniteAPI PlayniteApi, HltbDataUser data)
         {
@@ -337,14 +361,21 @@ namespace HowLongToBeat.Services
 
         public static void RemoveAllTag(IPlayniteAPI PlayniteApi, Game game)
         {
-            List<Tag> HltbTags = GetTagId(PlayniteApi);
-            if (game.Tags != null && game.Tags.Count > 0)
+            try
             {
-                foreach (Tag tag in HltbTags)
+                List<Tag> HltbTags = GetTagId(PlayniteApi);
+                if (game.Tags != null && game.Tags.Count > 0)
                 {
-                    game.TagIds.Remove(tag.Id);
-                    PlayniteApi.Database.Games.Update(game);
+                    foreach (Tag tag in HltbTags)
+                    {
+                        game.TagIds.Remove(tag.Id);
+                        PlayniteApi.Database.Games.Update(game);
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, "HowLongToBeat", $"Tag remove error with {game.Name}");
             }
         }
 
@@ -355,12 +386,19 @@ namespace HowLongToBeat.Services
             return File.Exists(FileGameData);
         }
 
-
         public static void SaveData(Guid GameId, HltbData hltbData, string PluginUserDataPath)
         {
             string FileGameData = PluginUserDataPath + "\\howlongtobeat\\" + GameId.ToString() + ".json";
             var SavData = new HltbDataUser { GameHltbData = hltbData };
-            File.WriteAllText(FileGameData, JsonConvert.SerializeObject(SavData));
+
+            try
+            {
+                File.WriteAllText(FileGameData, JsonConvert.SerializeObject(SavData));
+            }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, "HowLongToBeat", $"Error on saving data for {GameId}");
+            }
         }
 
         public static void ClearAllData(string PluginUserDataPath, IPlayniteAPI PlayniteApi)

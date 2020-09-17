@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using System.Windows.Shapes;
 
 namespace HowLongToBeat.Views.Interfaces
@@ -23,6 +22,7 @@ namespace HowLongToBeat.Views.Interfaces
 
         public bool ShowToolTip { get; set; }
         public bool ShowTime { get; set; }
+
 
         public HltbProgressBar(long Playtime, HltbDataUser gameData, HowLongToBeatSettings settings)
         {
