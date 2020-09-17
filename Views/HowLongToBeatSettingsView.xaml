@@ -78,14 +78,14 @@
                     <Label Content="{DynamicResource LOCHowLongToBeatIntegrationButton}" />
                 </CheckBox>
 
-                <CheckBox IsChecked="{Binding EnableIntegrationInDescription}" Name="HltB_IntegrationInDescription" Margin="0,5,0,0" Click="Checkbox_Click">
+                <CheckBox IsChecked="{Binding EnableIntegrationInDescription}" Name="HltB_IntegrationInDescription" Margin="0,35,0,0" Click="Checkbox_Click">
                     <Label Content="{DynamicResource LOCHowLongToBeatIntegrationInDescription}" />
-                </CheckBox>
-                <CheckBox IsChecked="{Binding IntegrationTopGameDetails}" Margin="30,5,0,0" IsEnabled="{Binding ElementName=HltB_IntegrationInDescription, Path=IsChecked}">
-                    <Label Content="{DynamicResource LOCHowLongToBeatIntegrationTopGameDetails}" />
                 </CheckBox>
                 <CheckBox IsChecked="{Binding IntegrationShowTitle}" Margin="30,5,0,0" IsEnabled="{Binding ElementName=HltB_IntegrationInDescription, Path=IsChecked}">
                     <Label Content="{DynamicResource LOCHowLongToBeatIntegrationShowTitle}" />
+                </CheckBox>
+                <CheckBox IsChecked="{Binding IntegrationTopGameDetails}" Margin="30,5,0,0" IsEnabled="{Binding ElementName=HltB_IntegrationInDescription, Path=IsChecked}">
+                    <Label Content="{DynamicResource LOCHowLongToBeatIntegrationTopGameDetails}" />
                 </CheckBox>
 
                 <CheckBox IsChecked="{Binding EnableIntegrationInCustomTheme}" Margin="0,5,0,0" Name="HltB_IntegrationInCustomTheme" Click="Checkbox_Click">

@@ -115,7 +115,7 @@ namespace HowLongToBeat.Views.Interfaces
                 ((FrameworkElement)sender).Width = parent.Width;
             }
 
-            if (settings.ProgressBarShowTime)
+            if (settings.ProgressBarShowTime && !settings.ProgressBarShowTimeInterior)
             {
                 ((FrameworkElement)sender).Height = ((FrameworkElement)sender).Height - spShowTime.Height;
             }
@@ -132,6 +132,7 @@ namespace HowLongToBeat.Views.Interfaces
             if (settings.ProgressBarShowTimeInterior)
             {
                 Grid.SetRow(spShowTime, 0);
+                spShowTime.Height = ((FrameworkElement)sender).Height;
             }
 
 
