@@ -9,7 +9,7 @@
     <sys:String x:Key="LOCHowLongToBeatProgressBarTag">Обработка...</sys:String>
     <sys:String x:Key="LOCHowLongToBeatProgressBar">Добавлено {0} - Добавлено ранее {1} - Не добавлено {2}</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatAddTagDescription">Тэг со временем "основного сюжета" / "одиночной игры" (Main + Extra / Vs if missing)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAddTagDescription">Тэг со временем "основного сюжета" / "одиночной игры" (если не найдено, то "сюжет + доп. задания" / "PVP")</sys:String>
     <sys:String x:Key="LOCHowLongToBeatShowHltbImage">Показывать обложки с сайта How Long To Beat</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatIntegration">Интеграция в интерфейс</sys:String>
@@ -19,7 +19,7 @@
     <sys:String x:Key="LOCHowLongToBeatIntegrationTopGameDetails">Показывать над описанием игры</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationInCustomTheme">Интеграция в нестандартные темы (если поддерживается темой)</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarOptions">Progress bar options</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarOptions">Настройки шкалы прогресса</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">Показывать подсказки на шкале прогресса</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTime">Показывать время на шкале прогресса</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeAbove">Над шкалой</sys:String>
@@ -37,7 +37,7 @@
     <sys:String x:Key="LOCHowLongToBeatSelection">HowLongToBeat выбор игры</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatMainStory">Основной сюжет</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatMainExtra">Сюжет + доп. задания</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatMainExtra">Сюжет+доп. задания</sys:String>
     <sys:String x:Key="LOCHowLongToBeatCompletionist">100% прохождение</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatSolo">Одиночная игра</sys:String>
