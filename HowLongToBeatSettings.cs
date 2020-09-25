@@ -11,8 +11,10 @@ namespace HowLongToBeat
         public bool EnableCheckVersion { get; set; } = true;
 
         public bool EnableTag { get; set; } = false;
-
         public bool ShowHltbImg { get; set; } = true;
+
+        public bool AutoAccept { get; set; } = true;
+        public bool ShowWhenMismatch { get; set; } = false;
         
         public bool EnableIntegrationButton { get; set; } = false;
         public bool EnableIntegrationInDescription { get; set; } = false;
@@ -50,8 +52,10 @@ namespace HowLongToBeat
                 EnableCheckVersion = savedSettings.EnableCheckVersion;
 
                 EnableTag = savedSettings.EnableTag;
-
                 ShowHltbImg = savedSettings.ShowHltbImg;
+
+                AutoAccept = savedSettings.AutoAccept;
+                ShowWhenMismatch = savedSettings.ShowWhenMismatch;
 
                 EnableIntegrationButton = savedSettings.EnableIntegrationButton;
                 EnableIntegrationInDescription = savedSettings.EnableIntegrationInDescription;

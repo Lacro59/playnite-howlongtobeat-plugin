@@ -2,9 +2,9 @@
 using AngleSharp.Parser.Html;
 using HowLongToBeat.Models;
 using Playnite.SDK;
+using PluginCommon;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -15,14 +15,13 @@ namespace HowLongToBeat.Services
     {
         private static readonly ILogger logger = LogManager.GetLogger();
 
-        private string UrlBase { get; set; }
+        private readonly string UrlBase = "https://howlongtobeat.com/";
         private string UrlSearch { get; set; }
         private string UrlGame { get; set; }
 
 
         public HowLongToBeatClient()
         {
-            UrlBase = "https://howlongtobeat.com/";
             UrlSearch = UrlBase + "search_results.php";
             UrlGame = UrlBase + "game.php?id=";
         }
@@ -50,10 +49,10 @@ namespace HowLongToBeat.Services
                     new KeyValuePair<string, string>("t", "games"),
                     new KeyValuePair<string, string>("sorthead", "popular"),
                     new KeyValuePair<string, string>("sortd", "Normal Order"),
-                    new KeyValuePair<string, string>("plat", ""),
+                    new KeyValuePair<string, string>("plat", string.Empty),
                     new KeyValuePair<string, string>("length_type", "main"),
-                    new KeyValuePair<string, string>("length_min", ""),
-                    new KeyValuePair<string, string>("length_max", ""),
+                    new KeyValuePair<string, string>("length_min", string.Empty),
+                    new KeyValuePair<string, string>("length_max", string.Empty),
                     new KeyValuePair<string, string>("detail", "0")
                 });
                 
@@ -62,13 +61,11 @@ namespace HowLongToBeat.Services
 
                 return responseBody;
             }
-            catch (HttpRequestException ex)
+            catch (Exception ex)
             {
-                var LineNumber = new StackTrace(ex, true).GetFrame(0).GetFileLineNumber();
-                string FileName = new StackTrace(ex, true).GetFrame(0).GetFileName();
-                logger.Error(ex, $"HowLongToBeat [{FileName} {LineNumber}] ");
+                Common.LogError(ex, "HowLongToBeat", $"Error on GameSearch()");
 
-                return "";
+                return string.Empty;
             }
         }
 
@@ -81,7 +78,7 @@ namespace HowLongToBeat.Services
         {
             if (Time.IndexOf("Hours") > -1)
             {
-                Time = Time.Replace("Hours", "");
+                Time = Time.Replace("Hours", string.Empty);
                 Time = Time.Replace("&#189;", ".5");
                 Time = Time.Replace("½", ".5");
                 Time = Time.Trim();
@@ -91,7 +88,7 @@ namespace HowLongToBeat.Services
 
             if (Time.IndexOf("Mins") > -1)
             {
-                Time = Time.Replace("Mins", "");
+                Time = Time.Replace("Mins", string.Empty);
                 Time = Time.Replace("&#189;", ".5");
                 Time = Time.Replace("½", ".5");
                 Time = Time.Trim();
@@ -111,23 +108,23 @@ namespace HowLongToBeat.Services
         {
             List<HltbData> ReturnData = new List<HltbData>();
 
-            if (data != "")
+            if (data != string.Empty)
             {
                 try {
                     HtmlParser parser = new HtmlParser();
                     IHtmlDocument htmlDocument = parser.Parse(data);
 
-                    string Name = "";
+                    string Name = string.Empty;
                     int Id = 0;
-                    string UrlImg = "";
-                    string Url = "";
+                    string UrlImg = string.Empty;
+                    string Url = string.Empty;
 
                     foreach (var SearchElement in htmlDocument.QuerySelectorAll("li.back_darkish"))
                     {
                         var ElementA = SearchElement.QuerySelector(".search_list_image a");
                         var ElementImg = SearchElement.QuerySelector(".search_list_image a img");
                         Name = ElementA.GetAttribute("title");
-                        Id = int.Parse(ElementA.GetAttribute("href").Replace("game?id=", ""));
+                        Id = int.Parse(ElementA.GetAttribute("href").Replace("game?id=", string.Empty));
                         UrlImg = ElementImg.GetAttribute("src");
                         Url = UrlBase + ElementA.GetAttribute("href");
 
@@ -195,7 +192,6 @@ namespace HowLongToBeat.Services
                             iElement += 1;
                         }
 
-                        //logger.Debug($"Name: {Name} - MainStory: {MainStory} - MainExtra: {MainExtra} - Completionist: {Completionist} - Solo: {Solo} - CoOp: {CoOp} - Vs: {Vs}");
                         ReturnData.Add(new HltbData
                         {
                             Name = Name,
@@ -213,9 +209,7 @@ namespace HowLongToBeat.Services
                 }
                 catch (Exception ex)
                 {
-                    var LineNumber = new StackTrace(ex, true).GetFrame(0).GetFileLineNumber();
-                    string FileName = new StackTrace(ex, true).GetFrame(0).GetFileName();
-                    logger.Error(ex, $"HowLongToBeat [{FileName} {LineNumber}] ");
+                    Common.LogError(ex, "HowLongToBeat", $"Error on SearchParser()");
                 }
             }
 

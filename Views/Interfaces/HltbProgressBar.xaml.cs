@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using System.Windows.Shapes;
 
 namespace HowLongToBeat.Views.Interfaces
@@ -23,6 +22,7 @@ namespace HowLongToBeat.Views.Interfaces
 
         public bool ShowToolTip { get; set; }
         public bool ShowTime { get; set; }
+
 
         public HltbProgressBar(long Playtime, HltbDataUser gameData, HowLongToBeatSettings settings)
         {
@@ -115,7 +115,7 @@ namespace HowLongToBeat.Views.Interfaces
                 ((FrameworkElement)sender).Width = parent.Width;
             }
 
-            if (settings.ProgressBarShowTime)
+            if (settings.ProgressBarShowTime && !settings.ProgressBarShowTimeInterior)
             {
                 ((FrameworkElement)sender).Height = ((FrameworkElement)sender).Height - spShowTime.Height;
             }
@@ -132,6 +132,7 @@ namespace HowLongToBeat.Views.Interfaces
             if (settings.ProgressBarShowTimeInterior)
             {
                 Grid.SetRow(spShowTime, 0);
+                spShowTime.Height = ((FrameworkElement)sender).Height;
             }
 
 

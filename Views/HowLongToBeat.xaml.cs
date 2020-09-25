@@ -11,6 +11,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Input;
 
 namespace HowLongToBeat.Views
 {
@@ -24,6 +25,7 @@ namespace HowLongToBeat.Views
 
         public string CoverImage { get; set; }
         public string GameName { get; set; }
+        public string HltbName { get; set; }
 
         public string PlaytimeFormat { get; set; }
 
@@ -36,79 +38,91 @@ namespace HowLongToBeat.Views
 
             InitializeComponent();
 
+            this.PreviewKeyDown += new KeyEventHandler(HandleEsc);
+
             HltbDataUser gameData = data.GetData();
-
-            if (string.IsNullOrEmpty(game.CoverImage))
+            if (data.hasData && gameData != null && gameData.GameHltbData != null)
             {
-                CoverImage = gameData.GameHltbData.UrlImg;
-            }
-            else
-            {
-                CoverImage = gameData.GameHltbData.UrlImg;
-                if (!settings.ShowHltbImg)
+                if (string.IsNullOrEmpty(game.CoverImage))
                 {
-                    CoverImage = PlayniteApi.Database.GetFullFilePath(game.CoverImage);
+                    CoverImage = gameData.GameHltbData.UrlImg;
                 }
+                else
+                {
+                    CoverImage = gameData.GameHltbData.UrlImg;
+                    if (!settings.ShowHltbImg)
+                    {
+                        CoverImage = PlayniteApi.Database.GetFullFilePath(game.CoverImage);
+                    }
+                }
+                GameName = game.Name;
+                HltbName = resources.GetString("LOCSourceLabel") + ": " + gameData.GameHltbData.Name;
+
+
+                int ElIndicator = 0;
+
+                Hltb_El1.Visibility = Visibility.Hidden;
+                Hltb_El1_Color.Visibility = Visibility.Hidden;
+                Hltb_El2.Visibility = Visibility.Hidden;
+                Hltb_El2_Color.Visibility = Visibility.Hidden;
+                Hltb_El3.Visibility = Visibility.Hidden;
+                Hltb_El3_Color.Visibility = Visibility.Hidden;
+
+                if (gameData.GameHltbData.MainStory != 0)
+                {
+                    ElIndicator += 1;
+                    SetDataInView(ElIndicator, resources.GetString("LOCHowLongToBeatMainStory"), gameData.GameHltbData.MainStoryFormat);
+                }
+
+                if (gameData.GameHltbData.MainExtra != 0)
+                {
+                    ElIndicator += 1;
+                    SetDataInView(ElIndicator, resources.GetString("LOCHowLongToBeatMainExtra"), gameData.GameHltbData.MainExtraFormat);
+                }
+
+                if (gameData.GameHltbData.Completionist != 0)
+                {
+                    ElIndicator += 1;
+                    SetDataInView(ElIndicator, resources.GetString("LOCHowLongToBeatCompletionist"), gameData.GameHltbData.CompletionistFormat);
+                }
+
+                if (gameData.GameHltbData.Solo != 0)
+                {
+                    ElIndicator += 1;
+                    SetDataInView(ElIndicator, resources.GetString("LOCHowLongToBeatSolo"), gameData.GameHltbData.SoloFormat);
+                }
+
+                if (gameData.GameHltbData.CoOp != 0)
+                {
+                    ElIndicator += 1;
+                    SetDataInView(ElIndicator, resources.GetString("LOCHowLongToBeatCoOp"), gameData.GameHltbData.CoOpFormat);
+                }
+
+                if (gameData.GameHltbData.Vs != 0)
+                {
+                    ElIndicator += 1;
+                    SetDataInView(ElIndicator, resources.GetString("LOCHowLongToBeatVs"), gameData.GameHltbData.VsFormat);
+                }
+
+
+                LongToTimePlayedConverter converter = new LongToTimePlayedConverter();
+                PlaytimeFormat = (string)converter.Convert((long)game.Playtime, null, null, CultureInfo.CurrentCulture);
+
+
+                HltbProgressBar.Children.Add(new HltbProgressBar(game.Playtime, gameData, settings));
+                HltbProgressBar.UpdateLayout();
             }
-            GameName = game.Name;
-
-
-            int ElIndicator = 0;
-
-            Hltb_El1.Visibility = Visibility.Hidden;
-            Hltb_El1_Color.Visibility = Visibility.Hidden;
-            Hltb_El2.Visibility = Visibility.Hidden;
-            Hltb_El2_Color.Visibility = Visibility.Hidden;
-            Hltb_El3.Visibility = Visibility.Hidden;
-            Hltb_El3_Color.Visibility = Visibility.Hidden;
-
-            if (gameData.GameHltbData.MainStory != 0)
-            {
-                ElIndicator += 1;
-                SetDataInView(ElIndicator, resources.GetString("LOCHowLongToBeatMainStory"), gameData.GameHltbData.MainStoryFormat);
-            }
-
-            if (gameData.GameHltbData.MainExtra != 0)
-            {
-                ElIndicator += 1;
-                SetDataInView(ElIndicator, resources.GetString("LOCHowLongToBeatMainExtra"), gameData.GameHltbData.MainExtraFormat);
-            }
-
-            if (gameData.GameHltbData.Completionist != 0)
-            {
-                ElIndicator += 1;
-                SetDataInView(ElIndicator, resources.GetString("LOCHowLongToBeatCompletionist"), gameData.GameHltbData.CompletionistFormat);
-            }
-
-            if (gameData.GameHltbData.Solo != 0)
-            {
-                ElIndicator += 1;
-                SetDataInView(ElIndicator, resources.GetString("LOCHowLongToBeatSolo"), gameData.GameHltbData.SoloFormat);
-            }
-
-            if (gameData.GameHltbData.CoOp != 0)
-            {
-                ElIndicator += 1;
-                SetDataInView(ElIndicator, resources.GetString("LOCHowLongToBeatCoOp"), gameData.GameHltbData.CoOpFormat);
-            }
-
-            if (gameData.GameHltbData.Vs != 0)
-            {
-                ElIndicator += 1;
-                SetDataInView(ElIndicator, resources.GetString("LOCHowLongToBeatVs"), gameData.GameHltbData.VsFormat);
-            }
-
-
-            LongToTimePlayedConverter converter = new LongToTimePlayedConverter();
-            PlaytimeFormat = (string)converter.Convert((long)game.Playtime, null, null, CultureInfo.CurrentCulture);
-
-
-            HltbProgressBar.Children.Add(new HltbProgressBar(game.Playtime, gameData, settings));
-            HltbProgressBar.UpdateLayout();
-
 
             // Set Binding data
             DataContext = this;
+        }
+
+        private void HandleEsc(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Escape)
+            {
+                Close();
+            }
         }
 
         private void SetDataInView(int ElIndicator, string ElText, string ElData)

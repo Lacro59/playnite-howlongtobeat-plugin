@@ -7,8 +7,9 @@
     -->
 
     <sys:String x:Key="LOCHowLongToBeatProgressBarTag">Treatment in progress...</sys:String>
-    
-    <sys:String x:Key="LOCHowLongToBeatAddTagDescription">Tag with "Main Story" / "Solo" time</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatProgressBar">Added {0} - Already added {1} - Not added {2}</sys:String>
+
+    <sys:String x:Key="LOCHowLongToBeatAddTagDescription">Tag with "Main Story" / "Solo" time (Main + Extra / Vs if missing)</sys:String>
     <sys:String x:Key="LOCHowLongToBeatShowHltbImage">Show How Long To Beat cover image</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatIntegration">Interface integration</sys:String>
@@ -18,11 +19,16 @@
     <sys:String x:Key="LOCHowLongToBeatIntegrationTopGameDetails">Integration above game description</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationInCustomTheme">Custom theme integration (if integrated)</sys:String>
 
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarOptions">Progress bar options</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">Show tooltip with time in progress bar</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTime">Show time with progress bar</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeAbove">Above</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeInterior">Interior</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeBelow">Below</sys:String>
+
+    <sys:String x:Key="LOCHowLongToBeatAutoData">Download datas</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoAccept">Automatic accept when only a game is find</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatShowWhenMismatch">Show the selection view when there is more a game found</sys:String>
 
     <!--  
     HowLongToBeatSelect
@@ -68,6 +74,7 @@
     MainView
     -->
 
+    <sys:String x:Key="LOCHowLongToBeat">HowLongToBeat</sys:String>
     <sys:String x:Key="LOCHowLongToBeatTitle">How long to beat</sys:String>
     
 </ResourceDictionary>

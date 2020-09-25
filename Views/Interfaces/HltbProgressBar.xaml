@@ -89,10 +89,6 @@
                         </Setter>
                     </Style>
                 </Slider.Style>
-
-                <!--Slider.ToolTip>
-                        <ToolTip Name="PlaytimeToolTip" />
-                    </Slider.ToolTip-->
             </Slider>
 
             <StackPanel Orientation="Horizontal" Visibility="{Binding ShowToolTip, Converter={StaticResource BooleanToVisibilityConverter}}">
@@ -114,14 +110,14 @@
             </StackPanel>
         </Grid>
 
-        <StackPanel Grid.Row="1" Orientation="Horizontal" Height="12" Name="spShowTime">
-            <StackPanel Width="{Binding ElementName=spHltb_El1, Path=Width}">
+        <StackPanel Name="spShowTime" Grid.Row="1" Orientation="Horizontal" Height="12" Width="{Binding ElementName=PART_HltbProgressBar_Contener, Path=Width}">
+            <StackPanel Width="{Binding ElementName=spHltb_El1, Path=Width}" VerticalAlignment="Center">
                 <Label Name="spHltbTime_El1" Content="02h02" FontSize="10" HorizontalAlignment="Center"/>
             </StackPanel>
-            <StackPanel Width="{Binding ElementName=spHltb_El2, Path=Width}">
+            <StackPanel Width="{Binding ElementName=spHltb_El2, Path=Width}" VerticalAlignment="Center">
                 <Label Name="spHltbTime_El2" Content="02h02" FontSize="10" HorizontalAlignment="Center"/>
             </StackPanel>
-            <StackPanel Width="{Binding ElementName=spHltb_El3, Path=Width}">
+            <StackPanel Width="{Binding ElementName=spHltb_El3, Path=Width}" VerticalAlignment="Center">
                 <Label Name="spHltbTime_El3" Content="02h02" FontSize="10" HorizontalAlignment="Center"/>
             </StackPanel>
         </StackPanel>
