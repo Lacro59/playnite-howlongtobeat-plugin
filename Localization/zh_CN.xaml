@@ -9,7 +9,7 @@
     <sys:String x:Key="LOCHowLongToBeatProgressBarTag">处理进度…</sys:String>
     <sys:String x:Key="LOCHowLongToBeatProgressBar">Added {0} - Already added {1} - Not added {2}</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatAddTagDescription">加上“主线”或者“单人”标签。(Main + Extra / Vs if missing)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAddTagDescription">加上“主线”/“单人”标签。（如果缺失主线+支线/竞技）</sys:String>
     <sys:String x:Key="LOCHowLongToBeatShowHltbImage">显示通关时长How Long To Beat的封面图片</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatIntegration">界面集成</sys:String>
@@ -19,16 +19,16 @@
     <sys:String x:Key="LOCHowLongToBeatIntegrationTopGameDetails">在其他描述之上</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationInCustomTheme">自定义主题集成（如被集成）</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarOptions">Progress bar options</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarOptions">进度条选项</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">鼠标在进度条上时显示时间</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTime">在进度条上显示时间</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeAbove">上部</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeInterior">内部</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeBelow">下部</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatAutoData">Download datas</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAutoAccept">Automatic accept when only a game is find</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatShowWhenMismatch">Show the selection view when there is more a game found</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoData">下载数据</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoAccept">当只有一个游戏被找到时自动接受</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatShowWhenMismatch">当多个游戏被找到时显示选择界面</sys:String>
 
     <!--  
     HowLongToBeatSelect
@@ -74,7 +74,7 @@
     MainView
     -->
 
-    <sys:String x:Key="LOCHowLongToBeat">HowLongToBeat</sys:String>
+    <sys:String x:Key="LOCHowLongToBeat">通关时长HowLongToBeat</sys:String>
     <sys:String x:Key="LOCHowLongToBeatTitle">通关时长How long to beat</sys:String>
     
 </ResourceDictionary>
