@@ -24,7 +24,8 @@ namespace HowLongToBeat.Views
         private IPlayniteAPI PlayniteApi;
         private string PluginUserDataPath;
 
-        private CancellationTokenSource tokenSource;
+        public static bool WithoutMessage = false;
+        public static CancellationTokenSource tokenSource;
         private CancellationToken ct;
 
 
@@ -112,6 +113,8 @@ namespace HowLongToBeat.Views
                         ct.ThrowIfCancellationRequested();
                     }
                 }
+
+                HowLongToBeatData.RemoveAllTagDb(PlayniteApi);
             }, tokenSource.Token)
             .ContinueWith(antecedent =>
             {

@@ -70,6 +70,9 @@
     <sys:String x:Key="LOCHowLongToBeat90to100">90到100小时</sys:String>
     <sys:String x:Key="LOCHowLongToBeat100plus">超过100小时</sys:String>
 
+    <sys:String x:Key="LOCHowLongToBeatNotificationTagError" xml:space="preserve">Error for insert tag.
+Please try to delete all tag in plugin setting.</sys:String>
+
     <!--  
     MainView
     -->

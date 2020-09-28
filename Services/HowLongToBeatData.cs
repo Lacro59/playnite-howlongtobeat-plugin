@@ -101,9 +101,14 @@ namespace HowLongToBeat.Services
                     _PlayniteApi.Database.Games.Update(_game);
                 }
             }
-            catch (Exception ex)
+            catch
             {
-                Common.LogError(ex, "HowLongToBeat", $"Tag insert error with {_game.Name}");
+                logger.Error($"HowLongToBeat - Tag insert error with {_game.Name}");
+                _PlayniteApi.Notifications.Add(new NotificationMessage(
+                    "HowLongToBeat-Tag-Errors",
+                    resources.GetString("LOCHowLongToBeatNotificationTagError"),
+                    NotificationType.Error
+                ));
             }
         }
 
@@ -239,100 +244,93 @@ namespace HowLongToBeat.Services
 
             if (data != null && data != new HltbDataUser() && data.GameHltbData != null && data.GameHltbData != new HltbData() && HltbTags.Count > 1 && HltbTags != null)
             {
-                try
+                // Get time
+                if (data.GameHltbData.MainStory != 0)
                 {
-                    // Get time
-                    if (data.GameHltbData.MainStory != 0)
-                    {
-                        hltbTime = data.GameHltbData.MainStory;
-                    }
-                    else if (data.GameHltbData.MainExtra != 0)
-                    {
-                        hltbTime = data.GameHltbData.MainStory;
-                    }
-                    if (data.GameHltbData.Solo != 0)
-                    {
-                        hltbTime = data.GameHltbData.Solo;
-                    }
-                    else if (data.GameHltbData.Vs != 0)
-                    {
-                        hltbTime = data.GameHltbData.Vs;
-                    }
-
-                    // Add tag
-                    if (hltbTime != 0)
-                    {
-                        bool isFind = false;
-                        if (hltbTime < 3600 && !isFind)
-                        {
-                            isFind = true;
-                            tagIds.Add((HltbTags.Find(x => x.Name == $"[HLTB] {resources.GetString("LOCPLaytimeLessThenAnHour")}")).Id);
-                        }
-                        if (hltbTime < 18000 && !isFind)
-                        {
-                            isFind = true;
-                            tagIds.Add((HltbTags.Find(x => x.Name == $"[HLTB] {resources.GetString("LOCHowLongToBeat1to5")}")).Id);
-                        }
-                        if (hltbTime < 36000 && !isFind)
-                        {
-                            isFind = true;
-                            tagIds.Add((HltbTags.Find(x => x.Name == $"[HLTB] {resources.GetString("LOCHowLongToBeat5to10")}")).Id);
-                        }
-                        if (hltbTime < 72000 && !isFind)
-                        {
-                            isFind = true;
-                            tagIds.Add((HltbTags.Find(x => x.Name == $"[HLTB] {resources.GetString("LOCHowLongToBeat10to20")}")).Id);
-                        }
-                        if (hltbTime < 108000 && !isFind)
-                        {
-                            isFind = true;
-                            tagIds.Add((HltbTags.Find(x => x.Name == $"[HLTB] {resources.GetString("LOCHowLongToBeat20to30")}")).Id);
-                        }
-                        if (hltbTime < 144000 && !isFind)
-                        {
-                            isFind = true;
-                            tagIds.Add((HltbTags.Find(x => x.Name == $"[HLTB] {resources.GetString("LOCHowLongToBeat30to40")}")).Id);
-                        }
-                        if (hltbTime < 180000 && !isFind)
-                        {
-                            isFind = true;
-                            tagIds.Add((HltbTags.Find(x => x.Name == $"[HLTB] {resources.GetString("LOCHowLongToBeat40to50")}")).Id);
-                        }
-                        if (hltbTime < 216000 && !isFind)
-                        {
-                            isFind = true;
-                            tagIds.Add((HltbTags.Find(x => x.Name == $"[HLTB] {resources.GetString("LOCHowLongToBeat50to60")}")).Id);
-                        }
-                        if (hltbTime < 252000 && !isFind)
-                        {
-                            isFind = true;
-                            tagIds.Add((HltbTags.Find(x => x.Name == $"[HLTB] {resources.GetString("LOCHowLongToBeat60to70")}")).Id);
-                        }
-                        if (hltbTime < 288000 && !isFind)
-                        {
-                            isFind = true;
-                            tagIds.Add((HltbTags.Find(x => x.Name == $"[HLTB] {resources.GetString("LOCHowLongToBeat70to80")}")).Id);
-                        }
-                        if (hltbTime < 324000 && !isFind)
-                        {
-                            isFind = true;
-                            tagIds.Add((HltbTags.Find(x => x.Name == $"[HLTB] {resources.GetString("LOCHowLongToBeat80to90")}")).Id);
-                        }
-                        if (hltbTime < 360000 && !isFind)
-                        {
-                            isFind = true;
-                            tagIds.Add((HltbTags.Find(x => x.Name == $"[HLTB] {resources.GetString("LOCHowLongToBeat90to100")}")).Id);
-                        }
-                        if (hltbTime >= 360000 && !isFind)
-                        {
-                            isFind = true;
-                            tagIds.Add((HltbTags.Find(x => x.Name == $"[HLTB] {resources.GetString("LOCHowLongToBeat100plus")}")).Id);
-                        }
-                    }
+                    hltbTime = data.GameHltbData.MainStory;
                 }
-                catch (Exception ex)
+                else if (data.GameHltbData.MainExtra != 0)
                 {
-                    Common.LogError(ex, "HowLongToBeat", $"Tag insert error with {hltbTime}");
+                    hltbTime = data.GameHltbData.MainStory;
+                }
+                if (data.GameHltbData.Solo != 0)
+                {
+                    hltbTime = data.GameHltbData.Solo;
+                }
+                else if (data.GameHltbData.Vs != 0)
+                {
+                    hltbTime = data.GameHltbData.Vs;
+                }
+
+                // Add tag
+                if (hltbTime != 0)
+                {
+                    bool isFind = false;
+                    if (hltbTime < 3600 && !isFind)
+                    {
+                        isFind = true;
+                        tagIds.Add((HltbTags.Find(x => x.Name == $"[HLTB] {resources.GetString("LOCPLaytimeLessThenAnHour")}")).Id);
+                    }
+                    if (hltbTime < 18000 && !isFind)
+                    {
+                        isFind = true;
+                        tagIds.Add((HltbTags.Find(x => x.Name == $"[HLTB] {resources.GetString("LOCHowLongToBeat1to5")}")).Id);
+                    }
+                    if (hltbTime < 36000 && !isFind)
+                    {
+                        isFind = true;
+                        tagIds.Add((HltbTags.Find(x => x.Name == $"[HLTB] {resources.GetString("LOCHowLongToBeat5to10")}")).Id);
+                    }
+                    if (hltbTime < 72000 && !isFind)
+                    {
+                        isFind = true;
+                        tagIds.Add((HltbTags.Find(x => x.Name == $"[HLTB] {resources.GetString("LOCHowLongToBeat10to20")}")).Id);
+                    }
+                    if (hltbTime < 108000 && !isFind)
+                    {
+                        isFind = true;
+                        tagIds.Add((HltbTags.Find(x => x.Name == $"[HLTB] {resources.GetString("LOCHowLongToBeat20to30")}")).Id);
+                    }
+                    if (hltbTime < 144000 && !isFind)
+                    {
+                        isFind = true;
+                        tagIds.Add((HltbTags.Find(x => x.Name == $"[HLTB] {resources.GetString("LOCHowLongToBeat30to40")}")).Id);
+                    }
+                    if (hltbTime < 180000 && !isFind)
+                    {
+                        isFind = true;
+                        tagIds.Add((HltbTags.Find(x => x.Name == $"[HLTB] {resources.GetString("LOCHowLongToBeat40to50")}")).Id);
+                    }
+                    if (hltbTime < 216000 && !isFind)
+                    {
+                        isFind = true;
+                        tagIds.Add((HltbTags.Find(x => x.Name == $"[HLTB] {resources.GetString("LOCHowLongToBeat50to60")}")).Id);
+                    }
+                    if (hltbTime < 252000 && !isFind)
+                    {
+                        isFind = true;
+                        tagIds.Add((HltbTags.Find(x => x.Name == $"[HLTB] {resources.GetString("LOCHowLongToBeat60to70")}")).Id);
+                    }
+                    if (hltbTime < 288000 && !isFind)
+                    {
+                        isFind = true;
+                        tagIds.Add((HltbTags.Find(x => x.Name == $"[HLTB] {resources.GetString("LOCHowLongToBeat70to80")}")).Id);
+                    }
+                    if (hltbTime < 324000 && !isFind)
+                    {
+                        isFind = true;
+                        tagIds.Add((HltbTags.Find(x => x.Name == $"[HLTB] {resources.GetString("LOCHowLongToBeat80to90")}")).Id);
+                    }
+                    if (hltbTime < 360000 && !isFind)
+                    {
+                        isFind = true;
+                        tagIds.Add((HltbTags.Find(x => x.Name == $"[HLTB] {resources.GetString("LOCHowLongToBeat90to100")}")).Id);
+                    }
+                    if (hltbTime >= 360000 && !isFind)
+                    {
+                        isFind = true;
+                        tagIds.Add((HltbTags.Find(x => x.Name == $"[HLTB] {resources.GetString("LOCHowLongToBeat100plus")}")).Id);
+                    }
                 }
             }
             return tagIds;
@@ -356,9 +354,14 @@ namespace HowLongToBeat.Services
                         PlayniteApi.Database.Games.Update(game);
                     }
                 }
-                catch (Exception ex)
+                catch
                 {
-                    Common.LogError(ex, "HowLongToBeat", $"Tag insert error with {game.Name}");
+                    logger.Error($"HowLongToBeat - Tag insert error with {game.Name}");
+                    PlayniteApi.Notifications.Add(new NotificationMessage(
+                        "HowLongToBeat-Tag-Errors",
+                        resources.GetString("LOCHowLongToBeatNotificationTagError"),
+                        NotificationType.Error
+                    ));
                 }
             }
         }
@@ -380,6 +383,22 @@ namespace HowLongToBeat.Services
             catch (Exception ex)
             {
                 Common.LogError(ex, "HowLongToBeat", $"Tag remove error with {game.Name}");
+            }
+        }
+
+        public static void RemoveAllTagDb(IPlayniteAPI PlayniteApi)
+        {
+            try
+            {
+                List<Tag> HltbTags = GetTagId(PlayniteApi);
+                foreach (Tag tag in HltbTags)
+                {
+                    PlayniteApi.Database.Tags.Remove(tag);
+                }
+            }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, "HowLongToBeat", $"Error on RemoveAllTagDb()");
             }
         }
 

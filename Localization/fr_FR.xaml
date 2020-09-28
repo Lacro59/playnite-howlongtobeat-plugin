@@ -70,6 +70,9 @@
     <sys:String x:Key="LOCHowLongToBeat90to100">90 à 100 heures</sys:String>
     <sys:String x:Key="LOCHowLongToBeat100plus">Plus de 100 hours</sys:String>
 
+    <sys:String x:Key="LOCHowLongToBeatNotificationTagError" xml:space="preserve">Erreur lors de l'insertation d'une étiquette.
+S'il vous plaît, essayer de supprimer tous les tags depuis le menu de configuration de l'extension.</sys:String>
+
     <!--  
     MainView
     -->
