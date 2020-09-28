@@ -2,6 +2,7 @@
 using HowLongToBeat.Services;
 using HowLongToBeat.Views;
 using HowLongToBeat.Views.Interfaces;
+using Newtonsoft.Json;
 using Playnite.SDK;
 using Playnite.SDK.Events;
 using Playnite.SDK.Models;
@@ -269,7 +270,7 @@ namespace HowLongToBeat
                             {
                                 Button HltbButton = new Button();
                                 HltbButton.Name = "PART_HltbButton";
-                                HltbButton.FontFamily = new FontFamily("pack://application:,,,/PluginCommon;component/Resources/font.ttf#font");
+                                HltbButton.FontFamily = new FontFamily(new Uri("pack://application:,,,/PluginCommon;component/Resources/"), "./#font");
                                 HltbButton.Margin = new Thickness(10, 0, 0, 0);
                                 HltbButton.Click += OnBtGameSelectedActionBarClick;
                                 HltbButton.Content = TransformIcon.Get("HowLongToBeat");

@@ -3,7 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:interfaces="clr-namespace:HowLongToBeat.Views.Interfaces"
              mc:Ignorable="d" Height="350" Width="700" Background="{DynamicResource WindowBackgourndBrush}"
              Title="HowLongToBeat"              
              d:DesignStyle="{StaticResource WindowDesignStyle}"
@@ -11,7 +10,7 @@
              ResizeMode="NoResize" WindowStartupLocation="CenterScreen" WindowStyle="None">
 
     <WindowBase.Resources>
-        <FontFamily x:Key="DefaultFontFamily">pack://application:,,,/PluginCommon;component/Resources/font.ttf#font</FontFamily>
+        <FontFamily x:Key="font">/PluginCommon;Component/Resources/font.ttf#font</FontFamily>
     </WindowBase.Resources>
     
     <DockPanel Margin="10" Loaded="DockPanel_Loaded">
@@ -76,7 +75,7 @@
 
         <DockPanel DockPanel.Dock="Bottom" Margin="0,10,0,0">
             <TextBlock DockPanel.Dock="Top" FontSize="24" FontWeight="Bold" Text="{DynamicResource LOCHowLongToBeatProgression}" Foreground="{DynamicResource TextBrush}" Margin="0,0,0,10" HorizontalAlignment="Center"></TextBlock>
-            <Label FontFamily="{StaticResource DefaultFontFamily}" Content=""></Label>
+
             <StackPanel Name="HltbProgressBar" DockPanel.Dock="Bottom" Height="40"></StackPanel>
         </DockPanel>
     </DockPanel>
