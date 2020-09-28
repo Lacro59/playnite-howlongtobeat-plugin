@@ -16,6 +16,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -32,8 +33,9 @@ namespace HowLongToBeat
         public override Guid Id { get; } = Guid.Parse("e08cd51f-9c9a-4ee3-a094-fde03b55492f");
 
         private readonly IntegrationUI ui = new IntegrationUI();
+        private readonly TaskHelper taskHelper = new TaskHelper();
 
-        
+
         public HowLongToBeat(IPlayniteAPI api) : base(api)
         {
             settings = new HowLongToBeatSettings(this);
@@ -253,6 +255,11 @@ namespace HowLongToBeat
                 ui.AddResources(resourcesLists);
 
 
+                taskHelper.Check();
+
+                CancellationTokenSource tokenSource = new CancellationTokenSource();
+                CancellationToken ct = tokenSource.Token;
+
                 var taskIntegration = Task.Run(() => LoadData(PlayniteApi, this.GetPluginUserDataPath(), settings))
                     .ContinueWith(antecedent =>
                     {
@@ -275,7 +282,10 @@ namespace HowLongToBeat
                                 HltbButton.Click += OnBtGameSelectedActionBarClick;
                                 HltbButton.Content = TransformIcon.Get("HowLongToBeat");
 
-                                ui.AddButtonInGameSelectedActionBarButtonOrToggleButton(HltbButton);
+                                if (!ct.IsCancellationRequested)
+                                {
+                                    ui.AddButtonInGameSelectedActionBarButtonOrToggleButton(HltbButton);
+                                }
                             }
 
                             if (HltbGameData.hasData)
@@ -319,6 +329,8 @@ namespace HowLongToBeat
                             }
                         }));
                     });
+
+                taskHelper.Add(taskIntegration, tokenSource);
             }
             catch (Exception ex)
             {
