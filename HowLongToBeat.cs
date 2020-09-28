@@ -7,6 +7,10 @@ using Playnite.SDK.Events;
 using Playnite.SDK.Models;
 using Playnite.SDK.Plugins;
 using PluginCommon;
+using PluginCommon.PlayniteResources;
+using PluginCommon.PlayniteResources.API;
+using PluginCommon.PlayniteResources.Common;
+using PluginCommon.PlayniteResources.Converters;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -62,41 +66,56 @@ namespace HowLongToBeat
 
         public override IEnumerable<ExtensionFunction> GetFunctions()
         {
-            return new List<ExtensionFunction>
-            {
+            List<ExtensionFunction> listFunctions = new List<ExtensionFunction>();
+
+            listFunctions.Add(
                 new ExtensionFunction(
-                    resources.GetString("LOCHowLongToBeat"),
-                    () =>
-                    {
-                        // Add code to be execute when user invokes this menu entry.
+                        resources.GetString("LOCHowLongToBeat"),
+                        () =>
+                        {
+                                // Add code to be execute when user invokes this menu entry.
 
-                        try {
-                            HowLongToBeatData data = new HowLongToBeatData(GameSelected, this.GetPluginUserDataPath(), PlayniteApi);
-                            if (data.hasData)
-                            {
-                                if (settings.EnableTag)
-                                {
-                                    data.AddTag();
-                                }
-
-                                new Views.HowLongToBeat(data, GameSelected, PlayniteApi, settings).ShowDialog();
                                 try
+                            {
+                                HowLongToBeatData data = new HowLongToBeatData(GameSelected, this.GetPluginUserDataPath(), PlayniteApi);
+                                if (data.hasData)
                                 {
-                                    Integration();
-                                }
-                                catch(Exception ex)
-                                {
-                                    Common.LogError(ex, "HowLongToBeat", $"Error on Integration");
+                                    if (settings.EnableTag)
+                                    {
+                                        data.AddTag();
+                                    }
+
+                                    new Views.HowLongToBeat(data, GameSelected, PlayniteApi, settings).ShowDialog();
+                                    try
+                                    {
+                                        Integration();
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        Common.LogError(ex, "HowLongToBeat", $"Error on Integration");
+                                    }
                                 }
                             }
-                        }
-                        catch (Exception ex)
-                        {
-                            Common.LogError(ex, "HowLongToBeat", "Error to load database");
-                            PlayniteApi.Dialogs.ShowErrorMessage(resources.GetString("LOCDatabaseErroTitle"), "HowLongToBeat");
-                        }
+                            catch (Exception ex)
+                            {
+                                Common.LogError(ex, "HowLongToBeat", "Error to load database");
+                                PlayniteApi.Dialogs.ShowErrorMessage(resources.GetString("LOCDatabaseErroTitle"), "HowLongToBeat");
+                            }
+                        })
+                );
+
+#if DEBUG
+            listFunctions.Add(
+                new ExtensionFunction(
+                    "HowLongToBeat Test",
+                    () =>
+                    {
+
                     })
-            };
+                );
+#endif
+
+            return listFunctions;
         }
 
 
@@ -250,7 +269,7 @@ namespace HowLongToBeat
                             {
                                 Button HltbButton = new Button();
                                 HltbButton.Name = "PART_HltbButton";
-                                HltbButton.FontFamily = new FontFamily(new Uri("pack://application:,,,/HowLongToBeat;component/Resources/"), "./#font");
+                                HltbButton.FontFamily = new FontFamily("pack://application:,,,/PluginCommon;component/Resources/font.ttf#font");
                                 HltbButton.Margin = new Thickness(10, 0, 0, 0);
                                 HltbButton.Click += OnBtGameSelectedActionBarClick;
                                 HltbButton.Content = TransformIcon.Get("HowLongToBeat");

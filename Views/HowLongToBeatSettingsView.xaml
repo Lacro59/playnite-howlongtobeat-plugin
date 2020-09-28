@@ -212,7 +212,7 @@
                             <Label Content="{DynamicResource LOCHowLongToBeatIntegrationProgressBarShowTime}" />
                         </CheckBox>
 
-                        <Grid Margin="30,5,0,0">
+                        <Grid Margin="30,5,0,0" IsEnabled="{Binding ProgressBarShowTime}">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="*" />

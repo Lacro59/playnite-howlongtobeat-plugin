@@ -2,10 +2,13 @@
 using HowLongToBeat.Services;
 using HowLongToBeat.Views.Interfaces;
 using Playnite.Controls;
-using Playnite.Converters;
 using Playnite.SDK;
 using Playnite.SDK.Models;
 using PluginCommon;
+using PluginCommon.PlayniteResources;
+using PluginCommon.PlayniteResources.API;
+using PluginCommon.PlayniteResources.Common;
+using PluginCommon.PlayniteResources.Converters;
 using System.Windows;
 using System.Diagnostics;
 using System.Globalization;

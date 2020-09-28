@@ -3,13 +3,17 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-                     xmlns:interfaces="clr-namespace:HowLongToBeat.Views.Interfaces"
-                     mc:Ignorable="d" Height="350" Width="700" Background="{DynamicResource WindowBackgourndBrush}"
+             xmlns:interfaces="clr-namespace:HowLongToBeat.Views.Interfaces"
+             mc:Ignorable="d" Height="350" Width="700" Background="{DynamicResource WindowBackgourndBrush}"
              Title="HowLongToBeat"              
              d:DesignStyle="{StaticResource WindowDesignStyle}"
              Style="{DynamicResource StandardWindowStyle}"
              ResizeMode="NoResize" WindowStartupLocation="CenterScreen" WindowStyle="None">
 
+    <WindowBase.Resources>
+        <FontFamily x:Key="DefaultFontFamily">pack://application:,,,/PluginCommon;component/Resources/font.ttf#font</FontFamily>
+    </WindowBase.Resources>
+    
     <DockPanel Margin="10" Loaded="DockPanel_Loaded">
 
         <DockPanel DockPanel.Dock="Top">
@@ -46,18 +50,18 @@
 
                         <StackPanel Name="Hltb_El1_Color" Grid.Column="0" Grid.Row="0" Background="DarkCyan" Width="25" Height="25"></StackPanel>
                         <TextBlock Name="Hltb_El1" Grid.Column="1" Grid.Row="0" Text="{DynamicResource LOCHowLongToBeatMainStory}" Foreground="{DynamicResource TextBrush}" FontSize="16" VerticalAlignment="Center"></TextBlock>
-                        <TextBlock Name="Hltb_El1_Data" Text="02h00" Grid.Column="2" Grid.Row="0" Foreground="{DynamicResource TextBrush}" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
+                        <TextBlock Name="Hltb_El1_Data" Grid.Column="2" Grid.Row="0" Foreground="{DynamicResource TextBrush}" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
 
                         <StackPanel Name="Hltb_El2_Color" Grid.Column="0" Grid.Row="1" Background="RoyalBlue" Width="25" Height="25"></StackPanel>
                         <TextBlock Name="Hltb_El2" Grid.Column="1" Grid.Row="1" Text="{DynamicResource LOCHowLongToBeatMainExtra}" Foreground="{DynamicResource TextBrush}" FontSize="16" VerticalAlignment="Center"></TextBlock>
-                        <TextBlock Name="Hltb_El2_Data" Text="06h00" Grid.Column="2" Grid.Row="1" Foreground="{DynamicResource TextBrush}" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
+                        <TextBlock Name="Hltb_El2_Data" Grid.Column="2" Grid.Row="1" Foreground="{DynamicResource TextBrush}" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
 
                         <StackPanel Name="Hltb_El3_Color" Grid.Column="0" Grid.Row="2" Background="ForestGreen" Width="25" Height="25"></StackPanel>
                         <TextBlock Name="Hltb_El3" Grid.Column="1" Grid.Row="2" Text="{DynamicResource LOCHowLongToBeatCompletionist}" Foreground="{DynamicResource TextBrush}" FontSize="16" VerticalAlignment="Center"></TextBlock>
-                        <TextBlock Name="Hltb_El3_Data" Text="12h00" Grid.Column="2" Grid.Row="2" Foreground="{DynamicResource TextBrush}" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
+                        <TextBlock Name="Hltb_El3_Data" Grid.Column="2" Grid.Row="2" Foreground="{DynamicResource TextBrush}" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
 
                         <TextBlock Grid.Column="1" Grid.Row="3" Text="{DynamicResource LOCHowLongToBeatPlaytime}" Foreground="{DynamicResource TextBrush}" FontSize="16" VerticalAlignment="Center"></TextBlock>
-                        <TextBlock Grid.Column="2" Grid.Row="3" Text="{Binding PlaytimeFormat, FallbackValue='36h00'}" Foreground="{DynamicResource TextBrush}" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
+                        <TextBlock Grid.Column="2" Grid.Row="3" Text="{Binding PlaytimeFormat}" Foreground="{DynamicResource TextBrush}" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
 
                         <Label Grid.Row="4" Grid.ColumnSpan="3" HorizontalAlignment="Right" Content="{Binding HltbName, FallbackValue='src: Name for test'}" FontSize="8" />
                     </Grid>
@@ -72,7 +76,7 @@
 
         <DockPanel DockPanel.Dock="Bottom" Margin="0,10,0,0">
             <TextBlock DockPanel.Dock="Top" FontSize="24" FontWeight="Bold" Text="{DynamicResource LOCHowLongToBeatProgression}" Foreground="{DynamicResource TextBrush}" Margin="0,0,0,10" HorizontalAlignment="Center"></TextBlock>
-
+            <Label FontFamily="{StaticResource DefaultFontFamily}" Content=""></Label>
             <StackPanel Name="HltbProgressBar" DockPanel.Dock="Bottom" Height="40"></StackPanel>
         </DockPanel>
     </DockPanel>
