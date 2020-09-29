@@ -260,7 +260,7 @@ namespace HowLongToBeat
                 CancellationTokenSource tokenSource = new CancellationTokenSource();
                 CancellationToken ct = tokenSource.Token;
 
-                var taskIntegration = Task.Run(() => LoadData(PlayniteApi, this.GetPluginUserDataPath(), settings))
+                var taskIntegration = Task.Run(() => LoadData(PlayniteApi, this.GetPluginUserDataPath(), settings), tokenSource.Token)
                     .ContinueWith(antecedent =>
                     {
                         HowLongToBeatData HltbGameData = antecedent.Result;
