@@ -119,8 +119,11 @@ namespace HowLongToBeat.Services
                 List<Tag> HltbTags = GetTagId(_PlayniteApi);
                 foreach (Tag tag in HltbTags)
                 {
-                    _game.TagIds.Remove(tag.Id);
-                    _PlayniteApi.Database.Games.Update(_game);
+                    if (_game.TagIds != null && _game.TagIds.Count > 0)
+                    {
+                        _game.TagIds.Remove(tag.Id);
+                        _PlayniteApi.Database.Games.Update(_game);
+                    }
                 }
             }
             catch (Exception ex)
