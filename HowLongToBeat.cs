@@ -76,9 +76,9 @@ namespace HowLongToBeat
                         resources.GetString("LOCHowLongToBeat"),
                         () =>
                         {
-                                // Add code to be execute when user invokes this menu entry.
+                            // Add code to be execute when user invokes this menu entry.
 
-                                try
+                            try
                             {
                                 HowLongToBeatData data = new HowLongToBeatData(GameSelected, this.GetPluginUserDataPath(), PlayniteApi);
                                 if (data.hasData)

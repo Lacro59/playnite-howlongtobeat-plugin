@@ -39,10 +39,6 @@
       <HintPath>packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Playnite">
-      <HintPath>playnite-plugincommon\Resources\PlayniteResources\Playnite.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="Playnite.SDK, Version=5.3.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>packages\PlayniteSDK.5.3.0-rc\lib\net462\Playnite.SDK.dll</HintPath>
       <Private>False</Private>
@@ -85,6 +81,7 @@
     <None Include="extension.yaml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="LICENSE" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -138,18 +135,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <None Include="Resources\PlayniteResources\DerivedStyles\MainWindowStyle.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Resources\PlayniteResources\DerivedStyles\StandardWindowStyle.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Resources\PlayniteResources\DerivedStyles\WindowBarButton.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </None>
+    <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
     <None Include="icon.png">
@@ -161,6 +147,9 @@
       <Project>{e05ac297-6067-4270-a572-1df926bb3635}</Project>
       <Name>PluginCommon</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Resources\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

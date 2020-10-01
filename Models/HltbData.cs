@@ -1,5 +1,9 @@
 ﻿using Newtonsoft.Json;
-using Playnite.Converters;
+using PluginCommon;
+using PluginCommon.PlayniteResources;
+using PluginCommon.PlayniteResources.API;
+using PluginCommon.PlayniteResources.Common;
+using PluginCommon.PlayniteResources.Converters;
 using System.Globalization;
 
 namespace HowLongToBeat.Models
