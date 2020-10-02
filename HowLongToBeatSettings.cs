@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using HowLongToBeat.Views;
+using Newtonsoft.Json;
 using Playnite.SDK;
 using System.Collections.Generic;
 
@@ -80,6 +81,12 @@ namespace HowLongToBeat
         {
             // Code executed when user decides to cancel any changes made since BeginEdit was called.
             // This method should revert any changes made to Option1 and Option2.
+
+            if (HowLongToBeatSettingsView.tokenSource != null)
+            {
+                HowLongToBeatSettingsView.WithoutMessage = true;
+                HowLongToBeatSettingsView.tokenSource.Cancel();
+            }
         }
 
         public void EndEdit()

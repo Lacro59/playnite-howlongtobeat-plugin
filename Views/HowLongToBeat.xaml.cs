@@ -1,11 +1,13 @@
 ﻿using HowLongToBeat.Models;
 using HowLongToBeat.Services;
 using HowLongToBeat.Views.Interfaces;
-using Playnite.Controls;
-using Playnite.Converters;
 using Playnite.SDK;
 using Playnite.SDK.Models;
 using PluginCommon;
+using PluginCommon.PlayniteResources;
+using PluginCommon.PlayniteResources.API;
+using PluginCommon.PlayniteResources.Common;
+using PluginCommon.PlayniteResources.Converters;
 using System.Windows;
 using System.Diagnostics;
 using System.Globalization;
@@ -18,7 +20,7 @@ namespace HowLongToBeat.Views
     /// <summary>
     /// Logique d'interaction pour HowLongToBeat.xaml
     /// </summary>
-    public partial class HowLongToBeat : WindowBase
+    public partial class HowLongToBeat : Window
     {
         private static readonly ILogger logger = LogManager.GetLogger();
         private static IResourceProvider resources = new ResourceProvider();

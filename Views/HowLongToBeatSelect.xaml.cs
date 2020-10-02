@@ -1,9 +1,12 @@
 ﻿using HowLongToBeat.Models;
 using HowLongToBeat.Services;
 using Newtonsoft.Json;
-using Playnite.Controls;
 using Playnite.SDK;
 using PluginCommon;
+using PluginCommon.PlayniteResources;
+using PluginCommon.PlayniteResources.API;
+using PluginCommon.PlayniteResources.Common;
+using PluginCommon.PlayniteResources.Converters;
 using System.Collections.Generic;
 using System.IO;
 using System.Windows;
@@ -11,13 +14,12 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 
-
 namespace HowLongToBeat.Views
 {
     /// <summary>
     /// Logique d'interaction pour HowLongToBeatSelect.xaml
     /// </summary>
-    public partial class HowLongToBeatSelect : WindowBase
+    public partial class HowLongToBeatSelect : Window
     {
         private static readonly ILogger logger = LogManager.GetLogger();
 
