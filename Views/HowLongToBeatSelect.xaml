@@ -4,10 +4,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
         xmlns:localPlugin="clr-namespace:PluginCommon;assembly=PluginCommon"
-        mc:Ignorable="d" Height="466" Width="500" Background="{DynamicResource WindowBackgourndBrush}"
+        mc:Ignorable="d" Height="510" Width="500" Background="{DynamicResource WindowBackgourndBrush}"
         Title="{DynamicResource LOCHowLongToBeatSelection}" 
-        BorderThickness="1" BorderBrush="{DynamicResource PopupBorderBrush}"
-        ResizeMode="NoResize" WindowStartupLocation="CenterScreen" WindowStyle="None">
+        ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
 
     <Window.Resources>
         <localPlugin:VisibilityZeroConverter x:Key="VisibilityZeroConverter" />
@@ -104,8 +103,8 @@
                 <ColumnDefinition Width="100" />
             </Grid.ColumnDefinitions>
 
-            <Button Name="ButtonSelect" IsEnabled="False" Grid.Column="1" Width="100" Content="{DynamicResource LOCHowLongToBeatSelect}" VerticalAlignment="Center" Click="ButtonSelect_Click"></Button>
-            <Button Grid.Column="3" Width="100" Content="{DynamicResource LOCHowLongToBeatCancel}" VerticalAlignment="Center" Click="ButtonCancel_Click"></Button>
+            <Button Name="ButtonSelect" IsEnabled="False" Grid.Column="1" Content="{DynamicResource LOCHowLongToBeatSelect}" VerticalAlignment="Center" Click="ButtonSelect_Click"></Button>
+            <Button Grid.Column="3" Content="{DynamicResource LOCHowLongToBeatCancel}" VerticalAlignment="Center" Click="ButtonCancel_Click"></Button>
         </Grid>
     </StackPanel>
 </Window >

@@ -3,10 +3,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        mc:Ignorable="d" Height="328" Width="700" Background="{DynamicResource WindowBackgourndBrush}"
+        mc:Ignorable="d" Height="350" Width="700" Background="{DynamicResource WindowBackgourndBrush}"
         Title="HowLongToBeat"             
-        BorderThickness="1" BorderBrush="{DynamicResource PopupBorderBrush}"
-        ResizeMode="NoResize" WindowStartupLocation="CenterScreen" WindowStyle="None">
+        ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
 
     <Window.Resources>
         <FontFamily x:Key="font">/PluginCommon;Component/Resources/font.ttf#font</FontFamily>
