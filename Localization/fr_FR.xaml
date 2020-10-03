@@ -2,25 +2,24 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:sys="clr-namespace:System;assembly=mscorlib">
 
-    <!--  
-    HowLongToBeatSettingsView
-    -->
+    <!-- HowLongToBeatSettingsView -->
 
     <sys:String x:Key="LOCHowLongToBeatProgressBarTag">Traitement en cours...</sys:String>
     <sys:String x:Key="LOCHowLongToBeatProgressBar">Ajouté(s) {0} - Déjà ajouté(s) {1} - Non ajouté(s) {2}</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatAddTagDescription">Etiquette avec le temps "Main Story" / "Solo" (Main + Extra / Vs si absent)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatShowHltbImage">Afficher l'image de couverture de How Long To Beat</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAddTagDescription">Ajouter une étiquette avec le temps pour finir le jeu</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoTag">Traitement automatique des étiquettes</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatShowHltbImage">Afficher la jaquette du jeu de HowLongToBeat</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatIntegration">Intégration dans l'interface</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationButton">Ajouter un bouton</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationButton">Ajouter un bouton aux détails du jeu</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationInDescription">Intégration dans la description du jeu</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationShowTitle">Afficher le titre</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationTopGameDetails">Intégrer au dessus de la description du jeu</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationInCustomTheme">Intégration dans les thèmes personnalisés (si intégré)</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarOptions">Options pour la barre de progression</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">Afficher info bulle avec le temps dans la barre de progression</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">Afficher une info bulle avec le temps</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTime">Afficher le temps avec la barre de progression</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeAbove">Au dessus</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeInterior">Intérieur</sys:String>
@@ -30,12 +29,10 @@
     <sys:String x:Key="LOCHowLongToBeatAutoAccept">Automatiquement accepter lorsqu'il n'y a qu'un jeu trouvé</sys:String>
     <sys:String x:Key="LOCHowLongToBeatShowWhenMismatch">Voir la fenêtre de sélection lorsqu'il y a plus d'un jeu trouvé</sys:String>
 
-    <!--  
-    HowLongToBeatSelect
-    -->
+    <!-- HowLongToBeatSelect -->
 
     <sys:String x:Key="LOCHowLongToBeatSelection">HowLongToBeat sélection</sys:String>
-    
+
     <sys:String x:Key="LOCHowLongToBeatMainStory">Histoire principal</sys:String>
     <sys:String x:Key="LOCHowLongToBeatMainExtra">Principal + extra</sys:String>
     <sys:String x:Key="LOCHowLongToBeatCompletionist">Complétiste</sys:String>
@@ -51,9 +48,7 @@
     <sys:String x:Key="LOCHowLongToBeatSelect">Sélectionner</sys:String>
     <sys:String x:Key="LOCHowLongToBeatCancel">Annuler</sys:String>
 
-    <!--  
-    HowLongToBeat
-    -->
+    <!-- HowLongToBeat -->
 
     <sys:String x:Key="LOCHowLongToBeatProgression">Progression</sys:String>
 
@@ -70,14 +65,12 @@
     <sys:String x:Key="LOCHowLongToBeat90to100">90 à 100 heures</sys:String>
     <sys:String x:Key="LOCHowLongToBeat100plus">Plus de 100 hours</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatNotificationTagError" xml:space="preserve">Erreur lors de l'insertation d'une étiquette.
-S'il vous plaît, essayer de supprimer tous les tags depuis le menu de configuration de l'extension.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatNotificationTagError" xml:space="preserve">Erreur lors de l'insertion d'une étiquette.
+Essayer de supprimer tous les tags depuis le menu de configuration de l'extension avant de réessayer.</sys:String>
 
-    <!--  
-    MainView
-    -->
+    <!-- MainView -->
 
     <sys:String x:Key="LOCHowLongToBeat">HowLongToBeat</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatTitle">How long to beat</sys:String>
-    
+    <sys:String x:Key="LOCHowLongToBeatTitle">HowLongToBeat</sys:String>
+
 </ResourceDictionary>

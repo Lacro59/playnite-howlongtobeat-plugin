@@ -26,17 +26,11 @@
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="10" />
-                            <ColumnDefinition Width="auto" />
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="30" />
                             <RowDefinition Height="30" />
-                            <RowDefinition Height="auto" />
                             <RowDefinition Height="30" />
-                            <RowDefinition Height="30" />
-                            <RowDefinition Height="35" />
-                            <RowDefinition Height="35" />
                         </Grid.RowDefinitions>
 
                         <CheckBox Grid.Row="0" IsChecked="{Binding ShowHltbImg}" Grid.Column="0" VerticalAlignment="Center">
@@ -47,27 +41,42 @@
                             <Label Content="{DynamicResource LOCHowLongToBeatAddTagDescription}" />
                         </CheckBox>
 
-                        <StackPanel Grid.Row="1" Grid.Column="2" Orientation="Horizontal">
+                        <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                            <TextBlock Text="{DynamicResource LOCHowLongToBeatAutoTag}" Margin="0,0,10,0" VerticalAlignment="Center" />
                             <Button Content="{DynamicResource LOCAddTitle}" Margin="0,0,10,0" IsEnabled="{Binding EnableTag}" VerticalAlignment="Center" Click="ButtonAddTag_Click"/>
                             <Button Content="{DynamicResource LOCRemoveTitle}" IsEnabled="{Binding EnableTag}" VerticalAlignment="Bottom" Click="ButtonRemoveTag_Click" Margin="0,0,0,1"/>
                         </StackPanel>
+                    </Grid>
 
-
-                        <StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" >
-                            <Label Content="{DynamicResource LOCHowLongToBeatAutoData}" FontSize="18" Margin="0,20,0,0" />
+                    <Grid Margin="0,40,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="10" />
+                            <ColumnDefinition Width="auto" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="30" />
+                            <RowDefinition Height="30" />
+                            <RowDefinition Height="35" />
+                            <RowDefinition Height="35" />
+                        </Grid.RowDefinitions>
+                        
+                        <StackPanel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" >
+                            <Label Content="{DynamicResource LOCHowLongToBeatAutoData}" FontSize="18" />
                             <Separator Margin="0,0,0,10" />
                         </StackPanel>
 
-                        <CheckBox Name="cbAutoAccept" Grid.Row="3" IsChecked="{Binding AutoAccept}" Grid.Column="0" VerticalAlignment="Center" Grid.ColumnSpan="3" >
+                        <CheckBox Name="cbAutoAccept" Grid.Row="1" IsChecked="{Binding AutoAccept}" Grid.Column="0" VerticalAlignment="Center" Grid.ColumnSpan="3" >
                             <Label Content="{DynamicResource LOCHowLongToBeatAutoAccept}" />
                         </CheckBox>
 
-                        <CheckBox Name="cbShowWhenMismatch" Grid.Row="4" IsChecked="{Binding ShowWhenMismatch}" Grid.Column="0" Grid.ColumnSpan="3" VerticalAlignment="Center">
+                        <CheckBox Name="cbShowWhenMismatch" Grid.Row="2" IsChecked="{Binding ShowWhenMismatch}" Grid.Column="0" Grid.ColumnSpan="3" VerticalAlignment="Center">
                             <Label Content="{DynamicResource LOCHowLongToBeatShowWhenMismatch}" />
                         </CheckBox>
 
-                        <Button Grid.Row="5" Grid.Column="3" Name="btAddData" Content="{DynamicResource LOCDownloadLabel}" Click="BtAddData_Click" VerticalAlignment="Center" />
-                        <Button Grid.Row="6" Grid.Column="3" Name="btRemoveData" Content="{DynamicResource LOCClearAll}" Click="BtRemoveData_Click" VerticalAlignment="Center "/>
+                        <Button Grid.Row="3" Grid.Column="3" Name="btAddData" Content="{DynamicResource LOCDownloadLabel}" Click="BtAddData_Click" VerticalAlignment="Center" />
+                        <Button Grid.Row="4" Grid.Column="3" Name="btRemoveData" Content="{DynamicResource LOCClearAll}" Click="BtRemoveData_Click" VerticalAlignment="Center "/>
                     </Grid>
                 </StackPanel>
             </Grid>
