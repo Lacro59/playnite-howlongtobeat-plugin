@@ -10,25 +10,25 @@
     <sys:String x:Key="LOCHowLongToBeatProgressBar">Добавлено {0} - Добавлено ранее {1} - Не добавлено {2}</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatAddTagDescription">Тэг со временем "основного сюжета" / "одиночной игры" (если не найдено, то "сюжет + доп. задания" / "PVP")</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatShowHltbImage">Показывать обложки с сайта How Long To Beat</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatShowHltbImage">Показывать обложки с сайта HowLongToBeat</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatIntegration">Интеграция в интерфейс</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationButton">Добавить кнопку</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationInDescription">Показывать в описании игры</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationButton">Добавить кнопку в подробный вид</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationInDescription">Добавить информацию в описание игры</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationShowTitle">Показывать заголовок</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationTopGameDetails">Показывать над описанием игры</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationInCustomTheme">Интеграция в нестандартные темы (если поддерживается темой)</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarOptions">Настройки шкалы прогресса</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">Показывать подсказки на шкале прогресса</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">Показывать всплывающие подсказки на шкале прогресса</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTime">Показывать время на шкале прогресса</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeAbove">Над шкалой</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeInterior">Внутри шкалы</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeBelow">Под шкалой</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatAutoData">Загрузка данных</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAutoAccept">Автоматически подтверждать если найдено только одно совпадение</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatShowWhenMismatch">Показывать окно выбора если найдено несколько совпадений</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoData">Загрузка информации об играх</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoAccept">Автоматически выбирать, если найдено только одно совпадение</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatShowWhenMismatch">Показывать окно выбора, если найдено несколько совпадений</sys:String>
 
     <!--
     HowLongToBeatSelect
@@ -70,14 +70,14 @@
     <sys:String x:Key="LOCHowLongToBeat90to100">От 90 до 100 часов</sys:String>
     <sys:String x:Key="LOCHowLongToBeat100plus">Больше 100 часов</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatNotificationTagError" xml:space="preserve">Error for insert tag.
-Please try to delete all tag in plugin setting.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatNotificationTagError" xml:space="preserve">Не удалось добавить тэг.
+Попробуйте убрать все тэги в настройках плагина.</sys:String>
 
     <!--
     MainView
     -->
 
     <sys:String x:Key="LOCHowLongToBeat">HowLongToBeat</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatTitle">Время на прохождение (HowLongToBeat)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatTitle">HowLongToBeat</sys:String>
 
 </ResourceDictionary>
