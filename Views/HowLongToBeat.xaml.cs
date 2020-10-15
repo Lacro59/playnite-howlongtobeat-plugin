@@ -20,7 +20,7 @@ namespace HowLongToBeat.Views
     /// <summary>
     /// Logique d'interaction pour HowLongToBeat.xaml
     /// </summary>
-    public partial class HowLongToBeat : Window
+    public partial class HowLongToBeat : UserControl
     {
         private static readonly ILogger logger = LogManager.GetLogger();
         private static IResourceProvider resources = new ResourceProvider();
@@ -39,8 +39,6 @@ namespace HowLongToBeat.Views
             this.data = data;
 
             InitializeComponent();
-
-            this.PreviewKeyDown += new KeyEventHandler(HandleEsc);
 
             HltbDataUser gameData = data.GetData();
             if (data.hasData && gameData != null && gameData.GameHltbData != null)
@@ -119,14 +117,6 @@ namespace HowLongToBeat.Views
             DataContext = this;
         }
 
-        private void HandleEsc(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.Escape)
-            {
-                Close();
-            }
-        }
-
         private void SetDataInView(int ElIndicator, string ElText, string ElData)
         {
             switch (ElIndicator)
@@ -154,11 +144,6 @@ namespace HowLongToBeat.Views
             }
         }
 
-        private void DockPanel_Loaded(object sender, System.Windows.RoutedEventArgs e)
-        {
-            Tools.DesactivePlayniteWindowControl(this);
-        }
-
         private void ButtonWeb_Click(object sender, System.Windows.RoutedEventArgs e)
         {
             if (data.GetData().GameHltbData.Url != "")
@@ -170,7 +155,7 @@ namespace HowLongToBeat.Views
         private void ButtonDelete_Click(object sender, System.Windows.RoutedEventArgs e)
         {
             data.RemoveData();
-            this.Close();
+            ((Window)this.Parent).Close();
         }
 
         private void TextBlock_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)

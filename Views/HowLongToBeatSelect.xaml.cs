@@ -19,7 +19,7 @@ namespace HowLongToBeat.Views
     /// <summary>
     /// Logique d'interaction pour HowLongToBeatSelect.xaml
     /// </summary>
-    public partial class HowLongToBeatSelect : Window
+    public partial class HowLongToBeatSelect : UserControl
     {
         private static readonly ILogger logger = LogManager.GetLogger();
 
@@ -31,8 +31,6 @@ namespace HowLongToBeat.Views
 
             InitializeComponent();
 
-            this.PreviewKeyDown += new KeyEventHandler(HandleEsc);
-
             SearchElement.Text = GameName;
 
             lbSelectable.ItemsSource = data;
@@ -41,22 +39,9 @@ namespace HowLongToBeat.Views
             DataContext = this;
         }
 
-        private void HandleEsc(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.Escape)
-            {
-                Close();
-            }
-        }
-
-        private void LbSelectable_Loaded(object sender, RoutedEventArgs e)
-        {
-            Tools.DesactivePlayniteWindowControl(this);
-        }
-
         private void ButtonCancel_Click(object sender, RoutedEventArgs e)
         {
-            Close();
+            ((Window)this.Parent).Close();
         }
 
         /// <summary>
@@ -75,7 +60,7 @@ namespace HowLongToBeat.Views
 
             File.WriteAllText(FileGameData, JsonConvert.SerializeObject(SavData));
 
-            Close();
+            ((Window)this.Parent).Close();
         }
 
         /// <summary>

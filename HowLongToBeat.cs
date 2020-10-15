@@ -87,8 +87,11 @@ namespace HowLongToBeat
                                     {
                                         data.AddTag();
                                     }
+                                    
+                                    var ViewExtension = new Views.HowLongToBeat(data, GameSelected, PlayniteApi, settings);
+                                    Window windowExtension = PlayniteUiHelper.CreateExtensionWindow(PlayniteApi, "HowLongToBeat", ViewExtension);
+                                    windowExtension.ShowDialog();
 
-                                    new Views.HowLongToBeat(data, GameSelected, PlayniteApi, settings).ShowDialog();
                                     try
                                     {
                                         Integration();
@@ -182,7 +185,10 @@ namespace HowLongToBeat
                         data.AddTag();
                     }
 
-                    new Views.HowLongToBeat(data, GameSelected, PlayniteApi, settings).ShowDialog();
+                    var ViewExtension = new Views.HowLongToBeat(data, GameSelected, PlayniteApi, settings);
+                    Window windowExtension = PlayniteUiHelper.CreateExtensionWindow(PlayniteApi, "HowLongToBeat", ViewExtension);
+                    windowExtension.ShowDialog();
+
                     try
                     {
                         Integration();

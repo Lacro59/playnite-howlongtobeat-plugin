@@ -11,6 +11,7 @@ using PluginCommon.PlayniteResources.Converters;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Windows;
 
 namespace HowLongToBeat.Services
 {
@@ -61,7 +62,11 @@ namespace HowLongToBeat.Services
 #endif
 
                     List<HltbData> dataSearch = new HowLongToBeatClient().Search(game.Name);
-                    new HowLongToBeatSelect(dataSearch, FileGameData, game.Name).ShowDialog();
+
+                    
+                    var ViewExtension = new HowLongToBeatSelect(dataSearch, FileGameData, game.Name);
+                    Window windowExtension = PlayniteUiHelper.CreateExtensionWindow(PlayniteApi, resources.GetString("LOCHowLongToBeatSelection"), ViewExtension);
+                    windowExtension.ShowDialog();
 
                     if (File.Exists(FileGameData))
                     {

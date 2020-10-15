@@ -1,19 +1,17 @@
-﻿<Window x:Class="HowLongToBeat.Views.HowLongToBeatSelect"
+﻿<UserControl x:Class="HowLongToBeat.Views.HowLongToBeatSelect"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
         xmlns:localPlugin="clr-namespace:PluginCommon;assembly=PluginCommon"
-        mc:Ignorable="d" Height="510" Width="500" Background="{DynamicResource WindowBackgourndBrush}"
-        Title="{DynamicResource LOCHowLongToBeatSelection}" 
-        ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
+        mc:Ignorable="d" Width="500" Height="470" Background="{DynamicResource WindowBackgourndBrush}">
 
-    <Window.Resources>
+    <UserControl.Resources>
         <localPlugin:VisibilityZeroConverter x:Key="VisibilityZeroConverter" />
-    </Window.Resources>
+    </UserControl.Resources>
 
     <StackPanel Margin="10" Name="SelectableContent">
-        <ListBox x:Name="lbSelectable" Height="370" Loaded="LbSelectable_Loaded" SelectionChanged="LbSelectable_SelectionChanged"
+        <ListBox x:Name="lbSelectable" Height="370" SelectionChanged="LbSelectable_SelectionChanged"
                  ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto">
             <ListBox.ItemTemplate>
                 <DataTemplate>
@@ -107,5 +105,5 @@
             <Button Grid.Column="3" Content="{DynamicResource LOCHowLongToBeatCancel}" VerticalAlignment="Center" Click="ButtonCancel_Click"></Button>
         </Grid>
     </StackPanel>
-</Window >
+</UserControl >
 

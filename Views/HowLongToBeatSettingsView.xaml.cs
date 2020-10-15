@@ -179,7 +179,10 @@ namespace HowLongToBeat.Views
                                     Application.Current.Dispatcher.Invoke(new Action(() =>
                                     {
                                         string FileGameData = _PluginUserDataPath + "\\howlongtobeat\\" + game.Id.ToString() + ".json";
-                                        new HowLongToBeatSelect(dataSearch, FileGameData, game.Name).ShowDialog();
+
+                                        var ViewExtension = new HowLongToBeatSelect(dataSearch, FileGameData, game.Name);
+                                        Window windowExtension = PlayniteUiHelper.CreateExtensionWindow(_PlayniteApi, resources.GetString("LOCHowLongToBeatSelection"), ViewExtension);
+                                        windowExtension.ShowDialog();
 
                                         if (EnableTag)
                                         {
