@@ -111,7 +111,7 @@ namespace HowLongToBeat.Services
                 logger.Error($"HowLongToBeat - Tag insert error with {_game.Name}");
                 _PlayniteApi.Notifications.Add(new NotificationMessage(
                     "HowLongToBeat-Tag-Errors",
-                    resources.GetString("LOCHowLongToBeatNotificationTagError"),
+                    "HowLongToBeat\r\n" + resources.GetString("LOCHowLongToBeatNotificationTagError"),
                     NotificationType.Error
                 ));
             }
@@ -367,7 +367,7 @@ namespace HowLongToBeat.Services
                     logger.Error($"HowLongToBeat - Tag insert error with {game.Name}");
                     PlayniteApi.Notifications.Add(new NotificationMessage(
                         "HowLongToBeat-Tag-Errors",
-                        resources.GetString("LOCHowLongToBeatNotificationTagError"),
+                        "HowLongToBeat\r\n" + resources.GetString("LOCHowLongToBeatNotificationTagError"),
                         NotificationType.Error
                     ));
                 }
