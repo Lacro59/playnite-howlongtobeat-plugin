@@ -62,8 +62,8 @@
                     </Grid>
 
                     <StackPanel Grid.Column="1" Orientation="Vertical">
-                        <Button Content="Web" Margin="0,0,0,10" Click="ButtonWeb_Click"></Button>
-                        <Button Content="Delete" Click="ButtonDelete_Click"></Button>
+                        <Button Content="{DynamicResource LOCWebsiteLabel}" Margin="0,0,0,10" Click="ButtonWeb_Click"></Button>
+                        <Button Content="{DynamicResource LOCRemoveLabel}" Click="ButtonDelete_Click"></Button>
                     </StackPanel>
                 </Grid>
             </StackPanel>
@@ -72,8 +72,7 @@
         <DockPanel DockPanel.Dock="Bottom" Margin="0,10,0,0">
             <TextBlock DockPanel.Dock="Top" FontSize="24" FontWeight="Bold" Text="{DynamicResource LOCHowLongToBeatProgression}" Foreground="{DynamicResource TextBrush}" Margin="0,0,0,10" HorizontalAlignment="Center"></TextBlock>
 
-            <StackPanel Name="PART_HltbProgressBar" DockPanel.Dock="Bottom" Height="40">
-            </StackPanel>
+            <StackPanel Name="PART_HltbProgressBar" DockPanel.Dock="Bottom" Height="40"></StackPanel>
         </DockPanel>
     </DockPanel>
 </UserControl >
