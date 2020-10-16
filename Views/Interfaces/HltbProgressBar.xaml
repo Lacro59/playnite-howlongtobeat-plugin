@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:HowLongToBeat.Views.Interfaces"
              mc:Ignorable="d">
-
+    
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     </UserControl.Resources>
@@ -15,8 +15,8 @@
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
-    
-        <Grid Grid.Row="0" Loaded="Grid_Loaded" Name="PART_HltbProgressBar_Contener" Height="40" MinWidth="200">
+
+        <Grid Grid.Row="0" Loaded="Grid_Loaded" Name="PART_HltbProgressBar_Contener" Height="40" MinWidth="100">
             <ProgressBar Name="ProgressHltb_El3" Height="{Binding ElementName=PART_HltbProgressBar_Contener, Path=Height}" Value="90" 
                          Maximum="90" Background="Transparent" Foreground="ForestGreen">
             </ProgressBar>
@@ -91,7 +91,7 @@
                 </Slider.Style>
             </Slider>
 
-            <StackPanel Orientation="Horizontal" Visibility="{Binding ShowToolTip, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <StackPanel Name="PART_ShowToolTip"  Orientation="Horizontal">
                 <StackPanel Name="spHltb_El1" Height="{Binding ElementName=PART_HltbProgressBar_Contener, Path=Height}" Width="0" Background="Transparent">
                     <StackPanel.ToolTip>
                         <ToolTip Name="tpHltb_El1" />
@@ -123,3 +123,4 @@
         </StackPanel>
     </Grid>
 </UserControl>
+

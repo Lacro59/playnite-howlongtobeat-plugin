@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using Playnite.SDK;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace HowLongToBeat
 {
@@ -94,6 +95,13 @@ namespace HowLongToBeat
             // Code executed when user decides to confirm changes made since BeginEdit was called.
             // This method should save settings made to Option1 and Option2.
             plugin.SavePluginSettings(this);
+
+            HowLongToBeat.howLongToBeatUI.RemoveElements();
+            var TaskIntegrationUI = Task.Run(() =>
+            {
+                HowLongToBeat.howLongToBeatUI.AddElements();
+                HowLongToBeat.howLongToBeatUI.RefreshElements(HowLongToBeat.GameSelected);
+            });
         }
 
         public bool VerifySettings(out List<string> errors)

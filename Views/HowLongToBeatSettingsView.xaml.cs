@@ -43,7 +43,12 @@ namespace HowLongToBeat.Views
 
         private void Checkbox_Click(object sender, RoutedEventArgs e)
         {
-            CheckBox cb = (CheckBox)sender;
+            CheckBox cb = (CheckBox)sender;            
+                
+            if((cb.Name == "HltB_IntegrationButton") && (bool)cb.IsChecked)
+            {
+                HltB_IntegrationInCustomTheme.IsChecked = false;
+            }
 
             if ((cb.Name == "HltB_IntegrationInDescription") && (bool)cb.IsChecked)
             {
@@ -52,6 +57,7 @@ namespace HowLongToBeat.Views
 
             if ((cb.Name == "HltB_IntegrationInCustomTheme") && (bool)cb.IsChecked)
             {
+                HltB_IntegrationButton.IsChecked = false;
                 HltB_IntegrationInDescription.IsChecked = false;
             }
         }

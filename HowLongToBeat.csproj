@@ -61,6 +61,7 @@
     <Compile Include="HowLongToBeatSettings.cs" />
     <Compile Include="Models\HltbDataUser.cs" />
     <Compile Include="Services\HowLongToBeatData.cs" />
+    <Compile Include="Services\HowLongToBeatUI.cs" />
     <Compile Include="Views\HowLongToBeatSelect.xaml.cs">
       <DependentUpon>HowLongToBeatSelect.xaml</DependentUpon>
     </Compile>
@@ -70,8 +71,14 @@
     <Compile Include="Models\HltbData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\HowLongToBeatClient.cs" />
-    <Compile Include="Views\HowLongToBeat.xaml.cs">
-      <DependentUpon>HowLongToBeat.xaml</DependentUpon>
+    <Compile Include="Views\HowLongToBeatView.xaml.cs">
+      <DependentUpon>HowLongToBeatView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Interfaces\HltbButton.xaml.cs">
+      <DependentUpon>HltbButton.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Interfaces\HltbDescriptionIntegration.xaml.cs">
+      <DependentUpon>HltbDescriptionIntegration.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Interfaces\HltbProgressBar.xaml.cs">
       <DependentUpon>HltbProgressBar.xaml</DependentUpon>
@@ -132,15 +139,23 @@
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <Page Include="Views\HowLongToBeat.xaml">
+    <Page Include="Views\HowLongToBeatView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Interfaces\HltbProgressBar.xaml">
+    <Page Include="Views\Interfaces\HltbButton.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Interfaces\HltbDescriptionIntegration.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <None Include="README.md" />
+    <Page Include="Views\Interfaces\HltbProgressBar.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <None Include="icon.png">

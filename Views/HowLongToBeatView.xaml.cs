@@ -20,7 +20,7 @@ namespace HowLongToBeat.Views
     /// <summary>
     /// Logique d'interaction pour HowLongToBeat.xaml
     /// </summary>
-    public partial class HowLongToBeat : UserControl
+    public partial class HowLongToBeatView : UserControl
     {
         private static readonly ILogger logger = LogManager.GetLogger();
         private static IResourceProvider resources = new ResourceProvider();
@@ -34,7 +34,7 @@ namespace HowLongToBeat.Views
         private HowLongToBeatData data { get; set; }
 
 
-        public HowLongToBeat(HowLongToBeatData data, Game game, IPlayniteAPI PlayniteApi, HowLongToBeatSettings settings)
+        public HowLongToBeatView(HowLongToBeatData data, Game game, IPlayniteAPI PlayniteApi, HowLongToBeatSettings settings)
         {
             this.data = data;
 
@@ -108,9 +108,12 @@ namespace HowLongToBeat.Views
                 LongToTimePlayedConverter converter = new LongToTimePlayedConverter();
                 PlaytimeFormat = (string)converter.Convert((long)game.Playtime, null, null, CultureInfo.CurrentCulture);
 
-
-                HltbProgressBar.Children.Add(new HltbProgressBar(game.Playtime, gameData, settings));
-                HltbProgressBar.UpdateLayout();
+                if (!data.isEmpty)
+                {
+                    HltbProgressBar hltbProgressBar = new HltbProgressBar();
+                    hltbProgressBar.SetHltbData(game.Playtime, data, settings);
+                    PART_HltbProgressBar.Children.Add(hltbProgressBar);
+                }
             }
 
             // Set Binding data

@@ -59,7 +59,6 @@ namespace HowLongToBeat.Views
             };
 
             File.WriteAllText(FileGameData, JsonConvert.SerializeObject(SavData));
-
             ((Window)this.Parent).Close();
         }
 

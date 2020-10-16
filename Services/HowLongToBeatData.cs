@@ -23,8 +23,9 @@ namespace HowLongToBeat.Services
         private IPlayniteAPI _PlayniteApi { get; set; }
         private Game _game { get; set; }
 
-        private HltbDataUser data { get; set; } = new HltbDataUser();
-        public readonly bool hasData = false;
+        private HltbDataUser data { get; set; } = null;
+        public bool hasData = false;
+        public bool isEmpty = true;
 
         private string FileGameData { get; set; }
 
@@ -49,7 +50,6 @@ namespace HowLongToBeat.Services
 #if DEBUG
                 logger.Debug($"HowLongToBeat - Load data for {game.Name}");
 #endif
-
                 data = JsonConvert.DeserializeObject<HltbDataUser>(File.ReadAllText(FileGameData));
             }
             else
@@ -57,31 +57,53 @@ namespace HowLongToBeat.Services
                 // Search data
                 if (mustFind)
                 {
-#if DEBUG  
-                    logger.Debug($"HowLongToBeat - Search data for {game.Name}");
-#endif
-
-                    List<HltbData> dataSearch = new HowLongToBeatClient().Search(game.Name);
-
-                    
-                    var ViewExtension = new HowLongToBeatSelect(dataSearch, FileGameData, game.Name);
-                    Window windowExtension = PlayniteUiHelper.CreateExtensionWindow(PlayniteApi, resources.GetString("LOCHowLongToBeatSelection"), ViewExtension);
-                    windowExtension.ShowDialog();
-
-                    if (File.Exists(FileGameData))
-                    {
-                        data = JsonConvert.DeserializeObject<HltbDataUser>(File.ReadAllText(FileGameData));
-                    }
-                    else
-                    {
-                        data = null;
-                    }
+                    SearchData(game);
                 }
             }
 
-            if (data != null && data != new HltbDataUser())
+            if (data != null)
             {
                 hasData = true;
+
+                if (data.GameHltbData.MainStory != 0 || data.GameHltbData.MainExtra != 0 || data.GameHltbData.Completionist != 0 ||
+                    data.GameHltbData.Solo != 0 || data.GameHltbData.CoOp != 0 || data.GameHltbData.Vs != 0)
+                {
+                    isEmpty = false;
+                }
+            }
+        }
+
+        public void SearchData(Game game)
+        {
+#if DEBUG
+            logger.Debug($"HowLongToBeat - Search data for {game.Name}");
+#endif
+
+            List<HltbData> dataSearch = new HowLongToBeatClient().Search(game.Name);
+
+            var ViewExtension = new HowLongToBeatSelect(dataSearch, FileGameData, game.Name);
+            Window windowExtension = PlayniteUiHelper.CreateExtensionWindow(_PlayniteApi, resources.GetString("LOCHowLongToBeatSelection"), ViewExtension);
+            windowExtension.ShowDialog();
+
+            if (File.Exists(FileGameData))
+            {
+                data = JsonConvert.DeserializeObject<HltbDataUser>(File.ReadAllText(FileGameData));
+            }
+            else
+            {
+                data = null;
+            }
+
+            if (data != null)
+            {
+                hasData = true;
+
+                if (data.GameHltbData.MainStory != 0 || data.GameHltbData.MainExtra != 0 || data.GameHltbData.Completionist != 0 ||
+                    data.GameHltbData.Solo != 0 || data.GameHltbData.CoOp != 0 || data.GameHltbData.Vs != 0)
+                {
+                    isEmpty = false;
+                    HowLongToBeat.howLongToBeatUI.RefreshElements(HowLongToBeat.GameSelected);
+                }
             }
         }
 
@@ -148,6 +170,12 @@ namespace HowLongToBeat.Services
             if (File.Exists(FileGameData))
             {
                 File.Delete(FileGameData);
+
+                data = null;
+                hasData = false;
+                isEmpty = true;
+
+                HowLongToBeat.howLongToBeatUI.RefreshElements(HowLongToBeat.GameSelected);
             }
             else
             {
