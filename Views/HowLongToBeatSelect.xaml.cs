@@ -7,8 +7,10 @@ using PluginCommon.PlayniteResources;
 using PluginCommon.PlayniteResources.API;
 using PluginCommon.PlayniteResources.Common;
 using PluginCommon.PlayniteResources.Converters;
+using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -33,7 +35,17 @@ namespace HowLongToBeat.Views
 
             SearchElement.Text = GameName;
 
-            lbSelectable.ItemsSource = data;
+            if (data == null)
+            {
+                SearchData();
+            }
+            else
+            {
+                lbSelectable.ItemsSource = data;
+                lbSelectable.UpdateLayout();
+                PART_DataLoadWishlist.Visibility = Visibility.Collapsed;
+                SelectableContent.IsEnabled = true;
+            }
 
             // Set Binding data
             DataContext = this;
@@ -79,9 +91,40 @@ namespace HowLongToBeat.Views
         /// <param name="e"></param>
         private void ButtonSearch_Click(object sender, RoutedEventArgs e)
         {
-            List<HltbData> dataSearch = new HowLongToBeatClient().Search(SearchElement.Text);
-            lbSelectable.ItemsSource = dataSearch;
-            lbSelectable.UpdateLayout();
+            SearchData();
+        }
+
+        private void SearchData()
+        {
+            PART_DataLoadWishlist.Visibility = Visibility.Visible;
+            SelectableContent.IsEnabled = false;
+
+            string GameSearch = SearchElement.Text;
+            Task task = Task.Run(() =>
+            {
+                List<HltbData> dataSearch = new List<HltbData>();
+                try
+                {
+                    HowLongToBeatClient howLongToBeatClient = new HowLongToBeatClient();
+                    dataSearch = howLongToBeatClient.Search(GameSearch);
+                }
+                catch (Exception ex)
+                {
+                    Common.LogError(ex, "HowLongToBeat", "Error on LoadData()");
+                }
+
+#if DEBUG
+                logger.Debug($"HowLongToBeat - dataSearch: {JsonConvert.SerializeObject(dataSearch)}");
+#endif
+                Application.Current.Dispatcher.Invoke(new Action(() =>
+                {
+                    lbSelectable.ItemsSource = dataSearch;
+                    lbSelectable.UpdateLayout();
+
+                    PART_DataLoadWishlist.Visibility = Visibility.Collapsed;
+                    SelectableContent.IsEnabled = true;
+                }));
+            });
         }
 
         /// <summary>

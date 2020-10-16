@@ -61,7 +61,7 @@ namespace HowLongToBeat.Services
                 }
             }
 
-            if (data != null)
+            if (data != null && data.GameHltbData != null)
             {
                 hasData = true;
 
@@ -79,9 +79,7 @@ namespace HowLongToBeat.Services
             logger.Debug($"HowLongToBeat - Search data for {game.Name}");
 #endif
 
-            List<HltbData> dataSearch = new HowLongToBeatClient().Search(game.Name);
-
-            var ViewExtension = new HowLongToBeatSelect(dataSearch, FileGameData, game.Name);
+            var ViewExtension = new HowLongToBeatSelect(null, FileGameData, game.Name);
             Window windowExtension = PlayniteUiHelper.CreateExtensionWindow(_PlayniteApi, resources.GetString("LOCHowLongToBeatSelection"), ViewExtension);
             windowExtension.ShowDialog();
 
@@ -94,7 +92,7 @@ namespace HowLongToBeat.Services
                 data = null;
             }
 
-            if (data != null)
+            if (data != null && data.GameHltbData != null)
             {
                 hasData = true;
 

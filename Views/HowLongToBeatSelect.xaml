@@ -10,100 +10,109 @@
         <localPlugin:VisibilityZeroConverter x:Key="VisibilityZeroConverter" />
     </UserControl.Resources>
 
-    <StackPanel Margin="10" Name="SelectableContent">
-        <ListBox x:Name="lbSelectable" Height="370" SelectionChanged="LbSelectable_SelectionChanged"
-                 ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto">
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <Grid x:Name="HltbId" Tag="{Binding Id}">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="120" />
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
+    <Grid>
+        <Grid Name="PART_DataLoadWishlist">
+            <ProgressBar IsIndeterminate="True" Width="350" Height="40" />
+            <TextBlock Text="{DynamicResource LOCDownloadingLabel}"
+                       Style="{DynamicResource BaseTextBlockStyle}"
+                       HorizontalAlignment="Center" VerticalAlignment="Center" />
+        </Grid>
 
-                        <Image x:Name="HltbImage" Grid.Column="0" Height="150" Width="100" HorizontalAlignment="Left" Source="{Binding UrlImg}" Stretch="Fill"></Image>
-
-                        <Grid Grid.Column="1">
+        <StackPanel Margin="10" Name="SelectableContent">
+            <ListBox x:Name="lbSelectable" Height="370" SelectionChanged="LbSelectable_SelectionChanged"
+                     ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Grid x:Name="HltbId" Tag="{Binding Id}">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="120" />
+                                <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
 
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="*" />
-                                <RowDefinition Height="*" />
-                            </Grid.RowDefinitions>
+                            <Image x:Name="HltbImage" Grid.Column="0" Height="150" Width="100" HorizontalAlignment="Left" Source="{Binding UrlImg}" Stretch="Fill"></Image>
 
-                            <Grid Grid.Row="0">
-                                <TextBlock x:Name="HltbName" Text="{Binding Name}" FontWeight="Bold" FontSize="18" 
-                                           TextTrimming="CharacterEllipsis" MouseEnter="TextBlock_MouseEnter">
-                                    <TextBlock.ToolTip>
-                                        <ToolTip Content="{Binding Name}"></ToolTip>
-                                    </TextBlock.ToolTip>
-                                </TextBlock>
-                            </Grid>
-
-                            <Grid Grid.Row="1">
+                            <Grid Grid.Column="1">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
 
                                 <Grid.RowDefinitions>
-                                    <RowDefinition Height="auto" />
-                                    <RowDefinition Height="auto" />
-                                    <RowDefinition Height="auto" />
-                                    <RowDefinition Height="auto" />
-                                    <RowDefinition Height="auto" />
-                                    <RowDefinition Height="auto" />
-                                    <RowDefinition Height="auto" />
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="*" />
                                 </Grid.RowDefinitions>
 
-                                <TextBlock MinHeight="25" Grid.Column="0" Grid.Row="0" Text="{DynamicResource LOCHowLongToBeatMainStory}" Visibility="{Binding MainStory, Converter={StaticResource VisibilityZeroConverter}, ConverterParameter=1}"></TextBlock>
-                                <TextBlock MinHeight="25" Grid.Column="1" Grid.Row="0" Text="{Binding MainStoryFormat}" HorizontalAlignment="Center" Visibility="{Binding MainStory, Converter={StaticResource VisibilityZeroConverter}, ConverterParameter=1}"></TextBlock>
+                                <Grid Grid.Row="0">
+                                    <TextBlock x:Name="HltbName" Text="{Binding Name}" FontWeight="Bold" FontSize="18" 
+                                               TextTrimming="CharacterEllipsis" MouseEnter="TextBlock_MouseEnter">
+                                        <TextBlock.ToolTip>
+                                            <ToolTip Content="{Binding Name}"></ToolTip>
+                                        </TextBlock.ToolTip>
+                                    </TextBlock>
+                                </Grid>
 
-                                <TextBlock MinHeight="25" Grid.Column="0" Grid.Row="1" Text="{DynamicResource LOCHowLongToBeatMainExtra}" Visibility="{Binding MainExtra, Converter={StaticResource VisibilityZeroConverter}, ConverterParameter=1}"></TextBlock>
-                                <TextBlock MinHeight="25" Grid.Column="1" Grid.Row="1" Text="{Binding MainExtraFormat}" HorizontalAlignment="Center" Visibility="{Binding MainExtra, Converter={StaticResource VisibilityZeroConverter}, ConverterParameter=1}"></TextBlock>
+                                <Grid Grid.Row="1">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
 
-                                <TextBlock MinHeight="25" Grid.Column="0" Grid.Row="2" Text="{DynamicResource LOCHowLongToBeatCompletionist}" Visibility="{Binding Completionist, Converter={StaticResource VisibilityZeroConverter}, ConverterParameter=1}"></TextBlock>
-                                <TextBlock MinHeight="25" Grid.Column="1" Grid.Row="2" Text="{Binding CompletionistFormat}" HorizontalAlignment="Center" Visibility="{Binding Completionist, Converter={StaticResource VisibilityZeroConverter}, ConverterParameter=1}"></TextBlock>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="auto" />
+                                        <RowDefinition Height="auto" />
+                                        <RowDefinition Height="auto" />
+                                        <RowDefinition Height="auto" />
+                                        <RowDefinition Height="auto" />
+                                        <RowDefinition Height="auto" />
+                                        <RowDefinition Height="auto" />
+                                    </Grid.RowDefinitions>
 
-                                <TextBlock MinHeight="25" Grid.Column="0" Grid.Row="3" Text="{DynamicResource LOCHowLongToBeatSolo}" Visibility="{Binding Solo, Converter={StaticResource VisibilityZeroConverter}, ConverterParameter=1}"></TextBlock>
-                                <TextBlock MinHeight="25" Grid.Column="1" Grid.Row="3" Text="{Binding SoloFormat}" HorizontalAlignment="Center" Visibility="{Binding Solo, Converter={StaticResource VisibilityZeroConverter}, ConverterParameter=1}"></TextBlock>
+                                    <TextBlock MinHeight="25" Grid.Column="0" Grid.Row="0" Text="{DynamicResource LOCHowLongToBeatMainStory}" Visibility="{Binding MainStory, Converter={StaticResource VisibilityZeroConverter}, ConverterParameter=1}"></TextBlock>
+                                    <TextBlock MinHeight="25" Grid.Column="1" Grid.Row="0" Text="{Binding MainStoryFormat}" HorizontalAlignment="Center" Visibility="{Binding MainStory, Converter={StaticResource VisibilityZeroConverter}, ConverterParameter=1}"></TextBlock>
 
-                                <TextBlock MinHeight="25" Grid.Column="0" Grid.Row="4" Text="{DynamicResource LOCHowLongToBeatCoOp}" Visibility="{Binding CoOp, Converter={StaticResource VisibilityZeroConverter}, ConverterParameter=1}"></TextBlock>
-                                <TextBlock MinHeight="25" Grid.Column="1" Grid.Row="4" Text="{Binding CoOpFormat}" HorizontalAlignment="Center" Visibility="{Binding CoOp, Converter={StaticResource VisibilityZeroConverter}, ConverterParameter=1}"></TextBlock>
+                                    <TextBlock MinHeight="25" Grid.Column="0" Grid.Row="1" Text="{DynamicResource LOCHowLongToBeatMainExtra}" Visibility="{Binding MainExtra, Converter={StaticResource VisibilityZeroConverter}, ConverterParameter=1}"></TextBlock>
+                                    <TextBlock MinHeight="25" Grid.Column="1" Grid.Row="1" Text="{Binding MainExtraFormat}" HorizontalAlignment="Center" Visibility="{Binding MainExtra, Converter={StaticResource VisibilityZeroConverter}, ConverterParameter=1}"></TextBlock>
 
-                                <TextBlock MinHeight="25" Grid.Column="0" Grid.Row="5" Text="{DynamicResource LOCHowLongToBeatVs}" Visibility="{Binding Vs, Converter={StaticResource VisibilityZeroConverter}, ConverterParameter=1}"></TextBlock>
-                                <TextBlock MinHeight="25" Grid.Column="1" Grid.Row="5" Text="{Binding VsFormat}" HorizontalAlignment="Center" Visibility="{Binding Vs, Converter={StaticResource VisibilityZeroConverter}, ConverterParameter=1}"></TextBlock>
+                                    <TextBlock MinHeight="25" Grid.Column="0" Grid.Row="2" Text="{DynamicResource LOCHowLongToBeatCompletionist}" Visibility="{Binding Completionist, Converter={StaticResource VisibilityZeroConverter}, ConverterParameter=1}"></TextBlock>
+                                    <TextBlock MinHeight="25" Grid.Column="1" Grid.Row="2" Text="{Binding CompletionistFormat}" HorizontalAlignment="Center" Visibility="{Binding Completionist, Converter={StaticResource VisibilityZeroConverter}, ConverterParameter=1}"></TextBlock>
+
+                                    <TextBlock MinHeight="25" Grid.Column="0" Grid.Row="3" Text="{DynamicResource LOCHowLongToBeatSolo}" Visibility="{Binding Solo, Converter={StaticResource VisibilityZeroConverter}, ConverterParameter=1}"></TextBlock>
+                                    <TextBlock MinHeight="25" Grid.Column="1" Grid.Row="3" Text="{Binding SoloFormat}" HorizontalAlignment="Center" Visibility="{Binding Solo, Converter={StaticResource VisibilityZeroConverter}, ConverterParameter=1}"></TextBlock>
+
+                                    <TextBlock MinHeight="25" Grid.Column="0" Grid.Row="4" Text="{DynamicResource LOCHowLongToBeatCoOp}" Visibility="{Binding CoOp, Converter={StaticResource VisibilityZeroConverter}, ConverterParameter=1}"></TextBlock>
+                                    <TextBlock MinHeight="25" Grid.Column="1" Grid.Row="4" Text="{Binding CoOpFormat}" HorizontalAlignment="Center" Visibility="{Binding CoOp, Converter={StaticResource VisibilityZeroConverter}, ConverterParameter=1}"></TextBlock>
+
+                                    <TextBlock MinHeight="25" Grid.Column="0" Grid.Row="5" Text="{DynamicResource LOCHowLongToBeatVs}" Visibility="{Binding Vs, Converter={StaticResource VisibilityZeroConverter}, ConverterParameter=1}"></TextBlock>
+                                    <TextBlock MinHeight="25" Grid.Column="1" Grid.Row="5" Text="{Binding VsFormat}" HorizontalAlignment="Center" Visibility="{Binding Vs, Converter={StaticResource VisibilityZeroConverter}, ConverterParameter=1}"></TextBlock>
+                                </Grid>
                             </Grid>
                         </Grid>
-                    </Grid>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
 
-        <Grid Margin="0, 10, 0, 0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="6" />
-                <ColumnDefinition Width="150" />
-            </Grid.ColumnDefinitions>
+            <Grid Margin="0, 10, 0, 0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="6" />
+                    <ColumnDefinition Width="150" />
+                </Grid.ColumnDefinitions>
 
-            <TextBox Grid.Column="0" Name="SearchElement" KeyUp="SearchElement_KeyUp"></TextBox>
-            <Button Grid.Column="3" Content="{DynamicResource LOCHowLongToBeatSearch}" Click="ButtonSearch_Click"></Button>
-        </Grid>
+                <TextBox Grid.Column="0" Name="SearchElement" KeyUp="SearchElement_KeyUp" VerticalAlignment="Center" />
+                <Button Grid.Column="3" Content="{DynamicResource LOCHowLongToBeatSearch}" Click="ButtonSearch_Click"></Button>
+            </Grid>
 
-        <Grid Margin="0, 10, 0, 0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="100" />
-                <ColumnDefinition Width="6" />
-                <ColumnDefinition Width="100" />
-            </Grid.ColumnDefinitions>
+            <Grid Margin="0, 10, 0, 0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="100" />
+                    <ColumnDefinition Width="6" />
+                    <ColumnDefinition Width="100" />
+                </Grid.ColumnDefinitions>
 
-            <Button Name="ButtonSelect" IsEnabled="False" Grid.Column="1" Content="{DynamicResource LOCHowLongToBeatSelect}" VerticalAlignment="Center" Click="ButtonSelect_Click"></Button>
-            <Button Grid.Column="3" Content="{DynamicResource LOCHowLongToBeatCancel}" VerticalAlignment="Center" Click="ButtonCancel_Click"></Button>
-        </Grid>
-    </StackPanel>
+                <Button Name="ButtonSelect" IsEnabled="False" Grid.Column="1" Content="{DynamicResource LOCHowLongToBeatSelect}" VerticalAlignment="Center" Click="ButtonSelect_Click"></Button>
+                <Button Grid.Column="3" Content="{DynamicResource LOCHowLongToBeatCancel}" VerticalAlignment="Center" Click="ButtonCancel_Click"></Button>
+            </Grid>
+        </StackPanel>
+    </Grid>
 </UserControl >
 
