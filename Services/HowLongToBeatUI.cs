@@ -41,7 +41,7 @@ namespace HowLongToBeat.Services
             if (_Settings.EnableIntegrationInDescription)
             {
 #if DEBUG
-                logger.Debug($"HowLongToBeat - InitialSpDescriptionr()");
+                logger.Debug($"HowLongToBeat - InitialSpDescription()");
 #endif
                 InitialSpDescription();
             }
@@ -96,13 +96,13 @@ namespace HowLongToBeat.Services
             }));
         }
 
-        public override void RefreshElements(Game GameSelected)
+        public override void RefreshElements(Game GameSelected, bool Force = false)
         {
             taskHelper.Check();
             CancellationTokenSource tokenSource = new CancellationTokenSource();
             CancellationToken ct = tokenSource.Token;
 
-            Task TaskRefreshBtActionBar = Task.Run(() => {
+            Task TaskRefresh = Task.Run(() => {
                 try
                 {
                     Initial();
@@ -160,6 +160,10 @@ namespace HowLongToBeat.Services
                         resourcesLists.Add(new ResourcesList { Key = "Htlb_Vs", Value = HowLongToBeat.HltbGameData.GetData().GameHltbData.Vs });
                         resourcesLists.Add(new ResourcesList { Key = "Htlb_VsFormat", Value = HowLongToBeat.HltbGameData.GetData().GameHltbData.VsFormat });
                     }
+                    else
+                    {
+                        logger.Warn("HowLongToBeat - No data for " + GameSelected.Name);
+                    }
 
                     // If not cancel, show
                     if (!ct.IsCancellationRequested)
@@ -179,7 +183,7 @@ namespace HowLongToBeat.Services
                             if (_Settings.EnableIntegrationInDescription)
                             {
 #if DEBUG
-                                logger.Debug($"HowLongToBeat - RefreshSpDescriptionr()");
+                                logger.Debug($"HowLongToBeat - RefreshSpDescription()");
 #endif
                                 RefreshSpDescription();
                             }
@@ -200,7 +204,7 @@ namespace HowLongToBeat.Services
                 }
             });
 
-            taskHelper.Add(TaskRefreshBtActionBar, tokenSource);
+            taskHelper.Add(TaskRefresh, tokenSource);
         }
 
 
@@ -238,7 +242,7 @@ namespace HowLongToBeat.Services
             }
             catch (Exception ex)
             {
-                Common.LogError(ex, "CheckLocalizations", "Error on AddBtActionBar()");
+                Common.LogError(ex, "HowLongToBeat", "Error on AddBtActionBar()");
             }
         }
 
@@ -322,17 +326,17 @@ namespace HowLongToBeat.Services
                 return;
             }
 
-            HltbDescriptionIntegration SpDescription = new HltbDescriptionIntegration(_Settings.IntegrationShowTitle);
-            SpDescription.Name = SpDescriptionName;
-
             try
             {
+                HltbDescriptionIntegration SpDescription = new HltbDescriptionIntegration(_Settings.IntegrationShowTitle);
+                SpDescription.Name = SpDescriptionName;
+
                 ui.AddElementInGameSelectedDescription(SpDescription, _Settings.IntegrationTopGameDetails);
                 PART_SpDescription = IntegrationUI.SearchElementByName(SpDescriptionName);
             }
             catch (Exception ex)
             {
-                Common.LogError(ex, "HowLongToBeat", "Error on AddBtActionBar()");
+                Common.LogError(ex, "HowLongToBeat", "Error on AddSpDescription()");
             }
         }
 
@@ -363,7 +367,7 @@ namespace HowLongToBeat.Services
             }
             else
             {
-                logger.Warn($"CheckLocalizations - PART_BtActionBar is not defined");
+                logger.Warn($"HowLongToBeat - PART_SpDescription is not defined");
             }
         }
         #endregion
@@ -396,9 +400,9 @@ namespace HowLongToBeat.Services
             FrameworkElement PART_hltbProgressBar = null;
             try
             {
-                PART_HltbButtonWithJustIcon = IntegrationUI.SearchElementByName("PART_HltbButtonWithJustIcon", true);
-                PART_hltbProgressBarWithTitle = IntegrationUI.SearchElementByName("PART_hltbProgressBarWithTitle", true);
-                PART_hltbProgressBar = IntegrationUI.SearchElementByName("PART_hltbProgressBarWithTitle", true);
+                PART_HltbButtonWithJustIcon = IntegrationUI.SearchElementByName("PART_HltbButtonWithJustIcon", false, true);
+                PART_hltbProgressBarWithTitle = IntegrationUI.SearchElementByName("PART_hltbProgressBarWithTitle", false, true);
+                PART_hltbProgressBar = IntegrationUI.SearchElementByName("PART_hltbProgressBar", false, true);
             }
             catch (Exception ex)
             {
@@ -408,6 +412,7 @@ namespace HowLongToBeat.Services
             if (PART_HltbButtonWithJustIcon != null)
             {
                 PART_HltbButtonWithJustIcon = new HltbButton();
+                PART_HltbButtonWithJustIcon.Name = "HltbButtonWithJustIcon";
                 ((Button)PART_HltbButtonWithJustIcon).Click += OnBtActionBarClick;
                 try
                 {
@@ -429,6 +434,7 @@ namespace HowLongToBeat.Services
             if (PART_hltbProgressBarWithTitle != null)
             {
                 PART_hltbProgressBarWithTitle = new HltbDescriptionIntegration(true);
+                PART_hltbProgressBarWithTitle.Name = "hltbProgressBarWithTitle";
                 try
                 {
                     ui.AddElementInCustomTheme(PART_hltbProgressBarWithTitle, "PART_hltbProgressBarWithTitle");
@@ -449,6 +455,7 @@ namespace HowLongToBeat.Services
             if (PART_hltbProgressBar != null)
             {
                 PART_hltbProgressBar = PART_hltbProgressBarWithTitle = new HltbDescriptionIntegration(false);
+                PART_hltbProgressBar.Name = "hltbProgressBar";
                 try
                 {
                     ui.AddElementInCustomTheme(PART_hltbProgressBar, "PART_hltbProgressBar");
@@ -469,44 +476,54 @@ namespace HowLongToBeat.Services
 
         public override void RefreshCustomElements()
         {
+#if DEBUG
+            logger.Debug($"HowLongToBeat - ListCustomElements - {ListCustomElements.Count}");
+#endif
             foreach (CustomElement customElement in ListCustomElements)
             {
-                bool isFind = false;
-
-                if (customElement.Element is HltbButton)
+                try
                 {
-#if DEBUG
-                    logger.Debug($"HowLongToBeat - customElement.Element is HltbButton");
-#endif
-                    customElement.Element.Visibility = Visibility.Visible;
-                    isFind = true;
-                }
+                    bool isFind = false;
 
-                if (customElement.Element is HltbDescriptionIntegration)
-                {
-#if DEBUG
-                    logger.Debug($"HowLongToBeat - customElement.Element is HltbDescriptionIntegration");
-#endif
-                    isFind = true;
-                    if (HowLongToBeat.HltbGameData.hasData && !HowLongToBeat.HltbGameData.isEmpty)
+                    if (customElement.Element is HltbButton)
                     {
+#if DEBUG
+                        logger.Debug($"HowLongToBeat - customElement.Element is HltbButton");
+#endif
                         customElement.Element.Visibility = Visibility.Visible;
-
-                        ((HltbDescriptionIntegration)customElement.Element).SetHltbData(
-                            HowLongToBeat.GameSelected.Playtime, HowLongToBeat.HltbGameData, _Settings
-                        );
+                        isFind = true;
                     }
-                    else
+
+                    if (customElement.Element is HltbDescriptionIntegration)
                     {
 #if DEBUG
-                        logger.Debug($"HowLongToBeat - customElement.Element is HltbDescriptionIntegration with no data");
+                        logger.Debug($"HowLongToBeat - customElement.Element is HltbDescriptionIntegration");
 #endif
+                        isFind = true;
+                        if (HowLongToBeat.HltbGameData.hasData && !HowLongToBeat.HltbGameData.isEmpty)
+                        {
+                            customElement.Element.Visibility = Visibility.Visible;
+
+                            ((HltbDescriptionIntegration)customElement.Element).SetHltbData(
+                                HowLongToBeat.GameSelected.Playtime, HowLongToBeat.HltbGameData, _Settings
+                            );
+                        }
+                        else
+                        {
+#if DEBUG
+                            logger.Debug($"HowLongToBeat - customElement.Element is HltbDescriptionIntegration with no data");
+#endif
+                        }
+                    }
+
+                    if (!isFind)
+                    {
+                        logger.Warn($"HowLongToBeat - RefreshCustomElements({customElement.ParentElementName})");
                     }
                 }
-
-                if (!isFind)
+                catch (Exception ex)
                 {
-                    logger.Warn($"HowLongToBeat - RefreshCustomElements({customElement.ParentElementName})");
+                    Common.LogError(ex, "HowLongToBeat", $"Error on RefreshCustomElements()");
                 }
             }
         }

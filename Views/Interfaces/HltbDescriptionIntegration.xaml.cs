@@ -13,14 +13,15 @@ namespace HowLongToBeat.Views.Interfaces
     {
         private HltbProgressBar hltbProgressBar = new HltbProgressBar();
 
+
         public HltbDescriptionIntegration(bool IntegrationShowTitle)
         {
             InitializeComponent();
 
             if (!IntegrationShowTitle)
             {
-                PART_tbHltb.Visibility = Visibility.Collapsed;
-                PART_hltbsep.Visibility = Visibility.Collapsed;
+                PART_Title.Visibility = Visibility.Collapsed;
+                PART_Separator.Visibility = Visibility.Collapsed;
             }
 
             PART_HltbProgressBar.Children.Add(hltbProgressBar);
