@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:HowLongToBeat.Views.Interfaces"
-             mc:Ignorable="d">
+             mc:Ignorable="d" Height="18">
     
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
@@ -16,7 +16,7 @@
             <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
 
-        <Grid Grid.Row="0" Loaded="Grid_Loaded" Name="PART_HltbProgressBar_Contener" Height="40" MinWidth="100">
+        <Grid Grid.Row="0" Loaded="Grid_Loaded" Name="PART_HltbProgressBar_Contener" MinWidth="100">
             <ProgressBar Name="ProgressHltb_El3" Height="{Binding ElementName=PART_HltbProgressBar_Contener, Path=Height}" Value="90" 
                          Maximum="90" Background="Transparent" Foreground="ForestGreen">
             </ProgressBar>
