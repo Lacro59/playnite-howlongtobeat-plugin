@@ -2,10 +2,10 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:sys="clr-namespace:System;assembly=mscorlib">
 
-    <!--  
-    HowLongToBeatSettingsView
-    -->
+    <!-- HowLongToBeatSettingsView -->
 
+    <sys:String x:Key="LOCHowLongToBeatMenuInExtensions">Plugin menus in extensions menu *</sys:String>
+    
     <sys:String x:Key="LOCHowLongToBeatProgressBarTag">Action in progress...</sys:String>
     <sys:String x:Key="LOCHowLongToBeatProgressBar">Added {0} - Already added {1} - Not added {2}</sys:String>
 
@@ -31,9 +31,7 @@
     <sys:String x:Key="LOCHowLongToBeatAutoAccept">Automatically select game when only one game is found during search</sys:String>
     <sys:String x:Key="LOCHowLongToBeatShowWhenMismatch">Show game selection list when more than one game is found during search</sys:String>
 
-    <!--  
-    HowLongToBeatSelect
-    -->
+    <!-- HowLongToBeatSelect -->
 
     <sys:String x:Key="LOCHowLongToBeatSelection">HowLongToBeat selection</sys:String>
     
@@ -52,9 +50,7 @@
     <sys:String x:Key="LOCHowLongToBeatSelect">Select</sys:String>
     <sys:String x:Key="LOCHowLongToBeatCancel">Cancel</sys:String>
 
-    <!--  
-    HowLongToBeat
-    -->
+    <!-- HowLongToBeat -->
 
     <sys:String x:Key="LOCHowLongToBeatProgression">Progression</sys:String>
 
@@ -74,11 +70,23 @@
     <sys:String x:Key="LOCHowLongToBeatNotificationTagError" xml:space="preserve">Error adding tag.
 Please clear all tags in the plugin settings.</sys:String>
 
-    <!--  
-    MainView
-    -->
+    <!-- MainView -->
 
     <sys:String x:Key="LOCHowLongToBeat">HowLongToBeat</sys:String>
     <sys:String x:Key="LOCHowLongToBeatTitle">HowLongToBeat</sys:String>
-    
+
+    <sys:String x:Key="LOCHowLongToBeatPluginView">View HowLongToBeat datas</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatPluginDelete">Delete HowLongToBeat datas</sys:String>
+
+    <sys:String x:Key="LOCHowLongToBeatRemove">Data is removed.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatErrorRemove">Cannot remove data. Please try again.</sys:String>
+
+    <sys:String x:Key="LOCHowLongToBeatAddAllTag">Add tag for games in database</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatGetAllDatas">Get data for all games in database</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatClearAllDatas">Clear data for all games in database</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatGettingAllDatas">Getting data for all games in database</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAddingAllTag">Adding tag for all games in database</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatRemoveAllTag">Remove tag for all games in database</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatRemovingAllTag">Removing tag for all games in database</sys:String>
+
 </ResourceDictionary>

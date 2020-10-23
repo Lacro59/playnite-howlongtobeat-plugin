@@ -11,6 +11,7 @@ namespace HowLongToBeat
         private readonly HowLongToBeat plugin;
 
         public bool EnableCheckVersion { get; set; } = true;
+        public bool MenuInExtensions { get; set; } = true;
 
         public bool EnableTag { get; set; } = false;
         public bool ShowHltbImg { get; set; } = true;
@@ -52,6 +53,7 @@ namespace HowLongToBeat
             if (savedSettings != null)
             {
                 EnableCheckVersion = savedSettings.EnableCheckVersion;
+                MenuInExtensions = savedSettings.MenuInExtensions;
 
                 EnableTag = savedSettings.EnableTag;
                 ShowHltbImg = savedSettings.ShowHltbImg;

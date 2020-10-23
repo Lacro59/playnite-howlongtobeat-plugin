@@ -31,12 +31,12 @@ namespace HowLongToBeat.Views
 
         public string PlaytimeFormat { get; set; }
 
-        private HowLongToBeatData data { get; set; }
+        private HowLongToBeatData _data { get; set; }
 
 
         public HowLongToBeatView(HowLongToBeatData data, Game game, IPlayniteAPI PlayniteApi, HowLongToBeatSettings settings)
         {
-            this.data = data;
+            _data = data;
 
             InitializeComponent();
 
@@ -149,15 +149,15 @@ namespace HowLongToBeat.Views
 
         private void ButtonWeb_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            if (data.GetData().GameHltbData.Url != "")
+            if (_data.GetData().GameHltbData.Url != "")
             {
-                Process.Start(data.GetData().GameHltbData.Url);
+                Process.Start(_data.GetData().GameHltbData.Url);
             }
         }
 
         private void ButtonDelete_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            data.RemoveData();
+            _data.RemoveData();
             ((Window)this.Parent).Close();
         }
 

@@ -11,6 +11,7 @@ using PluginCommon.PlayniteResources.API;
 using PluginCommon.PlayniteResources.Common;
 using PluginCommon.PlayniteResources.Converters;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
@@ -66,56 +67,128 @@ namespace HowLongToBeat
             EventManager.RegisterClassHandler(typeof(Button), Button.ClickEvent, new RoutedEventHandler(howLongToBeatUI.OnCustomThemeButtonClick));
         }
 
-        public override IEnumerable<ExtensionFunction> GetFunctions()
+        // To add new game menu items override GetGameMenuItems
+        public override List<GameMenuItem> GetGameMenuItems(GetGameMenuItemsArgs args)
         {
-            List<ExtensionFunction> listFunctions = new List<ExtensionFunction>();
+            Game gameMenu = args.Games.First();
+            HowLongToBeatData data = new HowLongToBeatData(gameMenu, this.GetPluginUserDataPath(), PlayniteApi, false);
 
-            listFunctions.Add(
-                new ExtensionFunction(
-                    resources.GetString("LOCHowLongToBeat"),
-                    () =>
+            List<GameMenuItem> gameMenuItems = new List<GameMenuItem>
+            {
+                new GameMenuItem {
+                    MenuSection = resources.GetString("LOCHowLongToBeat"),
+                    Description = resources.GetString("LOCHowLongToBeatPluginView"),
+                    Action = (gameMenuItem) =>
                     {
-                        // Add code to be execute when user invokes this menu entry.
-
                         try
                         {
-                            if (!HltbGameData.hasData)
+                            if (!data.hasData)
                             {
-                                HltbGameData.SearchData(GameSelected);
+                                data.SearchData(GameSelected);
                             }
 
-                            if (HltbGameData.hasData)
+                            if (data.hasData)
                             {
-                                if (settings.EnableTag)
-                                {
-                                    HltbGameData.AddTag();
-                                }
-                                    
-                                var ViewExtension = new Views.HowLongToBeatView(HltbGameData, GameSelected, PlayniteApi, settings);
+                                var ViewExtension = new HowLongToBeatView(data, gameMenu, PlayniteApi, settings);
                                 Window windowExtension = PlayniteUiHelper.CreateExtensionWindow(PlayniteApi, "HowLongToBeat", ViewExtension);
                                 windowExtension.ShowDialog();
                             }
                         }
                         catch (Exception ex)
                         {
-                            Common.LogError(ex, "HowLongToBeat", "Error to load database");
+                            Common.LogError(ex, "HowLongToBeat", $"Error to load game data for {args.Games.First().Name}");
                             PlayniteApi.Dialogs.ShowErrorMessage(resources.GetString("LOCDatabaseErroTitle"), "HowLongToBeat");
                         }
-                    })
-                );
+                    }
+                },
+                new GameMenuItem {
+                    MenuSection = resources.GetString("LOCHowLongToBeat"),
+                    Description = resources.GetString("LOCHowLongToBeatPluginDelete"),
+                    Action = (gameMenuItem) =>
+                    {
+                        data.RemoveData();
+
+                        howLongToBeatUI.RemoveElements();
+                        var TaskIntegrationUI = Task.Run(() =>
+                        {
+                            howLongToBeatUI.AddElements();
+                            howLongToBeatUI.RefreshElements(gameMenu);
+                        });
+                    }
+                }
+            };
 
 #if DEBUG
-            listFunctions.Add(
-                new ExtensionFunction(
-                    "HowLongToBeat Test",
-                    () =>
-                    {
-
-                    })
-                );
+            gameMenuItems.Add(new GameMenuItem
+            {
+                MenuSection = resources.GetString("LOCHowLongToBeat"),
+                Description = "Test",
+                Action = (mainMenuItem) => { }
+            });
 #endif
 
-            return listFunctions;
+            return gameMenuItems;
+        }
+
+        // To add new main menu items override GetMainMenuItems
+        public override List<MainMenuItem> GetMainMenuItems(GetMainMenuItemsArgs args)
+        {
+            string MenuInExtensions = string.Empty;
+            if (settings.MenuInExtensions)
+            {
+                MenuInExtensions = "@";
+            }
+
+            List <MainMenuItem> mainMenuItems = new List<MainMenuItem>
+            {
+                new MainMenuItem
+                {
+                    MenuSection = MenuInExtensions + resources.GetString("LOCHowLongToBeat"),
+                    Description = resources.GetString("LOCHowLongToBeatGetAllDatas"),
+                    Action = (mainMenuItem) =>
+                    {
+                        HowLongToBeatData.GetAllDataFromMain(PlayniteApi, this.GetPluginUserDataPath(), settings);
+                    }
+                },
+                new MainMenuItem
+                {
+                    MenuSection = MenuInExtensions + resources.GetString("LOCHowLongToBeat"),
+                    Description = resources.GetString("LOCHowLongToBeatClearAllDatas"),
+                    Action = (mainMenuItem) =>
+                    {
+                        HowLongToBeatData.ClearAllData(this.GetPluginUserDataPath(), PlayniteApi);
+                    }
+                },
+                new MainMenuItem
+                {
+                    MenuSection = MenuInExtensions + resources.GetString("LOCHowLongToBeat"),
+                    Description = resources.GetString("LOCHowLongToBeatAddAllTag"),
+                    Action = (mainMenuItem) =>
+                    {
+                        HowLongToBeatData.AddAllTagFromMain(PlayniteApi, this.GetPluginUserDataPath());
+                    }
+                },
+                new MainMenuItem
+                {
+                    MenuSection = MenuInExtensions + resources.GetString("LOCHowLongToBeat"),
+                    Description = resources.GetString("LOCHowLongToBeatRemoveAllTag"),
+                    Action = (mainMenuItem) =>
+                    {
+                        HowLongToBeatData.RemoveAllTagFromMain(PlayniteApi, this.GetPluginUserDataPath());
+                    }
+                }
+            };
+
+#if DEBUG
+            mainMenuItems.Add(new MainMenuItem
+            {
+                MenuSection = MenuInExtensions + resources.GetString("LOCHowLongToBeat"),
+                Description = "Test",
+                Action = (mainMenuItem) => { }
+            });
+#endif
+
+            return mainMenuItems;
         }
 
         public override void OnGameSelected(GameSelectionEventArgs args)

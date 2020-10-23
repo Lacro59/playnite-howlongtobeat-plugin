@@ -31,17 +31,22 @@
                             <RowDefinition Height="30" />
                             <RowDefinition Height="30" />
                             <RowDefinition Height="30" />
+                            <RowDefinition Height="30" />
                         </Grid.RowDefinitions>
 
-                        <CheckBox Grid.Row="0" IsChecked="{Binding ShowHltbImg}" Grid.Column="0" VerticalAlignment="Center">
+                        <CheckBox Grid.Row="0" IsChecked="{Binding MenuInExtensions}" VerticalAlignment="Center">
+                            <Label Content="{DynamicResource LOCHowLongToBeatMenuInExtensions}" />
+                        </CheckBox>
+
+                        <CheckBox Grid.Row="1" IsChecked="{Binding ShowHltbImg}" Grid.Column="0" VerticalAlignment="Center">
                             <Label Content="{DynamicResource LOCHowLongToBeatShowHltbImage}" />
                         </CheckBox>
 
-                        <CheckBox Name="cbEnableTag" Grid.Row="1"  IsChecked="{Binding EnableTag}" Grid.Column="0" VerticalAlignment="Center">
+                        <CheckBox Name="cbEnableTag" Grid.Row="2"  IsChecked="{Binding EnableTag}" Grid.Column="0" VerticalAlignment="Center">
                             <Label Content="{DynamicResource LOCHowLongToBeatAddTagDescription}" />
                         </CheckBox>
 
-                        <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                        <StackPanel Grid.Row="2" Grid.Column="3" Orientation="Horizontal" HorizontalAlignment="Right">
                             <TextBlock Text="{DynamicResource LOCHowLongToBeatAutoTag}" Margin="0,0,10,0" VerticalAlignment="Center" />
                             <Button Content="{DynamicResource LOCAddTitle}" Margin="0,0,10,0" IsEnabled="{Binding EnableTag}" VerticalAlignment="Center" Click="ButtonAddTag_Click"/>
                             <Button Content="{DynamicResource LOCRemoveTitle}" IsEnabled="{Binding EnableTag}" VerticalAlignment="Bottom" Click="ButtonRemoveTag_Click" Margin="0,0,0,1"/>

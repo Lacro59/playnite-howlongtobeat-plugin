@@ -9,7 +9,9 @@ using PluginCommon.PlayniteResources.API;
 using PluginCommon.PlayniteResources.Common;
 using PluginCommon.PlayniteResources.Converters;
 using System;
+using System.Linq;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Windows;
 
@@ -23,7 +25,7 @@ namespace HowLongToBeat.Services
         private IPlayniteAPI _PlayniteApi { get; set; }
         private Game _game { get; set; }
 
-        private HltbDataUser data { get; set; } = null;
+        private HltbDataUser hltbDataUser { get; set; } = null;
         public bool hasData = false;
         public bool isEmpty = true;
 
@@ -50,7 +52,7 @@ namespace HowLongToBeat.Services
 #if DEBUG
                 logger.Debug($"HowLongToBeat - Load data for {game.Name}");
 #endif
-                data = JsonConvert.DeserializeObject<HltbDataUser>(File.ReadAllText(FileGameData));
+                hltbDataUser = JsonConvert.DeserializeObject<HltbDataUser>(File.ReadAllText(FileGameData));
             }
             else
             {
@@ -61,12 +63,12 @@ namespace HowLongToBeat.Services
                 }
             }
 
-            if (data != null && data.GameHltbData != null)
+            if (hltbDataUser != null && hltbDataUser.GameHltbData != null)
             {
                 hasData = true;
 
-                if (data.GameHltbData.MainStory != 0 || data.GameHltbData.MainExtra != 0 || data.GameHltbData.Completionist != 0 ||
-                    data.GameHltbData.Solo != 0 || data.GameHltbData.CoOp != 0 || data.GameHltbData.Vs != 0)
+                if (hltbDataUser.GameHltbData.MainStory != 0 || hltbDataUser.GameHltbData.MainExtra != 0 || hltbDataUser.GameHltbData.Completionist != 0 ||
+                    hltbDataUser.GameHltbData.Solo != 0 || hltbDataUser.GameHltbData.CoOp != 0 || hltbDataUser.GameHltbData.Vs != 0)
                 {
                     isEmpty = false;
                 }
@@ -85,19 +87,19 @@ namespace HowLongToBeat.Services
 
             if (File.Exists(FileGameData))
             {
-                data = JsonConvert.DeserializeObject<HltbDataUser>(File.ReadAllText(FileGameData));
+                hltbDataUser = JsonConvert.DeserializeObject<HltbDataUser>(File.ReadAllText(FileGameData));
             }
             else
             {
-                data = null;
+                hltbDataUser = null;
             }
 
-            if (data != null && data.GameHltbData != null)
+            if (hltbDataUser != null && hltbDataUser.GameHltbData != null)
             {
                 hasData = true;
 
-                if (data.GameHltbData.MainStory != 0 || data.GameHltbData.MainExtra != 0 || data.GameHltbData.Completionist != 0 ||
-                    data.GameHltbData.Solo != 0 || data.GameHltbData.CoOp != 0 || data.GameHltbData.Vs != 0)
+                if (hltbDataUser.GameHltbData.MainStory != 0 || hltbDataUser.GameHltbData.MainExtra != 0 || hltbDataUser.GameHltbData.Completionist != 0 ||
+                    hltbDataUser.GameHltbData.Solo != 0 || hltbDataUser.GameHltbData.CoOp != 0 || hltbDataUser.GameHltbData.Vs != 0)
                 {
                     isEmpty = false;
                     HowLongToBeat.howLongToBeatUI.RefreshElements(HowLongToBeat.GameSelected);
@@ -114,9 +116,9 @@ namespace HowLongToBeat.Services
             {
                 List<Tag> HltbTags = GetTagId(_PlayniteApi);
 
-                if (data != null && data != new HltbDataUser())
+                if (hltbDataUser != null && hltbDataUser != new HltbDataUser())
                 {
-                    List<Guid> tagIds = SetListHltbTag(_PlayniteApi, data);
+                    List<Guid> tagIds = SetListHltbTag(_PlayniteApi, hltbDataUser);
 
                     if (tagIds.Count > 0)
                     {
@@ -160,7 +162,7 @@ namespace HowLongToBeat.Services
 
         public HltbDataUser GetData()
         {
-            return data;
+            return hltbDataUser;
         }
 
         public void RemoveData()
@@ -169,7 +171,7 @@ namespace HowLongToBeat.Services
             {
                 File.Delete(FileGameData);
 
-                data = null;
+                hltbDataUser = null;
                 hasData = false;
                 isEmpty = true;
 
@@ -275,7 +277,9 @@ namespace HowLongToBeat.Services
             List<Tag> HltbTags = GetTagId(PlayniteApi);
             List<Guid> tagIds = new List<Guid>();
             long hltbTime = 0;
-
+#if DEBUG
+            logger.Debug($"HowLongToBeat - HltbTags: {JsonConvert.SerializeObject(HltbTags)}");
+#endif
             if (data != null && data != new HltbDataUser() && data.GameHltbData != null && data.GameHltbData != new HltbData() && HltbTags.Count > 1 && HltbTags != null)
             {
                 // Get time
@@ -388,8 +392,11 @@ namespace HowLongToBeat.Services
                         PlayniteApi.Database.Games.Update(game);
                     }
                 }
-                catch
+                catch (Exception ex)
                 {
+#if DEBUG
+                    Common.LogError(ex, "HowLongToBeat", $"Error on AddAllTag()");
+#endif
                     logger.Error($"HowLongToBeat - Tag insert error with {game.Name}");
                     PlayniteApi.Notifications.Add(new NotificationMessage(
                         "HowLongToBeat-Tag-Errors",
@@ -436,7 +443,6 @@ namespace HowLongToBeat.Services
             }
         }
 
-
         public static bool HaveData(Guid GameId, string PluginUserDataPath)
         {
             string FileGameData = PluginUserDataPath + "\\howlongtobeat\\" + GameId.ToString() + ".json";
@@ -467,12 +473,183 @@ namespace HowLongToBeat.Services
                 {
                     Directory.Delete(PluginDirectory, true);
                     Directory.CreateDirectory(PluginDirectory);
+                    PlayniteApi.Dialogs.ShowMessage(resources.GetString("LOCHowLongToBeatRemove"), "HowLongToBeat");
                 }
                 catch
                 {
-                    PlayniteApi.Dialogs.ShowErrorMessage(resources.GetString("LOCSystemCheckerErrorRemove"), "HowLongToBeat error");
+                    PlayniteApi.Dialogs.ShowErrorMessage(resources.GetString("LOCHowLongToBeatErrorRemove"), "HowLongToBeat");
                 }
             }
+        }
+
+
+
+        public static void AddAllTagFromMain(IPlayniteAPI PlayniteApi, string PluginUserDataPath)
+        {
+            GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions(
+                resources.GetString("LOCHowLongToBeatAddingAllTag"),
+                true
+            );
+            globalProgressOptions.IsIndeterminate = false;
+
+            PlayniteApi.Dialogs.ActivateGlobalProgress((activateGlobalProgress) =>
+            {
+                Stopwatch stopWatch = new Stopwatch();
+                stopWatch.Start();
+
+                var db = PlayniteApi.Database.Games.Where(x => x.Hidden == false);
+                activateGlobalProgress.ProgressMaxValue = (double)db.Count();
+
+                string CancelText = string.Empty;
+
+                foreach (Game game in db)
+                {
+                    if (activateGlobalProgress.CancelToken.IsCancellationRequested)
+                    {
+                        CancelText = " canceled";
+                        break;
+                    }
+
+                    AddAllTag(PlayniteApi, game, PluginUserDataPath);
+                    activateGlobalProgress.CurrentProgressValue++;
+                }
+
+                stopWatch.Stop();
+                TimeSpan ts = stopWatch.Elapsed;
+                logger.Info($"HowLongToBeat - Task AddAllTagFromMain(){CancelText} - {String.Format("{0:00}:{1:00}.{2:00}", ts.Minutes, ts.Seconds, ts.Milliseconds / 10)}");
+            }, globalProgressOptions);
+        }
+
+        public static void RemoveAllTagFromMain(IPlayniteAPI PlayniteApi, string PluginUserDataPath)
+        {
+            GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions(
+                resources.GetString("LOCHowLongToBeatRemovingAllTag"),
+                true
+            );
+            globalProgressOptions.IsIndeterminate = false;
+
+            PlayniteApi.Dialogs.ActivateGlobalProgress((activateGlobalProgress) =>
+            {
+                Stopwatch stopWatch = new Stopwatch();
+                stopWatch.Start();
+
+                var db = PlayniteApi.Database.Games.Where(x => x.Hidden == false);
+                activateGlobalProgress.ProgressMaxValue = (double)db.Count();
+
+                string CancelText = string.Empty;
+
+                foreach (Game game in db)
+                {
+                    if (activateGlobalProgress.CancelToken.IsCancellationRequested)
+                    {
+                        CancelText = " canceled";
+                        break;
+                    }
+
+                    RemoveAllTag(PlayniteApi, game);
+                    activateGlobalProgress.CurrentProgressValue++;
+                }
+
+                stopWatch.Stop();
+                TimeSpan ts = stopWatch.Elapsed;
+                logger.Info($"HowLongToBeat - Task RemoveAllTagFromMain(){CancelText} - {String.Format("{0:00}:{1:00}.{2:00}", ts.Minutes, ts.Seconds, ts.Milliseconds / 10)}");
+            }, globalProgressOptions);
+        }
+
+        public static void GetAllDataFromMain(IPlayniteAPI PlayniteApi, string PluginUserDataPath, HowLongToBeatSettings settings)
+        {
+            GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions(
+                resources.GetString("LOCHowLongToBeatGettingAllDatas"),
+                true
+            );
+            globalProgressOptions.IsIndeterminate = false;
+
+            PlayniteApi.Dialogs.ActivateGlobalProgress((activateGlobalProgress) =>
+            {
+                Stopwatch stopWatch = new Stopwatch();
+                stopWatch.Start();
+
+                var db = PlayniteApi.Database.Games.Where(x => x.Hidden == false);
+                activateGlobalProgress.ProgressMaxValue = (double)db.Count();
+
+                string CancelText = string.Empty;
+
+                foreach (Game game in db)
+                {
+                    if (activateGlobalProgress.CancelToken.IsCancellationRequested)
+                    {
+                        CancelText = " canceled";
+                        break;
+                    }
+
+                    if (!HowLongToBeatData.HaveData(game.Id, PluginUserDataPath))
+                    {
+                        List<HltbData> dataSearch = new HowLongToBeatClient().Search(game.Name);
+
+                        if (dataSearch.Count == 1 && settings.AutoAccept)
+                        {
+                            HowLongToBeatData.SaveData(game.Id, dataSearch[0], PluginUserDataPath);
+
+                            if (settings.EnableTag)
+                            {
+                                HowLongToBeatData.AddAllTag(PlayniteApi, game, PluginUserDataPath);
+                            }
+                        }
+                        else
+                        {
+                            if (dataSearch.Count > 0 && settings.ShowWhenMismatch)
+                            {
+                                Application.Current.Dispatcher.Invoke(new Action(() =>
+                                {
+                                    string FileGameData = PluginUserDataPath + "\\howlongtobeat\\" + game.Id.ToString() + ".json";
+
+                                    var ViewExtension = new HowLongToBeatSelect(dataSearch, FileGameData, game.Name);
+                                    Window windowExtension = PlayniteUiHelper.CreateExtensionWindow(PlayniteApi, resources.GetString("LOCHowLongToBeatSelection"), ViewExtension);
+                                    windowExtension.ShowDialog();
+
+                                    if (settings.EnableTag)
+                                    {
+                                        HowLongToBeatData.AddAllTag(PlayniteApi, game, PluginUserDataPath);
+                                    }
+                                }));
+                            }
+                        }
+                    }
+                    activateGlobalProgress.CurrentProgressValue++;
+                }
+
+                stopWatch.Stop();
+                TimeSpan ts = stopWatch.Elapsed;
+                logger.Info($"HowLongToBeat - Task GetAllDataFromMain(){CancelText} - {String.Format("{0:00}:{1:00}.{2:00}", ts.Minutes, ts.Seconds, ts.Milliseconds / 10)}");
+            }, globalProgressOptions);
+        }
+
+        public static void ClearAllDataFromMain(string PluginUserDataPath, IPlayniteAPI PlayniteApi)
+        {
+            GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions(
+                resources.GetString("LOCHowLongToBeatRemovingAllTag"),
+                true
+            );
+            globalProgressOptions.IsIndeterminate = false;
+
+            PlayniteApi.Dialogs.ActivateGlobalProgress((activateGlobalProgress) =>
+            {
+                Stopwatch stopWatch = new Stopwatch();
+                stopWatch.Start();
+
+                string CancelText = string.Empty;
+
+                foreach (Game game in PlayniteApi.Database.Games)
+                {
+                    RemoveAllTag(PlayniteApi, game);
+                }
+
+                RemoveAllTagDb(PlayniteApi);
+
+                stopWatch.Stop();
+                TimeSpan ts = stopWatch.Elapsed;
+                logger.Info($"HowLongToBeat - Task RemoveAllTagFromMain(){CancelText} - {String.Format("{0:00}:{1:00}.{2:00}", ts.Minutes, ts.Seconds, ts.Milliseconds / 10)}");
+            }, globalProgressOptions);
         }
     }
 }
