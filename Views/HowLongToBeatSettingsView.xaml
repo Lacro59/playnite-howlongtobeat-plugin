@@ -87,7 +87,7 @@
             </Grid>
         </TabItem>
 
-        <TabItem Header="{DynamicResource LOCHowLongToBeatIntegration}">
+        <TabItem Header="{DynamicResource LOCCommonIntegration}">
             <StackPanel Margin="0,10,0,0">
                 <CheckBox IsChecked="{Binding EnableIntegrationButton}" Name="HltB_IntegrationButton" Click="Checkbox_Click">
                     <Label Content="{DynamicResource LOCCommonIntegrationButton}" />
