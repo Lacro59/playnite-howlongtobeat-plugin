@@ -12,11 +12,11 @@
     <sys:String x:Key="LOCHowLongToBeatShowHltbImage">Afficher la jaquette du jeu de HowLongToBeat</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatIntegration">Intégration dans l'interface</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationButton">Ajouter un bouton aux détails du jeu</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationInDescription">Intégration dans la description du jeu</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationShowTitle">Afficher le titre</sys:String>
+    <sys:String x:Key="LOCCommonIntegrationButton">Ajouter un bouton aux détails du jeu</sys:String>
+    <sys:String x:Key="LOCCommonIntegrationInDescription">Intégration dans la description du jeu</sys:String>
+    <sys:String x:Key="LOCCommonIntegrationShowTitle">Afficher le titre</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationTopGameDetails">Intégrer au dessus de la description du jeu</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationInCustomTheme">Intégration dans les thèmes personnalisés (si intégré)</sys:String>
+    <sys:String x:Key="LOCCommonIntegrationInCustomTheme">Intégration dans les thèmes personnalisés (si intégré)</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarOptions">Options pour la barre de progression</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">Afficher une info bulle avec le temps</sys:String>
@@ -31,7 +31,7 @@
 
     <!-- HowLongToBeatSelect -->
 
-    <sys:String x:Key="LOCHowLongToBeatSelection">HowLongToBeat sélection</sys:String>
+    <sys:String x:Key="LOCSelection">HowLongToBeat sélection</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatMainStory">Histoire principal</sys:String>
     <sys:String x:Key="LOCHowLongToBeatMainExtra">Principal + extra</sys:String>
@@ -43,10 +43,10 @@
 
     <sys:String x:Key="LOCHowLongToBeatPlaytime">Temps de jeu</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatSearch">Rechercher</sys:String>
+    <sys:String x:Key="LOCSearchLabel">Rechercher</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatSelect">Sélectionner</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatCancel">Annuler</sys:String>
+    <sys:String x:Key="LOCSelect">Sélectionner</sys:String>
+    <sys:String x:Key="LOCCancelLabel">Annuler</sys:String>
 
     <!-- HowLongToBeat -->
 
@@ -65,7 +65,7 @@
     <sys:String x:Key="LOCHowLongToBeat90to100">90 à 100 heures</sys:String>
     <sys:String x:Key="LOCHowLongToBeat100plus">Plus de 100 hours</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatNotificationTagError" xml:space="preserve">Erreur lors de l'insertion d'une étiquette.
+    <sys:String x:Key="LOCCommonNotificationTagError" xml:space="preserve">Erreur lors de l'insertion d'une étiquette.
 Essayer de supprimer tous les tags depuis le menu de configuration de l'extension avant de réessayer.</sys:String>
 
     <!-- MainView -->

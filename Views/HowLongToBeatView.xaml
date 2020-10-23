@@ -55,7 +55,7 @@
                         <TextBlock Name="Hltb_El3" Grid.Column="1" Grid.Row="2" Text="{DynamicResource LOCHowLongToBeatCompletionist}" Foreground="{DynamicResource TextBrush}" FontSize="16" VerticalAlignment="Center"></TextBlock>
                         <TextBlock Name="Hltb_El3_Data" Grid.Column="2" Grid.Row="2" Foreground="{DynamicResource TextBrush}" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
 
-                        <TextBlock Grid.Column="1" Grid.Row="3" Text="{DynamicResource LOCHowLongToBeatPlaytime}" Foreground="{DynamicResource TextBrush}" FontSize="16" VerticalAlignment="Center"></TextBlock>
+                        <TextBlock Grid.Column="1" Grid.Row="3" Text="{DynamicResource LOCTimePlayed}" Foreground="{DynamicResource TextBrush}" FontSize="16" VerticalAlignment="Center"></TextBlock>
                         <TextBlock Grid.Column="2" Grid.Row="3" Text="{Binding PlaytimeFormat}" Foreground="{DynamicResource TextBrush}" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
 
                         <Label Grid.Row="4" Grid.ColumnSpan="3" HorizontalAlignment="Right" Content="{Binding HltbName, FallbackValue='src: Name for test'}" FontSize="8" />

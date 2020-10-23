@@ -4,8 +4,6 @@
 
     <!-- HowLongToBeatSettingsView -->
 
-    <sys:String x:Key="LOCHowLongToBeatMenuInExtensions">Plugin menus in extensions menu *</sys:String>
-    
     <sys:String x:Key="LOCHowLongToBeatProgressBarTag">Action in progress...</sys:String>
     <sys:String x:Key="LOCHowLongToBeatProgressBar">Added {0} - Already added {1} - Not added {2}</sys:String>
 
@@ -14,11 +12,7 @@
     <sys:String x:Key="LOCHowLongToBeatShowHltbImage">Show HowLongToBeat game cover image</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatIntegration">Interface integration</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationButton">Add button to game details</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationInDescription">Integrate information to game description</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationShowTitle">Show title</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationTopGameDetails">Show progress bar above game description</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationInCustomTheme">Custom theme integration (Only if integrated in custom theme)</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarOptions">Progress bar options</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">Show tooltip with time in progress bar</sys:String>
@@ -33,7 +27,7 @@
 
     <!-- HowLongToBeatSelect -->
 
-    <sys:String x:Key="LOCHowLongToBeatSelection">HowLongToBeat selection</sys:String>
+    <sys:String x:Key="LOCSelection">HowLongToBeat selection</sys:String>
     
     <sys:String x:Key="LOCHowLongToBeatMainStory">Main story</sys:String>
     <sys:String x:Key="LOCHowLongToBeatMainExtra">Main + extra</sys:String>
@@ -42,13 +36,6 @@
     <sys:String x:Key="LOCHowLongToBeatSolo">Solo</sys:String>
     <sys:String x:Key="LOCHowLongToBeatCoOp">Co-Op</sys:String>
     <sys:String x:Key="LOCHowLongToBeatVs">Vs</sys:String>
-    
-    <sys:String x:Key="LOCHowLongToBeatPlaytime">Playtime</sys:String>
-
-    <sys:String x:Key="LOCHowLongToBeatSearch">Search</sys:String>
-
-    <sys:String x:Key="LOCHowLongToBeatSelect">Select</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatCancel">Cancel</sys:String>
 
     <!-- HowLongToBeat -->
 
@@ -66,9 +53,6 @@
     <sys:String x:Key="LOCHowLongToBeat80to90">80 to 90 hours</sys:String>
     <sys:String x:Key="LOCHowLongToBeat90to100">90 to 100 hours</sys:String>
     <sys:String x:Key="LOCHowLongToBeat100plus">More 100 hours</sys:String>
-    
-    <sys:String x:Key="LOCHowLongToBeatNotificationTagError" xml:space="preserve">Error adding tag.
-Please clear all tags in the plugin settings.</sys:String>
 
     <!-- MainView -->
 
@@ -76,17 +60,5 @@ Please clear all tags in the plugin settings.</sys:String>
     <sys:String x:Key="LOCHowLongToBeatTitle">HowLongToBeat</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatPluginView">View HowLongToBeat datas</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatPluginDelete">Delete HowLongToBeat datas</sys:String>
-
-    <sys:String x:Key="LOCHowLongToBeatRemove">Data is removed.</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatErrorRemove">Cannot remove data. Please try again.</sys:String>
-
-    <sys:String x:Key="LOCHowLongToBeatAddAllTag">Add tag for games in database</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatGetAllDatas">Get data for all games in database</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatClearAllDatas">Clear data for all games in database</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatGettingAllDatas">Getting data for all games in database</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAddingAllTag">Adding tag for all games in database</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatRemoveAllTag">Remove tag for all games in database</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatRemovingAllTag">Removing tag for all games in database</sys:String>
 
 </ResourceDictionary>

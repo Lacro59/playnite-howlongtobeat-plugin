@@ -14,11 +14,11 @@
     <sys:String x:Key="LOCHowLongToBeatShowHltbImage">显示通关时长How Long To Beat的封面图片</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatIntegration">界面集成</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationButton">添加按钮</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationInDescription">集成到游戏描述</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationShowTitle">显示标题</sys:String>
+    <sys:String x:Key="LOCCommonIntegrationButton">添加按钮</sys:String>
+    <sys:String x:Key="LOCCommonIntegrationInDescription">集成到游戏描述</sys:String>
+    <sys:String x:Key="LOCCommonIntegrationShowTitle">显示标题</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationTopGameDetails">在其他描述之上</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationInCustomTheme">自定义主题集成（如被集成）</sys:String>
+    <sys:String x:Key="LOCCommonIntegrationInCustomTheme">自定义主题集成（如被集成）</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarOptions">进度条选项</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">鼠标在进度条上时显示时间</sys:String>
@@ -35,7 +35,7 @@
     HowLongToBeatSelect
     -->
 
-    <sys:String x:Key="LOCHowLongToBeatSelection">通关时长How long to beat 选择</sys:String>
+    <sys:String x:Key="LOCSelection">通关时长How long to beat 选择</sys:String>
     
     <sys:String x:Key="LOCHowLongToBeatMainStory">主线</sys:String>
     <sys:String x:Key="LOCHowLongToBeatMainExtra">主线+支线</sys:String>
@@ -47,10 +47,10 @@
     
     <sys:String x:Key="LOCHowLongToBeatPlaytime">游戏时长</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatSearch">搜索</sys:String>
+    <sys:String x:Key="LOCSearchLabel">搜索</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatSelect">选择</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatCancel">取消</sys:String>
+    <sys:String x:Key="LOCSelect">选择</sys:String>
+    <sys:String x:Key="LOCCancelLabel">取消</sys:String>
 
     <!--  
     HowLongToBeat
@@ -71,7 +71,7 @@
     <sys:String x:Key="LOCHowLongToBeat90to100">90到100小时</sys:String>
     <sys:String x:Key="LOCHowLongToBeat100plus">超过100小时</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatNotificationTagError" xml:space="preserve">Error for insert tag.
+    <sys:String x:Key="LOCCommonNotificationTagError" xml:space="preserve">Error for insert tag.
 Please try to delete all tag in plugin setting.</sys:String>
 
     <!--  

@@ -98,7 +98,7 @@
                 </Grid.ColumnDefinitions>
 
                 <TextBox Grid.Column="0" Name="SearchElement" KeyUp="SearchElement_KeyUp" VerticalAlignment="Center" />
-                <Button Grid.Column="3" Content="{DynamicResource LOCHowLongToBeatSearch}" Click="ButtonSearch_Click"></Button>
+                <Button Grid.Column="3" Content="{DynamicResource LOCSearchLabel}" Click="ButtonSearch_Click"></Button>
             </Grid>
 
             <Grid Margin="0, 10, 0, 0">
@@ -109,8 +109,8 @@
                     <ColumnDefinition Width="100" />
                 </Grid.ColumnDefinitions>
 
-                <Button Name="ButtonSelect" IsEnabled="False" Grid.Column="1" Content="{DynamicResource LOCHowLongToBeatSelect}" VerticalAlignment="Center" Click="ButtonSelect_Click"></Button>
-                <Button Grid.Column="3" Content="{DynamicResource LOCHowLongToBeatCancel}" VerticalAlignment="Center" Click="ButtonCancel_Click"></Button>
+                <Button Name="ButtonSelect" IsEnabled="False" Grid.Column="1" Content="{DynamicResource LOCSelect}" VerticalAlignment="Center" Click="ButtonSelect_Click"></Button>
+                <Button Grid.Column="3" Content="{DynamicResource LOCCancelLabel}" VerticalAlignment="Center" Click="ButtonCancel_Click"></Button>
             </Grid>
         </StackPanel>
     </Grid>

@@ -83,7 +83,7 @@ namespace HowLongToBeat.Services
 #endif
 
             var ViewExtension = new HowLongToBeatSelect(null, FileGameData, game.Name);
-            Window windowExtension = PlayniteUiHelper.CreateExtensionWindow(_PlayniteApi, resources.GetString("LOCHowLongToBeatSelection"), ViewExtension);
+            Window windowExtension = PlayniteUiHelper.CreateExtensionWindow(_PlayniteApi, resources.GetString("LOCSelection"), ViewExtension);
             windowExtension.ShowDialog();
 
             if (File.Exists(FileGameData))
@@ -134,7 +134,7 @@ namespace HowLongToBeat.Services
                 logger.Error($"HowLongToBeat - Tag insert error with {_game.Name}");
                 _PlayniteApi.Notifications.Add(new NotificationMessage(
                     "HowLongToBeat-Tag-Errors",
-                    "HowLongToBeat\r\n" + resources.GetString("LOCHowLongToBeatNotificationTagError"),
+                    "HowLongToBeat\r\n" + resources.GetString("LOCCommonNotificationTagError"),
                     NotificationType.Error
                 ));
             }
@@ -404,7 +404,7 @@ namespace HowLongToBeat.Services
                     logger.Error($"HowLongToBeat - Tag insert error with {game.Name}");
                     PlayniteApi.Notifications.Add(new NotificationMessage(
                         "HowLongToBeat-Tag-Errors",
-                        "HowLongToBeat\r\n" + resources.GetString("LOCHowLongToBeatNotificationTagError"),
+                        "HowLongToBeat\r\n" + resources.GetString("LOCCommonNotificationTagError"),
                         NotificationType.Error
                     ));
                 }
@@ -477,11 +477,11 @@ namespace HowLongToBeat.Services
                 {
                     Directory.Delete(PluginDirectory, true);
                     Directory.CreateDirectory(PluginDirectory);
-                    PlayniteApi.Dialogs.ShowMessage(resources.GetString("LOCHowLongToBeatRemove"), "HowLongToBeat");
+                    PlayniteApi.Dialogs.ShowMessage(resources.GetString("LOCCommonDataRemove"), "HowLongToBeat");
                 }
                 catch
                 {
-                    PlayniteApi.Dialogs.ShowErrorMessage(resources.GetString("LOCHowLongToBeatErrorRemove"), "HowLongToBeat");
+                    PlayniteApi.Dialogs.ShowErrorMessage(resources.GetString("LOCCommonDataErrorRemove"), "HowLongToBeat");
                 }
             }
         }
@@ -491,7 +491,7 @@ namespace HowLongToBeat.Services
         public static void AddAllTagFromMain(IPlayniteAPI PlayniteApi, string PluginUserDataPath)
         {
             GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions(
-                resources.GetString("LOCHowLongToBeatAddingAllTag"),
+                resources.GetString("LOCCommonAddingAllTag"),
                 true
             );
             globalProgressOptions.IsIndeterminate = false;
@@ -527,7 +527,7 @@ namespace HowLongToBeat.Services
         public static void RemoveAllTagFromMain(IPlayniteAPI PlayniteApi, string PluginUserDataPath)
         {
             GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions(
-                resources.GetString("LOCHowLongToBeatRemovingAllTag"),
+                resources.GetString("LOCCommonRemovingAllTag"),
                 true
             );
             globalProgressOptions.IsIndeterminate = false;
@@ -563,7 +563,7 @@ namespace HowLongToBeat.Services
         public static void GetAllDataFromMain(IPlayniteAPI PlayniteApi, string PluginUserDataPath, HowLongToBeatSettings settings)
         {
             GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions(
-                resources.GetString("LOCHowLongToBeatGettingAllDatas"),
+                resources.GetString("LOCCommonGettingAllDatas"),
                 true
             );
             globalProgressOptions.IsIndeterminate = false;
@@ -608,7 +608,7 @@ namespace HowLongToBeat.Services
                                     string FileGameData = PluginUserDataPath + "\\howlongtobeat\\" + game.Id.ToString() + ".json";
 
                                     var ViewExtension = new HowLongToBeatSelect(dataSearch, FileGameData, game.Name);
-                                    Window windowExtension = PlayniteUiHelper.CreateExtensionWindow(PlayniteApi, resources.GetString("LOCHowLongToBeatSelection"), ViewExtension);
+                                    Window windowExtension = PlayniteUiHelper.CreateExtensionWindow(PlayniteApi, resources.GetString("LOCSelection"), ViewExtension);
                                     windowExtension.ShowDialog();
 
                                     if (settings.EnableTag)

@@ -14,11 +14,11 @@
     <sys:String x:Key="LOCHowLongToBeatShowHltbImage">Показывать обложки с сайта HowLongToBeat</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatIntegration">Интеграция в интерфейс</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationButton">Добавить кнопку в подробный вид</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationInDescription">Добавить информацию в описание игры</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationShowTitle">Показывать заголовок</sys:String>
+    <sys:String x:Key="LOCCommonIntegrationButton">Добавить кнопку в подробный вид</sys:String>
+    <sys:String x:Key="LOCCommonIntegrationInDescription">Добавить информацию в описание игры</sys:String>
+    <sys:String x:Key="LOCCommonIntegrationShowTitle">Показывать заголовок</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationTopGameDetails">Показывать шкалу прогресса над описанием игры</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationInCustomTheme">Интеграция в нестандартные темы (если поддерживается темой)</sys:String>
+    <sys:String x:Key="LOCCommonIntegrationInCustomTheme">Интеграция в нестандартные темы (если поддерживается темой)</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarOptions">Настройки шкалы прогресса</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">Показывать всплывающую подсказку на шкале прогресса</sys:String>
@@ -35,7 +35,7 @@
     HowLongToBeatSelect
     -->
 
-    <sys:String x:Key="LOCHowLongToBeatSelection">HowLongToBeat выбор игры</sys:String>
+    <sys:String x:Key="LOCSelection">HowLongToBeat выбор игры</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatMainStory">Основной сюжет</sys:String>
     <sys:String x:Key="LOCHowLongToBeatMainExtra">Сюжет+доп. задания</sys:String>
@@ -47,10 +47,10 @@
 
     <sys:String x:Key="LOCHowLongToBeatPlaytime">Сыграно</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatSearch">Найти</sys:String>
+    <sys:String x:Key="LOCSearchLabel">Найти</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatSelect">Выбрать</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatCancel">Отмена</sys:String>
+    <sys:String x:Key="LOCSelect">Выбрать</sys:String>
+    <sys:String x:Key="LOCCancelLabel">Отмена</sys:String>
 
     <!--
     HowLongToBeat
@@ -71,7 +71,7 @@
     <sys:String x:Key="LOCHowLongToBeat90to100">От 90 до 100 часов</sys:String>
     <sys:String x:Key="LOCHowLongToBeat100plus">Больше 100 часов</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatNotificationTagError" xml:space="preserve">Не удалось добавить тэг.
+    <sys:String x:Key="LOCCommonNotificationTagError" xml:space="preserve">Не удалось добавить тэг.
 Попробуйте убрать все тэги в настройках плагина.</sys:String>
 
     <!--

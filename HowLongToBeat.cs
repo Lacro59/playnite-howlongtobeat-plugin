@@ -103,7 +103,7 @@ namespace HowLongToBeat
                 },
                 new GameMenuItem {
                     MenuSection = resources.GetString("LOCHowLongToBeat"),
-                    Description = resources.GetString("LOCHowLongToBeatPluginDelete"),
+                    Description = resources.GetString("LOCCommonDeleteGameData"),
                     Action = (gameMenuItem) =>
                     {
                         data.RemoveData();
@@ -137,7 +137,7 @@ namespace HowLongToBeat
                 new MainMenuItem
                 {
                     MenuSection = MenuInExtensions + resources.GetString("LOCHowLongToBeat"),
-                    Description = resources.GetString("LOCHowLongToBeatGetAllDatas"),
+                    Description = resources.GetString("LOCCommonGetAllDatas"),
                     Action = (mainMenuItem) =>
                     {
                         HowLongToBeatData.GetAllDataFromMain(PlayniteApi, this.GetPluginUserDataPath(), settings);
@@ -146,7 +146,7 @@ namespace HowLongToBeat
                 new MainMenuItem
                 {
                     MenuSection = MenuInExtensions + resources.GetString("LOCHowLongToBeat"),
-                    Description = resources.GetString("LOCHowLongToBeatClearAllDatas"),
+                    Description = resources.GetString("LOCCommonClearAllDatas"),
                     Action = (mainMenuItem) =>
                     {
                         HowLongToBeatData.ClearAllData(this.GetPluginUserDataPath(), PlayniteApi);
@@ -155,7 +155,7 @@ namespace HowLongToBeat
                 new MainMenuItem
                 {
                     MenuSection = MenuInExtensions + resources.GetString("LOCHowLongToBeat"),
-                    Description = resources.GetString("LOCHowLongToBeatAddAllTag"),
+                    Description = resources.GetString("LOCCommonAddAllTags"),
                     Action = (mainMenuItem) =>
                     {
                         HowLongToBeatData.AddAllTagFromMain(PlayniteApi, this.GetPluginUserDataPath());
@@ -164,7 +164,7 @@ namespace HowLongToBeat
                 new MainMenuItem
                 {
                     MenuSection = MenuInExtensions + resources.GetString("LOCHowLongToBeat"),
-                    Description = resources.GetString("LOCHowLongToBeatRemoveAllTag"),
+                    Description = resources.GetString("LOCCommonRemoveAllTags"),
                     Action = (mainMenuItem) =>
                     {
                         HowLongToBeatData.RemoveAllTagFromMain(PlayniteApi, this.GetPluginUserDataPath());

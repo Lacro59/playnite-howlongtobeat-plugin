@@ -187,7 +187,7 @@ namespace HowLongToBeat.Views
                                         string FileGameData = _PluginUserDataPath + "\\howlongtobeat\\" + game.Id.ToString() + ".json";
 
                                         var ViewExtension = new HowLongToBeatSelect(dataSearch, FileGameData, game.Name);
-                                        Window windowExtension = PlayniteUiHelper.CreateExtensionWindow(_PlayniteApi, resources.GetString("LOCHowLongToBeatSelection"), ViewExtension);
+                                        Window windowExtension = PlayniteUiHelper.CreateExtensionWindow(_PlayniteApi, resources.GetString("LOCSelection"), ViewExtension);
                                         windowExtension.ShowDialog();
 
                                         if (EnableTag)

@@ -14,11 +14,11 @@
     <sys:String x:Key="LOCHowLongToBeatShowHltbImage">Show HowLongToBeat game cover image</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatIntegration">Interface integration</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationButton">Add button to game details</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationInDescription">Integrate information to game description</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationShowTitle">Show title</sys:String>
+    <sys:String x:Key="LOCCommonIntegrationButton">Add button to game details</sys:String>
+    <sys:String x:Key="LOCCommonIntegrationInDescription">Integrate information to game description</sys:String>
+    <sys:String x:Key="LOCCommonIntegrationShowTitle">Show title</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationTopGameDetails">Show progress bar above game description</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationInCustomTheme">Custom theme integration (Only if integrated in custom theme)</sys:String>
+    <sys:String x:Key="LOCCommonIntegrationInCustomTheme">Custom theme integration (Only if integrated in custom theme)</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarOptions">Progress bar options</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">Show tooltip with time in progress bar</sys:String>
@@ -35,7 +35,7 @@
     HowLongToBeatSelect
     -->
 
-    <sys:String x:Key="LOCHowLongToBeatSelection">HowLongToBeat selection</sys:String>
+    <sys:String x:Key="LOCSelection">HowLongToBeat selection</sys:String>
     
     <sys:String x:Key="LOCHowLongToBeatMainStory">Main story</sys:String>
     <sys:String x:Key="LOCHowLongToBeatMainExtra">Main + extra</sys:String>
@@ -47,10 +47,10 @@
     
     <sys:String x:Key="LOCHowLongToBeatPlaytime">Playtime</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatSearch">Search</sys:String>
+    <sys:String x:Key="LOCSearchLabel">Search</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatSelect">Select</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatCancel">Cancel</sys:String>
+    <sys:String x:Key="LOCSelect">Select</sys:String>
+    <sys:String x:Key="LOCCancelLabel">Cancel</sys:String>
 
     <!--  
     HowLongToBeat
@@ -71,7 +71,7 @@
     <sys:String x:Key="LOCHowLongToBeat90to100">90 to 100 hours</sys:String>
     <sys:String x:Key="LOCHowLongToBeat100plus">More 100 hours</sys:String>
     
-    <sys:String x:Key="LOCHowLongToBeatNotificationTagError" xml:space="preserve">Error adding tag.
+    <sys:String x:Key="LOCCommonNotificationTagError" xml:space="preserve">Error adding tag.
 Please clear all tags in the plugin settings.</sys:String>
 
     <!--  

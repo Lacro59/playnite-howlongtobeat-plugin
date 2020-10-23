@@ -35,7 +35,7 @@
                         </Grid.RowDefinitions>
 
                         <CheckBox Grid.Row="0" IsChecked="{Binding MenuInExtensions}" VerticalAlignment="Center">
-                            <Label Content="{DynamicResource LOCHowLongToBeatMenuInExtensions}" />
+                            <Label Content="{DynamicResource LOCCommonMenuInExtensions}" />
                         </CheckBox>
 
                         <CheckBox Grid.Row="1" IsChecked="{Binding ShowHltbImg}" Grid.Column="0" VerticalAlignment="Center">
@@ -90,21 +90,21 @@
         <TabItem Header="{DynamicResource LOCHowLongToBeatIntegration}">
             <StackPanel Margin="0,10,0,0">
                 <CheckBox IsChecked="{Binding EnableIntegrationButton}" Name="HltB_IntegrationButton" Click="Checkbox_Click">
-                    <Label Content="{DynamicResource LOCHowLongToBeatIntegrationButton}" />
+                    <Label Content="{DynamicResource LOCCommonIntegrationButton}" />
                 </CheckBox>
 
                 <CheckBox IsChecked="{Binding EnableIntegrationInDescription}" Name="HltB_IntegrationInDescription" Margin="0,35,0,0" Click="Checkbox_Click">
-                    <Label Content="{DynamicResource LOCHowLongToBeatIntegrationInDescription}" />
+                    <Label Content="{DynamicResource LOCCommonIntegrationInDescription}" />
                 </CheckBox>
                 <CheckBox IsChecked="{Binding IntegrationShowTitle}" Margin="30,5,0,0" IsEnabled="{Binding ElementName=HltB_IntegrationInDescription, Path=IsChecked}">
-                    <Label Content="{DynamicResource LOCHowLongToBeatIntegrationShowTitle}" />
+                    <Label Content="{DynamicResource LOCCommonIntegrationShowTitle}" />
                 </CheckBox>
                 <CheckBox IsChecked="{Binding IntegrationTopGameDetails}" Margin="30,5,0,0" IsEnabled="{Binding ElementName=HltB_IntegrationInDescription, Path=IsChecked}">
                     <Label Content="{DynamicResource LOCHowLongToBeatIntegrationTopGameDetails}" />
                 </CheckBox>
 
                 <CheckBox IsChecked="{Binding EnableIntegrationInCustomTheme}" Margin="0,5,0,0" Name="HltB_IntegrationInCustomTheme" Click="Checkbox_Click">
-                    <Label Content="{DynamicResource LOCHowLongToBeatIntegrationInCustomTheme}" />
+                    <Label Content="{DynamicResource LOCCommonIntegrationInCustomTheme}" />
                 </CheckBox>
 
                 <GroupBox Header="{DynamicResource LOCHowLongToBeatIntegrationProgressBarOptions}" Margin="0,10,0,0">
