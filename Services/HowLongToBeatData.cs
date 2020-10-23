@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Windows;
+using System.Threading.Tasks;
 
 namespace HowLongToBeat.Services
 {
@@ -175,11 +176,14 @@ namespace HowLongToBeat.Services
                 hasData = false;
                 isEmpty = true;
 
-                HowLongToBeat.howLongToBeatUI.RefreshElements(HowLongToBeat.GameSelected);
+                var TaskIntegrationUI = Task.Run(() =>
+                {
+                    HowLongToBeat.howLongToBeatUI.RefreshElements(HowLongToBeat.GameSelected);
+                });
             }
             else
             {
-                logger.Warn($"HowLongToBeat - Impossible to remove");
+                logger.Warn($"HowLongToBeat - Impossible to remove {_game.Name} in {FileGameData}");
             }
         }
 
@@ -621,34 +625,6 @@ namespace HowLongToBeat.Services
                 stopWatch.Stop();
                 TimeSpan ts = stopWatch.Elapsed;
                 logger.Info($"HowLongToBeat - Task GetAllDataFromMain(){CancelText} - {String.Format("{0:00}:{1:00}.{2:00}", ts.Minutes, ts.Seconds, ts.Milliseconds / 10)}");
-            }, globalProgressOptions);
-        }
-
-        public static void ClearAllDataFromMain(string PluginUserDataPath, IPlayniteAPI PlayniteApi)
-        {
-            GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions(
-                resources.GetString("LOCHowLongToBeatRemovingAllTag"),
-                true
-            );
-            globalProgressOptions.IsIndeterminate = false;
-
-            PlayniteApi.Dialogs.ActivateGlobalProgress((activateGlobalProgress) =>
-            {
-                Stopwatch stopWatch = new Stopwatch();
-                stopWatch.Start();
-
-                string CancelText = string.Empty;
-
-                foreach (Game game in PlayniteApi.Database.Games)
-                {
-                    RemoveAllTag(PlayniteApi, game);
-                }
-
-                RemoveAllTagDb(PlayniteApi);
-
-                stopWatch.Stop();
-                TimeSpan ts = stopWatch.Elapsed;
-                logger.Info($"HowLongToBeat - Task RemoveAllTagFromMain(){CancelText} - {String.Format("{0:00}:{1:00}.{2:00}", ts.Minutes, ts.Seconds, ts.Milliseconds / 10)}");
             }, globalProgressOptions);
         }
     }

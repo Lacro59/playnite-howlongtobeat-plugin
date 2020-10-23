@@ -107,13 +107,6 @@ namespace HowLongToBeat
                     Action = (gameMenuItem) =>
                     {
                         data.RemoveData();
-
-                        howLongToBeatUI.RemoveElements();
-                        var TaskIntegrationUI = Task.Run(() =>
-                        {
-                            howLongToBeatUI.AddElements();
-                            howLongToBeatUI.RefreshElements(gameMenu);
-                        });
                     }
                 }
             };
