@@ -11,6 +11,8 @@
     <sys:String x:Key="LOCHowLongToBeatAutoTag">Automatic tags processing</sys:String>
     <sys:String x:Key="LOCHowLongToBeatShowHltbImage">Show HowLongToBeat game cover image</sys:String>
 
+    <sys:String x:Key="LOCHowLongToBeatColorSelection">Color selection for progress bar:</sys:String>
+    
     <sys:String x:Key="LOCHowLongToBeatIntegration">Interface integration</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationTopGameDetails">Show progress bar above game description</sys:String>
 

@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using System.Windows.Shapes;
 
 namespace HowLongToBeat.Views.Interfaces
@@ -138,6 +139,10 @@ namespace HowLongToBeat.Views.Interfaces
 
             ShowToolTip = settings.ProgressBarShowToolTip;
             ShowTime = settings.ProgressBarShowTime;
+
+            ProgressHltb_El1.Foreground = new SolidColorBrush(settings.ColorFirst);
+            ProgressHltb_El2.Foreground = new SolidColorBrush(settings.ColorSecond);
+            ProgressHltb_El3.Foreground = new SolidColorBrush(settings.ColorThird);
 
             if (_gameData != null && _gameData.hasData && !_gameData.isEmpty) {
                 if (ShowToolTip)

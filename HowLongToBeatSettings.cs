@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using Playnite.SDK;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Windows.Media;
 
 namespace HowLongToBeat
 {
@@ -30,6 +31,10 @@ namespace HowLongToBeat
         public bool ProgressBarShowTimeAbove { get; set; } = false;
         public bool ProgressBarShowTimeInterior { get; set; } = true;
         public bool ProgressBarShowTimeBelow { get; set; } = false;
+
+        public Color ColorFirst { get; set; } = Brushes.DarkCyan.Color;
+        public Color ColorSecond { get; set; } = Brushes.RoyalBlue.Color;
+        public Color ColorThird { get; set; } = Brushes.ForestGreen.Color;
 
         // Playnite serializes settings object to a JSON object and saves it as text file.
         // If you want to exclude some property from being saved then use `JsonIgnore` ignore attribute.
@@ -72,6 +77,10 @@ namespace HowLongToBeat
                 ProgressBarShowTimeAbove = savedSettings.ProgressBarShowTimeAbove;
                 ProgressBarShowTimeInterior = savedSettings.ProgressBarShowTimeInterior;
                 ProgressBarShowTimeBelow = savedSettings.ProgressBarShowTimeBelow;
+
+                ColorFirst = savedSettings.ColorFirst;
+                ColorSecond = savedSettings.ColorSecond;
+                ColorThird = savedSettings.ColorThird;
             }
         }
 
@@ -96,6 +105,11 @@ namespace HowLongToBeat
         {
             // Code executed when user decides to confirm changes made since BeginEdit was called.
             // This method should save settings made to Option1 and Option2.
+
+            ColorFirst = HowLongToBeatSettingsView.ColorFirst;
+            ColorSecond = HowLongToBeatSettingsView.ColorSecond;
+            ColorThird = HowLongToBeatSettingsView.ColorThird;
+
             plugin.SavePluginSettings(this);
 
             HowLongToBeat.howLongToBeatUI.RemoveElements();
