@@ -13,9 +13,6 @@
 
     <sys:String x:Key="LOCHowLongToBeatColorSelection">Color selection for progress bar:</sys:String>
     
-    <sys:String x:Key="LOCHowLongToBeatIntegration">Interface integration</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationTopGameDetails">Show progress bar above game description</sys:String>
-
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarOptions">Progress bar options</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">Show tooltip with time in progress bar</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTime">Show times in progress bar</sys:String>

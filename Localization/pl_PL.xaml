@@ -17,7 +17,7 @@
     <sys:String x:Key="LOCCommonIntegrationButton">Dodaj przycisk</sys:String>
     <sys:String x:Key="LOCCommonIntegrationInDescription">Integracja z opisem gry</sys:String>
     <sys:String x:Key="LOCCommonIntegrationShowTitle">Wyświetlaj tytuł</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationTopGameDetails">Integracja nad opisem gry</sys:String>
+    <sys:String x:Key="LOCCommonIntegrationTopGameDetails">Integracja nad opisem gry</sys:String>
     <sys:String x:Key="LOCCommonIntegrationInCustomTheme">Integracja z niestandardowym motywem (jeśli jest zintegrowany)</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarOptions">Progress bar options</sys:String>

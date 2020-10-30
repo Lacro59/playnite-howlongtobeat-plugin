@@ -17,7 +17,7 @@
     <sys:String x:Key="LOCCommonIntegrationButton">添加按钮</sys:String>
     <sys:String x:Key="LOCCommonIntegrationInDescription">集成到游戏描述</sys:String>
     <sys:String x:Key="LOCCommonIntegrationShowTitle">显示标题</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationTopGameDetails">在其他描述之上</sys:String>
+    <sys:String x:Key="LOCCommonIntegrationTopGameDetails">在其他描述之上</sys:String>
     <sys:String x:Key="LOCCommonIntegrationInCustomTheme">自定义主题集成（如被集成）</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarOptions">进度条选项</sys:String>

@@ -17,7 +17,7 @@
     <sys:String x:Key="LOCCommonIntegrationButton">Добавить кнопку в подробный вид</sys:String>
     <sys:String x:Key="LOCCommonIntegrationInDescription">Добавить информацию в описание игры</sys:String>
     <sys:String x:Key="LOCCommonIntegrationShowTitle">Показывать заголовок</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationTopGameDetails">Показывать шкалу прогресса над описанием игры</sys:String>
+    <sys:String x:Key="LOCCommonIntegrationTopGameDetails">Показывать шкалу прогресса над описанием игры</sys:String>
     <sys:String x:Key="LOCCommonIntegrationInCustomTheme">Интеграция в нестандартные темы (если поддерживается темой)</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarOptions">Настройки шкалы прогресса</sys:String>
