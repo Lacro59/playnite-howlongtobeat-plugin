@@ -19,10 +19,24 @@ namespace HowLongToBeat.Services
     {
         private readonly HowLongToBeatSettings _Settings;
 
+        public override string _PluginUserDataPath { get; set; } = string.Empty;
+
+        public override bool IsFirstLoad { get; set; } = true;
+
+        public override string BtActionBarName { get; set; } = string.Empty;
+        public override FrameworkElement PART_BtActionBar { get; set; }
+
+        public override string SpDescriptionName { get; set; } = string.Empty;
+        public override FrameworkElement PART_SpDescription { get; set; }
+
+        public override List<CustomElement> ListCustomElements { get; set; } = new List<CustomElement>();
+
 
         public HowLongToBeatUI(IPlayniteAPI PlayniteApi, HowLongToBeatSettings Settings, string PluginUserDataPath) : base(PlayniteApi, PluginUserDataPath)
         {
             _Settings = Settings;
+            _PluginUserDataPath = PluginUserDataPath;
+
             BtActionBarName = "PART_HltbButton";
             SpDescriptionName = "PART_HltbDescriptionIntegration";
         }
@@ -66,7 +80,7 @@ namespace HowLongToBeat.Services
                 IsFirstLoad = false;
             }
 
-            Application.Current.Dispatcher.Invoke(new Action(() =>
+            Application.Current.Dispatcher.BeginInvoke((Action)delegate
             {
                 CheckTypeView();
 
@@ -93,7 +107,7 @@ namespace HowLongToBeat.Services
 #endif
                     AddCustomElements();
                 }
-            }));
+            });
         }
 
         public override void RefreshElements(Game GameSelected, bool Force = false)
@@ -102,7 +116,8 @@ namespace HowLongToBeat.Services
             CancellationTokenSource tokenSource = new CancellationTokenSource();
             CancellationToken ct = tokenSource.Token;
 
-            Task TaskRefresh = Task.Run(() => {
+            Task TaskRefresh = Task.Run(() => 
+            {
                 try
                 {
                     Initial();
@@ -138,11 +153,6 @@ namespace HowLongToBeat.Services
                         _PlayniteApi.Dialogs.ShowErrorMessage(resources.GetString("LOCDatabaseErroTitle"), "HowLongToBeat");
                     }
 
-                    if (_Settings.EnableTag)
-                    {
-                        HowLongToBeat.HltbGameData.AddTag();
-                    }
-
                     if (HowLongToBeat.HltbGameData.hasData)
                     {
                         resourcesLists = new List<ResourcesList>();
@@ -165,12 +175,17 @@ namespace HowLongToBeat.Services
                         logger.Warn("HowLongToBeat - No data for " + GameSelected.Name);
                     }
 
+                    if (_Settings.EnableTag)
+                    {
+                        HowLongToBeat.HltbGameData.AddTag();
+                    }
+
                     // If not cancel, show
                     if (!ct.IsCancellationRequested)
                     {
                         ui.AddResources(resourcesLists);
 
-                        Application.Current.Dispatcher.Invoke(new Action(() =>
+                        Application.Current.Dispatcher.BeginInvoke((Action)delegate
                         {
                             if (_Settings.EnableIntegrationButton)
                             {
@@ -195,14 +210,14 @@ namespace HowLongToBeat.Services
 #endif
                                 RefreshCustomElements();
                             }
-                        }));
+                        });
                     }
                 }
                 catch (Exception ex)
                 {
                     Common.LogError(ex, "HowLongToBeat", $"Error on TaskRefreshBtActionBar()");
                 }
-            });
+            }, ct);
 
             taskHelper.Add(TaskRefresh, tokenSource);
         }
@@ -211,13 +226,13 @@ namespace HowLongToBeat.Services
         #region BtActionBar
         public override void InitialBtActionBar()
         {
-            Application.Current.Dispatcher.Invoke(new Action(() =>
+            Application.Current.Dispatcher.BeginInvoke((Action)delegate
             {
                 if (PART_BtActionBar != null)
                 {
                     PART_BtActionBar.Visibility = Visibility.Collapsed;
                 }
-            }));
+            });
         }
 
         public override void AddBtActionBar()
@@ -307,13 +322,13 @@ namespace HowLongToBeat.Services
         #region SpDescription
         public override void InitialSpDescription()
         {
-            Application.Current.Dispatcher.Invoke(new Action(() =>
+            Application.Current.Dispatcher.BeginInvoke((Action)delegate
             {
                 if (PART_SpDescription != null)
                 {
                     PART_SpDescription.Visibility = Visibility.Collapsed;
                 }
-            }));
+            });
         }
 
         public override void AddSpDescription()
@@ -376,13 +391,13 @@ namespace HowLongToBeat.Services
         #region CustomElements
         public override void InitialCustomElements()
         {
-            Application.Current.Dispatcher.Invoke(new Action(() =>
+            Application.Current.Dispatcher.BeginInvoke((Action)delegate
             {
                 foreach (CustomElement customElement in ListCustomElements)
                 {
                     customElement.Element.Visibility = Visibility.Collapsed;
                 }
-            }));
+            });
         }
 
         public override void AddCustomElements()

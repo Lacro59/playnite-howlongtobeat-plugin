@@ -603,7 +603,7 @@ namespace HowLongToBeat.Services
                         {
                             if (dataSearch.Count > 0 && settings.ShowWhenMismatch)
                             {
-                                Application.Current.Dispatcher.Invoke(new Action(() =>
+                                Application.Current.Dispatcher.BeginInvoke((Action)delegate
                                 {
                                     string FileGameData = PluginUserDataPath + "\\howlongtobeat\\" + game.Id.ToString() + ".json";
 
@@ -615,7 +615,7 @@ namespace HowLongToBeat.Services
                                     {
                                         HowLongToBeatData.AddAllTag(PlayniteApi, game, PluginUserDataPath);
                                     }
-                                }));
+                                });
                             }
                         }
                     }

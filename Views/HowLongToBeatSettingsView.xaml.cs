@@ -89,10 +89,11 @@ namespace HowLongToBeat.Views
             }, tokenSource.Token)
             .ContinueWith(antecedent =>
             {
-                Application.Current.Dispatcher.Invoke(new Action(() => {
+                Application.Current.Dispatcher.BeginInvoke((Action)delegate 
+                {
                     DataLoad.Visibility = Visibility.Collapsed;
                     spSettings.Visibility = Visibility.Visible;
-                }));
+                });
             });
         }
 
@@ -125,10 +126,11 @@ namespace HowLongToBeat.Views
             }, tokenSource.Token)
             .ContinueWith(antecedent =>
             {
-                Application.Current.Dispatcher.Invoke(new Action(() => {
+                Application.Current.Dispatcher.BeginInvoke((Action)delegate 
+                {
                     DataLoad.Visibility = Visibility.Collapsed;
                     spSettings.Visibility = Visibility.Visible;
-                }));
+                });
             });
         }
 
@@ -182,7 +184,7 @@ namespace HowLongToBeat.Views
                                 TotalMultiFind += 1;
                                 if (dataSearch.Count > 0 && ShowWhenMismatch)
                                 {
-                                    Application.Current.Dispatcher.Invoke(new Action(() =>
+                                    Application.Current.Dispatcher.BeginInvoke((Action)delegate
                                     {
                                         string FileGameData = _PluginUserDataPath + "\\howlongtobeat\\" + game.Id.ToString() + ".json";
 
@@ -194,7 +196,7 @@ namespace HowLongToBeat.Views
                                         {
                                             HowLongToBeatData.AddAllTag(_PlayniteApi, game, _PluginUserDataPath);
                                         }
-                                    }));
+                                    });
                                 }
                                 else
                                 {
@@ -207,11 +209,11 @@ namespace HowLongToBeat.Views
                             TotalAlready += 1;
                             logger.Debug($"HowLongToBeat - {game.Name}");
                         }
-                        Application.Current.Dispatcher.Invoke(new Action(() =>
+                        Application.Current.Dispatcher.BeginInvoke((Action)delegate
                         {
                             tbDataLoad.Text = string.Format(resources.GetString("LOCHowLongToBeatProgressBar"), TotalAdded, TotalAlready, TotlaNotFind);
                             pbDataLoad.Value += 1;
-                        }));
+                        });
                     }
                     catch (Exception ex)
                     {
@@ -226,10 +228,11 @@ namespace HowLongToBeat.Views
             }, tokenSource.Token)
             .ContinueWith(antecedent =>
             {
-                Application.Current.Dispatcher.Invoke(new Action(() => {
+                Application.Current.Dispatcher.BeginInvoke((Action)delegate 
+                {
                     DataLoad.Visibility = Visibility.Collapsed;
                     spSettings.Visibility = Visibility.Visible;
-                }));
+                });
             });
         }
 
@@ -262,10 +265,11 @@ namespace HowLongToBeat.Views
             }, tokenSource.Token)
             .ContinueWith(antecedent =>
             {
-                Application.Current.Dispatcher.Invoke(new Action(() => {
+                Application.Current.Dispatcher.BeginInvoke((Action)delegate 
+                {
                     DataLoad.Visibility = Visibility.Collapsed;
                     spSettings.Visibility = Visibility.Visible;
-                }));
+                });
             });
         }
 

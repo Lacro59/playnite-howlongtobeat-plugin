@@ -116,14 +116,14 @@ namespace HowLongToBeat.Views
 #if DEBUG
                 logger.Debug($"HowLongToBeat - dataSearch: {JsonConvert.SerializeObject(dataSearch)}");
 #endif
-                Application.Current.Dispatcher.Invoke(new Action(() =>
+                Application.Current.Dispatcher.BeginInvoke((Action)delegate
                 {
                     lbSelectable.ItemsSource = dataSearch;
                     lbSelectable.UpdateLayout();
 
                     PART_DataLoadWishlist.Visibility = Visibility.Collapsed;
                     SelectableContent.IsEnabled = true;
-                }));
+                });
             });
         }
 

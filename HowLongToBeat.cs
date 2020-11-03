@@ -192,8 +192,10 @@ namespace HowLongToBeat
                 {
                     GameSelected = args.NewValue[0];
 
+                    //PlayniteUiHelper.ResetToggle();
                     var TaskIntegrationUI = Task.Run(() =>
                     {
+                        howLongToBeatUI.taskHelper.Check();
                         howLongToBeatUI.AddElements();
                         howLongToBeatUI.RefreshElements(GameSelected);
                     });
