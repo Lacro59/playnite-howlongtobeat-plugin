@@ -105,6 +105,11 @@ namespace HowLongToBeat.Views
                 }
 
 
+               Hltb_El1_Color.Background = new SolidColorBrush(settings.ColorFirst);
+               Hltb_El2_Color.Background = new SolidColorBrush(settings.ColorSecond);
+               Hltb_El3_Color.Background = new SolidColorBrush(settings.ColorThird);
+
+
                 LongToTimePlayedConverter converter = new LongToTimePlayedConverter();
                 PlaytimeFormat = (string)converter.Convert((long)game.Playtime, null, null, CultureInfo.CurrentCulture);
 

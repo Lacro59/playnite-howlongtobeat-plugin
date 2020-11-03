@@ -139,6 +139,9 @@ namespace HowLongToBeat.Services
                     resourcesLists.Add(new ResourcesList { Key = "Htlb_VsFormat", Value = string.Empty });
 
                     resourcesLists.Add(new ResourcesList { Key = "Htlb_EnableIntegrationInCustomTheme", Value = _Settings.EnableIntegrationInCustomTheme });
+                    resourcesLists.Add(new ResourcesList { Key = "Htlb_ColorFirst", Value = new SolidColorBrush(_Settings.ColorFirst) });
+                    resourcesLists.Add(new ResourcesList { Key = "Htlb_ColorSecond", Value = new SolidColorBrush(_Settings.ColorSecond) });
+                    resourcesLists.Add(new ResourcesList { Key = "Htlb_ColorThird", Value = new SolidColorBrush(_Settings.ColorThird) });
                     ui.AddResources(resourcesLists);
 
 
