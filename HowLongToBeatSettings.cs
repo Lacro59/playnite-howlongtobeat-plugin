@@ -110,6 +110,17 @@ namespace HowLongToBeat
             ColorSecond = HowLongToBeatSettingsView.ColorSecond;
             ColorThird = HowLongToBeatSettingsView.ColorThird;
 
+            if (!ProgressBarShowTimeAbove && !ProgressBarShowTimeInterior && !ProgressBarShowTimeBelow)
+            {
+                var savedSettings = plugin.LoadPluginSettings<HowLongToBeatSettings>();
+                if (savedSettings != null)
+                {
+                    ProgressBarShowTimeAbove = savedSettings.ProgressBarShowTimeAbove;
+                    ProgressBarShowTimeInterior = savedSettings.ProgressBarShowTimeInterior;
+                    ProgressBarShowTimeBelow = savedSettings.ProgressBarShowTimeBelow;
+                }
+            }
+
             plugin.SavePluginSettings(this);
 
             HowLongToBeat.howLongToBeatUI.RemoveElements();

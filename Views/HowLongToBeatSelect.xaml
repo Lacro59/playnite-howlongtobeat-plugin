@@ -97,7 +97,7 @@
                     <ColumnDefinition Width="150" />
                 </Grid.ColumnDefinitions>
 
-                <TextBox Grid.Column="0" Name="SearchElement" KeyUp="SearchElement_KeyUp" VerticalAlignment="Center" />
+                <TextBox Grid.Column="0" Name="SearchElement" KeyUp="SearchElement_KeyUp" VerticalContentAlignment="Center" />
                 <Button Grid.Column="3" Content="{DynamicResource LOCSearchLabel}" Click="ButtonSearch_Click"></Button>
             </Grid>
 
