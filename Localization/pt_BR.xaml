@@ -1,27 +1,19 @@
-<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+﻿<?xml version="1.0"?>
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:sys="clr-namespace:System;assembly=mscorlib">
 
-    <!--  
-    HowLongToBeatSettingsView
-    -->
+    <!-- HowLongToBeatSettingsView -->
 
-    <sys:String x:Key="LOCHowLongToBeatProgressBarTag">Treatment in progress...</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatProgressBar">Added {0} - Already added {1} - Not added {2}</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatProgressBarTag">Ação em progresso...</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatProgressBar">Adicionado {0} - Já adicionado {1} - Não adicionado {2}</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatAddTagDescription">Tag with "Main Story" / "Solo" time (Main + Extra / Vs if missing)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAutoTag">Automatic tags processing</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatShowHltbImage">Show How Long To Beat cover image</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAddTagDescription">Adicionar uma etiqueta com tempo para terminar o jogo</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoTag">Processamento automático de etiquetas</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatShowHltbImage">Mostrar imagem de capa do jogo de HowLongToBeat</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatIntegration">Integração com a Interface</sys:String>
-    <sys:String x:Key="LOCCommonIntegrationButton">Adicionar botão</sys:String>
-    <sys:String x:Key="LOCCommonIntegrationInDescription">Integração na descrição do jogo</sys:String>
-    <sys:String x:Key="LOCCommonIntegrationShowTitle">Mostrar título</sys:String>
-    <sys:String x:Key="LOCCommonIntegrationTopGameDetails">Integração acima da descrição do jogo</sys:String>
-    <sys:String x:Key="LOCCommonIntegrationInCustomTheme">Integração de temas personalizados (se integrado)</sys:String>
-
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarOptions">Progress bar options</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">Show tooltip with time in progress bar</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatColorSelection">Color selection for progress bar:</sys:String>
+    
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarOptions">Opções da barra de progresso</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">Mostrar dica com tempo na barra de progresso</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTime">Show time with progress bar</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeAbove">Above</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeInterior">Interior</sys:String>
@@ -29,32 +21,21 @@
 
     <sys:String x:Key="LOCHowLongToBeatAutoData">Download datas</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoAccept">Automatic accept when only a game is find</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatShowWhenMismatch">Show the selection view when there is more a game found</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatShowWhenMismatch">Mostrar a lista de seleção de jogos, quando mais de um jogo for encontrado, durante a pesquisa</sys:String>
 
-    <!--  
-    HowLongToBeatSelect
-    -->
+    <!-- HowLongToBeatSelect -->
 
-    <sys:String x:Key="LOCSelection">Seleção HowLongToBeat</sys:String>
+    <sys:String x:Key="LOCSelection">HowLongToBeat seleção</sys:String>
     
     <sys:String x:Key="LOCHowLongToBeatMainStory">História Principal</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatMainExtra">Principal + extras</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatCompletionist">Complecionista</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatMainExtra">Principal + extra</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatCompletionist">Completista</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatSolo">Solo</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatSolo">Só</sys:String>
     <sys:String x:Key="LOCHowLongToBeatCoOp">Co-Op</sys:String>
     <sys:String x:Key="LOCHowLongToBeatVs">Vs</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatPlaytime">Tempo de jogo</sys:String>
-
-    <sys:String x:Key="LOCSearchLabel">Buscar</sys:String>
-
-    <sys:String x:Key="LOCSelect">Selecionar</sys:String>
-    <sys:String x:Key="LOCCancelLabel">Cancelar</sys:String>
-
-    <!--  
-    HowLongToBeat
-    -->
+    <!-- HowLongToBeat -->
 
     <sys:String x:Key="LOCHowLongToBeatProgression">Progressão</sys:String>
 
@@ -69,16 +50,13 @@
     <sys:String x:Key="LOCHowLongToBeat70to80">70 a 80 horas</sys:String>
     <sys:String x:Key="LOCHowLongToBeat80to90">80 a 90 horas</sys:String>
     <sys:String x:Key="LOCHowLongToBeat90to100">90 a 100 horas</sys:String>
-    <sys:String x:Key="LOCHowLongToBeat100plus">More 100 hours</sys:String>
+    <sys:String x:Key="LOCHowLongToBeat100plus">Mais 100 horas</sys:String>
 
-    <sys:String x:Key="LOCCommonNotificationTagError" xml:space="preserve">Error for insert tag.
-Please try to delete all tag in plugin setting.</sys:String>
-
-    <!--  
-    MainView
-    -->
+    <!-- MainView -->
 
     <sys:String x:Key="LOCHowLongToBeat">HowLongToBeat</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatTitle">How long to beat</sys:String>
-    
+    <sys:String x:Key="LOCHowLongToBeatTitle">HowLongToBeat</sys:String>
+
+    <sys:String x:Key="LOCHowLongToBeatPluginView">Ver dados HowLongToBeat</sys:String>
+
 </ResourceDictionary>

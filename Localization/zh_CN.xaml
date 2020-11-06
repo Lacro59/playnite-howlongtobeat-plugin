@@ -1,10 +1,7 @@
-﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+﻿<?xml version="1.0"?>
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:sys="clr-namespace:System;assembly=mscorlib">
 
-    <!--  
-    HowLongToBeatSettingsView
-    -->
+    <!-- HowLongToBeatSettingsView -->
 
     <sys:String x:Key="LOCHowLongToBeatProgressBarTag">处理进度…</sys:String>
     <sys:String x:Key="LOCHowLongToBeatProgressBar">Added {0} - Already added {1} - Not added {2}</sys:String>
@@ -13,13 +10,8 @@
     <sys:String x:Key="LOCHowLongToBeatAutoTag">Automatic tags processing</sys:String>
     <sys:String x:Key="LOCHowLongToBeatShowHltbImage">显示通关时长How Long To Beat的封面图片</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatIntegration">界面集成</sys:String>
-    <sys:String x:Key="LOCCommonIntegrationButton">添加按钮</sys:String>
-    <sys:String x:Key="LOCCommonIntegrationInDescription">集成到游戏描述</sys:String>
-    <sys:String x:Key="LOCCommonIntegrationShowTitle">显示标题</sys:String>
-    <sys:String x:Key="LOCCommonIntegrationTopGameDetails">在其他描述之上</sys:String>
-    <sys:String x:Key="LOCCommonIntegrationInCustomTheme">自定义主题集成（如被集成）</sys:String>
-
+    <sys:String x:Key="LOCHowLongToBeatColorSelection">Color selection for progress bar:</sys:String>
+    
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarOptions">进度条选项</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">鼠标在进度条上时显示时间</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTime">在进度条上显示时间</sys:String>
@@ -31,11 +23,9 @@
     <sys:String x:Key="LOCHowLongToBeatAutoAccept">当只有一个游戏被找到时自动接受</sys:String>
     <sys:String x:Key="LOCHowLongToBeatShowWhenMismatch">当多个游戏被找到时显示选择界面</sys:String>
 
-    <!--  
-    HowLongToBeatSelect
-    -->
+    <!-- HowLongToBeatSelect -->
 
-    <sys:String x:Key="LOCSelection">通关时长How long to beat 选择</sys:String>
+    <sys:String x:Key="LOCSelection">HowLongToBeat selection</sys:String>
     
     <sys:String x:Key="LOCHowLongToBeatMainStory">主线</sys:String>
     <sys:String x:Key="LOCHowLongToBeatMainExtra">主线+支线</sys:String>
@@ -44,17 +34,8 @@
     <sys:String x:Key="LOCHowLongToBeatSolo">单人</sys:String>
     <sys:String x:Key="LOCHowLongToBeatCoOp">合作</sys:String>
     <sys:String x:Key="LOCHowLongToBeatVs">竞技</sys:String>
-    
-    <sys:String x:Key="LOCHowLongToBeatPlaytime">游戏时长</sys:String>
 
-    <sys:String x:Key="LOCSearchLabel">搜索</sys:String>
-
-    <sys:String x:Key="LOCSelect">选择</sys:String>
-    <sys:String x:Key="LOCCancelLabel">取消</sys:String>
-
-    <!--  
-    HowLongToBeat
-    -->
+    <!-- HowLongToBeat -->
 
     <sys:String x:Key="LOCHowLongToBeatProgression">进度</sys:String>
 
@@ -71,14 +52,11 @@
     <sys:String x:Key="LOCHowLongToBeat90to100">90到100小时</sys:String>
     <sys:String x:Key="LOCHowLongToBeat100plus">超过100小时</sys:String>
 
-    <sys:String x:Key="LOCCommonNotificationTagError" xml:space="preserve">Error for insert tag.
-Please try to delete all tag in plugin setting.</sys:String>
-
-    <!--  
-    MainView
-    -->
+    <!-- MainView -->
 
     <sys:String x:Key="LOCHowLongToBeat">通关时长HowLongToBeat</sys:String>
     <sys:String x:Key="LOCHowLongToBeatTitle">通关时长How long to beat</sys:String>
-    
+
+    <sys:String x:Key="LOCHowLongToBeatPluginView">View HowLongToBeat datas</sys:String>
+
 </ResourceDictionary>

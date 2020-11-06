@@ -1,0 +1,62 @@
+﻿<?xml version="1.0"?>
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:sys="clr-namespace:System;assembly=mscorlib">
+
+    <!-- HowLongToBeatSettingsView -->
+
+    <sys:String x:Key="LOCHowLongToBeatProgressBarTag">Azione in corso...</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatProgressBar">Aggiunto {0} - Già aggiunto {1} - Non aggiunto {2}</sys:String>
+
+    <sys:String x:Key="LOCHowLongToBeatAddTagDescription">Aggiungi un tag con il tempo per terminare la partita</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoTag">Elaborazione automatica dei tag</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatShowHltbImage">Mostra l'immagine della copertina di gioco HowLongToBeat</sys:String>
+
+    <sys:String x:Key="LOCHowLongToBeatColorSelection">Color selection for progress bar:</sys:String>
+    
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarOptions">Opzioni barra di avanzamento</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">Mostra il suggerimento con il tempo nella barra di avanzamento</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTime">Mostra orari nella barra di avanzamento</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeAbove">Sopra la barra di avanzamento</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeInterior">Barra di avanzamento interna</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeBelow">Sotto le barre di avanzamento</sys:String>
+
+    <sys:String x:Key="LOCHowLongToBeatAutoData">Download dati del gioco</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoAccept">Seleziona automaticamente il gioco quando si trova una sola partita durante la ricerca</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatShowWhenMismatch">Mostra la lista di selezione dei giochi quando si trova più di un gioco durante la ricerca</sys:String>
+
+    <!-- HowLongToBeatSelect -->
+
+    <sys:String x:Key="LOCSelection">Selezione HowLongToBeat</sys:String>
+    
+    <sys:String x:Key="LOCHowLongToBeatMainStory">Storia principale</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatMainExtra">Principale + extra</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatCompletionist">Completista</sys:String>
+
+    <sys:String x:Key="LOCHowLongToBeatSolo">Solo</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatCoOp">Co-Op</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatVs">Vs</sys:String>
+
+    <!-- HowLongToBeat -->
+
+    <sys:String x:Key="LOCHowLongToBeatProgression">Progressione</sys:String>
+
+    <sys:String x:Key="LOCHowLongToBeat1to5">1 o 5 ore</sys:String>
+    <sys:String x:Key="LOCHowLongToBeat5to10">5 a 10 ore</sys:String>
+    <sys:String x:Key="LOCHowLongToBeat10to20">10 a 20 ore</sys:String>
+    <sys:String x:Key="LOCHowLongToBeat20to30">20 a 30 ore</sys:String>
+    <sys:String x:Key="LOCHowLongToBeat30to40">30 a 40 ore</sys:String>
+    <sys:String x:Key="LOCHowLongToBeat40to50">40 a 50 ore</sys:String>
+    <sys:String x:Key="LOCHowLongToBeat50to60">50 a 60 ore</sys:String>
+    <sys:String x:Key="LOCHowLongToBeat60to70">60 a 70 ore</sys:String>
+    <sys:String x:Key="LOCHowLongToBeat70to80">70 a 80 ore</sys:String>
+    <sys:String x:Key="LOCHowLongToBeat80to90">80 a 90 ore</sys:String>
+    <sys:String x:Key="LOCHowLongToBeat90to100">90 a 100 ore</sys:String>
+    <sys:String x:Key="LOCHowLongToBeat100plus">Più di 100 ore</sys:String>
+
+    <!-- MainView -->
+
+    <sys:String x:Key="LOCHowLongToBeat">HowLongToBeat</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatTitle">HowLongToBeat</sys:String>
+
+    <sys:String x:Key="LOCHowLongToBeatPluginView">Visualizza dati HowLongToBeat</sys:String>
+
+</ResourceDictionary>
