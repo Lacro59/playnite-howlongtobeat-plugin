@@ -170,7 +170,7 @@ namespace HowLongToBeat.Views.Interfaces
                 if (e != null)
                 {
                     // Define height & width
-                    var parent = ((FrameworkElement)((FrameworkElement)((FrameworkElement)((FrameworkElement)sender).Parent).Parent).Parent);
+                    var parent = ((FrameworkElement)((FrameworkElement)(((UserControl)IntegrationUI.GetAncestorOfType<UserControl>((FrameworkElement)sender))).Parent).Parent);
 
                     if (!double.IsNaN(parent.Height))
                     {
@@ -181,11 +181,17 @@ namespace HowLongToBeat.Views.Interfaces
                     {
                         ((FrameworkElement)sender).Width = parent.Width;
                     }
+#if DEBUG
+                    logger.Debug($"HowLongToBeat - Parent({parent.Height}, {parent.Width}, {parent.Name}) -  Height: {((FrameworkElement)sender).Height} - Width: {((FrameworkElement)sender).Width = parent.Width}");
+#endif
                 }
 
                 if (_settings.ProgressBarShowTime && !_settings.ProgressBarShowTimeInterior)
                 {
                     ((FrameworkElement)sender).Height = ((FrameworkElement)sender).Height - spShowTime.Height;
+#if DEBUG
+                    logger.Debug($"HowLongToBeat - ProgressBarShowTime & !ProgressBarShowTimeInterior -  Height: {((FrameworkElement)sender).Height} - Width: {((FrameworkElement)sender).Width}");
+#endif
                 }
                 else
                 {
