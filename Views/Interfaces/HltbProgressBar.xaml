@@ -17,20 +17,20 @@
         </Grid.RowDefinitions>
 
         <Grid Grid.Row="0" Loaded="Grid_Loaded" Name="PART_HltbProgressBar_Contener" MinWidth="100" Height="40">
-            <ProgressBar Name="ProgressHltb_El3" Height="{Binding ElementName=PART_HltbProgressBar_Contener, Path=Height}" Value="90" 
+            <ProgressBar Name="ProgressHltb_El3" Height="{Binding ElementName=PART_HltbProgressBar_Contener, Path=ActualHeight}" Value="90" 
                          Maximum="90" Background="Transparent" Foreground="ForestGreen">
             </ProgressBar>
 
-            <ProgressBar Name="ProgressHltb_El2" Height="{Binding ElementName=PART_HltbProgressBar_Contener, Path=Height}" Value="40" 
+            <ProgressBar Name="ProgressHltb_El2" Height="{Binding ElementName=PART_HltbProgressBar_Contener, Path=ActualHeight}" Value="40" 
                          Maximum="90" Background="Transparent" Foreground="RoyalBlue">
             </ProgressBar>
-            <ProgressBar Name="ProgressHltb_El1" Height="{Binding ElementName=PART_HltbProgressBar_Contener, Path=Height}" Value="20" 
+            <ProgressBar Name="ProgressHltb_El1" Height="{Binding ElementName=PART_HltbProgressBar_Contener, Path=ActualHeight}" Value="20" 
                          Maximum="90" Background="Transparent" Foreground="DarkCyan">
             </ProgressBar>
 
             <Slider Name="SliderPlaytime" Value="20" Maximum="90" Margin="-4,0,-3,0"
                     Width="{Binding ElementName=PART_HltbProgressBar_Contener, Path=Width}"
-                    Height="{Binding ElementName=PART_HltbProgressBar_Contener, Path=Height}">
+                    Height="{Binding ElementName=PART_HltbProgressBar_Contener, Path=ActualHeight}">
                 <Slider.Style>
                     <Style TargetType="{x:Type Slider}" BasedOn="{StaticResource BaseStyle}">
                         <Setter Property="SnapsToDevicePixels" Value="True" />
@@ -45,18 +45,38 @@
                                             <RowDefinition Height="*" />
                                             <RowDefinition Height="2" />
                                         </Grid.RowDefinitions>
-                                        <TickBar x:Name="TopTick" Visibility="Hidden" Placement="Top" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"  Fill="{DynamicResource GlyphBrush}" />
+                                        <TickBar x:Name="TopTick" Visibility="Hidden" Placement="Top" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" Fill="{DynamicResource GlyphBrush}" />
                                         <Track Grid.Row="1" Name="PART_Track">
                                             <Track.Thumb>
-                                                <Thumb Name="SliderPlaytimeThumb" Width="20" />
+                                                <Thumb Name="SliderPlaytimeThumb" Width="20" SnapsToDevicePixels="True" IsEnabled="False">
+                                                    <Thumb.Style>
+                                                        <Style TargetType="{x:Type Thumb}">
+                                                            <Setter Property="Background" Value="{DynamicResource NormalBrush}" />
+                                                            <Setter Property="Template">
+                                                                <Setter.Value>
+                                                                    <ControlTemplate TargetType="{x:Type Thumb}">
+                                                                        <Grid>
+                                                                            <Rectangle x:Name="HoverRectangle" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                                                                               Width="Auto" Height="Auto" RadiusX="3" RadiusY="4"
+                                                                               Stroke="{x:Null}" Margin="4.5,1,4.5,1" MinHeight="10"
+                                                                               Fill="{TemplateBinding Background}" />
+                                                                        </Grid>
+                                                                        <ControlTemplate.Triggers>
+                                                                            <Trigger Property="IsFocused" Value="True" />
+                                                                            <Trigger Property="IsMouseOver" Value="True" />
+                                                                        </ControlTemplate.Triggers>
+                                                                    </ControlTemplate>
+                                                                </Setter.Value>
+                                                            </Setter>
+                                                        </Style>
+                                                    </Thumb.Style>
+                                                </Thumb>
                                             </Track.Thumb>
                                             <Track.DecreaseRepeatButton>
-                                                <RepeatButton Style="{StaticResource SliderTrackButton}"
-                                                  Command="Slider.DecreaseLarge" />
+                                                <RepeatButton Style="{StaticResource SliderTrackButton}" Command="Slider.DecreaseLarge" />
                                             </Track.DecreaseRepeatButton>
                                             <Track.IncreaseRepeatButton>
-                                                <RepeatButton Style="{StaticResource SliderTrackButton}"
-                                                  Command="Slider.IncreaseLarge" />
+                                                <RepeatButton Style="{StaticResource SliderTrackButton}" Command="Slider.IncreaseLarge" />
                                             </Track.IncreaseRepeatButton>
                                         </Track>
                                         <TickBar Name="BottomTick" Visibility="Hidden" Grid.Row="2" Placement="Bottom" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" Fill="{TemplateBinding Foreground}" />
@@ -92,17 +112,17 @@
             </Slider>
 
             <StackPanel Name="PART_ShowToolTip"  Orientation="Horizontal">
-                <StackPanel Name="spHltb_El1" Height="{Binding ElementName=PART_HltbProgressBar_Contener, Path=Height}" Width="0" Background="Transparent">
+                <StackPanel Name="spHltb_El1" Height="{Binding ElementName=PART_HltbProgressBar_Contener, Path=ActualHeight}" Width="0" Background="Transparent">
                     <StackPanel.ToolTip>
                         <ToolTip Name="tpHltb_El1" />
                     </StackPanel.ToolTip>
                 </StackPanel>
-                <StackPanel Name="spHltb_El2" Height="{Binding ElementName=PART_HltbProgressBar_Contener, Path=Height}" Width="0" Background="Transparent">
+                <StackPanel Name="spHltb_El2" Height="{Binding ElementName=PART_HltbProgressBar_Contener, Path=ActualHeight}" Width="0" Background="Transparent">
                     <StackPanel.ToolTip>
                         <ToolTip Name="tpHltb_El2" />
                     </StackPanel.ToolTip>
                 </StackPanel>
-                <StackPanel Name="spHltb_El3" Height="{Binding ElementName=PART_HltbProgressBar_Contener, Path=Height}" Width="0" Background="Transparent">
+                <StackPanel Name="spHltb_El3" Height="{Binding ElementName=PART_HltbProgressBar_Contener, Path=ActualHeight}" Width="0" Background="Transparent">
                     <StackPanel.ToolTip>
                         <ToolTip Name="tpHltb_El3" />
                     </StackPanel.ToolTip>
