@@ -615,7 +615,7 @@ namespace HowLongToBeat.Services
                                     {
                                         HowLongToBeatData.AddAllTag(PlayniteApi, game, PluginUserDataPath);
                                     }
-                                });
+                                }).Wait();
                             }
                         }
                     }

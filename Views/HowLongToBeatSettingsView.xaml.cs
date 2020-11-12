@@ -210,7 +210,7 @@ namespace HowLongToBeat.Views
                                         {
                                             HowLongToBeatData.AddAllTag(_PlayniteApi, game, _PluginUserDataPath);
                                         }
-                                    });
+                                    }).Wait();
                                 }
                                 else
                                 {
