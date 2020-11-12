@@ -10,13 +10,13 @@
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     </UserControl.Resources>
 
-    <Grid>
+    <Grid Loaded="Grid_Loaded">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
 
-        <Grid Grid.Row="0" Loaded="Grid_Loaded" Name="PART_HltbProgressBar_Contener" MinWidth="100" Height="40">
+        <Grid Grid.Row="0" Name="PART_HltbProgressBar_Contener" MinWidth="100" Height="40">
             <ProgressBar Name="ProgressHltb_El3" Height="{Binding ElementName=PART_HltbProgressBar_Contener, Path=ActualHeight}" Value="90" 
                          Maximum="90" Background="Transparent" Foreground="ForestGreen">
             </ProgressBar>

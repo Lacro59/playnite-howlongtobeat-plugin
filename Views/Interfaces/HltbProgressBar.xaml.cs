@@ -154,11 +154,11 @@ namespace HowLongToBeat.Views.Interfaces
                     PART_ShowToolTip.Visibility = Visibility.Collapsed;
                 }
 
-                Grid_Loaded(PART_HltbProgressBar_Contener, null);
+                LoadData();
             }
         }
 
-        private void Grid_Loaded(object sender, RoutedEventArgs e)
+        private void LoadData()
         {
             try
             {
@@ -167,30 +167,11 @@ namespace HowLongToBeat.Views.Interfaces
                     return;
                 }
 
-                if (e != null)
-                {
-                    // Define height & width
-                    var parent = ((FrameworkElement)((FrameworkElement)(((UserControl)IntegrationUI.GetAncestorOfType<UserControl>((FrameworkElement)sender))).Parent).Parent);
-
-                    if (!double.IsNaN(parent.Height))
-                    {
-                        ((FrameworkElement)sender).Height = parent.Height;
-                    }
-
-                    if (!double.IsNaN(parent.Width))
-                    {
-                        ((FrameworkElement)sender).Width = parent.Width;
-                    }
-#if DEBUG
-                    logger.Debug($"HowLongToBeat - Parent({parent.Height}, {parent.Width}, {parent.Name}) -  Height: {((FrameworkElement)sender).Height} - Width: {((FrameworkElement)sender).Width = parent.Width}");
-#endif
-                }
-
                 if (_settings.ProgressBarShowTime && !_settings.ProgressBarShowTimeInterior)
                 {
-                    ((FrameworkElement)sender).Height = ((FrameworkElement)sender).Height - spShowTime.Height;
+                    PART_HltbProgressBar_Contener.Height = PART_HltbProgressBar_Contener.Height - spShowTime.Height;
 #if DEBUG
-                    logger.Debug($"HowLongToBeat - ProgressBarShowTime & !ProgressBarShowTimeInterior -  Height: {((FrameworkElement)sender).Height} - Width: {((FrameworkElement)sender).Width}");
+                    logger.Debug($"HowLongToBeat - ProgressBarShowTime & !ProgressBarShowTimeInterior -  Height: {PART_HltbProgressBar_Contener.Height} - Width: {PART_HltbProgressBar_Contener.Width}");
 #endif
                 }
                 else
@@ -206,7 +187,7 @@ namespace HowLongToBeat.Views.Interfaces
                 if (_settings.ProgressBarShowTimeInterior)
                 {
                     Grid.SetRow(spShowTime, 0);
-                    spShowTime.Height = ((FrameworkElement)sender).Height;
+                    spShowTime.Height = PART_HltbProgressBar_Contener.Height;
                 }
 
                 // Definied data value in different component.
@@ -332,12 +313,39 @@ namespace HowLongToBeat.Views.Interfaces
             }
             catch (Exception ex)
             {
+                Common.LogError(ex, "HowLongToBeat", "Error on LoadData()");
+            }
+        }
+
+
+        private void Grid_Loaded(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                // Define height & width
+                var parent = ((FrameworkElement)((FrameworkElement)(((UserControl)IntegrationUI.GetAncestorOfType<UserControl>((FrameworkElement)sender))).Parent).Parent);
+
+                if (!double.IsNaN(parent.Height) && parent.Height > 0)
+                {
+                    ((FrameworkElement)sender).Height = parent.Height;
+                }
+
+                if (!double.IsNaN(parent.Width) && parent.Width > 0)
+                {
+                    ((FrameworkElement)sender).Width = parent.Width;
+                }
+#if DEBUG
+                logger.Debug($"HowLongToBeat - Parent({parent.Height}, {parent.Width}, {parent.Name}) -  Height: {((FrameworkElement)sender).Height} - Width: {((FrameworkElement)sender).Width = parent.Width}");
+#endif
+            }
+            catch (Exception ex)
+            {
                 Common.LogError(ex, "HowLongToBeat", "Error on Grid_Loaded()");
             }
         }
     }
 
-    public class ListProgressBar
+    internal class ListProgressBar
     {
         public int Indicator { get; set; }
         public long Value { get; set; }
