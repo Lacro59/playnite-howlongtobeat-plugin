@@ -44,70 +44,76 @@ namespace HowLongToBeat.Services
 
         public override void Initial()
         {
-            if (_Settings.EnableIntegrationButton)
+            if (_PlayniteApi.ApplicationInfo.Mode == ApplicationMode.Desktop)
             {
-#if DEBUG
-                logger.Debug($"HowLongToBeat - InitialBtActionBar()");
-#endif
-                InitialBtActionBar();
-            }
-
-            if (_Settings.EnableIntegrationInDescription)
-            {
-#if DEBUG
-                logger.Debug($"HowLongToBeat - InitialSpDescription()");
-#endif
-                InitialSpDescription();
-            }
-
-            if (_Settings.EnableIntegrationInCustomTheme)
-            {
-#if DEBUG
-                logger.Debug($"HowLongToBeat - InitialCustomElements()");
-#endif
-                InitialCustomElements();
-            }
-        }
-
-        public override void AddElements()
-        {
-            if (IsFirstLoad)
-            {
-#if DEBUG
-                logger.Debug($"HowLongToBeat - IsFirstLoad");
-#endif
-                Thread.Sleep(1000);
-                IsFirstLoad = false;
-            }
-
-            Application.Current.Dispatcher.BeginInvoke((Action)delegate
-            {
-                CheckTypeView();
-
                 if (_Settings.EnableIntegrationButton)
                 {
 #if DEBUG
-                    logger.Debug($"HowLongToBeat - AddBtActionBar()");
+                    logger.Debug($"HowLongToBeat - InitialBtActionBar()");
 #endif
-                    AddBtActionBar();
+                    InitialBtActionBar();
                 }
 
                 if (_Settings.EnableIntegrationInDescription)
                 {
 #if DEBUG
-                    logger.Debug($"HowLongToBeat - AddSpDescription()");
+                    logger.Debug($"HowLongToBeat - InitialSpDescription()");
 #endif
-                    AddSpDescription();
+                    InitialSpDescription();
                 }
 
                 if (_Settings.EnableIntegrationInCustomTheme)
                 {
 #if DEBUG
+                    logger.Debug($"HowLongToBeat - InitialCustomElements()");
+#endif
+                    InitialCustomElements();
+                }
+            }
+        }
+
+        public override void AddElements()
+        {
+            if (_PlayniteApi.ApplicationInfo.Mode == ApplicationMode.Desktop)
+            {
+                if (IsFirstLoad)
+                {
+#if DEBUG
+                    logger.Debug($"HowLongToBeat - IsFirstLoad");
+#endif
+                    Thread.Sleep(1000);
+                    IsFirstLoad = false;
+                }
+
+                Application.Current.Dispatcher.BeginInvoke((Action)delegate
+                {
+                    CheckTypeView();
+
+                    if (_Settings.EnableIntegrationButton)
+                    {
+#if DEBUG
+                    logger.Debug($"HowLongToBeat - AddBtActionBar()");
+#endif
+                    AddBtActionBar();
+                    }
+
+                    if (_Settings.EnableIntegrationInDescription)
+                    {
+#if DEBUG
+                    logger.Debug($"HowLongToBeat - AddSpDescription()");
+#endif
+                    AddSpDescription();
+                    }
+
+                    if (_Settings.EnableIntegrationInCustomTheme)
+                    {
+#if DEBUG
                     logger.Debug($"HowLongToBeat - AddCustomElements()");
 #endif
                     AddCustomElements();
-                }
-            });
+                    }
+                });
+            }
         }
 
         public override void RefreshElements(Game GameSelected, bool Force = false)
@@ -184,7 +190,7 @@ namespace HowLongToBeat.Services
                     }
 
                     // If not cancel, show
-                    if (!ct.IsCancellationRequested)
+                    if (!ct.IsCancellationRequested && _PlayniteApi.ApplicationInfo.Mode == ApplicationMode.Desktop)
                     {
                         ui.AddResources(resourcesLists);
 
