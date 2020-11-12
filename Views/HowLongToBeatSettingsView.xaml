@@ -72,9 +72,9 @@
                         <CheckBox Name="cbEnableTag" Grid.Row="2"  IsChecked="{Binding EnableTag}" Grid.Column="0" VerticalAlignment="Center">
                             <Label Content="{DynamicResource LOCHowLongToBeatAddTagDescription}" />
                         </CheckBox>
-
+                        
                         <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right">
-                            <TextBlock Text="{DynamicResource LOCHowLongToBeatAutoTag}" Margin="0,0,10,0" VerticalAlignment="Center" />
+                            <!--TextBlock Text="{DynamicResource LOCHowLongToBeatAutoTag}" Margin="0,0,10,0" VerticalAlignment="Center" /-->
                             <Button Content="{DynamicResource LOCAddTitle}" Margin="0,0,10,0" IsEnabled="{Binding EnableTag}" VerticalAlignment="Center" Click="ButtonAddTag_Click"/>
                             <Button Content="{DynamicResource LOCRemoveTitle}" IsEnabled="{Binding EnableTag}" VerticalAlignment="Bottom" Click="ButtonRemoveTag_Click" Margin="0,0,0,1"/>
                         </StackPanel>
