@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Threading;
 
 namespace HowLongToBeat.Services
 {
@@ -72,7 +73,7 @@ namespace HowLongToBeat.Services
             }
         }
 
-        public override void AddElements()
+        public override DispatcherOperation AddElements()
         {
             if (_PlayniteApi.ApplicationInfo.Mode == ApplicationMode.Desktop)
             {
@@ -85,7 +86,7 @@ namespace HowLongToBeat.Services
                     IsFirstLoad = false;
                 }
 
-                Application.Current.Dispatcher.BeginInvoke((Action)delegate
+                return Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new ThreadStart(delegate
                 {
                     CheckTypeView();
 
@@ -112,8 +113,10 @@ namespace HowLongToBeat.Services
 #endif
                     AddCustomElements();
                     }
-                });
+                }));
             }
+
+            return null;
         }
 
         public override void RefreshElements(Game GameSelected, bool Force = false)
@@ -194,7 +197,7 @@ namespace HowLongToBeat.Services
                     {
                         ui.AddResources(resourcesLists);
 
-                        Application.Current.Dispatcher.BeginInvoke((Action)delegate
+                        Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new ThreadStart(delegate
                         {
                             if (_Settings.EnableIntegrationButton)
                             {
@@ -219,7 +222,7 @@ namespace HowLongToBeat.Services
 #endif
                                 RefreshCustomElements();
                             }
-                        });
+                        }));
                     }
                 }
                 catch (Exception ex)

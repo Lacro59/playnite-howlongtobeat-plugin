@@ -126,8 +126,8 @@ namespace HowLongToBeat
             HowLongToBeat.howLongToBeatUI.RemoveElements();
             var TaskIntegrationUI = Task.Run(() =>
             {
-                HowLongToBeat.howLongToBeatUI.AddElements();
-                HowLongToBeat.howLongToBeatUI.RefreshElements(HowLongToBeat.GameSelected);
+                var dispatcherOp = HowLongToBeat.howLongToBeatUI.AddElements();
+                dispatcherOp.Completed += (s, e) => { HowLongToBeat.howLongToBeatUI.RefreshElements(HowLongToBeat.GameSelected); };
             });
         }
 
