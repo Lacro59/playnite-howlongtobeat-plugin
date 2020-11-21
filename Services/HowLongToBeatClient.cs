@@ -20,12 +20,14 @@ namespace HowLongToBeat.Services
         private static readonly ILogger logger = LogManager.GetLogger();
 
         private readonly string UrlBase = "https://howlongtobeat.com/";
+        private string UrlPostData { get; set; }
         private string UrlSearch { get; set; }
         private string UrlGame { get; set; }
 
 
         public HowLongToBeatClient()
         {
+            UrlPostData = UrlBase + "ssubmit?s=add&gid={0}";
             UrlSearch = UrlBase + "search_results.php";
             UrlGame = UrlBase + "game.php?id=";
         }
@@ -218,6 +220,20 @@ namespace HowLongToBeat.Services
             }
 
             return ReturnData;
+        }
+
+
+
+
+        public async Task<bool> PostData(HltbPostData hltbPostData)
+        {
+
+
+
+
+
+
+            return false;
         }
     }
 }
