@@ -1,14 +1,11 @@
 ﻿using Newtonsoft.Json;
-using PluginCommon;
-using PluginCommon.PlayniteResources;
-using PluginCommon.PlayniteResources.API;
-using PluginCommon.PlayniteResources.Common;
 using PluginCommon.PlayniteResources.Converters;
+using System.Collections.Generic;
 using System.Globalization;
 
 namespace HowLongToBeat.Models
 {
-    public class HltbData
+    public class HltbData : ObservableObject
     {
         private LongToTimePlayedConverter converter = new LongToTimePlayedConverter();
 

@@ -1,8 +1,10 @@
 ﻿using HowLongToBeat.Models;
 using HowLongToBeat.Services;
 using System;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Threading;
 
 namespace HowLongToBeat.Views.Interfaces
 {
@@ -11,11 +13,13 @@ namespace HowLongToBeat.Views.Interfaces
     /// </summary>
     public partial class HltbDescriptionIntegration : StackPanel
     {
-        private HltbProgressBar hltbProgressBar = new HltbProgressBar();
+        private HltbProgressBar hltbProgressBar;
 
 
-        public HltbDescriptionIntegration(bool IntegrationShowTitle)
+        public HltbDescriptionIntegration(HowLongToBeatSettings settings, bool IntegrationShowTitle)
         {
+            hltbProgressBar = new HltbProgressBar(settings);
+
             InitializeComponent();
 
             if (!IntegrationShowTitle)
@@ -27,10 +31,12 @@ namespace HowLongToBeat.Views.Interfaces
             PART_HltbProgressBar.Children.Add(hltbProgressBar);
         }
 
+        /*
         public void SetHltbData(long Playtime, HowLongToBeatData data, HowLongToBeatSettings settings)
         {
             hltbProgressBar.SetHltbData(Playtime, data, settings);
             PART_HltbProgressBar.UpdateLayout();
         }
+        */
     }
 }

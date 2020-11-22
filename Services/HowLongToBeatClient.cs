@@ -1,7 +1,9 @@
 ﻿using AngleSharp.Dom.Html;
 using AngleSharp.Parser.Html;
 using HowLongToBeat.Models;
+using HowLongToBeat.Views;
 using Playnite.SDK;
+using Playnite.SDK.Models;
 using PluginCommon;
 using PluginCommon.PlayniteResources;
 using PluginCommon.PlayniteResources.API;
@@ -12,12 +14,16 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Net.Http;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace HowLongToBeat.Services
 {
     public class HowLongToBeatClient
     {
         private static readonly ILogger logger = LogManager.GetLogger();
+        private static IResourceProvider resources = new ResourceProvider();
+
+        private IPlayniteAPI _PlayniteApi;
 
         private readonly string UrlBase = "https://howlongtobeat.com/";
         private string UrlPostData { get; set; }
@@ -25,8 +31,10 @@ namespace HowLongToBeat.Services
         private string UrlGame { get; set; }
 
 
-        public HowLongToBeatClient()
+        public HowLongToBeatClient(IPlayniteAPI PlayniteApi)
         {
+            _PlayniteApi = PlayniteApi;
+
             UrlPostData = UrlBase + "ssubmit?s=add&gid={0}";
             UrlSearch = UrlBase + "search_results.php";
             UrlGame = UrlBase + "game.php?id=";
@@ -221,6 +229,32 @@ namespace HowLongToBeat.Services
 
             return ReturnData;
         }
+
+
+
+
+        public GameHowLongToBeat SearchData(Game game)
+        {
+#if DEBUG
+            logger.Debug($"HowLongToBeat - Search data for {game.Name}");
+#endif
+
+            var ViewExtension = new HowLongToBeatSelect(null, game);
+            Window windowExtension = PlayniteUiHelper.CreateExtensionWindow(_PlayniteApi, resources.GetString("LOCSelection"), ViewExtension);
+            windowExtension.ShowDialog();
+
+            if (ViewExtension.gameHowLongToBeat != null && ViewExtension.gameHowLongToBeat.Items.Count > 0)
+            {
+                return ViewExtension.gameHowLongToBeat;
+            }
+
+            return null;
+        }
+
+
+
+
+
 
 
 

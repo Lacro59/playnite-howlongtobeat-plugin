@@ -4,16 +4,15 @@ using HowLongToBeat.Views.Interfaces;
 using Playnite.SDK;
 using Playnite.SDK.Models;
 using PluginCommon;
-using PluginCommon.PlayniteResources;
-using PluginCommon.PlayniteResources.API;
-using PluginCommon.PlayniteResources.Common;
 using PluginCommon.PlayniteResources.Converters;
+using System.Linq;
 using System.Windows;
 using System.Diagnostics;
 using System.Globalization;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Input;
+using System;
 
 namespace HowLongToBeat.Views
 {
@@ -31,19 +30,21 @@ namespace HowLongToBeat.Views
 
         public string PlaytimeFormat { get; set; }
 
-        private HowLongToBeatData _data { get; set; }
+        private GameHowLongToBeat _gameHowLongToBeat { get; set; }
 
 
-        public HowLongToBeatView(HowLongToBeatData data, Game game, IPlayniteAPI PlayniteApi, HowLongToBeatSettings settings)
+        public HowLongToBeatView(IPlayniteAPI PlayniteApi, HowLongToBeatSettings settings, GameHowLongToBeat gameHowLongToBeat)
         {
-            _data = data;
+            _gameHowLongToBeat = gameHowLongToBeat;
 
             InitializeComponent();
 
-            HltbDataUser gameData = data.GetData();
-            if (data.hasData && gameData != null && gameData.GameHltbData != null)
+
+            if (_gameHowLongToBeat.HasData)
             {
-                if (string.IsNullOrEmpty(game.CoverImage))
+                HltbDataUser gameData = _gameHowLongToBeat.Items.First();
+
+                if (string.IsNullOrEmpty(_gameHowLongToBeat.CoverImage))
                 {
                     CoverImage = gameData.GameHltbData.UrlImg;
                 }
@@ -52,10 +53,10 @@ namespace HowLongToBeat.Views
                     CoverImage = gameData.GameHltbData.UrlImg;
                     if (!settings.ShowHltbImg)
                     {
-                        CoverImage = PlayniteApi.Database.GetFullFilePath(game.CoverImage);
+                        CoverImage = PlayniteApi.Database.GetFullFilePath(_gameHowLongToBeat.CoverImage);
                     }
                 }
-                GameName = game.Name;
+                GameName = _gameHowLongToBeat.Name;
                 HltbName = resources.GetString("LOCSourceLabel") + ": " + gameData.GameHltbData.Name;
 
 
@@ -105,20 +106,17 @@ namespace HowLongToBeat.Views
                 }
 
 
-               Hltb_El1_Color.Background = new SolidColorBrush(settings.ColorFirst);
-               Hltb_El2_Color.Background = new SolidColorBrush(settings.ColorSecond);
-               Hltb_El3_Color.Background = new SolidColorBrush(settings.ColorThird);
+                Hltb_El1_Color.Background = new SolidColorBrush(settings.ColorFirst);
+                Hltb_El2_Color.Background = new SolidColorBrush(settings.ColorSecond);
+                Hltb_El3_Color.Background = new SolidColorBrush(settings.ColorThird);
 
 
                 LongToTimePlayedConverter converter = new LongToTimePlayedConverter();
-                PlaytimeFormat = (string)converter.Convert((long)game.Playtime, null, null, CultureInfo.CurrentCulture);
+                PlaytimeFormat = (string)converter.Convert((long)_gameHowLongToBeat.Playtime, null, null, CultureInfo.CurrentCulture);
 
-                if (!data.isEmpty)
-                {
-                    HltbProgressBar hltbProgressBar = new HltbProgressBar();
-                    hltbProgressBar.SetHltbData(game.Playtime, data, settings);
-                    PART_HltbProgressBar.Children.Add(hltbProgressBar);
-                }
+                HltbProgressBar hltbProgressBar = new HltbProgressBar(settings);
+                hltbProgressBar.SetHltbData(_gameHowLongToBeat);
+                PART_HltbProgressBar.Children.Add(hltbProgressBar);
             }
 
             // Set Binding data
@@ -132,41 +130,41 @@ namespace HowLongToBeat.Views
                 case 1:
                     Hltb_El1.Text = ElText;
                     Hltb_El1_Data.Text = ElData;
-                    Hltb_El1.Visibility = System.Windows.Visibility.Visible;
-                    Hltb_El1_Color.Visibility = System.Windows.Visibility.Visible;
+                    Hltb_El1.Visibility = Visibility.Visible;
+                    Hltb_El1_Color.Visibility = Visibility.Visible;
                     break;
 
                 case 2:
                     Hltb_El2.Text = ElText;
                     Hltb_El2_Data.Text = ElData;
-                    Hltb_El2.Visibility = System.Windows.Visibility.Visible;
-                    Hltb_El2_Color.Visibility = System.Windows.Visibility.Visible;
+                    Hltb_El2.Visibility = Visibility.Visible;
+                    Hltb_El2_Color.Visibility = Visibility.Visible;
                     break;
 
                 case 3:
                     Hltb_El3.Text = ElText;
                     Hltb_El3_Data.Text = ElData;
-                    Hltb_El3.Visibility = System.Windows.Visibility.Visible;
-                    Hltb_El3_Color.Visibility = System.Windows.Visibility.Visible;
+                    Hltb_El3.Visibility = Visibility.Visible;
+                    Hltb_El3_Color.Visibility = Visibility.Visible;
                     break;
             }
         }
 
-        private void ButtonWeb_Click(object sender, System.Windows.RoutedEventArgs e)
+        private void ButtonWeb_Click(object sender, RoutedEventArgs e)
         {
-            if (_data.GetData().GameHltbData.Url != "")
+            if (!_gameHowLongToBeat.GetData().GameHltbData.Url.IsNullOrEmpty())
             {
-                Process.Start(_data.GetData().GameHltbData.Url);
+                Process.Start(_gameHowLongToBeat.GetData().GameHltbData.Url);
             }
         }
 
-        private void ButtonDelete_Click(object sender, System.Windows.RoutedEventArgs e)
+        private void ButtonDelete_Click(object sender, RoutedEventArgs e)
         {
-            _data.RemoveData();
+            HowLongToBeat.PluginDatabase.Remove(_gameHowLongToBeat.Id);
             ((Window)this.Parent).Close();
         }
 
-        private void TextBlock_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
+        private void TextBlock_MouseEnter(object sender, MouseEventArgs e)
         {
             string Text = ((TextBlock)sender).Text;
             TextBlock textBlock = (TextBlock)sender;

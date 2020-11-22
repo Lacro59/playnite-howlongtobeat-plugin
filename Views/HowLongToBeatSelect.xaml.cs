@@ -2,6 +2,7 @@
 using HowLongToBeat.Services;
 using Newtonsoft.Json;
 using Playnite.SDK;
+using Playnite.SDK.Models;
 using PluginCommon;
 using PluginCommon.PlayniteResources;
 using PluginCommon.PlayniteResources.API;
@@ -25,15 +26,18 @@ namespace HowLongToBeat.Views
     {
         private static readonly ILogger logger = LogManager.GetLogger();
 
-        private string FileGameData;
+        public GameHowLongToBeat gameHowLongToBeat;
 
-        public HowLongToBeatSelect(List<HltbData> data, string FileGameData, string GameName)
+        private Game _game;
+
+
+        public HowLongToBeatSelect(List<HltbData> data, Game game)
         {
-            this.FileGameData = FileGameData;
+            _game = game;
 
             InitializeComponent();
 
-            SearchElement.Text = GameName;
+            SearchElement.Text = _game.Name;
 
             if (data == null)
             {
@@ -65,12 +69,24 @@ namespace HowLongToBeat.Views
         {
             HltbData Item = (HltbData)lbSelectable.SelectedItem;
 
-            var SavData = new HltbDataUser
+            gameHowLongToBeat = new GameHowLongToBeat
             {
-                GameHltbData = Item
+                Id = _game.Id,
+                Name = _game.Name,
+                Hidden = _game.Hidden,
+                Icon = _game.Icon,
+                CoverImage = _game.CoverImage,
+                GenreIds = _game.GenreIds,
+                Genres = _game.Genres,
+
+                Items = new List<HltbDataUser>() {
+                    new HltbDataUser
+                    {
+                        GameHltbData = Item
+                    }
+                }
             };
 
-            File.WriteAllText(FileGameData, JsonConvert.SerializeObject(SavData));
             ((Window)this.Parent).Close();
         }
 
@@ -105,8 +121,7 @@ namespace HowLongToBeat.Views
                 List<HltbData> dataSearch = new List<HltbData>();
                 try
                 {
-                    HowLongToBeatClient howLongToBeatClient = new HowLongToBeatClient();
-                    dataSearch = howLongToBeatClient.Search(GameSearch);
+                    dataSearch = HowLongToBeat.PluginDatabase.howLongToBeatClient.Search(GameSearch);
                 }
                 catch (Exception ex)
                 {

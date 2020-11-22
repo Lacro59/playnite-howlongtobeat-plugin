@@ -1,4 +1,5 @@
-﻿using HowLongToBeat.Views.Interfaces;
+﻿using HowLongToBeat.Models;
+using HowLongToBeat.Views.Interfaces;
 using Newtonsoft.Json;
 using Playnite.SDK;
 using Playnite.SDK.Models;
@@ -45,6 +46,8 @@ namespace HowLongToBeat.Services
 
         public override void Initial()
         {
+            HowLongToBeat.PluginDatabase.GameSelectedData = new GameHowLongToBeat();
+
             if (_PlayniteApi.ApplicationInfo.Mode == ApplicationMode.Desktop)
             {
                 if (_Settings.EnableIntegrationButton)
@@ -82,7 +85,7 @@ namespace HowLongToBeat.Services
 #if DEBUG
                     logger.Debug($"HowLongToBeat - IsFirstLoad");
 #endif
-                    Thread.Sleep(1000);
+                    Thread.Sleep(2000);
                     IsFirstLoad = false;
                 }
 
@@ -93,25 +96,25 @@ namespace HowLongToBeat.Services
                     if (_Settings.EnableIntegrationButton)
                     {
 #if DEBUG
-                    logger.Debug($"HowLongToBeat - AddBtActionBar()");
+                        logger.Debug($"HowLongToBeat - AddBtActionBar()");
 #endif
-                    AddBtActionBar();
+                        AddBtActionBar();
                     }
 
                     if (_Settings.EnableIntegrationInDescription)
                     {
 #if DEBUG
-                    logger.Debug($"HowLongToBeat - AddSpDescription()");
+                        logger.Debug($"HowLongToBeat - AddSpDescription()");
 #endif
-                    AddSpDescription();
+                        AddSpDescription();
                     }
 
                     if (_Settings.EnableIntegrationInCustomTheme)
                     {
 #if DEBUG
-                    logger.Debug($"HowLongToBeat - AddCustomElements()");
+                        logger.Debug($"HowLongToBeat - AddCustomElements()");
 #endif
-                    AddCustomElements();
+                        AddCustomElements();
                     }
                 }));
             }
@@ -155,32 +158,27 @@ namespace HowLongToBeat.Services
 
 
                     // Load data
-                    try
-                    {
-                        HowLongToBeat.HltbGameData = new HowLongToBeatData(GameSelected, _PluginUserDataPath, _PlayniteApi, false);
-                    }
-                    catch (Exception ex)
-                    {
-                        Common.LogError(ex, "HowLongToBeat", "Error to load data");
-                        _PlayniteApi.Dialogs.ShowErrorMessage(resources.GetString("LOCDatabaseErroTitle"), "HowLongToBeat");
-                    }
+                    GameHowLongToBeat gameLocalizations = HowLongToBeat.PluginDatabase.Get(GameSelected, true);
+                    HltbDataUser hltbDataUser;
 
-                    if (HowLongToBeat.HltbGameData.hasData)
+                    if (gameLocalizations.HasData)
                     {
+                        hltbDataUser = gameLocalizations.GetData();
+
                         resourcesLists = new List<ResourcesList>();
-                        resourcesLists.Add(new ResourcesList { Key = "Htlb_HasData", Value = HowLongToBeat.HltbGameData.hasData });
-                        resourcesLists.Add(new ResourcesList { Key = "Htlb_MainStory", Value = HowLongToBeat.HltbGameData.GetData().GameHltbData.MainStory });
-                        resourcesLists.Add(new ResourcesList { Key = "Htlb_MainStoryFormat", Value = HowLongToBeat.HltbGameData.GetData().GameHltbData.MainStoryFormat });
-                        resourcesLists.Add(new ResourcesList { Key = "Htlb_MainExtra", Value = HowLongToBeat.HltbGameData.GetData().GameHltbData.MainExtra });
-                        resourcesLists.Add(new ResourcesList { Key = "Htlb_MainExtraFormat", Value = HowLongToBeat.HltbGameData.GetData().GameHltbData.MainExtraFormat });
-                        resourcesLists.Add(new ResourcesList { Key = "Htlb_Completionist", Value = HowLongToBeat.HltbGameData.GetData().GameHltbData.Completionist });
-                        resourcesLists.Add(new ResourcesList { Key = "Htlb_CompletionistFormat", Value = HowLongToBeat.HltbGameData.GetData().GameHltbData.CompletionistFormat });
-                        resourcesLists.Add(new ResourcesList { Key = "Htlb_Solo", Value = HowLongToBeat.HltbGameData.GetData().GameHltbData.Solo });
-                        resourcesLists.Add(new ResourcesList { Key = "Htlb_SoloFormat", Value = HowLongToBeat.HltbGameData.GetData().GameHltbData.SoloFormat });
-                        resourcesLists.Add(new ResourcesList { Key = "Htlb_CoOp", Value = HowLongToBeat.HltbGameData.GetData().GameHltbData.CoOp });
-                        resourcesLists.Add(new ResourcesList { Key = "Htlb_CoOpFormat", Value = HowLongToBeat.HltbGameData.GetData().GameHltbData.CoOpFormat });
-                        resourcesLists.Add(new ResourcesList { Key = "Htlb_Vs", Value = HowLongToBeat.HltbGameData.GetData().GameHltbData.Vs });
-                        resourcesLists.Add(new ResourcesList { Key = "Htlb_VsFormat", Value = HowLongToBeat.HltbGameData.GetData().GameHltbData.VsFormat });
+                        resourcesLists.Add(new ResourcesList { Key = "Htlb_HasData", Value = gameLocalizations.HasData });
+                        resourcesLists.Add(new ResourcesList { Key = "Htlb_MainStory", Value = hltbDataUser.GameHltbData.MainStory });
+                        resourcesLists.Add(new ResourcesList { Key = "Htlb_MainStoryFormat", Value = hltbDataUser.GameHltbData.MainStoryFormat });
+                        resourcesLists.Add(new ResourcesList { Key = "Htlb_MainExtra", Value = hltbDataUser.GameHltbData.MainExtra });
+                        resourcesLists.Add(new ResourcesList { Key = "Htlb_MainExtraFormat", Value = hltbDataUser.GameHltbData.MainExtraFormat });
+                        resourcesLists.Add(new ResourcesList { Key = "Htlb_Completionist", Value = hltbDataUser.GameHltbData.Completionist });
+                        resourcesLists.Add(new ResourcesList { Key = "Htlb_CompletionistFormat", Value = hltbDataUser.GameHltbData.CompletionistFormat });
+                        resourcesLists.Add(new ResourcesList { Key = "Htlb_Solo", Value = hltbDataUser.GameHltbData.Solo });
+                        resourcesLists.Add(new ResourcesList { Key = "Htlb_SoloFormat", Value = hltbDataUser.GameHltbData.SoloFormat });
+                        resourcesLists.Add(new ResourcesList { Key = "Htlb_CoOp", Value = hltbDataUser.GameHltbData.CoOp });
+                        resourcesLists.Add(new ResourcesList { Key = "Htlb_CoOpFormat", Value = hltbDataUser.GameHltbData.CoOpFormat });
+                        resourcesLists.Add(new ResourcesList { Key = "Htlb_Vs", Value = hltbDataUser.GameHltbData.Vs });
+                        resourcesLists.Add(new ResourcesList { Key = "Htlb_VsFormat", Value = hltbDataUser.GameHltbData.VsFormat });
                     }
                     else
                     {
@@ -189,40 +187,45 @@ namespace HowLongToBeat.Services
 
                     if (_Settings.EnableTag)
                     {
-                        HowLongToBeat.HltbGameData.AddTag();
+                        HowLongToBeat.PluginDatabase.AddTag(GameSelected);
                     }
 
                     // If not cancel, show
-                    if (!ct.IsCancellationRequested && _PlayniteApi.ApplicationInfo.Mode == ApplicationMode.Desktop)
+                    if (!ct.IsCancellationRequested && GameSelected.Id == HowLongToBeat.GameSelected.Id)
                     {
                         ui.AddResources(resourcesLists);
 
-                        Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new ThreadStart(delegate
+                        if (_PlayniteApi.ApplicationInfo.Mode == ApplicationMode.Desktop)
                         {
-                            if (_Settings.EnableIntegrationButton)
-                            {
-#if DEBUG
-                                logger.Debug($"HowLongToBeat - RefreshBtActionBar()");
-#endif
-                                RefreshBtActionBar();
-                            }
+                            HowLongToBeat.PluginDatabase.SetCurrent(gameLocalizations);
 
-                            if (_Settings.EnableIntegrationInDescription)
+                            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new ThreadStart(delegate
                             {
+                                if (_Settings.EnableIntegrationButton)
+                                {
 #if DEBUG
-                                logger.Debug($"HowLongToBeat - RefreshSpDescription()");
+                                    logger.Debug($"HowLongToBeat - RefreshBtActionBar()");
 #endif
-                                RefreshSpDescription();
-                            }
+                                    RefreshBtActionBar();
+                                }
 
-                            if (_Settings.EnableIntegrationInCustomTheme)
-                            {
+                                if (_Settings.EnableIntegrationInDescription)
+                                {
 #if DEBUG
-                                logger.Debug($"HowLongToBeat - RefreshCustomElements()");
+                                    logger.Debug($"HowLongToBeat - RefreshSpDescription()");
 #endif
-                                RefreshCustomElements();
-                            }
-                        }));
+                                    RefreshSpDescription();
+                                }
+
+                                if (_Settings.EnableIntegrationInCustomTheme)
+                                {
+#if DEBUG
+                                    logger.Debug($"HowLongToBeat - RefreshCustomElements()");
+#endif
+                                    RefreshCustomElements();
+                                }
+                            }));
+                        }
                     }
                 }
                 catch (Exception ex)
@@ -242,7 +245,7 @@ namespace HowLongToBeat.Services
             {
                 if (PART_BtActionBar != null)
                 {
-                    PART_BtActionBar.Visibility = Visibility.Collapsed;
+                    PART_BtActionBar.Visibility = Visibility.Visible;
                 }
             });
         }
@@ -288,22 +291,16 @@ namespace HowLongToBeat.Services
 
         public void OnBtActionBarClick(object sender, RoutedEventArgs e)
         {
-#if DEBUG
-            logger.Debug($"HowLongToBeat - HowLongToBeat.HltbGameData: {JsonConvert.SerializeObject(HowLongToBeat.HltbGameData)}");
-#endif
-            if (!HowLongToBeat.HltbGameData.hasData)
-            {
-                HowLongToBeat.HltbGameData.SearchData(HowLongToBeat.GameSelected);
-            }
+            GameHowLongToBeat gameHowLongToBeat = HowLongToBeat.PluginDatabase.Get(HowLongToBeat.GameSelected);
 
-            if (HowLongToBeat.HltbGameData.hasData)
+            if (gameHowLongToBeat.HasData)
             {
-                if (_Settings.EnableTag)
+                var TaskIntegrationUI = Task.Run(() =>
                 {
-                    HowLongToBeat.HltbGameData.AddTag();
-                }
+                    HowLongToBeat.howLongToBeatUI.RefreshElements(HowLongToBeat.GameSelected);
+                });
 
-                var ViewExtension = new Views.HowLongToBeatView(HowLongToBeat.HltbGameData, HowLongToBeat.GameSelected, _PlayniteApi, _Settings);
+                var ViewExtension = new Views.HowLongToBeatView(_PlayniteApi, _Settings, gameHowLongToBeat);
                 Window windowExtension = PlayniteUiHelper.CreateExtensionWindow(_PlayniteApi, "HowLongToBeat", ViewExtension);
                 windowExtension.ShowDialog();
             }
@@ -338,7 +335,7 @@ namespace HowLongToBeat.Services
             {
                 if (PART_SpDescription != null)
                 {
-                    PART_SpDescription.Visibility = Visibility.Collapsed;
+                    PART_SpDescription.Visibility = Visibility.Visible;
                 }
             });
         }
@@ -355,7 +352,7 @@ namespace HowLongToBeat.Services
 
             try
             {
-                HltbDescriptionIntegration SpDescription = new HltbDescriptionIntegration(_Settings.IntegrationShowTitle);
+                HltbDescriptionIntegration SpDescription = new HltbDescriptionIntegration(_Settings, _Settings.IntegrationShowTitle);
                 SpDescription.Name = SpDescriptionName;
 
                 ui.AddElementInGameSelectedDescription(SpDescription, _Settings.IntegrationTopGameDetails);
@@ -363,7 +360,7 @@ namespace HowLongToBeat.Services
             }
             catch (Exception ex)
             {
-                Common.LogError(ex, "HowLongToBeat", "Error on AddSpDescription()");
+                Common.LogError(ex, "HowLongToBeat");
             }
         }
 
@@ -371,25 +368,13 @@ namespace HowLongToBeat.Services
         {
             if (PART_SpDescription != null)
             {
-#if DEBUG
-                logger.Debug($"HowLongToBeat - HowLongToBeat.HltbGameData: {JsonConvert.SerializeObject(HowLongToBeat.HltbGameData)}");
-#endif
-                if (HowLongToBeat.HltbGameData.hasData && !HowLongToBeat.HltbGameData.isEmpty)
+                if (HowLongToBeat.PluginDatabase.GameSelectedData.HasData)
                 {
                     PART_SpDescription.Visibility = Visibility.Visible;
-
-                    if (PART_SpDescription is HltbDescriptionIntegration)
-                    {
-                        ((HltbDescriptionIntegration)PART_SpDescription).SetHltbData(
-                            HowLongToBeat.GameSelected.Playtime, HowLongToBeat.HltbGameData, _Settings
-                        );
-                    }
                 }
                 else
                 {
-#if DEBUG
-                    logger.Debug($"HowLongToBeat - No data for {HowLongToBeat.GameSelected.Name}");
-#endif
+                    PART_SpDescription.Visibility = Visibility.Collapsed;
                 }
             }
             else
@@ -407,7 +392,7 @@ namespace HowLongToBeat.Services
             {
                 foreach (CustomElement customElement in ListCustomElements)
                 {
-                    customElement.Element.Visibility = Visibility.Collapsed;
+                    customElement.Element.Visibility = Visibility.Visible;
                 }
             });
         }
@@ -460,7 +445,7 @@ namespace HowLongToBeat.Services
 
             if (PART_hltbProgressBarWithTitle != null)
             {
-                PART_hltbProgressBarWithTitle = new HltbDescriptionIntegration(true);
+                PART_hltbProgressBarWithTitle = new HltbDescriptionIntegration(_Settings, true);
                 PART_hltbProgressBarWithTitle.Name = "hltbProgressBarWithTitle";
                 try
                 {
@@ -481,7 +466,7 @@ namespace HowLongToBeat.Services
 
             if (PART_hltbProgressBar != null)
             {
-                PART_hltbProgressBar = PART_hltbProgressBarWithTitle = new HltbDescriptionIntegration(false);
+                PART_hltbProgressBar = PART_hltbProgressBarWithTitle = new HltbDescriptionIntegration(_Settings, false);
                 PART_hltbProgressBar.Name = "hltbProgressBar";
                 try
                 {
@@ -527,20 +512,7 @@ namespace HowLongToBeat.Services
                         logger.Debug($"HowLongToBeat - customElement.Element is HltbDescriptionIntegration");
 #endif
                         isFind = true;
-                        if (HowLongToBeat.HltbGameData.hasData && !HowLongToBeat.HltbGameData.isEmpty)
-                        {
-                            customElement.Element.Visibility = Visibility.Visible;
-
-                            ((HltbDescriptionIntegration)customElement.Element).SetHltbData(
-                                HowLongToBeat.GameSelected.Playtime, HowLongToBeat.HltbGameData, _Settings
-                            );
-                        }
-                        else
-                        {
-#if DEBUG
-                            logger.Debug($"HowLongToBeat - customElement.Element is HltbDescriptionIntegration with no data");
-#endif
-                        }
+                        customElement.Element.Visibility = Visibility.Visible;
                     }
 
                     if (!isFind)

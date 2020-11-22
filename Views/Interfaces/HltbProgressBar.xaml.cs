@@ -7,11 +7,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace HowLongToBeat.Views.Interfaces
 {
@@ -22,7 +24,7 @@ namespace HowLongToBeat.Views.Interfaces
     {
         private static readonly ILogger logger = LogManager.GetLogger();
 
-        private HowLongToBeatData _gameData = null;
+        private GameHowLongToBeat _gameHowLongToBeat = null;
         private long _Playtime;
         private HowLongToBeatSettings _settings;
 
@@ -30,13 +32,34 @@ namespace HowLongToBeat.Views.Interfaces
         public bool ShowTime { get; set; }
 
 
-        public HltbProgressBar()
+        public HltbProgressBar(HowLongToBeatSettings settings)
         {
+            _settings = settings;
+
             InitializeComponent();
 
-            // Set Binding data
-            DataContext = this;
+            HowLongToBeat.PluginDatabase.PropertyChanged += OnPropertyChanged;
         }
+
+
+        protected void OnPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            try
+            {
+                this.Dispatcher.BeginInvoke(DispatcherPriority.Background, new ThreadStart(delegate
+                {
+#if DEBUG
+                    logger.Debug($"OnPropertyChanged: {JsonConvert.SerializeObject(HowLongToBeat.PluginDatabase.GameSelectedData)}");
+#endif
+                    SetHltbData(HowLongToBeat.PluginDatabase.GameSelectedData);
+                }));
+            }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, "GameActivity");
+            }
+        }
+
 
         private void SetDataInView(int ElIndicator, long ElValue, string ElFormat)
         {
@@ -131,42 +154,48 @@ namespace HowLongToBeat.Views.Interfaces
             }
         }
 
-        public void SetHltbData(long Playtime, HowLongToBeatData gameData, HowLongToBeatSettings settings)
+        public void SetHltbData(GameHowLongToBeat gameHowLongToBeat)
         {
-            _gameData = gameData;
-            _Playtime = Playtime;
-            _settings = settings;
-
-            ShowToolTip = settings.ProgressBarShowToolTip;
-            ShowTime = settings.ProgressBarShowTime;
-
-            ProgressHltb_El1.Foreground = new SolidColorBrush(settings.ColorFirst);
-            ProgressHltb_El2.Foreground = new SolidColorBrush(settings.ColorSecond);
-            ProgressHltb_El3.Foreground = new SolidColorBrush(settings.ColorThird);
-
-            if (_gameData != null && _gameData.hasData && !_gameData.isEmpty) {
-                if (ShowToolTip)
-                {
-                    PART_ShowToolTip.Visibility = Visibility.Visible;
-                }
-                else
-                {
-                    PART_ShowToolTip.Visibility = Visibility.Collapsed;
-                }
-
-                LoadData();
+            if (!gameHowLongToBeat.HasData)
+            {
+#if DEBUG
+                logger.Debug($"SetHltbData: No data for {gameHowLongToBeat.Name}");
+#endif
+                this.Visibility = Visibility.Collapsed;
+                return;
             }
+            else
+            {
+                this.Visibility = Visibility.Visible;
+            }
+
+            _gameHowLongToBeat = gameHowLongToBeat;
+            _Playtime = gameHowLongToBeat.Playtime;
+            
+
+            ShowToolTip = _settings.ProgressBarShowToolTip;
+            ShowTime = _settings.ProgressBarShowTime;
+
+            ProgressHltb_El1.Foreground = new SolidColorBrush(_settings.ColorFirst);
+            ProgressHltb_El2.Foreground = new SolidColorBrush(_settings.ColorSecond);
+            ProgressHltb_El3.Foreground = new SolidColorBrush(_settings.ColorThird);
+
+            if (ShowToolTip)
+            {
+                PART_ShowToolTip.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                PART_ShowToolTip.Visibility = Visibility.Collapsed;
+            }
+
+            LoadData();
         }
 
         private void LoadData()
         {
             try
             {
-                if (_gameData == null || !_gameData.hasData || _gameData.isEmpty)
-                {
-                    return;
-                }
-
                 if (_settings.ProgressBarShowTime && !_settings.ProgressBarShowTimeInterior)
                 {
                     PART_HltbProgressBar_Contener.Height = PART_HltbProgressBar_Contener.Height - spShowTime.Height;
@@ -195,65 +224,67 @@ namespace HowLongToBeat.Views.Interfaces
                 long MaxValue = 0;
                 long MaxHltb = 0;
                 List<ListProgressBar> listProgressBars = new List<ListProgressBar>();
-                if (_gameData != null)
+                if (_gameHowLongToBeat.HasData)
                 {
-                    if (_gameData.GetData().GameHltbData.MainStory != 0)
+                    var HltbData = _gameHowLongToBeat.GetData();
+
+                    if (HltbData.GameHltbData.MainStory != 0)
                     {
                         ElIndicator += 1;
-                        listProgressBars.Add(new ListProgressBar { Indicator = ElIndicator, Value = _gameData.GetData().GameHltbData.MainStory, Format = _gameData.GetData().GameHltbData.MainStoryFormat });
-                        if (MaxValue < _gameData.GetData().GameHltbData.MainStory)
+                        listProgressBars.Add(new ListProgressBar { Indicator = ElIndicator, Value = HltbData.GameHltbData.MainStory, Format = HltbData.GameHltbData.MainStoryFormat });
+                        if (MaxValue < HltbData.GameHltbData.MainStory)
                         {
-                            MaxValue = _gameData.GetData().GameHltbData.MainStory;
+                            MaxValue = HltbData.GameHltbData.MainStory;
                         }
                     }
 
-                    if (_gameData.GetData().GameHltbData.MainExtra != 0)
+                    if (HltbData.GameHltbData.MainExtra != 0)
                     {
                         ElIndicator += 1;
-                        listProgressBars.Add(new ListProgressBar { Indicator = ElIndicator, Value = _gameData.GetData().GameHltbData.MainExtra, Format = _gameData.GetData().GameHltbData.MainExtraFormat });
-                        if (MaxValue < _gameData.GetData().GameHltbData.MainExtra)
+                        listProgressBars.Add(new ListProgressBar { Indicator = ElIndicator, Value = HltbData.GameHltbData.MainExtra, Format = HltbData.GameHltbData.MainExtraFormat });
+                        if (MaxValue < HltbData.GameHltbData.MainExtra)
                         {
-                            MaxValue = _gameData.GetData().GameHltbData.MainExtra;
+                            MaxValue = HltbData.GameHltbData.MainExtra;
                         }
                     }
 
-                    if (_gameData.GetData().GameHltbData.Completionist != 0)
+                    if (HltbData.GameHltbData.Completionist != 0)
                     {
                         ElIndicator += 1;
-                        listProgressBars.Add(new ListProgressBar { Indicator = ElIndicator, Value = _gameData.GetData().GameHltbData.Completionist, Format = _gameData.GetData().GameHltbData.CompletionistFormat });
-                        if (MaxValue < _gameData.GetData().GameHltbData.Completionist)
+                        listProgressBars.Add(new ListProgressBar { Indicator = ElIndicator, Value = HltbData.GameHltbData.Completionist, Format = HltbData.GameHltbData.CompletionistFormat });
+                        if (MaxValue < HltbData.GameHltbData.Completionist)
                         {
-                            MaxValue = _gameData.GetData().GameHltbData.Completionist;
+                            MaxValue = HltbData.GameHltbData.Completionist;
                         }
                     }
 
-                    if (_gameData.GetData().GameHltbData.Solo != 0)
+                    if (HltbData.GameHltbData.Solo != 0)
                     {
                         ElIndicator += 1;
-                        listProgressBars.Add(new ListProgressBar { Indicator = ElIndicator, Value = _gameData.GetData().GameHltbData.Solo, Format = _gameData.GetData().GameHltbData.SoloFormat });
-                        if (MaxValue < _gameData.GetData().GameHltbData.Solo)
+                        listProgressBars.Add(new ListProgressBar { Indicator = ElIndicator, Value = HltbData.GameHltbData.Solo, Format = HltbData.GameHltbData.SoloFormat });
+                        if (MaxValue < HltbData.GameHltbData.Solo)
                         {
-                            MaxValue = _gameData.GetData().GameHltbData.Solo;
+                            MaxValue = HltbData.GameHltbData.Solo;
                         }
                     }
 
-                    if (_gameData.GetData().GameHltbData.CoOp != 0)
+                    if (HltbData.GameHltbData.CoOp != 0)
                     {
                         ElIndicator += 1;
-                        listProgressBars.Add(new ListProgressBar { Indicator = ElIndicator, Value = _gameData.GetData().GameHltbData.CoOp, Format = _gameData.GetData().GameHltbData.CoOpFormat });
-                        if (MaxValue < _gameData.GetData().GameHltbData.CoOp)
+                        listProgressBars.Add(new ListProgressBar { Indicator = ElIndicator, Value = HltbData.GameHltbData.CoOp, Format = HltbData.GameHltbData.CoOpFormat });
+                        if (MaxValue < HltbData.GameHltbData.CoOp)
                         {
-                            MaxValue = _gameData.GetData().GameHltbData.CoOp;
+                            MaxValue = HltbData.GameHltbData.CoOp;
                         }
                     }
 
-                    if (_gameData.GetData().GameHltbData.Vs != 0)
+                    if (HltbData.GameHltbData.Vs != 0)
                     {
                         ElIndicator += 1;
-                        listProgressBars.Add(new ListProgressBar { Indicator = ElIndicator, Value = _gameData.GetData().GameHltbData.Vs, Format = _gameData.GetData().GameHltbData.VsFormat });
-                        if (MaxValue < _gameData.GetData().GameHltbData.Vs)
+                        listProgressBars.Add(new ListProgressBar { Indicator = ElIndicator, Value = HltbData.GameHltbData.Vs, Format = HltbData.GameHltbData.VsFormat });
+                        if (MaxValue < HltbData.GameHltbData.Vs)
                         {
-                            MaxValue = _gameData.GetData().GameHltbData.Vs;
+                            MaxValue = HltbData.GameHltbData.Vs;
                         }
                     }
                 }

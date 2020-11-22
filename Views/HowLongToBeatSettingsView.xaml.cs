@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using Newtonsoft.Json;
 
 namespace HowLongToBeat.Views
 {
@@ -93,7 +94,8 @@ namespace HowLongToBeat.Views
 
                 foreach (Game game in _PlayniteApi.Database.Games)
                 {
-                    HowLongToBeatData.AddAllTag(_PlayniteApi, game, _PluginUserDataPath);
+                    Thread.Sleep(10);
+                    HowLongToBeat.PluginDatabase.AddTag(game);
 
                     if (ct.IsCancellationRequested)
                     {
@@ -128,7 +130,8 @@ namespace HowLongToBeat.Views
 
                 foreach (Game game in _PlayniteApi.Database.Games)
                 {
-                    HowLongToBeatData.RemoveAllTag(_PlayniteApi, game);
+                    Thread.Sleep(10);
+                    HowLongToBeat.PluginDatabase.RemoveTag(game);
 
                     if (ct.IsCancellationRequested)
                     {
@@ -136,7 +139,7 @@ namespace HowLongToBeat.Views
                     }
                 }
 
-                HowLongToBeatData.RemoveAllTagDb(_PlayniteApi);
+                HowLongToBeat.PluginDatabase.RemoveAllTagInDatabase();
             }, tokenSource.Token)
             .ContinueWith(antecedent =>
             {
@@ -178,17 +181,34 @@ namespace HowLongToBeat.Views
                 {
                     try
                     {
-                        if (!HowLongToBeatData.HaveData(game.Id, _PluginUserDataPath))
+                        GameHowLongToBeat gameHowLongToBeat = HowLongToBeat.PluginDatabase.Get(game, true);
+
+#if DEBUG
+                        logger.Debug($"HowLongToBeat - {gameHowLongToBeat.Name} - {JsonConvert.SerializeObject(gameHowLongToBeat)}");
+#endif
+
+                        if (!gameHowLongToBeat.HasData && !gameHowLongToBeat.IsSaved)
                         {
-                            List<HltbData> dataSearch = new HowLongToBeatClient().Search(game.Name);
+                            List<HltbData> dataSearch = HowLongToBeat.PluginDatabase.howLongToBeatClient.Search(game.Name);
 
                             if (dataSearch.Count == 1 && AutoAccept)
                             {
-                                HowLongToBeatData.SaveData(game.Id, dataSearch[0], _PluginUserDataPath);
+                                gameHowLongToBeat = new GameHowLongToBeat
+                                {
+                                    Items = new List<HltbDataUser>() {
+                                    new HltbDataUser
+                                    {
+                                        GameHltbData = dataSearch.First()
+                                    }
+                                }
+                                };
+
+                                Thread.Sleep(10);
+                                HowLongToBeat.PluginDatabase.Add(gameHowLongToBeat);
 
                                 if (EnableTag)
                                 {
-                                    HowLongToBeatData.AddAllTag(_PlayniteApi, game, _PluginUserDataPath);
+                                    HowLongToBeat.PluginDatabase.AddTag(game);
                                 }
 
                                 TotalAdded += 1;
@@ -200,15 +220,11 @@ namespace HowLongToBeat.Views
                                 {
                                     Application.Current.Dispatcher.BeginInvoke((Action)delegate
                                     {
-                                        string FileGameData = _PluginUserDataPath + "\\howlongtobeat\\" + game.Id.ToString() + ".json";
-
-                                        var ViewExtension = new HowLongToBeatSelect(dataSearch, FileGameData, game.Name);
-                                        Window windowExtension = PlayniteUiHelper.CreateExtensionWindow(_PlayniteApi, resources.GetString("LOCSelection"), ViewExtension);
-                                        windowExtension.ShowDialog();
+                                        HowLongToBeat.PluginDatabase.Get(game);
 
                                         if (EnableTag)
                                         {
-                                            HowLongToBeatData.AddAllTag(_PlayniteApi, game, _PluginUserDataPath);
+                                            HowLongToBeat.PluginDatabase.AddTag(game);
                                         }
                                     }).Wait();
                                 }
@@ -265,16 +281,11 @@ namespace HowLongToBeat.Views
             {
                 ct.ThrowIfCancellationRequested();
 
-                HowLongToBeatData.ClearAllData(_PluginUserDataPath, _PlayniteApi);
+                HowLongToBeat.PluginDatabase.ClearDatabase();
 
                 foreach (Game game in _PlayniteApi.Database.Games)
                 {
-                    HowLongToBeatData.RemoveAllTag(_PlayniteApi, game);
-
-                    if (ct.IsCancellationRequested)
-                    {
-                        ct.ThrowIfCancellationRequested();
-                    }
+                    HowLongToBeat.PluginDatabase.RemoveTag(game);
                 }
             }, tokenSource.Token)
             .ContinueWith(antecedent =>

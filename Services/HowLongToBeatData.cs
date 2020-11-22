@@ -32,7 +32,7 @@ namespace HowLongToBeat.Services
 
         private string FileGameData { get; set; }
 
-
+        /*
         public HowLongToBeatData(Game game, string PluginUserDataPath, IPlayniteAPI PlayniteApi, bool mustFind = true)
         {
             _PlayniteApi = PlayniteApi;
@@ -627,5 +627,6 @@ namespace HowLongToBeat.Services
                 logger.Info($"HowLongToBeat - Task GetAllDataFromMain(){CancelText} - {String.Format("{0:00}:{1:00}.{2:00}", ts.Minutes, ts.Seconds, ts.Milliseconds / 10)}");
             }, globalProgressOptions);
         }
+        */
     }
 }
