@@ -46,34 +46,7 @@ namespace HowLongToBeat.Services
 
         public override void Initial()
         {
-            HowLongToBeat.PluginDatabase.GameSelectedData = new GameHowLongToBeat();
 
-            if (_PlayniteApi.ApplicationInfo.Mode == ApplicationMode.Desktop)
-            {
-                if (_Settings.EnableIntegrationButton)
-                {
-#if DEBUG
-                    logger.Debug($"HowLongToBeat - InitialBtActionBar()");
-#endif
-                    InitialBtActionBar();
-                }
-
-                if (_Settings.EnableIntegrationInDescription)
-                {
-#if DEBUG
-                    logger.Debug($"HowLongToBeat - InitialSpDescription()");
-#endif
-                    InitialSpDescription();
-                }
-
-                if (_Settings.EnableIntegrationInCustomTheme)
-                {
-#if DEBUG
-                    logger.Debug($"HowLongToBeat - InitialCustomElements()");
-#endif
-                    InitialCustomElements();
-                }
-            }
         }
 
         public override DispatcherOperation AddElements()
@@ -85,14 +58,14 @@ namespace HowLongToBeat.Services
 #if DEBUG
                     logger.Debug($"HowLongToBeat - IsFirstLoad");
 #endif
-                    Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new ThreadStart(delegate
+                    Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Loaded, new ThreadStart(delegate
                     {
                         System.Threading.SpinWait.SpinUntil(() => IntegrationUI.SearchElementByName("PART_HtmlDescription") != null, 5000);
                     })).Wait();
                     IsFirstLoad = false;
                 }
 
-                return Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new ThreadStart(delegate
+                return Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Loaded, new ThreadStart(delegate
                 {
                     CheckTypeView();
 
@@ -186,6 +159,11 @@ namespace HowLongToBeat.Services
                         resourcesLists.Add(new ResourcesList { Key = "Htlb_CoOpFormat", Value = hltbDataUser.GameHltbData.CoOpFormat });
                         resourcesLists.Add(new ResourcesList { Key = "Htlb_Vs", Value = hltbDataUser.GameHltbData.Vs });
                         resourcesLists.Add(new ResourcesList { Key = "Htlb_VsFormat", Value = hltbDataUser.GameHltbData.VsFormat });
+
+                        resourcesLists.Add(new ResourcesList { Key = "Htlb_EnableIntegrationInCustomTheme", Value = _Settings.EnableIntegrationInCustomTheme });
+                        resourcesLists.Add(new ResourcesList { Key = "Htlb_ColorFirst", Value = new SolidColorBrush(_Settings.ColorFirst) });
+                        resourcesLists.Add(new ResourcesList { Key = "Htlb_ColorSecond", Value = new SolidColorBrush(_Settings.ColorSecond) });
+                        resourcesLists.Add(new ResourcesList { Key = "Htlb_ColorThird", Value = new SolidColorBrush(_Settings.ColorThird) });
                     }
                     else
                     {
@@ -200,33 +178,6 @@ namespace HowLongToBeat.Services
                         if (_PlayniteApi.ApplicationInfo.Mode == ApplicationMode.Desktop)
                         {
                             HowLongToBeat.PluginDatabase.SetCurrent(gameLocalizations);
-
-                            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new ThreadStart(delegate
-                            {
-                                if (_Settings.EnableIntegrationButton)
-                                {
-#if DEBUG
-                                    logger.Debug($"HowLongToBeat - RefreshBtActionBar()");
-#endif
-                                    RefreshBtActionBar();
-                                }
-
-                                if (_Settings.EnableIntegrationInDescription)
-                                {
-#if DEBUG
-                                    logger.Debug($"HowLongToBeat - RefreshSpDescription()");
-#endif
-                                    RefreshSpDescription();
-                                }
-
-                                if (_Settings.EnableIntegrationInCustomTheme)
-                                {
-#if DEBUG
-                                    logger.Debug($"HowLongToBeat - RefreshCustomElements()");
-#endif
-                                    RefreshCustomElements();
-                                }
-                            }));
                         }
                     }
                 }
@@ -354,7 +305,7 @@ namespace HowLongToBeat.Services
 
             try
             {
-                HltbDescriptionIntegration SpDescription = new HltbDescriptionIntegration(_Settings, _Settings.IntegrationShowTitle);
+                HltbDescriptionIntegration SpDescription = new HltbDescriptionIntegration();
                 SpDescription.Name = SpDescriptionName;
 
                 ui.AddElementInGameSelectedDescription(SpDescription, _Settings.IntegrationTopGameDetails);
@@ -447,7 +398,7 @@ namespace HowLongToBeat.Services
 
             if (PART_hltbProgressBarWithTitle != null)
             {
-                PART_hltbProgressBarWithTitle = new HltbDescriptionIntegration(_Settings, true);
+                PART_hltbProgressBarWithTitle = new HltbDescriptionIntegration();
                 PART_hltbProgressBarWithTitle.Name = "hltbProgressBarWithTitle";
                 try
                 {
@@ -468,7 +419,7 @@ namespace HowLongToBeat.Services
 
             if (PART_hltbProgressBar != null)
             {
-                PART_hltbProgressBar = PART_hltbProgressBarWithTitle = new HltbDescriptionIntegration(_Settings, false);
+                PART_hltbProgressBar = PART_hltbProgressBarWithTitle = new HltbDescriptionIntegration();
                 PART_hltbProgressBar.Name = "hltbProgressBar";
                 try
                 {

@@ -129,6 +129,8 @@ namespace HowLongToBeat
                 var dispatcherOp = HowLongToBeat.howLongToBeatUI.AddElements();
                 dispatcherOp.Completed += (s, e) => { HowLongToBeat.howLongToBeatUI.RefreshElements(HowLongToBeat.GameSelected); };
             });
+
+            HowLongToBeat.PluginDatabase.PluginSettings = this;
         }
 
         public bool VerifySettings(out List<string> errors)

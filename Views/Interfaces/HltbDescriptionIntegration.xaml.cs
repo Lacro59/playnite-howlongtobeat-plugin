@@ -1,5 +1,7 @@
 ﻿using HowLongToBeat.Models;
 using HowLongToBeat.Services;
+using Newtonsoft.Json;
+using Playnite.SDK;
 using PluginCommon;
 using System;
 using System.Threading;
@@ -14,59 +16,66 @@ namespace HowLongToBeat.Views.Interfaces
     /// </summary>
     public partial class HltbDescriptionIntegration : StackPanel
     {
+        private static readonly ILogger logger = LogManager.GetLogger();
+
+        private HowLongToBeatDatabase PluginDatabase = HowLongToBeat.PluginDatabase;
         private HltbProgressBar hltbProgressBar;
 
 
-        public HltbDescriptionIntegration(HowLongToBeatSettings settings, bool IntegrationShowTitle)
+        public HltbDescriptionIntegration()
         {
-            hltbProgressBar = new HltbProgressBar(settings);
-
             InitializeComponent();
 
-            if (!IntegrationShowTitle)
-            {
-                PART_Title.Visibility = Visibility.Collapsed;
-                PART_Separator.Visibility = Visibility.Collapsed;
-            }
-
+            hltbProgressBar = new HltbProgressBar();
             PART_HltbProgressBar.Children.Add(hltbProgressBar);
 
-            //HowLongToBeat.PluginDatabase.PropertyChanged += OnPropertyChanged;
+            PluginDatabase.PropertyChanged += OnPropertyChanged;
         }
 
-        /*
         protected void OnPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             try
             {
-                this.Dispatcher.BeginInvoke(DispatcherPriority.Background, new ThreadStart(delegate
-                {
-                    if (!HowLongToBeat.PluginDatabase.GameSelectedData.HasData)
+#if DEBUG
+                logger.Debug($"HltbDescriptionIntegration.OnPropertyChanged({e.PropertyName}): {JsonConvert.SerializeObject(PluginDatabase.GameSelectedData)}");
+#endif
+                if (e.PropertyName == "GameSelectedData" || e.PropertyName == "PluginSettings")
+                { 
+                    this.Dispatcher.BeginInvoke(DispatcherPriority.Loaded, new ThreadStart(delegate
                     {
-                        this.Visibility = Visibility.Collapsed;
-                        return;
-                    }
-                }));
-            }
-            catch (Exception ex)
-            {
-                Common.LogError(ex, "GameActivity");
-            }
-        }
-        */
+                        if (!PluginDatabase.GameSelectedData.HasData)
+                        {
+                            this.Visibility = Visibility.Collapsed;
+                        }
+                        else
+                        {
+                            this.Visibility = Visibility.Visible;
 
-        /*
-        private void PART_HltbProgressBar_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
-        {
-            try
-            {
-                this.Visibility = PART_Title.Visibility;
+                            if (PluginDatabase.PluginSettings.IntegrationShowTitle && !PluginDatabase.PluginSettings.EnableIntegrationInCustomTheme)
+                            {
+                                PART_Title.Visibility = Visibility.Visible;
+                                PART_Separator.Visibility = Visibility.Visible;
+                                PART_HltbProgressBar.Margin = new Thickness(0, 5, 0, 0);
+                            }
+                            else
+                            {
+                                PART_Title.Visibility = Visibility.Collapsed;
+                                PART_Separator.Visibility = Visibility.Collapsed;
+                                PART_HltbProgressBar.Margin = new Thickness(0, 0, 0, 0);
+
+                                if (!PluginDatabase.PluginSettings.IntegrationTopGameDetails)
+                                {
+                                    PART_HltbProgressBar.Margin = new Thickness(0, 15, 0, 0);
+                                }
+                            }
+                        }
+                    }));
+                }
             }
             catch (Exception ex)
             {
                 Common.LogError(ex, "GameActivity");
             }
         }
-        */
     }
 }

@@ -24,21 +24,20 @@ namespace HowLongToBeat.Views.Interfaces
     {
         private static readonly ILogger logger = LogManager.GetLogger();
 
+        private HowLongToBeatDatabase PluginDatabase = HowLongToBeat.PluginDatabase;
+
         private GameHowLongToBeat _gameHowLongToBeat = null;
         private long _Playtime;
-        private HowLongToBeatSettings _settings;
 
         public bool ShowToolTip { get; set; }
         public bool ShowTime { get; set; }
 
 
-        public HltbProgressBar(HowLongToBeatSettings settings)
+        public HltbProgressBar()
         {
-            _settings = settings;
-
             InitializeComponent();
 
-            HowLongToBeat.PluginDatabase.PropertyChanged += OnPropertyChanged;
+            PluginDatabase.PropertyChanged += OnPropertyChanged;
         }
 
 
@@ -46,17 +45,29 @@ namespace HowLongToBeat.Views.Interfaces
         {
             try
             {
-                this.Dispatcher.BeginInvoke(DispatcherPriority.Background, new ThreadStart(delegate
-                {
 #if DEBUG
-                    logger.Debug($"OnPropertyChanged: {JsonConvert.SerializeObject(HowLongToBeat.PluginDatabase.GameSelectedData)}");
+                logger.Debug($"HltbProgressBar.OnPropertyChanged({e.PropertyName}): {JsonConvert.SerializeObject(PluginDatabase.GameSelectedData)}");
 #endif
-                    SetHltbData(HowLongToBeat.PluginDatabase.GameSelectedData);
-                }));
+                if (e.PropertyName == "GameSelectedData" || e.PropertyName == "PluginSettings")
+                {
+                    this.Dispatcher.BeginInvoke(DispatcherPriority.Loaded, new ThreadStart(delegate
+                    {
+                        if (!PluginDatabase.GameSelectedData.HasData)
+                        {
+                            this.Visibility = Visibility.Collapsed;
+                        }
+                        else
+                        {
+                            this.Visibility = Visibility.Visible;
+
+                            SetHltbData(PluginDatabase.GameSelectedData);
+                        }
+                    }));
+                }
             }
             catch (Exception ex)
             {
-                Common.LogError(ex, "GameActivity");
+                Common.LogError(ex, "HowLongToBeat");
             }
         }
 
@@ -156,26 +167,20 @@ namespace HowLongToBeat.Views.Interfaces
 
         public void SetHltbData(GameHowLongToBeat gameHowLongToBeat)
         {
-            if (!gameHowLongToBeat.HasData)
-            {
-                this.Visibility = Visibility.Collapsed;
-                return;
-            }
-            else
-            {
-                this.Visibility = Visibility.Visible;
-            }
+#if DEBUG
+            logger.Debug($"HowLongToBeat - PluginSettings: {JsonConvert.SerializeObject(PluginDatabase.PluginSettings)}");
+#endif
 
             _gameHowLongToBeat = gameHowLongToBeat;
             _Playtime = gameHowLongToBeat.Playtime;
             
 
-            ShowToolTip = _settings.ProgressBarShowToolTip;
-            ShowTime = _settings.ProgressBarShowTime;
+            ShowToolTip = PluginDatabase.PluginSettings.ProgressBarShowToolTip;
+            ShowTime = PluginDatabase.PluginSettings.ProgressBarShowTime;
 
-            ProgressHltb_El1.Foreground = new SolidColorBrush(_settings.ColorFirst);
-            ProgressHltb_El2.Foreground = new SolidColorBrush(_settings.ColorSecond);
-            ProgressHltb_El3.Foreground = new SolidColorBrush(_settings.ColorThird);
+            ProgressHltb_El1.Foreground = new SolidColorBrush(PluginDatabase.PluginSettings.ColorFirst);
+            ProgressHltb_El2.Foreground = new SolidColorBrush(PluginDatabase.PluginSettings.ColorSecond);
+            ProgressHltb_El3.Foreground = new SolidColorBrush(PluginDatabase.PluginSettings.ColorThird);
 
             if (ShowToolTip)
             {
@@ -193,7 +198,7 @@ namespace HowLongToBeat.Views.Interfaces
         {
             try
             {
-                if (_settings.ProgressBarShowTime && !_settings.ProgressBarShowTimeInterior)
+                if (PluginDatabase.PluginSettings.ProgressBarShowTime && !PluginDatabase.PluginSettings.ProgressBarShowTimeInterior)
                 {
                     PART_HltbProgressBar_Contener.Height = PART_HltbProgressBar_Contener.Height - spShowTime.Height;
 #if DEBUG
@@ -205,12 +210,12 @@ namespace HowLongToBeat.Views.Interfaces
                     spShowTime.Height = 0;
                 }
 
-                if (_settings.ProgressBarShowTimeAbove)
+                if (PluginDatabase.PluginSettings.ProgressBarShowTime && PluginDatabase.PluginSettings.ProgressBarShowTimeAbove)
                 {
                     Grid.SetRow(spShowTime, 0);
                     Grid.SetRow(PART_HltbProgressBar_Contener, 1);
                 }
-                if (_settings.ProgressBarShowTimeInterior)
+                if (PluginDatabase.PluginSettings.ProgressBarShowTime && PluginDatabase.PluginSettings.ProgressBarShowTimeInterior)
                 {
                     Grid.SetRow(spShowTime, 0);
                     spShowTime.Height = PART_HltbProgressBar_Contener.Height;

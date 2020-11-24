@@ -114,7 +114,7 @@ namespace HowLongToBeat.Views
                 LongToTimePlayedConverter converter = new LongToTimePlayedConverter();
                 PlaytimeFormat = (string)converter.Convert((long)_gameHowLongToBeat.Playtime, null, null, CultureInfo.CurrentCulture);
 
-                HltbProgressBar hltbProgressBar = new HltbProgressBar(settings);
+                HltbProgressBar hltbProgressBar = new HltbProgressBar();
                 hltbProgressBar.SetHltbData(_gameHowLongToBeat);
                 PART_HltbProgressBar.Children.Add(hltbProgressBar);
             }
