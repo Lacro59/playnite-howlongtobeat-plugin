@@ -239,9 +239,13 @@ namespace HowLongToBeat.Services
             logger.Debug($"HowLongToBeat - Search data for {game.Name}");
 #endif
 
-            var ViewExtension = new HowLongToBeatSelect(null, game);
-            Window windowExtension = PlayniteUiHelper.CreateExtensionWindow(_PlayniteApi, resources.GetString("LOCSelection"), ViewExtension);
-            windowExtension.ShowDialog();
+            HowLongToBeatSelect ViewExtension = null;
+            Application.Current.Dispatcher.BeginInvoke((Action)delegate
+            {
+                ViewExtension = new HowLongToBeatSelect(null, game);
+                Window windowExtension = PlayniteUiHelper.CreateExtensionWindow(_PlayniteApi, resources.GetString("LOCSelection"), ViewExtension);
+                windowExtension.ShowDialog();
+            }).Wait();
 
             if (ViewExtension.gameHowLongToBeat != null && ViewExtension.gameHowLongToBeat.Items.Count > 0)
             {
@@ -250,10 +254,6 @@ namespace HowLongToBeat.Services
 
             return null;
         }
-
-
-
-
 
 
 

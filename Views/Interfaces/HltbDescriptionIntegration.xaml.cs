@@ -1,5 +1,6 @@
 ﻿using HowLongToBeat.Models;
 using HowLongToBeat.Services;
+using PluginCommon;
 using System;
 using System.Threading;
 using System.Windows;
@@ -29,13 +30,42 @@ namespace HowLongToBeat.Views.Interfaces
             }
 
             PART_HltbProgressBar.Children.Add(hltbProgressBar);
+
+            //HowLongToBeat.PluginDatabase.PropertyChanged += OnPropertyChanged;
         }
 
         /*
-        public void SetHltbData(long Playtime, HowLongToBeatData data, HowLongToBeatSettings settings)
+        protected void OnPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            hltbProgressBar.SetHltbData(Playtime, data, settings);
-            PART_HltbProgressBar.UpdateLayout();
+            try
+            {
+                this.Dispatcher.BeginInvoke(DispatcherPriority.Background, new ThreadStart(delegate
+                {
+                    if (!HowLongToBeat.PluginDatabase.GameSelectedData.HasData)
+                    {
+                        this.Visibility = Visibility.Collapsed;
+                        return;
+                    }
+                }));
+            }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, "GameActivity");
+            }
+        }
+        */
+
+        /*
+        private void PART_HltbProgressBar_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            try
+            {
+                this.Visibility = PART_Title.Visibility;
+            }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, "GameActivity");
+            }
         }
         */
     }

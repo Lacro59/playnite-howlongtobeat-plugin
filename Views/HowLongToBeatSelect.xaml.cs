@@ -69,21 +69,11 @@ namespace HowLongToBeat.Views
         {
             HltbData Item = (HltbData)lbSelectable.SelectedItem;
 
-            gameHowLongToBeat = new GameHowLongToBeat
-            {
-                Id = _game.Id,
-                Name = _game.Name,
-                Hidden = _game.Hidden,
-                Icon = _game.Icon,
-                CoverImage = _game.CoverImage,
-                GenreIds = _game.GenreIds,
-                Genres = _game.Genres,
-
-                Items = new List<HltbDataUser>() {
-                    new HltbDataUser
-                    {
-                        GameHltbData = Item
-                    }
+            gameHowLongToBeat = HowLongToBeat.PluginDatabase.GetDefault(_game);
+            gameHowLongToBeat.Items = new List<HltbDataUser>() {
+                new HltbDataUser
+                {
+                    GameHltbData = Item
                 }
             };
 
@@ -131,7 +121,7 @@ namespace HowLongToBeat.Views
 #if DEBUG
                 logger.Debug($"HowLongToBeat - dataSearch: {JsonConvert.SerializeObject(dataSearch)}");
 #endif
-                Application.Current.Dispatcher.BeginInvoke((Action)delegate
+                this.Dispatcher.BeginInvoke((Action)delegate
                 {
                     lbSelectable.ItemsSource = dataSearch;
                     lbSelectable.UpdateLayout();

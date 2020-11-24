@@ -22,7 +22,7 @@ namespace HowLongToBeat
 {
     public class HowLongToBeat : Plugin
     {
-        private static readonly ILogger logger = LogManager.GetLogger();
+        private static readonly ILogger logger = LogManager.GetLogger("HowLongToBeat");
         private static IResourceProvider resources = new ResourceProvider();
 
         private HowLongToBeatSettings settings { get; set; }
@@ -85,21 +85,17 @@ namespace HowLongToBeat
                         try
                         {
                             GameHowLongToBeat gameHowLongToBeat = PluginDatabase.Get(GameMenu);
-                            if (gameHowLongToBeat.HasData)
-                            {
-                                gameHowLongToBeat = PluginDatabase.howLongToBeatClient.SearchData(GameSelected);
-                            }
 
                             if (gameHowLongToBeat.HasData)
                             {
+                                var ViewExtension = new HowLongToBeatView(PlayniteApi, settings, gameHowLongToBeat);
+                                Window windowExtension = PlayniteUiHelper.CreateExtensionWindow(PlayniteApi, "HowLongToBeat", ViewExtension);
+                                windowExtension.ShowDialog();
+
                                 var TaskIntegrationUI = Task.Run(() =>
                                 {
                                     HowLongToBeat.howLongToBeatUI.RefreshElements(HowLongToBeat.GameSelected);
                                 });
-
-                                var ViewExtension = new HowLongToBeatView(PlayniteApi, settings, gameHowLongToBeat);
-                                Window windowExtension = PlayniteUiHelper.CreateExtensionWindow(PlayniteApi, "HowLongToBeat", ViewExtension);
-                                windowExtension.ShowDialog();
                             }
                         }
                         catch (Exception ex)
@@ -148,7 +144,7 @@ namespace HowLongToBeat
                     Description = resources.GetString("LOCCommonGetAllDatas"),
                     Action = (mainMenuItem) =>
                     {
-                        PluginDatabase.GetAllDataFromMain();
+                        PluginDatabase.GetAllDatas();
                     }
                 },
                 new MainMenuItem
@@ -173,7 +169,7 @@ namespace HowLongToBeat
                     Description = resources.GetString("LOCCommonAddAllTags"),
                     Action = (mainMenuItem) =>
                     {
-                        PluginDatabase.AddAllTagFromMain();
+                        PluginDatabase.AddTagAllGame();
                     }
                 },
                 new MainMenuItem
@@ -182,7 +178,7 @@ namespace HowLongToBeat
                     Description = resources.GetString("LOCCommonRemoveAllTags"),
                     Action = (mainMenuItem) =>
                     {
-                        PluginDatabase.RemoveAllTagFromMain();
+                        PluginDatabase.RemoveTagAllGame();
                     }
                 }
             };

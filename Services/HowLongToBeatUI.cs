@@ -85,7 +85,10 @@ namespace HowLongToBeat.Services
 #if DEBUG
                     logger.Debug($"HowLongToBeat - IsFirstLoad");
 #endif
-                    Thread.Sleep(2000);
+                    Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new ThreadStart(delegate
+                    {
+                        System.Threading.SpinWait.SpinUntil(() => IntegrationUI.SearchElementByName("PART_HtmlDescription") != null, 5000);
+                    })).Wait();
                     IsFirstLoad = false;
                 }
 
@@ -158,6 +161,10 @@ namespace HowLongToBeat.Services
 
 
                     // Load data
+                    if (!HowLongToBeat.PluginDatabase.IsLoaded)
+                    {
+                        return;
+                    }
                     GameHowLongToBeat gameLocalizations = HowLongToBeat.PluginDatabase.Get(GameSelected, true);
                     HltbDataUser hltbDataUser;
 
@@ -183,11 +190,6 @@ namespace HowLongToBeat.Services
                     else
                     {
                         logger.Warn("HowLongToBeat - No data for " + GameSelected.Name);
-                    }
-
-                    if (_Settings.EnableTag)
-                    {
-                        HowLongToBeat.PluginDatabase.AddTag(GameSelected);
                     }
 
                     // If not cancel, show
@@ -295,14 +297,14 @@ namespace HowLongToBeat.Services
 
             if (gameHowLongToBeat.HasData)
             {
+                var ViewExtension = new Views.HowLongToBeatView(_PlayniteApi, _Settings, gameHowLongToBeat);
+                Window windowExtension = PlayniteUiHelper.CreateExtensionWindow(_PlayniteApi, "HowLongToBeat", ViewExtension);
+                windowExtension.ShowDialog();
+
                 var TaskIntegrationUI = Task.Run(() =>
                 {
                     HowLongToBeat.howLongToBeatUI.RefreshElements(HowLongToBeat.GameSelected);
                 });
-
-                var ViewExtension = new Views.HowLongToBeatView(_PlayniteApi, _Settings, gameHowLongToBeat);
-                Window windowExtension = PlayniteUiHelper.CreateExtensionWindow(_PlayniteApi, "HowLongToBeat", ViewExtension);
-                windowExtension.ShowDialog();
             }
         }
 
@@ -335,7 +337,7 @@ namespace HowLongToBeat.Services
             {
                 if (PART_SpDescription != null)
                 {
-                    PART_SpDescription.Visibility = Visibility.Visible;
+                    PART_SpDescription.Visibility = Visibility.Collapsed;
                 }
             });
         }

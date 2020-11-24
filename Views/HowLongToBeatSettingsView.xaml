@@ -10,19 +10,6 @@
         <TabItem Header="{DynamicResource LOCHowLongToBeat}">
 
             <Grid Margin="0,10,0,0">
-                <!-- loader -->
-                <Grid Name="DataLoad" Height="40" HorizontalAlignment="Center" Visibility="Hidden">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="auto" />
-                        <ColumnDefinition Width="auto" />
-                    </Grid.ColumnDefinitions>
-                    <ProgressBar Grid.Column="0" Name="pbDataLoad" Width="350" Height="40" />
-                    <TextBlock Grid.Column="0" Name="tbDataLoad" Text="{DynamicResource LOCHowLongToBeatProgressBarTag}"
-                       Style="{DynamicResource BaseTextBlockStyle}"
-                       HorizontalAlignment="Center" VerticalAlignment="Center" />
-                    <Button Grid.Column="1" Click="ButtonCancelTask_Click" Margin="10,0,0,0" Content="{DynamicResource LOCCancelLabel}" />
-                </Grid>
-
                 <Grid Name="PART_SelectorColor" Width="500" Visibility="Collapsed">
                     <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                         <controls:ControlPickerGradient Name="PART_SelectorColorPicker"></controls:ControlPickerGradient>

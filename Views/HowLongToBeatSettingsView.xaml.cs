@@ -51,7 +51,6 @@ namespace HowLongToBeat.Views
             tbColorSecond.Background = new SolidColorBrush(settings.ColorSecond);
             tbColorThird.Background = new SolidColorBrush(settings.ColorThird);
 
-            DataLoad.Visibility = Visibility.Collapsed;
             spSettings.Visibility = Visibility.Visible;
         }
 
@@ -79,223 +78,22 @@ namespace HowLongToBeat.Views
 
         private void ButtonAddTag_Click(object sender, RoutedEventArgs e)
         {
-            tbDataLoad.Text = resources.GetString("LOCHowLongToBeatProgressBarTag");
-            pbDataLoad.IsIndeterminate = true;
-
-            DataLoad.Visibility = Visibility.Visible;
-            spSettings.Visibility = Visibility.Hidden;
-
-            tokenSource = new CancellationTokenSource();
-            ct = tokenSource.Token;
-
-            var taskSystem = Task.Run(() =>
-            {
-                ct.ThrowIfCancellationRequested();
-
-                foreach (Game game in _PlayniteApi.Database.Games)
-                {
-                    Thread.Sleep(10);
-                    HowLongToBeat.PluginDatabase.AddTag(game);
-
-                    if (ct.IsCancellationRequested)
-                    {
-                        ct.ThrowIfCancellationRequested();
-                    }
-                }
-            }, tokenSource.Token)
-            .ContinueWith(antecedent =>
-            {
-                Application.Current.Dispatcher.BeginInvoke((Action)delegate 
-                {
-                    DataLoad.Visibility = Visibility.Collapsed;
-                    spSettings.Visibility = Visibility.Visible;
-                });
-            });
+            HowLongToBeat.PluginDatabase.AddTagAllGame();
         }
 
         private void ButtonRemoveTag_Click(object sender, RoutedEventArgs e)
         {
-            tbDataLoad.Text = resources.GetString("LOCHowLongToBeatProgressBarTag");
-            pbDataLoad.IsIndeterminate = true;
-
-            DataLoad.Visibility = Visibility.Visible;
-            spSettings.Visibility = Visibility.Hidden;
-
-            tokenSource = new CancellationTokenSource();
-            ct = tokenSource.Token;
-
-            var taskSystem = Task.Run(() =>
-            {
-                ct.ThrowIfCancellationRequested();
-
-                foreach (Game game in _PlayniteApi.Database.Games)
-                {
-                    Thread.Sleep(10);
-                    HowLongToBeat.PluginDatabase.RemoveTag(game);
-
-                    if (ct.IsCancellationRequested)
-                    {
-                        ct.ThrowIfCancellationRequested();
-                    }
-                }
-
-                HowLongToBeat.PluginDatabase.RemoveAllTagInDatabase();
-            }, tokenSource.Token)
-            .ContinueWith(antecedent =>
-            {
-                Application.Current.Dispatcher.BeginInvoke((Action)delegate 
-                {
-                    DataLoad.Visibility = Visibility.Collapsed;
-                    spSettings.Visibility = Visibility.Visible;
-                });
-            });
+            HowLongToBeat.PluginDatabase.RemoveTagAllGame();
         }
 
         private void BtAddData_Click(object sender, RoutedEventArgs e)
         {
-            bool AutoAccept = (bool)cbAutoAccept.IsChecked;
-            bool ShowWhenMismatch = (bool)cbShowWhenMismatch.IsChecked;
-            bool EnableTag = (bool)cbEnableTag.IsChecked;
-
-            pbDataLoad.IsIndeterminate = false;
-            pbDataLoad.Minimum = 0;
-            pbDataLoad.Value = 0;
-            pbDataLoad.Maximum = _PlayniteApi.Database.Games.Count;
-
-            DataLoad.Visibility = Visibility.Visible;
-            spSettings.Visibility = Visibility.Hidden;
-
-            tokenSource = new CancellationTokenSource();
-            ct = tokenSource.Token;
-
-            int TotalAdded = 0;
-            int TotalAlready = 0;
-            int TotalMultiFind = 0;
-            int TotlaNotFind = 0;
-
-            var taskSystem = Task.Run(() =>
-            {
-                ct.ThrowIfCancellationRequested();
-
-                foreach (Game game in _PlayniteApi.Database.Games)
-                {
-                    try
-                    {
-                        GameHowLongToBeat gameHowLongToBeat = HowLongToBeat.PluginDatabase.Get(game, true);
-
-#if DEBUG
-                        logger.Debug($"HowLongToBeat - {gameHowLongToBeat.Name} - {JsonConvert.SerializeObject(gameHowLongToBeat)}");
-#endif
-
-                        if (!gameHowLongToBeat.HasData && !gameHowLongToBeat.IsSaved)
-                        {
-                            List<HltbData> dataSearch = HowLongToBeat.PluginDatabase.howLongToBeatClient.Search(game.Name);
-
-                            if (dataSearch.Count == 1 && AutoAccept)
-                            {
-                                gameHowLongToBeat = new GameHowLongToBeat
-                                {
-                                    Items = new List<HltbDataUser>() {
-                                    new HltbDataUser
-                                    {
-                                        GameHltbData = dataSearch.First()
-                                    }
-                                }
-                                };
-
-                                Thread.Sleep(10);
-                                HowLongToBeat.PluginDatabase.Add(gameHowLongToBeat);
-
-                                if (EnableTag)
-                                {
-                                    HowLongToBeat.PluginDatabase.AddTag(game);
-                                }
-
-                                TotalAdded += 1;
-                            }
-                            else
-                            {
-                                TotalMultiFind += 1;
-                                if (dataSearch.Count > 0 && ShowWhenMismatch)
-                                {
-                                    Application.Current.Dispatcher.BeginInvoke((Action)delegate
-                                    {
-                                        HowLongToBeat.PluginDatabase.Get(game);
-
-                                        if (EnableTag)
-                                        {
-                                            HowLongToBeat.PluginDatabase.AddTag(game);
-                                        }
-                                    }).Wait();
-                                }
-                                else
-                                {
-                                    TotlaNotFind += 1;
-                                }
-                            }
-                        }
-                        else
-                        {
-                            TotalAlready += 1;
-                            logger.Debug($"HowLongToBeat - {game.Name}");
-                        }
-                        Application.Current.Dispatcher.BeginInvoke((Action)delegate
-                        {
-                            tbDataLoad.Text = string.Format(resources.GetString("LOCHowLongToBeatProgressBar"), TotalAdded, TotalAlready, TotlaNotFind);
-                            pbDataLoad.Value += 1;
-                        });
-                    }
-                    catch (Exception ex)
-                    {
-                        Common.LogError(ex, "HowLongToBeat", $"Error on BtAddData_Click()");
-                    }
-
-                    if (ct.IsCancellationRequested)
-                    {
-                        ct.ThrowIfCancellationRequested();
-                    }
-                }
-            }, tokenSource.Token)
-            .ContinueWith(antecedent =>
-            {
-                Application.Current.Dispatcher.BeginInvoke((Action)delegate 
-                {
-                    DataLoad.Visibility = Visibility.Collapsed;
-                    spSettings.Visibility = Visibility.Visible;
-                });
-            });
+            HowLongToBeat.PluginDatabase.GetAllDatas();
         }
 
         private void BtRemoveData_Click(object sender, RoutedEventArgs e)
         {
-            tbDataLoad.Text = resources.GetString("LOCHowLongToBeatProgressBarTag");
-            pbDataLoad.IsIndeterminate = true;
-
-            DataLoad.Visibility = Visibility.Visible;
-            spSettings.Visibility = Visibility.Hidden;
-
-            tokenSource = new CancellationTokenSource();
-            ct = tokenSource.Token;
-
-            var taskSystem = Task.Run(() =>
-            {
-                ct.ThrowIfCancellationRequested();
-
-                HowLongToBeat.PluginDatabase.ClearDatabase();
-
-                foreach (Game game in _PlayniteApi.Database.Games)
-                {
-                    HowLongToBeat.PluginDatabase.RemoveTag(game);
-                }
-            }, tokenSource.Token)
-            .ContinueWith(antecedent =>
-            {
-                Application.Current.Dispatcher.BeginInvoke((Action)delegate 
-                {
-                    DataLoad.Visibility = Visibility.Collapsed;
-                    spSettings.Visibility = Visibility.Visible;
-                });
-            });
+            HowLongToBeat.PluginDatabase.ClearDatabase();
         }
 
 

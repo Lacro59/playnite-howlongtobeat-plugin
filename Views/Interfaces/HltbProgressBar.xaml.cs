@@ -158,9 +158,6 @@ namespace HowLongToBeat.Views.Interfaces
         {
             if (!gameHowLongToBeat.HasData)
             {
-#if DEBUG
-                logger.Debug($"SetHltbData: No data for {gameHowLongToBeat.Name}");
-#endif
                 this.Visibility = Visibility.Collapsed;
                 return;
             }
