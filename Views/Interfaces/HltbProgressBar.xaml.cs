@@ -32,6 +32,8 @@ namespace HowLongToBeat.Views.Interfaces
         public bool ShowToolTip { get; set; }
         public bool ShowTime { get; set; }
 
+        private bool IsFirstLoad = true;
+
 
         public HltbProgressBar()
         {
@@ -198,27 +200,29 @@ namespace HowLongToBeat.Views.Interfaces
         {
             try
             {
-                if (PluginDatabase.PluginSettings.ProgressBarShowTime && !PluginDatabase.PluginSettings.ProgressBarShowTimeInterior)
+                if (IsFirstLoad)
                 {
-                    PART_HltbProgressBar_Contener.Height = PART_HltbProgressBar_Contener.Height - spShowTime.Height;
-#if DEBUG
-                    logger.Debug($"HowLongToBeat - ProgressBarShowTime & !ProgressBarShowTimeInterior -  Height: {PART_HltbProgressBar_Contener.Height} - Width: {PART_HltbProgressBar_Contener.Width}");
-#endif
-                }
-                else
-                {
-                    spShowTime.Height = 0;
-                }
+                    if (PluginDatabase.PluginSettings.ProgressBarShowTime && !PluginDatabase.PluginSettings.ProgressBarShowTimeInterior)
+                    {
+                        PART_HltbProgressBar_Contener.Height = PART_HltbProgressBar_Contener.Height - spShowTime.Height;
+                    }
+                    else
+                    {
+                        spShowTime.Height = 0;
+                    }
 
-                if (PluginDatabase.PluginSettings.ProgressBarShowTime && PluginDatabase.PluginSettings.ProgressBarShowTimeAbove)
-                {
-                    Grid.SetRow(spShowTime, 0);
-                    Grid.SetRow(PART_HltbProgressBar_Contener, 1);
-                }
-                if (PluginDatabase.PluginSettings.ProgressBarShowTime && PluginDatabase.PluginSettings.ProgressBarShowTimeInterior)
-                {
-                    Grid.SetRow(spShowTime, 0);
-                    spShowTime.Height = PART_HltbProgressBar_Contener.Height;
+                    if (PluginDatabase.PluginSettings.ProgressBarShowTime && PluginDatabase.PluginSettings.ProgressBarShowTimeAbove)
+                    {
+                        Grid.SetRow(spShowTime, 0);
+                        Grid.SetRow(PART_HltbProgressBar_Contener, 1);
+                    }
+                    if (PluginDatabase.PluginSettings.ProgressBarShowTime && PluginDatabase.PluginSettings.ProgressBarShowTimeInterior)
+                    {
+                        Grid.SetRow(spShowTime, 0);
+                        spShowTime.Height = PART_HltbProgressBar_Contener.Height;
+                    }
+
+                    IsFirstLoad = false;
                 }
 
                 // Definied data value in different component.

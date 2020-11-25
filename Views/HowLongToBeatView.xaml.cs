@@ -31,6 +31,7 @@ namespace HowLongToBeat.Views
         public string PlaytimeFormat { get; set; }
 
         private GameHowLongToBeat _gameHowLongToBeat { get; set; }
+        private HltbProgressBar hltbProgressBar;
 
 
         public HowLongToBeatView(IPlayniteAPI PlayniteApi, HowLongToBeatSettings settings, GameHowLongToBeat gameHowLongToBeat)
@@ -114,8 +115,7 @@ namespace HowLongToBeat.Views
                 LongToTimePlayedConverter converter = new LongToTimePlayedConverter();
                 PlaytimeFormat = (string)converter.Convert((long)_gameHowLongToBeat.Playtime, null, null, CultureInfo.CurrentCulture);
 
-                HltbProgressBar hltbProgressBar = new HltbProgressBar();
-                hltbProgressBar.SetHltbData(_gameHowLongToBeat);
+                hltbProgressBar = new HltbProgressBar();
                 PART_HltbProgressBar.Children.Add(hltbProgressBar);
             }
 
@@ -192,6 +192,12 @@ namespace HowLongToBeat.Views
             {
                 ((ToolTip)((TextBlock)sender).ToolTip).Visibility = Visibility.Hidden;
             }
+        }
+
+
+        private void PART_HltbProgressBar_Loaded(object sender, RoutedEventArgs e)
+        {
+            hltbProgressBar.SetHltbData(_gameHowLongToBeat);
         }
     }
 }
