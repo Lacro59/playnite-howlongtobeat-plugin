@@ -173,7 +173,7 @@ namespace HowLongToBeat.Views.Interfaces
 
             _gameHowLongToBeat = gameHowLongToBeat;
             _Playtime = gameHowLongToBeat.Playtime;
-            
+
 
             ShowToolTip = PluginDatabase.PluginSettings.ProgressBarShowToolTip;
             ShowTime = PluginDatabase.PluginSettings.ProgressBarShowTime;
@@ -353,28 +353,7 @@ namespace HowLongToBeat.Views.Interfaces
 
         private void Grid_Loaded(object sender, RoutedEventArgs e)
         {
-            try
-            {
-                // Define height & width
-                var parent = ((FrameworkElement)((FrameworkElement)(((UserControl)IntegrationUI.GetAncestorOfType<UserControl>((FrameworkElement)sender))).Parent).Parent);
-
-                if (!double.IsNaN(parent.Height) && parent.Height > 0)
-                {
-                    ((FrameworkElement)sender).Height = parent.Height;
-                }
-
-                if (!double.IsNaN(parent.Width) && parent.Width > 0)
-                {
-                    ((FrameworkElement)sender).Width = parent.Width;
-                }
-#if DEBUG
-                logger.Debug($"HowLongToBeat - Parent({parent.Height}, {parent.Width}, {parent.Name}) -  Height: {((FrameworkElement)sender).Height} - Width: {((FrameworkElement)sender).Width = parent.Width}");
-#endif
-            }
-            catch (Exception ex)
-            {
-                Common.LogError(ex, "HowLongToBeat", "Error on Grid_Loaded()");
-            }
+            IntegrationUI.SetControlSize(PART_HltbProgressBar_Contener);
         }
     }
 

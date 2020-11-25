@@ -361,12 +361,10 @@ namespace HowLongToBeat.Services
             }
 
             FrameworkElement PART_HltbButtonWithJustIcon = null;
-            FrameworkElement PART_hltbProgressBarWithTitle = null;
             FrameworkElement PART_hltbProgressBar = null;
             try
             {
                 PART_HltbButtonWithJustIcon = IntegrationUI.SearchElementByName("PART_HltbButtonWithJustIcon", false, true);
-                PART_hltbProgressBarWithTitle = IntegrationUI.SearchElementByName("PART_hltbProgressBarWithTitle", false, true);
                 PART_hltbProgressBar = IntegrationUI.SearchElementByName("PART_hltbProgressBar", false, true);
             }
             catch (Exception ex)
@@ -396,30 +394,9 @@ namespace HowLongToBeat.Services
 #endif
             }
 
-            if (PART_hltbProgressBarWithTitle != null)
-            {
-                PART_hltbProgressBarWithTitle = new HltbDescriptionIntegration();
-                PART_hltbProgressBarWithTitle.Name = "hltbProgressBarWithTitle";
-                try
-                {
-                    ui.AddElementInCustomTheme(PART_hltbProgressBarWithTitle, "PART_hltbProgressBarWithTitle");
-                    ListCustomElements.Add(new CustomElement { ParentElementName = "PART_hltbProgressBarWithTitle", Element = PART_hltbProgressBarWithTitle });
-                }
-                catch (Exception ex)
-                {
-                    Common.LogError(ex, "HowLongToBeat", "Error on AddCustomElements()");
-                }
-            }
-            else
-            {
-#if DEBUG
-                logger.Debug($"HowLongToBeat - PART_HltbButtonWithJustIcon not find");
-#endif
-            }
-
             if (PART_hltbProgressBar != null)
             {
-                PART_hltbProgressBar = PART_hltbProgressBarWithTitle = new HltbDescriptionIntegration();
+                PART_hltbProgressBar = new HltbProgressBar();
                 PART_hltbProgressBar.Name = "hltbProgressBar";
                 try
                 {
@@ -459,7 +436,7 @@ namespace HowLongToBeat.Services
                         isFind = true;
                     }
 
-                    if (customElement.Element is HltbDescriptionIntegration)
+                    if (customElement.Element is HltbProgressBar)
                     {
 #if DEBUG
                         logger.Debug($"HowLongToBeat - customElement.Element is HltbDescriptionIntegration");

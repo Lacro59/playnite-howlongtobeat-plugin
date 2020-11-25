@@ -5,8 +5,14 @@
             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
             mc:Ignorable="d">
 
-    <TextBlock Name="PART_Title" Text="{DynamicResource  LOCHowLongToBeatTitle}" Margin="0,15,0,5" Style="{DynamicResource BaseTextBlockStyle}"  />
-    <Separator Name="PART_Separator" Background="{DynamicResource PanelSeparatorBrush}" />
+    <StackPanel.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+    </StackPanel.Resources>
 
-    <StackPanel Name="PART_HltbProgressBar" DockPanel.Dock="Bottom" Height="40" MinWidth="200" Margin="0, 5, 0, 5"></StackPanel>
+    <TextBlock Name="PART_Title" Text="{DynamicResource LOCHowLongToBeatTitle}" Margin="0,15,0,5" Style="{DynamicResource BaseTextBlockStyle}" 
+               Visibility="{Binding IntegrationShowTitle, Converter={StaticResource BooleanToVisibilityConverter}}" />
+    <Separator Name="PART_Separator" Background="{DynamicResource PanelSeparatorBrush}" 
+               Visibility="{Binding IntegrationShowTitle, Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+    <StackPanel Name="PART_HltbProgressBar" Height="40" MinWidth="200"></StackPanel>
 </StackPanel>

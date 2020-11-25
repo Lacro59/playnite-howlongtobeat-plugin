@@ -43,38 +43,47 @@ namespace HowLongToBeat.Views.Interfaces
                 { 
                     this.Dispatcher.BeginInvoke(DispatcherPriority.Loaded, new ThreadStart(delegate
                     {
+                        // No data
                         if (!PluginDatabase.GameSelectedData.HasData)
                         {
                             this.Visibility = Visibility.Collapsed;
+                            return;
                         }
                         else
                         {
                             this.Visibility = Visibility.Visible;
+                        }
 
-                            if (PluginDatabase.PluginSettings.IntegrationShowTitle && !PluginDatabase.PluginSettings.EnableIntegrationInCustomTheme)
+
+                        if (PluginDatabase.PluginSettings.IntegrationShowTitle)
+                        {
+                            PART_HltbProgressBar.Margin = new Thickness(0, 5, 0, 5);
+                        }
+                        else
+                        {
+                            if (!PluginDatabase.PluginSettings.IntegrationTopGameDetails)
                             {
-                                PART_Title.Visibility = Visibility.Visible;
-                                PART_Separator.Visibility = Visibility.Visible;
-                                PART_HltbProgressBar.Margin = new Thickness(0, 5, 0, 0);
+                                PART_HltbProgressBar.Margin = new Thickness(0, 15, 0, 0);
                             }
                             else
                             {
-                                PART_Title.Visibility = Visibility.Collapsed;
-                                PART_Separator.Visibility = Visibility.Collapsed;
                                 PART_HltbProgressBar.Margin = new Thickness(0, 0, 0, 0);
-
-                                if (!PluginDatabase.PluginSettings.IntegrationTopGameDetails)
-                                {
-                                    PART_HltbProgressBar.Margin = new Thickness(0, 15, 0, 0);
-                                }
                             }
                         }
+
+                        this.DataContext = new
+                        {
+                            IntegrationShowTitle = PluginDatabase.PluginSettings.IntegrationShowTitle
+                        };
+#if DEBUG
+                        logger.Debug($"HowLongToBeat - DataContext: {JsonConvert.SerializeObject(DataContext)}");
+#endif
                     }));
                 }
             }
             catch (Exception ex)
             {
-                Common.LogError(ex, "GameActivity");
+                Common.LogError(ex, "HowLongToBeat");
             }
         }
     }

@@ -1,0 +1,23 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:Sys="clr-namespace:System;assembly=mscorlib">
+
+    <Sys:Boolean x:Key="Htlb_HasData">True</Sys:Boolean>
+    <Sys:Double x:Key="Htlb_MainStory">0</Sys:Double>
+    <Sys:String x:Key="Htlb_MainStoryFormat">0</Sys:String>
+    <Sys:Double x:Key="Htlb_MainExtra">0</Sys:Double>
+    <Sys:String x:Key="Htlb_MainExtraFormat">0</Sys:String>
+    <Sys:Double x:Key="Htlb_Completionist">0</Sys:Double>
+    <Sys:String x:Key="Htlb_CompletionistFormat">0</Sys:String>
+    <Sys:Double x:Key="Htlb_Solo">0</Sys:Double>
+    <Sys:String x:Key="Htlb_SoloFormat">0</Sys:String>
+    <Sys:Double x:Key="Htlb_CoOp">0</Sys:Double>
+    <Sys:String x:Key="Htlb_CoOpFormat">0</Sys:String>
+    <Sys:Double x:Key="Htlb_Vs">0</Sys:Double>
+    <Sys:String x:Key="Htlb_VsFormat">0</Sys:String>
+
+    <Sys:Boolean x:Key="Htlb_EnableIntegrationInCustomTheme">True</Sys:Boolean>
+    <SolidColorBrush x:Key="Htlb_ColorFirst" Color="#78ffa0"></SolidColorBrush>
+    <SolidColorBrush x:Key="Htlb_ColorSecond" Color="#78ffa0"></SolidColorBrush>
+    <SolidColorBrush x:Key="Htlb_ColorThird" Color="#78ffa0"></SolidColorBrush>
+
+</ResourceDictionary>
