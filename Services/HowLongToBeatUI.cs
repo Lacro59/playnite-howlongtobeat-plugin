@@ -194,13 +194,7 @@ namespace HowLongToBeat.Services
         #region BtActionBar
         public override void InitialBtActionBar()
         {
-            Application.Current.Dispatcher.BeginInvoke((Action)delegate
-            {
-                if (PART_BtActionBar != null)
-                {
-                    PART_BtActionBar.Visibility = Visibility.Visible;
-                }
-            });
+
         }
 
         public override void AddBtActionBar()
@@ -231,14 +225,7 @@ namespace HowLongToBeat.Services
 
         public override void RefreshBtActionBar()
         {
-            if (PART_BtActionBar != null)
-            {
-                PART_BtActionBar.Visibility = Visibility.Visible;
-            }
-            else
-            {
-                logger.Warn($"HowLongToBeat - PART_BtActionBar is not defined");
-            }
+
         }
 
 
@@ -284,13 +271,7 @@ namespace HowLongToBeat.Services
         #region SpDescription
         public override void InitialSpDescription()
         {
-            Application.Current.Dispatcher.BeginInvoke((Action)delegate
-            {
-                if (PART_SpDescription != null)
-                {
-                    PART_SpDescription.Visibility = Visibility.Collapsed;
-                }
-            });
+
         }
 
         public override void AddSpDescription()
@@ -319,21 +300,7 @@ namespace HowLongToBeat.Services
 
         public override void RefreshSpDescription()
         {
-            if (PART_SpDescription != null)
-            {
-                if (HowLongToBeat.PluginDatabase.GameSelectedData.HasData)
-                {
-                    PART_SpDescription.Visibility = Visibility.Visible;
-                }
-                else
-                {
-                    PART_SpDescription.Visibility = Visibility.Collapsed;
-                }
-            }
-            else
-            {
-                logger.Warn($"HowLongToBeat - PART_SpDescription is not defined");
-            }
+
         }
         #endregion
 
@@ -341,13 +308,7 @@ namespace HowLongToBeat.Services
         #region CustomElements
         public override void InitialCustomElements()
         {
-            Application.Current.Dispatcher.BeginInvoke((Action)delegate
-            {
-                foreach (CustomElement customElement in ListCustomElements)
-                {
-                    customElement.Element.Visibility = Visibility.Visible;
-                }
-            });
+
         }
 
         public override void AddCustomElements()
@@ -418,43 +379,7 @@ namespace HowLongToBeat.Services
 
         public override void RefreshCustomElements()
         {
-#if DEBUG
-            logger.Debug($"HowLongToBeat - ListCustomElements - {ListCustomElements.Count}");
-#endif
-            foreach (CustomElement customElement in ListCustomElements)
-            {
-                try
-                {
-                    bool isFind = false;
 
-                    if (customElement.Element is HltbButton)
-                    {
-#if DEBUG
-                        logger.Debug($"HowLongToBeat - customElement.Element is HltbButton");
-#endif
-                        customElement.Element.Visibility = Visibility.Visible;
-                        isFind = true;
-                    }
-
-                    if (customElement.Element is HltbProgressBar)
-                    {
-#if DEBUG
-                        logger.Debug($"HowLongToBeat - customElement.Element is HltbDescriptionIntegration");
-#endif
-                        isFind = true;
-                        customElement.Element.Visibility = Visibility.Visible;
-                    }
-
-                    if (!isFind)
-                    {
-                        logger.Warn($"HowLongToBeat - RefreshCustomElements({customElement.ParentElementName})");
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Common.LogError(ex, "HowLongToBeat", $"Error on RefreshCustomElements()");
-                }
-            }
         }
         #endregion
     }
