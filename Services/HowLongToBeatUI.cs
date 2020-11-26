@@ -19,7 +19,7 @@ namespace HowLongToBeat.Services
 {
     public class HowLongToBeatUI : PlayniteUiHelper
     {
-        private readonly HowLongToBeatSettings _Settings;
+        private HowLongToBeatDatabase PluginDatabase = HowLongToBeat.PluginDatabase;
 
         public override string _PluginUserDataPath { get; set; } = string.Empty;
 
@@ -36,7 +36,6 @@ namespace HowLongToBeat.Services
 
         public HowLongToBeatUI(IPlayniteAPI PlayniteApi, HowLongToBeatSettings Settings, string PluginUserDataPath) : base(PlayniteApi, PluginUserDataPath)
         {
-            _Settings = Settings;
             _PluginUserDataPath = PluginUserDataPath;
 
             BtActionBarName = "PART_HltbButton";
@@ -69,7 +68,7 @@ namespace HowLongToBeat.Services
                 {
                     CheckTypeView();
 
-                    if (_Settings.EnableIntegrationButton)
+                    if (PluginDatabase.PluginSettings.EnableIntegrationButton)
                     {
 #if DEBUG
                         logger.Debug($"HowLongToBeat - AddBtActionBar()");
@@ -77,7 +76,7 @@ namespace HowLongToBeat.Services
                         AddBtActionBar();
                     }
 
-                    if (_Settings.EnableIntegrationInDescription)
+                    if (PluginDatabase.PluginSettings.EnableIntegrationInDescription)
                     {
 #if DEBUG
                         logger.Debug($"HowLongToBeat - AddSpDescription()");
@@ -85,7 +84,7 @@ namespace HowLongToBeat.Services
                         AddSpDescription();
                     }
 
-                    if (_Settings.EnableIntegrationInCustomTheme)
+                    if (PluginDatabase.PluginSettings.EnableIntegrationInCustomTheme)
                     {
 #if DEBUG
                         logger.Debug($"HowLongToBeat - AddCustomElements()");
@@ -126,10 +125,10 @@ namespace HowLongToBeat.Services
                     resourcesLists.Add(new ResourcesList { Key = "Htlb_Vs", Value = 0 });
                     resourcesLists.Add(new ResourcesList { Key = "Htlb_VsFormat", Value = string.Empty });
 
-                    resourcesLists.Add(new ResourcesList { Key = "Htlb_EnableIntegrationInCustomTheme", Value = _Settings.EnableIntegrationInCustomTheme });
-                    resourcesLists.Add(new ResourcesList { Key = "Htlb_ColorFirst", Value = new SolidColorBrush(_Settings.ColorFirst) });
-                    resourcesLists.Add(new ResourcesList { Key = "Htlb_ColorSecond", Value = new SolidColorBrush(_Settings.ColorSecond) });
-                    resourcesLists.Add(new ResourcesList { Key = "Htlb_ColorThird", Value = new SolidColorBrush(_Settings.ColorThird) });
+                    resourcesLists.Add(new ResourcesList { Key = "Htlb_EnableIntegrationInCustomTheme", Value = PluginDatabase.PluginSettings.EnableIntegrationInCustomTheme });
+                    resourcesLists.Add(new ResourcesList { Key = "Htlb_ColorFirst", Value = new SolidColorBrush(PluginDatabase.PluginSettings.ColorFirst) });
+                    resourcesLists.Add(new ResourcesList { Key = "Htlb_ColorSecond", Value = new SolidColorBrush(PluginDatabase.PluginSettings.ColorSecond) });
+                    resourcesLists.Add(new ResourcesList { Key = "Htlb_ColorThird", Value = new SolidColorBrush(PluginDatabase.PluginSettings.ColorThird) });
                     ui.AddResources(resourcesLists);
 
 
@@ -160,10 +159,10 @@ namespace HowLongToBeat.Services
                         resourcesLists.Add(new ResourcesList { Key = "Htlb_Vs", Value = hltbDataUser.GameHltbData.Vs });
                         resourcesLists.Add(new ResourcesList { Key = "Htlb_VsFormat", Value = hltbDataUser.GameHltbData.VsFormat });
 
-                        resourcesLists.Add(new ResourcesList { Key = "Htlb_EnableIntegrationInCustomTheme", Value = _Settings.EnableIntegrationInCustomTheme });
-                        resourcesLists.Add(new ResourcesList { Key = "Htlb_ColorFirst", Value = new SolidColorBrush(_Settings.ColorFirst) });
-                        resourcesLists.Add(new ResourcesList { Key = "Htlb_ColorSecond", Value = new SolidColorBrush(_Settings.ColorSecond) });
-                        resourcesLists.Add(new ResourcesList { Key = "Htlb_ColorThird", Value = new SolidColorBrush(_Settings.ColorThird) });
+                        resourcesLists.Add(new ResourcesList { Key = "Htlb_EnableIntegrationInCustomTheme", Value = PluginDatabase.PluginSettings.EnableIntegrationInCustomTheme });
+                        resourcesLists.Add(new ResourcesList { Key = "Htlb_ColorFirst", Value = new SolidColorBrush(PluginDatabase.PluginSettings.ColorFirst) });
+                        resourcesLists.Add(new ResourcesList { Key = "Htlb_ColorSecond", Value = new SolidColorBrush(PluginDatabase.PluginSettings.ColorSecond) });
+                        resourcesLists.Add(new ResourcesList { Key = "Htlb_ColorThird", Value = new SolidColorBrush(PluginDatabase.PluginSettings.ColorThird) });
                     }
                     else
                     {
@@ -235,7 +234,7 @@ namespace HowLongToBeat.Services
 
             if (gameHowLongToBeat.HasData)
             {
-                var ViewExtension = new Views.HowLongToBeatView(_PlayniteApi, _Settings, gameHowLongToBeat);
+                var ViewExtension = new Views.HowLongToBeatView(_PlayniteApi, PluginDatabase.PluginSettings, gameHowLongToBeat);
                 Window windowExtension = PlayniteUiHelper.CreateExtensionWindow(_PlayniteApi, "HowLongToBeat", ViewExtension);
                 windowExtension.ShowDialog();
 
@@ -248,7 +247,7 @@ namespace HowLongToBeat.Services
 
         public void OnCustomThemeButtonClick(object sender, RoutedEventArgs e)
         {
-            if (_Settings.EnableIntegrationInCustomTheme)
+            if (PluginDatabase.PluginSettings.EnableIntegrationInCustomTheme)
             {
                 string ButtonName = string.Empty;
                 try
@@ -289,7 +288,7 @@ namespace HowLongToBeat.Services
                 HltbDescriptionIntegration SpDescription = new HltbDescriptionIntegration();
                 SpDescription.Name = SpDescriptionName;
 
-                ui.AddElementInGameSelectedDescription(SpDescription, _Settings.IntegrationTopGameDetails);
+                ui.AddElementInGameSelectedDescription(SpDescription, PluginDatabase.PluginSettings.IntegrationTopGameDetails);
                 PART_SpDescription = IntegrationUI.SearchElementByName(SpDescriptionName);
             }
             catch (Exception ex)
