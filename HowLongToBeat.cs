@@ -34,10 +34,15 @@ namespace HowLongToBeat
 
         public static HowLongToBeatData HltbGameData { get; set; } = null;
 
+        private OldToNew oldToNew;
+
 
         public HowLongToBeat(IPlayniteAPI api) : base(api)
         {
             settings = new HowLongToBeatSettings(this);
+
+            // Old database
+            oldToNew = new OldToNew(this.GetPluginUserDataPath());
 
             // Loading plugin database 
             PluginDatabase = new HowLongToBeatDatabase(PlayniteApi, settings, this.GetPluginUserDataPath());
@@ -198,6 +203,12 @@ namespace HowLongToBeat
 
         public override void OnGameSelected(GameSelectionEventArgs args)
         {
+            // Old database
+            if (oldToNew.IsOld)
+            {
+                oldToNew.ConvertDB(PlayniteApi);
+            }
+
             try
             {
                 if (args.NewValue != null && args.NewValue.Count == 1)
