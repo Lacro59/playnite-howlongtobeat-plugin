@@ -32,8 +32,6 @@ namespace HowLongToBeat
         public static HowLongToBeatDatabase PluginDatabase;
         public static HowLongToBeatUI howLongToBeatUI { get; set; }
 
-        public static HowLongToBeatData HltbGameData { get; set; } = null;
-
         private OldToNew oldToNew;
 
 

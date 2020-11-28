@@ -19,7 +19,7 @@
         </Grid>
 
         <StackPanel Margin="10" Name="SelectableContent">
-            <ListBox x:Name="lbSelectable" Height="370" SelectionChanged="LbSelectable_SelectionChanged"
+            <ListBox x:Name="lbSelectable" Height="330" SelectionChanged="LbSelectable_SelectionChanged"
                      ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
@@ -90,6 +90,27 @@
                 </ListBox.ItemTemplate>
             </ListBox>
 
+            <!-- Platforms -->
+            <Grid Margin="0, 10, 0, 0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="6" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="6" />
+                    <ColumnDefinition Width="150" />
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Column="0" Text="{DynamicResource LOCPlatformsTitle}" Style="{StaticResource BaseTextBlockStyle}" VerticalAlignment="Center" />
+                <ComboBox Name="PART_SelectPlatform" Grid.Column="2" VerticalAlignment="Center" >
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Name}"/>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+            </Grid>
+
+            <!-- Name -->
             <Grid Margin="0, 10, 0, 0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
@@ -101,6 +122,7 @@
                 <Button Grid.Column="3" Content="{DynamicResource LOCSearchLabel}" Click="ButtonSearch_Click"></Button>
             </Grid>
 
+            <!-- Actions -->
             <Grid Margin="0, 10, 0, 0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />

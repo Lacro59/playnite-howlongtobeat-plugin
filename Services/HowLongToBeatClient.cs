@@ -40,9 +40,10 @@ namespace HowLongToBeat.Services
             UrlGame = UrlBase + "game.php?id=";
         }
 
-        public List<HltbData> Search(string Name)
+
+        public List<HltbData> Search(string Name, string Platform = "")
         {
-            string data = GameSearch(Name).GetAwaiter().GetResult();
+            string data = GameSearch(Name, Platform).GetAwaiter().GetResult();
             return SearchParser(data);
         }
 
@@ -51,7 +52,7 @@ namespace HowLongToBeat.Services
         /// </summary>
         /// <param name="Name"></param>
         /// <returns></returns>
-        private async Task<string> GameSearch(string Name)
+        private async Task<string> GameSearch(string Name, string Platform = "")
         { 
             try
             {
@@ -63,7 +64,7 @@ namespace HowLongToBeat.Services
                     new KeyValuePair<string, string>("t", "games"),
                     new KeyValuePair<string, string>("sorthead", "popular"),
                     new KeyValuePair<string, string>("sortd", "Normal Order"),
-                    new KeyValuePair<string, string>("plat", string.Empty),
+                    new KeyValuePair<string, string>("plat", Platform),
                     new KeyValuePair<string, string>("length_type", "main"),
                     new KeyValuePair<string, string>("length_min", string.Empty),
                     new KeyValuePair<string, string>("length_max", string.Empty),
@@ -229,8 +230,6 @@ namespace HowLongToBeat.Services
 
             return ReturnData;
         }
-
-
 
 
         public GameHowLongToBeat SearchData(Game game)
