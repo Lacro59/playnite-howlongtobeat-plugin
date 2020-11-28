@@ -156,24 +156,6 @@ namespace HowLongToBeat.Services
         }
 
 
-        public override GameHowLongToBeat GetDefault(Game game)
-        {
-            return new GameHowLongToBeat
-            {
-                Id = game.Id,
-                Name = game.Name,
-                SourceId = game.SourceId,
-                Hidden = game.Hidden,
-                Icon = game.Icon,
-                CoverImage = game.CoverImage,
-                GenreIds = game.GenreIds,
-                Genres = game.Genres,
-                Playtime = game.Playtime,
-                LastActivity = game.LastActivity
-            };
-        }
-
-
         protected override void GetPluginTags()
         {
 #if DEBUG

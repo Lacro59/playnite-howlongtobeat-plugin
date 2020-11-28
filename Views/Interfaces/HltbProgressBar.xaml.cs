@@ -127,7 +127,7 @@ namespace HowLongToBeat.Views.Interfaces
                         indicator = (Decorator)ProgressHltb_El2.Template.FindName("PART_Indicator", ProgressHltb_El2);
 
                         // ToolTip
-                        if (indicator != null)
+                        if (indicator != null && (indicator.Width - spHltb_El1.Width >= 0))
                         {
                             spHltb_El2.Width = indicator.Width - spHltb_El1.Width;
                             tpHltb_El2.Content = ElFormat;
@@ -150,7 +150,7 @@ namespace HowLongToBeat.Views.Interfaces
                         indicator = (Decorator)ProgressHltb_El3.Template.FindName("PART_Indicator", ProgressHltb_El3);
 
                         // ToolTip
-                        if (indicator != null)
+                        if (indicator != null && (indicator.Width - spHltb_El2.Width - spHltb_El1.Width >= 0))
                         {
                             spHltb_El3.Width = indicator.Width - spHltb_El2.Width - spHltb_El1.Width;
                             tpHltb_El3.Content = ElFormat;
@@ -200,30 +200,30 @@ namespace HowLongToBeat.Views.Interfaces
         {
             try
             {
-                if (IsFirstLoad)
-                {
-                    if (PluginDatabase.PluginSettings.ProgressBarShowTime && !PluginDatabase.PluginSettings.ProgressBarShowTimeInterior)
-                    {
-                        PART_HltbProgressBar_Contener.Height = PART_HltbProgressBar_Contener.Height - spShowTime.Height;
-                    }
-                    else
-                    {
-                        spShowTime.Height = 0;
-                    }
-
-                    if (PluginDatabase.PluginSettings.ProgressBarShowTime && PluginDatabase.PluginSettings.ProgressBarShowTimeAbove)
-                    {
-                        Grid.SetRow(spShowTime, 0);
-                        Grid.SetRow(PART_HltbProgressBar_Contener, 1);
-                    }
-                    if (PluginDatabase.PluginSettings.ProgressBarShowTime && PluginDatabase.PluginSettings.ProgressBarShowTimeInterior)
-                    {
-                        Grid.SetRow(spShowTime, 0);
-                        spShowTime.Height = PART_HltbProgressBar_Contener.Height;
-                    }
-
-                    IsFirstLoad = false;
-                }
+                //if (IsFirstLoad)
+                //{
+                //    if (PluginDatabase.PluginSettings.ProgressBarShowTime && !PluginDatabase.PluginSettings.ProgressBarShowTimeInterior)
+                //    {
+                //        PART_HltbProgressBar_Contener.Height = PART_HltbProgressBar_Contener.Height - spShowTime.Height;
+                //    }
+                //    else
+                //    {
+                //        spShowTime.Height = 0;
+                //    }
+                //
+                //    if (PluginDatabase.PluginSettings.ProgressBarShowTime && PluginDatabase.PluginSettings.ProgressBarShowTimeAbove)
+                //    {
+                //        Grid.SetRow(spShowTime, 0);
+                //        Grid.SetRow(PART_HltbProgressBar_Contener, 1);
+                //    }
+                //    if (PluginDatabase.PluginSettings.ProgressBarShowTime && PluginDatabase.PluginSettings.ProgressBarShowTimeInterior)
+                //    {
+                //        Grid.SetRow(spShowTime, 0);
+                //        spShowTime.Height = PART_HltbProgressBar_Contener.Height;
+                //    }
+                //
+                //    IsFirstLoad = false;
+                //}
 
                 // Definied data value in different component.
                 int ElIndicator = 0;
@@ -355,9 +355,36 @@ namespace HowLongToBeat.Views.Interfaces
         }
 
 
-        private void Grid_Loaded(object sender, RoutedEventArgs e)
+        public void Grid_Loaded(object sender, RoutedEventArgs e)
         {
             IntegrationUI.SetControlSize(PART_HltbProgressBar_Contener);
+
+            try
+            {
+                if (PluginDatabase.PluginSettings.ProgressBarShowTime && !PluginDatabase.PluginSettings.ProgressBarShowTimeInterior)
+                {
+                    PART_HltbProgressBar_Contener.Height = PART_HltbProgressBar_Contener.Height - spShowTime.Height;
+                }
+                else
+                {
+                    spShowTime.Height = 0;
+                }
+
+                if (PluginDatabase.PluginSettings.ProgressBarShowTime && PluginDatabase.PluginSettings.ProgressBarShowTimeAbove)
+                {
+                    Grid.SetRow(spShowTime, 0);
+                    Grid.SetRow(PART_HltbProgressBar_Contener, 1);
+                }
+                if (PluginDatabase.PluginSettings.ProgressBarShowTime && PluginDatabase.PluginSettings.ProgressBarShowTimeInterior)
+                {
+                    Grid.SetRow(spShowTime, 0);
+                    spShowTime.Height = PART_HltbProgressBar_Contener.Height;
+                }
+            }
+            catch
+            {
+
+            }
         }
     }
 
