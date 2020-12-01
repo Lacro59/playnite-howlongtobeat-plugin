@@ -9,11 +9,6 @@ namespace HowLongToBeat.Models
     {
         private LongToTimePlayedConverter converter = new LongToTimePlayedConverter();
 
-        public string Name { get; set; }
-        public int Id { get; set; }
-        public string UrlImg { get; set; }
-        public string Url { get; set; } = string.Empty;
-
         public long MainStory { get; set; }
         [JsonIgnore]
         public string MainStoryFormat

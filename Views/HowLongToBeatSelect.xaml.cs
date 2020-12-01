@@ -183,15 +183,10 @@ namespace HowLongToBeat.Views
         /// <param name="e"></param>
         private void ButtonSelect_Click(object sender, RoutedEventArgs e)
         {
-            HltbData Item = (HltbData)lbSelectable.SelectedItem;
+            HltbDataUser Item = (HltbDataUser)lbSelectable.SelectedItem;
 
             gameHowLongToBeat = HowLongToBeat.PluginDatabase.GetDefault(_game);
-            gameHowLongToBeat.Items = new List<HltbDataUser>() {
-                new HltbDataUser
-                {
-                    GameHltbData = Item
-                }
-            };
+            gameHowLongToBeat.Items = new List<HltbDataUser>() { Item };
 
             ((Window)this.Parent).Close();
         }
@@ -227,7 +222,7 @@ namespace HowLongToBeat.Views
             string GamePlatform = ((HltbPlatform)PART_SelectPlatform.SelectedValue).Name;
             Task task = Task.Run(() =>
             {
-                List<HltbData> dataSearch = new List<HltbData>();
+                List<HltbDataUser> dataSearch = new List<HltbDataUser>();
                 try
                 {
                     dataSearch = HowLongToBeat.PluginDatabase.howLongToBeatClient.Search(GameSearch, GamePlatform);

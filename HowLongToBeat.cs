@@ -43,7 +43,7 @@ namespace HowLongToBeat
             oldToNew = new OldToNew(this.GetPluginUserDataPath());
 
             // Loading plugin database 
-            PluginDatabase = new HowLongToBeatDatabase(PlayniteApi, settings, this.GetPluginUserDataPath());
+            PluginDatabase = new HowLongToBeatDatabase(this, PlayniteApi, settings, this.GetPluginUserDataPath());
             PluginDatabase.InitializeDatabase();
 
             // Get plugin's location 
@@ -144,6 +144,18 @@ namespace HowLongToBeat
                 new MainMenuItem
                 {
                     MenuSection = MenuInExtensions + resources.GetString("LOCHowLongToBeat"),
+                    Description = resources.GetString("LOCHowLongToBeatPluginUserView"),
+                    Action = (mainMenuItem) =>
+                    {
+                        var ViewExtension = new HowLongToBeatUserView();
+                        Window windowExtension = PlayniteUiHelper.CreateExtensionWindow(PlayniteApi, "HowLongToBeat", ViewExtension);
+                        windowExtension.ShowDialog();
+                    }
+                },
+
+                new MainMenuItem
+                {
+                    MenuSection = MenuInExtensions + resources.GetString("LOCHowLongToBeat"),
                     Description = resources.GetString("LOCCommonGetAllDatas"),
                     Action = (mainMenuItem) =>
                     {
@@ -166,6 +178,17 @@ namespace HowLongToBeat
                         }
                     }
                 },
+
+                new MainMenuItem
+                {
+                    MenuSection = MenuInExtensions + resources.GetString("LOCHowLongToBeat"),
+                    Description = resources.GetString("LOCHowLongToBeatActualiseUserData"),
+                    Action = (mainMenuItem) =>
+                    {
+                        PluginDatabase.RefreshUserData();
+                    }
+                },
+
                 new MainMenuItem
                 {
                     MenuSection = MenuInExtensions + resources.GetString("LOCHowLongToBeat"),

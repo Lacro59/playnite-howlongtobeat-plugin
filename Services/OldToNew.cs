@@ -2,10 +2,12 @@
 using Newtonsoft.Json;
 using Playnite.SDK;
 using PluginCommon;
+using PluginCommon.PlayniteResources.Converters;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -22,7 +24,7 @@ namespace HowLongToBeat.Services
 
         private string PathActivityDB = "howlongtobeat";
 
-        private ConcurrentDictionary<Guid, HltbDataUser> Items { get; set; } = new ConcurrentDictionary<Guid, HltbDataUser>();
+        private ConcurrentDictionary<Guid, HltbDataUserOld> Items { get; set; } = new ConcurrentDictionary<Guid, HltbDataUserOld>();
 
 
         public OldToNew(string PluginUserDataPath)
@@ -82,7 +84,7 @@ namespace HowLongToBeat.Services
 #endif
                     Guid gameId = Guid.Parse(objectFile.Replace(PathActivityDB, "").Replace(".json", "").Replace("\\", ""));
 
-                    HltbDataUser hltbDataUser = JsonConvert.DeserializeObject<HltbDataUser>(JsonStringData);
+                    HltbDataUserOld hltbDataUser = JsonConvert.DeserializeObject<HltbDataUserOld>(JsonStringData);
 
                     Items.TryAdd(gameId, hltbDataUser);
                 }
@@ -120,7 +122,24 @@ namespace HowLongToBeat.Services
                         {
                             GameHowLongToBeat gameHowLongToBeat = HowLongToBeat.PluginDatabase.Get(item.Key, true);
 
-                            gameHowLongToBeat.Items = new List<HltbDataUser> { item.Value };
+                            HltbDataUser hltbDataUser = new HltbDataUser
+                            {
+                                Id = item.Value.GameHltbData.Id,
+                                Name = item.Value.GameHltbData.Name,
+                                Url = item.Value.GameHltbData.Url,
+                                UrlImg = item.Value.GameHltbData.UrlImg,
+                                GameHltbData = new HltbData
+                                {
+                                    MainStory = item.Value.GameHltbData.MainStory,
+                                    MainExtra = item.Value.GameHltbData.MainExtra,
+                                    Completionist = item.Value.GameHltbData.Completionist,
+                                    Solo = item.Value.GameHltbData.Solo,
+                                    CoOp = item.Value.GameHltbData.CoOp,
+                                    Vs = item.Value.GameHltbData.Vs
+                                }
+                            };
+
+                            gameHowLongToBeat.Items = new List<HltbDataUser> { hltbDataUser };
 
                             Thread.Sleep(10);
                             HowLongToBeat.PluginDatabase.Add(gameHowLongToBeat);
@@ -145,6 +164,111 @@ namespace HowLongToBeat.Services
             }, globalProgressOptions);
 
             IsOld = false;
+        }
+    }
+
+
+    public class HltbDataUserOld
+    {
+        public long UserMainStory { get; set; } = 0;
+        public long UserMainExtra { get; set; } = 0;
+        public long UserCompletionist { get; set; } = 0;
+
+        public long UserSolo { get; set; } = 0;
+        public long UserCoOp { get; set; } = 0;
+        public long UserVs { get; set; } = 0;
+
+        public HltbDataOld GameHltbData { get; set; }
+    }
+
+    public class HltbDataOld
+    {
+        private LongToTimePlayedConverter converter = new LongToTimePlayedConverter();
+
+        public string Name { get; set; }
+        public int Id { get; set; }
+        public string UrlImg { get; set; }
+        public string Url { get; set; } = string.Empty;
+
+        public long MainStory { get; set; }
+        [JsonIgnore]
+        public string MainStoryFormat
+        {
+            get
+            {
+                if (MainStory == 0)
+                {
+                    return "--";
+                }
+                return (string)converter.Convert((long)MainStory, null, null, CultureInfo.CurrentCulture);
+            }
+        }
+        public long MainExtra { get; set; }
+        [JsonIgnore]
+        public string MainExtraFormat
+        {
+            get
+            {
+                if (MainExtra == 0)
+                {
+                    return "--";
+                }
+                return (string)converter.Convert((long)MainExtra, null, null, CultureInfo.CurrentCulture);
+            }
+        }
+        public long Completionist { get; set; }
+        [JsonIgnore]
+        public string CompletionistFormat
+        {
+            get
+            {
+                if (Completionist == 0)
+                {
+                    return "--";
+                }
+                return (string)converter.Convert((long)Completionist, null, null, CultureInfo.CurrentCulture);
+            }
+        }
+
+
+        public long Solo { get; set; } = 0;
+        [JsonIgnore]
+        public string SoloFormat
+        {
+            get
+            {
+                if (Solo == 0)
+                {
+                    return "--";
+                }
+                return (string)converter.Convert((long)Solo, null, null, CultureInfo.CurrentCulture);
+            }
+        }
+        public long CoOp { get; set; } = 0;
+        [JsonIgnore]
+        public string CoOpFormat
+        {
+            get
+            {
+                if (CoOp == 0)
+                {
+                    return "--";
+                }
+                return (string)converter.Convert((long)CoOp, null, null, CultureInfo.CurrentCulture);
+            }
+        }
+        public long Vs { get; set; } = 0;
+        [JsonIgnore]
+        public string VsFormat
+        {
+            get
+            {
+                if (Vs == 0)
+                {
+                    return "--";
+                }
+                return (string)converter.Convert((long)Vs, null, null, CultureInfo.CurrentCulture);
+            }
         }
     }
 }

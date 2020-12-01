@@ -24,6 +24,8 @@ namespace HowLongToBeat.Views
         private static readonly ILogger logger = LogManager.GetLogger();
         private static IResourceProvider resources = new ResourceProvider();
 
+        private HowLongToBeatDatabase PluginDatabase = HowLongToBeat.PluginDatabase;
+
         public string CoverImage { get; set; }
         public string GameName { get; set; }
         public string HltbName { get; set; }
@@ -47,18 +49,18 @@ namespace HowLongToBeat.Views
 
                 if (string.IsNullOrEmpty(_gameHowLongToBeat.CoverImage))
                 {
-                    CoverImage = gameData.GameHltbData.UrlImg;
+                    CoverImage = gameData.UrlImg;
                 }
                 else
                 {
-                    CoverImage = gameData.GameHltbData.UrlImg;
+                    CoverImage = gameData.UrlImg;
                     if (!settings.ShowHltbImg)
                     {
                         CoverImage = PlayniteApi.Database.GetFullFilePath(_gameHowLongToBeat.CoverImage);
                     }
                 }
                 GameName = _gameHowLongToBeat.Name;
-                HltbName = resources.GetString("LOCSourceLabel") + ": " + gameData.GameHltbData.Name;
+                HltbName = resources.GetString("LOCSourceLabel") + ": " + gameData.Name;
 
 
                 int ElIndicator = 0;
@@ -74,42 +76,48 @@ namespace HowLongToBeat.Views
                 {
                     ElIndicator += 1;
                     SetDataInView(ElIndicator, resources.GetString("LOCHowLongToBeatMainStory"), gameData.GameHltbData.MainStoryFormat);
+                    SetColor(ElIndicator, PluginDatabase.PluginSettings.ColorFirst);
                 }
 
                 if (gameData.GameHltbData.MainExtra != 0)
                 {
                     ElIndicator += 1;
                     SetDataInView(ElIndicator, resources.GetString("LOCHowLongToBeatMainExtra"), gameData.GameHltbData.MainExtraFormat);
+                    SetColor(ElIndicator, PluginDatabase.PluginSettings.ColorSecond);
                 }
 
                 if (gameData.GameHltbData.Completionist != 0)
                 {
                     ElIndicator += 1;
                     SetDataInView(ElIndicator, resources.GetString("LOCHowLongToBeatCompletionist"), gameData.GameHltbData.CompletionistFormat);
+                    SetColor(ElIndicator, PluginDatabase.PluginSettings.ColorThird);
                 }
 
                 if (gameData.GameHltbData.Solo != 0)
                 {
                     ElIndicator += 1;
                     SetDataInView(ElIndicator, resources.GetString("LOCHowLongToBeatSolo"), gameData.GameHltbData.SoloFormat);
+                    SetColor(ElIndicator, PluginDatabase.PluginSettings.ColorFirstMulti);
                 }
 
                 if (gameData.GameHltbData.CoOp != 0)
                 {
                     ElIndicator += 1;
                     SetDataInView(ElIndicator, resources.GetString("LOCHowLongToBeatCoOp"), gameData.GameHltbData.CoOpFormat);
+                    SetColor(ElIndicator, PluginDatabase.PluginSettings.ColorSecondMulti);
                 }
 
                 if (gameData.GameHltbData.Vs != 0)
                 {
                     ElIndicator += 1;
                     SetDataInView(ElIndicator, resources.GetString("LOCHowLongToBeatVs"), gameData.GameHltbData.VsFormat);
+                    SetColor(ElIndicator, PluginDatabase.PluginSettings.ColorThirdMulti);
                 }
 
 
-                Hltb_El1_Color.Background = new SolidColorBrush(settings.ColorFirst);
-                Hltb_El2_Color.Background = new SolidColorBrush(settings.ColorSecond);
-                Hltb_El3_Color.Background = new SolidColorBrush(settings.ColorThird);
+                //Hltb_El1_Color.Background = new SolidColorBrush(settings.ColorFirst);
+                //Hltb_El2_Color.Background = new SolidColorBrush(settings.ColorSecond);
+                //Hltb_El3_Color.Background = new SolidColorBrush(settings.ColorThird);
 
 
                 LongToTimePlayedConverter converter = new LongToTimePlayedConverter();
@@ -122,6 +130,26 @@ namespace HowLongToBeat.Views
             // Set Binding data
             DataContext = this;
         }
+
+
+        private void SetColor(int ElIndicator, Color color)
+        {
+            switch (ElIndicator)
+            {
+                case 1:
+                    Hltb_El1_Color.Background = new SolidColorBrush(color);
+                    break;
+
+                case 2:
+                    Hltb_El2_Color.Background = new SolidColorBrush(color);
+                    break;
+
+                case 3:
+                    Hltb_El3_Color.Background = new SolidColorBrush(color);
+                    break;
+            }
+        }
+
 
         private void SetDataInView(int ElIndicator, string ElText, string ElData)
         {
@@ -152,9 +180,9 @@ namespace HowLongToBeat.Views
 
         private void ButtonWeb_Click(object sender, RoutedEventArgs e)
         {
-            if (!_gameHowLongToBeat.GetData().GameHltbData.Url.IsNullOrEmpty())
+            if (!_gameHowLongToBeat.GetData().Url.IsNullOrEmpty())
             {
-                Process.Start(_gameHowLongToBeat.GetData().GameHltbData.Url);
+                Process.Start(_gameHowLongToBeat.GetData().Url);
             }
         }
 
@@ -197,7 +225,10 @@ namespace HowLongToBeat.Views
 
         private void PART_HltbProgressBar_Loaded(object sender, RoutedEventArgs e)
         {
-            hltbProgressBar.SetHltbData(_gameHowLongToBeat);
+            if (_gameHowLongToBeat.HasData)
+            {
+                hltbProgressBar.SetHltbData(_gameHowLongToBeat);
+            }
         }
     }
 }

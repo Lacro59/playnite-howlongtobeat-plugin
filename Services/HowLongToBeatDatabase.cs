@@ -8,6 +8,7 @@ using PluginCommon.Collections;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -21,13 +22,13 @@ namespace HowLongToBeat.Services
         public HowLongToBeatClient howLongToBeatClient;
 
 
-        public HowLongToBeatDatabase(IPlayniteAPI PlayniteApi, HowLongToBeatSettings PluginSettings, string PluginUserDataPath) : base(PlayniteApi, PluginSettings, PluginUserDataPath)
+        public HowLongToBeatDatabase(HowLongToBeat plugin, IPlayniteAPI PlayniteApi, HowLongToBeatSettings PluginSettings, string PluginUserDataPath) : base(PlayniteApi, PluginSettings, PluginUserDataPath)
         {
             PluginName = "HowLongToBeat";
 
             ControlAndCreateDirectory(PluginUserDataPath, "HowLongToBeat");
 
-            howLongToBeatClient = new HowLongToBeatClient(PlayniteApi);
+            howLongToBeatClient = new HowLongToBeatClient(plugin, PlayniteApi);
         }
 
 
@@ -37,6 +38,9 @@ namespace HowLongToBeat.Services
             Database = new GameHowLongToBeatCollection(PluginDatabaseDirectory);
 
             Database.SetGameInfo<HltbDataUser>(_PlayniteApi);
+
+            Database.UserHltbData = howLongToBeatClient.LoadUserData();
+
 #if DEBUG
             logger.Debug($"{PluginName} - db: {JsonConvert.SerializeObject(Database)}");
 #endif
@@ -85,16 +89,11 @@ namespace HowLongToBeat.Services
 
                         if (!gameHowLongToBeat.HasData && !gameHowLongToBeat.IsSaved)
                         {
-                            List<HltbData> dataSearch = HowLongToBeat.PluginDatabase.howLongToBeatClient.Search(game.Name);
+                            List<HltbDataUser> dataSearch = HowLongToBeat.PluginDatabase.howLongToBeatClient.Search(game.Name);
 
                             if (dataSearch.Count == 1 && PluginSettings.AutoAccept)
                             {
-                                gameHowLongToBeat.Items = new List<HltbDataUser>() {
-                                    new HltbDataUser
-                                    {
-                                        GameHltbData = dataSearch.First()
-                                    }
-                                };
+                                gameHowLongToBeat.Items = new List<HltbDataUser>() { dataSearch.First() };
 
                                 HowLongToBeat.PluginDatabase.Add(gameHowLongToBeat);
                             }
@@ -369,6 +368,41 @@ namespace HowLongToBeat.Services
             }
 
             return null;
+        }
+
+
+        public TitleList GetUserHltbData(int HltbId)
+        {
+            return Database.UserHltbData.TitlesList.Find(x => x.Id == HltbId);
+        }
+
+        public void RefreshUserData()
+        {
+            GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions(
+                $"{PluginName} - {resources.GetString("LOCHowLongToBeatPluginGetUserView")}",
+                false
+            );
+            globalProgressOptions.IsIndeterminate = true;
+
+            _PlayniteApi.Dialogs.ActivateGlobalProgress((activateGlobalProgress) =>
+            {
+                HltbUserStats UserHltbData = howLongToBeatClient.GetUserData();
+
+                if (UserHltbData != null)
+                {
+                    try
+                    {
+                        string PathHltbUserStats = Path.Combine(PluginUserDataPath, "HltbUserStats.json");
+                        File.WriteAllText(PathHltbUserStats, JsonConvert.SerializeObject(UserHltbData));
+                    }
+                    catch (Exception ex)
+                    {
+                        Common.LogError(ex, "HowLongToBeat");
+                    }
+
+                    Database.UserHltbData = UserHltbData;
+                }
+            }, globalProgressOptions);
         }
     }
 }

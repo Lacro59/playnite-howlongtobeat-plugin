@@ -31,10 +31,14 @@ namespace HowLongToBeat
         public bool ProgressBarShowTimeAbove { get; set; } = false;
         public bool ProgressBarShowTimeInterior { get; set; } = true;
         public bool ProgressBarShowTimeBelow { get; set; } = false;
+        public bool ProgressBarShowTimeUser{ get; set; } = false;
 
         public Color ColorFirst { get; set; } = Brushes.DarkCyan.Color;
         public Color ColorSecond { get; set; } = Brushes.RoyalBlue.Color;
         public Color ColorThird { get; set; } = Brushes.ForestGreen.Color;
+        public Color ColorFirstMulti { get; set; } = Brushes.DarkCyan.Color;
+        public Color ColorSecondMulti { get; set; } = Brushes.RoyalBlue.Color;
+        public Color ColorThirdMulti { get; set; } = Brushes.ForestGreen.Color;
 
         // Playnite serializes settings object to a JSON object and saves it as text file.
         // If you want to exclude some property from being saved then use `JsonIgnore` ignore attribute.
@@ -77,10 +81,14 @@ namespace HowLongToBeat
                 ProgressBarShowTimeAbove = savedSettings.ProgressBarShowTimeAbove;
                 ProgressBarShowTimeInterior = savedSettings.ProgressBarShowTimeInterior;
                 ProgressBarShowTimeBelow = savedSettings.ProgressBarShowTimeBelow;
+                ProgressBarShowTimeUser = savedSettings.ProgressBarShowTimeUser;
 
                 ColorFirst = savedSettings.ColorFirst;
                 ColorSecond = savedSettings.ColorSecond;
                 ColorThird = savedSettings.ColorThird;
+                ColorFirstMulti = savedSettings.ColorFirstMulti;
+                ColorSecondMulti = savedSettings.ColorSecondMulti;
+                ColorThirdMulti = savedSettings.ColorThirdMulti;
             }
         }
 
@@ -93,12 +101,6 @@ namespace HowLongToBeat
         {
             // Code executed when user decides to cancel any changes made since BeginEdit was called.
             // This method should revert any changes made to Option1 and Option2.
-
-            if (HowLongToBeatSettingsView.tokenSource != null)
-            {
-                HowLongToBeatSettingsView.WithoutMessage = true;
-                HowLongToBeatSettingsView.tokenSource.Cancel();
-            }
         }
 
         public void EndEdit()
@@ -109,6 +111,9 @@ namespace HowLongToBeat
             ColorFirst = HowLongToBeatSettingsView.ColorFirst;
             ColorSecond = HowLongToBeatSettingsView.ColorSecond;
             ColorThird = HowLongToBeatSettingsView.ColorThird;
+            ColorFirstMulti = HowLongToBeatSettingsView.ColorFirstMulti;
+            ColorSecondMulti = HowLongToBeatSettingsView.ColorSecondMulti;
+            ColorThirdMulti = HowLongToBeatSettingsView.ColorThirdMulti;
 
             if (!ProgressBarShowTimeAbove && !ProgressBarShowTimeInterior && !ProgressBarShowTimeBelow)
             {

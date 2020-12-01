@@ -32,7 +32,10 @@ namespace HowLongToBeat.Views.Interfaces
         public bool ShowToolTip { get; set; }
         public bool ShowTime { get; set; }
 
-        private bool IsFirstLoad = true;
+        public PointCollection ThumbPoint { get; set; }
+        public SolidColorBrush solidColorBrushFirst { get; set; }
+        public SolidColorBrush solidColorBrushSecond { get; set; }
+        public SolidColorBrush solidColorBrushThird { get; set; }
 
 
         public HltbProgressBar()
@@ -180,9 +183,9 @@ namespace HowLongToBeat.Views.Interfaces
             ShowToolTip = PluginDatabase.PluginSettings.ProgressBarShowToolTip;
             ShowTime = PluginDatabase.PluginSettings.ProgressBarShowTime;
 
-            ProgressHltb_El1.Foreground = new SolidColorBrush(PluginDatabase.PluginSettings.ColorFirst);
-            ProgressHltb_El2.Foreground = new SolidColorBrush(PluginDatabase.PluginSettings.ColorSecond);
-            ProgressHltb_El3.Foreground = new SolidColorBrush(PluginDatabase.PluginSettings.ColorThird);
+            //ProgressHltb_El1.Foreground = new SolidColorBrush(PluginDatabase.PluginSettings.ColorFirst);
+            //ProgressHltb_El2.Foreground = new SolidColorBrush(PluginDatabase.PluginSettings.ColorSecond);
+            //ProgressHltb_El3.Foreground = new SolidColorBrush(PluginDatabase.PluginSettings.ColorThird);
 
             if (ShowToolTip)
             {
@@ -195,36 +198,31 @@ namespace HowLongToBeat.Views.Interfaces
 
             LoadData();
         }
+         
+
+        private void SetColor(int ElIndicator, Color color)
+        {
+            switch (ElIndicator)
+            {
+                case 1:
+                    ProgressHltb_El1.Foreground = new SolidColorBrush(color);
+                    break;
+
+                case 2:
+                    ProgressHltb_El2.Foreground = new SolidColorBrush(color);
+                    break;
+
+                case 3:
+                    ProgressHltb_El3.Foreground = new SolidColorBrush(color);
+                    break;
+            }
+        }
+
 
         private void LoadData()
         {
             try
             {
-                //if (IsFirstLoad)
-                //{
-                //    if (PluginDatabase.PluginSettings.ProgressBarShowTime && !PluginDatabase.PluginSettings.ProgressBarShowTimeInterior)
-                //    {
-                //        PART_HltbProgressBar_Contener.Height = PART_HltbProgressBar_Contener.Height - spShowTime.Height;
-                //    }
-                //    else
-                //    {
-                //        spShowTime.Height = 0;
-                //    }
-                //
-                //    if (PluginDatabase.PluginSettings.ProgressBarShowTime && PluginDatabase.PluginSettings.ProgressBarShowTimeAbove)
-                //    {
-                //        Grid.SetRow(spShowTime, 0);
-                //        Grid.SetRow(PART_HltbProgressBar_Contener, 1);
-                //    }
-                //    if (PluginDatabase.PluginSettings.ProgressBarShowTime && PluginDatabase.PluginSettings.ProgressBarShowTimeInterior)
-                //    {
-                //        Grid.SetRow(spShowTime, 0);
-                //        spShowTime.Height = PART_HltbProgressBar_Contener.Height;
-                //    }
-                //
-                //    IsFirstLoad = false;
-                //}
-
                 // Definied data value in different component.
                 int ElIndicator = 0;
                 long MaxValue = 0;
@@ -242,6 +240,7 @@ namespace HowLongToBeat.Views.Interfaces
                         {
                             MaxValue = HltbData.GameHltbData.MainStory;
                         }
+                        SetColor(ElIndicator, PluginDatabase.PluginSettings.ColorFirst);
                     }
 
                     if (HltbData.GameHltbData.MainExtra != 0)
@@ -252,6 +251,7 @@ namespace HowLongToBeat.Views.Interfaces
                         {
                             MaxValue = HltbData.GameHltbData.MainExtra;
                         }
+                        SetColor(ElIndicator, PluginDatabase.PluginSettings.ColorSecond);
                     }
 
                     if (HltbData.GameHltbData.Completionist != 0)
@@ -262,6 +262,7 @@ namespace HowLongToBeat.Views.Interfaces
                         {
                             MaxValue = HltbData.GameHltbData.Completionist;
                         }
+                        SetColor(ElIndicator, PluginDatabase.PluginSettings.ColorThird);
                     }
 
                     if (HltbData.GameHltbData.Solo != 0)
@@ -272,6 +273,7 @@ namespace HowLongToBeat.Views.Interfaces
                         {
                             MaxValue = HltbData.GameHltbData.Solo;
                         }
+                        SetColor(ElIndicator, PluginDatabase.PluginSettings.ColorFirstMulti);
                     }
 
                     if (HltbData.GameHltbData.CoOp != 0)
@@ -282,6 +284,7 @@ namespace HowLongToBeat.Views.Interfaces
                         {
                             MaxValue = HltbData.GameHltbData.CoOp;
                         }
+                        SetColor(ElIndicator, PluginDatabase.PluginSettings.ColorSecondMulti);
                     }
 
                     if (HltbData.GameHltbData.Vs != 0)
@@ -292,6 +295,7 @@ namespace HowLongToBeat.Views.Interfaces
                         {
                             MaxValue = HltbData.GameHltbData.Vs;
                         }
+                        SetColor(ElIndicator, PluginDatabase.PluginSettings.ColorThirdMulti);
                     }
                 }
 
@@ -347,6 +351,74 @@ namespace HowLongToBeat.Views.Interfaces
 
 
                 SliderPlaytime.UpdateLayout();
+
+
+
+                // Show user hltb datas
+                PartSliderFirst.Maximum = MaxValue;
+                PartSliderFirst.Visibility = Visibility.Hidden;
+                PartSliderSecond.Maximum = MaxValue;
+                PartSliderSecond.Visibility = Visibility.Hidden;
+                PartSliderThird.Maximum = MaxValue;
+                PartSliderThird.Visibility = Visibility.Hidden;
+
+                if (_gameHowLongToBeat.HasData && PluginDatabase.PluginSettings.ProgressBarShowTimeUser)
+                {
+                    TitleList titleList = PluginDatabase.GetUserHltbData(_gameHowLongToBeat.GetData().Id);
+#if DEBUG
+                    logger.Debug($"HowLongToBeat - titleList: {JsonConvert.SerializeObject(titleList)}");
+#endif
+
+                    if (titleList != null)
+                    {
+                        ElIndicator = 0;
+
+                        if (titleList.HltbUserData.MainStory != 0)
+                        {
+                            ElIndicator++;
+                            SetUserData(ElIndicator, titleList.HltbUserData.MainStory, PluginDatabase.PluginSettings.ColorFirst);
+                        }
+
+                        if (titleList.HltbUserData.MainExtra != 0)
+                        {
+                            ElIndicator++;
+                            SetUserData(ElIndicator, titleList.HltbUserData.MainExtra, PluginDatabase.PluginSettings.ColorSecond);
+                        }
+
+                        if (titleList.HltbUserData.Completionist != 0)
+                        {
+                            ElIndicator++;
+                            SetUserData(ElIndicator, titleList.HltbUserData.Completionist, PluginDatabase.PluginSettings.ColorThird);
+                        }
+
+                        if (titleList.HltbUserData.Solo != 0)
+                        {
+                            ElIndicator++;
+                            SetUserData(ElIndicator, titleList.HltbUserData.Solo, PluginDatabase.PluginSettings.ColorFirstMulti);
+                        }
+
+                        if (titleList.HltbUserData.CoOp != 0)
+                        {
+                            ElIndicator++;
+                            SetUserData(ElIndicator, titleList.HltbUserData.CoOp, PluginDatabase.PluginSettings.ColorSecondMulti);
+                        }
+
+                        if (titleList.HltbUserData.Vs != 0)
+                        {
+                            ElIndicator++;
+                            SetUserData(ElIndicator, titleList.HltbUserData.Vs, PluginDatabase.PluginSettings.ColorThirdMulti);
+                        }
+
+                        this.DataContext = new
+                        {
+                            ThumbFirst = solidColorBrushFirst,
+                            ThumbSecond = solidColorBrushSecond,
+                            ThumbThird = solidColorBrushThird,
+
+                            ThumbPoint = ThumbPoint
+                        };
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -354,6 +426,27 @@ namespace HowLongToBeat.Views.Interfaces
             }
         }
 
+        public void SetUserData(int ElIndicator, long Value, Color color)
+        {
+            switch (ElIndicator)
+            {
+                case 1:
+                    PartSliderFirst.Value = Value;
+                    PartSliderFirst.Visibility = Visibility.Visible;
+                    solidColorBrushFirst = new SolidColorBrush(color);
+                    break;
+                case 2:
+                    PartSliderSecond.Value = Value;
+                    PartSliderSecond.Visibility = Visibility.Visible;
+                    solidColorBrushSecond = new SolidColorBrush(color);
+                    break;
+                case 3:
+                    PartSliderThird.Value = Value;
+                    PartSliderThird.Visibility = Visibility.Visible;
+                    solidColorBrushThird = new SolidColorBrush(color);
+                    break;
+            }
+        }
 
         public void Grid_Loaded(object sender, RoutedEventArgs e)
         {
@@ -380,6 +473,32 @@ namespace HowLongToBeat.Views.Interfaces
                     Grid.SetRow(spShowTime, 0);
                     spShowTime.Height = PART_HltbProgressBar_Contener.Height;
                 }
+
+                double SliderHeight = PART_HltbProgressBar_Contener.Height / 2;
+                PartSliderFirst.Height = SliderHeight;
+                PartSliderSecond.Height = SliderHeight;
+                PartSliderThird.Height = SliderHeight;
+
+                PartSliderFirst.Margin = SliderPlaytime.Margin;
+                PartSliderSecond.Margin = SliderPlaytime.Margin;
+                PartSliderThird.Margin = SliderPlaytime.Margin;
+
+                Point Point1 = new Point(SliderHeight/2.5, 0);
+                Point Point2 = new Point(SliderHeight/1.25, SliderHeight / 1.25);
+                Point Point3 = new Point(0, SliderHeight / 1.25);
+                ThumbPoint = new PointCollection();
+                ThumbPoint.Add(Point1);
+                ThumbPoint.Add(Point2);
+                ThumbPoint.Add(Point3);
+
+                this.DataContext = new
+                {
+                    ThumbFirst = solidColorBrushFirst,
+                    ThumbSecond = solidColorBrushSecond,
+                    ThumbThird = solidColorBrushThird,
+
+                    ThumbPoint = ThumbPoint
+                };
             }
             catch
             {

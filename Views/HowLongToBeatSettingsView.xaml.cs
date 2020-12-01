@@ -1,12 +1,5 @@
-﻿using HowLongToBeat.Models;
-using HowLongToBeat.Services;
-using Playnite.SDK;
-using Playnite.SDK.Models;
+﻿using Playnite.SDK;
 using PluginCommon;
-using PluginCommon.PlayniteResources;
-using PluginCommon.PlayniteResources.API;
-using PluginCommon.PlayniteResources.Common;
-using PluginCommon.PlayniteResources.Converters;
 using System;
 using System.Linq;
 using System.Collections.Generic;
@@ -16,6 +9,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using Newtonsoft.Json;
+using HowLongToBeat.Services;
 
 namespace HowLongToBeat.Views
 {
@@ -27,14 +21,16 @@ namespace HowLongToBeat.Views
         private IPlayniteAPI _PlayniteApi;
         private string _PluginUserDataPath;
 
-        public static bool WithoutMessage = false;
-        public static CancellationTokenSource tokenSource;
-        private CancellationToken ct;
+        private HowLongToBeatDatabase PluginDatabase = HowLongToBeat.PluginDatabase;
 
         private TextBlock tbControl;
+
         public static Color ColorFirst = Brushes.DarkCyan.Color;
         public static Color ColorSecond = Brushes.RoyalBlue.Color;
         public static Color ColorThird = Brushes.ForestGreen.Color;
+        public static Color ColorFirstMulti = Brushes.DarkCyan.Color;
+        public static Color ColorSecondMulti = Brushes.RoyalBlue.Color;
+        public static Color ColorThirdMulti = Brushes.ForestGreen.Color;
 
 
         public HowLongToBeatSettingsView(IPlayniteAPI PlayniteApi, string PluginUserDataPath, HowLongToBeatSettings settings)
@@ -44,22 +40,35 @@ namespace HowLongToBeat.Views
 
             InitializeComponent();
 
+            CheckAuthenticate();
+
             PART_SelectorColorPicker.OnlySimpleColor = true;
             PART_SelectorColorPicker.IsSimpleColor = true;
 
+            ColorFirst = settings.ColorFirst;
             tbColorFirst.Background = new SolidColorBrush(settings.ColorFirst);
+            ColorSecond = settings.ColorSecond;
             tbColorSecond.Background = new SolidColorBrush(settings.ColorSecond);
+            ColorThird = settings.ColorThird;
             tbColorThird.Background = new SolidColorBrush(settings.ColorThird);
+
+            ColorFirstMulti = settings.ColorFirstMulti;
+            tbColorFirstMulti.Background = new SolidColorBrush(settings.ColorFirstMulti);
+            ColorSecondMulti = settings.ColorSecondMulti;
+            tbColorSecondMulti.Background = new SolidColorBrush(settings.ColorSecondMulti);
+            ColorThirdMulti = settings.ColorThirdMulti;
+            tbColorThirdMulti.Background = new SolidColorBrush(settings.ColorThirdMulti);
 
             spSettings.Visibility = Visibility.Visible;
         }
 
 
+        #region Appareance
         private void Checkbox_Click(object sender, RoutedEventArgs e)
         {
-            CheckBox cb = (CheckBox)sender;            
-                
-            if((cb.Name == "HltB_IntegrationButton") && (bool)cb.IsChecked)
+            CheckBox cb = (CheckBox)sender;
+
+            if ((cb.Name == "HltB_IntegrationButton") && (bool)cb.IsChecked)
             {
                 HltB_IntegrationInCustomTheme.IsChecked = false;
             }
@@ -75,7 +84,10 @@ namespace HowLongToBeat.Views
                 HltB_IntegrationInDescription.IsChecked = false;
             }
         }
+        #endregion
 
+
+        #region Tag
         private void ButtonAddTag_Click(object sender, RoutedEventArgs e)
         {
             HowLongToBeat.PluginDatabase.AddTagAllGame();
@@ -85,7 +97,10 @@ namespace HowLongToBeat.Views
         {
             HowLongToBeat.PluginDatabase.RemoveTagAllGame();
         }
+        #endregion
 
+
+        #region Database
         private void BtAddData_Click(object sender, RoutedEventArgs e)
         {
             HowLongToBeat.PluginDatabase.GetAllDatas();
@@ -95,6 +110,7 @@ namespace HowLongToBeat.Views
         {
             HowLongToBeat.PluginDatabase.ClearDatabase();
         }
+        #endregion
 
 
         #region ProgressBar color
@@ -115,7 +131,7 @@ namespace HowLongToBeat.Views
             }
             catch (Exception ex)
             {
-                Common.LogError(ex, "ThemeModifier", "Error on BtPickColor_Click()");
+                Common.LogError(ex, "HowLongToBeat");
             }
         }
 
@@ -129,20 +145,38 @@ namespace HowLongToBeat.Views
                 {
                     case "1":
                         tbControl.Background = Brushes.DarkCyan;
+                        ColorFirst = Brushes.DarkCyan.Color;
                         break;
 
                     case "2":
                         tbControl.Background = Brushes.RoyalBlue;
+                        ColorSecond = Brushes.RoyalBlue.Color;
                         break;
 
                     case "3":
                         tbControl.Background = Brushes.ForestGreen;
+                        ColorThird = Brushes.ForestGreen.Color;
+                        break;
+
+                    case "4":
+                        tbControl.Background = Brushes.DarkCyan;
+                        ColorFirstMulti = Brushes.DarkCyan.Color;
+                        break;
+
+                    case "5":
+                        tbControl.Background = Brushes.RoyalBlue;
+                        ColorSecondMulti = Brushes.RoyalBlue.Color;
+                        break;
+
+                    case "6":
+                        tbControl.Background = Brushes.ForestGreen;
+                        ColorThirdMulti = Brushes.ForestGreen.Color;
                         break;
                 }
             }
             catch (Exception ex)
             {
-                Common.LogError(ex, "ThemeModifier", "Error on BtRestore_Click()");
+                Common.LogError(ex, "HowLongToBeat");
             }
         }
 
@@ -170,12 +204,24 @@ namespace HowLongToBeat.Views
                         case "3":
                             ColorThird = color;
                             break;
+
+                        case "4":
+                            ColorFirstMulti = color;
+                            break;
+
+                        case "5":
+                            ColorSecondMulti = color;
+                            break;
+
+                        case "6":
+                            ColorThirdMulti = color;
+                            break;
                     }
                 }
             }
             else
             {
-                logger.Warn("ThemeModifier - One control is undefined");
+                logger.Warn("HowLongToBeat - One control is undefined");
             }
 
             PART_SelectorColor.Visibility = Visibility.Collapsed;
@@ -190,9 +236,52 @@ namespace HowLongToBeat.Views
         #endregion
 
 
-        private void ButtonCancelTask_Click(object sender, RoutedEventArgs e)
+        #region Authenticate
+        private void CheckAuthenticate()
         {
-            tokenSource.Cancel();
+            PART_LbUserLogin.Visibility = Visibility.Collapsed;
+            PART_LbAuthenticate.Content = resources.GetString("LOCLoginChecking");
+
+            var task = Task.Run(() => PluginDatabase.howLongToBeatClient.GetIsUserLoggedIn())
+                .ContinueWith(antecedent =>
+                {
+                    this.Dispatcher.Invoke(new Action(() => {
+                        if (antecedent.Result)
+                        {
+                            PART_LbAuthenticate.Content = resources.GetString("LOCLoggedIn");
+                            PART_LbUserLogin.Visibility = Visibility.Visible;
+                            PART_LbUserLogin.Content = resources.GetString("LOCGOGUseAccountName") + " " + PluginDatabase.howLongToBeatClient.UserLogin;
+                        }
+                        else
+                        {
+                            PART_LbAuthenticate.Content = resources.GetString("LOCNotLoggedIn");
+                        }
+                    }));
+                });
         }
+
+        private void PART_BtAuthenticate_Click(object sender, RoutedEventArgs e)
+        {
+            PART_LbUserLogin.Visibility = Visibility.Collapsed;
+            PART_LbAuthenticate.Content = resources.GetString("LOCLoginChecking");
+
+            var task = Task.Run(() => PluginDatabase.howLongToBeatClient.Login())
+                .ContinueWith(antecedent =>
+                {
+                    this.Dispatcher.Invoke(new Action(() => {
+                        if ((bool)PluginDatabase.howLongToBeatClient.IsConnected)
+                        {
+                            PART_LbAuthenticate.Content = resources.GetString("LOCLoggedIn");
+                            PART_LbUserLogin.Visibility = Visibility.Visible;
+                            PART_LbUserLogin.Content = resources.GetString("LOCGOGUseAccountName") + " " + PluginDatabase.howLongToBeatClient.UserLogin;
+                        }
+                        else
+                        {
+                            PART_LbAuthenticate.Content = resources.GetString("LOCNotLoggedIn");
+                        }
+                    }));
+                });
+        }
+        #endregion
     }
 }

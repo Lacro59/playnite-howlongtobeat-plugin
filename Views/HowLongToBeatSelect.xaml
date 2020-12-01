@@ -66,23 +66,23 @@
                                         <RowDefinition Height="auto" />
                                     </Grid.RowDefinitions>
 
-                                    <TextBlock MinHeight="25" Grid.Column="0" Grid.Row="0" Text="{DynamicResource LOCHowLongToBeatMainStory}" Visibility="{Binding MainStory, Converter={StaticResource VisibilityZeroConverter}, ConverterParameter=1}"></TextBlock>
-                                    <TextBlock MinHeight="25" Grid.Column="1" Grid.Row="0" Text="{Binding MainStoryFormat}" HorizontalAlignment="Center" Visibility="{Binding MainStory, Converter={StaticResource VisibilityZeroConverter}, ConverterParameter=1}"></TextBlock>
+                                    <TextBlock MinHeight="25" Grid.Column="0" Grid.Row="0" Text="{DynamicResource LOCHowLongToBeatMainStory}" Visibility="{Binding GameHltbData.MainStory, Converter={StaticResource VisibilityZeroConverter}, ConverterParameter=1}"></TextBlock>
+                                    <TextBlock MinHeight="25" Grid.Column="1" Grid.Row="0" Text="{Binding GameHltbData.MainStoryFormat}" HorizontalAlignment="Center" Visibility="{Binding GameHltbData.MainStory, Converter={StaticResource VisibilityZeroConverter}, ConverterParameter=1}"></TextBlock>
 
-                                    <TextBlock MinHeight="25" Grid.Column="0" Grid.Row="1" Text="{DynamicResource LOCHowLongToBeatMainExtra}" Visibility="{Binding MainExtra, Converter={StaticResource VisibilityZeroConverter}, ConverterParameter=1}"></TextBlock>
-                                    <TextBlock MinHeight="25" Grid.Column="1" Grid.Row="1" Text="{Binding MainExtraFormat}" HorizontalAlignment="Center" Visibility="{Binding MainExtra, Converter={StaticResource VisibilityZeroConverter}, ConverterParameter=1}"></TextBlock>
+                                    <TextBlock MinHeight="25" Grid.Column="0" Grid.Row="1" Text="{DynamicResource LOCHowLongToBeatMainExtra}" Visibility="{Binding GameHltbData.MainExtra, Converter={StaticResource VisibilityZeroConverter}, ConverterParameter=1}"></TextBlock>
+                                    <TextBlock MinHeight="25" Grid.Column="1" Grid.Row="1" Text="{Binding GameHltbData.MainExtraFormat}" HorizontalAlignment="Center" Visibility="{Binding GameHltbData.MainExtra, Converter={StaticResource VisibilityZeroConverter}, ConverterParameter=1}"></TextBlock>
 
-                                    <TextBlock MinHeight="25" Grid.Column="0" Grid.Row="2" Text="{DynamicResource LOCHowLongToBeatCompletionist}" Visibility="{Binding Completionist, Converter={StaticResource VisibilityZeroConverter}, ConverterParameter=1}"></TextBlock>
-                                    <TextBlock MinHeight="25" Grid.Column="1" Grid.Row="2" Text="{Binding CompletionistFormat}" HorizontalAlignment="Center" Visibility="{Binding Completionist, Converter={StaticResource VisibilityZeroConverter}, ConverterParameter=1}"></TextBlock>
+                                    <TextBlock MinHeight="25" Grid.Column="0" Grid.Row="2" Text="{DynamicResource LOCHowLongToBeatCompletionist}" Visibility="{Binding GameHltbData.Completionist, Converter={StaticResource VisibilityZeroConverter}, ConverterParameter=1}"></TextBlock>
+                                    <TextBlock MinHeight="25" Grid.Column="1" Grid.Row="2" Text="{Binding GameHltbData.CompletionistFormat}" HorizontalAlignment="Center" Visibility="{Binding GameHltbData.Completionist, Converter={StaticResource VisibilityZeroConverter}, ConverterParameter=1}"></TextBlock>
 
-                                    <TextBlock MinHeight="25" Grid.Column="0" Grid.Row="3" Text="{DynamicResource LOCHowLongToBeatSolo}" Visibility="{Binding Solo, Converter={StaticResource VisibilityZeroConverter}, ConverterParameter=1}"></TextBlock>
-                                    <TextBlock MinHeight="25" Grid.Column="1" Grid.Row="3" Text="{Binding SoloFormat}" HorizontalAlignment="Center" Visibility="{Binding Solo, Converter={StaticResource VisibilityZeroConverter}, ConverterParameter=1}"></TextBlock>
+                                    <TextBlock MinHeight="25" Grid.Column="0" Grid.Row="3" Text="{DynamicResource LOCHowLongToBeatSolo}" Visibility="{Binding GameHltbData.Solo, Converter={StaticResource VisibilityZeroConverter}, ConverterParameter=1}"></TextBlock>
+                                    <TextBlock MinHeight="25" Grid.Column="1" Grid.Row="3" Text="{Binding GameHltbData.SoloFormat}" HorizontalAlignment="Center" Visibility="{Binding GameHltbData.Solo, Converter={StaticResource VisibilityZeroConverter}, ConverterParameter=1}"></TextBlock>
 
-                                    <TextBlock MinHeight="25" Grid.Column="0" Grid.Row="4" Text="{DynamicResource LOCHowLongToBeatCoOp}" Visibility="{Binding CoOp, Converter={StaticResource VisibilityZeroConverter}, ConverterParameter=1}"></TextBlock>
-                                    <TextBlock MinHeight="25" Grid.Column="1" Grid.Row="4" Text="{Binding CoOpFormat}" HorizontalAlignment="Center" Visibility="{Binding CoOp, Converter={StaticResource VisibilityZeroConverter}, ConverterParameter=1}"></TextBlock>
+                                    <TextBlock MinHeight="25" Grid.Column="0" Grid.Row="4" Text="{DynamicResource LOCHowLongToBeatCoOp}" Visibility="{Binding GameHltbData.CoOp, Converter={StaticResource VisibilityZeroConverter}, ConverterParameter=1}"></TextBlock>
+                                    <TextBlock MinHeight="25" Grid.Column="1" Grid.Row="4" Text="{Binding GameHltbData.CoOpFormat}" HorizontalAlignment="Center" Visibility="{Binding GameHltbData.CoOp, Converter={StaticResource VisibilityZeroConverter}, ConverterParameter=1}"></TextBlock>
 
-                                    <TextBlock MinHeight="25" Grid.Column="0" Grid.Row="5" Text="{DynamicResource LOCHowLongToBeatVs}" Visibility="{Binding Vs, Converter={StaticResource VisibilityZeroConverter}, ConverterParameter=1}"></TextBlock>
-                                    <TextBlock MinHeight="25" Grid.Column="1" Grid.Row="5" Text="{Binding VsFormat}" HorizontalAlignment="Center" Visibility="{Binding Vs, Converter={StaticResource VisibilityZeroConverter}, ConverterParameter=1}"></TextBlock>
+                                    <TextBlock MinHeight="25" Grid.Column="0" Grid.Row="5" Text="{DynamicResource LOCHowLongToBeatVs}" Visibility="{Binding GameHltbData.Vs, Converter={StaticResource VisibilityZeroConverter}, ConverterParameter=1}"></TextBlock>
+                                    <TextBlock MinHeight="25" Grid.Column="1" Grid.Row="5" Text="{Binding GameHltbData.VsFormat}" HorizontalAlignment="Center" Visibility="{Binding GameHltbData.Vs, Converter={StaticResource VisibilityZeroConverter}, ConverterParameter=1}"></TextBlock>
                                 </Grid>
                             </Grid>
                         </Grid>
