@@ -60,6 +60,8 @@ namespace HowLongToBeat.Views
             tbColorThirdMulti.Background = new SolidColorBrush(settings.ColorThirdMulti);
 
             spSettings.Visibility = Visibility.Visible;
+
+            PluginDatabase.howLongToBeatClient.PropertyChanged += OnPropertyChanged;
         }
 
 
@@ -242,45 +244,30 @@ namespace HowLongToBeat.Views
             PART_LbUserLogin.Visibility = Visibility.Collapsed;
             PART_LbAuthenticate.Content = resources.GetString("LOCLoginChecking");
 
-            var task = Task.Run(() => PluginDatabase.howLongToBeatClient.GetIsUserLoggedIn())
-                .ContinueWith(antecedent =>
-                {
-                    this.Dispatcher.Invoke(new Action(() => {
-                        if (antecedent.Result)
-                        {
-                            PART_LbAuthenticate.Content = resources.GetString("LOCLoggedIn");
-                            PART_LbUserLogin.Visibility = Visibility.Visible;
-                            PART_LbUserLogin.Content = resources.GetString("LOCGOGUseAccountName") + " " + PluginDatabase.howLongToBeatClient.UserLogin;
-                        }
-                        else
-                        {
-                            PART_LbAuthenticate.Content = resources.GetString("LOCNotLoggedIn");
-                        }
-                    }));
-                });
+            var task = Task.Run(() => PluginDatabase.howLongToBeatClient.GetIsUserLoggedIn());
         }
 
         private void PART_BtAuthenticate_Click(object sender, RoutedEventArgs e)
         {
             PART_LbUserLogin.Visibility = Visibility.Collapsed;
-            PART_LbAuthenticate.Content = resources.GetString("LOCLoginChecking");
+            var task = Task.Run(() => PluginDatabase.howLongToBeatClient.Login());
+        }
 
-            var task = Task.Run(() => PluginDatabase.howLongToBeatClient.Login())
-                .ContinueWith(antecedent =>
+
+        protected void OnPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            this.Dispatcher.Invoke(new Action(() => {
+                if ((bool)PluginDatabase.howLongToBeatClient.IsConnected)
                 {
-                    this.Dispatcher.Invoke(new Action(() => {
-                        if ((bool)PluginDatabase.howLongToBeatClient.IsConnected)
-                        {
-                            PART_LbAuthenticate.Content = resources.GetString("LOCLoggedIn");
-                            PART_LbUserLogin.Visibility = Visibility.Visible;
-                            PART_LbUserLogin.Content = resources.GetString("LOCGOGUseAccountName") + " " + PluginDatabase.howLongToBeatClient.UserLogin;
-                        }
-                        else
-                        {
-                            PART_LbAuthenticate.Content = resources.GetString("LOCNotLoggedIn");
-                        }
-                    }));
-                });
+                    PART_LbAuthenticate.Content = resources.GetString("LOCLoggedIn");
+                    PART_LbUserLogin.Visibility = Visibility.Visible;
+                    PART_LbUserLogin.Content = resources.GetString("LOCGOGUseAccountName") + " " + PluginDatabase.howLongToBeatClient.UserLogin;
+                }
+                else
+                {
+                    PART_LbAuthenticate.Content = resources.GetString("LOCNotLoggedIn");
+                }
+            }));
         }
         #endregion
     }

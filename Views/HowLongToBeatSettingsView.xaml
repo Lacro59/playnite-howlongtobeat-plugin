@@ -8,7 +8,6 @@
 
     <TabControl Margin="20" Name="tcSettings">
         <TabItem Header="{DynamicResource LOCHowLongToBeat}">
-
             <Grid Margin="0,10,0,0">
                 <Grid Name="PART_SelectorColor" Width="500" Visibility="Collapsed">
                     <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
@@ -28,12 +27,11 @@
                         </Grid.RowDefinitions>
 
                         <Button Name="PART_TM_ColorOK" Grid.Column="1" Grid.Row="1" Content="{DynamicResource LOCOKLabel}" 
-                                    Click="PART_TM_ColorOK_Click"/>
+                                        Click="PART_TM_ColorOK_Click"/>
                         <Button Name="PART_TM_ColorCancel" Grid.Column="3" Grid.Row="1" Content="{DynamicResource LOCCancelLabel}" 
-                                    Click="PART_TM_ColorCancel_Click" />
+                                        Click="PART_TM_ColorCancel_Click" />
                     </Grid>
                 </Grid>
-
 
                 <StackPanel Name="spSettings">
                     <Grid>
@@ -42,31 +40,48 @@
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="30" />
+                            <RowDefinition Height="10" />
+                            <RowDefinition Height="30" />
                             <RowDefinition Height="30" />
                             <RowDefinition Height="30" />
                             <RowDefinition Height="10" />
                             <RowDefinition Height="auto" />
                         </Grid.RowDefinitions>
 
-                        <CheckBox Grid.Row="0" IsChecked="{Binding MenuInExtensions}" VerticalAlignment="Center">
+                        <Grid Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="auto" />
+                                <ColumnDefinition Width="10" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <Button Name="PART_BtAuthenticate" Content="{DynamicResource LOCAuthenticateLabel}" 
+                                        Grid.Column="0"
+                                        VerticalAlignment="Center" MinWidth="110" Click="PART_BtAuthenticate_Click" />
+                            <Label Name="PART_LbAuthenticate" VerticalAlignment="Center" Grid.Column="2" />
+                            <Label Name="PART_LbUserLogin" Content="{Binding UserLogin}" VerticalAlignment="Center" Grid.Column="3" />
+                        </Grid>
+
+                        <CheckBox Grid.Row="2" IsChecked="{Binding MenuInExtensions}" VerticalAlignment="Center">
                             <Label Content="{DynamicResource LOCCommonMenuInExtensions}" />
                         </CheckBox>
 
-                        <CheckBox Grid.Row="1" IsChecked="{Binding ShowHltbImg}" Grid.Column="0" VerticalAlignment="Center">
+                        <CheckBox Grid.Row="3" IsChecked="{Binding ShowHltbImg}" Grid.Column="0" VerticalAlignment="Center">
                             <Label Content="{DynamicResource LOCHowLongToBeatShowHltbImage}" />
                         </CheckBox>
 
-                        <CheckBox Name="cbEnableTag" Grid.Row="2"  IsChecked="{Binding EnableTag}" Grid.Column="0" VerticalAlignment="Center">
+                        <CheckBox Name="cbEnableTag" Grid.Row="4"  IsChecked="{Binding EnableTag}" Grid.Column="0" VerticalAlignment="Center">
                             <Label Content="{DynamicResource LOCHowLongToBeatAddTagDescription}" />
                         </CheckBox>
-                        
-                        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right">
+
+                        <StackPanel Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Right">
                             <!--TextBlock Text="{DynamicResource LOCHowLongToBeatAutoTag}" Margin="0,0,10,0" VerticalAlignment="Center" /-->
                             <Button Content="{DynamicResource LOCAddTitle}" Margin="0,0,10,0" IsEnabled="{Binding EnableTag}" VerticalAlignment="Center" Click="ButtonAddTag_Click"/>
                             <Button Content="{DynamicResource LOCRemoveTitle}" IsEnabled="{Binding EnableTag}" VerticalAlignment="Bottom" Click="ButtonRemoveTag_Click" Margin="0,0,0,1"/>
                         </StackPanel>
 
-                        <Grid Grid.Row="4">
+                        <Grid Grid.Row="6">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="10" />
@@ -99,7 +114,7 @@
                                 <Button Click="BtPickColor_Click" Content="&#x270f;" Width="41" Tag="3" Margin="10,0,0,0" VerticalAlignment="Center" />
                                 <Button Click="BtRestore_Click" Content="&#x1f5d9;" Width="41" Tag="3" Margin="10,0,0,0" VerticalAlignment="Center" />
                             </StackPanel>
-                            
+
                             <StackPanel Orientation="Horizontal" Grid.Column="2" Grid.Row="1" HorizontalAlignment="center" VerticalAlignment="Center">
                                 <Label Width="120" Content="{DynamicResource LOCHowLongToBeatSolo}" VerticalAlignment="Center" Margin="30,0,0,0" />
                                 <TextBlock Height="28" Width="28" Background="DarkCyan" Tag="4" Name="tbColorFirstMulti" VerticalAlignment="Center" />
@@ -121,7 +136,7 @@
                         </Grid>
                     </Grid>
 
-                    <Grid Margin="0,40,0,0">
+                    <Grid Margin="0,30,0,0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="10" />
@@ -131,11 +146,10 @@
                             <RowDefinition Height="auto" />
                             <RowDefinition Height="30" />
                             <RowDefinition Height="30" />
-                            <RowDefinition Height="35" />
-                            <RowDefinition Height="35" />
+                            <RowDefinition Height="10" />
                             <RowDefinition Height="35" />
                         </Grid.RowDefinitions>
-                        
+
                         <StackPanel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" >
                             <Label Content="{DynamicResource LOCHowLongToBeatAutoData}" FontSize="18" />
                             <Separator Margin="0,0,0,10" />
@@ -161,25 +175,9 @@
 
                             <TextBlock Grid.Column="0" Text="{DynamicResource LOCCommonDatabase}" VerticalAlignment="Center" />
                             <Button Grid.Column="2" Name="btAddData" Content="{DynamicResource LOCUpdateAll}" 
-                                Click="BtAddData_Click" VerticalAlignment="Center" />
+                                    Click="BtAddData_Click" VerticalAlignment="Center" />
                             <Button Grid.Column="4" Name="btRemoveData" Content="{DynamicResource LOCClearAll}" 
-                                Click="BtRemoveData_Click" VerticalAlignment="Center "/>
-                        </Grid>
-
-
-                        <Grid Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="5">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="auto" />
-                                <ColumnDefinition Width="10" />
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-
-                            <Button Name="PART_BtAuthenticate" Content="{DynamicResource LOCAuthenticateLabel}" 
-                                    Grid.Column="0"
-                                    VerticalAlignment="Center" MinWidth="110" Click="PART_BtAuthenticate_Click" />
-                            <Label Name="PART_LbAuthenticate" VerticalAlignment="Center" Grid.Column="2" />
-                            <Label Name="PART_LbUserLogin" Content="{Binding UserLogin}" VerticalAlignment="Center" Grid.Column="3" />
+                                    Click="BtRemoveData_Click" VerticalAlignment="Center "/>
                         </Grid>
                     </Grid>
                 </StackPanel>

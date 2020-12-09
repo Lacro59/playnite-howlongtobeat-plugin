@@ -269,9 +269,9 @@ namespace HowLongToBeat.Services
                         {
                             game.TagIds = new List<Guid> { (Guid)TagId };
                         }
-                    }
 
-                    _PlayniteApi.Database.Games.Update(game);
+                        _PlayniteApi.Database.Games.Update(game);
+                    }
                 }
                 catch (Exception ex)
                 {
