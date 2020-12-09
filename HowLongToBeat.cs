@@ -70,7 +70,37 @@ namespace HowLongToBeat
 
             // Custom theme button
             EventManager.RegisterClassHandler(typeof(Button), Button.ClickEvent, new RoutedEventHandler(howLongToBeatUI.OnCustomThemeButtonClick));
+
+            // Add event fullScreen
+            if (api.ApplicationInfo.Mode == ApplicationMode.Fullscreen)
+            {
+                EventManager.RegisterClassHandler(typeof(Button), Button.ClickEvent, new RoutedEventHandler(BtFullScreen_ClickEvent));
+            }
         }
+
+
+        #region Custom event
+        private void BtFullScreen_ClickEvent(object sender, System.EventArgs e)
+        {
+            try
+            {
+                if (((Button)sender).Name == "PART_ButtonDetails")
+                {
+                    var TaskIntegrationUI = Task.Run(() =>
+                    {
+                        howLongToBeatUI.Initial();
+                        howLongToBeatUI.taskHelper.Check();
+                        var dispatcherOp = howLongToBeatUI.AddElementsFS();
+                        dispatcherOp.Completed += (s, ev) => { howLongToBeatUI.RefreshElements(GameSelected); };
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, "HowLongToBeat");
+            }
+        }
+        #endregion
 
 
         // To add new game menu items override GetGameMenuItems
@@ -241,7 +271,10 @@ namespace HowLongToBeat
                         howLongToBeatUI.Initial();
                         howLongToBeatUI.taskHelper.Check();
                         var dispatcherOp = howLongToBeatUI.AddElements();
-                        dispatcherOp.Completed += (s, e) => { howLongToBeatUI.RefreshElements(args.NewValue[0]); };
+                        if (dispatcherOp != null)
+                        {
+                            dispatcherOp.Completed += (s, e) => { howLongToBeatUI.RefreshElements(args.NewValue[0]); };
+                        }
                     });
                 }
             }

@@ -40,6 +40,9 @@ namespace HowLongToBeat
         public Color ColorSecondMulti { get; set; } = Brushes.RoyalBlue.Color;
         public Color ColorThirdMulti { get; set; } = Brushes.ForestGreen.Color;
 
+        public bool EnableIntegrationFS { get; set; } = false;
+
+
         // Playnite serializes settings object to a JSON object and saves it as text file.
         // If you want to exclude some property from being saved then use `JsonIgnore` ignore attribute.
         [JsonIgnore]
@@ -89,6 +92,8 @@ namespace HowLongToBeat
                 ColorFirstMulti = savedSettings.ColorFirstMulti;
                 ColorSecondMulti = savedSettings.ColorSecondMulti;
                 ColorThirdMulti = savedSettings.ColorThirdMulti;
+
+                EnableIntegrationFS = savedSettings.EnableIntegrationFS;
             }
         }
 

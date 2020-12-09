@@ -31,6 +31,14 @@ namespace HowLongToBeat.Services
         public override string SpDescriptionName { get; set; } = string.Empty;
         public override FrameworkElement PART_SpDescription { get; set; }
 
+
+        public override string SpInfoBarFSName { get; set; } = string.Empty;
+        public override FrameworkElement PART_SpInfoBarFS { get; set; }
+
+        public override string BtActionBarFSName { get; set; } = string.Empty;
+        public override FrameworkElement PART_BtActionBarFS { get; set; }
+
+
         public override List<CustomElement> ListCustomElements { get; set; } = new List<CustomElement>();
 
 
@@ -377,6 +385,77 @@ namespace HowLongToBeat.Services
         }
 
         public override void RefreshCustomElements()
+        {
+
+        }
+        #endregion
+
+
+
+
+        public override DispatcherOperation AddElementsFS()
+        {
+            if (_PlayniteApi.ApplicationInfo.Mode == ApplicationMode.Fullscreen)
+            {
+                if (IsFirstLoad)
+                {
+#if DEBUG
+                    logger.Debug($"CheckLocalizations - IsFirstLoad");
+#endif
+                    Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Loaded, new ThreadStart(delegate
+                    {
+                        System.Threading.SpinWait.SpinUntil(() => IntegrationUI.SearchElementByName("PART_ButtonContext") != null, 5000);
+                    })).Wait();
+                    IsFirstLoad = false;
+                }
+
+                return Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Loaded, new ThreadStart(delegate
+                {
+                    if (PluginDatabase.PluginSettings.EnableIntegrationFS)
+                    {
+#if DEBUG
+                        logger.Debug($"CheckLocalizations - AddBtInfoBarFS()");
+#endif
+                        AddSpInfoBarFS();
+                        AddSpInfoBarFS();
+                    }
+                }));
+            }
+
+            return null;
+        }
+
+
+        #region SpInfoBarFS
+        public override void InitialSpInfoBarFS()
+        {
+
+        }
+
+        public override void AddSpInfoBarFS()
+        {
+
+        }
+
+        public override void RefreshSpInfoBarFS()
+        {
+
+        }
+        #endregion
+
+
+        #region BtActionBarFS
+        public override void InitialBtActionBarFS()
+        {
+
+        }
+
+        public override void AddBtActionBarFS()
+        {
+
+        }
+
+        public override void RefreshBtActionBarFS()
         {
 
         }
