@@ -18,6 +18,7 @@
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeAbove">Above progress bar</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeInterior">Inside progress bar</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeBelow">Below progress bars</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeUser">Show user HowLongToBeat time</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatAutoData">Game data download</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoAccept">Automatically select game when only one game is found during search</sys:String>
@@ -39,6 +40,8 @@
 
     <sys:String x:Key="LOCHowLongToBeatProgression">Progression</sys:String>
 
+    <sys:String x:Key="LOCHowLongToBeatPluginGetUserView">Getting HowLongToBeat user data</sys:String>
+
     <sys:String x:Key="LOCHowLongToBeat1to5">1 to 5 hours</sys:String>
     <sys:String x:Key="LOCHowLongToBeat5to10">5 to 10 hours</sys:String>
     <sys:String x:Key="LOCHowLongToBeat10to20">10 to 20 hours</sys:String>
@@ -57,6 +60,8 @@
     <sys:String x:Key="LOCHowLongToBeat">HowLongToBeat</sys:String>
     <sys:String x:Key="LOCHowLongToBeatTitle">HowLongToBeat</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatPluginView">View HowLongToBeat datas</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatPluginView">View HowLongToBeat data</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatPluginUserView">View HowLongToBeat user data</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatActualiseUserData">Refresh HowLongToBeat user data</sys:String>
 
 </ResourceDictionary>

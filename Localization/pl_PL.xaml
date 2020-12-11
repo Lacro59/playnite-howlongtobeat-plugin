@@ -3,21 +3,22 @@
 
     <!-- HowLongToBeatSettingsView -->
 
-    <sys:String x:Key="LOCHowLongToBeatProgressBarTag">Treatment in progress...</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatProgressBarTag">Processing, please wait...</sys:String>
     <sys:String x:Key="LOCHowLongToBeatProgressBar">Added {0} - Already added {1} - Not added {2}</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatAddTagDescription">Tag z czasem &quot;Głównego wątku&quot; / &quot;Solo&quot; (Main + Extra / Vs if missing)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAddTagDescription">Add a tag to games with Main story completion time information</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoTag">Automatic tags processing</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatShowHltbImage">Show How Long To Beat cover image</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatShowHltbImage">Use HowLongToBeat original game cover image in window</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatColorSelection">Color selection for progress bar:</sys:String>
     
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarOptions">Progress bar options</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">Show tooltip with time in progress bar</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTime">Show time with progress bar</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">Show time tooltip in progress bar</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTime">Show time labels in progress bar</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeAbove">Above</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeInterior">Interior</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeBelow">Below</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeUser">Show user HowLongToBeat time</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatAutoData">Download datas</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoAccept">Automatic accept when only a game is find</sys:String>
@@ -39,6 +40,8 @@
 
     <sys:String x:Key="LOCHowLongToBeatProgression">Postęp</sys:String>
 
+    <sys:String x:Key="LOCHowLongToBeatPluginGetUserView">Getting HowLongToBeat user data</sys:String>
+
     <sys:String x:Key="LOCHowLongToBeat1to5">1 do 5 godzin</sys:String>
     <sys:String x:Key="LOCHowLongToBeat5to10">5 do 10 godzin</sys:String>
     <sys:String x:Key="LOCHowLongToBeat10to20">10 do 20 godzin</sys:String>
@@ -57,6 +60,8 @@
     <sys:String x:Key="LOCHowLongToBeat">HowLongToBeat</sys:String>
     <sys:String x:Key="LOCHowLongToBeatTitle">Jak długo trwa przejście</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatPluginView">View HowLongToBeat datas</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatPluginView">View HowLongToBeat data</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatPluginUserView">View HowLongToBeat user data</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatActualiseUserData">Actualise HowLongToBeat user data</sys:String>
 
 </ResourceDictionary>
