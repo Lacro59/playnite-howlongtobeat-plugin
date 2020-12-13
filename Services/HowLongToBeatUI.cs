@@ -72,7 +72,7 @@ namespace HowLongToBeat.Services
                     IsFirstLoad = false;
                 }
 
-                return Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Loaded, new ThreadStart(delegate
+                return Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new ThreadStart(delegate
                 {
                     CheckTypeView();
 
@@ -217,7 +217,6 @@ namespace HowLongToBeat.Services
             HltbButton BtActionBar = new HltbButton();
             BtActionBar.Click += OnBtActionBarClick;
             BtActionBar.Name = BtActionBarName;
-            BtActionBar.Margin = new Thickness(10, 0, 0, 0);
 
             try
             {

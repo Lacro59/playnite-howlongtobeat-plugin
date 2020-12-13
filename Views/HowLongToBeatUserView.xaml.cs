@@ -54,10 +54,12 @@ namespace HowLongToBeat.Views
             catch
             {
                 CollectionView view = (CollectionView)CollectionViewSource.GetDefaultView(ListViewGames.ItemsSource);
-
-                _lastHeaderClicked = lvName;
-                _lastHeaderClicked.Content += " ▲";
-                view.SortDescriptions.Add(new SortDescription("Name", _lastDirection));
+                if (view != null)
+                {
+                    _lastHeaderClicked = lvName;
+                    _lastHeaderClicked.Content += " ▲";
+                    view.SortDescriptions.Add(new SortDescription("Name", _lastDirection));
+                }
             }
         }
 

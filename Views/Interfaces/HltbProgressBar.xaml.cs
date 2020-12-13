@@ -56,17 +56,23 @@ namespace HowLongToBeat.Views.Interfaces
                 if (e.PropertyName == "GameSelectedData" || e.PropertyName == "PluginSettings")
                 {
                     this.Dispatcher.BeginInvoke(DispatcherPriority.Loaded, new ThreadStart(delegate
-                    {
+                    {   
                         if (!PluginDatabase.GameSelectedData.HasData)
                         {
                             this.Visibility = Visibility.Collapsed;
+                            return;
                         }
                         else
                         {
-                            this.Visibility = Visibility.Visible;
-
-                            SetHltbData(PluginDatabase.GameSelectedData);
+                            this.Visibility = Visibility.Hidden;
                         }
+                    }));
+
+                    this.Dispatcher.BeginInvoke(DispatcherPriority.Background, new ThreadStart(delegate
+                    {
+                        SetHltbData(PluginDatabase.GameSelectedData);
+
+                        this.Visibility = Visibility.Visible;
                     }));
                 }
             }
@@ -183,9 +189,6 @@ namespace HowLongToBeat.Views.Interfaces
             ShowToolTip = PluginDatabase.PluginSettings.ProgressBarShowToolTip;
             ShowTime = PluginDatabase.PluginSettings.ProgressBarShowTime;
 
-            //ProgressHltb_El1.Foreground = new SolidColorBrush(PluginDatabase.PluginSettings.ColorFirst);
-            //ProgressHltb_El2.Foreground = new SolidColorBrush(PluginDatabase.PluginSettings.ColorSecond);
-            //ProgressHltb_El3.Foreground = new SolidColorBrush(PluginDatabase.PluginSettings.ColorThird);
 
             if (ShowToolTip)
             {

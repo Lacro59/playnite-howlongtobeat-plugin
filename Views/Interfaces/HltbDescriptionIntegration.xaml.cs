@@ -61,14 +61,6 @@ namespace HowLongToBeat.Views.Interfaces
                         }
                         else
                         {
-                            if (!PluginDatabase.PluginSettings.IntegrationTopGameDetails)
-                            {
-                                PART_HltbProgressBar.Margin = new Thickness(0, 15, 0, 0);
-                            }
-                            else
-                            {
-                                PART_HltbProgressBar.Margin = new Thickness(0, 0, 0, 0);
-                            }
                         }
 
                         this.DataContext = new
