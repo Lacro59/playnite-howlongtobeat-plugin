@@ -295,7 +295,7 @@ namespace HowLongToBeat.Services
                 HltbDescriptionIntegration SpDescription = new HltbDescriptionIntegration();
                 SpDescription.Name = SpDescriptionName;
 
-                ui.AddElementInGameSelectedDescription(SpDescription, PluginDatabase.PluginSettings.IntegrationTopGameDetails);
+                ui.AddElementInGameSelectedDescription(SpDescription, PluginDatabase.PluginSettings.IntegrationTopGameDetails, PluginDatabase.PluginSettings.IntegrationShowTitle);
                 PART_SpDescription = IntegrationUI.SearchElementByName(SpDescriptionName);
             }
             catch (Exception ex)
