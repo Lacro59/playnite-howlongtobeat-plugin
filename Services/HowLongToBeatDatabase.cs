@@ -373,6 +373,11 @@ namespace HowLongToBeat.Services
 
         public TitleList GetUserHltbData(int HltbId)
         {
+            if (Database.UserHltbData.TitlesList == null || Database.UserHltbData.TitlesList.Count == 0)
+            {
+                return null;
+            }
+
             return Database.UserHltbData.TitlesList.Find(x => x.Id == HltbId);
         }
 
