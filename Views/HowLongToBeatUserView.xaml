@@ -9,7 +9,6 @@
 
     <UserControl.Resources>
         <commonshared:LocalDateConverter x:Key="LocalDateConverter" />
-        <FontFamily x:Key="font">pack://application:,,,/PluginCommon;component/Resources/font.ttf#font</FontFamily>
     </UserControl.Resources>
 
     <Grid Margin="10">

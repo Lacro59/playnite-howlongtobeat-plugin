@@ -53,6 +53,7 @@ namespace HowLongToBeat
             PluginLocalization.SetPluginLanguage(pluginFolder, api.ApplicationSettings.Language);
             // Add common in application ressource.
             Common.Load(pluginFolder);
+            Common.SetEvent(PlayniteApi);
 
             // Check version
             if (settings.EnableCheckVersion)

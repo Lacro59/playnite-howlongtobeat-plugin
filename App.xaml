@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Application xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+<Application xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
   <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -42,6 +42,9 @@
                 <!--PluginResources-->
                 <ResourceDictionary Source="Resources/Common.xaml" />
                 <!--PluginCommon-->
+                <ResourceDictionary>
+                    <FontFamily x:Key="CommonFont">pack://application:,,,/CommonControls;component/Resources/font.ttf#font</FontFamily>
+                </ResourceDictionary>
                 <ResourceDictionary Source="playnite-plugincommon/CommonControls/Resources/Common.xaml" />
                 <ResourceDictionary Source="playnite-plugincommon/CommonControls/Resources/LiveChartsCommon/Common.xaml" />
                 <!--Plugin default localization-->

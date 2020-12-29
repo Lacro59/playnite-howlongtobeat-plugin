@@ -6,10 +6,6 @@
              xmlns:interfaces="clr-namespace:HowLongToBeat.Views.Interfaces"
              mc:Ignorable="d" Width="700" Height="320" Background="{DynamicResource WindowBackgourndBrush}">
 
-    <UserControl.Resources>
-        <FontFamily x:Key="font">/PluginCommon;Component/Resources/font.ttf#font</FontFamily>
-    </UserControl.Resources>
-
     <DockPanel Margin="10">
         <DockPanel DockPanel.Dock="Top">
             <Image DockPanel.Dock="Left" Source="{Binding CoverImage}" Width="200" Height="200" Stretch="Uniform"></Image>
