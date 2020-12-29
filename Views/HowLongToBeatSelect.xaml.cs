@@ -229,7 +229,7 @@ namespace HowLongToBeat.Views
                 }
 
 #if DEBUG
-                logger.Debug($"HowLongToBeat - dataSearch: {JsonConvert.SerializeObject(dataSearch)}");
+                logger.Debug($"HowLongToBeat [Ignored] - dataSearch: {JsonConvert.SerializeObject(dataSearch)}");
 #endif
                 this.Dispatcher.BeginInvoke((Action)delegate
                 {

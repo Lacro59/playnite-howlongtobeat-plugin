@@ -42,7 +42,7 @@ namespace HowLongToBeat.Services
             Database.UserHltbData = howLongToBeatClient.LoadUserData();
 
 #if DEBUG
-            logger.Debug($"{PluginName} - db: {JsonConvert.SerializeObject(Database)}");
+            logger.Debug($"{PluginName} [Ignored] - db: {JsonConvert.SerializeObject(Database)}");
 #endif
 
             GameSelectedData = new GameHowLongToBeat();
@@ -84,7 +84,7 @@ namespace HowLongToBeat.Services
                         GameHowLongToBeat gameHowLongToBeat = Get(game, true);
 
 #if DEBUG
-                        logger.Debug($"{PluginName} - {gameHowLongToBeat.Name} - {gameHowLongToBeat.HasData} - {gameHowLongToBeat.IsSaved}");
+                        logger.Debug($"{PluginName} [Ignored] - {gameHowLongToBeat.Name} - {gameHowLongToBeat.HasData} - {gameHowLongToBeat.IsSaved}");
 #endif
 
                         if (!gameHowLongToBeat.HasData && !gameHowLongToBeat.IsSaved)
@@ -127,7 +127,7 @@ namespace HowLongToBeat.Services
             GameIsLoaded = false;
             GameHowLongToBeat gameHowLongToBeat = GetOnlyCache(Id);
 #if DEBUG
-            logger.Debug($"{PluginName} - GetFromDb({Id.ToString()}) - gameHowLongToBeat: {JsonConvert.SerializeObject(gameHowLongToBeat)}");
+            logger.Debug($"{PluginName} [Ignored] - GetFromDb({Id.ToString()}) - gameHowLongToBeat: {JsonConvert.SerializeObject(gameHowLongToBeat)}");
 #endif
             if (gameHowLongToBeat == null && !OnlyCache)
             {
@@ -138,7 +138,7 @@ namespace HowLongToBeat.Services
                 if (gameHowLongToBeat != null)
                 {
 #if DEBUG
-                    logger.Debug($"{PluginName} - GetFromWeb({Id.ToString()}) - gameHowLongToBeat: {JsonConvert.SerializeObject(gameHowLongToBeat)}");
+                    logger.Debug($"{PluginName} [Ignored] - GetFromWeb({Id.ToString()}) - gameHowLongToBeat: {JsonConvert.SerializeObject(gameHowLongToBeat)}");
 #endif
                     Add(gameHowLongToBeat);
                 }
@@ -158,7 +158,7 @@ namespace HowLongToBeat.Services
         protected override void GetPluginTags()
         {
 #if DEBUG
-            logger.Debug($"{PluginName} - GetPluginTags()");
+            logger.Debug($"{PluginName} [Ignored] - GetPluginTags()");
 #endif
 
             try
@@ -239,7 +239,7 @@ namespace HowLongToBeat.Services
                 }
 
 #if DEBUG
-                logger.Debug($"{PluginName} - PluginTags: {JsonConvert.SerializeObject(PluginTags)}");
+                logger.Debug($"{PluginName} [Ignored] - PluginTags: {JsonConvert.SerializeObject(PluginTags)}");
 #endif
             }
             catch (Exception ex)
@@ -276,7 +276,7 @@ namespace HowLongToBeat.Services
                 catch (Exception ex)
                 {
 #if DEBUG
-                    Common.LogError(ex, PluginName);
+                    Common.LogError(ex, PluginName + " [Ignored]");
 #endif
                     logger.Error($"{PluginName} - Tag insert error with {game.Name}");
                     _PlayniteApi.Notifications.Add(new NotificationMessage(

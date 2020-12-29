@@ -63,7 +63,7 @@ namespace HowLongToBeat.Services
                 if (IsFirstLoad)
                 {
 #if DEBUG
-                    logger.Debug($"HowLongToBeat - IsFirstLoad");
+                    logger.Debug($"HowLongToBeat [Ignored] - IsFirstLoad");
 #endif
                     Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Loaded, new ThreadStart(delegate
                     {
@@ -79,7 +79,7 @@ namespace HowLongToBeat.Services
                     if (PluginDatabase.PluginSettings.EnableIntegrationButton)
                     {
 #if DEBUG
-                        logger.Debug($"HowLongToBeat - AddBtActionBar()");
+                        logger.Debug($"HowLongToBeat [Ignored] - AddBtActionBar()");
 #endif
                         AddBtActionBar();
                     }
@@ -87,7 +87,7 @@ namespace HowLongToBeat.Services
                     if (PluginDatabase.PluginSettings.EnableIntegrationInDescription)
                     {
 #if DEBUG
-                        logger.Debug($"HowLongToBeat - AddSpDescription()");
+                        logger.Debug($"HowLongToBeat [Ignored] - AddSpDescription()");
 #endif
                         AddSpDescription();
                     }
@@ -95,7 +95,7 @@ namespace HowLongToBeat.Services
                     if (PluginDatabase.PluginSettings.EnableIntegrationInCustomTheme)
                     {
 #if DEBUG
-                        logger.Debug($"HowLongToBeat - AddCustomElements()");
+                        logger.Debug($"HowLongToBeat [Ignored] - AddCustomElements()");
 #endif
                         AddCustomElements();
                     }
@@ -178,7 +178,7 @@ namespace HowLongToBeat.Services
                     }
 
                     // If not cancel, show
-                    if (!ct.IsCancellationRequested && GameSelected.Id == HowLongToBeat.GameSelected.Id)
+                    if (!ct.IsCancellationRequested && GameSelected.Id == HowLongToBeatDatabase.GameSelected.Id)
                     {
                         ui.AddResources(resourcesLists);
 
@@ -209,7 +209,7 @@ namespace HowLongToBeat.Services
             if (PART_BtActionBar != null)
             {
 #if DEBUG
-                logger.Debug($"HowLongToBeat - PART_BtActionBar allready insert");
+                logger.Debug($"HowLongToBeat [Ignored] - PART_BtActionBar allready insert");
 #endif
                 return;
             }
@@ -237,7 +237,7 @@ namespace HowLongToBeat.Services
 
         public void OnBtActionBarClick(object sender, RoutedEventArgs e)
         {
-            GameHowLongToBeat gameHowLongToBeat = HowLongToBeat.PluginDatabase.Get(HowLongToBeat.GameSelected);
+            GameHowLongToBeat gameHowLongToBeat = HowLongToBeat.PluginDatabase.Get(HowLongToBeatDatabase.GameSelected);
 
             if (gameHowLongToBeat.HasData)
             {
@@ -247,7 +247,7 @@ namespace HowLongToBeat.Services
 
                 var TaskIntegrationUI = Task.Run(() =>
                 {
-                    HowLongToBeat.howLongToBeatUI.RefreshElements(HowLongToBeat.GameSelected);
+                    HowLongToBeat.howLongToBeatUI.RefreshElements(HowLongToBeatDatabase.GameSelected);
                 });
             }
         }
@@ -285,7 +285,7 @@ namespace HowLongToBeat.Services
             if (PART_SpDescription != null)
             {
 #if DEBUG
-                logger.Debug($"HowLongToBeat - PART_SpDescription allready insert");
+                logger.Debug($"HowLongToBeat [Ignored] - PART_SpDescription allready insert");
 #endif
                 return;
             }
@@ -322,7 +322,7 @@ namespace HowLongToBeat.Services
             if (ListCustomElements.Count > 0)
             {
 #if DEBUG
-                logger.Debug($"HowLongToBeat - CustomElements allready insert - {ListCustomElements.Count}");
+                logger.Debug($"HowLongToBeat [Ignored] - CustomElements allready insert - {ListCustomElements.Count}");
 #endif
                 return;
             }
@@ -357,7 +357,7 @@ namespace HowLongToBeat.Services
             else
             {
 #if DEBUG
-                logger.Debug($"HowLongToBeat - PART_HltbButtonWithJustIcon not find");
+                logger.Debug($"HowLongToBeat [Ignored] - PART_HltbButtonWithJustIcon not find");
 #endif
             }
 
@@ -378,7 +378,7 @@ namespace HowLongToBeat.Services
             else
             {
 #if DEBUG
-                logger.Debug($"HowLongToBeat - PART_HltbButtonWithJustIcon not find");
+                logger.Debug($"HowLongToBeat [Ignored] - PART_HltbButtonWithJustIcon not find");
 #endif
             }
         }
@@ -399,7 +399,7 @@ namespace HowLongToBeat.Services
                 if (IsFirstLoad)
                 {
 #if DEBUG
-                    logger.Debug($"CheckLocalizations - IsFirstLoad");
+                    logger.Debug($"HowLongToBeat [Ignored] - IsFirstLoad");
 #endif
                     Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Loaded, new ThreadStart(delegate
                     {
@@ -413,7 +413,7 @@ namespace HowLongToBeat.Services
                     if (PluginDatabase.PluginSettings.EnableIntegrationFS)
                     {
 #if DEBUG
-                        logger.Debug($"CheckLocalizations - AddBtInfoBarFS()");
+                        logger.Debug($"HowLongToBeat [Ignored] - AddBtInfoBarFS()");
 #endif
                         AddSpInfoBarFS();
                         AddSpInfoBarFS();

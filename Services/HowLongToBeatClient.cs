@@ -144,7 +144,7 @@ namespace HowLongToBeat.Services
 
             long TimeConverted = hours * 3600 + minutes * 60 + secondes;
 #if DEBUG
-            logger.Debug($"HowLongToBeat - ConvertStringToLongUser: {Time} - {TimeConverted}");
+            logger.Debug($"HowLongToBeat [Ignored] - ConvertStringToLongUser: {Time} - {TimeConverted}");
 #endif
 
             return TimeConverted;
@@ -198,7 +198,7 @@ namespace HowLongToBeat.Services
         public GameHowLongToBeat SearchData(Game game)
         {
 #if DEBUG
-            logger.Debug($"HowLongToBeat - Search data for {game.Name}");
+            logger.Debug($"HowLongToBeat [Ignored] - Search data for {game.Name}");
 #endif
 
             HowLongToBeatSelect ViewExtension = null;
@@ -371,13 +371,13 @@ namespace HowLongToBeat.Services
                 webView.LoadingChanged += (s, e) =>
                 {
 #if DEBUG
-                    logger.Debug($"HowLongToBeat - NavigationChanged - {webView.GetCurrentAddress()}");
+                    logger.Debug($"HowLongToBeat [Ignored] - NavigationChanged - {webView.GetCurrentAddress()}");
 #endif
 
                     if (webView.GetCurrentAddress().IndexOf("https://howlongtobeat.com/user?n=") > -1)
                     {
 #if DEBUG
-                        logger.Debug($"HowLongToBeat - webView.Close();");
+                        logger.Debug($"HowLongToBeat [Ignored] - webView.Close();");
 #endif
                         UserLogin = WebUtility.HtmlDecode(webView.GetCurrentAddress().Replace("https://howlongtobeat.com/user?n=", string.Empty));
                         IsConnected = true;
@@ -426,7 +426,7 @@ namespace HowLongToBeat.Services
                     List<HttpCookie> Cookies = webViews.GetCookies();
                     Cookies = Cookies.Where(x => x.Domain.Contains("howlongtobeat")).ToList();
 #if DEBUG
-                    logger.Debug($"HowLongToBeat - Cookies: {JsonConvert.SerializeObject(Cookies)}");
+                    logger.Debug($"HowLongToBeat [Ignored] - Cookies: {JsonConvert.SerializeObject(Cookies)}");
 #endif
 
                     // Get list games
@@ -439,9 +439,6 @@ namespace HowLongToBeat.Services
                     });
 
                     string response = Web.PostStringDataCookies(UrlUserStatsGameList, formContent, Cookies).GetAwaiter().GetResult();
-#if DEBUG
-                    //logger.Debug($"HowLongToBeat - webViews: {response.Replace(Environment.NewLine, string.Empty)}");
-#endif
 
                     HtmlParser parser = new HtmlParser();
                     IHtmlDocument htmlDocument = parser.Parse(response);
@@ -467,9 +464,6 @@ namespace HowLongToBeat.Services
                         });
 
                         response = Web.PostStringDataCookies(UrlUserStatsGameDetails, formContent, Cookies).GetAwaiter().GetResult();
-#if DEBUG
-                        //logger.Debug($"HowLongToBeat - webViews: {response.Replace(Environment.NewLine, string.Empty)}");
-#endif
 
                         parser = new HtmlParser();
                         htmlDocument = parser.Parse(response);
@@ -580,7 +574,7 @@ namespace HowLongToBeat.Services
                             }
                         }
 #if DEBUG
-                        logger.Debug($"HowLongToBeat - titleList: {JsonConvert.SerializeObject(titleList)}");
+                        logger.Debug($"HowLongToBeat [Ignored] - titleList: {JsonConvert.SerializeObject(titleList)}");
 #endif
 
                         hltbUserStats.TitlesList.Add(titleList);

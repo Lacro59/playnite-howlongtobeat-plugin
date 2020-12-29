@@ -50,9 +50,6 @@ namespace HowLongToBeat.Views.Interfaces
         {
             try
             {
-#if DEBUG
-                logger.Debug($"HltbProgressBar.OnPropertyChanged({e.PropertyName}): {JsonConvert.SerializeObject(PluginDatabase.GameSelectedData)}");
-#endif
                 if (e.PropertyName == "GameSelectedData" || e.PropertyName == "PluginSettings")
                 {
                     this.Dispatcher.BeginInvoke(DispatcherPriority.Loaded, new ThreadStart(delegate
@@ -178,10 +175,6 @@ namespace HowLongToBeat.Views.Interfaces
 
         public void SetHltbData(GameHowLongToBeat gameHowLongToBeat)
         {
-#if DEBUG
-            logger.Debug($"HowLongToBeat - PluginSettings: {JsonConvert.SerializeObject(PluginDatabase.PluginSettings)}");
-#endif
-
             _gameHowLongToBeat = gameHowLongToBeat;
             _Playtime = gameHowLongToBeat.Playtime;
 
@@ -332,7 +325,7 @@ namespace HowLongToBeat.Views.Interfaces
                 SliderPlaytime.Maximum = MaxValue;
 
 #if DEBUG
-                logger.Debug($"HowLongToBeat - listProgressBars: {JsonConvert.SerializeObject(listProgressBars)}");
+                logger.Debug($"HowLongToBeat [Ignored] - listProgressBars: {JsonConvert.SerializeObject(listProgressBars)}");
 #endif
 
                 ProgressHltb_El1.Visibility = Visibility.Hidden;
@@ -369,7 +362,7 @@ namespace HowLongToBeat.Views.Interfaces
                 {
                     TitleList titleList = PluginDatabase.GetUserHltbData(_gameHowLongToBeat.GetData().Id);
 #if DEBUG
-                    logger.Debug($"HowLongToBeat - titleList: {JsonConvert.SerializeObject(titleList)}");
+                    logger.Debug($"HowLongToBeat [Ignored] - titleList: {JsonConvert.SerializeObject(titleList)}");
 #endif
 
                     if (titleList != null)

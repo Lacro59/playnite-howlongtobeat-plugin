@@ -79,9 +79,6 @@ namespace HowLongToBeat.Services
                 {
                     var JsonStringData = File.ReadAllText(objectFile);
 
-#if DEBUG
-                    logger.Debug(objectFile.Replace(PathActivityDB, "").Replace(".json", "").Replace("\\", ""));
-#endif
                     Guid gameId = Guid.Parse(objectFile.Replace(PathActivityDB, "").Replace(".json", "").Replace("\\", ""));
 
                     HltbDataUserOld hltbDataUser = JsonConvert.DeserializeObject<HltbDataUserOld>(JsonStringData);

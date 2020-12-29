@@ -36,9 +36,6 @@ namespace HowLongToBeat.Views.Interfaces
         {
             try
             {
-#if DEBUG
-                logger.Debug($"HltbDescriptionIntegration.OnPropertyChanged({e.PropertyName}): {JsonConvert.SerializeObject(PluginDatabase.GameSelectedData)}");
-#endif
                 if (e.PropertyName == "GameSelectedData" || e.PropertyName == "PluginSettings")
                 { 
                     this.Dispatcher.BeginInvoke(DispatcherPriority.Loaded, new ThreadStart(delegate
@@ -67,9 +64,6 @@ namespace HowLongToBeat.Views.Interfaces
                         {
                             IntegrationShowTitle = PluginDatabase.PluginSettings.IntegrationShowTitle
                         };
-#if DEBUG
-                        logger.Debug($"HowLongToBeat - DataContext: {JsonConvert.SerializeObject(DataContext)}");
-#endif
                     }));
                 }
             }

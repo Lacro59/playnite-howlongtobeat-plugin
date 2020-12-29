@@ -28,7 +28,6 @@ namespace HowLongToBeat
         private HowLongToBeatSettings settings { get; set; }
         public override Guid Id { get; } = Guid.Parse("e08cd51f-9c9a-4ee3-a094-fde03b55492f");
 
-        public static Game GameSelected;
         public static HowLongToBeatDatabase PluginDatabase;
         public static HowLongToBeatUI howLongToBeatUI { get; set; }
 
@@ -92,7 +91,7 @@ namespace HowLongToBeat
                         howLongToBeatUI.Initial();
                         howLongToBeatUI.taskHelper.Check();
                         var dispatcherOp = howLongToBeatUI.AddElementsFS();
-                        dispatcherOp.Completed += (s, ev) => { howLongToBeatUI.RefreshElements(GameSelected); };
+                        dispatcherOp.Completed += (s, ev) => { howLongToBeatUI.RefreshElements(HowLongToBeatDatabase.GameSelected); };
                     });
                 }
             }
@@ -128,7 +127,7 @@ namespace HowLongToBeat
 
                                 var TaskIntegrationUI = Task.Run(() =>
                                 {
-                                    HowLongToBeat.howLongToBeatUI.RefreshElements(HowLongToBeat.GameSelected);
+                                    howLongToBeatUI.RefreshElements(HowLongToBeatDatabase.GameSelected);
                                 });
                             }
                         }
@@ -265,7 +264,7 @@ namespace HowLongToBeat
             {
                 if (args.NewValue != null && args.NewValue.Count == 1)
                 {
-                    GameSelected = args.NewValue[0];
+                    HowLongToBeatDatabase.GameSelected = args.NewValue[0];
 
                     var TaskIntegrationUI = Task.Run(() =>
                     {
@@ -310,7 +309,7 @@ namespace HowLongToBeat
             {
                 var TaskIntegrationUI = Task.Run(() =>
                 {
-                    howLongToBeatUI.RefreshElements(GameSelected);
+                    howLongToBeatUI.RefreshElements(HowLongToBeatDatabase.GameSelected);
                 });
             }
             catch (Exception ex)

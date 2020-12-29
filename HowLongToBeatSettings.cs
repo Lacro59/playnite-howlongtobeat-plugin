@@ -1,4 +1,5 @@
-﻿using HowLongToBeat.Views;
+﻿using HowLongToBeat.Services;
+using HowLongToBeat.Views;
 using Newtonsoft.Json;
 using Playnite.SDK;
 using System.Collections.Generic;
@@ -137,7 +138,7 @@ namespace HowLongToBeat
             var TaskIntegrationUI = Task.Run(() =>
             {
                 var dispatcherOp = HowLongToBeat.howLongToBeatUI.AddElements();
-                dispatcherOp.Completed += (s, e) => { HowLongToBeat.howLongToBeatUI.RefreshElements(HowLongToBeat.GameSelected); };
+                dispatcherOp.Completed += (s, e) => { HowLongToBeat.howLongToBeatUI.RefreshElements(HowLongToBeatDatabase.GameSelected); };
             });
 
             HowLongToBeat.PluginDatabase.PluginSettings = this;

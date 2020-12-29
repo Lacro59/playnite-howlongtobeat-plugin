@@ -38,6 +38,9 @@
                 <ResourceDictionary Source="playnite-plugincommon/CommonPlaynite/Resources/DefaultControls/ToggleButton.xaml" />
                 <ResourceDictionary Source="playnite-plugincommon/CommonPlaynite/Resources/DefaultControls/ToolTip.xaml" />
                 <ResourceDictionary Source="playnite-plugincommon/CommonPlaynite/Resources/DefaultControls/TreeView.xaml" />
+                <!--Derived Controls-->
+                <ResourceDictionary Source="playnite-plugincommon/CommonPlaynite/Resources/DerivedStyles/BottomButton.xaml" />
+                <ResourceDictionary Source="playnite-plugincommon/CommonPlaynite/Resources/DerivedStyles/HighlightBorder.xaml" />
 
                 <!--PluginResources-->
                 <ResourceDictionary Source="Resources/Common.xaml" />
