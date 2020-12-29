@@ -1,5 +1,4 @@
 ﻿using Playnite.SDK;
-using PluginCommon;
 using System;
 using System.Linq;
 using System.Collections.Generic;
@@ -10,6 +9,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using Newtonsoft.Json;
 using HowLongToBeat.Services;
+using CommonShared;
 
 namespace HowLongToBeat.Views
 {

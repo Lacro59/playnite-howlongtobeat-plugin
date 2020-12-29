@@ -1,8 +1,8 @@
-﻿using HowLongToBeat.Models;
+﻿using CommonShared;
+using HowLongToBeat.Models;
 using HowLongToBeat.Services;
 using Newtonsoft.Json;
 using Playnite.SDK;
-using PluginCommon;
 using System;
 using System.Threading;
 using System.Windows;

@@ -1,6 +1,6 @@
-﻿using HowLongToBeat.Services;
+﻿using CommonShared;
+using HowLongToBeat.Services;
 using Newtonsoft.Json;
-using PluginCommon;
 using System;
 using System.Collections.Generic;
 using System.Globalization;

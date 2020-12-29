@@ -1,5 +1,5 @@
-﻿using Newtonsoft.Json;
-using PluginCommon.PlayniteResources.Converters;
+﻿using CommonPlaynite.Converters;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Globalization;
 

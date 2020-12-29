@@ -1,9 +1,9 @@
-﻿using HowLongToBeat.Models;
+﻿using CommonShared;
+using HowLongToBeat.Models;
 using HowLongToBeat.Views.Interfaces;
 using Newtonsoft.Json;
 using Playnite.SDK;
 using Playnite.SDK.Models;
-using PluginCommon;
 using System;
 using System.Collections.Generic;
 using System.Linq;

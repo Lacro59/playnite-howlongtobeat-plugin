@@ -5,7 +5,6 @@ using Playnite.SDK;
 using Playnite.SDK.Events;
 using Playnite.SDK.Models;
 using Playnite.SDK.Plugins;
-using PluginCommon;
 using System;
 using System.Linq;
 using System.Collections.Generic;
@@ -17,6 +16,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using HowLongToBeat.Models;
+using CommonShared;
 
 namespace HowLongToBeat
 {
@@ -50,9 +50,9 @@ namespace HowLongToBeat
             string pluginFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 
             // Add plugin localization in application ressource.
-            PluginCommon.PluginLocalization.SetPluginLanguage(pluginFolder, api.ApplicationSettings.Language);
+            PluginLocalization.SetPluginLanguage(pluginFolder, api.ApplicationSettings.Language);
             // Add common in application ressource.
-            PluginCommon.Common.Load(pluginFolder);
+            Common.Load(pluginFolder);
 
             // Check version
             if (settings.EnableCheckVersion)

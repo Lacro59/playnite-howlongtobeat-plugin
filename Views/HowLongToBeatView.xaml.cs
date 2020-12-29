@@ -3,8 +3,6 @@ using HowLongToBeat.Services;
 using HowLongToBeat.Views.Interfaces;
 using Playnite.SDK;
 using Playnite.SDK.Models;
-using PluginCommon;
-using PluginCommon.PlayniteResources.Converters;
 using System.Linq;
 using System.Windows;
 using System.Diagnostics;
@@ -13,6 +11,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Input;
 using System;
+using CommonPlaynite.Converters;
 
 namespace HowLongToBeat.Views
 {

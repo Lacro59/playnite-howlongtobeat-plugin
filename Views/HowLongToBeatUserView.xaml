@@ -4,11 +4,11 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:HowLongToBeat.Views"
-             xmlns:localPlugin="clr-namespace:PluginCommon;assembly=PluginCommon"
+             xmlns:commonshared="clr-namespace:CommonShared"
              mc:Ignorable="d" Height="600" Width="1024">
 
     <UserControl.Resources>
-        <localPlugin:LocalDateConverter x:Key="LocalDateConverter" />
+        <commonshared:LocalDateConverter x:Key="LocalDateConverter" />
         <FontFamily x:Key="font">pack://application:,,,/PluginCommon;component/Resources/font.ttf#font</FontFamily>
     </UserControl.Resources>
 

@@ -1,5 +1,5 @@
-﻿using Newtonsoft.Json;
-using PluginCommon.Collections;
+﻿using CommonShared.Collections;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;

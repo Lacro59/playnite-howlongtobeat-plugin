@@ -5,7 +5,6 @@ using HowLongToBeat.Views;
 using Newtonsoft.Json;
 using Playnite.SDK;
 using Playnite.SDK.Models;
-using PluginCommon;
 using System;
 using System.Linq;
 using System.Collections.Generic;
@@ -16,6 +15,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Text.RegularExpressions;
 using System.IO;
+using CommonShared;
 
 namespace HowLongToBeat.Services
 {
