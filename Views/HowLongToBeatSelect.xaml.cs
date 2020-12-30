@@ -1,4 +1,4 @@
-﻿using CommonShared;
+﻿using CommonPluginsShared;
 using HowLongToBeat.Models;
 using HowLongToBeat.Services;
 using Newtonsoft.Json;

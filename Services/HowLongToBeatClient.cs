@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Text.RegularExpressions;
 using System.IO;
-using CommonShared;
+using CommonPluginsShared;
 
 namespace HowLongToBeat.Services
 {

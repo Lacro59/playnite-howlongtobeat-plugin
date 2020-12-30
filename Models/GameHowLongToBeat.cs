@@ -1,4 +1,4 @@
-﻿using CommonShared.Collections;
+﻿using CommonPluginsShared.Collections;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;

@@ -1,5 +1,5 @@
-﻿using CommonPlaynite.Converters;
-using CommonShared;
+﻿using CommonPluginsPlaynite.Converters;
+using CommonPluginsShared;
 using HowLongToBeat.Models;
 using Newtonsoft.Json;
 using Playnite.SDK;

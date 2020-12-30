@@ -9,7 +9,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using Newtonsoft.Json;
 using HowLongToBeat.Services;
-using CommonShared;
+using CommonPluginsShared;
 
 namespace HowLongToBeat.Views
 {

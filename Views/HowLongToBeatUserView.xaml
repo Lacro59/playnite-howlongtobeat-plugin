@@ -4,11 +4,11 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:HowLongToBeat.Views"
-             xmlns:commonshared="clr-namespace:CommonShared"
+             xmlns:commonpluginsshared="clr-namespace:CommonPluginsShared"
              mc:Ignorable="d" Height="600" Width="1024">
 
     <UserControl.Resources>
-        <commonshared:LocalDateConverter x:Key="LocalDateConverter" />
+        <commonpluginsshared:LocalDateConverter x:Key="LocalDateConverter" />
     </UserControl.Resources>
 
     <Grid Margin="10">

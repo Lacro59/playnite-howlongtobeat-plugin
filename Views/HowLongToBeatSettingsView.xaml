@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:controls="clr-namespace:CommonControls.Controls;assembly=CommonControls"
+             xmlns:controls="clr-namespace:CommonPluginsControls.Controls;assembly=CommonPluginsControls"
              mc:Ignorable="d">
 
     <TabControl Margin="20" Name="tcSettings">
@@ -27,7 +27,7 @@
                         </Grid.RowDefinitions>
 
                         <Button Name="PART_TM_ColorOK" Grid.Column="1" Grid.Row="1" Content="{DynamicResource LOCOKLabel}" 
-                                        Click="PART_TM_ColorOK_Click"/>
+                                        Click="PART_TM_ColorOK_Click" />
                         <Button Name="PART_TM_ColorCancel" Grid.Column="3" Grid.Row="1" Content="{DynamicResource LOCCancelLabel}" 
                                         Click="PART_TM_ColorCancel_Click" />
                     </Grid>
@@ -77,8 +77,8 @@
 
                         <StackPanel Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Right">
                             <!--TextBlock Text="{DynamicResource LOCHowLongToBeatAutoTag}" Margin="0,0,10,0" VerticalAlignment="Center" /-->
-                            <Button Content="{DynamicResource LOCAddTitle}" Margin="0,0,10,0" IsEnabled="{Binding EnableTag}" VerticalAlignment="Center" Click="ButtonAddTag_Click"/>
-                            <Button Content="{DynamicResource LOCRemoveTitle}" IsEnabled="{Binding EnableTag}" VerticalAlignment="Bottom" Click="ButtonRemoveTag_Click" Margin="0,0,0,1"/>
+                            <Button Content="{DynamicResource LOCAddTitle}" Margin="0,0,10,0" IsEnabled="{Binding EnableTag}" VerticalAlignment="Center" Click="ButtonAddTag_Click" />
+                            <Button Content="{DynamicResource LOCRemoveTitle}" IsEnabled="{Binding EnableTag}" VerticalAlignment="Bottom" Click="ButtonRemoveTag_Click" Margin="0,0,0,1" />
                         </StackPanel>
 
                         <Grid Grid.Row="6">
@@ -177,7 +177,7 @@
                             <Button Grid.Column="2" Name="btAddData" Content="{DynamicResource LOCUpdateAll}" 
                                     Click="BtAddData_Click" VerticalAlignment="Center" />
                             <Button Grid.Column="4" Name="btRemoveData" Content="{DynamicResource LOCClearAll}" 
-                                    Click="BtRemoveData_Click" VerticalAlignment="Center "/>
+                                    Click="BtRemoveData_Click" VerticalAlignment="Center " />
                         </Grid>
                     </Grid>
                 </StackPanel>
@@ -226,7 +226,7 @@
                                                     </TextBlock>
                                                 </Border>
                                                 <ContentPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" DockPanel.Dock="Top"
-                                                             Margin="{TemplateBinding Padding}"/>
+                                                             Margin="{TemplateBinding Padding}" />
                                             </DockPanel>
                                         </Border>
                                     </ControlTemplate>
@@ -276,11 +276,11 @@
                                                             <Grid Width="18" Height="18" Background="{DynamicResource NormalBrushDark}">
                                                                 <Viewbox x:Name="CheckIcon" Visibility="Collapsed">
                                                                     <TextBlock Text="b" FontFamily="Marlett" Foreground="{DynamicResource GlyphBrush}"
-                                                    HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                    HorizontalAlignment="Center" VerticalAlignment="Center" />
                                                                 </Viewbox>
                                                                 <Viewbox x:Name="IndeterminateIcon" Visibility="Collapsed" Margin="2">
                                                                     <TextBlock Text="g" FontFamily="Marlett" Foreground="{DynamicResource GlyphBrush}"
-                                                    HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                    HorizontalAlignment="Center" VerticalAlignment="Center" />
                                                                 </Viewbox>
                                                             </Grid>
                                                         </Border>
@@ -293,7 +293,7 @@
                                                             <Condition Property="IsChecked" Value="{x:Null}" />
                                                             <Condition Property="IsThreeState" Value="True" />
                                                         </MultiTrigger.Conditions>
-                                                        <Setter Property="Visibility" Value="Visible" TargetName="IndeterminateIcon"/>
+                                                        <Setter Property="Visibility" Value="Visible" TargetName="IndeterminateIcon" />
                                                     </MultiTrigger>
                                                     <Trigger Property="IsChecked" Value="True">
                                                         <Setter Property="Visibility" Value="Visible" TargetName="CheckIcon" />
@@ -308,13 +308,13 @@
                                             </ControlTemplate>
                                         </Setter.Value>
                                     </Setter>
-                                    <Setter Property="IsEnabled" Value="False"/>
+                                    <Setter Property="IsEnabled" Value="False" />
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding ElementName=HltB_IntegrationInCustomTheme, Path=IsChecked}" Value="True">
-                                            <Setter Property="IsEnabled" Value="True"/>
+                                            <Setter Property="IsEnabled" Value="True" />
                                         </DataTrigger>
                                         <DataTrigger Binding="{Binding ElementName=HltB_IntegrationInDescription, Path=IsChecked}" Value="True">
-                                            <Setter Property="IsEnabled" Value="True"/>
+                                            <Setter Property="IsEnabled" Value="True" />
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>

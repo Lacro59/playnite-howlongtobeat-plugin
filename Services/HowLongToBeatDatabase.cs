@@ -3,7 +3,7 @@ using HowLongToBeat.Views;
 using Newtonsoft.Json;
 using Playnite.SDK;
 using Playnite.SDK.Models;
-using CommonShared.Collections;
+using CommonPluginsShared.Collections;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -13,7 +13,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using CommonShared;
+using CommonPluginsShared;
 
 namespace HowLongToBeat.Services
 {

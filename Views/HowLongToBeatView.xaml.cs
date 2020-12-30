@@ -11,7 +11,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Input;
 using System;
-using CommonPlaynite.Converters;
+using CommonPluginsPlaynite.Converters;
 
 namespace HowLongToBeat.Views
 {
