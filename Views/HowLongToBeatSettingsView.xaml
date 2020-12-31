@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:controls="clr-namespace:CommonPluginsControls.Controls;assembly=CommonPluginsControls"
+             xmlns:controls="clr-namespace:CommonPluginsControls.Controls"
              mc:Ignorable="d">
 
     <TabControl Margin="20" Name="tcSettings">
@@ -11,7 +11,7 @@
             <Grid Margin="0,10,0,0">
                 <Grid Name="PART_SelectorColor" Width="500" Visibility="Collapsed">
                     <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                        <controls:ControlPickerGradient Name="PART_SelectorColorPicker"></controls:ControlPickerGradient>
+                        <controls:ControlPickerGradient x:Name="PART_SelectorColorPicker"></controls:ControlPickerGradient>
                     </StackPanel>
 
                     <Grid>
