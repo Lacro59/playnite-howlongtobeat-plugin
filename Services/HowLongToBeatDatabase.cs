@@ -299,7 +299,7 @@ namespace HowLongToBeat.Services
             }
             else if (hltbDataUser.GameHltbData.MainExtra != 0)
             {
-                hltbTime = hltbDataUser.GameHltbData.MainStory;
+                hltbTime = hltbDataUser.GameHltbData.MainExtra;
             }
             if (hltbDataUser.GameHltbData.Solo != 0)
             {
