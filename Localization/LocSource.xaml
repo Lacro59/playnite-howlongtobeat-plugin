@@ -40,6 +40,11 @@
 
     <sys:String x:Key="LOCHowLongToBeatProgression">Progression</sys:String>
 
+    <!-- HowLongToBeatUserView -->
+
+    <sys:String x:Key="LOCHowLongToBeatCompletationCProgress">Completion progress</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatCompleted">Completed</sys:String>
+
     <sys:String x:Key="LOCHowLongToBeatPluginGetUserView">Getting HowLongToBeat user data</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeat1to5">1 to 5 hours</sys:String>

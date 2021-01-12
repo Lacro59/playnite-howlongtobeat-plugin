@@ -1,4 +1,10 @@
-﻿using HowLongToBeat.Services;
+﻿using CommonPluginsControls.LiveChartsCommon;
+using CommonPluginsShared;
+using HowLongToBeat.Models;
+using HowLongToBeat.Services;
+using LiveCharts;
+using LiveCharts.Configurations;
+using LiveCharts.Wpf;
 using Playnite.SDK;
 using System;
 using System.Collections.Generic;
@@ -38,6 +44,18 @@ namespace HowLongToBeat.Views
 
             ListViewGames.ItemsSource = PluginDatabase.Database.UserHltbData.TitlesList;
             Sorting();
+
+
+            //let create a mapper so LiveCharts know how to plot our CustomerViewModel class
+            var customerVmMapper = Mappers.Xy<CustomerForSingle>()
+                .X((value, index) => index)
+                .Y(value => value.Values);
+
+            //lets save the mapper globally
+            Charting.For<CustomerForSingle>(customerVmMapper);
+
+
+            SetChartData();
         }
 
 
@@ -190,10 +208,68 @@ namespace HowLongToBeat.Views
         {
             ListViewGames.ItemsSource = null;
 
+            PART_ChartUserData.Series = null;
+            PART_ChartUserDataLabelsX.Labels = null;
+
+
             PluginDatabase.RefreshUserData();
+
 
             ListViewGames.ItemsSource = PluginDatabase.Database.UserHltbData.TitlesList;
             Sorting();
+
+            SetChartData();
+        }
+
+
+        private void SetChartData()
+        {
+            LocalDateYMConverter localDateYMConverter = new LocalDateYMConverter();
+
+            
+            // Dafault data
+            string[] ChartDataLabels = new string[24];           
+            ChartValues<CustomerForSingle> ChartDataSeries = new ChartValues<CustomerForSingle>();
+
+            for (int i = 23; i >= 0; i--)
+            {
+                ChartDataLabels[(23 - i)] = (string)localDateYMConverter.Convert(DateTime.Now.AddMonths(-i), null, null, null);
+                ChartDataSeries.Add(new CustomerForSingle
+                {
+                    Name = (string)localDateYMConverter.Convert(DateTime.Now.AddMonths(-i), null, null, null),
+                    Values = 0
+                });
+            }
+
+
+            // Set data
+            foreach (TitleList titleList in PluginDatabase.Database.UserHltbData.TitlesList)
+            {
+                if (titleList.Completion != null)
+                {
+                    string tempDateTime = (string)localDateYMConverter.Convert((DateTime)titleList.Completion, null, null, null);
+
+                    int index = Array.IndexOf(ChartDataLabels, tempDateTime);
+
+                    if (index > 0)
+                    {
+                        ChartDataSeries[index].Values += 1;
+                    }
+                }
+            }
+
+
+            // Create chart
+            SeriesCollection StatsGraphicAchievementsSeries = new SeriesCollection();
+            StatsGraphicAchievementsSeries.Add(new LineSeries
+            {
+                Title = string.Empty,
+                Values = ChartDataSeries
+            });
+
+
+            PART_ChartUserData.Series = StatsGraphicAchievementsSeries;
+            PART_ChartUserDataLabelsX.Labels = ChartDataLabels;
         }
     }
 }

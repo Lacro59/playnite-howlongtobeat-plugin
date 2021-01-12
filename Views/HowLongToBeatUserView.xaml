@@ -5,6 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:HowLongToBeat.Views"
              xmlns:commonpluginsshared="clr-namespace:CommonPluginsShared"
+             xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
+             xmlns:livechartscommon="clr-namespace:CommonPluginsControls.LiveChartsCommon"
              mc:Ignorable="d" Height="600" Width="1024">
 
     <UserControl.Resources>
@@ -14,10 +16,13 @@
     <Grid Margin="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
+            <RowDefinition Height="10" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="10" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        
-        <ListView Name="ListViewGames" Height="500" FontSize="24" Grid.Row="0"
+
+        <ListView Name="ListViewGames" Height="300" FontSize="24" Grid.Row="0"
                   GridViewColumnHeader.Click="ListviewGames_onHeaderClick">
             <ListView.View>
                 <GridView>
@@ -29,7 +34,7 @@
                         <GridViewColumnHeader Name="lvPlatform" Content="{DynamicResource LOCPlatformTitle}"></GridViewColumnHeader>
                     </GridViewColumn>
                     <GridViewColumn Width="100" DisplayMemberBinding="{Binding Completion, Converter={StaticResource LocalDateConverter}}" x:Name="lvGameCompletion">
-                        <GridViewColumnHeader Name="lvCompletion" Content="{DynamicResource LOCCompletionStatusCompleted}"></GridViewColumnHeader>
+                        <GridViewColumnHeader Name="lvCompletion" Content="{DynamicResource LOCHowLongToBeatCompleted}"></GridViewColumnHeader>
                     </GridViewColumn>
 
                     <GridViewColumn Width="120" DisplayMemberBinding="{Binding HltbUserData.MainStoryFormat}" x:Name="lvGameMainStory">
@@ -77,7 +82,31 @@
             </ListView.View>
         </ListView>
 
-        <DockPanel Grid.Row="1">
+        <Grid Grid.Row="2" Height="200">
+            <DockPanel>
+                <Label DockPanel.Dock="Top" Content="{DynamicResource LOCHowLongToBeatCompletationCProgress}" Margin="0,0,0,10" />
+
+                <lvc:CartesianChart LegendLocation="none" Name="PART_ChartUserData" DockPanel.Dock="Bottom">
+                    <lvc:CartesianChart.DataTooltip>
+                        <livechartscommon:CustomerToolTipForSingle />
+                    </lvc:CartesianChart.DataTooltip>
+                
+                    <lvc:CartesianChart.AxisX>
+                        <lvc:Axis Name="PART_ChartUserDataLabelsX" ShowLabels="True" FontSize="10" MinValue="0">
+                            <lvc:Axis.Separator>
+                                <lvc:Separator Step="1" />
+                            </lvc:Axis.Separator>
+                        </lvc:Axis>
+                    </lvc:CartesianChart.AxisX>
+
+                    <lvc:CartesianChart.AxisY>
+                        <lvc:Axis Name="PART_ChartUserDataLabelsY" MinValue="0"></lvc:Axis>
+                    </lvc:CartesianChart.AxisY>
+                </lvc:CartesianChart>
+            </DockPanel>
+        </Grid>
+        
+        <DockPanel Grid.Row="4">
             <Button Name="PART_BtRefreshUserData" Content="{DynamicResource LOCHowLongToBeatActualiseUserData}" 
                     HorizontalAlignment="Right" VerticalAlignment="Bottom" Click="PART_BtRefreshUserData_Click" />
         </DockPanel>
