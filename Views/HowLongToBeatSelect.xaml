@@ -4,10 +4,14 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:commonpluginsshared="clr-namespace:CommonPluginsShared"
+             xmlns:playnitecontrols="clr-namespace:CommonPluginsControls.PlayniteControls"
+             xmlns:converters="clr-namespace:CommonPluginsPlaynite.Converters"
+             xmlns:controls="clr-namespace:CommonPluginsControls.Controls"
              mc:Ignorable="d" Width="500" Height="470" Background="{DynamicResource WindowBackgourndBrush}">
 
     <UserControl.Resources>
         <commonpluginsshared:VisibilityZeroConverter x:Key="VisibilityZeroConverter" />
+        <converters:StringNullOrEmptyToBoolConverter x:Key="StringNullOrEmptyToBoolConverter" />
     </UserControl.Resources>
 
     <Grid>
@@ -100,14 +104,17 @@
                     <ColumnDefinition Width="150" />
                 </Grid.ColumnDefinitions>
 
-                <TextBlock Grid.Column="0" Text="{DynamicResource LOCPlatformsTitle}" Style="{StaticResource BaseTextBlockStyle}" VerticalAlignment="Center" />
-                <ComboBox Name="PART_SelectPlatform" Grid.Column="2" VerticalAlignment="Center" >
+                <TextBlock Grid.Column="0" Text="{DynamicResource LOCPlatformsTitle}" Style="{StaticResource BaseTextBlockStyle}" 
+                           VerticalAlignment="Center" />
+                <controls:ComboBoxRemovable x:Name="PART_SelectPlatform" Grid.Column="2" VerticalAlignment="Center"
+                                            IsEditable="True" TextSearch.TextPath="Name"
+                                            IsTextSearchCaseSensitive="False" StaysOpenOnEdit="True">
                     <ComboBox.ItemTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding Name}" />
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
-                </ComboBox>
+                </controls:ComboBoxRemovable>
             </Grid>
 
             <!-- Name -->
@@ -118,8 +125,9 @@
                     <ColumnDefinition Width="150" />
                 </Grid.ColumnDefinitions>
 
-                <TextBox Grid.Column="0" Name="SearchElement" KeyUp="SearchElement_KeyUp" VerticalContentAlignment="Center" />
-                <Button Grid.Column="3" Content="{DynamicResource LOCSearchLabel}" Click="ButtonSearch_Click"></Button>
+                <playnitecontrols:SearchBox Grid.Column="0" x:Name="SearchElement" KeyUp="SearchElement_KeyUp" />
+                <Button Name="PART_BtSearch" Grid.Column="3" Content="{DynamicResource LOCSearchLabel}" Click="ButtonSearch_Click"
+                        IsEnabled="{Binding ElementName=SearchElement, Path=Text, Converter={StaticResource StringNullOrEmptyToBoolConverter}}"/>
             </Grid>
 
             <!-- Actions -->

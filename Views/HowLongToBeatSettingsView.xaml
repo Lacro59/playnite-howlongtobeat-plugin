@@ -44,6 +44,7 @@
                             <RowDefinition Height="30" />
                             <RowDefinition Height="30" />
                             <RowDefinition Height="30" />
+                            <RowDefinition Height="30" />
                             <RowDefinition Height="10" />
                             <RowDefinition Height="auto" />
                         </Grid.RowDefinitions>
@@ -75,13 +76,13 @@
                             <Label Content="{DynamicResource LOCHowLongToBeatAddTagDescription}" />
                         </CheckBox>
 
-                        <StackPanel Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Right">
+                        <StackPanel Grid.Row="5" Orientation="Horizontal" HorizontalAlignment="Right">
                             <!--TextBlock Text="{DynamicResource LOCHowLongToBeatAutoTag}" Margin="0,0,10,0" VerticalAlignment="Center" /-->
                             <Button Content="{DynamicResource LOCAddTitle}" Margin="0,0,10,0" IsEnabled="{Binding EnableTag}" VerticalAlignment="Center" Click="ButtonAddTag_Click" />
                             <Button Content="{DynamicResource LOCRemoveTitle}" IsEnabled="{Binding EnableTag}" VerticalAlignment="Bottom" Click="ButtonRemoveTag_Click" Margin="0,0,0,1" />
                         </StackPanel>
 
-                        <Grid Grid.Row="6">
+                        <Grid Grid.Row="7">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="10" />

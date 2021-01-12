@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using Playnite.SDK;
 using Playnite.SDK.Models;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
@@ -24,8 +25,9 @@ namespace HowLongToBeat.Views
         private static readonly ILogger logger = LogManager.GetLogger();
 
         public GameHowLongToBeat gameHowLongToBeat;
-
         private Game _game;
+
+        private List<HltbPlatform> items;
 
 
         public HowLongToBeatSelect(List<HltbData> data, Game game)
@@ -57,19 +59,19 @@ namespace HowLongToBeat.Views
 
         private void SetPlatforms()
         {
-            List<HltbPlatform> items = new List<HltbPlatform>();
-            items.Add(new HltbPlatform() { Name = "", Category = "" });
+            items = new List<HltbPlatform>();
+            //items.Add(new HltbPlatform() { Name = "", Category = "" });
 
-            items.Add(new HltbPlatform() { Name = "Emulated", Category = "Popular Platforms" });
-            items.Add(new HltbPlatform() { Name = "Nintendo 3DS", Category = "Popular Platforms" });
-            items.Add(new HltbPlatform() { Name = "Nintendo Switch", Category = "Popular Platforms" });
-            items.Add(new HltbPlatform() { Name = "PC", Category = "Popular Platforms" });
-            items.Add(new HltbPlatform() { Name = "PlayStation 3", Category = "Popular Platforms" });
-            items.Add(new HltbPlatform() { Name = "PlayStation 4", Category = "Popular Platforms" });
-            items.Add(new HltbPlatform() { Name = "PlayStation Now", Category = "Popular Platforms" });
-            items.Add(new HltbPlatform() { Name = "Wii U", Category = "Popular Platforms" });
-            items.Add(new HltbPlatform() { Name = "Xbox 360", Category = "Popular Platforms" });
-            items.Add(new HltbPlatform() { Name = "Xbox One", Category = "Popular Platforms" });
+            //items.Add(new HltbPlatform() { Name = "Emulated", Category = "Popular Platforms" });
+            //items.Add(new HltbPlatform() { Name = "Nintendo 3DS", Category = "Popular Platforms" });
+            //items.Add(new HltbPlatform() { Name = "Nintendo Switch", Category = "Popular Platforms" });
+            //items.Add(new HltbPlatform() { Name = "PC", Category = "Popular Platforms" });
+            //items.Add(new HltbPlatform() { Name = "PlayStation 3", Category = "Popular Platforms" });
+            //items.Add(new HltbPlatform() { Name = "PlayStation 4", Category = "Popular Platforms" });
+            //items.Add(new HltbPlatform() { Name = "PlayStation Now", Category = "Popular Platforms" });
+            //items.Add(new HltbPlatform() { Name = "Wii U", Category = "Popular Platforms" });
+            //items.Add(new HltbPlatform() { Name = "Xbox 360", Category = "Popular Platforms" });
+            //items.Add(new HltbPlatform() { Name = "Xbox One", Category = "Popular Platforms" });
 
             items.Add(new HltbPlatform() { Name = "3DO", Category = "All Platforms" });
             items.Add(new HltbPlatform() { Name = "Amiga", Category = "All Platforms" });
@@ -161,10 +163,15 @@ namespace HowLongToBeat.Views
             items.Add(new HltbPlatform() { Name = "ZX Spectrum", Category = "All Platforms" });
 
             PART_SelectPlatform.ItemsSource = items;
-            PART_SelectPlatform.SelectedIndex = 0;
         }
 
+        private void PART_SelectPlatform_KeyUp(object sender, KeyEventArgs e)
+        {
+            string SearchText = ((ComboBox)sender).Text;
 
+            PART_SelectPlatform.ItemsSource = null;
+            PART_SelectPlatform.ItemsSource = items.Where(x => x.Name.ToLower().Contains(SearchText)).Distinct().ToList();
+        }
 
 
         private void ButtonCancel_Click(object sender, RoutedEventArgs e)
@@ -215,7 +222,7 @@ namespace HowLongToBeat.Views
             SelectableContent.IsEnabled = false;
 
             string GameSearch = SearchElement.Text;
-            string GamePlatform = ((HltbPlatform)PART_SelectPlatform.SelectedValue).Name;
+            string GamePlatform = ((HltbPlatform)PART_SelectPlatform.SelectedValue == null) ? string.Empty : ((HltbPlatform)PART_SelectPlatform.SelectedValue).Name;
             Task task = Task.Run(() =>
             {
                 List<HltbDataUser> dataSearch = new List<HltbDataUser>();
