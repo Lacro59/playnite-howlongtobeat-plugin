@@ -505,7 +505,7 @@ namespace HowLongToBeat.Services
                                 .Replace("<strong>", string.Empty).Replace("</strong>", string.Empty)
                                 .Split('/').ToList();
 
-                            for (int i = 0; i < ListTime.Count; i++)
+                            for (int i = 0; i < titleList.GameStatuses.Count; i++)
                             {
                                 titleList.GameStatuses[i].Time = ConvertStringToLongUser(ListTime[i]);
                             }
@@ -583,6 +583,14 @@ namespace HowLongToBeat.Services
                 catch (Exception ex)
                 {
                     Common.LogError(ex, "HowLongToBeat");
+
+                    _PlayniteApi.Notifications.Add(new NotificationMessage(
+                        "HowLongToBeat-Import-Error",
+                        "HowLongToBeat" + System.Environment.NewLine +
+                        ex.Message,
+                        NotificationType.Error,
+                        () => _plugin.OpenSettingsView()));
+
                     return null;
                 }
 

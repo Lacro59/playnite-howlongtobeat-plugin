@@ -30,7 +30,7 @@
                         <GridViewColumnHeader Name="lvName" Content="{DynamicResource LOCGameNameTitle}"></GridViewColumnHeader>
                     </GridViewColumn>
 
-                    <GridViewColumn Width="90" DisplayMemberBinding="{Binding Platform}" x:Name="lvGamePlatform">
+                    <GridViewColumn Width="100" DisplayMemberBinding="{Binding Platform}" x:Name="lvGamePlatform">
                         <GridViewColumnHeader Name="lvPlatform" Content="{DynamicResource LOCPlatformTitle}"></GridViewColumnHeader>
                     </GridViewColumn>
                     <GridViewColumn Width="100" DisplayMemberBinding="{Binding Completion, Converter={StaticResource LocalDateConverter}}" x:Name="lvGameCompletion">

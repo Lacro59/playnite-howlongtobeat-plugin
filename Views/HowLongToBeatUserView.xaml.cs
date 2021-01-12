@@ -228,12 +228,12 @@ namespace HowLongToBeat.Views
 
             
             // Dafault data
-            string[] ChartDataLabels = new string[24];           
+            string[] ChartDataLabels = new string[25];           
             ChartValues<CustomerForSingle> ChartDataSeries = new ChartValues<CustomerForSingle>();
 
-            for (int i = 23; i >= 0; i--)
+            for (int i = 24; i >= 0; i--)
             {
-                ChartDataLabels[(23 - i)] = (string)localDateYMConverter.Convert(DateTime.Now.AddMonths(-i), null, null, null);
+                ChartDataLabels[(24 - i)] = (string)localDateYMConverter.Convert(DateTime.Now.AddMonths(-i), null, null, null);
                 ChartDataSeries.Add(new CustomerForSingle
                 {
                     Name = (string)localDateYMConverter.Convert(DateTime.Now.AddMonths(-i), null, null, null),
