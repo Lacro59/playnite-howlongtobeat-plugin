@@ -17,6 +17,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using HowLongToBeat.Models;
 using CommonPluginsShared;
+using System.Windows.Threading;
 
 namespace HowLongToBeat
 {
@@ -270,7 +271,17 @@ namespace HowLongToBeat
                     {
                         howLongToBeatUI.Initial();
                         howLongToBeatUI.taskHelper.Check();
-                        var dispatcherOp = howLongToBeatUI.AddElements();
+
+                        DispatcherOperation dispatcherOp = null;
+                        if (PlayniteApi.ApplicationInfo.Mode == ApplicationMode.Desktop)
+                        {
+                            dispatcherOp = howLongToBeatUI.AddElements();
+                        }
+                        else if (PlayniteApi.ApplicationInfo.Mode == ApplicationMode.Fullscreen)
+                        {
+                            dispatcherOp = howLongToBeatUI.AddElementsFS();
+                        }
+
                         if (dispatcherOp != null)
                         {
                             dispatcherOp.Completed += (s, e) => { howLongToBeatUI.RefreshElements(args.NewValue[0]); };
