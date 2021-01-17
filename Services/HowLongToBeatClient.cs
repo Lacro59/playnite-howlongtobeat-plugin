@@ -16,6 +16,8 @@ using System.Windows;
 using System.Text.RegularExpressions;
 using System.IO;
 using CommonPluginsShared;
+using System.Windows.Threading;
+using System.Threading;
 
 namespace HowLongToBeat.Services
 {
@@ -80,6 +82,7 @@ namespace HowLongToBeat.Services
         }
 
         public string UserLogin = string.Empty;
+        public int UserId = 0;
         public HltbUserStats hltbUserStats = new HltbUserStats();
 
 
@@ -347,14 +350,6 @@ namespace HowLongToBeat.Services
             {
                 webViews.NavigateAndWait(UrlBase);
                 IsConnected = webViews.GetPageSource().ToLower().IndexOf("log in") == -1;
-
-                if ((bool)IsConnected)
-                {
-                    HtmlParser parser = new HtmlParser();
-                    IHtmlDocument htmlDocument = parser.Parse(webViews.GetPageSource());
-
-                    UserLogin = htmlDocument.QuerySelector("ul.login div.label").InnerHtml;
-                }
             }
 
             return (bool)IsConnected;
@@ -381,14 +376,52 @@ namespace HowLongToBeat.Services
 #endif
                         UserLogin = WebUtility.HtmlDecode(webView.GetCurrentAddress().Replace("https://howlongtobeat.com/user?n=", string.Empty));
                         IsConnected = true;
+                        Thread.Sleep(2000);
                         webView.Close();
                     }
                 };
 
                 IsConnected = false;
                 webView.Navigate(UrlLogOut);
+                webView.Navigate(UrlLogin);
                 webView.OpenDialog();
-            });
+            }).Completed += (s, e) => 
+            {
+                if ((bool)IsConnected)
+                {
+                    Application.Current.Dispatcher.BeginInvoke((Action)delegate
+                    {
+                        try
+                        {
+                            Task.Run(() => {
+                                IWebView webView = _PlayniteApi.WebViews.CreateOffscreenView();
+
+                                string url = @"https://howlongtobeat.com/submit?s=add";
+                                webView.NavigateAndWait(url);
+
+                                logger.Debug(webView.GetPageText());
+
+                                HtmlParser parser = new HtmlParser();
+                                IHtmlDocument htmlDocument = parser.Parse(webView.GetPageSource());
+
+                                foreach (var el in htmlDocument.QuerySelectorAll("input[name=\"user_id\"]"))
+                                {
+                                    string stringUserId = el.GetAttribute("value");
+                                    int.TryParse(stringUserId, out UserId);
+                                }
+
+                                webView.Close();
+
+                             HowLongToBeat.PluginDatabase.RefreshUserData();
+                            });
+                        }
+                        catch (Exception ex)
+                        {
+                            Common.LogError(ex, "HowLongToBeat");
+                        }
+                    });
+                }
+            };
         }
 
 
@@ -419,6 +452,7 @@ namespace HowLongToBeat.Services
             {
                 hltbUserStats = new HltbUserStats();
                 hltbUserStats.Login = UserLogin;
+                hltbUserStats.UserId = UserId;
                 hltbUserStats.TitlesList = new List<TitleList>();
 
                 try

@@ -13,6 +13,7 @@ namespace HowLongToBeat.Models
     public class HltbUserStats
     {
         public string Login { get; set; }
+        public int UserId { get; set; }
 
         public List<TitleList> TitlesList { get; set; }
     }

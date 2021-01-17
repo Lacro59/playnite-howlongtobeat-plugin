@@ -250,7 +250,9 @@ namespace HowLongToBeat.Views
         private void PART_BtAuthenticate_Click(object sender, RoutedEventArgs e)
         {
             PART_LbUserLogin.Visibility = Visibility.Collapsed;
-            var task = Task.Run(() => PluginDatabase.howLongToBeatClient.Login());
+            var task = Task.Run(() => {
+                PluginDatabase.howLongToBeatClient.Login();
+            });
         }
 
 
@@ -261,7 +263,7 @@ namespace HowLongToBeat.Views
                 {
                     PART_LbAuthenticate.Content = resources.GetString("LOCLoggedIn");
                     PART_LbUserLogin.Visibility = Visibility.Visible;
-                    PART_LbUserLogin.Content = resources.GetString("LOCGOGUseAccountName") + " " + PluginDatabase.howLongToBeatClient.UserLogin;
+                    PART_LbUserLogin.Content = resources.GetString("LOCGOGUseAccountName") + " " + PluginDatabase.Database.UserHltbData.Login;
                 }
                 else
                 {
