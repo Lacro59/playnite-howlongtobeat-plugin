@@ -455,7 +455,6 @@ namespace HowLongToBeat.Services
                         titleList.Platform = td[0].QuerySelector("span").InnerHtml.Trim();
                         titleList.Id = int.Parse(td[0].QuerySelector("a").GetAttribute("href").Replace("game?id=", string.Empty));
 
-
                         // Get game details
                         formContent = new FormUrlEncodedContent(new[]
                         {
@@ -537,7 +536,7 @@ namespace HowLongToBeat.Services
                                 titleList.HltbUserData.MainStory = ConvertStringToLongUser(tempTime);
                             }
 
-                            if (GameDetails[iPosUserData].Children[i].InnerHtml.ToLower().Contains("main + extras"))
+                            if (GameDetails[iPosUserData].Children[i].InnerHtml.ToLower().Contains("main+extras"))
                             {
                                 i++;
                                 tempTime = GameDetails[iPosUserData].Children[i].QuerySelector("span").InnerHtml;

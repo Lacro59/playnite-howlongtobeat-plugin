@@ -1,4 +1,5 @@
 ﻿using CommonPluginsControls.LiveChartsCommon;
+using CommonPluginsPlaynite.Converters;
 using CommonPluginsShared;
 using HowLongToBeat.Models;
 using HowLongToBeat.Services;
@@ -9,6 +10,7 @@ using Playnite.SDK;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -56,6 +58,7 @@ namespace HowLongToBeat.Views
 
 
             SetChartData();
+            SetStats();
         }
 
 
@@ -211,6 +214,11 @@ namespace HowLongToBeat.Views
             PART_ChartUserData.Series = null;
             PART_ChartUserDataLabelsX.Labels = null;
 
+            PART_CompletionsCount.Content = string.Empty;
+            PART_TimeSinglePlayer.Content = string.Empty;
+            PART_TimeCoOp.Content = string.Empty;
+            PART_TimeVs.Content = string.Empty;
+
 
             PluginDatabase.RefreshUserData();
 
@@ -219,6 +227,7 @@ namespace HowLongToBeat.Views
             Sorting();
 
             SetChartData();
+            SetStats();
         }
 
 
@@ -270,6 +279,44 @@ namespace HowLongToBeat.Views
 
             PART_ChartUserData.Series = StatsGraphicAchievementsSeries;
             PART_ChartUserDataLabelsX.Labels = ChartDataLabels;
+        }
+
+        private void SetStats()
+        {
+            List<TitleList> titleLists = PluginDatabase.Database.UserHltbData.TitlesList;
+
+
+            PART_CompletionsCount.Content = titleLists.FindAll(x => x.Completion != null).Count;
+
+
+            long TimeSinglePlayer = 0;
+            long TimeCoOp = 0;
+            long TimeVs = 0;
+
+            foreach (TitleList titleList  in titleLists)
+            {
+                if (titleList.HltbUserData.Completionist != 0)
+                {
+                    TimeSinglePlayer += titleList.HltbUserData.Completionist;
+                }
+                else if (titleList.HltbUserData.MainExtra != 0)
+                {
+                    TimeSinglePlayer += titleList.HltbUserData.MainExtra;
+                }
+                else if (titleList.HltbUserData.MainStory != 0)
+                {
+                    TimeSinglePlayer += titleList.HltbUserData.MainStory;
+                }
+
+                TimeCoOp += titleList.HltbUserData.CoOp;
+                TimeCoOp += titleList.HltbUserData.Vs;
+            }
+
+            LongToTimePlayedConverter converter = new LongToTimePlayedConverter();
+
+            PART_TimeSinglePlayer.Content = (string)converter.Convert((long)TimeSinglePlayer, null, null, CultureInfo.CurrentCulture);
+            PART_TimeCoOp.Content = (string)converter.Convert((long)TimeCoOp, null, null, CultureInfo.CurrentCulture); 
+            PART_TimeVs.Content = (string)converter.Convert((long)TimeVs, null, null, CultureInfo.CurrentCulture); 
         }
     }
 }
