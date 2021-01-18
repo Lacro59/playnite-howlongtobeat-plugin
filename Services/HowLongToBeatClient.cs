@@ -474,8 +474,6 @@ namespace HowLongToBeat.Services
 
                     string response = Web.PostStringDataCookies(UrlUserStatsGameList, formContent, Cookies).GetAwaiter().GetResult();
 
-                    logger.Debug(response);
-
                     HtmlParser parser = new HtmlParser();
                     IHtmlDocument htmlDocument = parser.Parse(response);
 

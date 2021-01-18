@@ -416,7 +416,6 @@ namespace HowLongToBeat.Services
                         logger.Debug($"HowLongToBeat [Ignored] - AddBtInfoBarFS()");
 #endif
                         AddSpInfoBarFS();
-                        AddSpInfoBarFS();
                     }
                 }));
             }

@@ -320,7 +320,20 @@ namespace HowLongToBeat
             {
                 var TaskIntegrationUI = Task.Run(() =>
                 {
-                    howLongToBeatUI.RefreshElements(HowLongToBeatDatabase.GameSelected);
+                    DispatcherOperation dispatcherOp = null;
+                    if (PlayniteApi.ApplicationInfo.Mode == ApplicationMode.Desktop)
+                    {
+                        dispatcherOp = howLongToBeatUI.AddElements();
+                    }
+                    else if (PlayniteApi.ApplicationInfo.Mode == ApplicationMode.Fullscreen)
+                    {
+                        dispatcherOp = howLongToBeatUI.AddElementsFS();
+                    }
+
+                    if (dispatcherOp != null)
+                    {
+                        dispatcherOp.Completed += (s, e) => { howLongToBeatUI.RefreshElements(HowLongToBeatDatabase.GameSelected); };
+                    }
                 });
             }
             catch (Exception ex)
