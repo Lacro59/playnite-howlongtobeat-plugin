@@ -1,6 +1,7 @@
 ﻿using CommonPluginsShared;
 using HowLongToBeat.Models;
 using HowLongToBeat.Views.Interfaces;
+using HowLongToBeat.Views.InterfacesFS;
 using Newtonsoft.Json;
 using Playnite.SDK;
 using Playnite.SDK.Models;
@@ -48,6 +49,8 @@ namespace HowLongToBeat.Services
 
             BtActionBarName = "PART_HltbButton";
             SpDescriptionName = "PART_HltbDescriptionIntegration";
+
+            SpInfoBarFSName = "PART_HltbSpInfoBar";
         }
 
 
@@ -432,7 +435,36 @@ namespace HowLongToBeat.Services
 
         public override void AddSpInfoBarFS()
         {
+            if (PART_SpInfoBarFS != null)
+            {
+#if DEBUG
+                logger.Debug($"HowLongToBeat [Ignored] - PART_BtInfoBar allready insert");
+#endif
 
+                ((HLTBInfoBarFS)PART_SpInfoBarFS).SetData(PluginDatabase.Get(HowLongToBeatDatabase.GameSelected));
+                return;
+            }
+
+            FrameworkElement SpInfoBar;
+            SpInfoBar = new HLTBInfoBarFS();
+
+            SpInfoBar.Name = SpInfoBarFSName;
+            SpInfoBar.Margin = new Thickness(50, 0, 0, 0);
+
+            try
+            {
+                ui.AddStackPanelInGameSelectedInfoBarFS(SpInfoBar);
+                PART_SpInfoBarFS = IntegrationUI.SearchElementByName(SpInfoBarFSName);
+
+                if (PART_SpInfoBarFS != null)
+                {
+                    ((HLTBInfoBarFS)PART_SpInfoBarFS).SetData(PluginDatabase.Get(HowLongToBeatDatabase.GameSelected));
+                }
+            }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, "HowLongToBeat");
+            }
         }
 
         public override void RefreshSpInfoBarFS()

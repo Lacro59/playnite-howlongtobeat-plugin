@@ -137,6 +137,9 @@
     <Compile Include="Views\HowLongToBeatView.xaml.cs">
       <DependentUpon>HowLongToBeatView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\InterfacesFS\HLTBInfoBarFS.xaml.cs">
+      <DependentUpon>HLTBInfoBarFS.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Interfaces\HltbButton.xaml.cs">
       <DependentUpon>HltbButton.xaml</DependentUpon>
     </Compile>
@@ -303,6 +306,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\HowLongToBeatView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\InterfacesFS\HLTBInfoBarFS.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

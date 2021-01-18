@@ -204,20 +204,21 @@ namespace HowLongToBeat.Services
 #if DEBUG
             logger.Debug($"HowLongToBeat [Ignored] - Search data for {game.Name}");
 #endif
-
-            HowLongToBeatSelect ViewExtension = null;
-            Application.Current.Dispatcher.BeginInvoke((Action)delegate
+            if (_PlayniteApi.ApplicationInfo.Mode == ApplicationMode.Desktop)
             {
-                ViewExtension = new HowLongToBeatSelect(null, game);
-                Window windowExtension = PlayniteUiHelper.CreateExtensionWindow(_PlayniteApi, resources.GetString("LOCSelection"), ViewExtension);
-                windowExtension.ShowDialog();
-            }).Wait();
+                HowLongToBeatSelect ViewExtension = null;
+                Application.Current.Dispatcher.BeginInvoke((Action)delegate
+                {
+                    ViewExtension = new HowLongToBeatSelect(null, game);
+                    Window windowExtension = PlayniteUiHelper.CreateExtensionWindow(_PlayniteApi, resources.GetString("LOCSelection"), ViewExtension);
+                    windowExtension.ShowDialog();
+                }).Wait();
 
-            if (ViewExtension.gameHowLongToBeat != null && ViewExtension.gameHowLongToBeat.Items.Count > 0)
-            {
-                return ViewExtension.gameHowLongToBeat;
+                if (ViewExtension.gameHowLongToBeat != null && ViewExtension.gameHowLongToBeat.Items.Count > 0)
+                {
+                    return ViewExtension.gameHowLongToBeat;
+                }
             }
-
             return null;
         }
         
