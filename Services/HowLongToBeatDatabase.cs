@@ -382,25 +382,7 @@ namespace HowLongToBeat.Services
 
         private Guid? FindGoodPluginTags(HltbDataUser hltbDataUser)
         {
-            long hltbTime = 0;
-
-            // Get time
-            if (hltbDataUser.GameHltbData.MainStory != 0)
-            {
-                hltbTime = hltbDataUser.GameHltbData.MainStory;
-            }
-            else if (hltbDataUser.GameHltbData.MainExtra != 0)
-            {
-                hltbTime = hltbDataUser.GameHltbData.MainExtra;
-            }
-            if (hltbDataUser.GameHltbData.Solo != 0)
-            {
-                hltbTime = hltbDataUser.GameHltbData.Solo;
-            }
-            else if (hltbDataUser.GameHltbData.Vs != 0)
-            {
-                hltbTime = hltbDataUser.GameHltbData.Vs;
-            }
+            long hltbTime = hltbDataUser.GameHltbData.TimeToBeat;
 
             // Add tag
             if (hltbTime != 0)

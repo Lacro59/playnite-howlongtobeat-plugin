@@ -135,11 +135,16 @@ namespace HowLongToBeat.Services
                     resourcesLists.Add(new ResourcesList { Key = "Htlb_CoOpFormat", Value = string.Empty });
                     resourcesLists.Add(new ResourcesList { Key = "Htlb_Vs", Value = 0 });
                     resourcesLists.Add(new ResourcesList { Key = "Htlb_VsFormat", Value = string.Empty });
+                    resourcesLists.Add(new ResourcesList { Key = "Htlb_TimeToBeat", Value = 0 });
+                    resourcesLists.Add(new ResourcesList { Key = "Htlb_TimeToBeatFormat", Value = string.Empty });
 
                     resourcesLists.Add(new ResourcesList { Key = "Htlb_EnableIntegrationInCustomTheme", Value = PluginDatabase.PluginSettings.EnableIntegrationInCustomTheme });
                     resourcesLists.Add(new ResourcesList { Key = "Htlb_ColorFirst", Value = new SolidColorBrush(PluginDatabase.PluginSettings.ColorFirst) });
                     resourcesLists.Add(new ResourcesList { Key = "Htlb_ColorSecond", Value = new SolidColorBrush(PluginDatabase.PluginSettings.ColorSecond) });
                     resourcesLists.Add(new ResourcesList { Key = "Htlb_ColorThird", Value = new SolidColorBrush(PluginDatabase.PluginSettings.ColorThird) });
+                    resourcesLists.Add(new ResourcesList { Key = "Htlb_ColorFirstMulti", Value = new SolidColorBrush(PluginDatabase.PluginSettings.ColorFirstMulti) });
+                    resourcesLists.Add(new ResourcesList { Key = "Htlb_ColorSecondMulti", Value = new SolidColorBrush(PluginDatabase.PluginSettings.ColorSecondMulti) });
+                    resourcesLists.Add(new ResourcesList { Key = "Htlb_ColorThirdMulti", Value = new SolidColorBrush(PluginDatabase.PluginSettings.ColorThirdMulti) });
                     ui.AddResources(resourcesLists);
 
 
@@ -169,11 +174,10 @@ namespace HowLongToBeat.Services
                         resourcesLists.Add(new ResourcesList { Key = "Htlb_CoOpFormat", Value = hltbDataUser.GameHltbData.CoOpFormat });
                         resourcesLists.Add(new ResourcesList { Key = "Htlb_Vs", Value = hltbDataUser.GameHltbData.Vs });
                         resourcesLists.Add(new ResourcesList { Key = "Htlb_VsFormat", Value = hltbDataUser.GameHltbData.VsFormat });
+                        resourcesLists.Add(new ResourcesList { Key = "Htlb_TimeToBeat", Value = hltbDataUser.GameHltbData.TimeToBeat });
+                        resourcesLists.Add(new ResourcesList { Key = "Htlb_TimeToBeatFormat", Value = hltbDataUser.GameHltbData.TimeToBeatFormat });
 
                         resourcesLists.Add(new ResourcesList { Key = "Htlb_EnableIntegrationInCustomTheme", Value = PluginDatabase.PluginSettings.EnableIntegrationInCustomTheme });
-                        resourcesLists.Add(new ResourcesList { Key = "Htlb_ColorFirst", Value = new SolidColorBrush(PluginDatabase.PluginSettings.ColorFirst) });
-                        resourcesLists.Add(new ResourcesList { Key = "Htlb_ColorSecond", Value = new SolidColorBrush(PluginDatabase.PluginSettings.ColorSecond) });
-                        resourcesLists.Add(new ResourcesList { Key = "Htlb_ColorThird", Value = new SolidColorBrush(PluginDatabase.PluginSettings.ColorThird) });
                     }
                     else
                     {

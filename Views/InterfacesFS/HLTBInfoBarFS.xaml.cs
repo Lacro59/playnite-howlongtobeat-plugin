@@ -39,34 +39,9 @@ namespace HowLongToBeat.Views.InterfacesFS
                 return;
             }
 
-            string TimeToBeat = string.Empty;
+            string TimeToBeat = GameSelectedData.GetData().GameHltbData.TimeToBeatFormat;
 
-            if (GameSelectedData.GetData().GameHltbData.MainStory != 0)
-            {
-                TimeToBeat = GameSelectedData.GetData().GameHltbData.MainStoryFormat;
-            } 
-            else if (GameSelectedData.GetData().GameHltbData.MainExtra != 0)
-            {
-                TimeToBeat = GameSelectedData.GetData().GameHltbData.MainExtraFormat;
-            }
-            else if (GameSelectedData.GetData().GameHltbData.Completionist != 0)
-            {
-                TimeToBeat = GameSelectedData.GetData().GameHltbData.CompletionistFormat;
-            }
-            else if (GameSelectedData.GetData().GameHltbData.Solo != 0)
-            {
-                TimeToBeat = GameSelectedData.GetData().GameHltbData.SoloFormat;
-            }
-            else if (GameSelectedData.GetData().GameHltbData.CoOp != 0)
-            {
-                TimeToBeat = GameSelectedData.GetData().GameHltbData.CoOpFormat;
-            }
-            else if (GameSelectedData.GetData().GameHltbData.Vs != 0)
-            {
-                TimeToBeat = GameSelectedData.GetData().GameHltbData.VsFormat;
-            }
-
-            if (TimeToBeat.IsNullOrEmpty())
+            if (TimeToBeat == "--")
             {
                 this.Visibility = Visibility.Collapsed;
             }
