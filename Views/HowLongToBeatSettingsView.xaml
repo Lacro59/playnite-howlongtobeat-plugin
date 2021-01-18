@@ -45,6 +45,7 @@
                             <RowDefinition Height="30" />
                             <RowDefinition Height="30" />
                             <RowDefinition Height="30" />
+                            <RowDefinition Height="auto" />
                             <RowDefinition Height="10" />
                             <RowDefinition Height="auto" />
                         </Grid.RowDefinitions>
@@ -77,12 +78,15 @@
                         </CheckBox>
 
                         <StackPanel Grid.Row="5" Orientation="Horizontal" HorizontalAlignment="Right">
-                            <!--TextBlock Text="{DynamicResource LOCHowLongToBeatAutoTag}" Margin="0,0,10,0" VerticalAlignment="Center" /-->
                             <Button Content="{DynamicResource LOCAddTitle}" Margin="0,0,10,0" IsEnabled="{Binding EnableTag}" VerticalAlignment="Center" Click="ButtonAddTag_Click" />
                             <Button Content="{DynamicResource LOCRemoveTitle}" IsEnabled="{Binding EnableTag}" VerticalAlignment="Bottom" Click="ButtonRemoveTag_Click" Margin="0,0,0,1" />
                         </StackPanel>
 
-                        <Grid Grid.Row="7">
+                        <!--CheckBox Grid.Row="6"  IsChecked="{Binding AutoSetCurrentPlayTime}" Grid.Column="0" VerticalAlignment="Center">
+                            <Label Content="{DynamicResource LOCHowLongToBeatAutoSetCurrentPlayTime}" />
+                        </CheckBox-->
+
+                        <Grid Grid.Row="8">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="10" />

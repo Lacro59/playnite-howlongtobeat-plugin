@@ -14,6 +14,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using CommonPluginsShared;
+using System.Net;
 
 namespace HowLongToBeat.Services
 {
@@ -21,6 +22,97 @@ namespace HowLongToBeat.Services
     {
         public HowLongToBeatClient howLongToBeatClient;
 
+        public List<HltbPlatform> hltbPlatforms = new List<HltbPlatform>
+        {
+            new HltbPlatform() { Name = "3DO", Category = "All Platforms" },
+            new HltbPlatform() { Name = "Amiga", Category = "All Platforms" },
+            new HltbPlatform() { Name = "Amstrad CPC", Category = "All Platforms" },
+            new HltbPlatform() { Name = "Android", Category = "All Platforms" },
+            new HltbPlatform() { Name = "Apple II", Category = "All Platforms" },
+            new HltbPlatform() { Name = "Arcade", Category = "All Platforms" },
+            new HltbPlatform() { Name = "Atari 2600", Category = "All Platforms" },
+            new HltbPlatform() { Name = "Atari 5200", Category = "All Platforms" },
+            new HltbPlatform() { Name = "Atari 7800", Category = "All Platforms" },
+            new HltbPlatform() { Name = "Atari 8-bit Family", Category = "All Platforms" },
+            new HltbPlatform() { Name = "Atari Jaguar", Category = "All Platforms" },
+            new HltbPlatform() { Name = "Atari Jaguar CD", Category = "All Platforms" },
+            new HltbPlatform() { Name = "Atari Lynx", Category = "All Platforms" },
+            new HltbPlatform() { Name = "Atari ST", Category = "All Platforms" },
+            new HltbPlatform() { Name = "BBC Micro", Category = "All Platforms" },
+            new HltbPlatform() { Name = "Browser", Category = "All Platforms" },
+            new HltbPlatform() { Name = "ColecoVision", Category = "All Platforms" },
+            new HltbPlatform() { Name = "Commodore 64", Category = "All Platforms" },
+            new HltbPlatform() { Name = "Dreamcast", Category = "All Platforms" },
+            new HltbPlatform() { Name = "Emulated", Category = "All Platforms" },
+            new HltbPlatform() { Name = "FM Towns", Category = "All Platforms" },
+            new HltbPlatform() { Name = "Game & Watch", Category = "All Platforms" },
+            new HltbPlatform() { Name = "Game Boy", Category = "All Platforms" },
+            new HltbPlatform() { Name = "Game Boy Advance", Category = "All Platforms" },
+            new HltbPlatform() { Name = "Game Boy Color", Category = "All Platforms" },
+            new HltbPlatform() { Name = "Gear VR", Category = "All Platforms" },
+            new HltbPlatform() { Name = "Google Stadia", Category = "All Platforms" },
+            new HltbPlatform() { Name = "Intellivision", Category = "All Platforms" },
+            new HltbPlatform() { Name = "Interactive Movie", Category = "All Platforms" },
+            new HltbPlatform() { Name = "iOS", Category = "All Platforms" },
+            new HltbPlatform() { Name = "Linux", Category = "All Platforms" },
+            new HltbPlatform() { Name = "Mac", Category = "All Platforms" },
+            new HltbPlatform() { Name = "Mobile", Category = "All Platforms" },
+            new HltbPlatform() { Name = "MSX", Category = "All Platforms" },
+            new HltbPlatform() { Name = "N-Gage", Category = "All Platforms" },
+            new HltbPlatform() { Name = "NEC PC-8800", Category = "All Platforms" },
+            new HltbPlatform() { Name = "NEC PC-9801/21", Category = "All Platforms" },
+            new HltbPlatform() { Name = "NEC PC-FX", Category = "All Platforms" },
+            new HltbPlatform() { Name = "Neo Geo", Category = "All Platforms" },
+            new HltbPlatform() { Name = "Neo Geo CD", Category = "All Platforms" },
+            new HltbPlatform() { Name = "Neo Geo Pocket", Category = "All Platforms" },
+            new HltbPlatform() { Name = "NES", Category = "All Platforms" },
+            new HltbPlatform() { Name = "Nintendo 3DS", Category = "All Platforms" },
+            new HltbPlatform() { Name = "Nintendo 64", Category = "All Platforms" },
+            new HltbPlatform() { Name = "Nintendo DS", Category = "All Platforms" },
+            new HltbPlatform() { Name = "Nintendo GameCube", Category = "All Platforms" },
+            new HltbPlatform() { Name = "Nintendo Switch", Category = "All Platforms" },
+            new HltbPlatform() { Name = "Oculus Go", Category = "All Platforms" },
+            new HltbPlatform() { Name = "Oculus Quest", Category = "All Platforms" },
+            new HltbPlatform() { Name = "OnLive", Category = "All Platforms" },
+            new HltbPlatform() { Name = "Ouya", Category = "All Platforms" },
+            new HltbPlatform() { Name = "PC", Category = "All Platforms" },
+            new HltbPlatform() { Name = "PC VR", Category = "All Platforms" },
+            new HltbPlatform() { Name = "Philips CD-i", Category = "All Platforms" },
+            new HltbPlatform() { Name = "Philips Videopac G7000", Category = "All Platforms" },
+            new HltbPlatform() { Name = "PlayStation", Category = "All Platforms" },
+            new HltbPlatform() { Name = "PlayStation 2", Category = "All Platforms" },
+            new HltbPlatform() { Name = "PlayStation 3", Category = "All Platforms" },
+            new HltbPlatform() { Name = "PlayStation 4", Category = "All Platforms" },
+            new HltbPlatform() { Name = "PlayStation 5", Category = "All Platforms" },
+            new HltbPlatform() { Name = "PlayStation Mobile", Category = "All Platforms" },
+            new HltbPlatform() { Name = "PlayStation Now", Category = "All Platforms" },
+            new HltbPlatform() { Name = "PlayStation Portable", Category = "All Platforms" },
+            new HltbPlatform() { Name = "PlayStation Vita", Category = "All Platforms" },
+            new HltbPlatform() { Name = "PlayStation VR", Category = "All Platforms" },
+            new HltbPlatform() { Name = "Plug & Play", Category = "All Platforms" },
+            new HltbPlatform() { Name = "Sega 32X", Category = "All Platforms" },
+            new HltbPlatform() { Name = "Sega CD", Category = "All Platforms" },
+            new HltbPlatform() { Name = "Sega Game Gear", Category = "All Platforms" },
+            new HltbPlatform() { Name = "Sega Master System", Category = "All Platforms" },
+            new HltbPlatform() { Name = "Sega Mega Drive/Genesis", Category = "All Platforms" },
+            new HltbPlatform() { Name = "Sega Saturn", Category = "All Platforms" },
+            new HltbPlatform() { Name = "SG-1000", Category = "All Platforms" },
+            new HltbPlatform() { Name = "Sharp X68000", Category = "All Platforms" },
+            new HltbPlatform() { Name = "Super Nintendo", Category = "All Platforms" },
+            new HltbPlatform() { Name = "Tiger Handheld", Category = "All Platforms" },
+            new HltbPlatform() { Name = "TurboGrafx-16", Category = "All Platforms" },
+            new HltbPlatform() { Name = "TurboGrafx-CD", Category = "All Platforms" },
+            new HltbPlatform() { Name = "Virtual Boy", Category = "All Platforms" },
+            new HltbPlatform() { Name = "Wii", Category = "All Platforms" },
+            new HltbPlatform() { Name = "Wii U", Category = "All Platforms" },
+            new HltbPlatform() { Name = "Windows Phone", Category = "All Platforms" },
+            new HltbPlatform() { Name = "WonderSwan", Category = "All Platforms" },
+            new HltbPlatform() { Name = "Xbox", Category = "All Platforms" },
+            new HltbPlatform() { Name = "Xbox 360", Category = "All Platforms" },
+            new HltbPlatform() { Name = "Xbox One", Category = "All Platforms" },
+            new HltbPlatform() { Name = "Xbox Series X/S", Category = "All Platforms" },
+            new HltbPlatform() { Name = "ZX Spectrum", Category = "All Platforms" }
+        };
 
         public HowLongToBeatDatabase(HowLongToBeat plugin, IPlayniteAPI PlayniteApi, HowLongToBeatSettings PluginSettings, string PluginUserDataPath) : base(PlayniteApi, PluginSettings, PluginUserDataPath)
         {
@@ -408,6 +500,43 @@ namespace HowLongToBeat.Services
                     Database.UserHltbData = UserHltbData;
                 }
             }, globalProgressOptions);
+        }
+
+
+        public void SetCurrentPlayTime(Game game)
+        {
+            GameHowLongToBeat gameHowLongToBeat = Database.Get(game.Id);
+
+            if (gameHowLongToBeat != null)
+            {
+                TimeSpan time = TimeSpan.FromSeconds(game.Playtime);
+
+                var platform = hltbPlatforms.FindAll(x => game.Platform.Name.ToLower().Contains(x.Name.ToLower())).First();
+
+                if (platform != null) {
+                    string Platform = platform.Name;
+
+                    HltbPostData hltbPostData = new HltbPostData
+                    {
+                        user_id = Database.UserHltbData.UserId,
+                        game_id = gameHowLongToBeat.GetData().Id,
+                        custom_title = gameHowLongToBeat.GetData().Name,
+                        platform = Platform,
+
+                        list_p = "1",
+
+                        protime_h = time.Hours.ToString(),
+                        protime_m = time.Minutes.ToString(),
+                        protime_s = time.Seconds.ToString(),
+                    };
+
+                    howLongToBeatClient.PostData(hltbPostData);
+                }
+                else
+                {
+                    logger.Warn($"HowLongToBeat - No platform find for {game.Name}");
+                }
+            }
         }
     }
 }

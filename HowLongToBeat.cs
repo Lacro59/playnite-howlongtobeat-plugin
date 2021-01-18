@@ -327,6 +327,22 @@ namespace HowLongToBeat
             {
                 Common.LogError(ex, "HowLongToBeat");
             }
+
+            // AutoSetCurrentPlayTime
+            if (settings.AutoSetCurrentPlayTime)
+            {
+                try
+                {
+                    Task.Run(() =>
+                    {
+                        PluginDatabase.SetCurrentPlayTime(game);
+                    });
+                }
+                catch (Exception ex)
+                {
+                    Common.LogError(ex, "HowLongToBeat");
+                }
+            }
         }
 
         // Add code to be executed when game is uninstalled.

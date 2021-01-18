@@ -18,6 +18,7 @@ using System.IO;
 using CommonPluginsShared;
 using System.Windows.Threading;
 using System.Threading;
+using System.Reflection;
 
 namespace HowLongToBeat.Services
 {
@@ -93,7 +94,7 @@ namespace HowLongToBeat.Services
 
             webViews = PlayniteApi.WebViews.CreateOffscreenView();
 
-            UrlPostData = UrlBase + "submit?s=add&gid={0}"; 
+            UrlPostData = UrlBase + "submit"; 
 
             UrlLogin = UrlBase + "login";
             UrlLogOut = UrlBase + "login?t=out";
@@ -352,7 +353,8 @@ namespace HowLongToBeat.Services
                 IsConnected = webViews.GetPageSource().ToLower().IndexOf("log in") == -1;
             }
 
-            return (bool)IsConnected;
+            IsConnected = (bool)IsConnected;
+            return !!(bool)IsConnected;
         }
 
         public void Login()
@@ -376,7 +378,7 @@ namespace HowLongToBeat.Services
 #endif
                         UserLogin = WebUtility.HtmlDecode(webView.GetCurrentAddress().Replace("https://howlongtobeat.com/user?n=", string.Empty));
                         IsConnected = true;
-                        Thread.Sleep(2000);
+                        Thread.Sleep(1500);
                         webView.Close();
                     }
                 };
@@ -394,25 +396,23 @@ namespace HowLongToBeat.Services
                         try
                         {
                             Task.Run(() => {
-                                IWebView webView = _PlayniteApi.WebViews.CreateOffscreenView();
-
                                 string url = @"https://howlongtobeat.com/submit?s=add";
-                                webView.NavigateAndWait(url);
-
-                                logger.Debug(webView.GetPageText());
+                                webViews.NavigateAndWait(url);
 
                                 HtmlParser parser = new HtmlParser();
-                                IHtmlDocument htmlDocument = parser.Parse(webView.GetPageSource());
+                                IHtmlDocument htmlDocument = parser.Parse(webViews.GetPageSource());
 
-                                foreach (var el in htmlDocument.QuerySelectorAll("input[name=\"user_id\"]"))
+                                foreach (var el in htmlDocument.QuerySelectorAll("input[type=\"hidden\"]"))
                                 {
-                                    string stringUserId = el.GetAttribute("value");
-                                    int.TryParse(stringUserId, out UserId);
+                                    if (el.GetAttribute("name") == "user_id")
+                                    {
+                                        string stringUserId = el.GetAttribute("value");
+                                        int.TryParse(stringUserId, out UserId);
+                                        break;
+                                    }
                                 }
 
-                                webView.Close();
-
-                             HowLongToBeat.PluginDatabase.RefreshUserData();
+                                HowLongToBeat.PluginDatabase.RefreshUserData();
                             });
                         }
                         catch (Exception ex)
@@ -451,8 +451,8 @@ namespace HowLongToBeat.Services
             if (GetIsUserLoggedIn())
             {
                 hltbUserStats = new HltbUserStats();
-                hltbUserStats.Login = UserLogin;
-                hltbUserStats.UserId = UserId;
+                hltbUserStats.Login = (UserLogin.IsNullOrEmpty()) ? HowLongToBeat.PluginDatabase.Database.UserHltbData.Login : UserLogin;
+                hltbUserStats.UserId = (UserId == 0) ? HowLongToBeat.PluginDatabase.Database.UserHltbData.UserId : UserId;
                 hltbUserStats.TitlesList = new List<TitleList>();
 
                 try
@@ -473,6 +473,8 @@ namespace HowLongToBeat.Services
                     });
 
                     string response = Web.PostStringDataCookies(UrlUserStatsGameList, formContent, Cookies).GetAwaiter().GetResult();
+
+                    logger.Debug(response);
 
                     HtmlParser parser = new HtmlParser();
                     IHtmlDocument htmlDocument = parser.Parse(response);
@@ -646,11 +648,143 @@ namespace HowLongToBeat.Services
 
         public async Task<bool> PostData(HltbPostData hltbPostData)
         {
+            if (GetIsUserLoggedIn() && hltbPostData.user_id != 0 && hltbPostData.game_id != 0)
+            {
+                try
+                {
+                    Type type = typeof(HltbPostData);
+                    PropertyInfo[] properties = type.GetProperties();
+                    var data = new Dictionary<string, string>();
+                    foreach (PropertyInfo property in properties)
+                    {
+                        switch (property.Name)
+                        {
+                            case "list_p":
+                                if (property.GetValue(hltbPostData, null).ToString() != string.Empty)
+                                {
+                                    data.Add(property.Name, property.GetValue(hltbPostData, null).ToString());
+                                }
+                                break;
+                            case "list_b":
+                                if (property.GetValue(hltbPostData, null).ToString() != string.Empty)
+                                {
+                                    data.Add(property.Name, property.GetValue(hltbPostData, null).ToString());
+                                }
+                                break;
+                            case "list_r":
+                                if (property.GetValue(hltbPostData, null).ToString() != string.Empty)
+                                {
+                                    data.Add(property.Name, property.GetValue(hltbPostData, null).ToString());
+                                }
+                                break;
+                            case "list_c":
+                                if (property.GetValue(hltbPostData, null).ToString() != string.Empty)
+                                {
+                                    data.Add(property.Name, property.GetValue(hltbPostData, null).ToString());
+                                }
+                                break;
+                            case "list_cp":
+                                if (property.GetValue(hltbPostData, null).ToString() != string.Empty)
+                                {
+                                    data.Add(property.Name, property.GetValue(hltbPostData, null).ToString());
+                                }
+                                break;
+                            case "list_rt":
+                                if (property.GetValue(hltbPostData, null).ToString() != string.Empty)
+                                {
+                                    data.Add(property.Name, property.GetValue(hltbPostData, null).ToString());
+                                }
+                                break;
 
 
+                            case "compmonth":
+                                if (property.GetValue(hltbPostData, null).ToString() == string.Empty)
+                                {
+                                    data.Add(property.Name, DateTime.Now.ToString("MM"));
+                                }
+                                else
+                                {
+                                    data.Add(property.Name, property.GetValue(hltbPostData, null).ToString());
+                                }
+                                break;
+                            case "compday":
+                                if (property.GetValue(hltbPostData, null).ToString() == string.Empty)
+                                {
+                                    data.Add(property.Name, DateTime.Now.ToString("dd"));
+                                }
+                                else
+                                {
+                                    data.Add(property.Name, property.GetValue(hltbPostData, null).ToString());
+                                }
+                                break;
+                            case "compyear":
+                                if (property.GetValue(hltbPostData, null).ToString() == string.Empty)
+                                {
+                                    data.Add(property.Name, DateTime.Now.ToString("yyyy"));
+                                }
+                                else
+                                {
+                                    data.Add(property.Name, property.GetValue(hltbPostData, null).ToString());
+                                }
+                                break;
+
+                            default:
+                                data.Add(property.Name, WebUtility.UrlEncode(property.GetValue(hltbPostData, null).ToString()));
+                                break;
+                        }
+                    }
+
+                    
+                    if (hltbPostData.edit_id != 0)
+                    {
+                        string url = string.Format(UrlPostData + "?s=add&gid={0}", hltbPostData.game_id);
+                        webViews.NavigateAndWait(url);
+                    }
+                    else
+                    {
+
+                    }
 
 
+                    List<HttpCookie> Cookies = webViews.GetCookies();
+                    Cookies = Cookies.Where(x => x.Domain.Contains("howlongtobeat")).ToList();
+#if DEBUG
+                    logger.Debug($"HowLongToBeat [Ignored] - Cookies: {JsonConvert.SerializeObject(Cookies)}");
+#endif
 
+                    var formContent = new FormUrlEncodedContent(data);
+                    string response = Web.PostStringDataCookies(UrlPostData, formContent, Cookies).GetAwaiter().GetResult();
+
+                    HtmlParser parser = new HtmlParser();
+                    IHtmlDocument htmlDocument = parser.Parse(response);
+
+
+                }
+                catch (Exception ex)
+                {
+                    Common.LogError(ex, "HowLongToBeat");
+
+                    _PlayniteApi.Notifications.Add(new NotificationMessage(
+                        "HowLongToBeat-DataUpdate-Error",
+                        "HowLongToBeat" + System.Environment.NewLine +
+                        ex.Message,
+                        NotificationType.Error,
+                        () => _plugin.OpenSettingsView()));
+
+                    return false;
+                }
+            }
+            else
+            {
+                _PlayniteApi.Notifications.Add(new NotificationMessage(
+                    "HowLongToBeat-DataUpdate-Error",
+                    "HowLongToBeat" + System.Environment.NewLine +
+                    resources.GetString("LOCNotLoggedIn"),
+                    NotificationType.Error,
+                    () => _plugin.OpenSettingsView()));
+
+                return false;
+            }
 
             return false;
         }
