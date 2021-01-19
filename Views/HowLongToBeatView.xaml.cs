@@ -42,26 +42,26 @@ namespace HowLongToBeat.Views
             InitializeComponent();
 
 
-            if (_gameHowLongToBeat.HasData)
-            {
-                HltbDataUser gameData = _gameHowLongToBeat.Items.First();
+            HltbDataUser gameData = _gameHowLongToBeat.Items.FirstOrDefault();
 
-                if (string.IsNullOrEmpty(_gameHowLongToBeat.CoverImage))
+            if (_gameHowLongToBeat.HasData || _gameHowLongToBeat.HasDataEmpty)
+            {
+                CoverImage = gameData.UrlImg;
+
+                if (!settings.ShowHltbImg)
                 {
-                    CoverImage = gameData.UrlImg;
-                }
-                else
-                {
-                    CoverImage = gameData.UrlImg;
-                    if (!settings.ShowHltbImg)
+                    if (!_gameHowLongToBeat.CoverImage.IsNullOrEmpty())
                     {
                         CoverImage = PlayniteApi.Database.GetFullFilePath(_gameHowLongToBeat.CoverImage);
                     }
                 }
+
                 GameName = _gameHowLongToBeat.Name;
                 HltbName = resources.GetString("LOCSourceLabel") + ": " + gameData.Name;
+            }
 
-
+            if (_gameHowLongToBeat.HasData)
+            {
                 int ElIndicator = 0;
 
                 Hltb_El1.Visibility = Visibility.Hidden;

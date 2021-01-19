@@ -246,7 +246,7 @@ namespace HowLongToBeat.Services
         {
             GameHowLongToBeat gameHowLongToBeat = HowLongToBeat.PluginDatabase.Get(HowLongToBeatDatabase.GameSelected);
 
-            if (gameHowLongToBeat.HasData)
+            if (gameHowLongToBeat.HasData || gameHowLongToBeat.HasDataEmpty)
             {
                 var ViewExtension = new Views.HowLongToBeatView(_PlayniteApi, PluginDatabase.PluginSettings, gameHowLongToBeat);
                 Window windowExtension = PlayniteUiHelper.CreateExtensionWindow(_PlayniteApi, "HowLongToBeat", ViewExtension);

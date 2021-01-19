@@ -444,6 +444,7 @@ namespace HowLongToBeat.Views.Interfaces
             }
         }
 
+
         public void Grid_Loaded(object sender, RoutedEventArgs e)
         {
             IntegrationUI.SetControlSize(PART_HltbProgressBar_Contener);
@@ -499,6 +500,26 @@ namespace HowLongToBeat.Views.Interfaces
             catch
             {
 
+            }
+        }
+
+
+        private void PART_Indicator1_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            spHltb_El1.Width = ((Decorator)sender).ActualWidth;
+        }
+        private void PART_Indicator2_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if (((Decorator)sender).ActualWidth - spHltb_El1.Width >= 0)
+            {
+                spHltb_El2.Width = ((Decorator)sender).ActualWidth - spHltb_El1.Width;
+            }
+        }
+        private void PART_Indicator3_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if (((Decorator)sender).ActualWidth - spHltb_El2.Width - spHltb_El1.Width >= 0)
+            {
+                spHltb_El3.Width = ((Decorator)sender).ActualWidth - spHltb_El2.Width - spHltb_El1.Width;
             }
         }
     }

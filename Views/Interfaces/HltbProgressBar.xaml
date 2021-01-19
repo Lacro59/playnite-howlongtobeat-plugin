@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:HowLongToBeat.Views.Interfaces"
-             mc:Ignorable="d">
+             mc:Ignorable="d" d:DesignWidth="300">
     
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
@@ -19,13 +19,175 @@
         <Grid Grid.Row="0" Name="PART_HltbProgressBar_Contener" MinWidth="100" Height="40">
             <ProgressBar Name="ProgressHltb_El3" Height="{Binding ElementName=PART_HltbProgressBar_Contener, Path=ActualHeight}" Value="90" 
                          Maximum="90" Background="Transparent" Foreground="ForestGreen">
+                <ProgressBar.Style>
+                    <Style TargetType="{x:Type ProgressBar}">
+                        <Setter Property="SnapsToDevicePixels" Value="True" />
+                        <Setter Property="Foreground" Value="{DynamicResource HoverBrush}" />
+                        <Setter Property="Background" Value="{DynamicResource NormalBrushDark}" />
+                        <Setter Property="BorderThickness" Value="{DynamicResource ControlBorderThickness}" />
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type ProgressBar}">
+                                    <Border BorderThickness="{TemplateBinding BorderThickness}" BorderBrush="{DynamicResource NormalBorderBrush}"
+                            CornerRadius="{DynamicResource ControlCornerRadius}">
+                                        <Grid SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}">
+                                            <Rectangle Fill="{TemplateBinding Background}" />
+                                            <Rectangle Name="PART_Track" Margin="0" />
+                                            <Decorator x:Name="PART_Indicator" SizeChanged="PART_Indicator3_SizeChanged"
+                                                       HorizontalAlignment="Left" VerticalAlignment="Stretch">
+                                                <Grid>
+                                                    <Rectangle Fill="{TemplateBinding Foreground}" />
+                                                    <Grid x:Name="Animation" Visibility="Hidden">
+                                                        <Rectangle Fill="{TemplateBinding Background}" Margin="0,0,50,0">
+                                                            <Rectangle.RenderTransform>
+                                                                <ScaleTransform x:Name="HiderPreTransform" ScaleX="0" />
+                                                            </Rectangle.RenderTransform>
+                                                        </Rectangle>
+                                                        <Rectangle Fill="{TemplateBinding Background}" RenderTransformOrigin="1, 0" Margin="50,0,0,0">
+                                                            <Rectangle.RenderTransform>
+                                                                <ScaleTransform x:Name="HiderPostTransform" ScaleX="1" />
+                                                            </Rectangle.RenderTransform>
+                                                        </Rectangle>
+                                                    </Grid>
+                                                </Grid>
+                                            </Decorator>
+                                        </Grid>
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsIndeterminate" Value="True">
+                                            <Setter TargetName="Animation" Property="Visibility" Value="Visible" />
+                                            <Trigger.EnterActions>
+                                                <BeginStoryboard>
+                                                    <Storyboard RepeatBehavior="Forever">
+                                                        <DoubleAnimation Storyboard.TargetName="HiderPreTransform" Storyboard.TargetProperty="(ScaleTransform.ScaleX)"
+                                                         To="1" Duration="0:00:2" AutoReverse="True" />
+                                                        <DoubleAnimation Storyboard.TargetName="HiderPostTransform" Storyboard.TargetProperty="(ScaleTransform.ScaleX)"
+                                                         To="0" Duration="0:00:2" AutoReverse="True" />
+                                                    </Storyboard>
+                                                </BeginStoryboard>
+                                            </Trigger.EnterActions>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </ProgressBar.Style>                
             </ProgressBar>
 
             <ProgressBar Name="ProgressHltb_El2" Height="{Binding ElementName=PART_HltbProgressBar_Contener, Path=ActualHeight}" Value="40" 
                          Maximum="90" Background="Transparent" Foreground="RoyalBlue">
+                <ProgressBar.Style>
+                    <Style TargetType="{x:Type ProgressBar}">
+                        <Setter Property="SnapsToDevicePixels" Value="True" />
+                        <Setter Property="Foreground" Value="{DynamicResource HoverBrush}" />
+                        <Setter Property="Background" Value="{DynamicResource NormalBrushDark}" />
+                        <Setter Property="BorderThickness" Value="{DynamicResource ControlBorderThickness}" />
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type ProgressBar}">
+                                    <Border BorderThickness="{TemplateBinding BorderThickness}" BorderBrush="{DynamicResource NormalBorderBrush}"
+                            CornerRadius="{DynamicResource ControlCornerRadius}">
+                                        <Grid SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}">
+                                            <Rectangle Fill="{TemplateBinding Background}" />
+                                            <Rectangle Name="PART_Track" Margin="0" />
+                                            <Decorator x:Name="PART_Indicator" SizeChanged="PART_Indicator2_SizeChanged"
+                                                       HorizontalAlignment="Left" VerticalAlignment="Stretch">
+                                                <Grid>
+                                                    <Rectangle Fill="{TemplateBinding Foreground}" />
+                                                    <Grid x:Name="Animation" Visibility="Hidden">
+                                                        <Rectangle Fill="{TemplateBinding Background}" Margin="0,0,50,0">
+                                                            <Rectangle.RenderTransform>
+                                                                <ScaleTransform x:Name="HiderPreTransform" ScaleX="0" />
+                                                            </Rectangle.RenderTransform>
+                                                        </Rectangle>
+                                                        <Rectangle Fill="{TemplateBinding Background}" RenderTransformOrigin="1, 0" Margin="50,0,0,0">
+                                                            <Rectangle.RenderTransform>
+                                                                <ScaleTransform x:Name="HiderPostTransform" ScaleX="1" />
+                                                            </Rectangle.RenderTransform>
+                                                        </Rectangle>
+                                                    </Grid>
+                                                </Grid>
+                                            </Decorator>
+                                        </Grid>
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsIndeterminate" Value="True">
+                                            <Setter TargetName="Animation" Property="Visibility" Value="Visible" />
+                                            <Trigger.EnterActions>
+                                                <BeginStoryboard>
+                                                    <Storyboard RepeatBehavior="Forever">
+                                                        <DoubleAnimation Storyboard.TargetName="HiderPreTransform" Storyboard.TargetProperty="(ScaleTransform.ScaleX)"
+                                                         To="1" Duration="0:00:2" AutoReverse="True" />
+                                                        <DoubleAnimation Storyboard.TargetName="HiderPostTransform" Storyboard.TargetProperty="(ScaleTransform.ScaleX)"
+                                                         To="0" Duration="0:00:2" AutoReverse="True" />
+                                                    </Storyboard>
+                                                </BeginStoryboard>
+                                            </Trigger.EnterActions>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </ProgressBar.Style>                
             </ProgressBar>
             <ProgressBar Name="ProgressHltb_El1" Height="{Binding ElementName=PART_HltbProgressBar_Contener, Path=ActualHeight}" Value="20" 
                          Maximum="90" Background="Transparent" Foreground="DarkCyan">
+                <ProgressBar.Style>
+                    <Style TargetType="{x:Type ProgressBar}">
+                        <Setter Property="SnapsToDevicePixels" Value="True" />
+                        <Setter Property="Foreground" Value="{DynamicResource HoverBrush}" />
+                        <Setter Property="Background" Value="{DynamicResource NormalBrushDark}" />
+                        <Setter Property="BorderThickness" Value="{DynamicResource ControlBorderThickness}" />
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type ProgressBar}">
+                                    <Border BorderThickness="{TemplateBinding BorderThickness}" BorderBrush="{DynamicResource NormalBorderBrush}"
+                            CornerRadius="{DynamicResource ControlCornerRadius}">
+                                        <Grid SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}">
+                                            <Rectangle Fill="{TemplateBinding Background}" />
+                                            <Rectangle Name="PART_Track" Margin="0" />
+                                            <Decorator x:Name="PART_Indicator" SizeChanged="PART_Indicator1_SizeChanged"
+                                                       HorizontalAlignment="Left" VerticalAlignment="Stretch">
+                                                <Grid>
+                                                    <Rectangle Fill="{TemplateBinding Foreground}" />
+                                                    <Grid x:Name="Animation" Visibility="Hidden">
+                                                        <Rectangle Fill="{TemplateBinding Background}" Margin="0,0,50,0">
+                                                            <Rectangle.RenderTransform>
+                                                                <ScaleTransform x:Name="HiderPreTransform" ScaleX="0" />
+                                                            </Rectangle.RenderTransform>
+                                                        </Rectangle>
+                                                        <Rectangle Fill="{TemplateBinding Background}" RenderTransformOrigin="1, 0" Margin="50,0,0,0">
+                                                            <Rectangle.RenderTransform>
+                                                                <ScaleTransform x:Name="HiderPostTransform" ScaleX="1" />
+                                                            </Rectangle.RenderTransform>
+                                                        </Rectangle>
+                                                    </Grid>
+                                                </Grid>
+                                            </Decorator>
+                                        </Grid>
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsIndeterminate" Value="True">
+                                            <Setter TargetName="Animation" Property="Visibility" Value="Visible" />
+                                            <Trigger.EnterActions>
+                                                <BeginStoryboard>
+                                                    <Storyboard RepeatBehavior="Forever">
+                                                        <DoubleAnimation Storyboard.TargetName="HiderPreTransform" Storyboard.TargetProperty="(ScaleTransform.ScaleX)"
+                                                         To="1" Duration="0:00:2" AutoReverse="True" />
+                                                        <DoubleAnimation Storyboard.TargetName="HiderPostTransform" Storyboard.TargetProperty="(ScaleTransform.ScaleX)"
+                                                         To="0" Duration="0:00:2" AutoReverse="True" />
+                                                    </Storyboard>
+                                                </BeginStoryboard>
+                                            </Trigger.EnterActions>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </ProgressBar.Style>
             </ProgressBar>
 
 
@@ -345,17 +507,20 @@
             </Slider>
 
             <StackPanel Name="PART_ShowToolTip"  Orientation="Horizontal">
-                <StackPanel Name="spHltb_El1" Height="{Binding ElementName=PART_HltbProgressBar_Contener, Path=ActualHeight}" Width="0" Background="Transparent">
+                <StackPanel Name="spHltb_El1" Width="0" Background="Transparent"
+                            Height="{Binding ElementName=PART_HltbProgressBar_Contener, Path=ActualHeight}">
                     <StackPanel.ToolTip>
                         <ToolTip Name="tpHltb_El1" />
                     </StackPanel.ToolTip>
                 </StackPanel>
-                <StackPanel Name="spHltb_El2" Height="{Binding ElementName=PART_HltbProgressBar_Contener, Path=ActualHeight}" Width="0" Background="Transparent">
+                <StackPanel Name="spHltb_El2" Width="0" Background="Transparent"
+                            Height="{Binding ElementName=PART_HltbProgressBar_Contener, Path=ActualHeight}">
                     <StackPanel.ToolTip>
                         <ToolTip Name="tpHltb_El2" />
                     </StackPanel.ToolTip>
                 </StackPanel>
-                <StackPanel Name="spHltb_El3" Height="{Binding ElementName=PART_HltbProgressBar_Contener, Path=ActualHeight}" Width="0" Background="Transparent">
+                <StackPanel Name="spHltb_El3" Width="0" Background="Transparent" 
+                            Height="{Binding ElementName=PART_HltbProgressBar_Contener, Path=ActualHeight}">
                     <StackPanel.ToolTip>
                         <ToolTip Name="tpHltb_El3" />
                     </StackPanel.ToolTip>

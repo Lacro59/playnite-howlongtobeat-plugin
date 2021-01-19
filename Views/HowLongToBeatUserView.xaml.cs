@@ -37,7 +37,7 @@ namespace HowLongToBeat.Views
         private HowLongToBeatDatabase PluginDatabase = HowLongToBeat.PluginDatabase;
 
         private GridViewColumnHeader _lastHeaderClicked = null;
-        private ListSortDirection _lastDirection;
+        private ListSortDirection _lastDirection = ListSortDirection.Ascending;
 
 
         public HowLongToBeatUserView()
@@ -79,7 +79,7 @@ namespace HowLongToBeat.Views
                 {
                     _lastHeaderClicked = lvName;
                     _lastHeaderClicked.Content += " ▲";
-                    view.SortDescriptions.Add(new SortDescription("Name", _lastDirection));
+                    view.SortDescriptions.Add(new SortDescription("lvName", _lastDirection));
                 }
             }
         }

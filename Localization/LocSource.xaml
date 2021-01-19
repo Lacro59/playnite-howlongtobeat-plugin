@@ -51,7 +51,7 @@
     <sys:String x:Key="LOCHowLongToBeatUserData">User data</sys:String>
     <sys:String x:Key="LOCHowLongToBeatCompleted">Completed</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatPluginGetUserView">Getting HowLongToBeat user data</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatPluginGetUserView">Getting user datas</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatCompletions">Completions</sys:String>
     <sys:String x:Key="LOCHowLongToBeatTimeSinglePlayer">Single-Player time</sys:String>
@@ -78,8 +78,8 @@
     <sys:String x:Key="LOCHowLongToBeat">HowLongToBeat</sys:String>
     <sys:String x:Key="LOCHowLongToBeatTitle">HowLongToBeat</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatPluginView">View HowLongToBeat data</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatPluginUserView">View HowLongToBeat user data</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatActualiseUserData">Refresh HowLongToBeat user data</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatPluginView">View HowLongToBeat datas</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatPluginUserView">View HowLongToBeat user datas</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatActualiseUserData">Refresh HowLongToBeat user datas</sys:String>
 
 </ResourceDictionary>

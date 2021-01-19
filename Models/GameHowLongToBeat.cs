@@ -39,6 +39,20 @@ namespace HowLongToBeat.Models
             }
         }
 
+        [JsonIgnore]
+        public bool HasDataEmpty
+        {
+            get
+            {
+                if (Items.Count > 0)
+                {
+                    return !Items.First().IsEmpty;
+                }
+
+                return false;
+            }
+        }
+
         public HltbDataUser GetData()
         {
             return Items.First();
