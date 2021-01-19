@@ -46,7 +46,7 @@
 
     <!-- HowLongToBeatUserView -->
 
-    <sys:String x:Key="LOCHowLongToBeatCompletationCProgress">Completion progress</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatCompletationProgress">Games completed over time</sys:String>
     
     <sys:String x:Key="LOCHowLongToBeatUserData">User data</sys:String>
     <sys:String x:Key="LOCHowLongToBeatCompleted">Completed</sys:String>
@@ -56,7 +56,7 @@
     <sys:String x:Key="LOCHowLongToBeatCompletions">Completions</sys:String>
     <sys:String x:Key="LOCHowLongToBeatTimeSinglePlayer">Single-Player time</sys:String>
     <sys:String x:Key="LOCHowLongToBeatTimeCoOp">Co-Op time</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatTimeVs">Vs. Multi-Player time</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatTimeVs">Vs Multi-Player time</sys:String>
 
     
     

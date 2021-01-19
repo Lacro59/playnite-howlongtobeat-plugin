@@ -97,7 +97,7 @@
 
         <Grid Grid.Row="2" Height="200">
             <DockPanel>
-                <Label DockPanel.Dock="Top" Content="{DynamicResource LOCHowLongToBeatCompletationCProgress}" Margin="0,0,0,10" />
+                <Label DockPanel.Dock="Top" Content="{DynamicResource LOCHowLongToBeatCompletationProgress}" Margin="0,0,0,10" />
 
                 <lvc:CartesianChart LegendLocation="none" Name="PART_ChartUserData" DockPanel.Dock="Bottom">
                     <lvc:CartesianChart.DataTooltip>
