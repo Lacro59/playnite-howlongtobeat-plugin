@@ -145,6 +145,7 @@ namespace HowLongToBeat
                     Action = (gameMenuItem) =>
                     {
                         PluginDatabase.Remove(GameMenu.Id);
+                        howLongToBeatUI.RefreshElements(HowLongToBeatDatabase.GameSelected);
                     }
                 }
             };
