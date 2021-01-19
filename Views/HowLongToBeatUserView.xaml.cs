@@ -44,6 +44,7 @@ namespace HowLongToBeat.Views
         {
             InitializeComponent();
 
+            PluginDatabase.Database.UserHltbData.TitlesList.Sort((x, y) => x.GameName.CompareTo(y.GameName));
             ListViewGames.ItemsSource = PluginDatabase.Database.UserHltbData.TitlesList;
             Sorting();
 
@@ -79,7 +80,7 @@ namespace HowLongToBeat.Views
                 {
                     _lastHeaderClicked = lvName;
                     _lastHeaderClicked.Content += " ▲";
-                    view.SortDescriptions.Add(new SortDescription("lvName", _lastDirection));
+                    //view.SortDescriptions.Add(new SortDescription("lvName", _lastDirection));
                 }
             }
         }
