@@ -59,11 +59,7 @@ namespace HowLongToBeat
             if (settings.EnableCheckVersion)
             {
                 CheckVersion cv = new CheckVersion();
-
-                if (cv.Check("HowLongToBeat", pluginFolder))
-                {
-                    cv.ShowNotification(api, "HowLongToBeat - " + resources.GetString("LOCUpdaterWindowTitle"));
-                }
+                cv.Check("HowLongToBeat", pluginFolder, api);
             }
 
             // Init ui interagration

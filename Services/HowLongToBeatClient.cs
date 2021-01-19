@@ -19,6 +19,7 @@ using CommonPluginsShared;
 using System.Windows.Threading;
 using System.Threading;
 using System.Reflection;
+using System.Diagnostics;
 
 namespace HowLongToBeat.Services
 {
@@ -158,8 +159,21 @@ namespace HowLongToBeat.Services
         #region Search
         public List<HltbDataUser> Search(string Name, string Platform = "")
         {
+#if DEBUG
+            Stopwatch stopWatch = new Stopwatch();
+            stopWatch.Start();
+#endif
+
             string data = GameSearch(Name, Platform).GetAwaiter().GetResult();
-            return SearchParser(data);
+            var dataParsed = SearchParser(data);
+
+#if DEBUG
+            stopWatch.Stop();
+            TimeSpan ts = stopWatch.Elapsed;
+            logger.Debug($"HowLongToBeat [Ignored] - Task Search() - {string.Format("{0:00}:{1:00}.{2:00}", ts.Minutes, ts.Seconds, ts.Milliseconds / 10)}");
+#endif
+
+            return dataParsed;
         }
 
         /// <summary>
@@ -171,8 +185,6 @@ namespace HowLongToBeat.Services
         { 
             try
             {
-                HttpClient client = new HttpClient();
-
                 var content = new FormUrlEncodedContent(new[]
                 {
                     new KeyValuePair<string, string>("queryString", Name),
@@ -185,11 +197,8 @@ namespace HowLongToBeat.Services
                     new KeyValuePair<string, string>("length_max", string.Empty),
                     new KeyValuePair<string, string>("detail", "0")
                 });
-                
-                var response = client.PostAsync(UrlSearch, content).Result;
-                string responseBody = response.Content.ReadAsStringAsync().Result;
 
-                return responseBody;
+                return await Web.PostStringDataCookies(UrlSearch, content);
             }
             catch (Exception ex)
             {
