@@ -190,6 +190,16 @@ namespace HowLongToBeat
                         PluginDatabase.GetAllDatas();
                     }
                 },
+
+                new MainMenuItem
+                {
+                    MenuSection = MenuInExtensions + resources.GetString("LOCHowLongToBeat"),
+                    Description = resources.GetString("LOCCommonSelectData"),
+                    Action = (mainMenuItem) =>
+                    {
+                        PluginDatabase.GetSelectDatas();
+                    }
+                },
                 new MainMenuItem
                 {
                     MenuSection = MenuInExtensions + resources.GetString("LOCHowLongToBeat"),

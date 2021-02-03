@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using CommonPluginsShared;
 using System.Net;
+using CommonPluginsControls.Controls;
 
 namespace HowLongToBeat.Services
 {
@@ -144,6 +145,85 @@ namespace HowLongToBeat.Services
             return true;
         }
 
+
+        public override void GetSelectDatas()
+        {
+            var View = new OptionsDownloadData(_PlayniteApi);
+            Window windowExtension = PlayniteUiHelper.CreateExtensionWindow(_PlayniteApi, PluginName + " - " + resources.GetString("LOCCommonSelectData"), View);
+            windowExtension.ShowDialog();
+
+            var PlayniteDb = View.GetFilteredGames();
+
+            if (PlayniteDb == null)
+            {
+                return;
+            }
+
+            GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions(
+                $"{PluginName} - {resources.GetString("LOCCommonGettingData")}",
+                true
+            );
+            globalProgressOptions.IsIndeterminate = false;
+
+            _PlayniteApi.Dialogs.ActivateGlobalProgress((activateGlobalProgress) =>
+            {
+                try
+                {
+                    Stopwatch stopWatch = new Stopwatch();
+                    stopWatch.Start();
+
+                    activateGlobalProgress.ProgressMaxValue = (double)PlayniteDb.Count();
+
+                    string CancelText = string.Empty;
+
+                    foreach (Game game in PlayniteDb)
+                    {
+                        if (activateGlobalProgress.CancelToken.IsCancellationRequested)
+                        {
+                            CancelText = " canceled";
+                            break;
+                        }
+
+                        Thread.Sleep(10);
+                        GameHowLongToBeat gameHowLongToBeat = Get(game, true);
+
+#if DEBUG
+                        logger.Debug($"{PluginName} [Ignored] - {gameHowLongToBeat.Name} - {gameHowLongToBeat.HasData} - {gameHowLongToBeat.IsSaved}");
+#endif
+
+                        if (!gameHowLongToBeat.HasData && !gameHowLongToBeat.IsSaved)
+                        {
+                            List<HltbDataUser> dataSearch = HowLongToBeat.PluginDatabase.howLongToBeatClient.Search(game.Name);
+
+                            if (dataSearch.Count == 1 && PluginSettings.AutoAccept)
+                            {
+                                gameHowLongToBeat.Items = new List<HltbDataUser>() { dataSearch.First() };
+
+                                HowLongToBeat.PluginDatabase.Add(gameHowLongToBeat);
+                            }
+                            else
+                            {
+                                if (dataSearch.Count > 0 && PluginSettings.ShowWhenMismatch)
+                                {
+                                    HowLongToBeat.PluginDatabase.Get(game);
+                                }
+                            }
+                        }
+
+                        activateGlobalProgress.CurrentProgressValue++;
+                    }
+
+                    stopWatch.Stop();
+                    TimeSpan ts = stopWatch.Elapsed;
+                    logger.Info($"{PluginName} - Task GetDatas(){CancelText} - {string.Format("{0:00}:{1:00}.{2:00}", ts.Minutes, ts.Seconds, ts.Milliseconds / 10)} for {activateGlobalProgress.CurrentProgressValue}/{(double)PlayniteDb.Count()} items");
+                }
+                catch (Exception ex)
+                {
+                    Common.LogError(ex, PluginName);
+                }
+            }, globalProgressOptions);
+        }
+
         public override void GetAllDatas()
         {
             GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions(
@@ -211,7 +291,6 @@ namespace HowLongToBeat.Services
                 }
             }, globalProgressOptions);
         }
-
 
 
         public override GameHowLongToBeat Get(Guid Id, bool OnlyCache = false)
