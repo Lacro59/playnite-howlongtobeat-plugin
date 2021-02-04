@@ -99,23 +99,49 @@
             <DockPanel>
                 <Label DockPanel.Dock="Top" Content="{DynamicResource LOCHowLongToBeatCompletationProgress}" Margin="0,0,0,10" />
 
-                <lvc:CartesianChart LegendLocation="none" Name="PART_ChartUserData" DockPanel.Dock="Bottom">
-                    <lvc:CartesianChart.DataTooltip>
-                        <livechartscommon:CustomerToolTipForSingle />
-                    </lvc:CartesianChart.DataTooltip>
-                
-                    <lvc:CartesianChart.AxisX>
-                        <lvc:Axis Name="PART_ChartUserDataLabelsX" ShowLabels="True" FontSize="10" MinValue="0">
-                            <lvc:Axis.Separator>
-                                <lvc:Separator Step="1" />
-                            </lvc:Axis.Separator>
-                        </lvc:Axis>
-                    </lvc:CartesianChart.AxisX>
+                <Grid DockPanel.Dock="Bottom">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="10" />
+                        <ColumnDefinition Width="3*" />
+                    </Grid.ColumnDefinitions>
 
-                    <lvc:CartesianChart.AxisY>
-                        <lvc:Axis Name="PART_ChartUserDataLabelsY" MinValue="0"></lvc:Axis>
-                    </lvc:CartesianChart.AxisY>
-                </lvc:CartesianChart>
+                    <lvc:CartesianChart LegendLocation="none" Name="PART_ChartUserDataYear" Grid.Column="0">
+                        <lvc:CartesianChart.DataTooltip>
+                            <livechartscommon:CustomerToolTipForSingle />
+                        </lvc:CartesianChart.DataTooltip>
+
+                        <lvc:CartesianChart.AxisX>
+                            <lvc:Axis Name="PART_ChartUserDataYearLabelsX" ShowLabels="True" FontSize="10" MinValue="0">
+                                <lvc:Axis.Separator>
+                                    <lvc:Separator Step="1" />
+                                </lvc:Axis.Separator>
+                            </lvc:Axis>
+                        </lvc:CartesianChart.AxisX>
+
+                        <lvc:CartesianChart.AxisY>
+                            <lvc:Axis Name="PART_ChartUserDataYearLabelsY" MinValue="0"></lvc:Axis>
+                        </lvc:CartesianChart.AxisY>
+                    </lvc:CartesianChart>
+
+                    <lvc:CartesianChart LegendLocation="none" Name="PART_ChartUserData" Grid.Column="2">
+                        <lvc:CartesianChart.DataTooltip>
+                            <livechartscommon:CustomerToolTipForSingle />
+                        </lvc:CartesianChart.DataTooltip>
+
+                        <lvc:CartesianChart.AxisX>
+                            <lvc:Axis Name="PART_ChartUserDataLabelsX" ShowLabels="True" FontSize="10" MinValue="0">
+                                <lvc:Axis.Separator>
+                                    <lvc:Separator Step="1" />
+                                </lvc:Axis.Separator>
+                            </lvc:Axis>
+                        </lvc:CartesianChart.AxisX>
+
+                        <lvc:CartesianChart.AxisY>
+                            <lvc:Axis Name="PART_ChartUserDataLabelsY" MinValue="0"></lvc:Axis>
+                        </lvc:CartesianChart.AxisY>
+                    </lvc:CartesianChart>
+                </Grid>
             </DockPanel>
         </Grid>
 

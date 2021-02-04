@@ -487,6 +487,13 @@ namespace HowLongToBeat.Services
                     HtmlParser parser = new HtmlParser();
                     IHtmlDocument htmlDocument = parser.Parse(response);
 
+#if DEBUG
+                    if(htmlDocument.QuerySelectorAll("table.user_game_list tbody").Count() < 1)
+                    {
+                        logger.Debug($"no data - {response}");
+                    }
+#endif
+
                     foreach (var ListGame in htmlDocument.QuerySelectorAll("table.user_game_list tbody"))
                     {
                         TitleList titleList = new TitleList();

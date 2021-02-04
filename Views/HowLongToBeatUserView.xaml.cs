@@ -58,6 +58,7 @@ namespace HowLongToBeat.Views
             Charting.For<CustomerForSingle>(customerVmMapper);
 
 
+            SetChartDataYear();
             SetChartData();
             SetStats();
         }
@@ -231,19 +232,66 @@ namespace HowLongToBeat.Views
             SetStats();
         }
 
+        private void SetChartDataYear()
+        {
+            // Default data
+            string[] ChartDataLabels = new string[5];
+            ChartValues<CustomerForSingle> ChartDataSeries = new ChartValues<CustomerForSingle>();
+
+            for (int i = 4; i >= 0; i--)
+            {
+                ChartDataLabels[(4 - i)] = DateTime.Now.AddYears(-i).ToString("yyyy");
+                ChartDataSeries.Add(new CustomerForSingle
+                {
+                    Name = DateTime.Now.AddYears(-i).ToString("yyyy"),
+                    Values = 0
+                });
+            }
+
+
+            // Set data
+            foreach (TitleList titleList in PluginDatabase.Database.UserHltbData.TitlesList)
+            {
+                if (titleList.Completion != null)
+                {
+                    string tempDateTime = ((DateTime)titleList.Completion).ToString("yyyy");
+
+                    int index = Array.IndexOf(ChartDataLabels, tempDateTime);
+
+                    if (index > 0)
+                    {
+                        ChartDataSeries[index].Values += 1;
+                    }
+                }
+            }
+
+
+            // Create chart
+            SeriesCollection ChartSeriesCollection = new SeriesCollection();
+            ChartSeriesCollection.Add(new ColumnSeries
+            {
+                Title = string.Empty,
+                Values = ChartDataSeries
+            });
+
+
+            PART_ChartUserDataYear.Series = ChartSeriesCollection;
+            PART_ChartUserDataYearLabelsX.Labels = ChartDataLabels;
+        }
 
         private void SetChartData()
         {
             LocalDateYMConverter localDateYMConverter = new LocalDateYMConverter();
 
-            
-            // Dafault data
-            string[] ChartDataLabels = new string[25];           
+
+            // Default data
+            string[] ChartDataLabels = new string[22];           
             ChartValues<CustomerForSingle> ChartDataSeries = new ChartValues<CustomerForSingle>();
 
-            for (int i = 24; i >= 0; i--)
+
+            for (int i = 21; i >= 0; i--)
             {
-                ChartDataLabels[(24 - i)] = (string)localDateYMConverter.Convert(DateTime.Now.AddMonths(-i), null, null, null);
+                ChartDataLabels[(21 - i)] = (string)localDateYMConverter.Convert(DateTime.Now.AddMonths(-i), null, null, null);
                 ChartDataSeries.Add(new CustomerForSingle
                 {
                     Name = (string)localDateYMConverter.Convert(DateTime.Now.AddMonths(-i), null, null, null),
@@ -270,15 +318,15 @@ namespace HowLongToBeat.Views
 
 
             // Create chart
-            SeriesCollection StatsGraphicAchievementsSeries = new SeriesCollection();
-            StatsGraphicAchievementsSeries.Add(new LineSeries
+            SeriesCollection ChartSeriesCollection = new SeriesCollection();
+            ChartSeriesCollection.Add(new LineSeries
             {
                 Title = string.Empty,
                 Values = ChartDataSeries
             });
 
 
-            PART_ChartUserData.Series = StatsGraphicAchievementsSeries;
+            PART_ChartUserData.Series = ChartSeriesCollection;
             PART_ChartUserDataLabelsX.Labels = ChartDataLabels;
         }
 
