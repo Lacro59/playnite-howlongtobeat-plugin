@@ -12,6 +12,8 @@ namespace HowLongToBeat
     {
         private readonly HowLongToBeat plugin;
 
+        public string UserLogin { get; set; } = string.Empty;
+
         public bool EnableCheckVersion { get; set; } = true;
         public bool MenuInExtensions { get; set; } = true;
 
@@ -67,6 +69,8 @@ namespace HowLongToBeat
             // LoadPluginSettings returns null if not saved data is available.
             if (savedSettings != null)
             {
+                UserLogin = savedSettings.UserLogin;
+
                 EnableCheckVersion = savedSettings.EnableCheckVersion;
                 MenuInExtensions = savedSettings.MenuInExtensions;
 

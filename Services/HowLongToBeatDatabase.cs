@@ -121,7 +121,7 @@ namespace HowLongToBeat.Services
 
             ControlAndCreateDirectory(PluginUserDataPath, "HowLongToBeat");
 
-            howLongToBeatClient = new HowLongToBeatClient(plugin, PlayniteApi);
+            howLongToBeatClient = new HowLongToBeatClient(plugin, PlayniteApi, PluginSettings);
         }
 
 

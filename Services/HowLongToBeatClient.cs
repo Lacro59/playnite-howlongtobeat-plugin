@@ -53,6 +53,7 @@ namespace HowLongToBeat.Services
         private IWebView webViews;
 
         HowLongToBeat _plugin;
+        HowLongToBeatSettings _settings;
 
         private readonly string UrlBase = "https://howlongtobeat.com/";
 
@@ -88,10 +89,11 @@ namespace HowLongToBeat.Services
         public HltbUserStats hltbUserStats = new HltbUserStats();
 
 
-        public HowLongToBeatClient(HowLongToBeat plugin, IPlayniteAPI PlayniteApi)
+        public HowLongToBeatClient(HowLongToBeat plugin, IPlayniteAPI PlayniteApi, HowLongToBeatSettings settings)
         {
             _plugin = plugin;
             _PlayniteApi = PlayniteApi;
+            _settings = settings;
 
             webViews = PlayniteApi.WebViews.CreateOffscreenView();
 
@@ -108,6 +110,8 @@ namespace HowLongToBeat.Services
             UrlSearch = UrlBase + "search_results.php";
 
             UrlGame = UrlBase + "game.php?id={0}";
+
+            UserLogin = _settings.UserLogin;
         }
 
 
@@ -388,6 +392,10 @@ namespace HowLongToBeat.Services
 #endif
                         UserLogin = WebUtility.HtmlDecode(webView.GetCurrentAddress().Replace("https://howlongtobeat.com/user?n=", string.Empty));
                         IsConnected = true;
+
+                        _settings.UserLogin = UserLogin;
+                        _plugin.SavePluginSettings(_settings);
+
                         Thread.Sleep(1500);
                         webView.Close();
                     }
@@ -467,7 +475,7 @@ namespace HowLongToBeat.Services
 
                 try
                 {
-                    //webViews.NavigateAndWait(UrlUserStatsGameList);
+                    webViews.NavigateAndWait(UrlUserStatsGameList);
 
                     List<HttpCookie> Cookies = webViews.GetCookies();
                     Cookies = Cookies.Where(x => x.Domain.Contains("howlongtobeat")).ToList();
@@ -478,7 +486,7 @@ namespace HowLongToBeat.Services
                     // Get list games
                     var formContent = new FormUrlEncodedContent(new[]
                     {
-                        new KeyValuePair<string, string>("n", UserLogin),
+                        new KeyValuePair<string, string>("n", hltbUserStats.Login),
                         new KeyValuePair<string, string>("c", "user_beat"),
                         new KeyValuePair<string, string>("p", string.Empty),
                         new KeyValuePair<string, string>("y", string.Empty)
