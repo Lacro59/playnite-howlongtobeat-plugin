@@ -755,7 +755,7 @@ namespace HowLongToBeat.Services
                         }
                     }
 
-                    
+                    /*
                     if (hltbPostData.edit_id != 0)
                     {
                         string url = string.Format(UrlPostData + "?s=add&gid={0}", hltbPostData.game_id);
@@ -765,7 +765,7 @@ namespace HowLongToBeat.Services
                     {
 
                     }
-
+                    */
 
                     List<HttpCookie> Cookies = webViews.GetCookies();
                     Cookies = Cookies.Where(x => x.Domain.Contains("howlongtobeat")).ToList();

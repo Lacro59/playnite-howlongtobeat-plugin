@@ -16,6 +16,7 @@ using System.Windows;
 using CommonPluginsShared;
 using System.Net;
 using CommonPluginsControls.Controls;
+using System.Net.Http;
 
 namespace HowLongToBeat.Services
 {
@@ -574,7 +575,8 @@ namespace HowLongToBeat.Services
 
                 var platform = hltbPlatforms.FindAll(x => game.Platform.Name.ToLower().Contains(x.Name.ToLower())).First();
 
-                if (platform != null) {
+                if (platform != null)
+                {
                     string Platform = platform.Name;
 
                     HltbPostData hltbPostData = new HltbPostData
