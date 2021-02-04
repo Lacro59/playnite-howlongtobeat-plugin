@@ -125,6 +125,11 @@ namespace HowLongToBeat.Views
                         var sortBy = columnBinding?.Path.Path ?? headerClicked.Column.Header as string;
 
                         // Specific sort with another column
+                        if (headerClicked.Name == "lvCurrentTime")
+                        {
+                            columnBinding = lvCurrentTimeValue.Column.DisplayMemberBinding as Binding;
+                            sortBy = columnBinding?.Path.Path ?? headerClicked.Column.Header as string;
+                        }
                         if (headerClicked.Name == "lvMainStory")
                         {
                             columnBinding = lvMainStoryValue.Column.DisplayMemberBinding as Binding;
@@ -213,6 +218,8 @@ namespace HowLongToBeat.Views
         {
             ListViewGames.ItemsSource = null;
 
+            PART_ChartUserDataYear.Series = null;
+            PART_ChartUserDataYearLabelsX.Labels = null;
             PART_ChartUserData.Series = null;
             PART_ChartUserDataLabelsX.Labels = null;
 
@@ -231,6 +238,7 @@ namespace HowLongToBeat.Views
             SetChartData();
             SetStats();
         }
+
 
         private void SetChartDataYear()
         {

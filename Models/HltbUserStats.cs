@@ -27,6 +27,7 @@ namespace HowLongToBeat.Models
         public string UserGameId { get; set; }
         public string GameName { get; set; }
         public string Platform { get; set; }
+        public long CurrentTime { get; set; }
         public DateTime? Completion { get; set; }
         [JsonIgnore]
         public string CompletionFormat

@@ -467,6 +467,8 @@ namespace HowLongToBeat.Services
 
                 try
                 {
+                    //webViews.NavigateAndWait(UrlUserStatsGameList);
+
                     List<HttpCookie> Cookies = webViews.GetCookies();
                     Cookies = Cookies.Where(x => x.Domain.Contains("howlongtobeat")).ToList();
 #if DEBUG
@@ -487,13 +489,6 @@ namespace HowLongToBeat.Services
                     HtmlParser parser = new HtmlParser();
                     IHtmlDocument htmlDocument = parser.Parse(response);
 
-#if DEBUG
-                    if(htmlDocument.QuerySelectorAll("table.user_game_list tbody").Count() < 1)
-                    {
-                        logger.Debug($"no data - {response}");
-                    }
-#endif
-
                     foreach (var ListGame in htmlDocument.QuerySelectorAll("table.user_game_list tbody"))
                     {
                         TitleList titleList = new TitleList();
@@ -505,6 +500,9 @@ namespace HowLongToBeat.Services
                         titleList.GameName = td[0].QuerySelector("a").InnerHtml.Trim();
                         titleList.Platform = td[0].QuerySelector("span").InnerHtml.Trim();
                         titleList.Id = int.Parse(td[0].QuerySelector("a").GetAttribute("href").Replace("game?id=", string.Empty));
+
+                        string sCurrentTime = td[1].InnerHtml;
+                        titleList.CurrentTime = ConvertStringToLongUser(sCurrentTime);
 
                         // Get game details
                         formContent = new FormUrlEncodedContent(new[]
