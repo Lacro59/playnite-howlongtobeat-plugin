@@ -722,7 +722,6 @@ namespace HowLongToBeat.Services
                 var SelectPlatform = htmlDocument.QuerySelectorAll("select[name=platform]");
                 foreach(var option in SelectPlatform[0].QuerySelectorAll("option"))
                 {
-                    logger.Debug(option.OuterHtml);
                     if (option.GetAttribute("selected") == "selected")
                     {
                         hltbPostData.platform = option.InnerHtml;
@@ -734,7 +733,6 @@ namespace HowLongToBeat.Services
                     {
                         foreach (var option in SelectPlatform[1].QuerySelectorAll("option"))
                         {
-                            logger.Debug(option.OuterHtml);
                             if (option.GetAttribute("selected") == "selected")
                             {
                                 hltbPostData.platform = option.InnerHtml;
@@ -816,7 +814,6 @@ namespace HowLongToBeat.Services
                 var compyear = htmlDocument.QuerySelector("#compyear");
                 foreach (var option in compyear.QuerySelectorAll("option"))
                 {
-                    logger.Debug(option.OuterHtml);
                     if (option.GetAttribute("selected") == "selected")
                     {
                         hltbPostData.compyear = option.GetAttribute("value");
