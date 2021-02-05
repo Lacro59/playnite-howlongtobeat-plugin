@@ -649,11 +649,14 @@ namespace HowLongToBeat.Services
                     }
                     else
                     {
-                        string tmpEditId = howLongToBeatClient.FindIdExisting(HltbData.Id.ToString());
-                        if (!tmpEditId.IsNullOrEmpty())
+                        if (HltbData != null)
                         {
-                            edit_id = int.Parse(tmpEditId);
-                            hltbPostData = howLongToBeatClient.GetSubmitData(tmpEditId);
+                            string tmpEditId = howLongToBeatClient.FindIdExisting(edit_id.ToString());
+                            if (!tmpEditId.IsNullOrEmpty())
+                            {
+                                edit_id = int.Parse(tmpEditId);
+                                hltbPostData = howLongToBeatClient.GetSubmitData(tmpEditId);
+                            }
                         }
                     }
 
