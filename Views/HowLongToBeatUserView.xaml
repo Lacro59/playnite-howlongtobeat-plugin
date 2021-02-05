@@ -13,6 +13,8 @@
     <UserControl.Resources>
         <commonpluginsshared:LocalDateConverter x:Key="LocalDateConverter" />
         <converters:LongToTimePlayedConverter x:Key="LongToTimePlayedConverter" />
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+        <converters:InvertedBooleanToVisibilityConverter x:Key="InvertedBooleanToVisibilityConverter" />
     </UserControl.Resources>
 
     <Grid Margin="10">
@@ -40,8 +42,28 @@
                       GridViewColumnHeader.Click="ListviewGames_onHeaderClick">
                 <ListView.View>
                     <GridView>
-                        <GridViewColumn Width="240" DisplayMemberBinding="{Binding GameName}" x:Name="lvGameName">
+                        <GridViewColumn Width="0" DisplayMemberBinding="{Binding GameName}">
+                            <GridViewColumnHeader Name="lvGameNameValue" Content=""></GridViewColumnHeader>
+                        </GridViewColumn>
+                        <GridViewColumn Width="240" x:Name="lvGameName">
                             <GridViewColumnHeader Name="lvName" Content="{DynamicResource LOCGameNameTitle}"></GridViewColumnHeader>
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{Binding GameName}" TextDecorations="Strikethrough"
+                                                   Visibility="{Binding IsRetired, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                        </TextBlock>
+                                        <TextBlock Text="{Binding GameName}"
+                                                   Visibility="{Binding IsRetired, Converter={StaticResource InvertedBooleanToVisibilityConverter}}">
+                                        </TextBlock>
+
+                                        <TextBlock Text="" FontFamily="{DynamicResource CommonFont}" 
+                                                   Margin="10,0,0,0" 
+                                                   Visibility="{Binding IsReplay, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                        </TextBlock>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
                         </GridViewColumn>
 
                         <GridViewColumn Width="100" DisplayMemberBinding="{Binding Platform}" x:Name="lvGamePlatform">

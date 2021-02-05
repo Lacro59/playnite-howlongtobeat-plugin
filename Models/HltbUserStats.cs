@@ -28,6 +28,10 @@ namespace HowLongToBeat.Models
         public string GameName { get; set; }
         public string Platform { get; set; }
         public long CurrentTime { get; set; }
+
+        public bool IsReplay { get; set; }
+        public bool IsRetired { get; set; }
+
         public DateTime? Completion { get; set; }
         [JsonIgnore]
         public string CompletionFormat

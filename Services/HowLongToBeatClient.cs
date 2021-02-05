@@ -543,6 +543,9 @@ namespace HowLongToBeat.Services
                     tempCurrentTime += (hltbPostData.protime_s.IsNullOrEmpty()) ? string.Empty : " " + hltbPostData.protime_s + "s";
 
                     titleList.CurrentTime = ConvertStringToLongUser(tempCurrentTime.Trim());
+
+                    titleList.IsReplay = (hltbPostData.play_num == 2);
+                    titleList.IsRetired = (hltbPostData.list_rt == "1");
                 }
 
                 string response = GetUserGamesDetail(titleList.UserGameId);

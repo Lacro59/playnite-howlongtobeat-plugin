@@ -125,6 +125,11 @@ namespace HowLongToBeat.Views
                         var sortBy = columnBinding?.Path.Path ?? headerClicked.Column.Header as string;
 
                         // Specific sort with another column
+                        if (headerClicked.Name == "lvName")
+                        {
+                            columnBinding = lvGameNameValue.Column.DisplayMemberBinding as Binding;
+                            sortBy = columnBinding?.Path.Path ?? headerClicked.Column.Header as string;
+                        }
                         if (headerClicked.Name == "lvCurrentTime")
                         {
                             columnBinding = lvCurrentTimeValue.Column.DisplayMemberBinding as Binding;
