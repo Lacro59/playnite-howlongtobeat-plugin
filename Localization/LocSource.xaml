@@ -81,4 +81,6 @@
     <sys:String x:Key="LOCHowLongToBeatPluginUserView">View HowLongToBeat user datas</sys:String>
     <sys:String x:Key="LOCHowLongToBeatActualiseUserData">Refresh HowLongToBeat user datas</sys:String>
 
+    <sys:String x:Key="LOCHowLongToBeatSetCurrentTime">Want you send your current playtime? (experimental)</sys:String>
+
 </ResourceDictionary>

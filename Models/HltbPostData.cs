@@ -84,7 +84,5 @@ namespace HowLongToBeat.Models
         public string review_notes { get; set; } = string.Empty;
         public string play_notes { get; set; } = string.Empty;
         public string play_video { get; set; } = string.Empty;
-
-        public string submitted { get; set; } = "Submit";
     }
 }

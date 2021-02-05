@@ -235,6 +235,7 @@ namespace HowLongToBeat.Views
             ListViewGames.ItemsSource = PluginDatabase.Database.UserHltbData.TitlesList;
             Sorting();
 
+            SetChartDataYear();
             SetChartData();
             SetStats();
         }

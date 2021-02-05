@@ -142,6 +142,7 @@ namespace HowLongToBeat.Services
             GameSelectedData = new GameHowLongToBeat();
             GetPluginTags();
 
+
             IsLoaded = true;
             return true;
         }
@@ -564,14 +565,69 @@ namespace HowLongToBeat.Services
             }, globalProgressOptions);
         }
 
+        public void RefreshUserDataTask()
+        {
+            Task.Run(() =>
+            {
+                HltbUserStats UserHltbData = howLongToBeatClient.GetUserData();
 
-        public void SetCurrentPlayTime(Game game)
+                if (UserHltbData != null)
+                {
+                    try
+                    {
+                        string PathHltbUserStats = Path.Combine(PluginUserDataPath, "HltbUserStats.json");
+                        File.WriteAllText(PathHltbUserStats, JsonConvert.SerializeObject(UserHltbData));
+                    }
+                    catch (Exception ex)
+                    {
+                        Common.LogError(ex, "HowLongToBeat");
+                    }
+
+                    Database.UserHltbData = UserHltbData;
+                }
+            });
+        }
+
+        public void RefreshUserData(int game_id)
+        {
+            Task.Run(() => 
+            {
+                TitleList titleList = howLongToBeatClient.GetUserData(game_id);
+
+                if (titleList != null)
+                {
+                    int index = Database.UserHltbData.TitlesList.FindIndex(x => x.Id == game_id);
+
+                    if (index > -1)
+                    {
+                        Database.UserHltbData.TitlesList[index] = titleList;
+                    }
+                    else
+                    {
+                        Database.UserHltbData.TitlesList.Add(titleList);
+                    }
+
+                    try
+                    {
+                        string PathHltbUserStats = Path.Combine(PluginUserDataPath, "HltbUserStats.json");
+                        File.WriteAllText(PathHltbUserStats, JsonConvert.SerializeObject(Database.UserHltbData));
+                    }
+                    catch (Exception ex)
+                    {
+                        Common.LogError(ex, "HowLongToBeat");
+                    }
+                }
+            });
+        }
+
+
+        public void SetCurrentPlayTime(Game game, long elapsedSeconds)
         {
             GameHowLongToBeat gameHowLongToBeat = Database.Get(game.Id);
 
             if (gameHowLongToBeat != null)
             {
-                TimeSpan time = TimeSpan.FromSeconds(game.Playtime);
+                TimeSpan time = TimeSpan.FromSeconds(game.Playtime + elapsedSeconds);
 
                 var platform = hltbPlatforms.FindAll(x => game.Platform.Name.ToLower().Contains(x.Name.ToLower())).First();
 
@@ -579,19 +635,40 @@ namespace HowLongToBeat.Services
                 {
                     string Platform = platform.Name;
 
-                    HltbPostData hltbPostData = new HltbPostData
+
+                    var HltbData = GetUserHltbData(gameHowLongToBeat.GetData().Id);
+                    int edit_id = 0;
+                    HltbPostData hltbPostData = new HltbPostData();
+                    if (HltbData != null)
                     {
-                        user_id = Database.UserHltbData.UserId,
-                        game_id = gameHowLongToBeat.GetData().Id,
-                        custom_title = gameHowLongToBeat.GetData().Name,
-                        platform = Platform,
+                        if (howLongToBeatClient.EditIdExist(HltbData.UserGameId))
+                        {
+                            edit_id = int.Parse(HltbData.UserGameId);
+                            hltbPostData = howLongToBeatClient.GetSubmitData(edit_id.ToString());
+                        }
+                    }
+                    else
+                    {
+                        string tmpEditId = howLongToBeatClient.FindIdExisting(HltbData.Id.ToString());
+                        if (!tmpEditId.IsNullOrEmpty())
+                        {
+                            edit_id = int.Parse(tmpEditId);
+                            hltbPostData = howLongToBeatClient.GetSubmitData(tmpEditId);
+                        }
+                    }
 
-                        list_p = "1",
+                    hltbPostData.user_id = Database.UserHltbData.UserId;
+                    hltbPostData.edit_id = edit_id;
+                    hltbPostData.game_id = gameHowLongToBeat.GetData().Id;
+                    hltbPostData.custom_title = gameHowLongToBeat.GetData().Name;
+                    hltbPostData.platform = Platform;
 
-                        protime_h = time.Hours.ToString(),
-                        protime_m = time.Minutes.ToString(),
-                        protime_s = time.Seconds.ToString(),
-                    };
+                    hltbPostData.list_p = "1";
+
+                    hltbPostData.protime_h = time.Hours.ToString();
+                    hltbPostData.protime_m = time.Minutes.ToString();
+                    hltbPostData.protime_s = time.Seconds.ToString();
+
 
                     howLongToBeatClient.PostData(hltbPostData);
                 }

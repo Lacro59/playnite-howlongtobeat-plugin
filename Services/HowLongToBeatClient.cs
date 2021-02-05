@@ -20,6 +20,9 @@ using System.Windows.Threading;
 using System.Threading;
 using System.Reflection;
 using System.Diagnostics;
+using AngleSharp.Dom;
+using TinyCsvParser;
+using System.Text;
 
 namespace HowLongToBeat.Services
 {
@@ -66,9 +69,12 @@ namespace HowLongToBeat.Services
         private string UrlUserStatsGameDetails { get; set; }
 
         private string UrlPostData { get; set; }
+        private string UrlPostDataEdit { get; set; }
         private string UrlSearch { get; set; }
 
         private string UrlGame { get; set; }
+
+        private string UrlExportAll { get; set; }
 
         private bool? _IsConnected = null;
         public bool? IsConnected
@@ -88,6 +94,8 @@ namespace HowLongToBeat.Services
         public int UserId = 0;
         public HltbUserStats hltbUserStats = new HltbUserStats();
 
+        private bool IsFirst = true;
+
 
         public HowLongToBeatClient(HowLongToBeat plugin, IPlayniteAPI PlayniteApi, HowLongToBeatSettings settings)
         {
@@ -98,6 +106,7 @@ namespace HowLongToBeat.Services
             webViews = PlayniteApi.WebViews.CreateOffscreenView();
 
             UrlPostData = UrlBase + "submit"; 
+            UrlPostDataEdit = UrlBase + "submit?s=add&eid={0}"; 
 
             UrlLogin = UrlBase + "login";
             UrlLogOut = UrlBase + "login?t=out";
@@ -110,6 +119,8 @@ namespace HowLongToBeat.Services
             UrlSearch = UrlBase + "search_results.php";
 
             UrlGame = UrlBase + "game.php?id={0}";
+
+            UrlExportAll = UrlBase + "user_export?all=1";
 
             UserLogin = _settings.UserLogin;
         }
@@ -443,6 +454,549 @@ namespace HowLongToBeat.Services
         }
 
 
+        private string GetUserGamesList()
+        {
+            try
+            {
+                List<HttpCookie> Cookies = webViews.GetCookies();
+                Cookies = Cookies.Where(x => x.Domain.Contains("howlongtobeat")).ToList();
+
+                var formContent = new FormUrlEncodedContent(new[]
+                {
+                        new KeyValuePair<string, string>("n", UserLogin),
+                        new KeyValuePair<string, string>("c", "user_beat"),
+                        new KeyValuePair<string, string>("p", string.Empty),
+                        new KeyValuePair<string, string>("y", string.Empty)
+                    });
+
+                string response = Web.PostStringDataCookies(UrlUserStatsGameList, formContent, Cookies).GetAwaiter().GetResult();
+                return response;
+            }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, "HowLongToBeat");
+
+                _PlayniteApi.Notifications.Add(new NotificationMessage(
+                    "HowLongToBeat-Import-Error",
+                    "HowLongToBeat" + System.Environment.NewLine +
+                    ex.Message,
+                    NotificationType.Error,
+                    () => _plugin.OpenSettingsView()));
+
+                return string.Empty;
+            }
+        }
+
+        private string GetUserGamesDetail(string UserGameId)
+        {
+            try
+            {
+                List<HttpCookie> Cookies = webViews.GetCookies();
+                Cookies = Cookies.Where(x => x.Domain.Contains("howlongtobeat")).ToList();
+
+                var formContent = new FormUrlEncodedContent(new[]
+                {
+                    new KeyValuePair<string, string>("option", UserGameId),
+                    new KeyValuePair<string, string>("option_b", "comp_all")
+                });
+
+                string response = Web.PostStringDataCookies(UrlUserStatsGameDetails, formContent, Cookies).GetAwaiter().GetResult();
+                return response;
+            }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, "HowLongToBeat");
+
+                _PlayniteApi.Notifications.Add(new NotificationMessage(
+                    "HowLongToBeat-Import-Error",
+                    "HowLongToBeat" + System.Environment.NewLine +
+                    ex.Message,
+                    NotificationType.Error,
+                    () => _plugin.OpenSettingsView()));
+
+                return string.Empty;
+            }
+        }
+
+        private TitleList GetTitleList(IElement element)
+        {
+            try
+            {
+                TitleList titleList = new TitleList();
+
+                var tr = element.QuerySelectorAll("tr");
+                var td = tr[0].QuerySelectorAll("td");
+
+                titleList.UserGameId = element.GetAttribute("id").Replace("user_sel_", string.Empty).Trim();
+                titleList.GameName = td[0].QuerySelector("a").InnerHtml.Trim();
+                titleList.Platform = td[0].QuerySelector("span").InnerHtml.Trim();
+                titleList.Id = int.Parse(td[0].QuerySelector("a").GetAttribute("href").Replace("game?id=", string.Empty));
+
+                string sCurrentTime = td[1].InnerHtml;
+                titleList.CurrentTime = ConvertStringToLongUser(sCurrentTime);
+
+                HltbPostData hltbPostData = GetSubmitData(titleList.UserGameId);
+                if (hltbPostData != null)
+                {
+                    string tempCurrentTime = (hltbPostData.protime_h.IsNullOrEmpty()) ? string.Empty : hltbPostData.protime_h + "h";
+                    tempCurrentTime += (hltbPostData.protime_m.IsNullOrEmpty()) ? string.Empty : " " + hltbPostData.protime_m + "m";
+                    tempCurrentTime += (hltbPostData.protime_s.IsNullOrEmpty()) ? string.Empty : " " + hltbPostData.protime_s + "s";
+
+                    titleList.CurrentTime = ConvertStringToLongUser(tempCurrentTime.Trim());
+                }
+
+                string response = GetUserGamesDetail(titleList.UserGameId);
+                if (response.IsNullOrEmpty())
+                {
+                    logger.Warn($"HowLongToBeat - No details for {titleList.GameName}");
+                    return null;
+                }
+
+                HtmlParser parser = new HtmlParser();
+                IHtmlDocument htmlDocument = parser.Parse(response);
+
+                var GameDetails = htmlDocument.QuerySelectorAll("div.user_game_detail > div");
+
+                // Game status type
+                titleList.GameStatuses = new List<GameStatus>();
+                foreach (var GameStatus in GameDetails[0].QuerySelectorAll("span"))
+                {
+                    switch (GameStatus.InnerHtml.ToLower())
+                    {
+                        case "playing":
+                            titleList.GameStatuses.Add(new GameStatus { Status = StatusType.Playing });
+                            break;
+                        case "backlog":
+                            titleList.GameStatuses.Add(new GameStatus { Status = StatusType.Backlog });
+                            break;
+                        case "replays":
+                            titleList.GameStatuses.Add(new GameStatus { Status = StatusType.Replays });
+                            break;
+                        case "custom tab":
+                            titleList.GameStatuses.Add(new GameStatus { Status = StatusType.CustomTab });
+                            break;
+                        case "completed":
+                            titleList.GameStatuses.Add(new GameStatus { Status = StatusType.Completed });
+                            break;
+                        case "retired":
+                            titleList.GameStatuses.Add(new GameStatus { Status = StatusType.Retired });
+                            break;
+                    }
+                }
+
+                // Game status time
+                int iPosUserData = 1;
+                if (GameDetails[1].InnerHtml.ToLower().Contains("<h5>progress</h5>"))
+                {
+                    List<string> ListTime = GameDetails[1].QuerySelector("span").InnerHtml
+                        .Replace("<strong>", string.Empty).Replace("</strong>", string.Empty)
+                        .Split('/').ToList();
+
+                    for (int i = 0; i < titleList.GameStatuses.Count; i++)
+                    {
+                        titleList.GameStatuses[i].Time = ConvertStringToLongUser(ListTime[i]);
+                    }
+
+                    iPosUserData = 2;
+                }
+
+                // User data
+                titleList.HltbUserData = new HltbData();
+                for (int i = 0; i < GameDetails[iPosUserData].Children.Count(); i++)
+                {
+                    string tempTime = string.Empty;
+
+                    // Completion date
+                    if (GameDetails[iPosUserData].Children[i].InnerHtml.ToLower().Contains("completion"))
+                    {
+                        if (GameDetails[iPosUserData].Children[i].QuerySelectorAll("p").FirstOrDefault() != null)
+                        {
+                            tempTime = GameDetails[iPosUserData].Children[i].QuerySelectorAll("p").FirstOrDefault().InnerHtml;
+                            titleList.Completion = Convert.ToDateTime(tempTime);
+                        }
+                    }
+
+
+                    if (GameDetails[iPosUserData].Children[i].InnerHtml.ToLower().Contains("main story"))
+                    {
+                        i++;
+                        tempTime = GameDetails[iPosUserData].Children[i].QuerySelector("span").InnerHtml;
+                        titleList.HltbUserData.MainStory = ConvertStringToLongUser(tempTime);
+                    }
+
+                    if (GameDetails[iPosUserData].Children[i].InnerHtml.ToLower().Contains("main+extras"))
+                    {
+                        i++;
+                        tempTime = GameDetails[iPosUserData].Children[i].QuerySelector("span").InnerHtml;
+                        titleList.HltbUserData.MainExtra = ConvertStringToLongUser(tempTime);
+                    }
+
+                    if (GameDetails[iPosUserData].Children[i].InnerHtml.ToLower().Contains("completionist"))
+                    {
+                        i++;
+                        tempTime = GameDetails[iPosUserData].Children[i].QuerySelector("span").InnerHtml;
+                        titleList.HltbUserData.Completionist = ConvertStringToLongUser(tempTime);
+                    }
+
+
+                    if (GameDetails[iPosUserData].Children[i].InnerHtml.ToLower().Contains("solo"))
+                    {
+                        i++;
+                        tempTime = GameDetails[iPosUserData].Children[i].QuerySelector("span").InnerHtml;
+                        titleList.HltbUserData.Solo = ConvertStringToLongUser(tempTime);
+                    }
+
+                    if (GameDetails[iPosUserData].Children[i].InnerHtml.ToLower().Contains("co-op"))
+                    {
+                        i++;
+                        tempTime = GameDetails[iPosUserData].Children[i].QuerySelector("span").InnerHtml;
+                        titleList.HltbUserData.CoOp = ConvertStringToLongUser(tempTime);
+                    }
+
+                    if (GameDetails[iPosUserData].Children[i].InnerHtml.ToLower().Contains("vs"))
+                    {
+                        i++;
+                        tempTime = GameDetails[iPosUserData].Children[i].QuerySelector("span").InnerHtml;
+                        titleList.HltbUserData.Vs = ConvertStringToLongUser(tempTime);
+                    }
+                }
+#if DEBUG
+                logger.Debug($"HowLongToBeat [Ignored] - titleList: {JsonConvert.SerializeObject(titleList)}");
+#endif
+                return titleList;
+            }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, "HowLongToBeat");
+
+                _PlayniteApi.Notifications.Add(new NotificationMessage(
+                    "HowLongToBeat-Import-Error",
+                    "HowLongToBeat" + System.Environment.NewLine +
+                    ex.Message,
+                    NotificationType.Error,
+                    () => _plugin.OpenSettingsView()));
+
+                return null;
+            }
+        }
+
+        public HltbPostData GetSubmitData(string UserGameId)
+        {
+            try
+            {
+                List<HttpCookie> Cookies = webViews.GetCookies();
+                Cookies = Cookies.Where(x => x.Domain.Contains("howlongtobeat")).ToList();
+
+                string response = Web.DownloadStringData(string.Format(UrlPostDataEdit, UserGameId), Cookies).GetAwaiter().GetResult();
+
+                if (response.IsNullOrEmpty())
+                {
+                    logger.Warn($"HowLongToBeat - No SubmitData for {UserGameId}");
+                    return null;
+                }
+
+                HtmlParser parser = new HtmlParser();
+                IHtmlDocument htmlDocument = parser.Parse(response);
+
+
+                HltbPostData hltbPostData = new HltbPostData();
+
+
+                var user_id = htmlDocument.QuerySelector("input[name=user_id]");
+                int.TryParse(user_id.GetAttribute("value"), out int user_id_value);
+                hltbPostData.user_id = user_id_value;
+
+                var edit_id = htmlDocument.QuerySelector("input[name=edit_id]");
+                int.TryParse(edit_id.GetAttribute("value"), out int edit_id_value);
+                hltbPostData.edit_id = edit_id_value;
+
+                var game_id = htmlDocument.QuerySelector("input[name=game_id]");
+                int.TryParse(game_id.GetAttribute("value"), out int game_id_value);
+                hltbPostData.game_id = game_id_value;
+
+
+                var CustomTitle = htmlDocument.QuerySelector("input[name=custom_title]");
+                hltbPostData.custom_title = CustomTitle.GetAttribute("value");
+
+                // TODO No selected....
+                var SelectPlatform = htmlDocument.QuerySelectorAll("select[name=platform]");
+                foreach(var option in SelectPlatform[0].QuerySelectorAll("option"))
+                {
+                    logger.Debug(option.OuterHtml);
+                    if (option.GetAttribute("selected") == "selected")
+                    {
+                        hltbPostData.platform = option.InnerHtml;
+                    }
+                }
+                if (hltbPostData.platform.IsNullOrEmpty())
+                {
+                    if (SelectPlatform.Count() > 1)
+                    {
+                        foreach (var option in SelectPlatform[1].QuerySelectorAll("option"))
+                        {
+                            logger.Debug(option.OuterHtml);
+                            if (option.GetAttribute("selected") == "selected")
+                            {
+                                hltbPostData.platform = option.InnerHtml;
+                            }
+                        }
+                    }
+                }
+
+
+                var cbList = htmlDocument.QuerySelector("#list_p");
+                if (cbList.OuterHtml.ToLower().Contains(" checked"))
+                {
+                    hltbPostData.list_p = "1";
+                }
+
+                cbList = htmlDocument.QuerySelector("#list_b");
+                if (cbList.OuterHtml.ToLower().Contains(" checked"))
+                {
+                    hltbPostData.list_b = "1";
+                }
+
+                cbList = htmlDocument.QuerySelector("#list_r");
+                if (cbList.OuterHtml.ToLower().Contains(" checked"))
+                {
+                    hltbPostData.list_r = "1";
+                }
+
+                cbList = htmlDocument.QuerySelector("#list_c");
+                if (cbList.OuterHtml.ToLower().Contains(" checked"))
+                {
+                    hltbPostData.list_c = "1";
+                }
+
+                cbList = htmlDocument.QuerySelector("#list_cp");
+                if (cbList.OuterHtml.ToLower().Contains(" checked"))
+                {
+                    hltbPostData.list_cp = "1";
+                }
+
+                cbList = htmlDocument.QuerySelector("#list_rt");
+                if (cbList.OuterHtml.ToLower().Contains(" checked"))
+                {
+                    hltbPostData.list_rt = "1";
+                }
+
+                var cp_pull_h = htmlDocument.QuerySelector("#cp_pull_h");
+                hltbPostData.protime_h = cp_pull_h.GetAttribute("value");
+
+                var cp_pull_m = htmlDocument.QuerySelector("#cp_pull_m");
+                hltbPostData.protime_m = cp_pull_m.GetAttribute("value");
+
+                var cp_pull_s = htmlDocument.QuerySelector("#cp_pull_s");
+                hltbPostData.protime_s = cp_pull_s.GetAttribute("value");
+
+
+                var rt_notes = htmlDocument.QuerySelector("input[name=rt_notes]");
+                hltbPostData.rt_notes = rt_notes.GetAttribute("value");
+
+
+                var compmonth = htmlDocument.QuerySelector("#compmonth");
+                foreach (var option in compmonth.QuerySelectorAll("option"))
+                {
+                    if (option.GetAttribute("selected") == "selected")
+                    {
+                        hltbPostData.compmonth = option.GetAttribute("value");
+                    }
+                }
+
+                var compday = htmlDocument.QuerySelector("#compday");
+                var a = compday.InnerHtml;
+                foreach (var option in compday.QuerySelectorAll("option"))
+                {
+                    if (option.GetAttribute("selected") == "selected")
+                    {
+                        hltbPostData.compday = option.GetAttribute("value");
+                    }
+                }
+
+                var compyear = htmlDocument.QuerySelector("#compyear");
+                foreach (var option in compyear.QuerySelectorAll("option"))
+                {
+                    logger.Debug(option.OuterHtml);
+                    if (option.GetAttribute("selected") == "selected")
+                    {
+                        hltbPostData.compyear = option.GetAttribute("value");
+                    }
+                }
+
+
+                var play_num = htmlDocument.QuerySelector("#play_num");
+                foreach (var option in play_num.QuerySelectorAll("option"))
+                {
+                    if (option.GetAttribute("selected") == "selected")
+                    {
+                        int.TryParse(option.GetAttribute("value"), out int play_num_value);
+                        hltbPostData.play_num = play_num_value;
+                    }
+                }
+
+
+                var c_main_h = htmlDocument.QuerySelector("#c_main_h");
+                hltbPostData.c_main_h = c_main_h.GetAttribute("value");
+
+                var c_main_m = htmlDocument.QuerySelector("#c_main_m");
+                hltbPostData.c_main_m = c_main_m.GetAttribute("value");
+
+                var c_main_s = htmlDocument.QuerySelector("#c_main_s");
+                hltbPostData.c_main_s = c_main_s.GetAttribute("value");
+
+                var c_main_notes = htmlDocument.QuerySelector("input[name=c_main_notes]");
+                hltbPostData.c_main_notes = c_main_notes.GetAttribute("value");
+
+
+                var c_plus_h = htmlDocument.QuerySelector("#c_plus_h");
+                hltbPostData.c_plus_h = c_plus_h.GetAttribute("value");
+
+                var c_plus_m = htmlDocument.QuerySelector("#c_plus_m");
+                hltbPostData.c_plus_m = c_plus_m.GetAttribute("value");
+
+                var c_plus_s = htmlDocument.QuerySelector("#c_plus_s");
+                hltbPostData.c_plus_s = c_plus_s.GetAttribute("value");
+
+                var c_plus_notes = htmlDocument.QuerySelector("input[name=c_plus_notes]");
+                hltbPostData.c_plus_notes = c_plus_notes.GetAttribute("value");
+
+
+                var c_100_h = htmlDocument.QuerySelector("#c_100_h");
+                hltbPostData.c_100_h = c_100_h.GetAttribute("value");
+
+                var c_100_m = htmlDocument.QuerySelector("#c_100_m");
+                hltbPostData.c_100_m = c_100_m.GetAttribute("value");
+
+                var c_100_s = htmlDocument.QuerySelector("#c_100_s");
+                hltbPostData.c_100_s = c_100_s.GetAttribute("value");
+
+                var c_100_notes = htmlDocument.QuerySelector("input[name=c_100_notes]");
+                hltbPostData.c_100_notes = c_100_notes.GetAttribute("value");
+
+
+                var c_speed_h = htmlDocument.QuerySelector("#c_speed_h");
+                hltbPostData.c_speed_h = c_speed_h.GetAttribute("value");
+
+                var c_speed_m = htmlDocument.QuerySelector("#c_speed_m");
+                hltbPostData.c_speed_m = c_speed_m.GetAttribute("value");
+
+                var c_speed_s = htmlDocument.QuerySelector("#c_speed_s");
+                hltbPostData.c_speed_s = c_speed_s.GetAttribute("value");
+
+                var c_speed_notes = htmlDocument.QuerySelector("input[name=c_speed_notes]");
+                hltbPostData.c_speed_notes = c_speed_notes.GetAttribute("value");
+
+
+                var cotime_h = htmlDocument.QuerySelector("#cotime_h");
+                hltbPostData.cotime_h = cotime_h.GetAttribute("value");
+
+                var cotime_m = htmlDocument.QuerySelector("#cotime_m");
+                hltbPostData.cotime_m = cotime_m.GetAttribute("value");
+
+                var cotime_s = htmlDocument.QuerySelector("#cotime_s");
+                hltbPostData.cotime_s = cotime_s.GetAttribute("value");
+
+
+                var mptime_h = htmlDocument.QuerySelector("#mptime_h");
+                hltbPostData.mptime_h = mptime_h.GetAttribute("value");
+
+                var mptime_m = htmlDocument.QuerySelector("#mptime_m");
+                hltbPostData.mptime_m = mptime_m.GetAttribute("value");
+
+                var mptime_s = htmlDocument.QuerySelector("#mptime_s");
+                hltbPostData.mptime_s = mptime_s.GetAttribute("value");
+
+                var mptime_notes = htmlDocument.QuerySelector("#mptime_notes");
+
+
+                var review_score = htmlDocument.QuerySelector("select[name=review_score]");
+                foreach (var option in review_score.QuerySelectorAll("option"))
+                {
+                    if (option.GetAttribute("selected") == "selected")
+                    {
+                        int.TryParse(option.GetAttribute("value"), out int review_score_value);
+                        hltbPostData.review_score = review_score_value;
+                    }
+                }
+
+
+                var review_notes = htmlDocument.QuerySelector("textarea[name=review_notes]");
+                hltbPostData.review_notes = review_notes.InnerHtml;
+
+
+                var play_notes = htmlDocument.QuerySelector("textarea[name=play_notes]");
+                hltbPostData.play_notes = play_notes.InnerHtml;
+
+
+                var play_video = htmlDocument.QuerySelector("input[name=play_video]");
+                hltbPostData.play_video = play_video.GetAttribute("value");
+
+
+                return hltbPostData;
+            }
+            catch (Exception ex)
+            {
+                if (IsFirst)
+                {
+                    IsFirst = false;
+                    return GetSubmitData(UserGameId);
+                }
+                else
+                {
+                    Common.LogError(ex, "HowLongToBeat");
+
+                    _PlayniteApi.Notifications.Add(new NotificationMessage(
+                        "HowLongToBeat-Import-Error",
+                        "HowLongToBeat" + System.Environment.NewLine +
+                        ex.Message,
+                        NotificationType.Error,
+                        () => _plugin.OpenSettingsView()));
+
+                    return null;
+                }
+            }
+        }
+
+        public List<TitleList> GetExportAll()
+        {
+            try
+            {
+                List<HttpCookie> Cookies = webViews.GetCookies();
+                Cookies = Cookies.Where(x => x.Domain.Contains("howlongtobeat")).ToList();
+
+                Stream FileStream = Web.DownloadFileStream(UrlExportAll, Cookies).GetAwaiter().GetResult();
+
+                CsvParserOptions csvParserOptions = new CsvParserOptions(true, ',');
+                CsvHltbDataExportedMapping csvMapper = new CsvHltbDataExportedMapping();
+                CsvParser<HltbDataExported> csvParser = new CsvParser<HltbDataExported>(csvParserOptions, csvMapper);
+
+                List<TitleList> result = new List<TitleList>();
+
+                var ParsedData = csvParser.ReadFromStream(FileStream, Encoding.UTF8).ToList();
+                foreach(var Data in ParsedData)
+                {
+                    TitleList titleList = new TitleList();
+                }
+
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, "HowLongToBeat");
+
+                _PlayniteApi.Notifications.Add(new NotificationMessage(
+                    "HowLongToBeat-Import-Error",
+                    "HowLongToBeat" + System.Environment.NewLine +
+                    ex.Message,
+                    NotificationType.Error,
+                    () => _plugin.OpenSettingsView()));
+
+                return new List<TitleList>() ;
+            }
+        }
+
+
         public HltbUserStats LoadUserData()
         {
             string PathHltbUserStats = Path.Combine(_plugin.GetPluginUserDataPath(), "HltbUserStats.json");
@@ -464,6 +1018,7 @@ namespace HowLongToBeat.Services
             return hltbDataUser;
         }
 
+
         public HltbUserStats GetUserData()
         {
             if (GetIsUserLoggedIn())
@@ -473,165 +1028,22 @@ namespace HowLongToBeat.Services
                 hltbUserStats.UserId = (UserId == 0) ? HowLongToBeat.PluginDatabase.Database.UserHltbData.UserId : UserId;
                 hltbUserStats.TitlesList = new List<TitleList>();
 
+                //hltbUserStats.TitlesList = GetExportAll();
+                
+                string response = GetUserGamesList();
+                if (response.IsNullOrEmpty())
+                {
+                    return null;
+                }
+
                 try
                 {
-                    webViews.NavigateAndWait(UrlUserStatsGameList);
-
-                    List<HttpCookie> Cookies = webViews.GetCookies();
-                    Cookies = Cookies.Where(x => x.Domain.Contains("howlongtobeat")).ToList();
-#if DEBUG
-                    logger.Debug($"HowLongToBeat [Ignored] - Cookies: {JsonConvert.SerializeObject(Cookies)}");
-#endif
-
-                    // Get list games
-                    var formContent = new FormUrlEncodedContent(new[]
-                    {
-                        new KeyValuePair<string, string>("n", hltbUserStats.Login),
-                        new KeyValuePair<string, string>("c", "user_beat"),
-                        new KeyValuePair<string, string>("p", string.Empty),
-                        new KeyValuePair<string, string>("y", string.Empty)
-                    });
-
-                    string response = Web.PostStringDataCookies(UrlUserStatsGameList, formContent, Cookies).GetAwaiter().GetResult();
-
                     HtmlParser parser = new HtmlParser();
                     IHtmlDocument htmlDocument = parser.Parse(response);
 
                     foreach (var ListGame in htmlDocument.QuerySelectorAll("table.user_game_list tbody"))
                     {
-                        TitleList titleList = new TitleList();
-
-                        var tr = ListGame.QuerySelectorAll("tr");
-                        var td = tr[0].QuerySelectorAll("td");
-
-                        titleList.UserGameId = ListGame.GetAttribute("id").Replace("user_sel_", string.Empty).Trim();
-                        titleList.GameName = td[0].QuerySelector("a").InnerHtml.Trim();
-                        titleList.Platform = td[0].QuerySelector("span").InnerHtml.Trim();
-                        titleList.Id = int.Parse(td[0].QuerySelector("a").GetAttribute("href").Replace("game?id=", string.Empty));
-
-                        string sCurrentTime = td[1].InnerHtml;
-                        titleList.CurrentTime = ConvertStringToLongUser(sCurrentTime);
-
-                        // Get game details
-                        formContent = new FormUrlEncodedContent(new[]
-                        {
-                            new KeyValuePair<string, string>("option", titleList.UserGameId),
-                            new KeyValuePair<string, string>("option_b", "comp_all")
-                        });
-
-                        response = Web.PostStringDataCookies(UrlUserStatsGameDetails, formContent, Cookies).GetAwaiter().GetResult();
-
-                        parser = new HtmlParser();
-                        htmlDocument = parser.Parse(response);
-
-                        var GameDetails = htmlDocument.QuerySelectorAll("div.user_game_detail > div");
-
-                        // Game status type
-                        titleList.GameStatuses = new List<GameStatus>();
-                        foreach (var GameStatus in GameDetails[0].QuerySelectorAll("span"))
-                        {
-                            switch(GameStatus.InnerHtml.ToLower())
-                            {
-                                case "playing":
-                                    titleList.GameStatuses.Add(new GameStatus { Status = StatusType.Playing });
-                                    break;
-                                case "backlog":
-                                    titleList.GameStatuses.Add(new GameStatus { Status = StatusType.Backlog });
-                                    break;
-                                case "replays":
-                                    titleList.GameStatuses.Add(new GameStatus { Status = StatusType.Replays });
-                                    break;
-                                case "custom tab":
-                                    titleList.GameStatuses.Add(new GameStatus { Status = StatusType.CustomTab });
-                                    break;
-                                case "completed":
-                                    titleList.GameStatuses.Add(new GameStatus { Status = StatusType.Completed });
-                                    break;
-                                case "retired":
-                                    titleList.GameStatuses.Add(new GameStatus { Status = StatusType.Retired });
-                                    break;
-                            }
-                        }
-
-                        // Game status time
-                        int iPosUserData = 1;
-                        if (GameDetails[1].InnerHtml.ToLower().Contains("<h5>progress</h5>"))
-                        {
-                            List<string> ListTime = GameDetails[1].QuerySelector("span").InnerHtml
-                                .Replace("<strong>", string.Empty).Replace("</strong>", string.Empty)
-                                .Split('/').ToList();
-
-                            for (int i = 0; i < titleList.GameStatuses.Count; i++)
-                            {
-                                titleList.GameStatuses[i].Time = ConvertStringToLongUser(ListTime[i]);
-                            }
-
-                            iPosUserData = 2;
-                        }
-
-                        // User data
-                        titleList.HltbUserData = new HltbData();
-                        for (int i = 0; i < GameDetails[iPosUserData].Children.Count(); i++)
-                        {
-                            string tempTime = string.Empty;
-
-                            // Completion date
-                            if (GameDetails[iPosUserData].Children[i].InnerHtml.ToLower().Contains("completion"))
-                            {
-                                if (GameDetails[iPosUserData].Children[i].QuerySelectorAll("p").FirstOrDefault() != null)
-                                {
-                                    tempTime = GameDetails[iPosUserData].Children[i].QuerySelectorAll("p").FirstOrDefault().InnerHtml;
-                                    titleList.Completion = Convert.ToDateTime(tempTime);
-                                }
-                            }
-
-
-                            if (GameDetails[iPosUserData].Children[i].InnerHtml.ToLower().Contains("main story"))
-                            {
-                                i++;
-                                tempTime = GameDetails[iPosUserData].Children[i].QuerySelector("span").InnerHtml;
-                                titleList.HltbUserData.MainStory = ConvertStringToLongUser(tempTime);
-                            }
-
-                            if (GameDetails[iPosUserData].Children[i].InnerHtml.ToLower().Contains("main+extras"))
-                            {
-                                i++;
-                                tempTime = GameDetails[iPosUserData].Children[i].QuerySelector("span").InnerHtml;
-                                titleList.HltbUserData.MainExtra = ConvertStringToLongUser(tempTime);
-                            }
-
-                            if (GameDetails[iPosUserData].Children[i].InnerHtml.ToLower().Contains("completionist"))
-                            {
-                                i++;
-                                tempTime = GameDetails[iPosUserData].Children[i].QuerySelector("span").InnerHtml;
-                                titleList.HltbUserData.Completionist = ConvertStringToLongUser(tempTime);
-                            }
-
-
-                            if (GameDetails[iPosUserData].Children[i].InnerHtml.ToLower().Contains("solo"))
-                            {
-                                i++;
-                                tempTime = GameDetails[iPosUserData].Children[i].QuerySelector("span").InnerHtml;
-                                titleList.HltbUserData.Solo = ConvertStringToLongUser(tempTime);
-                            }
-
-                            if (GameDetails[iPosUserData].Children[i].InnerHtml.ToLower().Contains("co-op"))
-                            {
-                                i++;
-                                tempTime = GameDetails[iPosUserData].Children[i].QuerySelector("span").InnerHtml;
-                                titleList.HltbUserData.CoOp = ConvertStringToLongUser(tempTime);
-                            }
-
-                            if (GameDetails[iPosUserData].Children[i].InnerHtml.ToLower().Contains("vs"))
-                            {
-                                i++;
-                                tempTime = GameDetails[iPosUserData].Children[i].QuerySelector("span").InnerHtml;
-                                titleList.HltbUserData.Vs = ConvertStringToLongUser(tempTime);
-                            }
-                        }
-#if DEBUG
-                        logger.Debug($"HowLongToBeat [Ignored] - titleList: {JsonConvert.SerializeObject(titleList)}");
-#endif
+                        TitleList titleList = GetTitleList(ListGame);
 
                         hltbUserStats.TitlesList.Add(titleList);
                     }
@@ -664,6 +1076,109 @@ namespace HowLongToBeat.Services
                 return null;
             }
         }
+
+        public TitleList GetUserData(int game_id)
+        {
+            if (GetIsUserLoggedIn())
+            {
+                string response = GetUserGamesList();
+                if (response.IsNullOrEmpty())
+                {
+                    return null;
+                }
+
+                try
+                {
+                    HtmlParser parser = new HtmlParser();
+                    IHtmlDocument htmlDocument = parser.Parse(response);
+
+                    foreach (var ListGame in htmlDocument.QuerySelectorAll("table.user_game_list tbody"))
+                    {
+                        var tr = ListGame.QuerySelectorAll("tr");
+                        var td = tr[0].QuerySelectorAll("td");
+
+                        int Id = int.Parse(td[0].QuerySelector("a").GetAttribute("href").Replace("game?id=", string.Empty));
+
+                        if (Id != game_id)
+                        {
+                            continue;
+                        }
+
+                        TitleList titleList = GetTitleList(ListGame);
+#if DEBUG
+                        logger.Debug($"HowLongToBeat [Ignored] - titleList: {JsonConvert.SerializeObject(titleList)}");
+#endif
+                        return titleList;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Common.LogError(ex, "HowLongToBeat");
+
+                    _PlayniteApi.Notifications.Add(new NotificationMessage(
+                        "HowLongToBeat-Import-Error",
+                        "HowLongToBeat" + System.Environment.NewLine +
+                        ex.Message,
+                        NotificationType.Error,
+                        () => _plugin.OpenSettingsView()));
+
+                    return null;
+                }
+
+                return null;
+            }
+            else
+            {
+                _PlayniteApi.Notifications.Add(new NotificationMessage(
+                    "HowLongToBeat-Import-Error",
+                    "HowLongToBeat" + System.Environment.NewLine +
+                    resources.GetString("LOCNotLoggedIn"),
+                    NotificationType.Error,
+                    () => _plugin.OpenSettingsView()));
+
+                return null;
+            }
+        }
+
+
+        public bool EditIdExist(string UserGameId)
+        {
+            return GetUserGamesList().ToLower().Contains("user_sel_" + UserGameId);
+        }
+
+        public string FindIdExisting(string GameId)
+        {
+            try
+            {
+                string UserGamesList = GetUserGamesList();
+                HtmlParser parser = new HtmlParser();
+                IHtmlDocument htmlDocument = parser.Parse(UserGamesList);
+
+                var element = htmlDocument.QuerySelectorAll("a").Where(x => x.GetAttribute("href").Contains($"game?id={GameId}")).FirstOrDefault();
+
+                if (element != null)
+                {
+                    return element.GetAttribute("id").ToLower().Replace("user_play_sel_", string.Empty);
+                }
+                else
+                {
+                    return string.Empty;
+                }
+            }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, "HowLongToBeat");
+
+                _PlayniteApi.Notifications.Add(new NotificationMessage(
+                    "HowLongToBeat-Import-Error",
+                    "HowLongToBeat" + System.Environment.NewLine +
+                    ex.Message,
+                    NotificationType.Error,
+                    () => _plugin.OpenSettingsView()));
+
+                return null;
+            }
+        }
         #endregion
 
 
@@ -676,6 +1191,19 @@ namespace HowLongToBeat.Services
                     Type type = typeof(HltbPostData);
                     PropertyInfo[] properties = type.GetProperties();
                     var data = new Dictionary<string, string>();
+
+
+                    // Get existing data
+                    if (hltbPostData.edit_id != 0)
+                    {
+                        data.Add("edited", "Save Edit");
+                    }
+                    else
+                    {
+                        data.Add("submitted", "Submit");
+                    }
+
+
                     foreach (PropertyInfo property in properties)
                     {
                         switch (property.Name)
@@ -750,22 +1278,12 @@ namespace HowLongToBeat.Services
                                 break;
 
                             default:
-                                data.Add(property.Name, WebUtility.UrlEncode(property.GetValue(hltbPostData, null).ToString()));
+                                //data.Add(property.Name, WebUtility.UrlEncode(property.GetValue(hltbPostData, null).ToString()));
+                                data.Add(property.Name, property.GetValue(hltbPostData, null).ToString());
                                 break;
                         }
                     }
-
-                    /*
-                    if (hltbPostData.edit_id != 0)
-                    {
-                        string url = string.Format(UrlPostData + "?s=add&gid={0}", hltbPostData.game_id);
-                        webViews.NavigateAndWait(url);
-                    }
-                    else
-                    {
-
-                    }
-                    */
+                    
 
                     List<HttpCookie> Cookies = webViews.GetCookies();
                     Cookies = Cookies.Where(x => x.Domain.Contains("howlongtobeat")).ToList();
@@ -776,9 +1294,8 @@ namespace HowLongToBeat.Services
                     var formContent = new FormUrlEncodedContent(data);
                     string response = Web.PostStringDataCookies(UrlPostData, formContent, Cookies).GetAwaiter().GetResult();
 
-                    HtmlParser parser = new HtmlParser();
-                    IHtmlDocument htmlDocument = parser.Parse(response);
 
+                    HowLongToBeat.PluginDatabase.RefreshUserData(hltbPostData.game_id);
 
                 }
                 catch (Exception ex)
