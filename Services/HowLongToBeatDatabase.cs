@@ -528,12 +528,23 @@ namespace HowLongToBeat.Services
 
         public TitleList GetUserHltbData(int HltbId)
         {
-            if (Database.UserHltbData.TitlesList == null || Database.UserHltbData.TitlesList.Count == 0)
+            try
             {
+                if (Database.UserHltbData.TitlesList == null || Database.UserHltbData.TitlesList.Count == 0)
+                {
+                    return null;
+                }
+
+                return Database.UserHltbData.TitlesList.Find(x => x.Id == HltbId);
+            }
+            catch (Exception ex)
+            {
+#if DEBUG
+                Common.LogError(ex, "HowLongToBeat");
+#endif
+                logger.Warn($"HowLongToBeat - No HltbData for {HltbId}");
                 return null;
             }
-
-            return Database.UserHltbData.TitlesList.Find(x => x.Id == HltbId);
         }
 
         public void RefreshUserData()

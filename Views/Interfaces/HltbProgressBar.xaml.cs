@@ -364,7 +364,6 @@ namespace HowLongToBeat.Views.Interfaces
 #if DEBUG
                     logger.Debug($"HowLongToBeat [Ignored] - titleList: {JsonConvert.SerializeObject(titleList)}");
 #endif
-
                     if (titleList != null)
                     {
                         ElIndicator = 0;
