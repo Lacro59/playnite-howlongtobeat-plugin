@@ -104,6 +104,7 @@ namespace HowLongToBeat
         public override List<GameMenuItem> GetGameMenuItems(GetGameMenuItemsArgs args)
         {
             Game GameMenu = args.Games.First();
+            GameHowLongToBeat gameHowLongToBeat = PluginDatabase.Get(GameMenu, true);
 
             List<GameMenuItem> gameMenuItems = new List<GameMenuItem>
             {
@@ -114,7 +115,7 @@ namespace HowLongToBeat
                     {
                         try
                         {
-                            GameHowLongToBeat gameHowLongToBeat = PluginDatabase.Get(GameMenu);
+                            gameHowLongToBeat = PluginDatabase.Get(GameMenu);
 
                             if (gameHowLongToBeat.HasData)
                             {
@@ -134,8 +135,33 @@ namespace HowLongToBeat
                             PlayniteApi.Dialogs.ShowErrorMessage(resources.GetString("LOCDatabaseErroTitle"), "HowLongToBeat");
                         }
                     }
-                },
-                new GameMenuItem {
+                }
+            };
+
+
+            if (gameHowLongToBeat.HasData)
+            {
+                gameMenuItems.Add(new GameMenuItem
+                {
+                    MenuSection = resources.GetString("LOCHowLongToBeat"),
+                    Description = resources.GetString("LOCHowLongToBeatSetCurrentTimeManual"),
+                    Action = (mainMenuItem) =>
+                    {
+                        GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions(
+                            $"HowLongToBeat - {resources.GetString("LOCCommonProcessing")}",
+                            false
+                        );
+                        globalProgressOptions.IsIndeterminate = true;
+
+                        PlayniteApi.Dialogs.ActivateGlobalProgress((activateGlobalProgress) =>
+                        {
+                            PluginDatabase.SetCurrentPlayTime(GameMenu, 0);
+                        }, globalProgressOptions);
+                    }
+                });
+
+                gameMenuItems.Add(new GameMenuItem
+                {
                     MenuSection = resources.GetString("LOCHowLongToBeat"),
                     Description = resources.GetString("LOCCommonDeleteGameData"),
                     Action = (gameMenuItem) =>
@@ -143,8 +169,8 @@ namespace HowLongToBeat
                         PluginDatabase.Remove(GameMenu.Id);
                         howLongToBeatUI.RefreshElements(HowLongToBeatDatabase.GameSelected);
                     }
-                }
-            };
+                });
+            }
 
 #if DEBUG
             gameMenuItems.Add(new GameMenuItem

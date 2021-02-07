@@ -372,6 +372,14 @@ namespace HowLongToBeat.Services
         #region user account
         public bool GetIsUserLoggedIn()
         {
+            UserId = HowLongToBeat.PluginDatabase.Database.UserHltbData.UserId;
+
+            if (UserId == 0)
+            {
+                IsConnected = false;
+                return false;
+            }
+
             if (IsConnected == null)
             {
                 webViews.NavigateAndWait(UrlBase);
@@ -431,14 +439,11 @@ namespace HowLongToBeat.Services
                                 HtmlParser parser = new HtmlParser();
                                 IHtmlDocument htmlDocument = parser.Parse(webViews.GetPageSource());
 
-                                foreach (var el in htmlDocument.QuerySelectorAll("input[type=\"hidden\"]"))
+                                var el = htmlDocument.QuerySelector("input[name=user_id]");
+                                if (el != null)
                                 {
-                                    if (el.GetAttribute("name") == "user_id")
-                                    {
-                                        string stringUserId = el.GetAttribute("value");
-                                        int.TryParse(stringUserId, out UserId);
-                                        break;
-                                    }
+                                    string stringUserId = el.GetAttribute("value");
+                                    int.TryParse(stringUserId, out UserId);
                                 }
 
                                 HowLongToBeat.PluginDatabase.RefreshUserData();

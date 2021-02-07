@@ -434,6 +434,7 @@ namespace HowLongToBeat.Views.Interfaces
                     PartSliderSecond.Value = Value;
                     PartSliderSecond.Visibility = Visibility.Visible;
                     solidColorBrushSecond = new SolidColorBrush(color);
+
                     break;
                 case 3:
                     PartSliderThird.Value = Value;
