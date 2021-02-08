@@ -372,7 +372,10 @@ namespace HowLongToBeat.Services
         #region user account
         public bool GetIsUserLoggedIn()
         {
-            UserId = HowLongToBeat.PluginDatabase.Database.UserHltbData.UserId;
+            if (UserId == 0)
+            {
+                UserId = HowLongToBeat.PluginDatabase.Database.UserHltbData.UserId;
+            }
 
             if (UserId == 0)
             {

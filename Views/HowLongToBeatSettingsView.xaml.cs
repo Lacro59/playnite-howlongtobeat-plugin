@@ -263,7 +263,14 @@ namespace HowLongToBeat.Views
                 {
                     PART_LbAuthenticate.Content = resources.GetString("LOCLoggedIn");
                     PART_LbUserLogin.Visibility = Visibility.Visible;
-                    PART_LbUserLogin.Content = resources.GetString("LOCGOGUseAccountName") + " " + PluginDatabase.Database.UserHltbData.Login;
+
+                    string UserLogin = PluginDatabase.howLongToBeatClient.UserLogin;
+                    if (UserLogin.IsNullOrEmpty())
+                    {
+                        UserLogin = PluginDatabase.Database.UserHltbData.Login;
+                    }
+
+                    PART_LbUserLogin.Content = resources.GetString("LOCGOGUseAccountName") + " " + UserLogin;
                 }
                 else
                 {
