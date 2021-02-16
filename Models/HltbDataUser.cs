@@ -24,10 +24,10 @@ namespace HowLongToBeat.Models
                 if (GameHltbData.MainStory != 0 || GameHltbData.MainExtra != 0 || GameHltbData.Completionist != 0 ||
                     GameHltbData.Solo != 0 || GameHltbData.CoOp != 0 || GameHltbData.Vs != 0)
                 {
-                    return true;
+                    return false;
                 }
 
-                return false;
+                return true;
             }
         }
     }

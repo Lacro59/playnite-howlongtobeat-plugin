@@ -30,9 +30,9 @@ namespace HowLongToBeat.Models
         {
             get
             {
-                if (Items.Count > 0)
+                if (Items != null & Items.Count > 0)
                 {
-                    return Items.First().IsEmpty;
+                    return !Items.First().IsEmpty;
                 }
 
                 return false;
@@ -44,9 +44,9 @@ namespace HowLongToBeat.Models
         {
             get
             {
-                if (Items.Count > 0)
+                if (Items != null & Items.Count > 0)
                 {
-                    return !Items.First().IsEmpty;
+                    return Items.First().IsEmpty;
                 }
 
                 return false;
