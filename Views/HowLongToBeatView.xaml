@@ -1,0 +1,103 @@
+﻿<UserControl x:Class="HowLongToBeat.Views.HowLongToBeatView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:interfaces="clr-namespace:HowLongToBeat.Views.Interfaces"
+             mc:Ignorable="d" Width="750" Height="350" Background="{DynamicResource WindowBackgourndBrush}">
+
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="10" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        
+        <DockPanel Grid.Row="0">
+            <Image DockPanel.Dock="Left" Source="{Binding CoverImage}" Width="200" Height="200" Stretch="Uniform"></Image>
+
+            <Grid DockPanel.Dock="Right" Margin="10,0,0,0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                
+                <TextBlock Grid.Row="0"
+                           Text="{Binding GameName, FallbackValue='Game test name'}" Margin="0,0,0,20" 
+                           FontSize="24" FontWeight="Bold" Foreground="{DynamicResource TextBrush}"                                           
+                           TextTrimming="CharacterEllipsis" MouseEnter="TextBlock_MouseEnter">
+                    <TextBlock.ToolTip>
+                        <ToolTip Content="{Binding GameName}"></ToolTip>
+                    </TextBlock.ToolTip>
+                </TextBlock>
+
+                <Grid Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="100" />
+                    </Grid.ColumnDefinitions>
+
+                    <Grid Grid.Column="0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="40" />
+                            <ColumnDefinition Width="auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="30" />
+                            <RowDefinition Height="30" />
+                            <RowDefinition Height="30" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+
+                        <StackPanel Name="Hltb_El1_Color" Grid.Column="0" Grid.Row="0" Background="DarkCyan" Width="25" Height="25"></StackPanel>
+                        <TextBlock Name="Hltb_El1" Grid.Column="1" Grid.Row="0" Text="{DynamicResource LOCHowLongToBeatMainStory}" Foreground="{DynamicResource TextBrush}" FontSize="16" VerticalAlignment="Center"></TextBlock>
+                        <TextBlock Name="Hltb_El1_Data" Grid.Column="2" Grid.Row="0" Foreground="{DynamicResource TextBrush}" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
+                        <TextBlock Name="Hltb_El1_DataUser" Grid.Column="3" Grid.Row="0" Foreground="{DynamicResource TextBrush}" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
+
+                        <StackPanel Name="Hltb_El2_Color" Grid.Column="0" Grid.Row="1" Background="RoyalBlue" Width="25" Height="25"></StackPanel>
+                        <TextBlock Name="Hltb_El2" Grid.Column="1" Grid.Row="1" Text="{DynamicResource LOCHowLongToBeatMainExtra}" Foreground="{DynamicResource TextBrush}" FontSize="16" VerticalAlignment="Center"></TextBlock>
+                        <TextBlock Name="Hltb_El2_Data" Grid.Column="2" Grid.Row="1" Foreground="{DynamicResource TextBrush}" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
+                        <TextBlock Name="Hltb_El2_DataUser" Grid.Column="3" Grid.Row="1" Foreground="{DynamicResource TextBrush}" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
+
+                        <StackPanel Name="Hltb_El3_Color" Grid.Column="0" Grid.Row="2" Background="ForestGreen" Width="25" Height="25"></StackPanel>
+                        <TextBlock Name="Hltb_El3" Grid.Column="1" Grid.Row="2" Text="{DynamicResource LOCHowLongToBeatCompletionist}" Foreground="{DynamicResource TextBrush}" FontSize="16" VerticalAlignment="Center"></TextBlock>
+                        <TextBlock Name="Hltb_El3_Data" Grid.Column="2" Grid.Row="2" Foreground="{DynamicResource TextBrush}" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
+                        <TextBlock Name="Hltb_El3_DataUser" Grid.Column="3" Grid.Row="2" Foreground="{DynamicResource TextBrush}" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
+
+                        <TextBlock Grid.Column="1" Grid.Row="3" Text="{DynamicResource LOCTimePlayed}" 
+                                   Foreground="{DynamicResource TextBrush}" FontSize="16" VerticalAlignment="Bottom" />
+                        <TextBlock Grid.Column="3" Grid.Row="3" Text="{Binding PlaytimeFormat}" 
+                                   Foreground="{DynamicResource TextBrush}" FontSize="16" HorizontalAlignment="Center" 
+                                   VerticalAlignment="Bottom" />
+                    </Grid>
+
+                    <StackPanel Grid.Column="1" Orientation="Vertical">
+                        <Button Content="{DynamicResource LOCWebsiteLabel}" Margin="0,0,0,10" Click="ButtonWeb_Click"></Button>
+                        <Button Content="{DynamicResource LOCRemoveLabel}" Click="ButtonDelete_Click"></Button>
+                    </StackPanel>
+                </Grid>
+            </Grid>
+        </DockPanel>
+
+        <Grid Grid.Row="2" Margin="0,10,0,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="10" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="10" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            
+            <TextBlock Grid.Row="0" FontSize="24" FontWeight="Bold" Text="{DynamicResource LOCHowLongToBeatProgression}" 
+                       Foreground="{DynamicResource TextBrush}" HorizontalAlignment="Center"></TextBlock>
+
+            <StackPanel Name="PART_HltbProgressBar" Grid.Row="2" Height="40"
+                        Loaded="PART_HltbProgressBar_Loaded" />
+
+            <Label Grid.Row="4" HorizontalAlignment="Left" Content="{Binding HltbName, FallbackValue='src: Name for test'}" FontSize="8" />
+        </Grid>
+    </Grid>
+</UserControl >

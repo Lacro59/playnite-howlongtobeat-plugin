@@ -1,14 +1,15 @@
-﻿using HowLongToBeat.Models;
-using HowLongToBeat.Services;
-using Playnite.SDK;
-using Playnite.SDK.Models;
-using PluginCommon;
+﻿using Playnite.SDK;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
+using Newtonsoft.Json;
+using HowLongToBeat.Services;
+using CommonPluginsShared;
 
 namespace HowLongToBeat.Views
 {
@@ -17,27 +18,62 @@ namespace HowLongToBeat.Views
         private static readonly ILogger logger = LogManager.GetLogger();
         private static IResourceProvider resources = new ResourceProvider();
 
-        private IPlayniteAPI PlayniteApi;
-        private string PluginUserDataPath;
+        private IPlayniteAPI _PlayniteApi;
+        private string _PluginUserDataPath;
 
-        private CancellationTokenSource tokenSource;
-        private CancellationToken ct;
+        private HowLongToBeatDatabase PluginDatabase = HowLongToBeat.PluginDatabase;
+
+        private TextBlock tbControl;
+
+        public static Color ColorFirst = Brushes.DarkCyan.Color;
+        public static Color ColorSecond = Brushes.RoyalBlue.Color;
+        public static Color ColorThird = Brushes.ForestGreen.Color;
+        public static Color ColorFirstMulti = Brushes.DarkCyan.Color;
+        public static Color ColorSecondMulti = Brushes.RoyalBlue.Color;
+        public static Color ColorThirdMulti = Brushes.ForestGreen.Color;
 
 
-        public HowLongToBeatSettingsView(IPlayniteAPI PlayniteApi, string PluginUserDataPath)
+        public HowLongToBeatSettingsView(IPlayniteAPI PlayniteApi, string PluginUserDataPath, HowLongToBeatSettings settings)
         {
-            this.PlayniteApi = PlayniteApi;
-            this.PluginUserDataPath = PluginUserDataPath;
+            _PlayniteApi = PlayniteApi;
+            _PluginUserDataPath = PluginUserDataPath;
+
             InitializeComponent();
 
-            DataLoad.Visibility = Visibility.Collapsed;
+            CheckAuthenticate();
+
+            PART_SelectorColorPicker.OnlySimpleColor = true;
+            PART_SelectorColorPicker.IsSimpleColor = true;
+
+            ColorFirst = settings.ColorFirst;
+            tbColorFirst.Background = new SolidColorBrush(settings.ColorFirst);
+            ColorSecond = settings.ColorSecond;
+            tbColorSecond.Background = new SolidColorBrush(settings.ColorSecond);
+            ColorThird = settings.ColorThird;
+            tbColorThird.Background = new SolidColorBrush(settings.ColorThird);
+
+            ColorFirstMulti = settings.ColorFirstMulti;
+            tbColorFirstMulti.Background = new SolidColorBrush(settings.ColorFirstMulti);
+            ColorSecondMulti = settings.ColorSecondMulti;
+            tbColorSecondMulti.Background = new SolidColorBrush(settings.ColorSecondMulti);
+            ColorThirdMulti = settings.ColorThirdMulti;
+            tbColorThirdMulti.Background = new SolidColorBrush(settings.ColorThirdMulti);
+
             spSettings.Visibility = Visibility.Visible;
+
+            PluginDatabase.howLongToBeatClient.PropertyChanged += OnPropertyChanged;
         }
 
 
+        #region Appareance
         private void Checkbox_Click(object sender, RoutedEventArgs e)
         {
             CheckBox cb = (CheckBox)sender;
+
+            if ((cb.Name == "HltB_IntegrationButton") && (bool)cb.IsChecked)
+            {
+                HltB_IntegrationInCustomTheme.IsChecked = false;
+            }
 
             if ((cb.Name == "HltB_IntegrationInDescription") && (bool)cb.IsChecked)
             {
@@ -46,216 +82,202 @@ namespace HowLongToBeat.Views
 
             if ((cb.Name == "HltB_IntegrationInCustomTheme") && (bool)cb.IsChecked)
             {
+                HltB_IntegrationButton.IsChecked = false;
                 HltB_IntegrationInDescription.IsChecked = false;
             }
         }
+        #endregion
 
+
+        #region Tag
         private void ButtonAddTag_Click(object sender, RoutedEventArgs e)
         {
-            tbDataLoad.Text = resources.GetString("LOCHowLongToBeatProgressBarTag");
-            pbDataLoad.IsIndeterminate = true;
-
-            DataLoad.Visibility = Visibility.Visible;
-            spSettings.Visibility = Visibility.Hidden;
-
-            tokenSource = new CancellationTokenSource();
-            ct = tokenSource.Token;
-
-            var taskSystem = Task.Run(() =>
-            {
-                ct.ThrowIfCancellationRequested();
-
-                foreach (Game game in PlayniteApi.Database.Games)
-                {
-                    HowLongToBeatData.AddAllTag(PlayniteApi, game, PluginUserDataPath);
-
-                    if (ct.IsCancellationRequested)
-                    {
-                        ct.ThrowIfCancellationRequested();
-                    }
-                }
-            }, tokenSource.Token)
-            .ContinueWith(antecedent =>
-            {
-                Application.Current.Dispatcher.Invoke(new Action(() => {
-                    DataLoad.Visibility = Visibility.Collapsed;
-                    spSettings.Visibility = Visibility.Visible;
-                }));
-            });
+            HowLongToBeat.PluginDatabase.AddTagAllGame();
         }
 
         private void ButtonRemoveTag_Click(object sender, RoutedEventArgs e)
         {
-            tbDataLoad.Text = resources.GetString("LOCHowLongToBeatProgressBarTag");
-            pbDataLoad.IsIndeterminate = true;
-
-            DataLoad.Visibility = Visibility.Visible;
-            spSettings.Visibility = Visibility.Hidden;
-
-            tokenSource = new CancellationTokenSource();
-            ct = tokenSource.Token;
-
-            var taskSystem = Task.Run(() =>
-            {
-                ct.ThrowIfCancellationRequested();
-
-                foreach (Game game in PlayniteApi.Database.Games)
-                {
-                    HowLongToBeatData.RemoveAllTag(PlayniteApi, game);
-
-                    if (ct.IsCancellationRequested)
-                    {
-                        ct.ThrowIfCancellationRequested();
-                    }
-                }
-            }, tokenSource.Token)
-            .ContinueWith(antecedent =>
-            {
-                Application.Current.Dispatcher.Invoke(new Action(() => {
-                    DataLoad.Visibility = Visibility.Collapsed;
-                    spSettings.Visibility = Visibility.Visible;
-                }));
-            });
+            HowLongToBeat.PluginDatabase.RemoveTagAllGame();
         }
+        #endregion
 
+
+        #region Database
         private void BtAddData_Click(object sender, RoutedEventArgs e)
         {
-            bool AutoAccept = (bool)cbAutoAccept.IsChecked;
-            bool ShowWhenMismatch = (bool)cbShowWhenMismatch.IsChecked;
-            bool EnableTag = (bool)cbEnableTag.IsChecked;
-
-            pbDataLoad.IsIndeterminate = false;
-            pbDataLoad.Minimum = 0;
-            pbDataLoad.Value = 0;
-            pbDataLoad.Maximum = PlayniteApi.Database.Games.Count;
-
-            DataLoad.Visibility = Visibility.Visible;
-            spSettings.Visibility = Visibility.Hidden;
-
-            tokenSource = new CancellationTokenSource();
-            ct = tokenSource.Token;
-
-            int TotalAdded = 0;
-            int TotalAlready = 0;
-            int TotalMultiFind = 0;
-            int TotlaNotFind = 0;
-
-            var taskSystem = Task.Run(() =>
-            {
-                ct.ThrowIfCancellationRequested();
-
-                foreach (Game game in PlayniteApi.Database.Games)
-                {
-                    try
-                    {
-                        if (!HowLongToBeatData.HaveData(game.Id, PluginUserDataPath))
-                        {
-                            List<HltbData> dataSearch = new HowLongToBeatClient().Search(game.Name);
-
-                            if (dataSearch.Count == 1 && AutoAccept)
-                            {
-                                HowLongToBeatData.SaveData(game.Id, dataSearch[0], PluginUserDataPath);
-
-                                if (EnableTag)
-                                {
-                                    HowLongToBeatData.AddAllTag(PlayniteApi, game, PluginUserDataPath);
-                                }
-
-                                TotalAdded += 1;
-                            }
-                            else
-                            {
-                                TotalMultiFind += 1;
-                                if (dataSearch.Count > 0 && ShowWhenMismatch)
-                                {
-                                    Application.Current.Dispatcher.Invoke(new Action(() =>
-                                    {
-                                        string FileGameData = PluginUserDataPath + "\\howlongtobeat\\" + game.Id.ToString() + ".json";
-                                        new HowLongToBeatSelect(dataSearch, FileGameData, game.Name).ShowDialog();
-
-                                        if (EnableTag)
-                                        {
-                                            HowLongToBeatData.AddAllTag(PlayniteApi, game, PluginUserDataPath);
-                                        }
-                                    }));
-                                }
-                                else
-                                {
-                                    TotlaNotFind += 1;
-                                }
-                            }
-                        }
-                        else
-                        {
-                            TotalAlready += 1;
-                            logger.Debug($"HowLongToBeat - {game.Name}");
-                        }
-                        Application.Current.Dispatcher.Invoke(new Action(() =>
-                        {
-                            tbDataLoad.Text = string.Format(resources.GetString("LOCHowLongToBeatProgressBar"), TotalAdded, TotalAlready, TotlaNotFind);
-                            pbDataLoad.Value += 1;
-                        }));
-                    }
-                    catch (Exception ex)
-                    {
-                        Common.LogError(ex, "HowLongToBeat", $"Error on BtAddData_Click()");
-                    }
-
-                    if (ct.IsCancellationRequested)
-                    {
-                        ct.ThrowIfCancellationRequested();
-                    }
-                }
-            }, tokenSource.Token)
-            .ContinueWith(antecedent =>
-            {
-                Application.Current.Dispatcher.Invoke(new Action(() => {
-                    DataLoad.Visibility = Visibility.Collapsed;
-                    spSettings.Visibility = Visibility.Visible;
-                }));
-            });
+            HowLongToBeat.PluginDatabase.GetAllDatas();
         }
 
         private void BtRemoveData_Click(object sender, RoutedEventArgs e)
         {
-            tbDataLoad.Text = resources.GetString("LOCHowLongToBeatProgressBarTag");
-            pbDataLoad.IsIndeterminate = true;
+            HowLongToBeat.PluginDatabase.ClearDatabase();
+        }
+        #endregion
 
-            DataLoad.Visibility = Visibility.Visible;
-            spSettings.Visibility = Visibility.Hidden;
 
-            tokenSource = new CancellationTokenSource();
-            ct = tokenSource.Token;
-
-            var taskSystem = Task.Run(() =>
+        #region ProgressBar color
+        private void BtPickColor_Click(object sender, RoutedEventArgs e)
+        {
+            try
             {
-                ct.ThrowIfCancellationRequested();
+                tbControl = ((StackPanel)((FrameworkElement)sender).Parent).Children.OfType<TextBlock>().FirstOrDefault();
 
-                HowLongToBeatData.ClearAllData(PluginUserDataPath, PlayniteApi);
-
-                foreach (Game game in PlayniteApi.Database.Games)
+                if (tbControl.Background is SolidColorBrush)
                 {
-                    HowLongToBeatData.RemoveAllTag(PlayniteApi, game);
+                    Color color = ((SolidColorBrush)tbControl.Background).Color;
+                    PART_SelectorColorPicker.SetColors(color);
+                }
 
-                    if (ct.IsCancellationRequested)
+                PART_SelectorColor.Visibility = Visibility.Visible;
+                spSettings.Visibility = Visibility.Collapsed;
+            }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, "HowLongToBeat");
+            }
+        }
+
+        private void BtRestore_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                TextBlock tbControl = ((StackPanel)((FrameworkElement)sender).Parent).Children.OfType<TextBlock>().FirstOrDefault();
+
+                switch ((string)((Button)sender).Tag)
+                {
+                    case "1":
+                        tbControl.Background = Brushes.DarkCyan;
+                        ColorFirst = Brushes.DarkCyan.Color;
+                        break;
+
+                    case "2":
+                        tbControl.Background = Brushes.RoyalBlue;
+                        ColorSecond = Brushes.RoyalBlue.Color;
+                        break;
+
+                    case "3":
+                        tbControl.Background = Brushes.ForestGreen;
+                        ColorThird = Brushes.ForestGreen.Color;
+                        break;
+
+                    case "4":
+                        tbControl.Background = Brushes.DarkCyan;
+                        ColorFirstMulti = Brushes.DarkCyan.Color;
+                        break;
+
+                    case "5":
+                        tbControl.Background = Brushes.RoyalBlue;
+                        ColorSecondMulti = Brushes.RoyalBlue.Color;
+                        break;
+
+                    case "6":
+                        tbControl.Background = Brushes.ForestGreen;
+                        ColorThirdMulti = Brushes.ForestGreen.Color;
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, "HowLongToBeat");
+            }
+        }
+
+        private void PART_TM_ColorOK_Click(object sender, RoutedEventArgs e)
+        {
+            Color color = default(Color);
+
+            if (tbControl != null)
+            {
+                if (PART_SelectorColorPicker.IsSimpleColor)
+                {
+                    color = PART_SelectorColorPicker.SimpleColor;
+                    tbControl.Background = new SolidColorBrush(color);
+
+                    switch ((string)tbControl.Tag)
                     {
-                        ct.ThrowIfCancellationRequested();
+                        case "1":
+                            ColorFirst = color;
+                            break;
+
+                        case "2":
+                            ColorSecond = color;
+                            break;
+
+                        case "3":
+                            ColorThird = color;
+                            break;
+
+                        case "4":
+                            ColorFirstMulti = color;
+                            break;
+
+                        case "5":
+                            ColorSecondMulti = color;
+                            break;
+
+                        case "6":
+                            ColorThirdMulti = color;
+                            break;
                     }
                 }
-            }, tokenSource.Token)
-            .ContinueWith(antecedent =>
+            }
+            else
             {
-                Application.Current.Dispatcher.Invoke(new Action(() => {
-                    DataLoad.Visibility = Visibility.Collapsed;
-                    spSettings.Visibility = Visibility.Visible;
-                }));
+                logger.Warn("HowLongToBeat - One control is undefined");
+            }
+
+            PART_SelectorColor.Visibility = Visibility.Collapsed;
+            spSettings.Visibility = Visibility.Visible;
+        }
+
+        private void PART_TM_ColorCancel_Click(object sender, RoutedEventArgs e)
+        {
+            PART_SelectorColor.Visibility = Visibility.Collapsed;
+            spSettings.Visibility = Visibility.Visible;
+        }
+        #endregion
+
+
+        #region Authenticate
+        private void CheckAuthenticate()
+        {
+            PART_LbUserLogin.Visibility = Visibility.Collapsed;
+            PART_LbAuthenticate.Content = resources.GetString("LOCLoginChecking");
+
+            var task = Task.Run(() => PluginDatabase.howLongToBeatClient.GetIsUserLoggedIn());
+        }
+
+        private void PART_BtAuthenticate_Click(object sender, RoutedEventArgs e)
+        {
+            PART_LbUserLogin.Visibility = Visibility.Collapsed;
+            var task = Task.Run(() => {
+                PluginDatabase.howLongToBeatClient.Login();
             });
         }
 
 
-        private void ButtonCancelTask_Click(object sender, RoutedEventArgs e)
+        protected void OnPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            tokenSource.Cancel();
+            this.Dispatcher.Invoke(new Action(() => {
+                if ((bool)PluginDatabase.howLongToBeatClient.IsConnected)
+                {
+                    PART_LbAuthenticate.Content = resources.GetString("LOCLoggedIn");
+                    PART_LbUserLogin.Visibility = Visibility.Visible;
+
+                    string UserLogin = PluginDatabase.howLongToBeatClient.UserLogin;
+                    if (UserLogin.IsNullOrEmpty())
+                    {
+                        UserLogin = PluginDatabase.Database.UserHltbData.Login;
+                    }
+
+                    PART_LbUserLogin.Content = resources.GetString("LOCGOGUseAccountName") + " " + UserLogin;
+                }
+                else
+                {
+                    PART_LbAuthenticate.Content = resources.GetString("LOCNotLoggedIn");
+                }
+            }));
         }
+        #endregion
     }
 }

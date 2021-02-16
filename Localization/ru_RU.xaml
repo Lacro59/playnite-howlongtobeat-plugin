@@ -1,41 +1,33 @@
-﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+﻿<?xml version="1.0"?>
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:sys="clr-namespace:System;assembly=mscorlib">
 
-    <!--
-    HowLongToBeatSettingsView
-    -->
+    <!-- HowLongToBeatSettingsView -->
 
-    <sys:String x:Key="LOCHowLongToBeatProgressBarTag">Обработка...</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatProgressBarTag">Обработка, пожалуйста подождите...</sys:String>
     <sys:String x:Key="LOCHowLongToBeatProgressBar">Добавлено {0} - Добавлено ранее {1} - Не добавлено {2}</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatAddTagDescription">Тэг со временем "основного сюжета" / "одиночной игры" (если не найдено, то "сюжет + доп. задания" / "PVP")</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatShowHltbImage">Показывать обложки с сайта How Long To Beat</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAddTagDescription">Добавить тэг в игры с информацией о времени завершения основной истории</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoTag">Автоматическая обработка тэгов</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatShowHltbImage">Использовать HowLongToBeat оригинальное обложку игры в окне</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatIntegration">Интеграция в интерфейс</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationButton">Добавить кнопку</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationInDescription">Показывать в описании игры</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationShowTitle">Показывать заголовок</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationTopGameDetails">Показывать над описанием игры</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationInCustomTheme">Интеграция в нестандартные темы (если поддерживается темой)</sys:String>
-
+    <sys:String x:Key="LOCHowLongToBeatColorSelection">Выбор цвета для индикатора прогресса:</sys:String>
+    
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarOptions">Настройки шкалы прогресса</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">Показывать подсказки на шкале прогресса</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTime">Показывать время на шкале прогресса</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">Показывать время на шкале прогресса</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTime">Показывать метки времени в строке прогресса</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeAbove">Над шкалой</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeInterior">Внутри шкалы</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeBelow">Под шкалой</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeUser">Show user HowLongToBeat time</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatAutoData">Загрузка данных</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAutoAccept">Автоматически подтверждать если найдено только одно совпадение</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatShowWhenMismatch">Показывать окно выбора если найдено несколько совпадений</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoData">Загрузка информации об играх</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoAccept">Автоматически выбирать, если найдено только одно совпадение</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatShowWhenMismatch">Показывать окно выбора, если найдено несколько совпадений</sys:String>
 
-    <!--
-    HowLongToBeatSelect
-    -->
+    <!-- HowLongToBeatSelect -->
 
-    <sys:String x:Key="LOCHowLongToBeatSelection">HowLongToBeat выбор игры</sys:String>
-
+    <sys:String x:Key="LOCSelection">Выбор HowLongToBeat</sys:String>
+    
     <sys:String x:Key="LOCHowLongToBeatMainStory">Основной сюжет</sys:String>
     <sys:String x:Key="LOCHowLongToBeatMainExtra">Сюжет+доп. задания</sys:String>
     <sys:String x:Key="LOCHowLongToBeatCompletionist">100% прохождение</sys:String>
@@ -44,18 +36,11 @@
     <sys:String x:Key="LOCHowLongToBeatCoOp">Кооператив</sys:String>
     <sys:String x:Key="LOCHowLongToBeatVs">PVP</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatPlaytime">Сыграно</sys:String>
-
-    <sys:String x:Key="LOCHowLongToBeatSearch">Найти</sys:String>
-
-    <sys:String x:Key="LOCHowLongToBeatSelect">Выбрать</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatCancel">Отмена</sys:String>
-
-    <!--
-    HowLongToBeat
-    -->
+    <!-- HowLongToBeat -->
 
     <sys:String x:Key="LOCHowLongToBeatProgression">Прогресс</sys:String>
+
+    <sys:String x:Key="LOCHowLongToBeatPluginGetUserView">Getting HowLongToBeat user data</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeat1to5">От 1 до 5 часов</sys:String>
     <sys:String x:Key="LOCHowLongToBeat5to10">От 5 до 10 часов</sys:String>
@@ -70,11 +55,13 @@
     <sys:String x:Key="LOCHowLongToBeat90to100">От 90 до 100 часов</sys:String>
     <sys:String x:Key="LOCHowLongToBeat100plus">Больше 100 часов</sys:String>
 
-    <!--
-    MainView
-    -->
+    <!-- MainView -->
 
-    <sys:String x:Key="LOCHowLongToBeat">HowLongToBeat</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatTitle">Время на прохождение (HowLongToBeat)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeat">Время прохождения</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatTitle">Время прохождения</sys:String>
+
+    <sys:String x:Key="LOCHowLongToBeatPluginView">View HowLongToBeat data</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatPluginUserView">View HowLongToBeat user data</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatActualiseUserData">Actualise HowLongToBeat user data</sys:String>
 
 </ResourceDictionary>

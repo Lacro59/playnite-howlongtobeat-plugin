@@ -1,60 +1,79 @@
-﻿using HowLongToBeat.Models;
+﻿using CommonPluginsShared;
+using HowLongToBeat.Models;
 using HowLongToBeat.Services;
 using Newtonsoft.Json;
-using Playnite.Controls;
 using Playnite.SDK;
-using PluginCommon;
+using Playnite.SDK.Models;
+using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
-
 
 namespace HowLongToBeat.Views
 {
     /// <summary>
     /// Logique d'interaction pour HowLongToBeatSelect.xaml
     /// </summary>
-    public partial class HowLongToBeatSelect : WindowBase
+    public partial class HowLongToBeatSelect : UserControl
     {
         private static readonly ILogger logger = LogManager.GetLogger();
 
-        private string FileGameData;
+        public GameHowLongToBeat gameHowLongToBeat;
+        private Game _game;
 
-        public HowLongToBeatSelect(List<HltbData> data, string FileGameData, string GameName)
+        private List<HltbPlatform> items;
+
+
+        public HowLongToBeatSelect(List<HltbData> data, Game game)
         {
-            this.FileGameData = FileGameData;
+            _game = game;
 
             InitializeComponent();
 
-            this.PreviewKeyDown += new KeyEventHandler(HandleEsc);
+            SetPlatforms();
 
-            SearchElement.Text = GameName;
+            SearchElement.Text = _game.Name;
 
-            lbSelectable.ItemsSource = data;
+            if (data == null)
+            {
+                SearchData();
+            }
+            else
+            {
+                lbSelectable.ItemsSource = data;
+                lbSelectable.UpdateLayout();
+                PART_DataLoadWishlist.Visibility = Visibility.Collapsed;
+                SelectableContent.IsEnabled = true;
+            }
 
             // Set Binding data
             DataContext = this;
         }
 
-        private void HandleEsc(object sender, KeyEventArgs e)
+
+        private void SetPlatforms()
         {
-            if (e.Key == Key.Escape)
-            {
-                Close();
-            }
+            PART_SelectPlatform.ItemsSource = HowLongToBeat.PluginDatabase.hltbPlatforms;
         }
 
-        private void LbSelectable_Loaded(object sender, RoutedEventArgs e)
+        private void PART_SelectPlatform_KeyUp(object sender, KeyEventArgs e)
         {
-            Tools.DesactivePlayniteWindowControl(this);
+            string SearchText = ((ComboBox)sender).Text;
+
+            PART_SelectPlatform.ItemsSource = null;
+            PART_SelectPlatform.ItemsSource = items.Where(x => x.Name.ToLower().Contains(SearchText)).Distinct().ToList();
         }
+
 
         private void ButtonCancel_Click(object sender, RoutedEventArgs e)
         {
-            Close();
+            ((Window)this.Parent).Close();
         }
 
         /// <summary>
@@ -64,16 +83,12 @@ namespace HowLongToBeat.Views
         /// <param name="e"></param>
         private void ButtonSelect_Click(object sender, RoutedEventArgs e)
         {
-            HltbData Item = (HltbData)lbSelectable.SelectedItem;
+            HltbDataUser Item = (HltbDataUser)lbSelectable.SelectedItem;
 
-            var SavData = new HltbDataUser
-            {
-                GameHltbData = Item
-            };
+            gameHowLongToBeat = HowLongToBeat.PluginDatabase.GetDefault(_game);
+            gameHowLongToBeat.Items = new List<HltbDataUser>() { Item };
 
-            File.WriteAllText(FileGameData, JsonConvert.SerializeObject(SavData));
-
-            Close();
+            ((Window)this.Parent).Close();
         }
 
         /// <summary>
@@ -93,9 +108,42 @@ namespace HowLongToBeat.Views
         /// <param name="e"></param>
         private void ButtonSearch_Click(object sender, RoutedEventArgs e)
         {
-            List<HltbData> dataSearch = new HowLongToBeatClient().Search(SearchElement.Text);
-            lbSelectable.ItemsSource = dataSearch;
-            lbSelectable.UpdateLayout();
+            SearchData();
+        }
+
+        private void SearchData()
+        {
+            lbSelectable.ItemsSource = null;
+
+            PART_DataLoadWishlist.Visibility = Visibility.Visible;
+            SelectableContent.IsEnabled = false;
+
+            string GameSearch = SearchElement.Text;
+            string GamePlatform = ((HltbPlatform)PART_SelectPlatform.SelectedValue == null) ? string.Empty : ((HltbPlatform)PART_SelectPlatform.SelectedValue).Name;
+            Task task = Task.Run(() =>
+            {
+                List<HltbDataUser> dataSearch = new List<HltbDataUser>();
+                try
+                {
+                    dataSearch = HowLongToBeat.PluginDatabase.howLongToBeatClient.Search(GameSearch, GamePlatform);
+                }
+                catch (Exception ex)
+                {
+                    Common.LogError(ex, "HowLongToBeat", "Error on LoadData()");
+                }
+
+#if DEBUG
+                logger.Debug($"HowLongToBeat [Ignored] - dataSearch: {JsonConvert.SerializeObject(dataSearch)}");
+#endif
+                this.Dispatcher.BeginInvoke((Action)delegate
+                {
+                    lbSelectable.ItemsSource = dataSearch;
+                    lbSelectable.UpdateLayout();
+
+                    PART_DataLoadWishlist.Visibility = Visibility.Collapsed;
+                    SelectableContent.IsEnabled = true;
+                });
+            });
         }
 
         /// <summary>
@@ -145,5 +193,13 @@ namespace HowLongToBeat.Views
                 ButtonSearch_Click(null, null);
             }
         }
+    }
+
+
+
+    public class HltbPlatform
+    {
+        public string Name { get; set; }
+        public string Category { get; set; }
     }
 }

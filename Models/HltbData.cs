@@ -1,17 +1,13 @@
-﻿using Newtonsoft.Json;
-using Playnite.Converters;
+﻿using CommonPluginsPlaynite.Converters;
+using Newtonsoft.Json;
+using System.Collections.Generic;
 using System.Globalization;
 
 namespace HowLongToBeat.Models
 {
-    public class HltbData
+    public class HltbData : ObservableObject
     {
         private LongToTimePlayedConverter converter = new LongToTimePlayedConverter();
-
-        public string Name { get; set; }
-        public int Id { get; set; }
-        public string UrlImg { get; set; }
-        public string Url { get; set; } = string.Empty;
 
         public long MainStory { get; set; }
         [JsonIgnore]
@@ -91,6 +87,73 @@ namespace HowLongToBeat.Models
                     return "--";
                 }
                 return (string)converter.Convert((long)Vs, null, null, CultureInfo.CurrentCulture);
+            }
+        }
+
+
+        [JsonIgnore]
+        public long TimeToBeat {
+            get
+            {
+                if (MainStory != 0)
+                {
+                    return MainStory;
+                }
+                else if (MainExtra != 0)
+                {
+                    return MainExtra;
+                }
+                else if (Completionist != 0)
+                {
+                    return Completionist;
+                }
+                else if (Solo != 0)
+                {
+                    return Solo;
+                }
+                else if (CoOp != 0)
+                {
+                    return CoOp;
+                }
+                else if (Vs != 0)
+                {
+                    return Vs;
+                }
+
+                return 0;
+            }
+        }
+        [JsonIgnore]
+        public string TimeToBeatFormat
+        {
+            get
+            {
+                if (MainStory != 0)
+                {
+                    return MainStoryFormat;
+                }
+                else if (MainExtra != 0)
+                {
+                    return MainExtraFormat;
+                }
+                else if (Completionist != 0)
+                {
+                    return CompletionistFormat;
+                }
+                else if (Solo != 0)
+                {
+                    return SoloFormat;
+                }
+                else if (CoOp != 0)
+                {
+                    return CoOpFormat;
+                }
+                else if (Vs != 0)
+                {
+                    return VsFormat;
+                }
+
+                return "--";
             }
         }
     }

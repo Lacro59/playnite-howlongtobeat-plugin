@@ -3,94 +3,213 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:controls="clr-namespace:CommonPluginsControls.Controls"
              mc:Ignorable="d">
 
     <TabControl Margin="20" Name="tcSettings">
         <TabItem Header="{DynamicResource LOCHowLongToBeat}">
-
-            <Grid Margin="0,10,0,0">
-                <!-- loader -->
-                <Grid Name="DataLoad" Height="40" HorizontalAlignment="Center" Visibility="Hidden">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="auto" />
-                        <ColumnDefinition Width="auto" />
-                    </Grid.ColumnDefinitions>
-                    <ProgressBar Grid.Column="0" Name="pbDataLoad" Width="350" Height="40" />
-                    <TextBlock Grid.Column="0" Name="tbDataLoad" Text="{DynamicResource LOCHowLongToBeatProgressBarTag}"
-                       Style="{DynamicResource BaseTextBlockStyle}"
-                       HorizontalAlignment="Center" VerticalAlignment="Center" />
-                    <Button Grid.Column="1" Click="ButtonCancelTask_Click" Margin="10,0,0,0" Content="{DynamicResource LOCCancelLabel}" />
-                </Grid>
-
-                <StackPanel Name="spSettings">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="10" />
-                            <ColumnDefinition Width="auto" />
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="30" />
-                            <RowDefinition Height="30" />
-                            <RowDefinition Height="auto" />
-                            <RowDefinition Height="30" />
-                            <RowDefinition Height="30" />
-                            <RowDefinition Height="35" />
-                            <RowDefinition Height="35" />
-                        </Grid.RowDefinitions>
-
-                        <CheckBox Grid.Row="0" IsChecked="{Binding ShowHltbImg}" Grid.Column="0" VerticalAlignment="Center">
-                            <Label Content="{DynamicResource LOCHowLongToBeatShowHltbImage}" />
-                        </CheckBox>
-
-                        <CheckBox Name="cbEnableTag" Grid.Row="1"  IsChecked="{Binding EnableTag}" Grid.Column="0" VerticalAlignment="Center">
-                            <Label Content="{DynamicResource LOCHowLongToBeatAddTagDescription}" />
-                        </CheckBox>
-
-                        <StackPanel Grid.Row="1" Grid.Column="2" Orientation="Horizontal">
-                            <Button Content="{DynamicResource LOCAddTitle}" Margin="0,0,10,0" IsEnabled="{Binding EnableTag}" VerticalAlignment="Center" Click="ButtonAddTag_Click"/>
-                            <Button Content="{DynamicResource LOCRemoveTitle}" IsEnabled="{Binding EnableTag}" VerticalAlignment="Bottom" Click="ButtonRemoveTag_Click" Margin="0,0,0,1"/>
+            <ScrollViewer Margin="0,10,0,0">
+                <Grid>
+                    <Grid Name="PART_SelectorColor" Width="500" Visibility="Collapsed">
+                        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <controls:ControlPickerGradient x:Name="PART_SelectorColorPicker"></controls:ControlPickerGradient>
                         </StackPanel>
 
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="90" />
+                                <ColumnDefinition Width="10" />
+                                <ColumnDefinition Width="90" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="auto" />
+                            </Grid.RowDefinitions>
 
-                        <StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" >
-                            <Label Content="{DynamicResource LOCHowLongToBeatAutoData}" FontSize="18" Margin="0,20,0,0" />
-                            <Separator Margin="0,0,0,10" />
-                        </StackPanel>
-
-                        <CheckBox Name="cbAutoAccept" Grid.Row="3" IsChecked="{Binding AutoAccept}" Grid.Column="0" VerticalAlignment="Center" Grid.ColumnSpan="3" >
-                            <Label Content="{DynamicResource LOCHowLongToBeatAutoAccept}" />
-                        </CheckBox>
-
-                        <CheckBox Name="cbShowWhenMismatch" Grid.Row="4" IsChecked="{Binding ShowWhenMismatch}" Grid.Column="0" Grid.ColumnSpan="3" VerticalAlignment="Center">
-                            <Label Content="{DynamicResource LOCHowLongToBeatShowWhenMismatch}" />
-                        </CheckBox>
-
-                        <Button Grid.Row="5" Grid.Column="3" Name="btAddData" Content="{DynamicResource LOCDownloadLabel}" Click="BtAddData_Click" VerticalAlignment="Center" />
-                        <Button Grid.Row="6" Grid.Column="3" Name="btRemoveData" Content="{DynamicResource LOCClearAll}" Click="BtRemoveData_Click" VerticalAlignment="Center "/>
+                            <Button Name="PART_TM_ColorOK" Grid.Column="1" Grid.Row="1" Content="{DynamicResource LOCOKLabel}" 
+                                            Click="PART_TM_ColorOK_Click" />
+                            <Button Name="PART_TM_ColorCancel" Grid.Column="3" Grid.Row="1" Content="{DynamicResource LOCCancelLabel}" 
+                                            Click="PART_TM_ColorCancel_Click" />
+                        </Grid>
                     </Grid>
-                </StackPanel>
-            </Grid>
+
+                    <StackPanel Name="spSettings">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="30" />
+                                <RowDefinition Height="10" />
+                                <RowDefinition Height="30" />
+                                <RowDefinition Height="30" />
+                                <RowDefinition Height="30" />
+                                <RowDefinition Height="30" />
+                                <RowDefinition Height="30" />
+                                <RowDefinition Height="auto" />
+                                <RowDefinition Height="10" />
+                                <RowDefinition Height="auto" />
+                            </Grid.RowDefinitions>
+
+                            <Grid Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="auto" />
+                                    <ColumnDefinition Width="10" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+
+                                <Button Name="PART_BtAuthenticate" Content="{DynamicResource LOCAuthenticateLabel}" 
+                                            Grid.Column="0"
+                                            VerticalAlignment="Center" MinWidth="110" Click="PART_BtAuthenticate_Click" />
+                                <Label Name="PART_LbAuthenticate" VerticalAlignment="Center" Grid.Column="2" />
+                                <Label Name="PART_LbUserLogin" Content="{Binding UserLogin}" VerticalAlignment="Center" Grid.Column="3" />
+                            </Grid>
+
+                            <CheckBox Grid.Row="2" IsChecked="{Binding MenuInExtensions}" VerticalAlignment="Center">
+                                <Label Content="{DynamicResource LOCCommonMenuInExtensions}" />
+                            </CheckBox>
+
+                            <CheckBox Grid.Row="3" IsChecked="{Binding ShowHltbImg}" Grid.Column="0" VerticalAlignment="Center">
+                                <Label Content="{DynamicResource LOCHowLongToBeatShowHltbImage}" />
+                            </CheckBox>
+
+                            <CheckBox Name="cbEnableTag" Grid.Row="4"  IsChecked="{Binding EnableTag}" Grid.Column="0" VerticalAlignment="Center">
+                                <Label Content="{DynamicResource LOCHowLongToBeatAddTagDescription}" />
+                            </CheckBox>
+
+                            <StackPanel Grid.Row="5" Orientation="Horizontal" HorizontalAlignment="Right">
+                                <Button Content="{DynamicResource LOCAddTitle}" Margin="0,0,10,0" IsEnabled="{Binding EnableTag}" VerticalAlignment="Center" Click="ButtonAddTag_Click" />
+                                <Button Content="{DynamicResource LOCRemoveTitle}" IsEnabled="{Binding EnableTag}" VerticalAlignment="Bottom" Click="ButtonRemoveTag_Click" Margin="0,0,0,1" />
+                            </StackPanel>
+
+                            <CheckBox Grid.Row="6" IsChecked="{Binding AutoSetCurrentPlayTime}" Grid.Column="0" VerticalAlignment="Center">
+                                <Label Content="{DynamicResource LOCHowLongToBeatAutoSetCurrentPlayTime}" />
+                            </CheckBox>
+
+                            <Grid Grid.Row="10">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="10" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="35" />
+                                    <RowDefinition Height="35" />
+                                    <RowDefinition Height="35" />
+                                    <RowDefinition Height="35" />
+                                </Grid.RowDefinitions>
+
+                                <Label Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="0" Content="{DynamicResource LOCHowLongToBeatColorSelection}" />
+
+                                <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="1" HorizontalAlignment="center" VerticalAlignment="Center">
+                                    <Label Width="120" Content="{DynamicResource LOCHowLongToBeatMainStory}" VerticalAlignment="Center" Margin="30,0,0,0" />
+                                    <TextBlock Height="28" Width="28" Background="DarkCyan" Tag="1" Name="tbColorFirst" VerticalAlignment="Center" />
+                                    <Button Click="BtPickColor_Click" Content="&#x270f;" Width="41" Tag="1" Margin="10,0,0,0" VerticalAlignment="Center" />
+                                    <Button Click="BtRestore_Click" Content="&#x1f5d9;" Width="41" Tag="1" Margin="10,0,0,0" VerticalAlignment="Center" />
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="2" HorizontalAlignment="center" VerticalAlignment="Center">
+                                    <Label Width="120" Content="{DynamicResource LOCHowLongToBeatMainExtra}" VerticalAlignment="Center" Margin="30,0,0,0" />
+                                    <TextBlock Height="28" Width="28" Background="RoyalBlue" Tag="2" Name="tbColorSecond" VerticalAlignment="Center" />
+                                    <Button Click="BtPickColor_Click" Content="&#x270f;" Width="41" Tag="2" Margin="10,0,0,0" VerticalAlignment="Center" />
+                                    <Button Click="BtRestore_Click" Content="&#x1f5d9;" Width="41" Tag="2" Margin="10,0,0,0" VerticalAlignment="Center" />
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="3" HorizontalAlignment="center" VerticalAlignment="Center">
+                                    <Label Width="120" Content="{DynamicResource LOCHowLongToBeatCompletionist}" VerticalAlignment="Center" Margin="30,0,0,0" />
+                                    <TextBlock Height="28" Width="28" Background="ForestGreen" Tag="3" Name="tbColorThird" VerticalAlignment="Center" />
+                                    <Button Click="BtPickColor_Click" Content="&#x270f;" Width="41" Tag="3" Margin="10,0,0,0" VerticalAlignment="Center" />
+                                    <Button Click="BtRestore_Click" Content="&#x1f5d9;" Width="41" Tag="3" Margin="10,0,0,0" VerticalAlignment="Center" />
+                                </StackPanel>
+
+                                <StackPanel Orientation="Horizontal" Grid.Column="2" Grid.Row="1" HorizontalAlignment="center" VerticalAlignment="Center">
+                                    <Label Width="120" Content="{DynamicResource LOCHowLongToBeatSolo}" VerticalAlignment="Center" Margin="30,0,0,0" />
+                                    <TextBlock Height="28" Width="28" Background="DarkCyan" Tag="4" Name="tbColorFirstMulti" VerticalAlignment="Center" />
+                                    <Button Click="BtPickColor_Click" Content="&#x270f;" Width="41" Tag="4" Margin="10,0,0,0" VerticalAlignment="Center" />
+                                    <Button Click="BtRestore_Click" Content="&#x1f5d9;" Width="41" Tag="4" Margin="10,0,0,0" VerticalAlignment="Center" />
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" Grid.Column="2" Grid.Row="2" HorizontalAlignment="center" VerticalAlignment="Center">
+                                    <Label Width="120" Content="{DynamicResource LOCHowLongToBeatCoOp}" VerticalAlignment="Center" Margin="30,0,0,0" />
+                                    <TextBlock Height="28" Width="28" Background="RoyalBlue" Tag="5" Name="tbColorSecondMulti" VerticalAlignment="Center" />
+                                    <Button Click="BtPickColor_Click" Content="&#x270f;" Width="41" Tag="5" Margin="10,0,0,0" VerticalAlignment="Center" />
+                                    <Button Click="BtRestore_Click" Content="&#x1f5d9;" Width="41" Tag="5" Margin="10,0,0,0" VerticalAlignment="Center" />
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" Grid.Column="2" Grid.Row="3" HorizontalAlignment="center" VerticalAlignment="Center">
+                                    <Label Width="120" Content="{DynamicResource LOCHowLongToBeatVs}" VerticalAlignment="Center" Margin="30,0,0,0" />
+                                    <TextBlock Height="28" Width="28" Background="ForestGreen" Tag="6" Name="tbColorThirdMulti" VerticalAlignment="Center" />
+                                    <Button Click="BtPickColor_Click" Content="&#x270f;" Width="41" Tag="6" Margin="10,0,0,0" VerticalAlignment="Center" />
+                                    <Button Click="BtRestore_Click" Content="&#x1f5d9;" Width="41" Tag="6" Margin="10,0,0,0" VerticalAlignment="Center" />
+                                </StackPanel>
+                            </Grid>
+                        </Grid>
+
+                        <Grid Margin="0,30,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="10" />
+                                <ColumnDefinition Width="auto" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="auto" />
+                                <RowDefinition Height="30" />
+                                <RowDefinition Height="30" />
+                                <RowDefinition Height="10" />
+                                <RowDefinition Height="35" />
+                            </Grid.RowDefinitions>
+
+                            <StackPanel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" >
+                                <Label Content="{DynamicResource LOCHowLongToBeatAutoData}" FontSize="18" />
+                                <Separator Margin="0,0,0,10" />
+                            </StackPanel>
+
+                            <CheckBox Name="cbAutoAccept" Grid.Row="1" IsChecked="{Binding AutoAccept}" Grid.Column="0" VerticalAlignment="Center" Grid.ColumnSpan="3" >
+                                <Label Content="{DynamicResource LOCHowLongToBeatAutoAccept}" />
+                            </CheckBox>
+
+                            <CheckBox Name="cbShowWhenMismatch" Grid.Row="2" IsChecked="{Binding ShowWhenMismatch}" Grid.Column="0" Grid.ColumnSpan="3" VerticalAlignment="Center">
+                                <Label Content="{DynamicResource LOCHowLongToBeatShowWhenMismatch}" />
+                            </CheckBox>
+
+
+                            <Grid Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="4">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="10" />
+                                    <ColumnDefinition Width="auto" />
+                                    <ColumnDefinition Width="10" />
+                                    <ColumnDefinition Width="auto" />
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock Grid.Column="0" Text="{DynamicResource LOCCommonDatabase}" VerticalAlignment="Center" />
+                                <Button Grid.Column="2" Name="btAddData" Content="{DynamicResource LOCUpdateAll}" 
+                                        Click="BtAddData_Click" VerticalAlignment="Center" />
+                                <Button Grid.Column="4" Name="btRemoveData" Content="{DynamicResource LOCClearAll}" 
+                                        Click="BtRemoveData_Click" VerticalAlignment="Center " />
+                            </Grid>
+                        </Grid>
+                    </StackPanel>
+                </Grid>
+            </ScrollViewer>
         </TabItem>
 
-        <TabItem Header="{DynamicResource LOCHowLongToBeatIntegration}">
+        <TabItem Header="{DynamicResource LOCCommonIntegration}">
             <StackPanel Margin="0,10,0,0">
-                <CheckBox IsChecked="{Binding EnableIntegrationButton}" Name="HltB_IntegrationButton">
-                    <Label Content="{DynamicResource LOCHowLongToBeatIntegrationButton}" />
+                <CheckBox IsChecked="{Binding EnableIntegrationInCustomTheme}" Margin="0,0,0,0" Name="HltB_IntegrationInCustomTheme" Click="Checkbox_Click">
+                    <Label Content="{DynamicResource LOCCommonIntegrationInCustomTheme}" />
                 </CheckBox>
 
-                <CheckBox IsChecked="{Binding EnableIntegrationInDescription}" Name="HltB_IntegrationInDescription" Margin="0,35,0,0" Click="Checkbox_Click">
-                    <Label Content="{DynamicResource LOCHowLongToBeatIntegrationInDescription}" />
+                <CheckBox IsChecked="{Binding EnableIntegrationButton}" Margin="0,5,0,0"  Name="HltB_IntegrationButton" Click="Checkbox_Click">
+                    <Label Content="{DynamicResource LOCCommonIntegrationButton}" />
+                </CheckBox>
+
+                <CheckBox IsChecked="{Binding EnableIntegrationInDescription}" Name="HltB_IntegrationInDescription" Margin="0,5,0,0" Click="Checkbox_Click">
+                    <Label Content="{DynamicResource LOCCommonIntegrationInDescription}" />
                 </CheckBox>
                 <CheckBox IsChecked="{Binding IntegrationShowTitle}" Margin="30,5,0,0" IsEnabled="{Binding ElementName=HltB_IntegrationInDescription, Path=IsChecked}">
-                    <Label Content="{DynamicResource LOCHowLongToBeatIntegrationShowTitle}" />
+                    <Label Content="{DynamicResource LOCCommonIntegrationShowTitle}" />
                 </CheckBox>
                 <CheckBox IsChecked="{Binding IntegrationTopGameDetails}" Margin="30,5,0,0" IsEnabled="{Binding ElementName=HltB_IntegrationInDescription, Path=IsChecked}">
-                    <Label Content="{DynamicResource LOCHowLongToBeatIntegrationTopGameDetails}" />
-                </CheckBox>
-
-                <CheckBox IsChecked="{Binding EnableIntegrationInCustomTheme}" Margin="0,5,0,0" Name="HltB_IntegrationInCustomTheme" Click="Checkbox_Click">
-                    <Label Content="{DynamicResource LOCHowLongToBeatIntegrationInCustomTheme}" />
+                    <Label Content="{DynamicResource LOCCommonIntegrationTopGameDetails}" />
                 </CheckBox>
 
                 <GroupBox Header="{DynamicResource LOCHowLongToBeatIntegrationProgressBarOptions}" Margin="0,10,0,0">
@@ -115,7 +234,7 @@
                                                     </TextBlock>
                                                 </Border>
                                                 <ContentPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" DockPanel.Dock="Top"
-                                                             Margin="{TemplateBinding Padding}"/>
+                                                             Margin="{TemplateBinding Padding}" />
                                             </DockPanel>
                                         </Border>
                                     </ControlTemplate>
@@ -165,11 +284,11 @@
                                                             <Grid Width="18" Height="18" Background="{DynamicResource NormalBrushDark}">
                                                                 <Viewbox x:Name="CheckIcon" Visibility="Collapsed">
                                                                     <TextBlock Text="b" FontFamily="Marlett" Foreground="{DynamicResource GlyphBrush}"
-                                                    HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                    HorizontalAlignment="Center" VerticalAlignment="Center" />
                                                                 </Viewbox>
                                                                 <Viewbox x:Name="IndeterminateIcon" Visibility="Collapsed" Margin="2">
                                                                     <TextBlock Text="g" FontFamily="Marlett" Foreground="{DynamicResource GlyphBrush}"
-                                                    HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                    HorizontalAlignment="Center" VerticalAlignment="Center" />
                                                                 </Viewbox>
                                                             </Grid>
                                                         </Border>
@@ -182,7 +301,7 @@
                                                             <Condition Property="IsChecked" Value="{x:Null}" />
                                                             <Condition Property="IsThreeState" Value="True" />
                                                         </MultiTrigger.Conditions>
-                                                        <Setter Property="Visibility" Value="Visible" TargetName="IndeterminateIcon"/>
+                                                        <Setter Property="Visibility" Value="Visible" TargetName="IndeterminateIcon" />
                                                     </MultiTrigger>
                                                     <Trigger Property="IsChecked" Value="True">
                                                         <Setter Property="Visibility" Value="Visible" TargetName="CheckIcon" />
@@ -197,13 +316,13 @@
                                             </ControlTemplate>
                                         </Setter.Value>
                                     </Setter>
-                                    <Setter Property="IsEnabled" Value="False"/>
+                                    <Setter Property="IsEnabled" Value="False" />
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding ElementName=HltB_IntegrationInCustomTheme, Path=IsChecked}" Value="True">
-                                            <Setter Property="IsEnabled" Value="True"/>
+                                            <Setter Property="IsEnabled" Value="True" />
                                         </DataTrigger>
                                         <DataTrigger Binding="{Binding ElementName=HltB_IntegrationInDescription, Path=IsChecked}" Value="True">
-                                            <Setter Property="IsEnabled" Value="True"/>
+                                            <Setter Property="IsEnabled" Value="True" />
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
@@ -212,7 +331,7 @@
                             <Label Content="{DynamicResource LOCHowLongToBeatIntegrationProgressBarShowTime}" />
                         </CheckBox>
 
-                        <Grid Margin="30,5,0,0">
+                        <Grid Margin="30,5,0,0" IsEnabled="{Binding ProgressBarShowTime}">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="*" />
@@ -223,9 +342,30 @@
                             <RadioButton Grid.Column="1" GroupName="A" Content="{DynamicResource LOCHowLongToBeatIntegrationProgressBarShowTimeInterior}" IsChecked="{Binding ProgressBarShowTimeInterior}" />
                             <RadioButton Grid.Column="2" GroupName="A" Content="{DynamicResource LOCHowLongToBeatIntegrationProgressBarShowTimeBelow}" IsChecked="{Binding ProgressBarShowTimeBelow}" />
                         </Grid>
+
+                        <CheckBox IsChecked="{Binding ProgressBarShowTimeUser}" Margin="0,5,0,0">
+                            <Label Content="{DynamicResource LOCHowLongToBeatIntegrationProgressBarShowTimeUser}" />
+                        </CheckBox>
                     </StackPanel>
                 </GroupBox>
             </StackPanel>
+        </TabItem>
+
+        <TabItem Header="{DynamicResource LOCCommonIntegrationFullScreen}">
+            <ScrollViewer>
+                <Grid Margin="0,10,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto" />
+                    </Grid.RowDefinitions>
+
+                    <CheckBox Grid.Column="0" Grid.Row="0" IsChecked="{Binding EnableIntegrationFS}" >
+                        <Label Content="{DynamicResource LOCCommonIntegrationFullScreenEnable}" />
+                    </CheckBox>
+                </Grid>
+            </ScrollViewer>
         </TabItem>
     </TabControl>
 </UserControl>
