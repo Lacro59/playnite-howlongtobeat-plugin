@@ -274,7 +274,21 @@ namespace HowLongToBeat.Services
                         Name = ElementA.GetAttribute("title");
                         Id = int.Parse(ElementA.GetAttribute("href").Replace("game?id=", string.Empty));
                         UrlImg = ElementImg.GetAttribute("src");
-                        Url = UrlBase + ElementA.GetAttribute("href");
+                        Url = ElementA.GetAttribute("href");
+
+                        if (!UrlImg.ToLower().Contains(UrlBase.ToLower()))
+                        {
+                            if (UrlImg.Substring(0, 1) == "/")
+                            {
+                                UrlImg = UrlImg.Substring(1, UrlImg.Length - 1);
+                            }
+
+                            UrlImg = UrlBase + UrlImg;
+                        }
+                        if (!Url.ToLower().Contains(UrlBase.ToLower()))
+                        {
+                            Url = UrlBase + Url;
+                        }
 
                         var ElementDetails = SearchElement.QuerySelector(".search_list_details_block");
                         var Details = ElementDetails.QuerySelectorAll(".search_list_tidbit");

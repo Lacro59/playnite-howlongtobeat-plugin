@@ -636,71 +636,90 @@ namespace HowLongToBeat.Services
 
         public void SetCurrentPlayTime(Game game, long elapsedSeconds)
         {
-            if (howLongToBeatClient.GetIsUserLoggedIn())
+            try
             {
-                GameHowLongToBeat gameHowLongToBeat = Database.Get(game.Id);
-
-                if (gameHowLongToBeat != null)
+                if (howLongToBeatClient.GetIsUserLoggedIn())
                 {
-                    TimeSpan time = TimeSpan.FromSeconds(game.Playtime + elapsedSeconds);
+                    GameHowLongToBeat gameHowLongToBeat = Database.Get(game.Id);
 
-                    var platform = hltbPlatforms.FindAll(x => game.Platform.Name.ToLower().Contains(x.Name.ToLower())).First();
-
-                    if (platform != null)
+                    if (gameHowLongToBeat != null)
                     {
-                        string Platform = platform.Name;
+                        TimeSpan time = TimeSpan.FromSeconds(game.Playtime + elapsedSeconds);
 
-                        var HltbData = GetUserHltbData(gameHowLongToBeat.GetData().Id);
-                        int edit_id = 0;
-                        HltbPostData hltbPostData = new HltbPostData();
-                        if (HltbData != null)
+                        var platform = hltbPlatforms.FindAll(x => game.Platform.Name.ToLower().Contains(x.Name.ToLower())).First();
+
+                        if (platform != null)
                         {
-                            if (howLongToBeatClient.EditIdExist(HltbData.UserGameId))
+                            string Platform = platform.Name;
+
+                            var HltbData = GetUserHltbData(gameHowLongToBeat.GetData().Id);
+                            int edit_id = 0;
+                            HltbPostData hltbPostData = new HltbPostData();
+                            if (HltbData != null)
                             {
-                                edit_id = int.Parse(HltbData.UserGameId);
-                                hltbPostData = howLongToBeatClient.GetSubmitData(edit_id.ToString());
+                                if (howLongToBeatClient.EditIdExist(HltbData.UserGameId))
+                                {
+                                    edit_id = int.Parse(HltbData.UserGameId);
+                                    hltbPostData = howLongToBeatClient.GetSubmitData(edit_id.ToString());
+                                }
                             }
+                            else
+                            {
+                                if (HltbData != null)
+                                {
+                                    string tmpEditId = howLongToBeatClient.FindIdExisting(edit_id.ToString());
+                                    if (!tmpEditId.IsNullOrEmpty())
+                                    {
+                                        edit_id = int.Parse(tmpEditId);
+                                        hltbPostData = howLongToBeatClient.GetSubmitData(tmpEditId);
+                                    }
+                                }
+                            }
+
+                            if (hltbPostData == null)
+                            {
+                                logger.Warn($"HowLongToBeat - No hltbPostData for {game.Name}");
+                                return;
+                            }
+
+                            hltbPostData.user_id = Database.UserHltbData.UserId;
+                            hltbPostData.edit_id = edit_id;
+                            hltbPostData.game_id = gameHowLongToBeat.GetData().Id;
+                            hltbPostData.custom_title = gameHowLongToBeat.GetData().Name;
+                            hltbPostData.platform = Platform;
+
+                            hltbPostData.list_p = "1";
+
+                            hltbPostData.protime_h = (time.Hours + (24 * time.Days)).ToString();
+                            hltbPostData.protime_m = time.Minutes.ToString();
+                            hltbPostData.protime_s = time.Seconds.ToString();
+
+
+                            howLongToBeatClient.PostData(hltbPostData);
                         }
                         else
                         {
-                            if (HltbData != null)
-                            {
-                                string tmpEditId = howLongToBeatClient.FindIdExisting(edit_id.ToString());
-                                if (!tmpEditId.IsNullOrEmpty())
-                                {
-                                    edit_id = int.Parse(tmpEditId);
-                                    hltbPostData = howLongToBeatClient.GetSubmitData(tmpEditId);
-                                }
-                            }
+                            logger.Warn($"HowLongToBeat - No platform find for {game.Name}");
                         }
-
-                        hltbPostData.user_id = Database.UserHltbData.UserId;
-                        hltbPostData.edit_id = edit_id;
-                        hltbPostData.game_id = gameHowLongToBeat.GetData().Id;
-                        hltbPostData.custom_title = gameHowLongToBeat.GetData().Name;
-                        hltbPostData.platform = Platform;
-
-                        hltbPostData.list_p = "1";
-
-                        hltbPostData.protime_h = (time.Hours + (24 * time.Days)).ToString();
-                        hltbPostData.protime_m = time.Minutes.ToString();
-                        hltbPostData.protime_s = time.Seconds.ToString();
-
-
-                        howLongToBeatClient.PostData(hltbPostData);
-                    }
-                    else
-                    {
-                        logger.Warn($"HowLongToBeat - No platform find for {game.Name}");
                     }
                 }
+                else
+                {
+                    _PlayniteApi.Notifications.Add(new NotificationMessage(
+                        "HowLongToBeat-Import-Error",
+                        "HowLongToBeat" + System.Environment.NewLine +
+                        resources.GetString("LOCNotLoggedIn"),
+                        NotificationType.Error,
+                        () => _plugin.OpenSettingsView()));
+                }
             }
-            else
+            catch (Exception ex)
             {
+                Common.LogError(ex, "HowLongToBeat");
                 _PlayniteApi.Notifications.Add(new NotificationMessage(
                     "HowLongToBeat-Import-Error",
                     "HowLongToBeat" + System.Environment.NewLine +
-                    resources.GetString("LOCNotLoggedIn"),
+                    ex.Message,
                     NotificationType.Error,
                     () => _plugin.OpenSettingsView()));
             }
