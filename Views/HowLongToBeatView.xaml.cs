@@ -44,6 +44,11 @@ namespace HowLongToBeat.Views
 
             HltbDataUser gameData = _gameHowLongToBeat.Items.FirstOrDefault();
 
+            if (gameData == null)
+            {
+                return;
+            }
+
             if (_gameHowLongToBeat.HasData || _gameHowLongToBeat.HasDataEmpty)
             {
                 CoverImage = gameData.UrlImg;
