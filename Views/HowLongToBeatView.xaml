@@ -3,8 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:interfaces="clr-namespace:HowLongToBeat.Views.Interfaces"
-             mc:Ignorable="d" Width="750" Height="350" Background="{DynamicResource WindowBackgourndBrush}">
+             mc:Ignorable="d" Width="750" Height="350">
 
     <Grid Margin="10">
         <Grid.RowDefinitions>
@@ -94,7 +93,7 @@
             <TextBlock Grid.Row="0" FontSize="24" FontWeight="Bold" Text="{DynamicResource LOCHowLongToBeatProgression}" 
                        Foreground="{DynamicResource TextBrush}" HorizontalAlignment="Center"></TextBlock>
 
-            <StackPanel Name="PART_HltbProgressBar" Grid.Row="2" Height="40"
+            <StackPanel Name="PART_HltbProgressBar" Grid.Row="2" Height="50"
                         Loaded="PART_HltbProgressBar_Loaded" />
 
             <Label Grid.Row="4" HorizontalAlignment="Left" Content="{Binding HltbName, FallbackValue='src: Name for test'}" FontSize="8" />

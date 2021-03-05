@@ -2,41 +2,60 @@
 using HowLongToBeat.Views;
 using Newtonsoft.Json;
 using Playnite.SDK;
+using Playnite.SDK.Data;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Media;
 
 namespace HowLongToBeat
 {
-    public class HowLongToBeatSettings : ISettings
+    public class HowLongToBeatSettings : ObservableObject
     {
-        private readonly HowLongToBeat plugin;
+        #region Settings variables
+        public bool MenuInExtensions { get; set; } = true;
 
         public string UserLogin { get; set; } = string.Empty;
 
-        public bool EnableCheckVersion { get; set; } = true;
-        public bool MenuInExtensions { get; set; } = true;
-
         public bool EnableTag { get; set; } = false;
+
         public bool ShowHltbImg { get; set; } = true;
 
         public bool AutoSetCurrentPlayTime { get; set; } = false;
 
         public bool AutoAccept { get; set; } = true;
         public bool ShowWhenMismatch { get; set; } = false;
+
+
+        public bool EnableIntegrationButtonHeader { get; set; } = false;
+
+        private bool _EnableIntegrationProgressBar { get; set; } = false;
+        public bool EnableIntegrationProgressBar
+        {
+            get => _EnableIntegrationProgressBar;
+            set
+            {
+                _EnableIntegrationProgressBar = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool ProgressBarShowToolTip { get; set; } = true;
+        public bool ProgressBarShowTimeAbove { get; set; } = false;
+        public bool ProgressBarShowTimeInterior { get; set; } = true;
+        public bool ProgressBarShowTimeBelow { get; set; } = false;
         
+
+
+
+
         public bool EnableIntegrationButton { get; set; } = false;
         public bool EnableIntegrationInDescription { get; set; } = false;
         public bool IntegrationShowTitle { get; set; } = true;
         public bool IntegrationTopGameDetails { get; set; } = true;
         public bool EnableIntegrationInCustomTheme { get; set; } = false;
 
-        public bool ProgressBarShowToolTip { get; set; } = true;
+        public bool ProgressBarShowTimeUser { get; set; } = false;
         public bool ProgressBarShowTime { get; set; } = false;
-        public bool ProgressBarShowTimeAbove { get; set; } = false;
-        public bool ProgressBarShowTimeInterior { get; set; } = true;
-        public bool ProgressBarShowTimeBelow { get; set; } = false;
-        public bool ProgressBarShowTimeUser{ get; set; } = false;
 
         public Color ColorFirst { get; set; } = Brushes.DarkCyan.Color;
         public Color ColorSecond { get; set; } = Brushes.RoyalBlue.Color;
@@ -46,22 +65,47 @@ namespace HowLongToBeat
         public Color ColorThirdMulti { get; set; } = Brushes.ForestGreen.Color;
 
         public bool EnableIntegrationFS { get; set; } = false;
-
+        #endregion
 
         // Playnite serializes settings object to a JSON object and saves it as text file.
-        // If you want to exclude some property from being saved then use `JsonIgnore` ignore attribute.
-        [JsonIgnore]
-        public bool OptionThatWontBeSaved { get; set; } = false;
-
-        // Parameterless constructor must exist if you want to use LoadPluginSettings method.
-        public HowLongToBeatSettings()
+        // If you want to exclude some property from being saved then use `JsonDontSerialize` ignore attribute.
+        #region Variables exposed
+        [DontSerialize]
+        private bool _HasData { get; set; } = false;
+        public bool HasData
         {
+            get => _HasData;
+            set
+            {
+                _HasData = value;
+                OnPropertyChanged();
+            }
+        }
+        #endregion  
+    }
+
+
+    public class HowLongToBeatSettingsViewModel : ObservableObject, ISettings
+    {
+        private readonly HowLongToBeat Plugin;
+        private HowLongToBeatSettings EditingClone { get; set; }
+
+        private HowLongToBeatSettings _Settings;
+        public HowLongToBeatSettings Settings
+        {
+            get => _Settings;
+            set
+            {
+                _Settings = value;
+                OnPropertyChanged();
+            }
         }
 
-        public HowLongToBeatSettings(HowLongToBeat plugin)
+
+        public HowLongToBeatSettingsViewModel(HowLongToBeat plugin)
         {
             // Injecting your plugin instance is required for Save/Load method because Playnite saves data to a location based on what plugin requested the operation.
-            this.plugin = plugin;
+            Plugin = plugin;
 
             // Load saved settings.
             var savedSettings = plugin.LoadPluginSettings<HowLongToBeatSettings>();
@@ -69,94 +113,59 @@ namespace HowLongToBeat
             // LoadPluginSettings returns null if not saved data is available.
             if (savedSettings != null)
             {
-                UserLogin = savedSettings.UserLogin;
-
-                EnableCheckVersion = savedSettings.EnableCheckVersion;
-                MenuInExtensions = savedSettings.MenuInExtensions;
-
-                EnableTag = savedSettings.EnableTag;
-                ShowHltbImg = savedSettings.ShowHltbImg;
-
-                AutoSetCurrentPlayTime = savedSettings.AutoSetCurrentPlayTime;
-
-                AutoAccept = savedSettings.AutoAccept;
-                ShowWhenMismatch = savedSettings.ShowWhenMismatch;
-
-                EnableIntegrationButton = savedSettings.EnableIntegrationButton;
-                EnableIntegrationInDescription = savedSettings.EnableIntegrationInDescription;
-                IntegrationShowTitle = savedSettings.IntegrationShowTitle;
-                IntegrationTopGameDetails = savedSettings.IntegrationTopGameDetails;
-                EnableIntegrationInCustomTheme = savedSettings.EnableIntegrationInCustomTheme;
-
-                ProgressBarShowToolTip = savedSettings.ProgressBarShowToolTip;
-                ProgressBarShowTime = savedSettings.ProgressBarShowTime;
-                ProgressBarShowTimeAbove = savedSettings.ProgressBarShowTimeAbove;
-                ProgressBarShowTimeInterior = savedSettings.ProgressBarShowTimeInterior;
-                ProgressBarShowTimeBelow = savedSettings.ProgressBarShowTimeBelow;
-                ProgressBarShowTimeUser = savedSettings.ProgressBarShowTimeUser;
-
-                ColorFirst = savedSettings.ColorFirst;
-                ColorSecond = savedSettings.ColorSecond;
-                ColorThird = savedSettings.ColorThird;
-                ColorFirstMulti = savedSettings.ColorFirstMulti;
-                ColorSecondMulti = savedSettings.ColorSecondMulti;
-                ColorThirdMulti = savedSettings.ColorThirdMulti;
-
-                EnableIntegrationFS = savedSettings.EnableIntegrationFS;
+                Settings = savedSettings;
+            }
+            else
+            {
+                Settings = new HowLongToBeatSettings();
             }
         }
 
+        // Code executed when settings view is opened and user starts editing values.
         public void BeginEdit()
         {
-            // Code executed when settings view is opened and user starts editing values.
+            EditingClone = Serialization.GetClone(Settings);
         }
 
+        // Code executed when user decides to cancel any changes made since BeginEdit was called.
+        // This method should revert any changes made to Option1 and Option2.
         public void CancelEdit()
         {
-            // Code executed when user decides to cancel any changes made since BeginEdit was called.
-            // This method should revert any changes made to Option1 and Option2.
+            Settings = EditingClone;
         }
 
+        // Code executed when user decides to confirm changes made since BeginEdit was called.
+        // This method should save settings made to Option1 and Option2.
         public void EndEdit()
         {
-            // Code executed when user decides to confirm changes made since BeginEdit was called.
-            // This method should save settings made to Option1 and Option2.
+            Settings.ColorFirst = HowLongToBeatSettingsView.ColorFirst;
+            Settings.ColorSecond = HowLongToBeatSettingsView.ColorSecond;
+            Settings.ColorThird = HowLongToBeatSettingsView.ColorThird;
+            Settings.ColorFirstMulti = HowLongToBeatSettingsView.ColorFirstMulti;
+            Settings.ColorSecondMulti = HowLongToBeatSettingsView.ColorSecondMulti;
+            Settings.ColorThirdMulti = HowLongToBeatSettingsView.ColorThirdMulti;
 
-            ColorFirst = HowLongToBeatSettingsView.ColorFirst;
-            ColorSecond = HowLongToBeatSettingsView.ColorSecond;
-            ColorThird = HowLongToBeatSettingsView.ColorThird;
-            ColorFirstMulti = HowLongToBeatSettingsView.ColorFirstMulti;
-            ColorSecondMulti = HowLongToBeatSettingsView.ColorSecondMulti;
-            ColorThirdMulti = HowLongToBeatSettingsView.ColorThirdMulti;
-
-            if (!ProgressBarShowTimeAbove && !ProgressBarShowTimeInterior && !ProgressBarShowTimeBelow)
+            if (!Settings.ProgressBarShowTimeAbove && !Settings.ProgressBarShowTimeInterior && !Settings.ProgressBarShowTimeBelow)
             {
-                var savedSettings = plugin.LoadPluginSettings<HowLongToBeatSettings>();
+                var savedSettings = Plugin.LoadPluginSettings<HowLongToBeatSettings>();
                 if (savedSettings != null)
                 {
-                    ProgressBarShowTimeAbove = savedSettings.ProgressBarShowTimeAbove;
-                    ProgressBarShowTimeInterior = savedSettings.ProgressBarShowTimeInterior;
-                    ProgressBarShowTimeBelow = savedSettings.ProgressBarShowTimeBelow;
+                    Settings.ProgressBarShowTimeAbove = savedSettings.ProgressBarShowTimeAbove;
+                    Settings.ProgressBarShowTimeInterior = savedSettings.ProgressBarShowTimeInterior;
+                    Settings.ProgressBarShowTimeBelow = savedSettings.ProgressBarShowTimeBelow;
                 }
             }
 
-            plugin.SavePluginSettings(this);
-
-            HowLongToBeat.howLongToBeatUI.RemoveElements();
-            var TaskIntegrationUI = Task.Run(() =>
-            {
-                var dispatcherOp = HowLongToBeat.howLongToBeatUI.AddElements();
-                dispatcherOp.Completed += (s, e) => { HowLongToBeat.howLongToBeatUI.RefreshElements(HowLongToBeatDatabase.GameSelected); };
-            });
-
+            Plugin.SavePluginSettings(Settings);
             HowLongToBeat.PluginDatabase.PluginSettings = this;
+            this.OnPropertyChanged();
         }
 
+        // Code execute when user decides to confirm changes made since BeginEdit was called.
+        // Executed before EndEdit is called and EndEdit is not called if false is returned.
+        // List of errors is presented to user if verification fails.
         public bool VerifySettings(out List<string> errors)
         {
-            // Code execute when user decides to confirm changes made since BeginEdit was called.
-            // Executed before EndEdit is called and EndEdit is not called if false is returned.
-            // List of errors is presented to user if verification fails.
             errors = new List<string>();
             return true;
         }

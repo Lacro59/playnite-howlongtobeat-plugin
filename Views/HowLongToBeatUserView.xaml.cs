@@ -48,7 +48,7 @@ namespace HowLongToBeat.Views
             {
                 PluginDatabase.Database.UserHltbData.TitlesList.Sort((x, y) => x.GameName.CompareTo(y.GameName));
                 ListViewGames.ItemsSource = PluginDatabase.Database.UserHltbData.TitlesList;
-                Sorting();
+                ListViewGames.Sorting();
             }
 
             //let create a mapper so LiveCharts know how to plot our CustomerViewModel class
@@ -64,161 +64,6 @@ namespace HowLongToBeat.Views
             SetChartData();
             SetStats();
         }
-
-
-        #region Functions sorting ListviewGames.
-        private void Sorting()
-        {
-            // Sorting
-            try
-            {
-                var columnBinding = _lastHeaderClicked.Column.DisplayMemberBinding as Binding;
-                var sortBy = columnBinding?.Path.Path ?? _lastHeaderClicked.Column.Header as string;
-            }
-            // If first view
-            catch
-            {
-                CollectionView view = (CollectionView)CollectionViewSource.GetDefaultView(ListViewGames.ItemsSource);
-                if (view != null)
-                {
-                    _lastHeaderClicked = lvName;
-                    _lastHeaderClicked.Content += " ▲";
-                    //view.SortDescriptions.Add(new SortDescription("lvName", _lastDirection));
-                }
-            }
-        }
-
-        private void ListviewGames_onHeaderClick(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                lvMainStoryValue.IsEnabled = true;
-                lvMainExtraValue.IsEnabled = true;
-                lvCompletionistValue.IsEnabled = true;
-                lvSoloValue.IsEnabled = true;
-                lvCoOpValue.IsEnabled = true;
-                lvVsValue.IsEnabled = true;
-
-
-                var headerClicked = e.OriginalSource as GridViewColumnHeader;
-                ListSortDirection direction;
-
-                if (headerClicked != null)
-                {
-                    if (headerClicked.Role != GridViewColumnHeaderRole.Padding)
-                    {
-                        if (headerClicked != _lastHeaderClicked)
-                        {
-                            direction = ListSortDirection.Ascending;
-                        }
-                        else
-                        {
-                            if (_lastDirection == ListSortDirection.Ascending)
-                            {
-                                direction = ListSortDirection.Descending;
-                            }
-                            else
-                            {
-                                direction = ListSortDirection.Ascending;
-                            }
-                        }
-
-                        var columnBinding = headerClicked.Column.DisplayMemberBinding as Binding;
-                        var sortBy = columnBinding?.Path.Path ?? headerClicked.Column.Header as string;
-
-                        // Specific sort with another column
-                        if (headerClicked.Name == "lvName")
-                        {
-                            columnBinding = lvGameNameValue.Column.DisplayMemberBinding as Binding;
-                            sortBy = columnBinding?.Path.Path ?? headerClicked.Column.Header as string;
-                        }
-                        if (headerClicked.Name == "lvCurrentTime")
-                        {
-                            columnBinding = lvCurrentTimeValue.Column.DisplayMemberBinding as Binding;
-                            sortBy = columnBinding?.Path.Path ?? headerClicked.Column.Header as string;
-                        }
-                        if (headerClicked.Name == "lvMainStory")
-                        {
-                            columnBinding = lvMainStoryValue.Column.DisplayMemberBinding as Binding;
-                            sortBy = columnBinding?.Path.Path ?? headerClicked.Column.Header as string;
-                        }
-                        if (headerClicked.Name == "lvMainExtra")
-                        {
-                            columnBinding = lvMainExtraValue.Column.DisplayMemberBinding as Binding;
-                            sortBy = columnBinding?.Path.Path ?? headerClicked.Column.Header as string;
-                        }
-                        if (headerClicked.Name == "lvCompletionist")
-                        {
-                            columnBinding = lvCompletionistValue.Column.DisplayMemberBinding as Binding;
-                            sortBy = columnBinding?.Path.Path ?? headerClicked.Column.Header as string;
-                        }
-                        if (headerClicked.Name == "lvSolo")
-                        {
-                            columnBinding = lvSoloValue.Column.DisplayMemberBinding as Binding;
-                            sortBy = columnBinding?.Path.Path ?? headerClicked.Column.Header as string;
-                        }
-                        if (headerClicked.Name == "lvCoOp")
-                        {
-                            columnBinding = lvCoOpValue.Column.DisplayMemberBinding as Binding;
-                            sortBy = columnBinding?.Path.Path ?? headerClicked.Column.Header as string;
-                        }
-                        if (headerClicked.Name == "lvVs")
-                        {
-                            columnBinding = lvVsValue.Column.DisplayMemberBinding as Binding;
-                            sortBy = columnBinding?.Path.Path ?? headerClicked.Column.Header as string;
-                        }
-
-                        Sort(sortBy, direction);
-
-                        if (_lastHeaderClicked != null)
-                        {
-                            _lastHeaderClicked.Content = ((string)_lastHeaderClicked.Content).Replace(" ▲", string.Empty);
-                            _lastHeaderClicked.Content = ((string)_lastHeaderClicked.Content).Replace(" ▼", string.Empty);
-                        }
-
-                        if (direction == ListSortDirection.Ascending)
-                        {
-                            headerClicked.Content += " ▲";
-                        }
-                        else
-                        {
-                            headerClicked.Content += " ▼";
-                        }
-
-                        // Remove arrow from previously sorted header
-                        if (_lastHeaderClicked != null && _lastHeaderClicked != headerClicked)
-                        {
-                            _lastHeaderClicked.Column.HeaderTemplate = null;
-                        }
-
-                        _lastHeaderClicked = headerClicked;
-                        _lastDirection = direction;
-                    }
-                }
-
-                lvMainStoryValue.IsEnabled = false;
-                lvMainExtraValue.IsEnabled = false;
-                lvCompletionistValue.IsEnabled = false;
-                lvSoloValue.IsEnabled = false;
-                lvCoOpValue.IsEnabled = false;
-                lvVsValue.IsEnabled = false;
-            }
-            catch
-            {
-
-            }
-        }
-
-        private void Sort(string sortBy, ListSortDirection direction)
-        {
-            ICollectionView dataView = CollectionViewSource.GetDefaultView(ListViewGames.ItemsSource);
-
-            dataView.SortDescriptions.Clear();
-            SortDescription sd = new SortDescription(sortBy, direction);
-            dataView.SortDescriptions.Add(sd);
-            dataView.Refresh();
-        }
-        #endregion
 
 
         private void PART_BtRefreshUserData_Click(object sender, RoutedEventArgs e)
@@ -240,7 +85,7 @@ namespace HowLongToBeat.Views
 
 
             ListViewGames.ItemsSource = PluginDatabase.Database.UserHltbData.TitlesList;
-            Sorting();
+            ListViewGames.Sorting();
 
             SetChartDataYear();
             SetChartData();

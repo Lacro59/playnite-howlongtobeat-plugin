@@ -1,6 +1,5 @@
 ﻿using HowLongToBeat.Models;
 using HowLongToBeat.Services;
-using HowLongToBeat.Views.Interfaces;
 using Playnite.SDK;
 using Playnite.SDK.Models;
 using System.Linq;
@@ -12,6 +11,7 @@ using System.Windows.Media;
 using System.Windows.Input;
 using System;
 using CommonPluginsPlaynite.Converters;
+using HowLongToBeat.Controls;
 
 namespace HowLongToBeat.Views
 {
@@ -82,42 +82,42 @@ namespace HowLongToBeat.Views
                 {
                     ElIndicator += 1;
                     SetDataInView(ElIndicator, resources.GetString("LOCHowLongToBeatMainStory"), gameData.GameHltbData.MainStoryFormat, (titleList != null) ? titleList.HltbUserData.MainStoryFormat : string.Empty);
-                    SetColor(ElIndicator, PluginDatabase.PluginSettings.ColorFirst);
+                    SetColor(ElIndicator, PluginDatabase.PluginSettings.Settings.ColorFirst);
                 }
 
                 if (gameData.GameHltbData.MainExtra != 0)
                 {
                     ElIndicator += 1;
                     SetDataInView(ElIndicator, resources.GetString("LOCHowLongToBeatMainExtra"), gameData.GameHltbData.MainExtraFormat, (titleList != null) ? titleList.HltbUserData.MainExtraFormat : string.Empty);
-                    SetColor(ElIndicator, PluginDatabase.PluginSettings.ColorSecond);
+                    SetColor(ElIndicator, PluginDatabase.PluginSettings.Settings.ColorSecond);
                 }
 
                 if (gameData.GameHltbData.Completionist != 0)
                 {
                     ElIndicator += 1;
                     SetDataInView(ElIndicator, resources.GetString("LOCHowLongToBeatCompletionist"), gameData.GameHltbData.CompletionistFormat, (titleList != null) ? titleList.HltbUserData.CompletionistFormat : string.Empty);
-                    SetColor(ElIndicator, PluginDatabase.PluginSettings.ColorThird);
+                    SetColor(ElIndicator, PluginDatabase.PluginSettings.Settings.ColorThird);
                 }
 
                 if (gameData.GameHltbData.Solo != 0)
                 {
                     ElIndicator += 1;
                     SetDataInView(ElIndicator, resources.GetString("LOCHowLongToBeatSolo"), gameData.GameHltbData.SoloFormat, (titleList != null) ? titleList.HltbUserData.SoloFormat : string.Empty);
-                    SetColor(ElIndicator, PluginDatabase.PluginSettings.ColorFirstMulti);
+                    SetColor(ElIndicator, PluginDatabase.PluginSettings.Settings.ColorFirstMulti);
                 }
 
                 if (gameData.GameHltbData.CoOp != 0)
                 {
                     ElIndicator += 1;
                     SetDataInView(ElIndicator, resources.GetString("LOCHowLongToBeatCoOp"), gameData.GameHltbData.CoOpFormat, (titleList != null) ? titleList.HltbUserData.CoOpFormat : string.Empty);
-                    SetColor(ElIndicator, PluginDatabase.PluginSettings.ColorSecondMulti);
+                    SetColor(ElIndicator, PluginDatabase.PluginSettings.Settings.ColorSecondMulti);
                 }
 
                 if (gameData.GameHltbData.Vs != 0)
                 {
                     ElIndicator += 1;
                     SetDataInView(ElIndicator, resources.GetString("LOCHowLongToBeatVs"), gameData.GameHltbData.VsFormat, (titleList != null) ? titleList.HltbUserData.VsFormat : string.Empty);
-                    SetColor(ElIndicator, PluginDatabase.PluginSettings.ColorThirdMulti);
+                    SetColor(ElIndicator, PluginDatabase.PluginSettings.Settings.ColorThirdMulti);
                 }
 
 
@@ -125,6 +125,7 @@ namespace HowLongToBeat.Views
                 PlaytimeFormat = (string)converter.Convert((long)_gameHowLongToBeat.Playtime, null, null, CultureInfo.CurrentCulture);
 
                 hltbProgressBar = new HltbProgressBar();
+                hltbProgressBar.Height = 50;
                 PART_HltbProgressBar.Children.Add(hltbProgressBar);
             }
 

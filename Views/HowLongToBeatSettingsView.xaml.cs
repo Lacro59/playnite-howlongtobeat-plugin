@@ -133,7 +133,7 @@ namespace HowLongToBeat.Views
             }
             catch (Exception ex)
             {
-                Common.LogError(ex, "HowLongToBeat");
+                Common.LogError(ex, false);
             }
         }
 
@@ -178,7 +178,7 @@ namespace HowLongToBeat.Views
             }
             catch (Exception ex)
             {
-                Common.LogError(ex, "HowLongToBeat");
+                Common.LogError(ex, false);
             }
         }
 
@@ -242,7 +242,7 @@ namespace HowLongToBeat.Views
         private void CheckAuthenticate()
         {
             PART_LbUserLogin.Visibility = Visibility.Collapsed;
-            PART_LbAuthenticate.Content = resources.GetString("LOCLoginChecking");
+            PART_LbAuthenticate.Content = resources.GetString("LOCCommonLoginChecking");
 
             var task = Task.Run(() => PluginDatabase.howLongToBeatClient.GetIsUserLoggedIn());
         }
@@ -261,7 +261,7 @@ namespace HowLongToBeat.Views
             this.Dispatcher.Invoke(new Action(() => {
                 if ((bool)PluginDatabase.howLongToBeatClient.IsConnected)
                 {
-                    PART_LbAuthenticate.Content = resources.GetString("LOCLoggedIn");
+                    PART_LbAuthenticate.Content = resources.GetString("LOCCommonLoggedIn");
                     PART_LbUserLogin.Visibility = Visibility.Visible;
 
                     string UserLogin = PluginDatabase.howLongToBeatClient.UserLogin;
@@ -270,11 +270,11 @@ namespace HowLongToBeat.Views
                         UserLogin = PluginDatabase.Database.UserHltbData.Login;
                     }
 
-                    PART_LbUserLogin.Content = resources.GetString("LOCGOGUseAccountName") + " " + UserLogin;
+                    PART_LbUserLogin.Content = resources.GetString("LOCCommonAccountName") + " " + UserLogin;
                 }
                 else
                 {
-                    PART_LbAuthenticate.Content = resources.GetString("LOCNotLoggedIn");
+                    PART_LbAuthenticate.Content = resources.GetString("LOCCommonNotLoggedIn");
                 }
             }));
         }

@@ -46,8 +46,6 @@
                 <ResourceDictionary Source="playnite-plugincommon/CommonPluginsResources/ResourcesPlaynite/DerivedStyles/BottomButton.xaml" />
                 <ResourceDictionary Source="playnite-plugincommon/CommonPluginsResources/ResourcesPlaynite/DerivedStyles/HighlightBorder.xaml" />
 
-                <!--PluginResources-->
-                <ResourceDictionary Source="Resources/Common.xaml" />
                 <!--PluginCommon-->
                 <ResourceDictionary>
                     <FontFamily x:Key="CommonFont">pack://application:,,,/CommonPluginsResources;component/Resources/font.ttf#font</FontFamily>

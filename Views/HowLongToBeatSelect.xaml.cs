@@ -129,12 +129,11 @@ namespace HowLongToBeat.Views
                 }
                 catch (Exception ex)
                 {
-                    Common.LogError(ex, "HowLongToBeat", "Error on LoadData()");
+                    Common.LogError(ex, false);
                 }
 
-#if DEBUG
-                logger.Debug($"HowLongToBeat [Ignored] - dataSearch: {JsonConvert.SerializeObject(dataSearch)}");
-#endif
+                Common.LogDebug(true, $"dataSearch: {JsonConvert.SerializeObject(dataSearch)}");
+
                 this.Dispatcher.BeginInvoke((Action)delegate
                 {
                     lbSelectable.ItemsSource = dataSearch;

@@ -1,0 +1,18 @@
+﻿<controls:PluginUserControlExtend
+        xmlns:controls="clr-namespace:CommonPluginsShared.Controls"
+        x:Class="HowLongToBeat.Controls.HltbButton"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+        xmlns:local="clr-namespace:HowLongToBeat.Controls"
+        mc:Ignorable="d" d:DesignHeight="40" d:DesignWidth="40">
+
+    <Button Name="PART_HltbButton" Click="PART_HltbButton_Click" 
+            Style="{StaticResource {x:Type Button}}">
+        <Grid>
+            <TextBlock Name="PART_ButtonIcon" Text="" FontFamily="{DynamicResource CommonFont}"
+                       FontSize="{Binding RelativeSource={RelativeSource AncestorType=ContentControl}, Path=FontSize}" />
+        </Grid>
+    </Button>
+</controls:PluginUserControlExtend>

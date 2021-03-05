@@ -217,8 +217,7 @@ namespace HowLongToBeat.Services
             }
             catch (Exception ex)
             {
-                Common.LogError(ex, "HowLongToBeat", $"Error on GameSearch()");
-
+                Common.LogError(ex, false);
                 return string.Empty;
             }
         }
@@ -374,7 +373,7 @@ namespace HowLongToBeat.Services
                 }
                 catch (Exception ex)
                 {
-                    Common.LogError(ex, "HowLongToBeat", $"Error on SearchParser()");
+                    Common.LogError(ex, false);
                 }
             }
 
@@ -468,7 +467,7 @@ namespace HowLongToBeat.Services
                         }
                         catch (Exception ex)
                         {
-                            Common.LogError(ex, "HowLongToBeat");
+                            Common.LogError(ex, false);
                         }
                     });
                 }
@@ -496,7 +495,7 @@ namespace HowLongToBeat.Services
             }
             catch (Exception ex)
             {
-                Common.LogError(ex, "HowLongToBeat");
+                Common.LogError(ex, false);
 
                 _PlayniteApi.Notifications.Add(new NotificationMessage(
                     "HowLongToBeat-Import-Error",
@@ -527,7 +526,7 @@ namespace HowLongToBeat.Services
             }
             catch (Exception ex)
             {
-                Common.LogError(ex, "HowLongToBeat");
+                Common.LogError(ex, false);
 
                 _PlayniteApi.Notifications.Add(new NotificationMessage(
                     "HowLongToBeat-Import-Error",
@@ -692,7 +691,7 @@ namespace HowLongToBeat.Services
             }
             catch (Exception ex)
             {
-                Common.LogError(ex, "HowLongToBeat");
+                Common.LogError(ex, false);
 
                 _PlayniteApi.Notifications.Add(new NotificationMessage(
                     "HowLongToBeat-Import-Error",
@@ -965,7 +964,7 @@ namespace HowLongToBeat.Services
                 }
                 else
                 {
-                    Common.LogError(ex, "HowLongToBeat");
+                    Common.LogError(ex, false);
 
                     _PlayniteApi.Notifications.Add(new NotificationMessage(
                         "HowLongToBeat-Import-Error",
@@ -1000,12 +999,11 @@ namespace HowLongToBeat.Services
                     TitleList titleList = new TitleList();
                 }
 
-
                 return result;
             }
             catch (Exception ex)
             {
-                Common.LogError(ex, "HowLongToBeat");
+                Common.LogError(ex, false);
 
                 _PlayniteApi.Notifications.Add(new NotificationMessage(
                     "HowLongToBeat-Import-Error",
@@ -1033,7 +1031,7 @@ namespace HowLongToBeat.Services
                 }
                 catch (Exception ex)
                 {
-                    Common.LogError(ex, "HowLongToBeat");
+                    Common.LogError(ex, false);
                 }
             }
 
@@ -1072,7 +1070,7 @@ namespace HowLongToBeat.Services
                 }
                 catch (Exception ex)
                 {
-                    Common.LogError(ex, "HowLongToBeat");
+                    Common.LogError(ex, false);
 
                     _PlayniteApi.Notifications.Add(new NotificationMessage(
                         "HowLongToBeat-Import-Error",
@@ -1091,7 +1089,7 @@ namespace HowLongToBeat.Services
                 _PlayniteApi.Notifications.Add(new NotificationMessage(
                     "HowLongToBeat-Import-Error",
                     "HowLongToBeat" + System.Environment.NewLine +
-                    resources.GetString("LOCNotLoggedIn"),
+                    resources.GetString("LOCCommonNotLoggedIn"),
                     NotificationType.Error,
                     () => _plugin.OpenSettingsView()));
 
@@ -1127,15 +1125,15 @@ namespace HowLongToBeat.Services
                         }
 
                         TitleList titleList = GetTitleList(ListGame);
-#if DEBUG
-                        logger.Debug($"HowLongToBeat [Ignored] - titleList: {JsonConvert.SerializeObject(titleList)}");
-#endif
+
+                        Common.LogDebug(true, $"titleList: {JsonConvert.SerializeObject(titleList)}");
+
                         return titleList;
                     }
                 }
                 catch (Exception ex)
                 {
-                    Common.LogError(ex, "HowLongToBeat");
+                    Common.LogError(ex, false);
 
                     _PlayniteApi.Notifications.Add(new NotificationMessage(
                         "HowLongToBeat-Import-Error",
@@ -1154,7 +1152,7 @@ namespace HowLongToBeat.Services
                 _PlayniteApi.Notifications.Add(new NotificationMessage(
                     "HowLongToBeat-Import-Error",
                     "HowLongToBeat" + System.Environment.NewLine +
-                    resources.GetString("LOCNotLoggedIn"),
+                    resources.GetString("LOCCommonNotLoggedIn"),
                     NotificationType.Error,
                     () => _plugin.OpenSettingsView()));
 
@@ -1189,7 +1187,7 @@ namespace HowLongToBeat.Services
             }
             catch (Exception ex)
             {
-                Common.LogError(ex, "HowLongToBeat");
+                Common.LogError(ex, false);
 
                 _PlayniteApi.Notifications.Add(new NotificationMessage(
                     "HowLongToBeat-Import-Error",
@@ -1322,7 +1320,7 @@ namespace HowLongToBeat.Services
                 }
                 catch (Exception ex)
                 {
-                    Common.LogError(ex, "HowLongToBeat");
+                    Common.LogError(ex, false);
 
                     _PlayniteApi.Notifications.Add(new NotificationMessage(
                         "HowLongToBeat-DataUpdate-Error",
@@ -1339,7 +1337,7 @@ namespace HowLongToBeat.Services
                 _PlayniteApi.Notifications.Add(new NotificationMessage(
                     "HowLongToBeat-DataUpdate-Error",
                     "HowLongToBeat" + System.Environment.NewLine +
-                    resources.GetString("LOCNotLoggedIn"),
+                    resources.GetString("LOCCommonNotLoggedIn"),
                     NotificationType.Error,
                     () => _plugin.OpenSettingsView()));
 
