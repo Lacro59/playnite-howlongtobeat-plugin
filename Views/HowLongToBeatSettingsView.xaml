@@ -252,36 +252,6 @@
                             </CheckBox>
                         </StackPanel>
                     </GroupBox>
-
-
-
-
-
-
-
-
-
-
-
-                    <CheckBox IsChecked="{Binding Settings.EnableIntegrationInCustomTheme}" Margin="0,100,0,0" Name="HltB_IntegrationInCustomTheme" Click="Checkbox_Click">
-                        <Label Content="{DynamicResource LOCCommonIntegrationInCustomTheme}" />
-                    </CheckBox>
-
-                    <CheckBox IsChecked="{Binding Settings.EnableIntegrationButton}" Margin="0,5,0,0"  Name="HltB_IntegrationButton" Click="Checkbox_Click">
-                        <Label Content="{DynamicResource LOCCommonIntegrationButton}" />
-                    </CheckBox>
-
-                    <CheckBox IsChecked="{Binding Settings.EnableIntegrationInDescription}" Name="HltB_IntegrationInDescription" Margin="0,5,0,0" Click="Checkbox_Click">
-                        <Label Content="{DynamicResource LOCCommonIntegrationInDescription}" />
-                    </CheckBox>
-                    <CheckBox IsChecked="{Binding Settings.IntegrationShowTitle}" Margin="30,5,0,0" IsEnabled="{Binding ElementName=HltB_IntegrationInDescription, Path=IsChecked}">
-                        <Label Content="{DynamicResource LOCCommonIntegrationShowTitle}" />
-                    </CheckBox>
-                    <CheckBox IsChecked="{Binding Settings.IntegrationTopGameDetails}" Margin="30,5,0,0" IsEnabled="{Binding ElementName=HltB_IntegrationInDescription, Path=IsChecked}">
-                        <Label Content="{DynamicResource LOCCommonIntegrationTopGameDetails}" />
-                    </CheckBox>
-
-
                 </StackPanel>
             </ScrollViewer>
         </TabItem>

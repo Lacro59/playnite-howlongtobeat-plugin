@@ -43,26 +43,76 @@ namespace HowLongToBeat
         public bool ProgressBarShowTimeAbove { get; set; } = false;
         public bool ProgressBarShowTimeInterior { get; set; } = true;
         public bool ProgressBarShowTimeBelow { get; set; } = false;
-        
-
-
-
-
-        public bool EnableIntegrationButton { get; set; } = false;
-        public bool EnableIntegrationInDescription { get; set; } = false;
-        public bool IntegrationShowTitle { get; set; } = true;
-        public bool IntegrationTopGameDetails { get; set; } = true;
-        public bool EnableIntegrationInCustomTheme { get; set; } = false;
 
         public bool ProgressBarShowTimeUser { get; set; } = false;
         public bool ProgressBarShowTime { get; set; } = false;
 
-        public Color ColorFirst { get; set; } = Brushes.DarkCyan.Color;
-        public Color ColorSecond { get; set; } = Brushes.RoyalBlue.Color;
-        public Color ColorThird { get; set; } = Brushes.ForestGreen.Color;
-        public Color ColorFirstMulti { get; set; } = Brushes.DarkCyan.Color;
-        public Color ColorSecondMulti { get; set; } = Brushes.RoyalBlue.Color;
-        public Color ColorThirdMulti { get; set; } = Brushes.ForestGreen.Color;
+
+        private Color _ColorFirst { get; set; } = Brushes.DarkCyan.Color;
+        public Color ColorFirst
+        {
+            get => _ColorFirst;
+            set
+            {
+                _ColorFirst = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private Color _ColorSecond { get; set; } = Brushes.RoyalBlue.Color;
+        public Color ColorSecond
+        {
+            get => _ColorSecond;
+            set
+            {
+                _ColorSecond = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private Color _ColorThird { get; set; } = Brushes.ForestGreen.Color;
+        public Color ColorThird
+        {
+            get => _ColorThird;
+            set
+            {
+                _ColorThird = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private Color _ColorFirstMulti { get; set; } = Brushes.DarkCyan.Color;
+        public Color ColorFirstMulti
+        {
+            get => _ColorFirstMulti;
+            set
+            {
+                _ColorFirstMulti = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private Color _ColorSecondMulti { get; set; } = Brushes.RoyalBlue.Color;
+        public Color ColorSecondMulti
+        {
+            get => _ColorSecondMulti;
+            set
+            {
+                _ColorSecondMulti = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private Color _ColorThirdMulti { get; set; } = Brushes.ForestGreen.Color;
+        public Color ColorThirdMulti
+        {
+            get => _ColorThirdMulti;
+            set
+            {
+                _ColorThirdMulti = value;
+                OnPropertyChanged();
+            }
+        }
 
         public bool EnableIntegrationFS { get; set; } = false;
         #endregion
@@ -78,6 +128,169 @@ namespace HowLongToBeat
             set
             {
                 _HasData = value;
+                OnPropertyChanged();
+            }
+        }
+
+
+        [DontSerialize]
+        private long _MainStory { get; set; } = 0;
+        public long MainStory
+        {
+            get => _MainStory;
+            set
+            {
+                _MainStory = value;
+                OnPropertyChanged();
+            }
+        }
+        [DontSerialize]
+        private string _MainStoryFormat { get; set; } = string.Empty;
+        public string MainStoryFormat
+        {
+            get => _MainStoryFormat;
+            set
+            {
+                _MainStoryFormat = value;
+                OnPropertyChanged();
+            }
+        }
+
+        [DontSerialize]
+        private long _MainExtra { get; set; } = 0;
+        public long MainExtra
+        {
+            get => _MainExtra;
+            set
+            {
+                _MainExtra = value;
+                OnPropertyChanged();
+            }
+        }
+        [DontSerialize]
+        private string _MainExtraFormat { get; set; } = string.Empty;
+        public string MainExtraFormat
+        {
+            get => _MainExtraFormat;
+            set
+            {
+                _MainExtraFormat = value;
+                OnPropertyChanged();
+            }
+        }
+
+        [DontSerialize]
+        private long _Completionist { get; set; } = 0;
+        public long Completionist
+        {
+            get => _Completionist;
+            set
+            {
+                _Completionist = value;
+                OnPropertyChanged();
+            }
+        }
+        [DontSerialize]
+        private string _CompletionistFormat { get; set; } = string.Empty;
+        public string CompletionistFormat
+        {
+            get => _CompletionistFormat;
+            set
+            {
+                _CompletionistFormat = value;
+                OnPropertyChanged();
+            }
+        }
+
+        [DontSerialize]
+        private long _Solo { get; set; } = 0;
+        public long Solo
+        {
+            get => _Solo;
+            set
+            {
+                _Solo = value;
+                OnPropertyChanged();
+            }
+        }
+        [DontSerialize]
+        private string _SoloFormat { get; set; } = string.Empty;
+        public string SoloFormat
+        {
+            get => _SoloFormat;
+            set
+            {
+                _SoloFormat = value;
+                OnPropertyChanged();
+            }
+        }
+
+        [DontSerialize]
+        private long _CoOp { get; set; } = 0;
+        public long CoOp
+        {
+            get => _CoOp;
+            set
+            {
+                _CoOp = value;
+                OnPropertyChanged();
+            }
+        }
+        [DontSerialize]
+        private string _CoOpFormat { get; set; } = string.Empty;
+        public string CoOpFormat
+        {
+            get => _CoOpFormat;
+            set
+            {
+                _CoOpFormat = value;
+                OnPropertyChanged();
+            }
+        }
+
+        [DontSerialize]
+        private long _Vs { get; set; } = 0;
+        public long Vs
+        {
+            get => _Vs;
+            set
+            {
+                _Vs = value;
+                OnPropertyChanged();
+            }
+        }
+        [DontSerialize]
+        private string _VsFormat { get; set; } = string.Empty;
+        public string VsFormat
+        {
+            get => _VsFormat;
+            set
+            {
+                _VsFormat = value;
+                OnPropertyChanged();
+            }
+        }
+
+
+        [DontSerialize]
+        private long _TimeToBeat { get; set; } = 0;
+        public long TimeToBeat
+        {
+            get => _TimeToBeat;
+            set
+            {
+                _TimeToBeat = value;
+                OnPropertyChanged();
+            }
+        }
+        [DontSerialize]
+        private string _TimeToBeatFormat { get; set; } = string.Empty;
+        public string TimeToBeatFormat
+        {
+            get => _TimeToBeatFormat;
+            set
+            {
+                _TimeToBeatFormat = value;
                 OnPropertyChanged();
             }
         }

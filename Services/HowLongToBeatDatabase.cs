@@ -707,6 +707,22 @@ namespace HowLongToBeat.Services
             GameHowLongToBeat gameHowLongToBeat = Get(game, true);
 
             PluginSettings.Settings.HasData = gameHowLongToBeat.HasData;
+
+            PluginSettings.Settings.MainStory = gameHowLongToBeat.Items[0].GameHltbData.MainStory;
+            PluginSettings.Settings.MainStoryFormat = gameHowLongToBeat.Items[0].GameHltbData.MainStoryFormat;
+            PluginSettings.Settings.MainExtra = gameHowLongToBeat.Items[0].GameHltbData.MainExtra;
+            PluginSettings.Settings.MainExtraFormat = gameHowLongToBeat.Items[0].GameHltbData.MainExtraFormat;
+            PluginSettings.Settings.Completionist = gameHowLongToBeat.Items[0].GameHltbData.Completionist;
+            PluginSettings.Settings.CompletionistFormat = gameHowLongToBeat.Items[0].GameHltbData.CompletionistFormat;
+            PluginSettings.Settings.Solo = gameHowLongToBeat.Items[0].GameHltbData.Solo;
+            PluginSettings.Settings.SoloFormat = gameHowLongToBeat.Items[0].GameHltbData.SoloFormat;
+            PluginSettings.Settings.CoOp = gameHowLongToBeat.Items[0].GameHltbData.CoOp;
+            PluginSettings.Settings.CoOpFormat = gameHowLongToBeat.Items[0].GameHltbData.CoOpFormat;
+            PluginSettings.Settings.Vs = gameHowLongToBeat.Items[0].GameHltbData.Vs;
+            PluginSettings.Settings.VsFormat = gameHowLongToBeat.Items[0].GameHltbData.VsFormat;
+
+            PluginSettings.Settings.TimeToBeat = gameHowLongToBeat.Items[0].GameHltbData.TimeToBeat;
+            PluginSettings.Settings.TimeToBeatFormat = gameHowLongToBeat.Items[0].GameHltbData.TimeToBeatFormat;
         }
 
         public override void Games_ItemUpdated(object sender, ItemUpdatedEventArgs<Game> e)
