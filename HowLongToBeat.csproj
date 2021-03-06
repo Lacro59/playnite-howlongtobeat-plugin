@@ -104,6 +104,9 @@
     <Compile Include="Controls\HltbProgressBar.xaml.cs">
       <DependentUpon>HltbProgressBar.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\HltbViewItem.xaml.cs">
+      <DependentUpon>HltbViewItem.xaml</DependentUpon>
+    </Compile>
     <Compile Include="HowLongToBeat.cs" />
     <Compile Include="HowLongToBeatSettings.cs" />
     <Compile Include="Models\GameHowLongToBeat.cs" />
@@ -160,9 +163,6 @@
     </Compile>
     <Compile Include="Views\HowLongToBeatView.xaml.cs">
       <DependentUpon>HowLongToBeatView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\InterfacesFS\HLTBInfoBarFS.xaml.cs">
-      <DependentUpon>HLTBInfoBarFS.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -275,6 +275,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Controls\HltbViewItem.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="playnite-plugincommon\CommonPluginsControls\Controls\ComboBoxRemovable.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -333,10 +337,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\HowLongToBeatView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\InterfacesFS\HLTBInfoBarFS.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

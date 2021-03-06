@@ -44,7 +44,7 @@ namespace HowLongToBeat
             // Custom elements integration
             AddCustomElementSupport(new AddCustomElementSupportArgs
             {
-                ElementList = new List<string> { "HltbButton", "HltbProgressBar" },
+                ElementList = new List<string> { "HltbButton", "HltbProgressBar", "HltbViewItem" },
                 SourceName = "HowLongToBeat",
                 SettingsRoot = $"{nameof(PluginSettings)}.{nameof(PluginSettings.Settings)}"
             });
@@ -120,6 +120,11 @@ namespace HowLongToBeat
             if (args.Name == "HltbProgressBar")
             {
                 return new HltbProgressBar();
+            }
+
+            if (args.Name == "HltbViewItem")
+            {
+                return new HltbViewItem();
             }
 
             return null;

@@ -153,22 +153,29 @@
                                 <RowDefinition Height="auto" />
                                 <RowDefinition Height="10" />
                                 <RowDefinition Height="auto" />
+                                <RowDefinition Height="10" />
+                                <RowDefinition Height="auto" />
                             </Grid.RowDefinitions>
 
                             <CheckBox Grid.Row="0" VerticalAlignment="Center" Grid.ColumnSpan="3"
-                                  IsChecked="{Binding Settings.EnableIntegrationButtonHeader}">
+                                      IsChecked="{Binding Settings.EnableIntegrationButtonHeader}">
                                 <Label Content="{DynamicResource LOCCommonIntegrationButtonHeader}" />
                             </CheckBox>
 
                             <CheckBox Grid.Row="2" VerticalAlignment="Center" 
-                                  IsChecked="{Binding Settings.EnableIntegrationButton}" 
-                                  Name="PART_IntegrationButton">
+                                      IsChecked="{Binding Settings.EnableIntegrationButton}" 
+                                      Name="PART_IntegrationButton">
                                 <Label Content="{DynamicResource LOCCommonControlsPluginButtonShow}" />
                             </CheckBox>
 
-                            <CheckBox Grid.Row="4" VerticalAlignment="Center" 
-                                  IsChecked="{Binding Settings.EnableIntegrationProgressBar}" 
-                                  Name="PART_IntegrationProgressBar">
+                            <CheckBox Grid.Row="4" IsChecked="{Binding Settings.EnableIntegrationViewItem}" 
+                                      VerticalAlignment="Center" Name="PART_IntegrationViewItem">
+                                <Label Content="{DynamicResource LOCCommonControlsPluginViewItemShow}" />
+                            </CheckBox>
+
+                            <CheckBox Grid.Row="6" VerticalAlignment="Center" 
+                                      IsChecked="{Binding Settings.EnableIntegrationProgressBar}" 
+                                      Name="PART_IntegrationProgressBar">
                                 <Label Content="{DynamicResource LOCHowLongToBeatIntegrationProgressBar}" />
                             </CheckBox>
                         </Grid>
