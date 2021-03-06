@@ -21,12 +21,24 @@ namespace HowLongToBeat
         public bool ShowHltbImg { get; set; } = true;
 
         public bool AutoSetCurrentPlayTime { get; set; } = false;
+        public bool AutoSetCurrentPlayTimeWithoutConfirmation { get; set; } = false;
 
         public bool AutoAccept { get; set; } = true;
         public bool ShowWhenMismatch { get; set; } = false;
 
 
         public bool EnableIntegrationButtonHeader { get; set; } = false;
+
+        private bool _EnableIntegrationButton { get; set; } = false;
+        public bool EnableIntegrationButton
+        {
+            get => _EnableIntegrationButton;
+            set
+            {
+                _EnableIntegrationButton = value;
+                OnPropertyChanged();
+            }
+        }
 
         private bool _EnableIntegrationProgressBar { get; set; } = false;
         public bool EnableIntegrationProgressBar

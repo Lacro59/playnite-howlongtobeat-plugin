@@ -411,7 +411,12 @@ namespace HowLongToBeat
             {
                 try
                 {
-                    var result = PlayniteApi.Dialogs.ShowMessage(resources.GetString("LOCHowLongToBeatSetCurrentTime"), "HowLongToBeat", MessageBoxButton.YesNo);
+                    MessageBoxResult result = MessageBoxResult.Yes;
+                    if (!PluginSettings.Settings.AutoSetCurrentPlayTimeWithoutConfirmation)
+                    {
+                        result = PlayniteApi.Dialogs.ShowMessage(resources.GetString("LOCHowLongToBeatSetCurrentTime"), "HowLongToBeat", MessageBoxButton.YesNo);
+                    }
+                    
                     if (result == MessageBoxResult.Yes)
                     {
                         GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions(

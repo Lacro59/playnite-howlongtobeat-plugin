@@ -65,30 +65,6 @@ namespace HowLongToBeat.Views
         }
 
 
-        #region Appareance
-        private void Checkbox_Click(object sender, RoutedEventArgs e)
-        {
-            CheckBox cb = (CheckBox)sender;
-
-            if ((cb.Name == "HltB_IntegrationButton") && (bool)cb.IsChecked)
-            {
-                HltB_IntegrationInCustomTheme.IsChecked = false;
-            }
-
-            if ((cb.Name == "HltB_IntegrationInDescription") && (bool)cb.IsChecked)
-            {
-                HltB_IntegrationInCustomTheme.IsChecked = false;
-            }
-
-            if ((cb.Name == "HltB_IntegrationInCustomTheme") && (bool)cb.IsChecked)
-            {
-                HltB_IntegrationButton.IsChecked = false;
-                HltB_IntegrationInDescription.IsChecked = false;
-            }
-        }
-        #endregion
-
-
         #region Tag
         private void ButtonAddTag_Click(object sender, RoutedEventArgs e)
         {
