@@ -422,6 +422,7 @@ namespace HowLongToBeat.Services
                         if (!noUpdate)
                         {
                             PlayniteApi.Database.Games.Update(game);
+                            game.OnPropertyChanged();
                         }
                     }
                 }
