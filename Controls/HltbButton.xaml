@@ -11,7 +11,7 @@
     <Button Name="PART_HltbButton" Click="PART_HltbButton_Click" 
             Style="{StaticResource {x:Type Button}}">
         <Grid>
-            <TextBlock Name="PART_ButtonIcon" Text="" FontFamily="{DynamicResource CommonFont}"
+            <TextBlock Name="PART_ButtonIcon" Text="&#xe90d;" FontFamily="{DynamicResource CommonFont}"
                        FontSize="{Binding RelativeSource={RelativeSource AncestorType=ContentControl}, Path=FontSize}" />
         </Grid>
     </Button>

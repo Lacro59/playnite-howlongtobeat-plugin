@@ -89,7 +89,7 @@ namespace HowLongToBeat
                     {
                         Icon = new TextBlock
                         {
-                            Text = "",
+                            Text = "\ue90d",
                             FontSize = 20,
                             FontFamily = resources.GetResource("CommonFont") as FontFamily
                         },
@@ -139,7 +139,7 @@ namespace HowLongToBeat
                 Title = resources.GetString("LOCHowLongToBeat");
                 Icon = new TextBlock
                 {
-                    Text = "",
+                    Text = "\ue90d",
                     FontFamily = resources.GetResource("CommonFont") as FontFamily
                 };
             }
