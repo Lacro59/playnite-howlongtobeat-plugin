@@ -136,8 +136,6 @@ namespace HowLongToBeat
                 OnPropertyChanged();
             }
         }
-
-        public bool EnableIntegrationFS { get; set; } = false;
         #endregion
 
         // Playnite serializes settings object to a JSON object and saves it as text file.
