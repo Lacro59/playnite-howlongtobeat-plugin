@@ -140,6 +140,10 @@ namespace HowLongToBeat.Controls
                     return;
                 }
 
+                tpHltb_El1.Content = string.Empty;
+                tpHltb_El2.Content = string.Empty;
+                tpHltb_El3.Content = string.Empty;
+
                 SetHltbData(gameHowLongToBeat);
             }
             else
