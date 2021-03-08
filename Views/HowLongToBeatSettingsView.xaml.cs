@@ -199,7 +199,7 @@ namespace HowLongToBeat.Views
             }
             else
             {
-                logger.Warn("HowLongToBeat - One control is undefined");
+                logger.Warn("One control is undefined");
             }
 
             PART_SelectorColor.Visibility = Visibility.Collapsed;

@@ -163,9 +163,8 @@ namespace HowLongToBeat.Services
             long.TryParse(Regex.Match(Time, @"\d+s").Value.Replace("s", string.Empty).Trim(), out long secondes);
 
             long TimeConverted = hours * 3600 + minutes * 60 + secondes;
-#if DEBUG
-            logger.Debug($"HowLongToBeat [Ignored] - ConvertStringToLongUser: {Time} - {TimeConverted}");
-#endif
+
+            Common.LogDebug(true, $"ConvertStringToLongUser: {Time} - {TimeConverted}");
 
             return TimeConverted;
         }
@@ -174,20 +173,8 @@ namespace HowLongToBeat.Services
         #region Search
         public List<HltbDataUser> Search(string Name, string Platform = "")
         {
-#if DEBUG
-            Stopwatch stopWatch = new Stopwatch();
-            stopWatch.Start();
-#endif
-
             string data = GameSearch(Name, Platform).GetAwaiter().GetResult();
             var dataParsed = SearchParser(data);
-
-#if DEBUG
-            stopWatch.Stop();
-            TimeSpan ts = stopWatch.Elapsed;
-            logger.Debug($"HowLongToBeat [Ignored] - Task Search() - {string.Format("{0:00}:{1:00}.{2:00}", ts.Minutes, ts.Seconds, ts.Milliseconds / 10)}");
-#endif
-
             return dataParsed;
         }
 
@@ -224,9 +211,8 @@ namespace HowLongToBeat.Services
 
         public GameHowLongToBeat SearchData(Game game)
         {
-#if DEBUG
-            logger.Debug($"HowLongToBeat [Ignored] - Search data for {game.Name}");
-#endif
+            Common.LogDebug(true, $"Search data for {game.Name}");
+
             if (_PlayniteApi.ApplicationInfo.Mode == ApplicationMode.Desktop)
             {
                 HowLongToBeatSelect ViewExtension = null;
@@ -412,19 +398,16 @@ namespace HowLongToBeat.Services
             {
                 IWebView webView = _PlayniteApi.WebViews.CreateView(490, 670);
 
-                logger.Info("HowLongToBeat - Login()");
+                logger.Info("Login()");
 
                 webView.LoadingChanged += (s, e) =>
                 {
-#if DEBUG
-                    logger.Debug($"HowLongToBeat [Ignored] - NavigationChanged - {webView.GetCurrentAddress()}");
-#endif
+                    Common.LogDebug(true, $"NavigationChanged - {webView.GetCurrentAddress()}");
 
                     if (webView.GetCurrentAddress().IndexOf("https://howlongtobeat.com/user?n=") > -1)
                     {
-#if DEBUG
-                        logger.Debug($"HowLongToBeat [Ignored] - webView.Close();");
-#endif
+                        Common.LogDebug(true, $"webView.Close();");
+
                         UserLogin = WebUtility.HtmlDecode(webView.GetCurrentAddress().Replace("https://howlongtobeat.com/user?n=", string.Empty));
                         IsConnected = true;
 
@@ -572,7 +555,7 @@ namespace HowLongToBeat.Services
                 string response = GetUserGamesDetail(titleList.UserGameId);
                 if (response.IsNullOrEmpty())
                 {
-                    logger.Warn($"HowLongToBeat - No details for {titleList.GameName}");
+                    logger.Warn($"No details for {titleList.GameName}");
                     return null;
                 }
 
@@ -684,9 +667,9 @@ namespace HowLongToBeat.Services
                         titleList.HltbUserData.Vs = ConvertStringToLongUser(tempTime);
                     }
                 }
-#if DEBUG
-                logger.Debug($"HowLongToBeat [Ignored] - titleList: {JsonConvert.SerializeObject(titleList)}");
-#endif
+
+                Common.LogDebug(true, $"titleList: {JsonConvert.SerializeObject(titleList)}");
+
                 return titleList;
             }
             catch (Exception ex)
@@ -715,7 +698,7 @@ namespace HowLongToBeat.Services
 
                 if (response.IsNullOrEmpty())
                 {
-                    logger.Warn($"HowLongToBeat - No SubmitData for {UserGameId}");
+                    logger.Warn($"No SubmitData for {UserGameId}");
                     return null;
                 }
 
@@ -1307,9 +1290,8 @@ namespace HowLongToBeat.Services
 
                     List<HttpCookie> Cookies = webViews.GetCookies();
                     Cookies = Cookies.Where(x => x.Domain.Contains("howlongtobeat")).ToList();
-#if DEBUG
-                    logger.Debug($"HowLongToBeat [Ignored] - Cookies: {JsonConvert.SerializeObject(Cookies)}");
-#endif
+
+                    Common.LogDebug(true, $"Cookies: {JsonConvert.SerializeObject(Cookies)}");
 
                     var formContent = new FormUrlEncodedContent(data);
                     string response = Web.PostStringDataCookies(UrlPostData, formContent, Cookies).GetAwaiter().GetResult();

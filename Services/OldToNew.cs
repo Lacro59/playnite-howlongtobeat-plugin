@@ -69,7 +69,7 @@ namespace HowLongToBeat.Services
 
         public void LoadOldDB()
         {
-            logger.Info($"HowLongToBeat - LoadOldDB()");
+            logger.Info($"LoadOldDB()");
 
             Parallel.ForEach(Directory.EnumerateFiles(PathActivityDB, "*.json"), (objectFile) =>
             {
@@ -107,7 +107,7 @@ namespace HowLongToBeat.Services
                 Stopwatch stopWatch = new Stopwatch();
                 stopWatch.Start();
 
-                logger.Info($"HowLongToBeat - ConvertDB()");
+                logger.Info($"ConvertDB()");
 
                 int Converted = 0;
 

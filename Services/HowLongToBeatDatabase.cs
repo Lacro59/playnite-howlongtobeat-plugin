@@ -212,7 +212,7 @@ namespace HowLongToBeat.Services
 
                     stopWatch.Stop();
                     TimeSpan ts = stopWatch.Elapsed;
-                    logger.Info($"{PluginName} - Task GetDatas(){CancelText} - {string.Format("{0:00}:{1:00}.{2:00}", ts.Minutes, ts.Seconds, ts.Milliseconds / 10)} for {activateGlobalProgress.CurrentProgressValue}/{(double)PlayniteDb.Count()} items");
+                    logger.Info($"Task GetDatas(){CancelText} - {string.Format("{0:00}:{1:00}.{2:00}", ts.Minutes, ts.Seconds, ts.Milliseconds / 10)} for {activateGlobalProgress.CurrentProgressValue}/{(double)PlayniteDb.Count()} items");
                 }
                 catch (Exception ex)
                 {
@@ -428,10 +428,8 @@ namespace HowLongToBeat.Services
                 }
                 catch (Exception ex)
                 {
-#if DEBUG
                     Common.LogError(ex, true);
-#endif
-                    logger.Error($"{PluginName} - Tag insert error with {game.Name}");
+                    logger.Error($"Tag insert error with {game.Name}");
                     PlayniteApi.Notifications.Add(new NotificationMessage(
                         $"{PluginName}-Tag-Errors",
                         $"{PluginName}\r\n" + resources.GetString("LOCCommonNotificationTagError"),
@@ -654,7 +652,7 @@ namespace HowLongToBeat.Services
 
                             if (hltbPostData == null)
                             {
-                                logger.Warn($"HowLongToBeat - No hltbPostData for {game.Name}");
+                                logger.Warn($"No hltbPostData for {game.Name}");
                                 return;
                             }
 
@@ -675,7 +673,7 @@ namespace HowLongToBeat.Services
                         }
                         else
                         {
-                            logger.Warn($"HowLongToBeat - No platform find for {game.Name}");
+                            logger.Warn($"No platform find for {game.Name}");
                         }
                     }
                 }
