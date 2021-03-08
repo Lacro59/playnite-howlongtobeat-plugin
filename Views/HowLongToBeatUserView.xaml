@@ -58,14 +58,17 @@
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal">
                                         <TextBlock Text="{Binding GameName}" TextDecorations="Strikethrough"
+                                                   Style="{DynamicResource ListExtendStyleTextBlock}"
                                                    Visibility="{Binding IsRetired, Converter={StaticResource BooleanToVisibilityConverter}}">
                                         </TextBlock>
                                         <TextBlock Text="{Binding GameName}"
+                                                   Style="{DynamicResource ListExtendStyleTextBlock}"
                                                    Visibility="{Binding IsRetired, Converter={StaticResource InvertedBooleanToVisibilityConverter}}">
                                         </TextBlock>
 
                                         <TextBlock Text="" FontFamily="{DynamicResource CommonFont}" 
                                                    Margin="10,0,0,0" 
+                                                   Style="{DynamicResource ListExtendStyleTextBlock}"
                                                    Visibility="{Binding IsReplay, Converter={StaticResource BooleanToVisibilityConverter}}">
                                         </TextBlock>
                                     </StackPanel>

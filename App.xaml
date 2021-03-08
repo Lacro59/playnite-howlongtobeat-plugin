@@ -52,6 +52,7 @@
                 </ResourceDictionary>
                 <ResourceDictionary Source="playnite-plugincommon/CommonPluginsResources/Resources/Common.xaml" />
                 <ResourceDictionary Source="playnite-plugincommon/CommonPluginsResources/Resources/LiveChartsCommon/Common.xaml" />
+                <ResourceDictionary Source="playnite-plugincommon/CommonPluginsResources/Resources/Controls/ListExtendStyle.xaml" />
                 <!--Plugin default localization-->
                 <ResourceDictionary Source="playnite-plugincommon/CommonPluginsResources/Localization/Common/LocSource.xaml" />
                 <ResourceDictionary Source="Localization/LocSource.xaml" />
