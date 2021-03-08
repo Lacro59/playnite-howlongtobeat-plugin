@@ -57,19 +57,42 @@
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal">
-                                        <TextBlock Text="{Binding GameName}" TextDecorations="Strikethrough"
-                                                   Style="{DynamicResource ListExtendStyleTextBlock}"
-                                                   Visibility="{Binding IsRetired, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                        <TextBlock Visibility="{Binding IsRetired, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                                <Hyperlink Command="{Binding GoToGame}" CommandParameter="{Binding GameId}">
+                                                    <TextBlock Text="{Binding GameName}" TextDecorations="Strikethrough"
+                                                               Style="{DynamicResource ListExtendStyleTextBlock}" />
+                                                </Hyperlink>
                                         </TextBlock>
-                                        <TextBlock Text="{Binding GameName}"
-                                                   Style="{DynamicResource ListExtendStyleTextBlock}"
-                                                   Visibility="{Binding IsRetired, Converter={StaticResource InvertedBooleanToVisibilityConverter}}">
+                                        
+                                        <TextBlock>
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="Visibility" Value="Visible" />
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding IsRetired}" Value="True">
+                                                            <Setter Property="Visibility" Value="Collapsed" />
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding IsReplay}" Value="True">
+                                                            <Setter Property="Visibility" Value="Collapsed" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                            
+                                            <Hyperlink Command="{Binding GoToGame}" CommandParameter="{Binding GameId}">
+                                                <TextBlock Text="{Binding GameName}"
+                                                            Style="{DynamicResource ListExtendStyleTextBlock}" />
+                                            </Hyperlink>
                                         </TextBlock>
 
-                                        <TextBlock Text="" FontFamily="{DynamicResource CommonFont}" 
-                                                   Margin="10,0,0,0" 
-                                                   Style="{DynamicResource ListExtendStyleTextBlock}"
-                                                   Visibility="{Binding IsReplay, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                        <TextBlock Visibility="{Binding IsReplay, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                                 <Hyperlink Command="{Binding GoToGame}" CommandParameter="{Binding GameId}">
+                                                        <TextBlock Text="{Binding GameName}"
+                                                                   Style="{DynamicResource ListExtendStyleTextBlock}" />
+                                                    <TextBlock Text="" FontFamily="{DynamicResource CommonFont}" 
+                                                               Margin="10,0,0,0" 
+                                                               Style="{DynamicResource ListExtendStyleTextBlock}" />
+                                                </Hyperlink>
                                         </TextBlock>
                                     </StackPanel>
                                 </DataTemplate>

@@ -1,6 +1,7 @@
 ﻿using CommonPluginsShared;
 using HowLongToBeat.Services;
 using Newtonsoft.Json;
+using Playnite.SDK;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -21,6 +22,8 @@ namespace HowLongToBeat.Models
 
     public class TitleList
     {
+        private HowLongToBeatDatabase PluginDatabase = HowLongToBeat.PluginDatabase;
+
         private LocalDateConverter converter = new LocalDateConverter();
 
         public int Id { get; set; }
@@ -49,6 +52,31 @@ namespace HowLongToBeat.Models
         public List<GameStatus> GameStatuses { get; set; }
 
         public HltbData HltbUserData { get; set; }
+
+        [JsonIgnore]
+        public Guid GameId {
+            get
+            {
+                foreach(var el in PluginDatabase.Database.Items)
+                {
+                    if (el.Value.GetData().Id == Id)
+                    {
+                        return el.Key;
+                    }
+                }
+
+                return new Guid();
+            }
+        }
+
+        [JsonIgnore]
+        public RelayCommand<Guid> GoToGame
+        {
+            get
+            {
+                return PluginDatabase.GoToGame;
+            }
+        }
     }
 
     public class GameStatus
