@@ -44,7 +44,7 @@ namespace HowLongToBeat
             // Custom elements integration
             AddCustomElementSupport(new AddCustomElementSupportArgs
             {
-                ElementList = new List<string> { "HltbButton", "HltbProgressBar", "HltbViewItem" },
+                ElementList = new List<string> { "PluginButton", "PluginProgressBar", "PluginViewItem" },
                 SourceName = "HowLongToBeat",
                 SettingsRoot = $"{nameof(PluginSettings)}.{nameof(PluginSettings.Settings)}"
             });
@@ -112,19 +112,19 @@ namespace HowLongToBeat
         // List custom controls
         public override Control GetGameViewControl(GetGameViewControlArgs args)
         {
-            if (args.Name == "HltbButton")
+            if (args.Name == "PluginButton")
             {
-                return new HltbButton();
+                return new PluginButton();
             }
 
-            if (args.Name == "HltbProgressBar")
+            if (args.Name == "PluginProgressBar")
             {
-                return new HltbProgressBar();
+                return new PluginProgressBar();
             }
 
-            if (args.Name == "HltbViewItem")
+            if (args.Name == "PluginViewItem")
             {
-                return new HltbViewItem();
+                return new PluginViewItem();
             }
 
             return null;

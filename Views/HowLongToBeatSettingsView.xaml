@@ -181,7 +181,7 @@
                         </Grid>
 
                         <GroupBox IsEnabled="{Binding ElementName=PART_IntegrationProgressBar, Path=IsChecked}" 
-                              Header="{DynamicResource LOCHowLongToBeatIntegrationProgressBarOptions}" Margin="0,30,0,0">
+                                  Header="{DynamicResource LOCHowLongToBeatIntegrationProgressBarOptions}" Margin="0,30,0,0">
                             <StackPanel>
                                 <CheckBox IsChecked="{Binding Settings.ProgressBarShowToolTip}" Margin="0,5,0,0" Name="HltB_IntegrationProgressBarShowToolTip">
                                     <Label Content="{DynamicResource LOCHowLongToBeatIntegrationProgressBarShowToolTip}" />

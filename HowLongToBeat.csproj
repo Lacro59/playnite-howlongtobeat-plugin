@@ -98,14 +98,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Controls\HltbButton.xaml.cs">
-      <DependentUpon>HltbButton.xaml</DependentUpon>
+    <Compile Include="Controls\PluginButton.xaml.cs">
+      <DependentUpon>PluginButton.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\HltbProgressBar.xaml.cs">
-      <DependentUpon>HltbProgressBar.xaml</DependentUpon>
+    <Compile Include="Controls\PluginProgressBar.xaml.cs">
+      <DependentUpon>PluginProgressBar.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\HltbViewItem.xaml.cs">
-      <DependentUpon>HltbViewItem.xaml</DependentUpon>
+    <Compile Include="Controls\PluginViewItem.xaml.cs">
+      <DependentUpon>PluginViewItem.xaml</DependentUpon>
     </Compile>
     <Compile Include="HowLongToBeat.cs" />
     <Compile Include="HowLongToBeatSettings.cs" />
@@ -267,15 +267,15 @@
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <Page Include="Controls\HltbButton.xaml">
+    <Page Include="Controls\PluginButton.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Controls\HltbProgressBar.xaml">
+    <Page Include="Controls\PluginProgressBar.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Controls\HltbViewItem.xaml">
+    <Page Include="Controls\PluginViewItem.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

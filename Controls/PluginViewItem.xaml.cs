@@ -22,31 +22,40 @@ using System.Windows.Shapes;
 namespace HowLongToBeat.Controls
 {
     /// <summary>
-    /// Logique d'interaction pour HltbViewItem.xaml
+    /// Logique d'interaction pour PluginViewItem.xaml
     /// </summary>
-    public partial class HltbViewItem : PluginUserControlExtend
+    public partial class PluginViewItem : PluginUserControlExtend
     {
         private HowLongToBeatDatabase PluginDatabase = HowLongToBeat.PluginDatabase;
 
 
-        public HltbViewItem()
+        public PluginViewItem()
         {
             InitializeComponent();
 
-            PluginDatabase.PluginSettings.PropertyChanged += PluginSettings_PropertyChanged;
-            PluginDatabase.Database.ItemUpdated += Database_ItemUpdated;
-            PluginDatabase.Database.ItemCollectionChanged += Database_ItemCollectionChanged;
-            PluginDatabase.PlayniteApi.Database.Games.ItemUpdated += Games_ItemUpdated;
+            Task.Run(() =>
+            {
+                // Wait extension database are loaded
+                System.Threading.SpinWait.SpinUntil(() => PluginDatabase.IsLoaded, -1);
 
-            // Apply settings
-            PluginSettings_PropertyChanged(null, null);
+                this.Dispatcher.BeginInvoke((Action)delegate
+                {
+                    PluginDatabase.PluginSettings.PropertyChanged += PluginSettings_PropertyChanged;
+                    PluginDatabase.Database.ItemUpdated += Database_ItemUpdated;
+                    PluginDatabase.Database.ItemCollectionChanged += Database_ItemCollectionChanged;
+                    PluginDatabase.PlayniteApi.Database.Games.ItemUpdated += Games_ItemUpdated;
+
+                    // Apply settings
+                    PluginSettings_PropertyChanged(null, null);
+                });
+            });
         }
 
 
         #region OnPropertyChange
         private static void SettingsPropertyChangedCallback(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {
-            HltbProgressBar obj = sender as HltbProgressBar;
+            PluginProgressBar obj = sender as PluginProgressBar;
             if (obj != null && e.NewValue != e.OldValue)
             {
                 obj.PluginSettings_PropertyChanged(null, null);
@@ -55,7 +64,7 @@ namespace HowLongToBeat.Controls
 
         private static void ControlsPropertyChangedCallback(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {
-            HltbProgressBar obj = sender as HltbProgressBar;
+            PluginProgressBar obj = sender as PluginProgressBar;
             if (obj != null && e.NewValue != e.OldValue)
             {
                 obj.GameContextChanged(null, obj.GameContext);
@@ -87,6 +96,11 @@ namespace HowLongToBeat.Controls
         // When game is changed
         public override void GameContextChanged(Game oldContext, Game newContext)
         {
+            if (!PluginDatabase.IsLoaded)
+            {
+                return;
+            }
+
             if (IgnoreSettings)
             {
                 MustDisplay = true;
