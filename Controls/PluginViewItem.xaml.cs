@@ -55,8 +55,7 @@ namespace HowLongToBeat.Controls
         #region OnPropertyChange
         private static void SettingsPropertyChangedCallback(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {
-            PluginProgressBar obj = sender as PluginProgressBar;
-            if (obj != null && e.NewValue != e.OldValue)
+            if (sender is PluginProgressBar obj && e.NewValue != e.OldValue)
             {
                 obj.PluginSettings_PropertyChanged(null, null);
             }
@@ -64,8 +63,7 @@ namespace HowLongToBeat.Controls
 
         private static void ControlsPropertyChangedCallback(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {
-            PluginProgressBar obj = sender as PluginProgressBar;
-            if (obj != null && e.NewValue != e.OldValue)
+            if (sender is PluginProgressBar obj && e.NewValue != e.OldValue)
             {
                 obj.GameContextChanged(null, obj.GameContext);
             }
@@ -116,6 +114,9 @@ namespace HowLongToBeat.Controls
                 }
             }
 
+            // Default value
+            string Text = string.Empty;
+
             if (newContext != null)
             {
                 GameHowLongToBeat gameHowLongToBeat = PluginDatabase.Get(newContext, true);
@@ -126,12 +127,17 @@ namespace HowLongToBeat.Controls
                     return;
                 }
 
-                PART_Text.Text = gameHowLongToBeat.GetData().GameHltbData.TimeToBeatFormat;
+                Text = gameHowLongToBeat.GetData().GameHltbData.TimeToBeatFormat;
             }
             else
             {
 
             }
+
+            this.DataContext = new
+            {
+                Text
+            };
         }
         #endregion
     }

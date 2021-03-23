@@ -35,7 +35,7 @@ namespace HowLongToBeat.Views
         private PluginProgressBar hltbProgressBar;
 
 
-        public HowLongToBeatView(IPlayniteAPI PlayniteApi, HowLongToBeatSettings settings, GameHowLongToBeat gameHowLongToBeat)
+        public HowLongToBeatView(GameHowLongToBeat gameHowLongToBeat)
         {
             _gameHowLongToBeat = gameHowLongToBeat;
 
@@ -53,11 +53,11 @@ namespace HowLongToBeat.Views
             {
                 CoverImage = gameData.UrlImg;
 
-                if (!settings.ShowHltbImg)
+                if (!PluginDatabase.PluginSettings.Settings.ShowHltbImg)
                 {
                     if (!_gameHowLongToBeat.CoverImage.IsNullOrEmpty())
                     {
-                        CoverImage = PlayniteApi.Database.GetFullFilePath(_gameHowLongToBeat.CoverImage);
+                        CoverImage = PluginDatabase.PlayniteApi.Database.GetFullFilePath(_gameHowLongToBeat.CoverImage);
                     }
                 }
 

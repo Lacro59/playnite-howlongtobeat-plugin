@@ -133,14 +133,13 @@ namespace HowLongToBeat.Services
 
         protected override bool LoadDatabase()
         {
-            IsLoaded = false;
             Database = new GameHowLongToBeatCollection(Paths.PluginDatabasePath);
             Database.SetGameInfo<HltbDataUser>(PlayniteApi);
+
             GetPluginTags();
 
             Database.UserHltbData = howLongToBeatClient.LoadUserData();
 
-            IsLoaded = true;
             return true;
         }
 

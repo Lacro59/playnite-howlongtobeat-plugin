@@ -9,7 +9,8 @@
         mc:Ignorable="d">
 
     <Grid>
-        <TextBlock Name="PART_Text" Style="{DynamicResource BaseTextBlockStyle}" Text="Here time to beat"
+        <TextBlock Style="{DynamicResource BaseTextBlockStyle}" 
+                   Text="{Binding Text, Mode=OneWay}"
                    Foreground="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=Foreground}"
                    FontSize="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=FontSize}" />
     </Grid>

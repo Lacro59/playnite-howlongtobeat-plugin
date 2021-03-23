@@ -1294,7 +1294,7 @@ namespace HowLongToBeat.Services
                     Common.LogDebug(true, $"Cookies: {JsonConvert.SerializeObject(Cookies)}");
 
                     var formContent = new FormUrlEncodedContent(data);
-                    string response = Web.PostStringDataCookies(UrlPostData, formContent, Cookies).GetAwaiter().GetResult();
+                    string response = await Web.PostStringDataCookies(UrlPostData, formContent, Cookies);
 
 
                     HowLongToBeat.PluginDatabase.RefreshUserData(hltbPostData.game_id);

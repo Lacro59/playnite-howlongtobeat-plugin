@@ -10,7 +10,7 @@
 
     <Button Name="PART_PluginButton" Click="PART_PluginButton_Click" Style="{StaticResource {x:Type Button}}">
         <Grid>
-            <TextBlock Name="PART_ButtonIcon" Text="&#xe90d;" FontFamily="{DynamicResource CommonFont}"
+            <TextBlock Text="&#xe90d;" FontFamily="{DynamicResource CommonFont}"
                        FontSize="{Binding RelativeSource={RelativeSource AncestorType=ContentControl}, Path=FontSize}" />
         </Grid>
     </Button>
