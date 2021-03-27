@@ -151,10 +151,16 @@ namespace HowLongToBeat.Services
             windowExtension.ShowDialog();
 
             var PlayniteDb = View.GetFilteredGames();
+            bool OnlyMissing = View.GetOnlyMissing();
 
             if (PlayniteDb == null)
             {
                 return;
+            }
+
+            if (OnlyMissing)
+            {
+                PlayniteDb = PlayniteDb.FindAll(x => !Get(x.Id, true).HasData);
             }
 
             GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions(
@@ -185,24 +191,18 @@ namespace HowLongToBeat.Services
                         Thread.Sleep(10);
                         GameHowLongToBeat gameHowLongToBeat = Get(game, true);
 
-                        Common.LogDebug(true, $"{gameHowLongToBeat.Name} - {gameHowLongToBeat.HasData} - {gameHowLongToBeat.IsSaved}");
+                        List<HltbDataUser> dataSearch = HowLongToBeat.PluginDatabase.howLongToBeatClient.Search(game.Name);
 
-                        if (!gameHowLongToBeat.HasData && !gameHowLongToBeat.IsSaved)
+                        if (dataSearch.Count == 1 && PluginSettings.Settings.AutoAccept)
                         {
-                            List<HltbDataUser> dataSearch = HowLongToBeat.PluginDatabase.howLongToBeatClient.Search(game.Name);
-
-                            if (dataSearch.Count == 1 && PluginSettings.Settings.AutoAccept)
+                            gameHowLongToBeat.Items = new List<HltbDataUser>() { dataSearch.First() };
+                            AddOrUpdate(gameHowLongToBeat);
+                        }
+                        else
+                        {
+                            if (dataSearch.Count > 0 && PluginSettings.Settings.ShowWhenMismatch)
                             {
-                                gameHowLongToBeat.Items = new List<HltbDataUser>() { dataSearch.First() };
-
-                                HowLongToBeat.PluginDatabase.Add(gameHowLongToBeat);
-                            }
-                            else
-                            {
-                                if (dataSearch.Count > 0 && PluginSettings.Settings.ShowWhenMismatch)
-                                {
-                                    HowLongToBeat.PluginDatabase.Get(game);
-                                }
+                                Get(game, false, true);
                             }
                         }
 
@@ -211,73 +211,7 @@ namespace HowLongToBeat.Services
 
                     stopWatch.Stop();
                     TimeSpan ts = stopWatch.Elapsed;
-                    logger.Info($"Task GetDatas(){CancelText} - {string.Format("{0:00}:{1:00}.{2:00}", ts.Minutes, ts.Seconds, ts.Milliseconds / 10)} for {activateGlobalProgress.CurrentProgressValue}/{(double)PlayniteDb.Count()} items");
-                }
-                catch (Exception ex)
-                {
-                    Common.LogError(ex, false);
-                }
-            }, globalProgressOptions);
-        }
-
-        public override void GetAllDatas()
-        {
-            GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions(
-                $"{PluginName} - {resources.GetString("LOCCommonGettingAllDatas")}",
-                true
-            );
-            globalProgressOptions.IsIndeterminate = false;
-
-            PlayniteApi.Dialogs.ActivateGlobalProgress((activateGlobalProgress) =>
-            {
-                try
-                {
-                    Stopwatch stopWatch = new Stopwatch();
-                    stopWatch.Start();
-
-                    var PlayniteDb = PlayniteApi.Database.Games.Where(x => x.Hidden == false);
-                    activateGlobalProgress.ProgressMaxValue = (double)PlayniteDb.Count();
-
-                    string CancelText = string.Empty;
-
-                    foreach (Game game in PlayniteDb)
-                    {
-                        if (activateGlobalProgress.CancelToken.IsCancellationRequested)
-                        {
-                            CancelText = " canceled";
-                            break;
-                        }
-
-                        Thread.Sleep(10);
-                        GameHowLongToBeat gameHowLongToBeat = Get(game, true);
-
-                        Common.LogDebug(true, $"{gameHowLongToBeat.Name} - {gameHowLongToBeat.HasData} - {gameHowLongToBeat.IsSaved}");
-
-                        if (!gameHowLongToBeat.HasData && !gameHowLongToBeat.IsSaved)
-                        {
-                            List<HltbDataUser> dataSearch = HowLongToBeat.PluginDatabase.howLongToBeatClient.Search(game.Name);
-
-                            if (dataSearch.Count == 1 && PluginSettings.Settings.AutoAccept)
-                            {
-                                gameHowLongToBeat.Items = new List<HltbDataUser>() { dataSearch.First() };
-
-                                HowLongToBeat.PluginDatabase.Add(gameHowLongToBeat);
-                            }
-                            else
-                            {
-                                if (dataSearch.Count > 0 && PluginSettings.Settings.ShowWhenMismatch)
-                                {
-                                    HowLongToBeat.PluginDatabase.Get(game);
-                                }
-                            }
-                        }
-                        
-                        activateGlobalProgress.CurrentProgressValue++;
-                    }
-
-                    stopWatch.Stop();
-                    TimeSpan ts = stopWatch.Elapsed;
-                    logger.Info($"Task GetAllDatas(){CancelText} - {string.Format("{0:00}:{1:00}.{2:00}", ts.Minutes, ts.Seconds, ts.Milliseconds / 10)} for {activateGlobalProgress.CurrentProgressValue}/{(double)PlayniteDb.Count()} items");
+                    logger.Info($"Task GetSelectData(){CancelText} - {string.Format("{0:00}:{1:00}.{2:00}", ts.Minutes, ts.Seconds, ts.Milliseconds / 10)} for {activateGlobalProgress.CurrentProgressValue}/{(double)PlayniteDb.Count()} items");
                 }
                 catch (Exception ex)
                 {
@@ -287,17 +221,17 @@ namespace HowLongToBeat.Services
         }
 
 
-        public override GameHowLongToBeat Get(Guid Id, bool OnlyCache = false)
+        public override GameHowLongToBeat Get(Guid Id, bool OnlyCache = false, bool Force = false)
         {
             GameHowLongToBeat gameHowLongToBeat = GetOnlyCache(Id);
 
-            if (gameHowLongToBeat == null && !OnlyCache)
+            if ((gameHowLongToBeat == null && !OnlyCache) || Force)
             {
                 gameHowLongToBeat = howLongToBeatClient.SearchData(PlayniteApi.Database.Games.Get(Id));
 
                 if (gameHowLongToBeat != null)
                 {
-                    Add(gameHowLongToBeat);
+                    AddOrUpdate(gameHowLongToBeat);
                 }
             }
 

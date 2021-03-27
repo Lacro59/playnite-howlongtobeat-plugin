@@ -1,5 +1,7 @@
 ﻿using CommonPluginsShared;
+using CommonPluginsShared.Collections;
 using CommonPluginsShared.Controls;
+using CommonPluginsShared.Interfaces;
 using HowLongToBeat.Models;
 using HowLongToBeat.Services;
 using Playnite.SDK.Models;
@@ -8,6 +10,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -18,6 +21,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace HowLongToBeat.Controls
 {
@@ -27,6 +31,30 @@ namespace HowLongToBeat.Controls
     public partial class PluginViewItem : PluginUserControlExtend
     {
         private HowLongToBeatDatabase PluginDatabase = HowLongToBeat.PluginDatabase;
+        internal override IPluginDatabase _PluginDatabase
+        {
+            get
+            {
+                return PluginDatabase;
+            }
+            set
+            {
+                PluginDatabase = (HowLongToBeatDatabase)_PluginDatabase;
+            }
+        }
+
+        private PluginViewItemDataContext ControlDataContext;
+        internal override IDataContext _ControlDataContext
+        {
+            get
+            {
+                return ControlDataContext;
+            }
+            set
+            {
+                ControlDataContext = (PluginViewItemDataContext)_ControlDataContext;
+            }
+        }
 
 
         public PluginViewItem()
@@ -52,93 +80,40 @@ namespace HowLongToBeat.Controls
         }
 
 
-        #region OnPropertyChange
-        private static void SettingsPropertyChangedCallback(DependencyObject sender, DependencyPropertyChangedEventArgs e)
+        public override void SetDefaultDataContext()
         {
-            if (sender is PluginProgressBar obj && e.NewValue != e.OldValue)
+            ControlDataContext = new PluginViewItemDataContext
             {
-                obj.PluginSettings_PropertyChanged(null, null);
-            }
-        }
+                IsActivated = PluginDatabase.PluginSettings.Settings.EnableIntegrationViewItem,
 
-        private static void ControlsPropertyChangedCallback(DependencyObject sender, DependencyPropertyChangedEventArgs e)
-        {
-            if (sender is PluginProgressBar obj && e.NewValue != e.OldValue)
-            {
-                obj.GameContextChanged(null, obj.GameContext);
-            }
-        }
-
-        // When settings is updated
-        public override void PluginSettings_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (IgnoreSettings)
-            {
-                this.DataContext = new
-                {
-
-                };
-            }
-            else
-            {
-                this.DataContext = new
-                {
-
-                };
-            }
-
-            // Publish changes for the currently displayed game
-            GameContextChanged(null, GameContext);
-        }
-
-        // When game is changed
-        public override void GameContextChanged(Game oldContext, Game newContext)
-        {
-            if (!PluginDatabase.IsLoaded)
-            {
-                return;
-            }
-
-            if (IgnoreSettings)
-            {
-                MustDisplay = true;
-            }
-            else
-            {
-                MustDisplay = PluginDatabase.PluginSettings.Settings.EnableIntegrationViewItem;
-
-                // When control is not used
-                if (!PluginDatabase.PluginSettings.Settings.EnableIntegrationViewItem)
-                {
-                    return;
-                }
-            }
-
-            // Default value
-            string Text = string.Empty;
-
-            if (newContext != null)
-            {
-                GameHowLongToBeat gameHowLongToBeat = PluginDatabase.Get(newContext, true);
-
-                if (!gameHowLongToBeat.HasData)
-                {
-                    MustDisplay = false;
-                    return;
-                }
-
-                Text = gameHowLongToBeat.GetData().GameHltbData.TimeToBeatFormat;
-            }
-            else
-            {
-
-            }
-
-            this.DataContext = new
-            {
-                Text
+                Text = string.Empty
             };
         }
-        #endregion
+
+
+        public override Task<bool> SetData(Game newContext, PluginDataBaseGameBase PluginGameData)
+        {
+            return Task.Run(() =>
+            {
+                GameHowLongToBeat gameHowLongToBeat = (GameHowLongToBeat)PluginGameData;
+
+                ControlDataContext.Text = gameHowLongToBeat.GetData().GameHltbData.TimeToBeatFormat;
+
+                this.Dispatcher.BeginInvoke(DispatcherPriority.Loaded, new ThreadStart(delegate
+                {
+                    this.DataContext = ControlDataContext;
+                }));
+
+                return true;
+            });
+        }
+    }
+
+
+    public class PluginViewItemDataContext : IDataContext
+    {
+        public bool IsActivated { get; set; }
+
+        public string Text { get; set; }
     }
 }

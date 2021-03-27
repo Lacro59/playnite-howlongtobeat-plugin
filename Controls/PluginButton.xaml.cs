@@ -1,5 +1,7 @@
 ﻿using CommonPluginsShared;
+using CommonPluginsShared.Collections;
 using CommonPluginsShared.Controls;
+using CommonPluginsShared.Interfaces;
 using HowLongToBeat.Models;
 using HowLongToBeat.Services;
 using HowLongToBeat.Views;
@@ -9,6 +11,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -19,6 +22,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace HowLongToBeat.Controls
 {
@@ -28,10 +32,35 @@ namespace HowLongToBeat.Controls
     public partial class PluginButton : PluginUserControlExtend
     {
         private HowLongToBeatDatabase PluginDatabase = HowLongToBeat.PluginDatabase;
+        internal override IPluginDatabase _PluginDatabase
+        {
+            get
+            {
+                return PluginDatabase;
+            }
+            set
+            {
+                PluginDatabase = (HowLongToBeatDatabase)_PluginDatabase;
+            }
+        }
 
+        private PluginButtonDataContext ControlDataContext;
+        internal override IDataContext _ControlDataContext
+        {
+            get
+            {
+                return ControlDataContext;
+            }
+            set
+            {
+                ControlDataContext = (PluginButtonDataContext)_ControlDataContext;
+            }
+        }
 
         public PluginButton()
         {
+            AlwaysShow = true;
+
             InitializeComponent();
 
             Task.Run(() =>
@@ -53,37 +82,31 @@ namespace HowLongToBeat.Controls
         }
 
 
-        #region OnPropertyChange
-        // When settings is updated
-        public override void PluginSettings_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        public override void SetDefaultDataContext()
         {
-            // Apply settings
-            this.DataContext = new
+            ControlDataContext = new PluginButtonDataContext
             {
+                IsActivated = PluginDatabase.PluginSettings.Settings.EnableIntegrationButton,
 
+                Text = "\ue90d"
             };
-
-            // Publish changes for the currently displayed game
-            GameContextChanged(null, GameContext);
         }
 
-        // When game is changed
-        public override void GameContextChanged(Game oldContext, Game newContext)
+
+        public override Task<bool> SetData(Game newContext, PluginDataBaseGameBase PluginGameData)
         {
-            if (!PluginDatabase.IsLoaded)
+            return Task.Run(() =>
             {
-                return;
-            }
+                GameHowLongToBeat gameHowLongToBeat = (GameHowLongToBeat)PluginGameData;
 
-            MustDisplay = PluginDatabase.PluginSettings.Settings.EnableIntegrationButton;
+                this.Dispatcher.BeginInvoke(DispatcherPriority.Loaded, new ThreadStart(delegate
+                {
+                    this.DataContext = ControlDataContext;
+                }));
 
-            // When control is not used
-            if (!PluginDatabase.PluginSettings.Settings.EnableIntegrationButton)
-            {
-                return;
-            }
+                return true;
+            });
         }
-        #endregion
 
 
         #region Events
@@ -99,5 +122,13 @@ namespace HowLongToBeat.Controls
             }
         }
         #endregion
+    }
+
+
+    public class PluginButtonDataContext : IDataContext
+    {
+        public bool IsActivated { get; set; }
+
+        public string Text { get; set; }
     }
 }

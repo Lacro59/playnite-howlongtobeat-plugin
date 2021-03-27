@@ -1,5 +1,7 @@
 ﻿using CommonPluginsShared;
+using CommonPluginsShared.Collections;
 using CommonPluginsShared.Controls;
+using CommonPluginsShared.Interfaces;
 using HowLongToBeat.Models;
 using HowLongToBeat.Services;
 using Playnite.SDK.Models;
@@ -8,9 +10,11 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
+using System.Windows.Threading;
 
 namespace HowLongToBeat.Controls
 {
@@ -20,6 +24,30 @@ namespace HowLongToBeat.Controls
     public partial class PluginProgressBar : PluginUserControlExtend
     {
         private HowLongToBeatDatabase PluginDatabase = HowLongToBeat.PluginDatabase;
+        internal override IPluginDatabase _PluginDatabase
+        {
+            get
+            {
+                return PluginDatabase;
+            }
+            set
+            {
+                PluginDatabase = (HowLongToBeatDatabase)_PluginDatabase;
+            }
+        }
+
+        private PluginProgressBarDataContext ControlDataContext;
+        internal override IDataContext _ControlDataContext
+        {
+            get
+            {
+                return ControlDataContext;
+            }
+            set
+            {
+                ControlDataContext = (PluginProgressBarDataContext)_ControlDataContext;
+            }
+        }
 
         public PointCollection ThumbPoint { get; set; }
         public SolidColorBrush SolidColorBrushFirst { get; set; }
@@ -53,120 +81,60 @@ namespace HowLongToBeat.Controls
             });
         }
 
-        #region OnPropertyChange
-        private static void SettingsPropertyChangedCallback(DependencyObject sender, DependencyPropertyChangedEventArgs e)
-        {
-            PluginProgressBar obj = sender as PluginProgressBar;
-            if (obj != null && e.NewValue != e.OldValue)
-            {
-                obj.PluginSettings_PropertyChanged(null, null);
-            }
-        }
 
-        private static void ControlsPropertyChangedCallback(DependencyObject sender, DependencyPropertyChangedEventArgs e)
+        public override void SetDefaultDataContext()
         {
-            PluginProgressBar obj = sender as PluginProgressBar;
-            if (obj != null && e.NewValue != e.OldValue)
-            {
-                obj.GameContextChanged(null, obj.GameContext);
-            }
-        }
-
-        // When settings is updated
-        public override void PluginSettings_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            TextAboveVisibility = PluginDatabase.PluginSettings.Settings.ProgressBarShowTimeAbove;
-            TextInsideVisibility = PluginDatabase.PluginSettings.Settings.ProgressBarShowTimeInterior;
-            TextBelowVisibility = PluginDatabase.PluginSettings.Settings.ProgressBarShowTimeBelow;
-
-            if (!PluginDatabase.PluginSettings.Settings.ProgressBarShowTime)
+            bool TextAboveVisibility = PluginDatabase.PluginSettings.Settings.ProgressBarShowTimeAbove; 
+            bool TextInsideVisibility = PluginDatabase.PluginSettings.Settings.ProgressBarShowTimeInterior;
+            bool TextBelowVisibility = PluginDatabase.PluginSettings.Settings.ProgressBarShowTimeBelow;
+            if (IgnoreSettings)
             {
                 TextAboveVisibility = false;
                 TextInsideVisibility = false;
                 TextBelowVisibility = false;
             }
 
-            if (IgnoreSettings)
+
+            ControlDataContext = new PluginProgressBarDataContext
             {
-                this.DataContext = new
-                {
-                    ShowToolTip = PluginDatabase.PluginSettings.Settings.ProgressBarShowToolTip,
-                    TextAboveVisibility,
-                    TextInsideVisibility,
-                    TextBelowVisibility,
+                IsActivated = PluginDatabase.PluginSettings.Settings.EnableIntegrationViewItem,
+                ShowToolTip = PluginDatabase.PluginSettings.Settings.ProgressBarShowToolTip,
 
-                    ThumbFirst = SolidColorBrushFirst,
-                    ThumbSecond = SolidColorBrushSecond,
-                    ThumbThird = SolidColorBrushThird,
-                    ThumbPoint
-                };
-            }
-            else
-            {
-                this.DataContext = new
-                {
-                    ShowToolTip = PluginDatabase.PluginSettings.Settings.ProgressBarShowToolTip,
-                    TextAboveVisibility,
-                    TextInsideVisibility,
-                    TextBelowVisibility,
+                TextAboveVisibility = TextAboveVisibility,
+                TextInsideVisibility = TextInsideVisibility,
+                TextBelowVisibility = TextBelowVisibility,
 
-                    ThumbFirst = SolidColorBrushFirst,
-                    ThumbSecond = SolidColorBrushSecond,
-                    ThumbThird = SolidColorBrushThird,
-                    ThumbPoint
-                };
-            }
+                ThumbFirst = SolidColorBrushFirst,
+                ThumbSecond = SolidColorBrushSecond,
+                ThumbThird = SolidColorBrushThird,
+                ThumbPoint = ThumbPoint
+            };
 
-            // Publish changes for the currently displayed game
-            GameContextChanged(null, GameContext);
+
             PART_GridContener_Loaded(null, null);
         }
 
-        // When game is changed
-        public override void GameContextChanged(Game oldContext, Game newContext)
+
+        public override Task<bool> SetData(Game newContext, PluginDataBaseGameBase PluginGameData)
         {
-            if (!PluginDatabase.IsLoaded)
+            return Task.Run(() =>
             {
-                return;
-            }
+                GameHowLongToBeat gameHowLongToBeat = (GameHowLongToBeat)PluginGameData;
 
-            if (IgnoreSettings)
-            {
-                MustDisplay = true;
-            }
-            else
-            {
-                MustDisplay = PluginDatabase.PluginSettings.Settings.EnableIntegrationProgressBar;
-
-                // When control is not used
-                if (!PluginDatabase.PluginSettings.Settings.EnableIntegrationProgressBar)
+                this.Dispatcher.BeginInvoke(DispatcherPriority.Loaded, new ThreadStart(delegate
                 {
-                    return;
-                }
-            }
+                    tpHltb_El1.Content = string.Empty;
+                    tpHltb_El2.Content = string.Empty;
+                    tpHltb_El3.Content = string.Empty;
 
-            if (newContext != null)
-            {
-                GameHowLongToBeat gameHowLongToBeat = PluginDatabase.Get(newContext, true);
+                    SetHltbData(gameHowLongToBeat);
 
-                if (!gameHowLongToBeat.HasData)
-                {
-                    MustDisplay = false;
-                    return;
-                }
+                    this.DataContext = ControlDataContext;
+                }));
 
-                tpHltb_El1.Content = string.Empty;
-                tpHltb_El2.Content = string.Empty;
-                tpHltb_El3.Content = string.Empty;
-
-                SetHltbData(gameHowLongToBeat);
-            }
-            else
-            {
-
-            }
+                return true;
+            });
         }
-        #endregion
 
 
         private void SetDataInView(int ElIndicator, long ElValue, string ElFormat)
@@ -559,6 +527,21 @@ namespace HowLongToBeat.Controls
             PART_GridContener_Loaded(null, null);
         }
         #endregion
+    }
+
+
+    public class PluginProgressBarDataContext : IDataContext
+    {
+        public bool IsActivated { get; set; }
+        public bool ShowToolTip { get; set; }
+
+        public bool TextAboveVisibility { get; set; }
+        public bool TextInsideVisibility { get; set; }
+        public bool TextBelowVisibility { get; set; }
+        public SolidColorBrush ThumbFirst { get; set; }
+        public SolidColorBrush ThumbSecond { get; set; }
+        public SolidColorBrush ThumbThird { get; set; }
+        public PointCollection ThumbPoint { get; set; }
     }
 
     internal class ListProgressBar

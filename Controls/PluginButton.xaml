@@ -10,8 +10,8 @@
 
     <Button Name="PART_PluginButton" Click="PART_PluginButton_Click" Style="{StaticResource {x:Type Button}}">
         <Grid>
-            <TextBlock Text="&#xe90d;" FontFamily="{DynamicResource CommonFont}"
-                       FontSize="{Binding RelativeSource={RelativeSource AncestorType=ContentControl}, Path=FontSize}" />
+            <TextBlock Text="{Binding Text, Mode=OneWay, FallbackValue='&#xe90d;'}" FontFamily="{DynamicResource CommonFont}"
+                       FontSize="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=FontSize}" />
         </Grid>
     </Button>
 </controls:PluginUserControlExtend>
