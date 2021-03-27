@@ -9,7 +9,7 @@ namespace HowLongToBeat.Models
     {
         private LongToTimePlayedConverter converter = new LongToTimePlayedConverter();
 
-        public long MainStory { get; set; }
+        public long MainStory { get; set; } = 0;
         [JsonIgnore]
         public string MainStoryFormat
         {

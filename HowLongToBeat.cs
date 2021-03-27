@@ -272,17 +272,7 @@ namespace HowLongToBeat
                 new MainMenuItem
                 {
                     MenuSection = MenuInExtensions + resources.GetString("LOCHowLongToBeat"),
-                    Description = resources.GetString("LOCCommonGetAllDatas"),
-                    Action = (mainMenuItem) =>
-                    {
-                        PluginDatabase.GetAllDatas();
-                    }
-                },
-
-                new MainMenuItem
-                {
-                    MenuSection = MenuInExtensions + resources.GetString("LOCHowLongToBeat"),
-                    Description = resources.GetString("LOCCommonSelectData"),
+                    Description = resources.GetString("LOCCommonDownloadPluginData"),
                     Action = (mainMenuItem) =>
                     {
                         PluginDatabase.GetSelectData();

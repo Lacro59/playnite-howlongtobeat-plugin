@@ -5,9 +5,9 @@ namespace HowLongToBeat.Models
 {
     public class HltbDataUser : ObservableObject
     {
-        public string Name { get; set; }
-        public int Id { get; set; }
-        public string UrlImg { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public int Id { get; set; } = 0;
+        public string UrlImg { get; set; } = string.Empty;
         public string Url { get; set; } = string.Empty;
 
         public HltbData GameHltbData { get; set; }

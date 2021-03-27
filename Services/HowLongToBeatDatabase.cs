@@ -638,7 +638,6 @@ namespace HowLongToBeat.Services
             GameHowLongToBeat gameHowLongToBeat = Get(game, true);
 
             PluginSettings.Settings.HasData = gameHowLongToBeat.HasData;
-
             PluginSettings.Settings.MainStory = gameHowLongToBeat.GetData().GameHltbData.MainStory;
             PluginSettings.Settings.MainStoryFormat = gameHowLongToBeat.GetData().GameHltbData.MainStoryFormat;
             PluginSettings.Settings.MainExtra = gameHowLongToBeat.GetData().GameHltbData.MainExtra;

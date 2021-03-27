@@ -55,6 +55,13 @@ namespace HowLongToBeat.Models
 
         public HltbDataUser GetData()
         {
+            if (Items != null & Items.Count == 0)
+            {
+                HltbDataUser hltbDataUser = new HltbDataUser();
+                hltbDataUser.GameHltbData = new HltbData();
+                return hltbDataUser;
+            }
+
             return Items.First();
         }
     }
