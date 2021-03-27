@@ -17,6 +17,7 @@ using CommonPluginsShared;
 using System.Net;
 using CommonPluginsControls.Controls;
 using System.Net.Http;
+using System.Windows.Threading;
 
 namespace HowLongToBeat.Services
 {
@@ -245,6 +246,32 @@ namespace HowLongToBeat.Services
         }
 
 
+        public override void Refresh(Guid Id)
+        {
+            GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions(
+                $"{PluginName} - {resources.GetString("LOCCommonProcessing")}",
+                false
+            );
+            globalProgressOptions.IsIndeterminate = true;
+
+            PlayniteApi.Dialogs.ActivateGlobalProgress((activateGlobalProgress) =>
+            {
+                var loadedItem = Get(Id, true);
+                List<HltbDataUser> dataSearch = HowLongToBeat.PluginDatabase.howLongToBeatClient.Search(loadedItem.GetData().Name);
+
+                HltbDataUser webDataSearch = dataSearch.Find(x => x.Id == loadedItem.GetData().Id);
+                if (webDataSearch != null)
+                {
+                    if (!ReferenceEquals(loadedItem.GetData(), webDataSearch))
+                    {
+                        loadedItem.Items = new List<HltbDataUser> { webDataSearch };
+                        Update(loadedItem);
+                    }
+                }
+            }, globalProgressOptions);
+        }
+
+
         protected override void GetPluginTags()
         {
             try
@@ -354,8 +381,11 @@ namespace HowLongToBeat.Services
 
                         if (!noUpdate)
                         {
-                            PlayniteApi.Database.Games.Update(game);
-                            game.OnPropertyChanged();
+                            Application.Current.Dispatcher?.Invoke(() =>
+                            {
+                                PlayniteApi.Database.Games.Update(game);
+                                game.OnPropertyChanged();
+                            }, DispatcherPriority.Send);
                         }
                     }
                 }

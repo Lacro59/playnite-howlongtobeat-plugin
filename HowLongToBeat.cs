@@ -221,6 +221,20 @@ namespace HowLongToBeat
                     }
                 });
 
+                // Refresh plugin data for the selected game
+                gameMenuItems.Add(new GameMenuItem
+                {
+                    MenuSection = resources.GetString("LOCHowLongToBeat"),
+                    Description = resources.GetString("LOCCommonRefreshGameData"),
+                    Action = (gameMenuItem) =>
+                    {
+                        var TaskIntegrationUI = Task.Run(() =>
+                        {
+                            PluginDatabase.Refresh(GameMenu.Id);
+                        });
+                    }
+                });
+
                 gameMenuItems.Add(new GameMenuItem
                 {
                     MenuSection = resources.GetString("LOCHowLongToBeat"),

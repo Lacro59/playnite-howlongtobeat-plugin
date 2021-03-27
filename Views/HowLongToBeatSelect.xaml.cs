@@ -27,8 +27,6 @@ namespace HowLongToBeat.Views
         public GameHowLongToBeat gameHowLongToBeat;
         private Game _game;
 
-        private List<HltbPlatform> items;
-
 
         public HowLongToBeatSelect(List<HltbData> data, Game game)
         {
@@ -60,14 +58,6 @@ namespace HowLongToBeat.Views
         private void SetPlatforms()
         {
             PART_SelectPlatform.ItemsSource = HowLongToBeat.PluginDatabase.hltbPlatforms;
-        }
-
-        private void PART_SelectPlatform_KeyUp(object sender, KeyEventArgs e)
-        {
-            string SearchText = ((ComboBox)sender).Text;
-
-            PART_SelectPlatform.ItemsSource = null;
-            PART_SelectPlatform.ItemsSource = items.Where(x => x.Name.ToLower().Contains(SearchText)).Distinct().ToList();
         }
 
 
