@@ -152,7 +152,6 @@ namespace HowLongToBeat.Views
             }
         }
 
-
         private void SetDataInView(int ElIndicator, string ElText, string ElData, string ElDataUser)
         {
             switch (ElIndicator)
@@ -183,6 +182,7 @@ namespace HowLongToBeat.Views
             }
         }
 
+
         private void ButtonWeb_Click(object sender, RoutedEventArgs e)
         {
             if (!_gameHowLongToBeat.GetData().Url.IsNullOrEmpty())
@@ -196,6 +196,7 @@ namespace HowLongToBeat.Views
             HowLongToBeat.PluginDatabase.Remove(_gameHowLongToBeat.Id);
             ((Window)this.Parent).Close();
         }
+
 
         private void TextBlock_MouseEnter(object sender, MouseEventArgs e)
         {
@@ -233,6 +234,7 @@ namespace HowLongToBeat.Views
             if (_gameHowLongToBeat.HasData)
             {
                 hltbProgressBar.SetHltbData(_gameHowLongToBeat);
+                hltbProgressBar.GameContext = PluginDatabase.PlayniteApi.Database.Games.Get(_gameHowLongToBeat.Id);
             }
         }
     }
