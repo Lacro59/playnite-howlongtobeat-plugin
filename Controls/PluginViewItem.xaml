@@ -10,7 +10,7 @@
 
     <Grid>
         <TextBlock Style="{DynamicResource BaseTextBlockStyle}" 
-                   Text="{Binding Text, Mode=OneWay}"
+                   Text="{Binding Text, Mode=OneWay, FallbackValue='TimeToBeat'}"
                    Foreground="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=Foreground}"
                    FontSize="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=FontSize}" />
     </Grid>
