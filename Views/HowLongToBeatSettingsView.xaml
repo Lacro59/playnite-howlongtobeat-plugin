@@ -1,6 +1,7 @@
 ﻿<UserControl x:Class="HowLongToBeat.Views.HowLongToBeatSettingsView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:AttachedProperties="clr-namespace:CommonPluginsShared.Controls"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:controls="clr-namespace:CommonPluginsControls.Controls"
@@ -157,111 +158,161 @@
                                 <RowDefinition Height="auto" />
                             </Grid.RowDefinitions>
 
-                            <CheckBox Grid.Row="0" VerticalAlignment="Center" Grid.ColumnSpan="3"
-                                      IsChecked="{Binding Settings.EnableIntegrationButtonHeader}">
-                                <Label Content="{DynamicResource LOCCommonIntegrationButtonHeader}" />
-                            </CheckBox>
+                            <Expander Grid.Row="0" AttachedProperties:ExpanderAttachedProperties.HideExpanderArrow="True">
+                                <Expander.Style>
+                                    <Style TargetType="{x:Type Expander}" BasedOn="{StaticResource {x:Type Expander}}">
+                                        <Setter Property="Background" Value="Transparent" />
+                                    </Style>
+                                </Expander.Style>
 
-                            <CheckBox Grid.Row="2" VerticalAlignment="Center" 
-                                      IsChecked="{Binding Settings.EnableIntegrationButton}" 
-                                      Name="PART_IntegrationButton">
-                                <Label Content="{DynamicResource LOCCommonControlsPluginButtonShow}" />
-                            </CheckBox>
+                                <Expander.Header>
+                                    <CheckBox IsChecked="{Binding Settings.EnableIntegrationButtonHeader}">
+                                        <Label Content="{DynamicResource LOCCommonIntegrationButtonHeader}" />
+                                    </CheckBox>
+                                </Expander.Header>
+                            </Expander>
 
-                            <CheckBox Grid.Row="4" IsChecked="{Binding Settings.EnableIntegrationViewItem}" 
-                                      VerticalAlignment="Center" Name="PART_IntegrationViewItem">
-                                <Label Content="{DynamicResource LOCCommonControlsPluginViewItemShow}" />
-                            </CheckBox>
+                            <Expander Grid.Row="2" AttachedProperties:ExpanderAttachedProperties.HideExpanderArrow="True">
+                                <Expander.Style>
+                                    <Style TargetType="{x:Type Expander}" BasedOn="{StaticResource {x:Type Expander}}">
+                                        <Setter Property="Background" Value="Transparent" />
+                                    </Style>
+                                </Expander.Style>
 
-                            <CheckBox Grid.Row="6" VerticalAlignment="Center" 
-                                      IsChecked="{Binding Settings.EnableIntegrationProgressBar}" 
-                                      Name="PART_IntegrationProgressBar">
-                                <Label Content="{DynamicResource LOCHowLongToBeatIntegrationProgressBar}" />
-                            </CheckBox>
+                                <Expander.Header>
+                                    <CheckBox IsChecked="{Binding Settings.EnableIntegrationButton}" Name="PART_IntegrationButton">
+                                        <Label Content="{DynamicResource LOCCommonControlsPluginButtonShow}" />
+                                    </CheckBox>
+                                </Expander.Header>
+                            </Expander>
+
+                            <Expander Grid.Row="4" AttachedProperties:ExpanderAttachedProperties.HideExpanderArrow="True">
+                                <Expander.Style>
+                                    <Style TargetType="{x:Type Expander}" BasedOn="{StaticResource {x:Type Expander}}">
+                                        <Setter Property="Background" Value="Transparent" />
+                                    </Style>
+                                </Expander.Style>
+
+                                <Expander.Header>
+                                    <CheckBox IsChecked="{Binding Settings.EnableIntegrationViewItem}" Name="PART_IntegrationViewItem">
+                                        <Label Content="{DynamicResource LOCCommonControlsPluginViewItemShow}" />
+                                    </CheckBox>
+                                </Expander.Header>
+                            </Expander>
+
+                            <Expander Grid.Row="6">
+                                <Expander.Style>
+                                    <Style TargetType="{x:Type Expander}" BasedOn="{StaticResource {x:Type Expander}}">
+                                        <Setter Property="Background" Value="Transparent" />
+                                    </Style>
+                                </Expander.Style>
+
+                                <Expander.Header>
+                                    <CheckBox  IsChecked="{Binding Settings.EnableIntegrationProgressBar}" Name="PART_IntegrationProgressBar">
+                                        <Label Content="{DynamicResource LOCHowLongToBeatIntegrationProgressBar}" />
+                                    </CheckBox>
+                                </Expander.Header>
+
+                                <Expander.Content>
+                                    <Border IsEnabled="{Binding ElementName=PART_IntegrationProgressBar, Path=IsChecked}"
+				                            Margin="5" Padding="10"
+				                            BorderBrush="{DynamicResource PopupBorderBrush}"
+				                            BorderThickness="{DynamicResource PopupBorderThickness}">
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="auto" />
+                                                <RowDefinition Height="10" />
+                                                <RowDefinition Height="auto" />
+                                                <RowDefinition Height="10" />
+                                                <RowDefinition Height="auto" />
+                                                <RowDefinition Height="10" />
+                                                <RowDefinition Height="auto" />
+                                                <RowDefinition Height="10" />
+                                                <RowDefinition Height="auto" />
+                                            </Grid.RowDefinitions>
+
+                                            <CheckBox IsChecked="{Binding Settings.ProgressBarShowToolTip}" Grid.Row="0" Name="HltB_IntegrationProgressBarShowToolTip">
+                                                <Label Content="{DynamicResource LOCHowLongToBeatIntegrationProgressBarShowToolTip}" />
+                                            </CheckBox>
+
+                                            <CheckBox IsChecked="{Binding Settings.ProgressBarShowTime}" Grid.Row="2" Name="HltB_IntegrationProgressBarShowTime">
+                                                <Label Content="{DynamicResource LOCHowLongToBeatIntegrationProgressBarShowTime}" />
+                                            </CheckBox>
+
+                                            <Grid Grid.Row="4" IsEnabled="{Binding ElementName=HltB_IntegrationProgressBarShowTime, Path=IsChecked}">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*" />
+                                                    <ColumnDefinition Width="*" />
+                                                    <ColumnDefinition Width="*" />
+                                                </Grid.ColumnDefinitions>
+
+                                                <RadioButton Grid.Column="0" GroupName="A" Content="{DynamicResource LOCHowLongToBeatIntegrationProgressBarShowTimeAbove}" IsChecked="{Binding Settings.ProgressBarShowTimeAbove}" />
+                                                <RadioButton Grid.Column="1" GroupName="A" Content="{DynamicResource LOCHowLongToBeatIntegrationProgressBarShowTimeInterior}" IsChecked="{Binding Settings.ProgressBarShowTimeInterior}" />
+                                                <RadioButton Grid.Column="2" GroupName="A" Content="{DynamicResource LOCHowLongToBeatIntegrationProgressBarShowTimeBelow}" IsChecked="{Binding Settings.ProgressBarShowTimeBelow}" />
+                                            </Grid>
+
+                                            <CheckBox IsChecked="{Binding Settings.ProgressBarShowTimeUser}" Grid.Row="6">
+                                                <Label Content="{DynamicResource LOCHowLongToBeatIntegrationProgressBarShowTimeUser}" />
+                                            </CheckBox>
+
+                                            <Grid Grid.Row="8">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*" />
+                                                    <ColumnDefinition Width="10" />
+                                                    <ColumnDefinition Width="*" />
+                                                </Grid.ColumnDefinitions>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="35" />
+                                                    <RowDefinition Height="35" />
+                                                    <RowDefinition Height="35" />
+                                                    <RowDefinition Height="35" />
+                                                </Grid.RowDefinitions>
+
+                                                <Label Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="0" Content="{DynamicResource LOCHowLongToBeatColorSelection}" />
+
+                                                <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="1" HorizontalAlignment="center" VerticalAlignment="Center">
+                                                    <Label Width="120" Content="{DynamicResource LOCHowLongToBeatMainStory}" VerticalAlignment="Center" Margin="30,0,0,0" />
+                                                    <TextBlock Height="28" Width="28" Background="DarkCyan" Tag="1" Name="tbColorFirst" VerticalAlignment="Center" />
+                                                    <Button Click="BtPickColor_Click" Content="&#x270f;" Width="41" Tag="1" Margin="10,0,0,0" VerticalAlignment="Center" />
+                                                    <Button Click="BtRestore_Click" Content="&#x1f5d9;" Width="41" Tag="1" Margin="10,0,0,0" VerticalAlignment="Center" />
+                                                </StackPanel>
+                                                <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="2" HorizontalAlignment="center" VerticalAlignment="Center">
+                                                    <Label Width="120" Content="{DynamicResource LOCHowLongToBeatMainExtra}" VerticalAlignment="Center" Margin="30,0,0,0" />
+                                                    <TextBlock Height="28" Width="28" Background="RoyalBlue" Tag="2" Name="tbColorSecond" VerticalAlignment="Center" />
+                                                    <Button Click="BtPickColor_Click" Content="&#x270f;" Width="41" Tag="2" Margin="10,0,0,0" VerticalAlignment="Center" />
+                                                    <Button Click="BtRestore_Click" Content="&#x1f5d9;" Width="41" Tag="2" Margin="10,0,0,0" VerticalAlignment="Center" />
+                                                </StackPanel>
+                                                <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="3" HorizontalAlignment="center" VerticalAlignment="Center">
+                                                    <Label Width="120" Content="{DynamicResource LOCHowLongToBeatCompletionist}" VerticalAlignment="Center" Margin="30,0,0,0" />
+                                                    <TextBlock Height="28" Width="28" Background="ForestGreen" Tag="3" Name="tbColorThird" VerticalAlignment="Center" />
+                                                    <Button Click="BtPickColor_Click" Content="&#x270f;" Width="41" Tag="3" Margin="10,0,0,0" VerticalAlignment="Center" />
+                                                    <Button Click="BtRestore_Click" Content="&#x1f5d9;" Width="41" Tag="3" Margin="10,0,0,0" VerticalAlignment="Center" />
+                                                </StackPanel>
+
+                                                <StackPanel Orientation="Horizontal" Grid.Column="2" Grid.Row="1" HorizontalAlignment="center" VerticalAlignment="Center">
+                                                    <Label Width="120" Content="{DynamicResource LOCHowLongToBeatSolo}" VerticalAlignment="Center" Margin="30,0,0,0" />
+                                                    <TextBlock Height="28" Width="28" Background="DarkCyan" Tag="4" Name="tbColorFirstMulti" VerticalAlignment="Center" />
+                                                    <Button Click="BtPickColor_Click" Content="&#x270f;" Width="41" Tag="4" Margin="10,0,0,0" VerticalAlignment="Center" />
+                                                    <Button Click="BtRestore_Click" Content="&#x1f5d9;" Width="41" Tag="4" Margin="10,0,0,0" VerticalAlignment="Center" />
+                                                </StackPanel>
+                                                <StackPanel Orientation="Horizontal" Grid.Column="2" Grid.Row="2" HorizontalAlignment="center" VerticalAlignment="Center">
+                                                    <Label Width="120" Content="{DynamicResource LOCHowLongToBeatCoOp}" VerticalAlignment="Center" Margin="30,0,0,0" />
+                                                    <TextBlock Height="28" Width="28" Background="RoyalBlue" Tag="5" Name="tbColorSecondMulti" VerticalAlignment="Center" />
+                                                    <Button Click="BtPickColor_Click" Content="&#x270f;" Width="41" Tag="5" Margin="10,0,0,0" VerticalAlignment="Center" />
+                                                    <Button Click="BtRestore_Click" Content="&#x1f5d9;" Width="41" Tag="5" Margin="10,0,0,0" VerticalAlignment="Center" />
+                                                </StackPanel>
+                                                <StackPanel Orientation="Horizontal" Grid.Column="2" Grid.Row="3" HorizontalAlignment="center" VerticalAlignment="Center">
+                                                    <Label Width="120" Content="{DynamicResource LOCHowLongToBeatVs}" VerticalAlignment="Center" Margin="30,0,0,0" />
+                                                    <TextBlock Height="28" Width="28" Background="ForestGreen" Tag="6" Name="tbColorThirdMulti" VerticalAlignment="Center" />
+                                                    <Button Click="BtPickColor_Click" Content="&#x270f;" Width="41" Tag="6" Margin="10,0,0,0" VerticalAlignment="Center" />
+                                                    <Button Click="BtRestore_Click" Content="&#x1f5d9;" Width="41" Tag="6" Margin="10,0,0,0" VerticalAlignment="Center" />
+                                                </StackPanel>
+                                            </Grid>
+                                        </Grid>
+                                    </Border>
+                                </Expander.Content>
+                            </Expander>
                         </Grid>
-
-                        <GroupBox IsEnabled="{Binding ElementName=PART_IntegrationProgressBar, Path=IsChecked}" 
-                                  Header="{DynamicResource LOCHowLongToBeatIntegrationProgressBarOptions}" Margin="0,30,0,0">
-                            <StackPanel>
-                                <CheckBox IsChecked="{Binding Settings.ProgressBarShowToolTip}" Margin="0,5,0,0" Name="HltB_IntegrationProgressBarShowToolTip">
-                                    <Label Content="{DynamicResource LOCHowLongToBeatIntegrationProgressBarShowToolTip}" />
-                                </CheckBox>
-
-                                <CheckBox IsChecked="{Binding Settings.ProgressBarShowTime}" Margin="0,5,0,0" Name="HltB_IntegrationProgressBarShowTime">
-                                    <Label Content="{DynamicResource LOCHowLongToBeatIntegrationProgressBarShowTime}" />
-                                </CheckBox>
-
-                                <Grid Margin="30,5,0,0" IsEnabled="{Binding ElementName=HltB_IntegrationProgressBarShowTime, Path=IsChecked}">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*" />
-                                        <ColumnDefinition Width="*" />
-                                        <ColumnDefinition Width="*" />
-                                    </Grid.ColumnDefinitions>
-
-                                    <RadioButton Grid.Column="0" GroupName="A" Content="{DynamicResource LOCHowLongToBeatIntegrationProgressBarShowTimeAbove}" IsChecked="{Binding Settings.ProgressBarShowTimeAbove}" />
-                                    <RadioButton Grid.Column="1" GroupName="A" Content="{DynamicResource LOCHowLongToBeatIntegrationProgressBarShowTimeInterior}" IsChecked="{Binding Settings.ProgressBarShowTimeInterior}" />
-                                    <RadioButton Grid.Column="2" GroupName="A" Content="{DynamicResource LOCHowLongToBeatIntegrationProgressBarShowTimeBelow}" IsChecked="{Binding Settings.ProgressBarShowTimeBelow}" />
-                                </Grid>
-
-                                <CheckBox IsChecked="{Binding Settings.ProgressBarShowTimeUser}" Margin="0,5,0,0">
-                                    <Label Content="{DynamicResource LOCHowLongToBeatIntegrationProgressBarShowTimeUser}" />
-                                </CheckBox>
-
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*" />
-                                        <ColumnDefinition Width="10" />
-                                        <ColumnDefinition Width="*" />
-                                    </Grid.ColumnDefinitions>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="35" />
-                                        <RowDefinition Height="35" />
-                                        <RowDefinition Height="35" />
-                                        <RowDefinition Height="35" />
-                                    </Grid.RowDefinitions>
-
-                                    <Label Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="0" Content="{DynamicResource LOCHowLongToBeatColorSelection}" />
-
-                                    <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="1" HorizontalAlignment="center" VerticalAlignment="Center">
-                                        <Label Width="120" Content="{DynamicResource LOCHowLongToBeatMainStory}" VerticalAlignment="Center" Margin="30,0,0,0" />
-                                        <TextBlock Height="28" Width="28" Background="DarkCyan" Tag="1" Name="tbColorFirst" VerticalAlignment="Center" />
-                                        <Button Click="BtPickColor_Click" Content="&#x270f;" Width="41" Tag="1" Margin="10,0,0,0" VerticalAlignment="Center" />
-                                        <Button Click="BtRestore_Click" Content="&#x1f5d9;" Width="41" Tag="1" Margin="10,0,0,0" VerticalAlignment="Center" />
-                                    </StackPanel>
-                                    <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="2" HorizontalAlignment="center" VerticalAlignment="Center">
-                                        <Label Width="120" Content="{DynamicResource LOCHowLongToBeatMainExtra}" VerticalAlignment="Center" Margin="30,0,0,0" />
-                                        <TextBlock Height="28" Width="28" Background="RoyalBlue" Tag="2" Name="tbColorSecond" VerticalAlignment="Center" />
-                                        <Button Click="BtPickColor_Click" Content="&#x270f;" Width="41" Tag="2" Margin="10,0,0,0" VerticalAlignment="Center" />
-                                        <Button Click="BtRestore_Click" Content="&#x1f5d9;" Width="41" Tag="2" Margin="10,0,0,0" VerticalAlignment="Center" />
-                                    </StackPanel>
-                                    <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="3" HorizontalAlignment="center" VerticalAlignment="Center">
-                                        <Label Width="120" Content="{DynamicResource LOCHowLongToBeatCompletionist}" VerticalAlignment="Center" Margin="30,0,0,0" />
-                                        <TextBlock Height="28" Width="28" Background="ForestGreen" Tag="3" Name="tbColorThird" VerticalAlignment="Center" />
-                                        <Button Click="BtPickColor_Click" Content="&#x270f;" Width="41" Tag="3" Margin="10,0,0,0" VerticalAlignment="Center" />
-                                        <Button Click="BtRestore_Click" Content="&#x1f5d9;" Width="41" Tag="3" Margin="10,0,0,0" VerticalAlignment="Center" />
-                                    </StackPanel>
-
-                                    <StackPanel Orientation="Horizontal" Grid.Column="2" Grid.Row="1" HorizontalAlignment="center" VerticalAlignment="Center">
-                                        <Label Width="120" Content="{DynamicResource LOCHowLongToBeatSolo}" VerticalAlignment="Center" Margin="30,0,0,0" />
-                                        <TextBlock Height="28" Width="28" Background="DarkCyan" Tag="4" Name="tbColorFirstMulti" VerticalAlignment="Center" />
-                                        <Button Click="BtPickColor_Click" Content="&#x270f;" Width="41" Tag="4" Margin="10,0,0,0" VerticalAlignment="Center" />
-                                        <Button Click="BtRestore_Click" Content="&#x1f5d9;" Width="41" Tag="4" Margin="10,0,0,0" VerticalAlignment="Center" />
-                                    </StackPanel>
-                                    <StackPanel Orientation="Horizontal" Grid.Column="2" Grid.Row="2" HorizontalAlignment="center" VerticalAlignment="Center">
-                                        <Label Width="120" Content="{DynamicResource LOCHowLongToBeatCoOp}" VerticalAlignment="Center" Margin="30,0,0,0" />
-                                        <TextBlock Height="28" Width="28" Background="RoyalBlue" Tag="5" Name="tbColorSecondMulti" VerticalAlignment="Center" />
-                                        <Button Click="BtPickColor_Click" Content="&#x270f;" Width="41" Tag="5" Margin="10,0,0,0" VerticalAlignment="Center" />
-                                        <Button Click="BtRestore_Click" Content="&#x1f5d9;" Width="41" Tag="5" Margin="10,0,0,0" VerticalAlignment="Center" />
-                                    </StackPanel>
-                                    <StackPanel Orientation="Horizontal" Grid.Column="2" Grid.Row="3" HorizontalAlignment="center" VerticalAlignment="Center">
-                                        <Label Width="120" Content="{DynamicResource LOCHowLongToBeatVs}" VerticalAlignment="Center" Margin="30,0,0,0" />
-                                        <TextBlock Height="28" Width="28" Background="ForestGreen" Tag="6" Name="tbColorThirdMulti" VerticalAlignment="Center" />
-                                        <Button Click="BtPickColor_Click" Content="&#x270f;" Width="41" Tag="6" Margin="10,0,0,0" VerticalAlignment="Center" />
-                                        <Button Click="BtRestore_Click" Content="&#x1f5d9;" Width="41" Tag="6" Margin="10,0,0,0" VerticalAlignment="Center" />
-                                    </StackPanel>
-                                </Grid>
-                            </StackPanel>
-                        </GroupBox>
                     </StackPanel>
                 </Grid>
             </ScrollViewer>
