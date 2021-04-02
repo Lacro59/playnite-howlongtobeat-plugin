@@ -84,11 +84,13 @@ namespace HowLongToBeat.Controls
 
         public override void SetDefaultDataContext()
         {
+            bool IsActivated = PluginDatabase.PluginSettings.Settings.EnableIntegrationViewItem;
             bool TextAboveVisibility = PluginDatabase.PluginSettings.Settings.ProgressBarShowTimeAbove; 
             bool TextInsideVisibility = PluginDatabase.PluginSettings.Settings.ProgressBarShowTimeInterior;
             bool TextBelowVisibility = PluginDatabase.PluginSettings.Settings.ProgressBarShowTimeBelow;
             if (IgnoreSettings)
             {
+                IsActivated = true;
                 TextAboveVisibility = false;
                 TextInsideVisibility = false;
                 TextBelowVisibility = false;
@@ -97,7 +99,7 @@ namespace HowLongToBeat.Controls
 
             ControlDataContext = new PluginProgressBarDataContext
             {
-                IsActivated = PluginDatabase.PluginSettings.Settings.EnableIntegrationViewItem,
+                IsActivated = IsActivated,
                 ShowToolTip = PluginDatabase.PluginSettings.Settings.ProgressBarShowToolTip,
 
                 TextAboveVisibility = TextAboveVisibility,
