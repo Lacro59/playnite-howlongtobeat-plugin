@@ -81,7 +81,7 @@ namespace HowLongToBeat.Views
         #region Database
         private void BtAddData_Click(object sender, RoutedEventArgs e)
         {
-            HowLongToBeat.PluginDatabase.GetAllDatas();
+            HowLongToBeat.PluginDatabase.GetSelectData();
         }
 
         private void BtRemoveData_Click(object sender, RoutedEventArgs e)
