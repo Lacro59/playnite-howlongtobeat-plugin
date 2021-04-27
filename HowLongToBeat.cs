@@ -45,6 +45,12 @@ namespace HowLongToBeat
             AddCustomElementSupport(new AddCustomElementSupportArgs
             {
                 ElementList = new List<string> { "PluginButton", "PluginProgressBar", "PluginViewItem" },
+                SourceName = "HowLongToBeat"
+            });
+
+            // Settings integration
+            AddSettingsSupport(new AddSettingsSupportArgs
+            {
                 SourceName = "HowLongToBeat",
                 SettingsRoot = $"{nameof(PluginSettings)}.{nameof(PluginSettings.Settings)}"
             });

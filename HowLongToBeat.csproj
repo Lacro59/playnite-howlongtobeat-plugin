@@ -17,7 +17,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\..\Dropbox\Playnite\PlayniteCurrent\Extensions\playnite-howlongtobeat-plugin\</OutputPath>
+    <OutputPath>..\..\JosefNemec\Playnite\source\Playnite.DesktopApp\bin\x86\Release\Extensions\playnite-howlongtobeat-plugin\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -67,7 +67,7 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="Playnite.SDK">
-      <HintPath>..\..\..\Dropbox\Playnite\Playnite9\Playnite.SDK.dll</HintPath>
+      <HintPath>..\..\JosefNemec\Playnite\source\Playnite.DesktopApp\bin\x86\Release\Playnite.SDK.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="PresentationCore" />
