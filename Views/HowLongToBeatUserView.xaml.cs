@@ -45,6 +45,25 @@ namespace HowLongToBeat.Views
             {
                 PluginDatabase.Database.UserHltbData.TitlesList.Sort((x, y) => x.GameName.CompareTo(y.GameName));
                 ListViewGames.ItemsSource = PluginDatabase.Database.UserHltbData.TitlesList;
+
+                string SortingDefaultDataName = string.Empty;
+                switch (PluginDatabase.PluginSettings.Settings.TitleListSort)
+                {
+                    case TitleListSort.GameName:
+                        SortingDefaultDataName = "GameName";
+                        break;
+                    case TitleListSort.Platform:
+                        SortingDefaultDataName = "Platform";
+                        break;
+                    case TitleListSort.Completion:
+                        SortingDefaultDataName = "Completion";
+                        break;
+                    case TitleListSort.CurrentTime:
+                        SortingDefaultDataName = "CurrentTime";
+                        break;
+                };
+                ListViewGames.SortingDefaultDataName = SortingDefaultDataName;
+                ListViewGames.SortingSortDirection = (PluginDatabase.PluginSettings.Settings.IsAsc) ? ListSortDirection.Ascending : ListSortDirection.Descending;
                 ListViewGames.Sorting();
             }
 
@@ -79,7 +98,6 @@ namespace HowLongToBeat.Views
 
 
             PluginDatabase.RefreshUserData();
-
 
             ListViewGames.ItemsSource = PluginDatabase.Database.UserHltbData.TitlesList;
             ListViewGames.Sorting();

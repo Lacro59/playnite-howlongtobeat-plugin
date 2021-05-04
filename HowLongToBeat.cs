@@ -99,8 +99,8 @@ namespace HowLongToBeat
                             FontSize = 20,
                             FontFamily = resources.GetResource("CommonFont") as FontFamily
                         },
-                        ToolTip = resources.GetString("LOCHowLongToBeat"),
-                        Action = () =>
+                        Title = resources.GetString("LOCHowLongToBeat"),
+                        Activated = () =>
                         {
                             var ViewExtension = new HowLongToBeatUserView();
                             ViewExtension.Height = 660;
@@ -148,15 +148,14 @@ namespace HowLongToBeat
                     Text = "\ue90d",
                     FontFamily = resources.GetResource("CommonFont") as FontFamily
                 };
-            }
+                Opened = () =>
+                {
+                    SidebarItemControl sidebarItemControl = new SidebarItemControl(PluginDatabase.PlayniteApi);
+                    sidebarItemControl.SetTitle(resources.GetString("LOCHowLongToBeat"));
+                    sidebarItemControl.AddContent(new HowLongToBeatUserView());
 
-            public override Control Opened()
-            {
-                SidebarItemControl sidebarItemControl = new SidebarItemControl(PluginDatabase.PlayniteApi);
-                sidebarItemControl.SetTitle(resources.GetString("LOCHowLongToBeat"));
-                sidebarItemControl.AddContent(new HowLongToBeatUserView());
-
-                return sidebarItemControl;
+                    return sidebarItemControl;
+                };
             }
         }
 
@@ -204,10 +203,15 @@ namespace HowLongToBeat
                     }
                 }
             };
-
-
+            
             if (gameHowLongToBeat.HasData || gameHowLongToBeat.HasDataEmpty)
             {
+                gameMenuItems.Add(new GameMenuItem
+                {
+                    MenuSection = resources.GetString("LOCHowLongToBeat"),
+                    Description = "-"
+                });
+
                 gameMenuItems.Add(new GameMenuItem
                 {
                     MenuSection = resources.GetString("LOCHowLongToBeat"),
@@ -244,6 +248,12 @@ namespace HowLongToBeat
                 gameMenuItems.Add(new GameMenuItem
                 {
                     MenuSection = resources.GetString("LOCHowLongToBeat"),
+                    Description = "-"
+                });
+
+                gameMenuItems.Add(new GameMenuItem
+                {
+                    MenuSection = resources.GetString("LOCHowLongToBeat"),
                     Description = resources.GetString("LOCCommonDeleteGameData"),
                     Action = (gameMenuItem) =>
                     {
@@ -253,6 +263,11 @@ namespace HowLongToBeat
             }
 
 #if DEBUG
+            gameMenuItems.Add(new GameMenuItem
+            {
+                MenuSection = resources.GetString("LOCHowLongToBeat"),
+                Description = "-"
+            });
             gameMenuItems.Add(new GameMenuItem
             {
                 MenuSection = resources.GetString("LOCHowLongToBeat"),
@@ -292,6 +307,12 @@ namespace HowLongToBeat
                 new MainMenuItem
                 {
                     MenuSection = MenuInExtensions + resources.GetString("LOCHowLongToBeat"),
+                    Description = "-"
+                },
+
+                new MainMenuItem
+                {
+                    MenuSection = MenuInExtensions + resources.GetString("LOCHowLongToBeat"),
                     Description = resources.GetString("LOCCommonDownloadPluginData"),
                     Action = (mainMenuItem) =>
                     {
@@ -318,11 +339,23 @@ namespace HowLongToBeat
                 new MainMenuItem
                 {
                     MenuSection = MenuInExtensions + resources.GetString("LOCHowLongToBeat"),
+                    Description = "-"
+                },
+
+                new MainMenuItem
+                {
+                    MenuSection = MenuInExtensions + resources.GetString("LOCHowLongToBeat"),
                     Description = resources.GetString("LOCHowLongToBeatActualiseUserData"),
                     Action = (mainMenuItem) =>
                     {
                         PluginDatabase.RefreshUserData();
                     }
+                },
+
+                new MainMenuItem
+                {
+                    MenuSection = MenuInExtensions + resources.GetString("LOCHowLongToBeat"),
+                    Description = "-"
                 },
 
                 new MainMenuItem
@@ -346,6 +379,11 @@ namespace HowLongToBeat
             };
 
 #if DEBUG
+            mainMenuItems.Add(new MainMenuItem
+            {
+                MenuSection = MenuInExtensions + resources.GetString("LOCHowLongToBeat"),
+                Description = "-"
+            });
             mainMenuItems.Add(new MainMenuItem
             {
                 MenuSection = MenuInExtensions + resources.GetString("LOCHowLongToBeat"),

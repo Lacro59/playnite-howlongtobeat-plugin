@@ -50,7 +50,7 @@
                 <ListView.View>
                     <GridView>
                         <GridViewColumn Width="0" DisplayMemberBinding="{Binding GameName}">
-                            <GridViewColumnHeader IsHitTestVisible="False" />
+                            <controlsShared:GridViewColumnHeaderExtend Style="{StaticResource {x:Type GridViewColumnHeader}}" IsHitTestVisible="False" RefIndex="1" />
                         </GridViewColumn>
                         <GridViewColumn Width="240">
                             <GridViewColumnHeader Content="{DynamicResource LOCGameNameTitle}" Tag="GameName" />
@@ -111,49 +111,49 @@
                             <GridViewColumnHeader Content="{DynamicResource LOCTimePlayed}" Tag="CurrentTime" />
                         </GridViewColumn>
                         <GridViewColumn Width="0" DisplayMemberBinding="{Binding CurrentTime}">
-                            <GridViewColumnHeader IsHitTestVisible="False" />
+                            <controlsShared:GridViewColumnHeaderExtend Style="{StaticResource {x:Type GridViewColumnHeader}}" IsHitTestVisible="False" RefIndex="4" />
                         </GridViewColumn>
 
                         <GridViewColumn Width="120" DisplayMemberBinding="{Binding HltbUserData.MainStoryFormat}">
                             <GridViewColumnHeader Content="{DynamicResource LOCHowLongToBeatMainStory}" Tag="HltbUserData.MainStory" />
                         </GridViewColumn>
                         <GridViewColumn Width="0" DisplayMemberBinding="{Binding HltbUserData.MainStory}">
-                            <GridViewColumnHeader IsHitTestVisible="False" />
+                            <controlsShared:GridViewColumnHeaderExtend Style="{StaticResource {x:Type GridViewColumnHeader}}" IsHitTestVisible="False" RefIndex="6" />
                         </GridViewColumn>
                     
                         <GridViewColumn Width="120" DisplayMemberBinding="{Binding HltbUserData.MainExtraFormat}">
                             <GridViewColumnHeader Content="{DynamicResource LOCHowLongToBeatMainExtra}" Tag="HltbUserData.MainExtra" />
                         </GridViewColumn>
                         <GridViewColumn Width="0" DisplayMemberBinding="{Binding HltbUserData.MainExtra}">
-                            <GridViewColumnHeader IsHitTestVisible="False" />
+                            <controlsShared:GridViewColumnHeaderExtend Style="{StaticResource {x:Type GridViewColumnHeader}}" IsHitTestVisible="False" RefIndex="9" />
                         </GridViewColumn>
                     
                         <GridViewColumn Width="120" DisplayMemberBinding="{Binding HltbUserData.CompletionistFormat}">
                             <GridViewColumnHeader Content="{DynamicResource LOCHowLongToBeatCompletionist}" Tag="HltbUserData.Completionist" />
                         </GridViewColumn>
                         <GridViewColumn Width="0" DisplayMemberBinding="{Binding HltbUserData.Completionist}">
-                            <GridViewColumnHeader IsHitTestVisible="False" />
+                            <controlsShared:GridViewColumnHeaderExtend Style="{StaticResource {x:Type GridViewColumnHeader}}" IsHitTestVisible="False" RefIndex="11" />
                         </GridViewColumn>
                     
                         <GridViewColumn Width="90" DisplayMemberBinding="{Binding HltbUserData.SoloFormat}">
                             <GridViewColumnHeader Content="{DynamicResource LOCHowLongToBeatSolo}" Tag="HltbUserData.Solo" />
                         </GridViewColumn>
                         <GridViewColumn Width="0" DisplayMemberBinding="{Binding HltbUserData.Solo}">
-                            <GridViewColumnHeader IsHitTestVisible="False" />
+                            <controlsShared:GridViewColumnHeaderExtend Style="{StaticResource {x:Type GridViewColumnHeader}}" IsHitTestVisible="False" RefIndex="13" />
                         </GridViewColumn>
                     
                         <GridViewColumn Width="90" DisplayMemberBinding="{Binding HltbUserData.CoOpFormat}">
                             <GridViewColumnHeader Content="{DynamicResource LOCHowLongToBeatCoOp}" Tag="HltbUserData.CoOp" />
                         </GridViewColumn>
                         <GridViewColumn Width="0" DisplayMemberBinding="{Binding HltbUserData.CoOp}">
-                            <GridViewColumnHeader IsHitTestVisible="False" />
+                            <controlsShared:GridViewColumnHeaderExtend Style="{StaticResource {x:Type GridViewColumnHeader}}" IsHitTestVisible="False" RefIndex="15" />
                         </GridViewColumn>
                     
                         <GridViewColumn Width="90" DisplayMemberBinding="{Binding HltbUserData.VsFormat}">
                             <GridViewColumnHeader Content="{DynamicResource LOCHowLongToBeatVs}" Tag="HltbUserData.Vs" />
                         </GridViewColumn>
                         <GridViewColumn Width="0" DisplayMemberBinding="{Binding HltbUserData.Vs}">
-                            <GridViewColumnHeader IsHitTestVisible="False" />
+                            <controlsShared:GridViewColumnHeaderExtend Style="{StaticResource {x:Type GridViewColumnHeader}}" IsHitTestVisible="False" RefIndex="17" />
                         </GridViewColumn>
                     </GridView>
                 </ListView.View>

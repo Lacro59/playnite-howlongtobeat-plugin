@@ -68,6 +68,71 @@
                             </CheckBox>
                         </Grid>
 
+                        <StackPanel Margin="0,30,0,0">
+                            <Label Content="{DynamicResource LOCHowLongToBeatUserData}" FontSize="18" />
+                            <Separator Margin="0,0,0,10" />
+
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="8" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="8" />
+                                    <ColumnDefinition Width="100" />
+                                </Grid.ColumnDefinitions>
+                                
+                                <Label Grid.Column="0" Grid.Row="0" Content="{DynamicResource LOCCommonDefaultSorting}" />
+                                <ComboBox Name="cbDefaultSorting" Grid.Column="2" Grid.Row="0" Height="30" IsEditable="True" IsReadOnly="True" 
+                                          SelectionChanged="CbDefaultSorting_SelectionChanged">
+                                    <ComboBoxItem Content="{DynamicResource LOCGameNameTitle}" Tag="0">
+                                        <ComboBoxItem.Style>
+                                            <Style TargetType="{x:Type ComboBoxItem}" BasedOn="{StaticResource {x:Type ComboBoxItem}}">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Settings.TitleListSort}" Value="0">
+                                                        <Setter Property="IsSelected" Value="True" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </ComboBoxItem.Style>
+                                    </ComboBoxItem>
+                                    <ComboBoxItem Content="{DynamicResource LOCPlatformTitle}" Tag="1">
+                                        <ComboBoxItem.Style>
+                                            <Style TargetType="{x:Type ComboBoxItem}" BasedOn="{StaticResource {x:Type ComboBoxItem}}">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Settings.TitleListSort}" Value="1">
+                                                        <Setter Property="IsSelected" Value="True" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </ComboBoxItem.Style>
+                                    </ComboBoxItem>
+                                    <ComboBoxItem Content="{DynamicResource LOCHowLongToBeatCompleted}" Tag="2">
+                                        <ComboBoxItem.Style>
+                                            <Style TargetType="{x:Type ComboBoxItem}" BasedOn="{StaticResource {x:Type ComboBoxItem}}">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Settings.TitleListSort}" Value="2">
+                                                        <Setter Property="IsSelected" Value="True" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </ComboBoxItem.Style>
+                                    </ComboBoxItem>
+                                    <ComboBoxItem Content="{DynamicResource LOCTimePlayed}" Tag="3">
+                                        <ComboBoxItem.Style>
+                                            <Style TargetType="{x:Type ComboBoxItem}" BasedOn="{StaticResource {x:Type ComboBoxItem}}">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Settings.TitleListSort}" Value="3">
+                                                        <Setter Property="IsSelected" Value="True" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </ComboBoxItem.Style>
+                                    </ComboBoxItem>
+                                </ComboBox>
+                                <ToggleButton Content="{DynamicResource LOCMenuSortAscending}" IsChecked="{Binding Settings.IsAsc}" Grid.Column="4" Grid.Row="0" Height="30" />
+                            </Grid>
+                        </StackPanel>
+                        
                         <Grid Margin="0,30,0,0">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />

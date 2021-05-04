@@ -1,4 +1,5 @@
-﻿using HowLongToBeat.Services;
+﻿using HowLongToBeat.Models;
+using HowLongToBeat.Services;
 using HowLongToBeat.Views;
 using Newtonsoft.Json;
 using Playnite.SDK;
@@ -136,6 +137,10 @@ namespace HowLongToBeat
                 OnPropertyChanged();
             }
         }
+
+
+        public TitleListSort TitleListSort { get; set; } = TitleListSort.Completion;
+        public bool IsAsc { get; set; } = false;
         #endregion
 
         // Playnite serializes settings object to a JSON object and saves it as text file.

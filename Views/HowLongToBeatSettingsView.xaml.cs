@@ -10,6 +10,7 @@ using System.Windows.Media;
 using Newtonsoft.Json;
 using HowLongToBeat.Services;
 using CommonPluginsShared;
+using HowLongToBeat.Models;
 
 namespace HowLongToBeat.Views
 {
@@ -255,5 +256,26 @@ namespace HowLongToBeat.Views
             }));
         }
         #endregion
+
+
+        private void CbDefaultSorting_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            string index = ((ComboBoxItem)cbDefaultSorting.SelectedItem).Tag.ToString();
+            switch(index)
+            {
+                case "0":
+                    PluginDatabase.PluginSettings.Settings.TitleListSort = TitleListSort.GameName;
+                    break;
+                case "1":
+                    PluginDatabase.PluginSettings.Settings.TitleListSort = TitleListSort.Platform;
+                    break;
+                case "2":
+                    PluginDatabase.PluginSettings.Settings.TitleListSort = TitleListSort.Completion;
+                    break;
+                case "3":
+                    PluginDatabase.PluginSettings.Settings.TitleListSort = TitleListSort.CurrentTime;
+                    break;
+            }
+        }
     }
 }
