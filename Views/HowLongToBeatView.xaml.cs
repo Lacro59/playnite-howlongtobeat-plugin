@@ -120,14 +120,14 @@ namespace HowLongToBeat.Views
                     SetColor(ElIndicator, PluginDatabase.PluginSettings.Settings.ColorThirdMulti);
                 }
 
-
-                LongToTimePlayedConverter converter = new LongToTimePlayedConverter();
-                PlaytimeFormat = (string)converter.Convert((long)_gameHowLongToBeat.Playtime, null, null, CultureInfo.CurrentCulture);
-
                 hltbProgressBar = new PluginProgressBar();
                 hltbProgressBar.Height = 50;
+                hltbProgressBar.IgnoreSettings = true;
                 PART_HltbProgressBar.Children.Add(hltbProgressBar);
             }
+
+            LongToTimePlayedConverter converter = new LongToTimePlayedConverter();
+            PlaytimeFormat = (string)converter.Convert((long)_gameHowLongToBeat.Playtime, null, null, CultureInfo.CurrentCulture);
 
             // Set Binding data
             DataContext = this;
@@ -235,7 +235,6 @@ namespace HowLongToBeat.Views
             {
                 hltbProgressBar.SetHltbData(_gameHowLongToBeat);
                 hltbProgressBar.GameContext = PluginDatabase.PlayniteApi.Database.Games.Get(_gameHowLongToBeat.Id);
-                hltbProgressBar.Visibility = Visibility.Visible;
             }
         }
     }

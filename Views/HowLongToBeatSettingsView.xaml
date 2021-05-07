@@ -59,11 +59,13 @@
                                 <Button Content="{DynamicResource LOCRemoveTitle}" IsEnabled="{Binding Settings.EnableTagAuto}" VerticalAlignment="Bottom" Click="ButtonRemoveTag_Click" Margin="0,0,0,1" />
                             </StackPanel>
 
-                            <CheckBox Grid.Row="6" IsChecked="{Binding Settings.AutoSetCurrentPlayTime}" Grid.Column="0" VerticalAlignment="Center">
+                            <CheckBox Grid.Row="6" IsChecked="{Binding Settings.AutoSetCurrentPlayTime}" Grid.Column="0" VerticalAlignment="Center" 
+                                      Name="PART_AutoSetCurrentPlayTime">
                                 <Label Content="{DynamicResource LOCHowLongToBeatAutoSetCurrentPlayTime}" />
                             </CheckBox>
 
-                            <CheckBox Grid.Row="7" Margin="50,0,0,0" IsChecked="{Binding Settings.AutoSetCurrentPlayTimeWithoutConfirmation}" Grid.Column="0" VerticalAlignment="Center">
+                            <CheckBox Grid.Row="7" Margin="50,0,0,0" IsChecked="{Binding Settings.AutoSetCurrentPlayTimeWithoutConfirmation}" Grid.Column="0" VerticalAlignment="Center"
+                                      IsEnabled="{Binding ElementName=PART_AutoSetCurrentPlayTime, Path=IsChecked}">
                                 <Label Content="{DynamicResource LOCHowLongToBeatWithoutConfirmation}" />
                             </CheckBox>
                         </Grid>

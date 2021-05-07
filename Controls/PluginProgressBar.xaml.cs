@@ -92,7 +92,7 @@ namespace HowLongToBeat.Controls
             {
                 IsActivated = true;
                 TextAboveVisibility = false;
-                TextInsideVisibility = false;
+                TextInsideVisibility = true;
                 TextBelowVisibility = false;
             }
 
