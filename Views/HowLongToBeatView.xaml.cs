@@ -16,7 +16,7 @@ using HowLongToBeat.Controls;
 namespace HowLongToBeat.Views
 {
     /// <summary>
-    /// Logique d'interaction pour HowLongToBeat.xaml
+    /// Logique d'interaction pour HowLongToBeatView.xaml
     /// </summary>
     public partial class HowLongToBeatView : UserControl
     {
@@ -235,6 +235,7 @@ namespace HowLongToBeat.Views
             {
                 hltbProgressBar.SetHltbData(_gameHowLongToBeat);
                 hltbProgressBar.GameContext = PluginDatabase.PlayniteApi.Database.Games.Get(_gameHowLongToBeat.Id);
+                hltbProgressBar.Visibility = Visibility.Visible;
             }
         }
     }
