@@ -164,7 +164,7 @@ namespace HowLongToBeat.Services
 
             long TimeConverted = hours * 3600 + minutes * 60 + secondes;
 
-            Common.LogDebug(true, $"ConvertStringToLongUser: {Time} - {TimeConverted}");
+            Common.LogDebug(true, $"ConvertStringToLongUser: {Time.Trim()} - {TimeConverted}");
 
             return TimeConverted;
         }
@@ -256,7 +256,7 @@ namespace HowLongToBeat.Services
                     {
                         var ElementA = SearchElement.QuerySelector(".search_list_image a");
                         var ElementImg = SearchElement.QuerySelector(".search_list_image a img");
-                        Name = ElementA.GetAttribute("title");
+                        Name = WebUtility.HtmlDecode(ElementA.GetAttribute("title"));
                         Id = int.Parse(ElementA.GetAttribute("href").Replace("game?id=", string.Empty));
                         UrlImg = ElementImg.GetAttribute("src");
                         Url = ElementA.GetAttribute("href");
@@ -532,8 +532,8 @@ namespace HowLongToBeat.Services
                 var td = tr[0].QuerySelectorAll("td");
 
                 titleList.UserGameId = element.GetAttribute("id").Replace("user_sel_", string.Empty).Trim();
-                titleList.GameName = td[0].QuerySelector("a").InnerHtml.Trim();
-                titleList.Platform = td[0].QuerySelector("span").InnerHtml.Trim();
+                titleList.GameName = WebUtility.HtmlDecode(td[0].QuerySelector("a").InnerHtml.Trim());
+                titleList.Platform = WebUtility.HtmlDecode(td[0].QuerySelector("span").InnerHtml.Trim());
                 titleList.Id = int.Parse(td[0].QuerySelector("a").GetAttribute("href").Replace("game?id=", string.Empty));
 
                 string sCurrentTime = td[1].InnerHtml;
