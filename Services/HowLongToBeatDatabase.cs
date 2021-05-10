@@ -256,19 +256,42 @@ namespace HowLongToBeat.Services
 
             PlayniteApi.Dialogs.ActivateGlobalProgress((activateGlobalProgress) =>
             {
-                var loadedItem = Get(Id, true);
-                List<HltbDataUser> dataSearch = HowLongToBeat.PluginDatabase.howLongToBeatClient.Search(loadedItem.GetData().Name);
+                RefreshElement(Id);
+            }, globalProgressOptions);
+        }
 
-                HltbDataUser webDataSearch = dataSearch.Find(x => x.Id == loadedItem.GetData().Id);
-                if (webDataSearch != null)
+        public void RefreshAll()
+        {
+            GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions(
+                $"{PluginName} - {resources.GetString("LOCCommonProcessing")}",
+                false
+            );
+            globalProgressOptions.IsIndeterminate = true;
+
+            PlayniteApi.Dialogs.ActivateGlobalProgress((activateGlobalProgress) =>
+            {
+                var db = Database.Where(x => x.HasData);
+                foreach(var item in db)
                 {
-                    if (!ReferenceEquals(loadedItem.GetData(), webDataSearch))
-                    {
-                        loadedItem.Items = new List<HltbDataUser> { webDataSearch };
-                        Update(loadedItem);
-                    }
+                    RefreshElement(item.Id);
                 }
             }, globalProgressOptions);
+        }
+
+        private void RefreshElement(Guid Id)
+        {
+            var loadedItem = Get(Id, true);
+            List<HltbDataUser> dataSearch = HowLongToBeat.PluginDatabase.howLongToBeatClient.Search(loadedItem.GetData().Name);
+
+            HltbDataUser webDataSearch = dataSearch.Find(x => x.Id == loadedItem.GetData().Id);
+            if (webDataSearch != null)
+            {
+                if (!ReferenceEquals(loadedItem.GetData(), webDataSearch))
+                {
+                    loadedItem.Items = new List<HltbDataUser> { webDataSearch };
+                    Update(loadedItem);
+                }
+            }
         }
 
 

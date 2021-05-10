@@ -23,6 +23,7 @@ namespace HowLongToBeat.Controls
     /// </summary>
     public partial class PluginProgressBar : PluginUserControlExtend
     {
+        // TODO Rewrite this control to resolve latency
         private HowLongToBeatDatabase PluginDatabase = HowLongToBeat.PluginDatabase;
         internal override IPluginDatabase _PluginDatabase
         {

@@ -355,6 +355,16 @@ namespace HowLongToBeat
                 new MainMenuItem
                 {
                     MenuSection = MenuInExtensions + resources.GetString("LOCHowLongToBeat"),
+                    Description = resources.GetString("LOCCommonRefreshAllData"),
+                    Action = (mainMenuItem) =>
+                    {
+                        PluginDatabase.RefreshAll();
+                    }
+                },
+
+                new MainMenuItem
+                {
+                    MenuSection = MenuInExtensions + resources.GetString("LOCHowLongToBeat"),
                     Description = "-"
                 },
 
