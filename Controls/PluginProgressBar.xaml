@@ -8,32 +8,70 @@
         xmlns:local="clr-namespace:HowLongToBeat.Controls"
         xmlns:controlsShared="clr-namespace:CommonPluginsControls.Controls"
         xmlns:converters="clr-namespace:CommonPluginsPlaynite.Converters"
-        mc:Ignorable="d" d:DesignHeight="50" d:DesignWidth="800">
+        xmlns:commonpluginsshared="clr-namespace:CommonPluginsShared"
+        mc:Ignorable="d" d:DesignHeight="80" d:DesignWidth="800">
 
     <controls:PluginUserControlExtend.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
         <converters:StringNullOrEmptyToBoolConverter x:Key="StringNullOrEmptyToBoolConverter" />
+        <local:CalcWidthConverter x:Key="CalcWidthConverter" />
     </controls:PluginUserControlExtend.Resources>
 
-    <Grid Loaded="PART_GridContener_Loaded" Name="PART_GridContener" SizeChanged="PART_GridContener_SizeChanged">
+    <Grid Name="PART_GridContener">
         <controlsShared:ProgressBarExtend x:Name="PART_ProgressBarThird" Background="Transparent"
-                                          Minimum="0" Value="60" Maximum="100" TextValue="test"
+                                          MarginWidth ="0"
+                                          TextWidth="0"
+                                          Minimum="0" 
+                                          Value="{Binding ProgressBarThirdValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                          TextValue="{Binding ToolTipThird, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                          Foreground="{Binding ThumbThird, FallbackValue=Green}"
+                                          Maximum="{Binding MaxValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                           TextAboveVisibility="{Binding TextAboveVisibility}"
                                           TextInsideVisibility="{Binding TextInsideVisibility}"
                                           TextBelowVisibility="{Binding TextBelowVisibility}" />
         <controlsShared:ProgressBarExtend x:Name="PART_ProgressBarSecond" Background="Transparent"
-                                          Minimum="0" Value="40" Maximum="100" TextValue="test"
+                                          MarginWidth ="0"
+                                          TextWidth="0"
+                                          Minimum="0" 
+                                          Value="{Binding ProgressBarSecondValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                          TextValue="{Binding ToolTipSecond, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                          Foreground="{Binding ThumbSecond, FallbackValue=DarkRed}"
+                                          Maximum="{Binding MaxValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                           TextAboveVisibility="{Binding TextAboveVisibility}"
                                           TextInsideVisibility="{Binding TextInsideVisibility}"
                                           TextBelowVisibility="{Binding TextBelowVisibility}" />
-        <controlsShared:ProgressBarExtend x:Name="PART_ProgressBarFirst" Background="Transparent"
-                                          Minimum="0" Value="20" Maximum="100" TextValue="test"
+        <controlsShared:ProgressBarExtend x:Name="PART_ProgressBarFirst" Background="Transparent" LayoutUpdated="PART_ProgressBarFirst_LayoutUpdated"
+                                          MarginWidth ="0"
+                                          TextWidth="0"
+                                          Minimum="0" 
+                                          Value="{Binding ProgressBarFirstValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                          TextValue="{Binding ToolTipFirst, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                          Foreground="{Binding ThumbFirst, FallbackValue=DarkBlue}"
+                                          Maximum="{Binding MaxValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                           TextAboveVisibility="{Binding TextAboveVisibility}"
                                           TextInsideVisibility="{Binding TextInsideVisibility}"
                                           TextBelowVisibility="{Binding TextBelowVisibility}" />
 
-        <Grid Name="PART_SliderContener">
-            <Slider Name="SliderPlaytime" Value="30" Maximum="100" Margin="-6,0,-6,0">
+        <Grid Name="PART_SliderContener" Height="{Binding ElementName=PART_ProgressBarFirst, Path=IndicatorHeight}">
+            <Grid.Style>
+                <Style TargetType="{x:Type Grid}">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding TextInsideVisibility}" Value="True">
+                            <Setter Property="VerticalAlignment" Value="Stretch"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding TextAboveVisibility}" Value="True">
+                            <Setter Property="VerticalAlignment" Value="Bottom"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding TextBelowVisibility}" Value="True">
+                            <Setter Property="VerticalAlignment" Value="Top"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Grid.Style>
+
+            <Slider Name="SliderPlaytime" Margin="-6,0,-6,0"
+                    Value="{Binding PlaytimeValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, FallbackValue=5}" 
+                    Maximum="{Binding MaxValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                 <Slider.Style>
                     <Style TargetType="{x:Type Slider}" BasedOn="{StaticResource BaseStyle}">
                         <Setter Property="SnapsToDevicePixels" Value="True" />
@@ -109,8 +147,50 @@
             </Slider>
         </Grid>
 
-        <Grid Name="PART_SliderUserContener">
-            <Slider Name="PartSliderFirst" VerticalAlignment="Bottom" Value="10" Height="10">
+        <Grid Name="PART_SliderUserContener" Height="{Binding ElementName=PART_ProgressBarFirst, Path=IndicatorHeight}">
+            <Grid.Style>
+                <Style TargetType="{x:Type Grid}">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding TextInsideVisibility}" Value="True">
+                            <Setter Property="VerticalAlignment" Value="Stretch"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding TextAboveVisibility}" Value="True">
+                            <Setter Property="VerticalAlignment" Value="Bottom"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding TextBelowVisibility}" Value="True">
+                            <Setter Property="VerticalAlignment" Value="Top"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Grid.Style>
+
+            <controlsShared:SliderWithPointer x:Name="PartSliderFirst" VerticalAlignment="Bottom"
+                                              ThumbFill="{Binding ThumbFirst, FallbackValue=DarkBlue}"
+                                              Visibility="{Binding SliderFirstVisibility}"
+                                              Value="{Binding SliderFirstValue, FallbackValue=1}" 
+                                              Maximum="{Binding MaxValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                              Height="{Binding ElementName=PART_ProgressBarFirst, Path=IndicatorDemiHeight}" 
+                                              Margin="{Binding ElementName=SliderPlaytime, Path=Margin}" />
+
+            <controlsShared:SliderWithPointer x:Name="PartSliderSecond" VerticalAlignment="Bottom"
+                                              ThumbFill="{Binding ThumbSecond, FallbackValue=DarkRed}" 
+                                              Visibility="{Binding SliderSecondVisibility}"
+                                              Value="{Binding SliderSecondValue, FallbackValue=2}" 
+                                              Maximum="{Binding MaxValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                              Height="{Binding ElementName=PART_ProgressBarFirst, Path=IndicatorDemiHeight}" 
+                                              Margin="{Binding ElementName=SliderPlaytime, Path=Margin}" />
+
+            <controlsShared:SliderWithPointer x:Name="PartSliderThird" VerticalAlignment="Bottom"
+                                              ThumbFill="{Binding ThumbThird, FallbackValue=Green}"
+                                              Visibility="{Binding SliderThirdVisibility}"
+                                              Value="{Binding SliderThirdValue, FallbackValue=3}" 
+                                              Maximum="{Binding MaxValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                              Height="{Binding ElementName=PART_ProgressBarFirst, Path=IndicatorDemiHeight}" 
+                                              Margin="{Binding ElementName=SliderPlaytime, Path=Margin}" />
+
+            <!--Slider Name="PartSliderFirst" VerticalAlignment="Bottom" Value="10" 
+                    Height="{Binding ElementName=PART_ProgressBarFirst, Path=IndicatorDemiHeight}" 
+                    Margin="{Binding ElementName=SliderPlaytime, Path=Margin}">
                 <Slider.Style>
                     <Style TargetType="{x:Type Slider}" BasedOn="{StaticResource BaseStyle}">
                         <Setter Property="SnapsToDevicePixels" Value="True" />
@@ -180,8 +260,11 @@
                         </Setter>
                     </Style>
                 </Slider.Style>
-            </Slider>
-            <Slider Name="PartSliderSecond" VerticalAlignment="Bottom" Value="50" Height="10">
+            </Slider-->
+            
+            <!--Slider Name="PartSliderSecond" VerticalAlignment="Bottom" Value="50"
+                    Height="{Binding ElementName=PART_ProgressBarFirst, Path=IndicatorDemiHeight}" 
+                    Margin="{Binding ElementName=SliderPlaytime, Path=Margin}">
                 <Slider.Style>
                     <Style TargetType="{x:Type Slider}" BasedOn="{StaticResource BaseStyle}">
                         <Setter Property="SnapsToDevicePixels" Value="True" />
@@ -251,8 +334,11 @@
                         </Setter>
                     </Style>
                 </Slider.Style>
-            </Slider>
-            <Slider Name="PartSliderThird" VerticalAlignment="Bottom" Value="80" Height="10">
+            </Slider-->
+            
+            <!--Slider Name="PartSliderThird" VerticalAlignment="Bottom" Value="80"
+                    Height="{Binding ElementName=PART_ProgressBarFirst, Path=IndicatorDemiHeight}" 
+                    Margin="{Binding ElementName=SliderPlaytime, Path=Margin}">
                 <Slider.Style>
                     <Style TargetType="{x:Type Slider}" BasedOn="{StaticResource BaseStyle}">
                         <Setter Property="SnapsToDevicePixels" Value="True" />
@@ -322,11 +408,28 @@
                         </Setter>
                     </Style>
                 </Slider.Style>
-            </Slider>
+            </Slider-->
         </Grid>
 
         <StackPanel Name="PART_ShowToolTip" Orientation="Horizontal" 
-                    Visibility="{Binding ShowToolTip, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    Visibility="{Binding ShowToolTip, Converter={StaticResource BooleanToVisibilityConverter}}" 
+                    Height="{Binding ElementName=PART_ProgressBarFirst, Path=IndicatorHeight}">
+            <StackPanel.Style>
+                <Style TargetType="{x:Type StackPanel}">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding TextInsideVisibility}" Value="True">
+                            <Setter Property="VerticalAlignment" Value="Stretch"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding TextAboveVisibility}" Value="True">
+                            <Setter Property="VerticalAlignment" Value="Bottom"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding TextBelowVisibility}" Value="True">
+                            <Setter Property="VerticalAlignment" Value="Top"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </StackPanel.Style>
+            
             <StackPanel Name="spHltb_El1" Width="0" Background="Transparent"
                         IsEnabled="{Binding ElementName=tpHltb_El1, Path=Content, Converter={StaticResource StringNullOrEmptyToBoolConverter}}">
                 <StackPanel.ToolTip>

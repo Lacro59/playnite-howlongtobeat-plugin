@@ -1,18 +1,22 @@
-﻿using CommonPluginsShared;
+﻿using CommonPluginsControls.Controls;
+using CommonPluginsShared;
 using CommonPluginsShared.Collections;
 using CommonPluginsShared.Controls;
 using CommonPluginsShared.Interfaces;
 using HowLongToBeat.Models;
 using HowLongToBeat.Services;
+using Playnite.SDK;
 using Playnite.SDK.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Data;
 using System.Windows.Media;
 using System.Windows.Threading;
 
@@ -49,15 +53,6 @@ namespace HowLongToBeat.Controls
                 ControlDataContext = (PluginProgressBarDataContext)_ControlDataContext;
             }
         }
-
-        public PointCollection ThumbPoint { get; set; }
-        public SolidColorBrush SolidColorBrushFirst { get; set; }
-        public SolidColorBrush SolidColorBrushSecond { get; set; }
-        public SolidColorBrush SolidColorBrushThird { get; set; }
-
-        public bool TextAboveVisibility { get; set; }
-        public bool TextInsideVisibility { get; set; }
-        public bool TextBelowVisibility { get; set; }
 
 
         public PluginProgressBar()
@@ -97,7 +92,6 @@ namespace HowLongToBeat.Controls
                 TextBelowVisibility = false;
             }
 
-
             ControlDataContext = new PluginProgressBarDataContext
             {
                 IsActivated = IsActivated,
@@ -107,14 +101,33 @@ namespace HowLongToBeat.Controls
                 TextInsideVisibility = TextInsideVisibility,
                 TextBelowVisibility = TextBelowVisibility,
 
-                ThumbFirst = SolidColorBrushFirst,
-                ThumbSecond = SolidColorBrushSecond,
-                ThumbThird = SolidColorBrushThird,
-                ThumbPoint = ThumbPoint
+                PlaytimeValue = 0,
+                MaxValue = 0,
+
+                ProgressBarFirstValue = 0,
+                ProgressBarFirstVisibility = Visibility.Collapsed,
+                ToolTipFirst = string.Empty,
+
+                ProgressBarSecondValue = 0,
+                ProgressBarSecondVisibility = Visibility.Collapsed,
+                ToolTipSecond = string.Empty,
+
+                ProgressBarThirdValue = 0,
+                ProgressBarThirdVisibility = Visibility.Collapsed,
+                ToolTipThird = string.Empty,
+
+                SliderFirstValue = 0,
+                SliderFirstVisibility = Visibility.Collapsed,
+                ThumbFirst = null,
+
+                SliderSecondValue = 0,
+                SliderSecondVisibility = Visibility.Collapsed,
+                ThumbSecond = null,
+
+                SliderThirdValue = 0,
+                SliderThirdVisibility = Visibility.Collapsed,
+                ThumbThird = null
             };
-
-
-            PART_GridContener_Loaded(null, null);
         }
 
 
@@ -126,12 +139,7 @@ namespace HowLongToBeat.Controls
 
                 this.Dispatcher.BeginInvoke(DispatcherPriority.Loaded, new ThreadStart(delegate
                 {
-                    tpHltb_El1.Content = string.Empty;
-                    tpHltb_El2.Content = string.Empty;
-                    tpHltb_El3.Content = string.Empty;
-
-                    SetHltbData(gameHowLongToBeat);
-
+                    LoadData(gameHowLongToBeat);
                     this.DataContext = ControlDataContext;
                 }));
 
@@ -140,92 +148,14 @@ namespace HowLongToBeat.Controls
         }
 
 
-        private void SetDataInView(int ElIndicator, long ElValue, string ElFormat)
-        {
-            try
-            {
-                switch (ElIndicator)
-                {
-                    case 1:
-                        if (ElValue != 0)
-                        {
-                            PART_ProgressBarFirst.Visibility = Visibility.Visible;
-                        }
-
-                        PART_ProgressBarFirst.Value = ElValue;
-                        PART_ProgressBarFirst.TextValue = ElFormat;
-
-                        // ToolTip
-                        tpHltb_El1.Content = ElFormat;
-
-                        break;
-
-                    case 2:
-                        if (ElValue != 0)
-                        {
-                            PART_ProgressBarSecond.Visibility = Visibility.Visible;
-                        }
-
-                        PART_ProgressBarSecond.Value = ElValue;
-                        PART_ProgressBarSecond.TextValue = ElFormat;
-
-                        // ToolTip
-                        tpHltb_El2.Content = ElFormat;
-
-                        break;
-
-                    case 3:
-                        if (ElValue != 0)
-                        {
-                            PART_ProgressBarThird.Visibility = Visibility.Visible;
-                        }
-
-                        PART_ProgressBarThird.Value = ElValue;
-                        PART_ProgressBarThird.TextValue = ElFormat;
-
-                        // ToolTip
-                        tpHltb_El3.Content = ElFormat;
-
-                        break;
-                }
-            }
-            catch (Exception ex)
-            {
-                Common.LogError(ex, false, $"Error on SetDataInView({ElIndicator}, {ElValue}, {ElFormat})");
-            }
-        }
-
-        public void SetHltbData(GameHowLongToBeat gameHowLongToBeat)
-        {
-            LoadData(gameHowLongToBeat);
-        }
-
-        private void SetColor(int ElIndicator, Color color)
-        {
-            switch (ElIndicator)
-            {
-                case 1:
-                    PART_ProgressBarFirst.Foreground = new SolidColorBrush(color);
-                    break;
-
-                case 2:
-                    PART_ProgressBarSecond.Foreground = new SolidColorBrush(color);
-                    break;
-
-                case 3:
-                    PART_ProgressBarThird.Foreground = new SolidColorBrush(color);
-                    break;
-            }
-        }
-
         private void LoadData(GameHowLongToBeat gameHowLongToBeat)
         {
             try
             {
                 // Definied data value in different component.
                 int ElIndicator = 0;
-                long MaxValue = 0;
-                long MaxHltb = 0;
+                double MaxValue = 0;
+                double MaxHltb = 0;
                 long Playtime = gameHowLongToBeat.Playtime;
                 List<ListProgressBar> listProgressBars = new List<ListProgressBar>();
                 if (gameHowLongToBeat.HasData)
@@ -314,37 +244,13 @@ namespace HowLongToBeat.Controls
                 }
 
 
-                // Add data
-                PART_ProgressBarFirst.Maximum = MaxValue;
-                PART_ProgressBarSecond.Maximum = MaxValue;
-                PART_ProgressBarThird.Maximum = MaxValue;
-
-                SliderPlaytime.Value = Playtime;
-                SliderPlaytime.Maximum = MaxValue;
-
-
-                PART_ProgressBarFirst.Visibility = Visibility.Hidden;
-                PART_ProgressBarSecond.Visibility = Visibility.Hidden;
-                PART_ProgressBarThird.Visibility = Visibility.Hidden;
-
-
                 foreach (var listProgressBar in listProgressBars)
                 {
                     SetDataInView(listProgressBar.Indicator, listProgressBar.Value, listProgressBar.Format);
                 }
 
 
-                SliderPlaytime.UpdateLayout();
-
-
                 // Show user hltb datas
-                PartSliderFirst.Maximum = MaxValue;
-                PartSliderFirst.Visibility = Visibility.Hidden;
-                PartSliderSecond.Maximum = MaxValue;
-                PartSliderSecond.Visibility = Visibility.Hidden;
-                PartSliderThird.Maximum = MaxValue;
-                PartSliderThird.Visibility = Visibility.Hidden;
-
                 if (gameHowLongToBeat.HasData && PluginDatabase.PluginSettings.Settings.ProgressBarShowTimeUser)
                 {
                     TitleList titleList = PluginDatabase.GetUserHltbData(gameHowLongToBeat.GetData().Id);
@@ -391,7 +297,9 @@ namespace HowLongToBeat.Controls
                     }
                 }
 
-                PART_GridContener_Loaded(null, null);
+
+                ControlDataContext.MaxValue = MaxValue;
+                ControlDataContext.PlaytimeValue = Playtime;
             }
             catch (Exception ex)
             {
@@ -399,135 +307,116 @@ namespace HowLongToBeat.Controls
             }
         }
 
+
         public void SetUserData(int ElIndicator, long Value, Color color)
         {
             switch (ElIndicator)
             {
                 case 1:
-                    PartSliderFirst.Value = Value;
-                    PartSliderFirst.Visibility = Visibility.Visible;
-                    SolidColorBrushFirst = new SolidColorBrush(color);
+                    ControlDataContext.SliderFirstValue = Value;
+                    ControlDataContext.SliderFirstVisibility = Visibility.Visible;
                     break;
                 case 2:
-                    PartSliderSecond.Value = Value;
-                    PartSliderSecond.Visibility = Visibility.Visible;
-                    SolidColorBrushSecond = new SolidColorBrush(color);
+                    ControlDataContext.SliderSecondValue = Value;
+                    ControlDataContext.SliderSecondVisibility = Visibility.Visible;
 
                     break;
                 case 3:
-                    PartSliderThird.Value = Value;
-                    PartSliderThird.Visibility = Visibility.Visible;
-                    SolidColorBrushThird = new SolidColorBrush(color);
+                    ControlDataContext.SliderThirdValue = Value;
+                    ControlDataContext.SliderThirdVisibility = Visibility.Visible;
                     break;
+            }
+        }
+
+        private void SetColor(int ElIndicator, Color color)
+        {
+            switch (ElIndicator)
+            {
+                case 1:
+                    ControlDataContext.ThumbFirst = new SolidColorBrush(color);
+                    break;
+
+                case 2:
+                    ControlDataContext.ThumbSecond = new SolidColorBrush(color);
+                    break;
+
+                case 3:
+                    ControlDataContext.ThumbThird = new SolidColorBrush(color);
+                    break;
+            }
+        }
+
+        private void SetDataInView(int ElIndicator, long ElValue, string ElFormat)
+        {
+            try
+            {
+                switch (ElIndicator)
+                {
+                    case 1:
+                        if (ElValue != 0)
+                        {
+                            ControlDataContext.ProgressBarFirstVisibility = Visibility.Visible;
+                            ControlDataContext.ProgressBarFirstValue = ElValue;
+                            ControlDataContext.ToolTipFirst = ElFormat;
+                        }
+
+                        break;
+
+                    case 2:
+                        if (ElValue != 0)
+                        {
+                            ControlDataContext.ProgressBarSecondVisibility = Visibility.Visible;
+                            ControlDataContext.ProgressBarSecondValue = ElValue;
+                            ControlDataContext.ToolTipSecond = ElFormat;
+                        }
+
+                        break;
+
+                    case 3:
+                        if (ElValue != 0)
+                        {
+                            ControlDataContext.ProgressBarThirdVisibility = Visibility.Visible;
+                            ControlDataContext.ProgressBarThirdValue = ElValue;
+                            ControlDataContext.ToolTipThird = ElFormat;
+                        }
+
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, false, $"Error on SetDataInView({ElIndicator}, {ElValue}, {ElFormat})");
             }
         }
 
 
         #region Events
-        public void PART_GridContener_Loaded(object sender, RoutedEventArgs e)
+        private void PART_ProgressBarFirst_LayoutUpdated(object sender, EventArgs e)
         {
+            double Width1 = PART_ProgressBarFirst.GetIndicatorWidth();
+            double Width2 = PART_ProgressBarSecond.GetIndicatorWidth();
+            double Width3 = PART_ProgressBarThird.GetIndicatorWidth();
+
+
             if (PART_ProgressBarThird.IsVisible)
             {
-                spHltb_El3.Width = PART_ProgressBarThird.GetIndicatorWidth() - PART_ProgressBarSecond.GetIndicatorWidth();
-                PART_ProgressBarThird.MarginWidth = PART_ProgressBarSecond.GetIndicatorWidth();
-                PART_ProgressBarThird.TextWidth = PART_ProgressBarThird.GetIndicatorWidth() - PART_ProgressBarSecond.GetIndicatorWidth();
+                spHltb_El3.Width = (Width3 - Width2 > 0) ? Width3 - Width2 : 0;
+                PART_ProgressBarThird.MarginWidth = Width2;
+                PART_ProgressBarThird.TextWidth = (Width3 - Width2 > 0) ? Width3 - Width2 : 0;
             }
 
             if (PART_ProgressBarSecond.IsVisible)
             {
-                spHltb_El2.Width = PART_ProgressBarSecond.GetIndicatorWidth() - PART_ProgressBarFirst.GetIndicatorWidth();
-                PART_ProgressBarSecond.MarginWidth = PART_ProgressBarFirst.GetIndicatorWidth();
-                PART_ProgressBarSecond.TextWidth = PART_ProgressBarSecond.GetIndicatorWidth() - PART_ProgressBarFirst.GetIndicatorWidth();
+                spHltb_El2.Width = (Width2 - Width1 > 0) ? Width2 - Width1 : 0;
+                PART_ProgressBarSecond.MarginWidth = Width1;
+                PART_ProgressBarSecond.TextWidth = (Width2 - Width1 > 0) ? Width2 - Width1 : 0;
             }
 
             if (PART_ProgressBarFirst.IsVisible)
             {
-                spHltb_El1.Width = PART_ProgressBarFirst.GetIndicatorWidth();
-                PART_ProgressBarFirst.TextWidth = PART_ProgressBarFirst.GetIndicatorWidth();
+                spHltb_El1.Width = Width1;
+                PART_ProgressBarFirst.TextWidth = Width1;
             }
-
-
-            double SliderHeight = PART_ProgressBarFirst.GetIndicatorHeight() / 2;
-            PartSliderFirst.Height = SliderHeight;
-            PartSliderSecond.Height = SliderHeight;
-            PartSliderThird.Height = SliderHeight;
-
-            PartSliderFirst.Margin = SliderPlaytime.Margin;
-            PartSliderSecond.Margin = SliderPlaytime.Margin;
-            PartSliderThird.Margin = SliderPlaytime.Margin;
-
-            Point Point1 = new Point(SliderHeight / 2.5, 0);
-            Point Point2 = new Point(SliderHeight / 1.25, SliderHeight / 1.25);
-            Point Point3 = new Point(0, SliderHeight / 1.25);
-            ThumbPoint = new PointCollection();
-            ThumbPoint.Add(Point1);
-            ThumbPoint.Add(Point2);
-            ThumbPoint.Add(Point3);
-
-
-            this.DataContext = new
-            {
-                ShowToolTip = PluginDatabase.PluginSettings.Settings.ProgressBarShowToolTip,
-                TextAboveVisibility,
-                TextInsideVisibility,
-                TextBelowVisibility,
-
-                ThumbFirst = SolidColorBrushFirst,
-                ThumbSecond = SolidColorBrushSecond,
-                ThumbThird = SolidColorBrushThird,
-                ThumbPoint
-            };
-
-
-            if (PART_SliderContener != null)
-            {
-                PART_SliderContener.Height = PART_ProgressBarFirst.GetIndicatorHeight();
-
-                PART_SliderContener.VerticalAlignment = VerticalAlignment.Stretch;
-                if (PluginDatabase.PluginSettings.Settings.ProgressBarShowTimeAbove)
-                {
-                    PART_SliderContener.VerticalAlignment = VerticalAlignment.Bottom;
-                }
-                if (PluginDatabase.PluginSettings.Settings.ProgressBarShowTimeBelow)
-                {
-                    PART_SliderContener.VerticalAlignment = VerticalAlignment.Top;
-                }
-            }
-
-            if (PART_SliderUserContener != null)
-            {
-                PART_SliderUserContener.Height = PART_ProgressBarFirst.GetIndicatorHeight();
-
-                PART_SliderUserContener.VerticalAlignment = VerticalAlignment.Stretch;
-                if (PluginDatabase.PluginSettings.Settings.ProgressBarShowTimeAbove)
-                {
-                    PART_SliderUserContener.VerticalAlignment = VerticalAlignment.Bottom;
-                }
-                if (PluginDatabase.PluginSettings.Settings.ProgressBarShowTimeBelow)
-                {
-                    PART_SliderUserContener.VerticalAlignment = VerticalAlignment.Top;
-                }
-            }
-
-            if (PART_ShowToolTip != null)
-            {
-                PART_ShowToolTip.Height = PART_ProgressBarFirst.GetIndicatorHeight();
-
-                PART_ShowToolTip.VerticalAlignment = VerticalAlignment.Stretch;
-                if (PluginDatabase.PluginSettings.Settings.ProgressBarShowTimeAbove)
-                {
-                    PART_ShowToolTip.VerticalAlignment = VerticalAlignment.Bottom;
-                }
-                if (PluginDatabase.PluginSettings.Settings.ProgressBarShowTimeBelow)
-                {
-                    PART_ShowToolTip.VerticalAlignment = VerticalAlignment.Top;
-                }
-            }
-        }
-
-        private void PART_GridContener_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            PART_GridContener_Loaded(null, null);
         }
         #endregion
     }
@@ -544,7 +433,32 @@ namespace HowLongToBeat.Controls
         public SolidColorBrush ThumbFirst { get; set; }
         public SolidColorBrush ThumbSecond { get; set; }
         public SolidColorBrush ThumbThird { get; set; }
-        public PointCollection ThumbPoint { get; set; }
+
+        public double PlaytimeValue { get; set; }
+        public double MaxValue { get; set; }
+
+
+        public double ProgressBarFirstValue { get; set; }
+        public Visibility ProgressBarFirstVisibility { get; set; }
+        public string ToolTipFirst { get; set; }
+
+        public double ProgressBarSecondValue { get; set; }
+        public Visibility ProgressBarSecondVisibility { get; set; }
+        public string ToolTipSecond { get; set; }
+
+        public double ProgressBarThirdValue { get; set; }
+        public Visibility ProgressBarThirdVisibility { get; set; }
+        public string ToolTipThird { get; set; }
+
+
+        public double SliderFirstValue { get; set; }
+        public Visibility SliderFirstVisibility { get; set; }
+
+        public double SliderSecondValue { get; set; }
+        public Visibility SliderSecondVisibility { get; set; }
+
+        public double SliderThirdValue { get; set; }
+        public Visibility SliderThirdVisibility { get; set; }
     }
 
     internal class ListProgressBar
@@ -552,5 +466,38 @@ namespace HowLongToBeat.Controls
         public int Indicator { get; set; }
         public long Value { get; set; }
         public string Format { get; set; }
+    }
+
+
+    public class CalcWidthConverter : IValueConverter
+    {
+        private static ILogger logger = LogManager.GetLogger();
+
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            try
+            {
+                double.TryParse(value.ToString(), out double valueDouble);
+
+                if (parameter is ProgressBarExtend)
+                {
+                    double Width = ((ProgressBarExtend)parameter).IndicatorWidth - valueDouble;
+
+                    return (Width > 0) ? Width : 0;
+                }
+
+                return 0;
+            }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, false);
+                return 0;
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
     }
 }

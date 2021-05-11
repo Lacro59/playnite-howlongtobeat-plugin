@@ -233,7 +233,6 @@ namespace HowLongToBeat.Views
         {
             if (_gameHowLongToBeat.HasData)
             {
-                hltbProgressBar.SetHltbData(_gameHowLongToBeat);
                 hltbProgressBar.GameContext = PluginDatabase.PlayniteApi.Database.Games.Get(_gameHowLongToBeat.Id);
             }
         }
