@@ -264,17 +264,39 @@ namespace HowLongToBeat.Services
         {
             GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions(
                 $"{PluginName} - {resources.GetString("LOCCommonProcessing")}",
-                false
+                true
             );
-            globalProgressOptions.IsIndeterminate = true;
+            globalProgressOptions.IsIndeterminate = false;
 
             PlayniteApi.Dialogs.ActivateGlobalProgress((activateGlobalProgress) =>
             {
+                Stopwatch stopWatch = new Stopwatch();
+                stopWatch.Start();
+
+                string CancelText = string.Empty;
+
                 var db = Database.Where(x => x.HasData);
-                foreach(var item in db)
+                activateGlobalProgress.ProgressMaxValue = (double)db.Count();
+
+                foreach (var item in db)
                 {
-                    RefreshElement(item.Id);
+                    if (activateGlobalProgress.CancelToken.IsCancellationRequested)
+                    {
+                        CancelText = " canceled";
+                        break;
+                    }
+
+                    if (item.DateLastRefresh.AddMonths(1) < DateTime.Now)
+                    {
+                        RefreshElement(item.Id);
+                    }
+
+                    activateGlobalProgress.CurrentProgressValue++;
                 }
+
+                stopWatch.Stop();
+                TimeSpan ts = stopWatch.Elapsed;
+                logger.Info($"Task RefreshAll(){CancelText} - {string.Format("{0:00}:{1:00}.{2:00}", ts.Minutes, ts.Seconds, ts.Milliseconds / 10)} for {activateGlobalProgress.CurrentProgressValue}/{(double)db.Count()} items");
             }, globalProgressOptions);
         }
 
@@ -289,6 +311,7 @@ namespace HowLongToBeat.Services
                 if (!ReferenceEquals(loadedItem.GetData(), webDataSearch))
                 {
                     loadedItem.Items = new List<HltbDataUser> { webDataSearch };
+                    loadedItem.DateLastRefresh = DateTime.Now;
                     Update(loadedItem);
                 }
             }
