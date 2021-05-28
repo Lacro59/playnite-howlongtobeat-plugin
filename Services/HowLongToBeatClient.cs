@@ -223,7 +223,7 @@ namespace HowLongToBeat.Services
                     windowExtension.ShowDialog();
                 }).Wait();
 
-                if (ViewExtension.gameHowLongToBeat != null && ViewExtension.gameHowLongToBeat.Items.Count > 0)
+                if (ViewExtension.gameHowLongToBeat?.Items.Count > 0)
                 {
                     return ViewExtension.gameHowLongToBeat;
                 }

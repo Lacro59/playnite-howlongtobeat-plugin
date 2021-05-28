@@ -324,9 +324,10 @@ namespace HowLongToBeat.Services
             {
                 // Get tags in playnite database
                 PluginTags = new List<Tag>();
+
                 foreach (Tag tag in PlayniteApi.Database.Tags)
                 {
-                    if (tag.Name.IndexOf("[HLTB] ") > -1)
+                    if (tag.Name?.IndexOf("[HLTB] ") > -1)
                     {
                         PluginTags.Add(tag);
                     }

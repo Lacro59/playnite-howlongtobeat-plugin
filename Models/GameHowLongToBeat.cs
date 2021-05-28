@@ -30,7 +30,7 @@ namespace HowLongToBeat.Models
         {
             get
             {
-                if (Items != null & Items.Count > 0)
+                if (Items?.Count > 0)
                 {
                     return !Items.First().IsEmpty;
                 }
@@ -44,7 +44,7 @@ namespace HowLongToBeat.Models
         {
             get
             {
-                if (Items != null & Items.Count > 0)
+                if (Items?.Count > 0)
                 {
                     return Items.First().IsEmpty;
                 }
@@ -55,7 +55,7 @@ namespace HowLongToBeat.Models
 
         public HltbDataUser GetData()
         {
-            if (Items != null & Items.Count == 0)
+            if (Items?.Count == 0)
             {
                 HltbDataUser hltbDataUser = new HltbDataUser();
                 hltbDataUser.GameHltbData = new HltbData();

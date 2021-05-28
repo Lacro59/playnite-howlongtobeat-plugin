@@ -421,7 +421,7 @@ namespace HowLongToBeat
 
             try
             {
-                if (args.NewValue != null && args.NewValue.Count == 1)
+                if (args.NewValue?.Count == 1)
                 {
                     PluginDatabase.GameContext = args.NewValue[0];
                     PluginDatabase.SetThemesResources(PluginDatabase.GameContext);

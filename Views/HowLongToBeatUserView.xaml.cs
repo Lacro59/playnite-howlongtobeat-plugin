@@ -41,7 +41,7 @@ namespace HowLongToBeat.Views
         {
             InitializeComponent();
 
-            if (PluginDatabase.Database.UserHltbData != null && PluginDatabase.Database.UserHltbData.TitlesList != null)
+            if (PluginDatabase.Database.UserHltbData?.TitlesList != null)
             {
                 PluginDatabase.Database.UserHltbData.TitlesList.Sort((x, y) => x.GameName.CompareTo(y.GameName));
                 ListViewGames.ItemsSource = PluginDatabase.Database.UserHltbData.TitlesList;
@@ -110,7 +110,7 @@ namespace HowLongToBeat.Views
 
         private void SetChartDataYear()
         {
-            if (PluginDatabase.Database.UserHltbData != null && PluginDatabase.Database.UserHltbData.TitlesList != null)
+            if (PluginDatabase.Database.UserHltbData?.TitlesList != null)
             {
                 // Default data
                 string[] ChartDataLabels = new string[5];
@@ -160,7 +160,7 @@ namespace HowLongToBeat.Views
 
         private void SetChartData()
         {
-            if (PluginDatabase.Database.UserHltbData != null && PluginDatabase.Database.UserHltbData.TitlesList != null)
+            if (PluginDatabase.Database.UserHltbData?.TitlesList != null)
             {
                 LocalDateYMConverter localDateYMConverter = new LocalDateYMConverter();
 
@@ -214,7 +214,7 @@ namespace HowLongToBeat.Views
 
         private void SetStats()
         {
-            if (PluginDatabase.Database.UserHltbData != null && PluginDatabase.Database.UserHltbData.TitlesList != null)
+            if (PluginDatabase.Database.UserHltbData?.TitlesList != null)
             {
                 List<TitleList> titleLists = PluginDatabase.Database.UserHltbData.TitlesList;
 
