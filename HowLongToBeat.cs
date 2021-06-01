@@ -361,14 +361,19 @@ namespace HowLongToBeat
                         PluginDatabase.RefreshAll();
                     }
                 },
+            };
 
-                new MainMenuItem
+
+            if (PluginDatabase.PluginSettings.Settings.EnableTag)
+            {
+                mainMenuItems.Add(new MainMenuItem
                 {
                     MenuSection = MenuInExtensions + resources.GetString("LOCHowLongToBeat"),
                     Description = "-"
-                },
+                });
 
-                new MainMenuItem
+                // Tag menus
+                mainMenuItems.Add(new MainMenuItem
                 {
                     MenuSection = MenuInExtensions + resources.GetString("LOCHowLongToBeat"),
                     Description = resources.GetString("LOCCommonAddAllTags"),
@@ -376,8 +381,8 @@ namespace HowLongToBeat
                     {
                         PluginDatabase.AddTagAllGame();
                     }
-                },
-                new MainMenuItem
+                });
+                mainMenuItems.Add(new MainMenuItem
                 {
                     MenuSection = MenuInExtensions + resources.GetString("LOCHowLongToBeat"),
                     Description = resources.GetString("LOCCommonRemoveAllTags"),
@@ -385,8 +390,9 @@ namespace HowLongToBeat
                     {
                         PluginDatabase.RemoveTagAllGame();
                     }
-                }
-            };
+                });
+            }
+
 
 #if DEBUG
             mainMenuItems.Add(new MainMenuItem
