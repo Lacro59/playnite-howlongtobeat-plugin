@@ -379,18 +379,16 @@ namespace HowLongToBeat
             {
                 try
                 {
-                    /*
-                    Task.Run(() =>
+                    MessageBoxResult result = MessageBoxResult.Yes;
+                    if (!settings.AutoSetCurrentPlayTimeWithoutConfirmation)
                     {
-                        PluginDatabase.SetCurrentPlayTime(game, elapsedSeconds);
-                    });
-                    */
+                        result = PlayniteApi.Dialogs.ShowMessage(resources.GetString("LOCHowLongToBeatSetCurrentTime"), "HowLongToBeat", MessageBoxButton.YesNo);
+                    }
 
-                    var result = PlayniteApi.Dialogs.ShowMessage(resources.GetString("LOCHowLongToBeatSetCurrentTime"), "HowLongToBeat", MessageBoxButton.YesNo);
                     if (result == MessageBoxResult.Yes)
                     {
                         GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions(
-                            $"HowLongToBeat - {resources.GetString("LOCCommonProcessing")}", 
+                            $"HowLongToBeat - {resources.GetString("LOCCommonProcessing")}",
                             false
                         );
                         globalProgressOptions.IsIndeterminate = true;
@@ -400,7 +398,6 @@ namespace HowLongToBeat
                             PluginDatabase.SetCurrentPlayTime(game, elapsedSeconds);
                         }, globalProgressOptions);
                     }
-
                 }
                 catch (Exception ex)
                 {

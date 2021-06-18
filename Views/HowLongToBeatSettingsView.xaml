@@ -47,6 +47,7 @@
                                 <RowDefinition Height="30" />
                                 <RowDefinition Height="30" />
                                 <RowDefinition Height="30" />
+                                <RowDefinition Height="30" />
                                 <RowDefinition Height="auto" />
                                 <RowDefinition Height="10" />
                                 <RowDefinition Height="auto" />
@@ -84,8 +85,14 @@
                                 <Button Content="{DynamicResource LOCRemoveTitle}" IsEnabled="{Binding EnableTag}" VerticalAlignment="Bottom" Click="ButtonRemoveTag_Click" Margin="0,0,0,1" />
                             </StackPanel>
 
-                            <CheckBox Grid.Row="6" IsChecked="{Binding AutoSetCurrentPlayTime}" Grid.Column="0" VerticalAlignment="Center">
+                            <CheckBox Grid.Row="6" IsChecked="{Binding AutoSetCurrentPlayTime}" Grid.Column="0" VerticalAlignment="Center" 
+                                      Name="PART_AutoSetCurrentPlayTime">
                                 <Label Content="{DynamicResource LOCHowLongToBeatAutoSetCurrentPlayTime}" />
+                            </CheckBox>
+
+                            <CheckBox Grid.Row="7" Margin="50,0,0,0" IsChecked="{Binding AutoSetCurrentPlayTimeWithoutConfirmation}" Grid.Column="0" VerticalAlignment="Center"
+                                      IsEnabled="{Binding ElementName=PART_AutoSetCurrentPlayTime, Path=IsChecked}">
+                                <Label Content="Without confirmation message" />
                             </CheckBox>
 
                             <Grid Grid.Row="10">

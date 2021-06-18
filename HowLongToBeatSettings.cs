@@ -20,6 +20,7 @@ namespace HowLongToBeat
         public bool EnableTag { get; set; } = false;
         public bool ShowHltbImg { get; set; } = true;
 
+        public bool AutoSetCurrentPlayTimeWithoutConfirmation { get; set; } = false;
         public bool AutoSetCurrentPlayTime { get; set; } = false;
 
         public bool AutoAccept { get; set; } = true;
@@ -78,6 +79,7 @@ namespace HowLongToBeat
                 ShowHltbImg = savedSettings.ShowHltbImg;
 
                 AutoSetCurrentPlayTime = savedSettings.AutoSetCurrentPlayTime;
+                AutoSetCurrentPlayTimeWithoutConfirmation = savedSettings.AutoSetCurrentPlayTimeWithoutConfirmation;
 
                 AutoAccept = savedSettings.AutoAccept;
                 ShowWhenMismatch = savedSettings.ShowWhenMismatch;
