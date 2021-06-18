@@ -164,7 +164,7 @@ namespace HowLongToBeat.Services
 
             long TimeConverted = hours * 3600 + minutes * 60 + secondes;
 #if DEBUG
-            logger.Debug($"HowLongToBeat [Ignored] - ConvertStringToLongUser: {Time} - {TimeConverted}");
+            logger.Debug($"HowLongToBeat [Ignored] - ConvertStringToLongUser: {Time.Trim()} - {TimeConverted}");
 #endif
 
             return TimeConverted;
@@ -481,7 +481,7 @@ namespace HowLongToBeat.Services
             try
             {
                 List<HttpCookie> Cookies = webViews.GetCookies();
-                Cookies = Cookies.Where(x => x.Domain.Contains("howlongtobeat")).ToList();
+                Cookies = Cookies.Where(x => (bool)(x?.Domain?.Contains("howlongtobeat")))?.ToList();
 
                 var formContent = new FormUrlEncodedContent(new[]
                 {
@@ -514,7 +514,7 @@ namespace HowLongToBeat.Services
             try
             {
                 List<HttpCookie> Cookies = webViews.GetCookies();
-                Cookies = Cookies.Where(x => x.Domain.Contains("howlongtobeat")).ToList();
+                Cookies = Cookies.Where(x => (bool)(x?.Domain?.Contains("howlongtobeat")))?.ToList();
 
                 var formContent = new FormUrlEncodedContent(new[]
                 {
@@ -710,7 +710,7 @@ namespace HowLongToBeat.Services
             try
             {
                 List<HttpCookie> Cookies = webViews.GetCookies();
-                Cookies = Cookies.Where(x => x.Domain.Contains("howlongtobeat")).ToList();
+                Cookies = Cookies.Where(x => (bool)(x?.Domain?.Contains("howlongtobeat")))?.ToList();
 
                 string response = Web.DownloadStringData(string.Format(UrlPostDataEdit, UserGameId), Cookies).GetAwaiter().GetResult();
 
@@ -984,7 +984,7 @@ namespace HowLongToBeat.Services
             try
             {
                 List<HttpCookie> Cookies = webViews.GetCookies();
-                Cookies = Cookies.Where(x => x.Domain.Contains("howlongtobeat")).ToList();
+                Cookies = Cookies.Where(x => (bool)(x?.Domain?.Contains("howlongtobeat")))?.ToList();
 
                 Stream FileStream = Web.DownloadFileStream(UrlExportAll, Cookies).GetAwaiter().GetResult();
 
@@ -999,7 +999,6 @@ namespace HowLongToBeat.Services
                 {
                     TitleList titleList = new TitleList();
                 }
-
 
                 return result;
             }
@@ -1308,10 +1307,7 @@ namespace HowLongToBeat.Services
                     
 
                     List<HttpCookie> Cookies = webViews.GetCookies();
-                    Cookies = Cookies.Where(x => x.Domain.Contains("howlongtobeat")).ToList();
-#if DEBUG
-                    logger.Debug($"HowLongToBeat [Ignored] - Cookies: {JsonConvert.SerializeObject(Cookies)}");
-#endif
+                    Cookies = Cookies.Where(x => (bool)(x?.Domain?.Contains("howlongtobeat")))?.ToList();
 
                     var formContent = new FormUrlEncodedContent(data);
                     string response = Web.PostStringDataCookies(UrlPostData, formContent, Cookies).GetAwaiter().GetResult();
