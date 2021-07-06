@@ -137,8 +137,6 @@ namespace HowLongToBeat.Services
             Database = new GameHowLongToBeatCollection(Paths.PluginDatabasePath);
             Database.SetGameInfo<HltbDataUser>(PlayniteApi);
 
-            GetPluginTags();
-
             Database.UserHltbData = howLongToBeatClient.LoadUserData();
 
             return true;
@@ -406,6 +404,7 @@ namespace HowLongToBeat.Services
 
         public override void AddTag(Game game, bool noUpdate = false)
         {
+            GetPluginTags();
             GameHowLongToBeat gameHowLongToBeat = Get(game, true);
 
             if (gameHowLongToBeat.HasData)
