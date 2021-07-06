@@ -75,7 +75,6 @@
                     </Grid>
 
                     <StackPanel Grid.Column="1" Orientation="Vertical">
-                        <Button Content="{DynamicResource LOCWebsiteLabel}" Margin="0,0,0,10" Click="ButtonWeb_Click"></Button>
                         <Button Content="{DynamicResource LOCRemoveLabel}" Click="ButtonDelete_Click"></Button>
                     </StackPanel>
                 </Grid>
@@ -96,7 +95,20 @@
 
             <StackPanel Name="PART_HltbProgressBar" Grid.Row="2" Height="50" Loaded="PART_HltbProgressBar_Loaded" />
 
-            <Label Grid.Row="4" HorizontalAlignment="Left" Content="{Binding HltbName, FallbackValue='src: Name for test'}" FontSize="8" />
+            <Grid Grid.Row="4">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="10" />
+                    <ColumnDefinition Width="auto" />
+                </Grid.ColumnDefinitions>
+
+                <Label Content="{DynamicResource LOCSourceLabel}" Grid.Column="0" FontSize="8" />
+                <TextBlock Grid.Column="2" VerticalAlignment="Center" FontSize="8">
+                <Hyperlink Name="PART_SourceLink" Click="PART_SourceLink_Click">
+                    <TextBlock Name="PART_SourceLabel" FontSize="8" Text="{Binding HltbName}" />
+                </Hyperlink>
+            </TextBlock>
+            </Grid>
         </Grid>
     </Grid>
 </UserControl >

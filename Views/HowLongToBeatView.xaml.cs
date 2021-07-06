@@ -62,7 +62,7 @@ namespace HowLongToBeat.Views
                 }
 
                 GameName = _gameHowLongToBeat.Name;
-                HltbName = resources.GetString("LOCSourceLabel") + ": " + gameData.Name;
+                HltbName = gameData.Name;
             }
 
             if (_gameHowLongToBeat.HasData)
@@ -183,13 +183,14 @@ namespace HowLongToBeat.Views
         }
 
 
-        private void ButtonWeb_Click(object sender, RoutedEventArgs e)
+        private void PART_SourceLink_Click(object sender, System.Windows.RoutedEventArgs e)
         {
             if (!_gameHowLongToBeat.GetData().Url.IsNullOrEmpty())
             {
                 Process.Start(_gameHowLongToBeat.GetData().Url);
             }
         }
+
 
         private void ButtonDelete_Click(object sender, RoutedEventArgs e)
         {
