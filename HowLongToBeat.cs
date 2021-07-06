@@ -487,16 +487,10 @@ namespace HowLongToBeat
                     
                     if (result == MessageBoxResult.Yes)
                     {
-                        GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions(
-                            $"HowLongToBeat - {resources.GetString("LOCCommonProcessing")}", 
-                            false
-                        );
-                        globalProgressOptions.IsIndeterminate = true;
-
-                        PlayniteApi.Dialogs.ActivateGlobalProgress((activateGlobalProgress) =>
+                        Task.Run(() => 
                         {
                             PluginDatabase.SetCurrentPlayTime(game, elapsedSeconds);
-                        }, globalProgressOptions);
+                        });
                     }
 
                 }
