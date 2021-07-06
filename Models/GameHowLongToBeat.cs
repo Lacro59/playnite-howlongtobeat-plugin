@@ -1,5 +1,5 @@
 ﻿using CommonPluginsShared.Collections;
-using Newtonsoft.Json;
+using Playnite.SDK.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,7 +25,7 @@ namespace HowLongToBeat.Models
             }
         }
 
-        [JsonIgnore]
+        [DontSerialize]
         public override bool HasData
         {
             get
@@ -39,7 +39,7 @@ namespace HowLongToBeat.Models
             }
         }
 
-        [JsonIgnore]
+        [DontSerialize]
         public bool HasDataEmpty
         {
             get

@@ -2,8 +2,8 @@
 using AngleSharp.Parser.Html;
 using HowLongToBeat.Models;
 using HowLongToBeat.Views;
-using Newtonsoft.Json;
 using Playnite.SDK;
+using Playnite.SDK.Data;
 using Playnite.SDK.Models;
 using System;
 using System.Linq;
@@ -668,7 +668,7 @@ namespace HowLongToBeat.Services
                     }
                 }
 
-                Common.LogDebug(true, $"titleList: {JsonConvert.SerializeObject(titleList)}");
+                Common.LogDebug(true, $"titleList: {Serialization.ToJson(titleList)}");
 
                 return titleList;
             }
@@ -1009,8 +1009,7 @@ namespace HowLongToBeat.Services
             {
                 try
                 {
-                    var JsonStringData = File.ReadAllText(PathHltbUserStats);
-                    hltbDataUser = JsonConvert.DeserializeObject<HltbUserStats>(JsonStringData);
+                    hltbDataUser = Serialization.FromJsonFile<HltbUserStats>(PathHltbUserStats);
                 }
                 catch (Exception ex)
                 {
@@ -1109,7 +1108,7 @@ namespace HowLongToBeat.Services
 
                         TitleList titleList = GetTitleList(ListGame);
 
-                        Common.LogDebug(true, $"titleList: {JsonConvert.SerializeObject(titleList)}");
+                        Common.LogDebug(true, $"titleList: {Serialization.ToJson(titleList)}");
 
                         return titleList;
                     }
@@ -1291,7 +1290,7 @@ namespace HowLongToBeat.Services
                     List<HttpCookie> Cookies = webViews.GetCookies();
                     Cookies = Cookies.Where(x => x.Domain.Contains("howlongtobeat")).ToList();
 
-                    Common.LogDebug(true, $"Cookies: {JsonConvert.SerializeObject(Cookies)}");
+                    Common.LogDebug(true, $"Cookies: {Serialization.ToJson(Cookies)}");
 
                     var formContent = new FormUrlEncodedContent(data);
                     string response = await Web.PostStringDataCookies(UrlPostData, formContent, Cookies);

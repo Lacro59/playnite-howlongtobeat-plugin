@@ -1,5 +1,5 @@
 ﻿using CommonPluginsPlaynite.Converters;
-using Newtonsoft.Json;
+using Playnite.SDK.Data;
 using System.Collections.Generic;
 using System.Globalization;
 
@@ -10,7 +10,7 @@ namespace HowLongToBeat.Models
         private LongToTimePlayedConverter converter = new LongToTimePlayedConverter();
 
         public long MainStory { get; set; } = 0;
-        [JsonIgnore]
+        [DontSerialize]
         public string MainStoryFormat
         {
             get
@@ -23,7 +23,7 @@ namespace HowLongToBeat.Models
             }
         }
         public long MainExtra { get; set; }
-        [JsonIgnore]
+        [DontSerialize]
         public string MainExtraFormat
         {
             get
@@ -36,7 +36,7 @@ namespace HowLongToBeat.Models
             }
         }
         public long Completionist { get; set; }
-        [JsonIgnore]
+        [DontSerialize]
         public string CompletionistFormat
         {
             get
@@ -51,7 +51,7 @@ namespace HowLongToBeat.Models
 
 
         public long Solo { get; set; } = 0;
-        [JsonIgnore]
+        [DontSerialize]
         public string SoloFormat
         {
             get
@@ -64,7 +64,7 @@ namespace HowLongToBeat.Models
             }
         }
         public long CoOp { get; set; } = 0;
-        [JsonIgnore]
+        [DontSerialize]
         public string CoOpFormat
         {
             get
@@ -77,7 +77,7 @@ namespace HowLongToBeat.Models
             }
         }
         public long Vs { get; set; } = 0;
-        [JsonIgnore]
+        [DontSerialize]
         public string VsFormat
         {
             get
@@ -91,7 +91,7 @@ namespace HowLongToBeat.Models
         }
 
 
-        [JsonIgnore]
+        [DontSerialize]
         public long TimeToBeat {
             get
             {
@@ -123,7 +123,7 @@ namespace HowLongToBeat.Models
                 return 0;
             }
         }
-        [JsonIgnore]
+        [DontSerialize]
         public string TimeToBeatFormat
         {
             get

@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+﻿using Playnite.SDK.Data;
 using System.Collections.Generic;
 
 namespace HowLongToBeat.Models
@@ -12,7 +12,7 @@ namespace HowLongToBeat.Models
 
         public HltbData GameHltbData { get; set; }
 
-        [JsonIgnore]
+        [DontSerialize]
         public bool IsEmpty {
             get
             {

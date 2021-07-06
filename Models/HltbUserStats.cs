@@ -1,8 +1,8 @@
 ﻿using CommonPluginsShared;
 using CommonPluginsShared.Converters;
 using HowLongToBeat.Services;
-using Newtonsoft.Json;
 using Playnite.SDK;
+using Playnite.SDK.Data;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -42,7 +42,7 @@ namespace HowLongToBeat.Models
         public bool IsRetired { get; set; }
 
         public DateTime? Completion { get; set; }
-        [JsonIgnore]
+        [DontSerialize]
         public string CompletionFormat
         {
             get
@@ -59,7 +59,7 @@ namespace HowLongToBeat.Models
 
         public HltbData HltbUserData { get; set; }
 
-        [JsonIgnore]
+        [DontSerialize]
         public Guid GameId {
             get
             {
@@ -75,7 +75,7 @@ namespace HowLongToBeat.Models
             }
         }
 
-        [JsonIgnore]
+        [DontSerialize]
         public RelayCommand<Guid> GoToGame
         {
             get
@@ -84,7 +84,7 @@ namespace HowLongToBeat.Models
             }
         }
 
-        [JsonIgnore]
+        [DontSerialize]
         public bool GameExist
         {
             get

@@ -1,7 +1,7 @@
 ﻿using HowLongToBeat.Models;
 using HowLongToBeat.Views;
-using Newtonsoft.Json;
 using Playnite.SDK;
+using Playnite.SDK.Data;
 using Playnite.SDK.Models;
 using CommonPluginsShared.Collections;
 using System;
@@ -548,8 +548,7 @@ namespace HowLongToBeat.Services
                 {
                     try
                     {
-                        string PathHltbUserStats = Path.Combine(Paths.PluginUserDataPath, "HltbUserStats.json");
-                        File.WriteAllText(PathHltbUserStats, JsonConvert.SerializeObject(UserHltbData));
+                        Serialization.ToFile(UserHltbData, Path.Combine(Paths.PluginUserDataPath, "HltbUserStats.json"), Format.Json);
                     }
                     catch (Exception ex)
                     {
@@ -571,8 +570,7 @@ namespace HowLongToBeat.Services
                 {
                     try
                     {
-                        string PathHltbUserStats = Path.Combine(Paths.PluginUserDataPath, "HltbUserStats.json");
-                        File.WriteAllText(PathHltbUserStats, JsonConvert.SerializeObject(UserHltbData));
+                        Serialization.ToFile(UserHltbData, Path.Combine(Paths.PluginUserDataPath, "HltbUserStats.json"), Format.Json);
                     }
                     catch (Exception ex)
                     {
@@ -605,8 +603,7 @@ namespace HowLongToBeat.Services
 
                     try
                     {
-                        string PathHltbUserStats = Path.Combine(Paths.PluginUserDataPath, "HltbUserStats.json");
-                        File.WriteAllText(PathHltbUserStats, JsonConvert.SerializeObject(Database.UserHltbData));
+                        Serialization.ToFile(Database.UserHltbData, Path.Combine(Paths.PluginUserDataPath, "HltbUserStats.json"), Format.Json);
                     }
                     catch (Exception ex)
                     {

@@ -1,8 +1,8 @@
 ﻿using CommonPluginsPlaynite.Converters;
 using CommonPluginsShared;
 using HowLongToBeat.Models;
-using Newtonsoft.Json;
 using Playnite.SDK;
+using Playnite.SDK.Data;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -77,11 +77,8 @@ namespace HowLongToBeat.Services
 
                 try
                 {
-                    var JsonStringData = File.ReadAllText(objectFile);
-
                     Guid gameId = Guid.Parse(objectFile.Replace(PathActivityDB, "").Replace(".json", "").Replace("\\", ""));
-
-                    HltbDataUserOld hltbDataUser = JsonConvert.DeserializeObject<HltbDataUserOld>(JsonStringData);
+                    HltbDataUserOld hltbDataUser = Serialization.FromJsonFile<HltbDataUserOld>(objectFile);
 
                     Items.TryAdd(gameId, hltbDataUser);
                 }
@@ -188,7 +185,7 @@ namespace HowLongToBeat.Services
         public string Url { get; set; } = string.Empty;
 
         public long MainStory { get; set; }
-        [JsonIgnore]
+        [DontSerialize]
         public string MainStoryFormat
         {
             get
@@ -201,7 +198,7 @@ namespace HowLongToBeat.Services
             }
         }
         public long MainExtra { get; set; }
-        [JsonIgnore]
+        [DontSerialize]
         public string MainExtraFormat
         {
             get
@@ -214,7 +211,7 @@ namespace HowLongToBeat.Services
             }
         }
         public long Completionist { get; set; }
-        [JsonIgnore]
+        [DontSerialize]
         public string CompletionistFormat
         {
             get
@@ -229,7 +226,7 @@ namespace HowLongToBeat.Services
 
 
         public long Solo { get; set; } = 0;
-        [JsonIgnore]
+        [DontSerialize]
         public string SoloFormat
         {
             get
@@ -242,7 +239,7 @@ namespace HowLongToBeat.Services
             }
         }
         public long CoOp { get; set; } = 0;
-        [JsonIgnore]
+        [DontSerialize]
         public string CoOpFormat
         {
             get
@@ -255,7 +252,7 @@ namespace HowLongToBeat.Services
             }
         }
         public long Vs { get; set; } = 0;
-        [JsonIgnore]
+        [DontSerialize]
         public string VsFormat
         {
             get

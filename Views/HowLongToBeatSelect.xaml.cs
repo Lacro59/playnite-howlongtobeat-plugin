@@ -1,8 +1,8 @@
 ﻿using CommonPluginsShared;
 using HowLongToBeat.Models;
 using HowLongToBeat.Services;
-using Newtonsoft.Json;
 using Playnite.SDK;
+using Playnite.SDK.Data;
 using Playnite.SDK.Models;
 using System;
 using System.Linq;
@@ -122,7 +122,7 @@ namespace HowLongToBeat.Views
                     Common.LogError(ex, false);
                 }
 
-                Common.LogDebug(true, $"dataSearch: {JsonConvert.SerializeObject(dataSearch)}");
+                Common.LogDebug(true, $"dataSearch: {Serialization.ToJson(dataSearch)}");
 
                 this.Dispatcher.BeginInvoke((Action)delegate
                 {

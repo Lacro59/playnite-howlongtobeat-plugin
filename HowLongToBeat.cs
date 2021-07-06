@@ -1,6 +1,5 @@
 ﻿using HowLongToBeat.Services;
 using HowLongToBeat.Views;
-using Newtonsoft.Json;
 using Playnite.SDK;
 using Playnite.SDK.Events;
 using Playnite.SDK.Models;
