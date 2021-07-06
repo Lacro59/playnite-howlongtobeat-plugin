@@ -81,9 +81,9 @@ namespace HowLongToBeat.Controls
         public override void SetDefaultDataContext()
         {
             bool IsActivated = PluginDatabase.PluginSettings.Settings.EnableIntegrationViewItem;
-            bool TextAboveVisibility = PluginDatabase.PluginSettings.Settings.ProgressBarShowTimeAbove; 
-            bool TextInsideVisibility = PluginDatabase.PluginSettings.Settings.ProgressBarShowTimeInterior;
-            bool TextBelowVisibility = PluginDatabase.PluginSettings.Settings.ProgressBarShowTimeBelow;
+            bool TextAboveVisibility = PluginDatabase.PluginSettings.Settings.ProgressBarShowTime ? PluginDatabase.PluginSettings.Settings.ProgressBarShowTimeAbove : false; 
+            bool TextInsideVisibility = PluginDatabase.PluginSettings.Settings.ProgressBarShowTime ? PluginDatabase.PluginSettings.Settings.ProgressBarShowTimeInterior : false;
+            bool TextBelowVisibility = PluginDatabase.PluginSettings.Settings.ProgressBarShowTime ? PluginDatabase.PluginSettings.Settings.ProgressBarShowTimeBelow : false;
             if (IgnoreSettings)
             {
                 IsActivated = true;
@@ -158,11 +158,13 @@ namespace HowLongToBeat.Controls
                 double MaxHltb = 0;
                 long Playtime = gameHowLongToBeat.Playtime;
                 List<ListProgressBar> listProgressBars = new List<ListProgressBar>();
+                TitleList titleList = PluginDatabase.GetUserHltbData(gameHowLongToBeat.GetData().Id);
+
                 if (gameHowLongToBeat.HasData)
                 {
                     var HltbData = gameHowLongToBeat.GetData();
 
-                    if (HltbData.GameHltbData.MainStory != 0)
+                    if (HltbData.GameHltbData.MainStory > 0)
                     {
                         ElIndicator += 1;
                         listProgressBars.Add(new ListProgressBar { Indicator = ElIndicator, Value = HltbData.GameHltbData.MainStory, Format = HltbData.GameHltbData.MainStoryFormat });
@@ -171,9 +173,19 @@ namespace HowLongToBeat.Controls
                             MaxValue = HltbData.GameHltbData.MainStory;
                         }
                         SetColor(ElIndicator, PluginDatabase.PluginSettings.Settings.ColorFirst);
+
+
+                        // Show user hltb datas
+                        if (gameHowLongToBeat.HasData && PluginDatabase.PluginSettings.Settings.ProgressBarShowTimeUser)
+                        {
+                            if (titleList?.HltbUserData?.MainStory > 0)
+                            {
+                                SetUserData(ElIndicator, titleList.HltbUserData.MainStory, PluginDatabase.PluginSettings.Settings.ColorFirst);
+                            }
+                        }
                     }
 
-                    if (HltbData.GameHltbData.MainExtra != 0)
+                    if (HltbData.GameHltbData.MainExtra > 0)
                     {
                         ElIndicator += 1;
                         listProgressBars.Add(new ListProgressBar { Indicator = ElIndicator, Value = HltbData.GameHltbData.MainExtra, Format = HltbData.GameHltbData.MainExtraFormat });
@@ -182,6 +194,16 @@ namespace HowLongToBeat.Controls
                             MaxValue = HltbData.GameHltbData.MainExtra;
                         }
                         SetColor(ElIndicator, PluginDatabase.PluginSettings.Settings.ColorSecond);
+
+
+                        // Show user hltb datas
+                        if (gameHowLongToBeat.HasData && PluginDatabase.PluginSettings.Settings.ProgressBarShowTimeUser)
+                    {
+                            if (titleList?.HltbUserData?.MainExtra > 0)
+                            {
+                                SetUserData(ElIndicator, titleList.HltbUserData.MainExtra, PluginDatabase.PluginSettings.Settings.ColorSecond);
+                            }
+                        }
                     }
 
                     if (HltbData.GameHltbData.Completionist != 0)
@@ -193,6 +215,16 @@ namespace HowLongToBeat.Controls
                             MaxValue = HltbData.GameHltbData.Completionist;
                         }
                         SetColor(ElIndicator, PluginDatabase.PluginSettings.Settings.ColorThird);
+
+
+                        // Show user hltb datas
+                        if (gameHowLongToBeat.HasData && PluginDatabase.PluginSettings.Settings.ProgressBarShowTimeUser)
+                        {
+                            if (titleList?.HltbUserData?.Completionist > 0)
+                            {
+                                SetUserData(ElIndicator, titleList.HltbUserData.Completionist, PluginDatabase.PluginSettings.Settings.ColorThird);
+                            }
+                        }
                     }
 
                     if (HltbData.GameHltbData.Solo != 0)
@@ -204,6 +236,16 @@ namespace HowLongToBeat.Controls
                             MaxValue = HltbData.GameHltbData.Solo;
                         }
                         SetColor(ElIndicator, PluginDatabase.PluginSettings.Settings.ColorFirstMulti);
+
+
+                        // Show user hltb datas
+                        if (gameHowLongToBeat.HasData && PluginDatabase.PluginSettings.Settings.ProgressBarShowTimeUser)
+                        {
+                            if (titleList?.HltbUserData?.Solo > 0)
+                            {
+                                SetUserData(ElIndicator, titleList.HltbUserData.Solo, PluginDatabase.PluginSettings.Settings.ColorFirstMulti);
+                            }
+                        }
                     }
 
                     if (HltbData.GameHltbData.CoOp != 0)
@@ -215,6 +257,16 @@ namespace HowLongToBeat.Controls
                             MaxValue = HltbData.GameHltbData.CoOp;
                         }
                         SetColor(ElIndicator, PluginDatabase.PluginSettings.Settings.ColorSecondMulti);
+
+
+                        // Show user hltb datas
+                        if (gameHowLongToBeat.HasData && PluginDatabase.PluginSettings.Settings.ProgressBarShowTimeUser)
+                        {
+                            if (titleList?.HltbUserData?.CoOp > 0)
+                            {
+                                SetUserData(ElIndicator, titleList.HltbUserData.CoOp, PluginDatabase.PluginSettings.Settings.ColorSecondMulti);
+                            }
+                        }
                     }
 
                     if (HltbData.GameHltbData.Vs != 0)
@@ -226,6 +278,16 @@ namespace HowLongToBeat.Controls
                             MaxValue = HltbData.GameHltbData.Vs;
                         }
                         SetColor(ElIndicator, PluginDatabase.PluginSettings.Settings.ColorThirdMulti);
+
+
+                        // Show user hltb datas
+                        if (gameHowLongToBeat.HasData && PluginDatabase.PluginSettings.Settings.ProgressBarShowTimeUser)
+                        {
+                            if (titleList?.HltbUserData?.Vs > 0)
+                            {
+                                SetUserData(ElIndicator, titleList.HltbUserData.Vs, PluginDatabase.PluginSettings.Settings.ColorThirdMulti);
+                            }
+                        }
                     }
                 }
 
@@ -247,54 +309,6 @@ namespace HowLongToBeat.Controls
                 foreach (var listProgressBar in listProgressBars)
                 {
                     SetDataInView(listProgressBar.Indicator, listProgressBar.Value, listProgressBar.Format);
-                }
-
-
-                // Show user hltb datas
-                if (gameHowLongToBeat.HasData && PluginDatabase.PluginSettings.Settings.ProgressBarShowTimeUser)
-                {
-                    TitleList titleList = PluginDatabase.GetUserHltbData(gameHowLongToBeat.GetData().Id);
-
-                    if (titleList != null)
-                    {
-                        ElIndicator = 0;
-
-                        if (titleList.HltbUserData.MainStory != 0)
-                        {
-                            ElIndicator++;
-                            SetUserData(ElIndicator, titleList.HltbUserData.MainStory, PluginDatabase.PluginSettings.Settings.ColorFirst);
-                        }
-
-                        if (titleList.HltbUserData.MainExtra != 0)
-                        {
-                            ElIndicator++;
-                            SetUserData(ElIndicator, titleList.HltbUserData.MainExtra, PluginDatabase.PluginSettings.Settings.ColorSecond);
-                        }
-
-                        if (titleList.HltbUserData.Completionist != 0)
-                        {
-                            ElIndicator++;
-                            SetUserData(ElIndicator, titleList.HltbUserData.Completionist, PluginDatabase.PluginSettings.Settings.ColorThird);
-                        }
-
-                        if (titleList.HltbUserData.Solo != 0)
-                        {
-                            ElIndicator++;
-                            SetUserData(ElIndicator, titleList.HltbUserData.Solo, PluginDatabase.PluginSettings.Settings.ColorFirstMulti);
-                        }
-
-                        if (titleList.HltbUserData.CoOp != 0)
-                        {
-                            ElIndicator++;
-                            SetUserData(ElIndicator, titleList.HltbUserData.CoOp, PluginDatabase.PluginSettings.Settings.ColorSecondMulti);
-                        }
-
-                        if (titleList.HltbUserData.Vs != 0)
-                        {
-                            ElIndicator++;
-                            SetUserData(ElIndicator, titleList.HltbUserData.Vs, PluginDatabase.PluginSettings.Settings.ColorThirdMulti);
-                        }
-                    }
                 }
 
 

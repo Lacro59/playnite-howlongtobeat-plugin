@@ -1,6 +1,7 @@
 ﻿using CommonPluginsControls.LiveChartsCommon;
 using CommonPluginsPlaynite.Converters;
 using CommonPluginsShared;
+using CommonPluginsShared.Converters;
 using HowLongToBeat.Models;
 using HowLongToBeat.Services;
 using LiveCharts;
@@ -113,12 +114,12 @@ namespace HowLongToBeat.Views
             if (PluginDatabase.Database.UserHltbData?.TitlesList != null)
             {
                 // Default data
-                string[] ChartDataLabels = new string[5];
+                string[] ChartDataLabels = new string[7];
                 ChartValues<CustomerForSingle> ChartDataSeries = new ChartValues<CustomerForSingle>();
 
-                for (int i = 4; i >= 0; i--)
+                for (int i = 6; i >= 0; i--)
                 {
-                    ChartDataLabels[(4 - i)] = DateTime.Now.AddYears(-i).ToString("yyyy");
+                    ChartDataLabels[(6 - i)] = DateTime.Now.AddYears(-i).ToString("yyyy");
                     ChartDataSeries.Add(new CustomerForSingle
                     {
                         Name = DateTime.Now.AddYears(-i).ToString("yyyy"),
@@ -166,13 +167,13 @@ namespace HowLongToBeat.Views
 
 
                 // Default data
-                string[] ChartDataLabels = new string[22];
+                string[] ChartDataLabels = new string[20];
                 ChartValues<CustomerForSingle> ChartDataSeries = new ChartValues<CustomerForSingle>();
 
 
-                for (int i = 21; i >= 0; i--)
+                for (int i = 19; i >= 0; i--)
                 {
-                    ChartDataLabels[(21 - i)] = (string)localDateYMConverter.Convert(DateTime.Now.AddMonths(-i), null, null, null);
+                    ChartDataLabels[(19 - i)] = (string)localDateYMConverter.Convert(DateTime.Now.AddMonths(-i), null, null, null);
                     ChartDataSeries.Add(new CustomerForSingle
                     {
                         Name = (string)localDateYMConverter.Convert(DateTime.Now.AddMonths(-i), null, null, null),

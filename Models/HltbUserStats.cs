@@ -1,4 +1,5 @@
 ﻿using CommonPluginsShared;
+using CommonPluginsShared.Converters;
 using HowLongToBeat.Services;
 using Newtonsoft.Json;
 using Playnite.SDK;
