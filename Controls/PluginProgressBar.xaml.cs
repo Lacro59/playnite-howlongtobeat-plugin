@@ -55,6 +55,9 @@ namespace HowLongToBeat.Controls
         }
 
 
+        private bool ShowUserData = true;
+
+
         public PluginProgressBar()
         {
             InitializeComponent();
@@ -80,7 +83,9 @@ namespace HowLongToBeat.Controls
 
         public override void SetDefaultDataContext()
         {
-            bool IsActivated = PluginDatabase.PluginSettings.Settings.EnableIntegrationViewItem;
+            ShowUserData = PluginDatabase.PluginSettings.Settings.ProgressBarShowTimeUser;
+
+            bool IsActivated = PluginDatabase.PluginSettings.Settings.EnableIntegrationProgressBar;
             bool TextAboveVisibility = PluginDatabase.PluginSettings.Settings.ProgressBarShowTime ? PluginDatabase.PluginSettings.Settings.ProgressBarShowTimeAbove : false; 
             bool TextInsideVisibility = PluginDatabase.PluginSettings.Settings.ProgressBarShowTime ? PluginDatabase.PluginSettings.Settings.ProgressBarShowTimeInterior : false;
             bool TextBelowVisibility = PluginDatabase.PluginSettings.Settings.ProgressBarShowTime ? PluginDatabase.PluginSettings.Settings.ProgressBarShowTimeBelow : false;
@@ -90,6 +95,7 @@ namespace HowLongToBeat.Controls
                 TextAboveVisibility = false;
                 TextInsideVisibility = true;
                 TextBelowVisibility = false;
+                ShowUserData = true;
             }
 
             ControlDataContext = new PluginProgressBarDataContext
@@ -176,7 +182,7 @@ namespace HowLongToBeat.Controls
 
 
                         // Show user hltb datas
-                        if (gameHowLongToBeat.HasData && PluginDatabase.PluginSettings.Settings.ProgressBarShowTimeUser)
+                        if (gameHowLongToBeat.HasData && ShowUserData)
                         {
                             if (titleList?.HltbUserData?.MainStory > 0)
                             {
@@ -197,7 +203,7 @@ namespace HowLongToBeat.Controls
 
 
                         // Show user hltb datas
-                        if (gameHowLongToBeat.HasData && PluginDatabase.PluginSettings.Settings.ProgressBarShowTimeUser)
+                        if (gameHowLongToBeat.HasData && ShowUserData)
                     {
                             if (titleList?.HltbUserData?.MainExtra > 0)
                             {
@@ -218,7 +224,7 @@ namespace HowLongToBeat.Controls
 
 
                         // Show user hltb datas
-                        if (gameHowLongToBeat.HasData && PluginDatabase.PluginSettings.Settings.ProgressBarShowTimeUser)
+                        if (gameHowLongToBeat.HasData && ShowUserData)
                         {
                             if (titleList?.HltbUserData?.Completionist > 0)
                             {
@@ -239,7 +245,7 @@ namespace HowLongToBeat.Controls
 
 
                         // Show user hltb datas
-                        if (gameHowLongToBeat.HasData && PluginDatabase.PluginSettings.Settings.ProgressBarShowTimeUser)
+                        if (gameHowLongToBeat.HasData && ShowUserData)
                         {
                             if (titleList?.HltbUserData?.Solo > 0)
                             {
@@ -260,7 +266,7 @@ namespace HowLongToBeat.Controls
 
 
                         // Show user hltb datas
-                        if (gameHowLongToBeat.HasData && PluginDatabase.PluginSettings.Settings.ProgressBarShowTimeUser)
+                        if (gameHowLongToBeat.HasData && ShowUserData)
                         {
                             if (titleList?.HltbUserData?.CoOp > 0)
                             {
@@ -281,7 +287,7 @@ namespace HowLongToBeat.Controls
 
 
                         // Show user hltb datas
-                        if (gameHowLongToBeat.HasData && PluginDatabase.PluginSettings.Settings.ProgressBarShowTimeUser)
+                        if (gameHowLongToBeat.HasData && ShowUserData)
                         {
                             if (titleList?.HltbUserData?.Vs > 0)
                             {

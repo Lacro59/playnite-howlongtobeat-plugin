@@ -167,13 +167,13 @@ namespace HowLongToBeat.Views
 
 
                 // Default data
-                string[] ChartDataLabels = new string[20];
+                string[] ChartDataLabels = new string[18];
                 ChartValues<CustomerForSingle> ChartDataSeries = new ChartValues<CustomerForSingle>();
 
 
-                for (int i = 19; i >= 0; i--)
+                for (int i = 17; i >= 0; i--)
                 {
-                    ChartDataLabels[(19 - i)] = (string)localDateYMConverter.Convert(DateTime.Now.AddMonths(-i), null, null, null);
+                    ChartDataLabels[(17 - i)] = (string)localDateYMConverter.Convert(DateTime.Now.AddMonths(-i), null, null, null);
                     ChartDataSeries.Add(new CustomerForSingle
                     {
                         Name = (string)localDateYMConverter.Convert(DateTime.Now.AddMonths(-i), null, null, null),

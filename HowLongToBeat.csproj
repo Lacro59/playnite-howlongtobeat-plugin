@@ -67,7 +67,7 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="Playnite.SDK">
-      <HintPath>..\..\JosefNemec\Playnite\source\Playnite.DesktopApp\bin\x86\Release\Playnite.SDK.dll</HintPath>
+      <HintPath>..\..\..\Playnite_dev\Playnite.SDK.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="PresentationCore" />
