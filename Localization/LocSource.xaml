@@ -60,20 +60,6 @@
     <sys:String x:Key="LOCHowLongToBeatTimeCoOp">Co-Op time</sys:String>
     <sys:String x:Key="LOCHowLongToBeatTimeVs">Vs Multi-Player time</sys:String>
 
-    
-    
-    <sys:String x:Key="LOCHowLongToBeat1to5">1 to 5 hours</sys:String>
-    <sys:String x:Key="LOCHowLongToBeat5to10">5 to 10 hours</sys:String>
-    <sys:String x:Key="LOCHowLongToBeat10to20">10 to 20 hours</sys:String>
-    <sys:String x:Key="LOCHowLongToBeat20to30">20 to 30 hours</sys:String>
-    <sys:String x:Key="LOCHowLongToBeat30to40">30 to 40 hours</sys:String>
-    <sys:String x:Key="LOCHowLongToBeat40to50">40 to 50 hours</sys:String>
-    <sys:String x:Key="LOCHowLongToBeat50to60">50 to 60 hours</sys:String>
-    <sys:String x:Key="LOCHowLongToBeat60to70">60 to 70 hours</sys:String>
-    <sys:String x:Key="LOCHowLongToBeat70to80">70 to 80 hours</sys:String>
-    <sys:String x:Key="LOCHowLongToBeat80to90">80 to 90 hours</sys:String>
-    <sys:String x:Key="LOCHowLongToBeat90to100">90 to 100 hours</sys:String>
-    <sys:String x:Key="LOCHowLongToBeat100plus">More 100 hours</sys:String>
 
     <!-- MainView -->
 
