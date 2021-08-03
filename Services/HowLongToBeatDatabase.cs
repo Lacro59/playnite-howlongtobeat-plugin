@@ -237,7 +237,10 @@ namespace HowLongToBeat.Services
             if (gameHowLongToBeat == null)
             {
                 Game game = PlayniteApi.Database.Games.Get(Id);
-                gameHowLongToBeat = GetDefault(game);
+                if (game != null)
+                {
+                    gameHowLongToBeat = GetDefault(game);
+                }
             }
 
             return gameHowLongToBeat;
@@ -709,6 +712,11 @@ namespace HowLongToBeat.Services
         public override void SetThemesResources(Game game)
         {
             GameHowLongToBeat gameHowLongToBeat = Get(game, true);
+
+            if (gameHowLongToBeat == null)
+            {
+                return;
+            }
 
             PluginSettings.Settings.HasData = gameHowLongToBeat.HasData;
             PluginSettings.Settings.MainStory = gameHowLongToBeat.GetData().GameHltbData.MainStory;
