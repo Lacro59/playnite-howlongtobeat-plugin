@@ -145,8 +145,8 @@ namespace HowLongToBeat
         // Playnite serializes settings object to a JSON object and saves it as text file.
         // If you want to exclude some property from being saved then use `JsonDontSerialize` ignore attribute.
         #region Variables exposed
-        [DontSerialize]
         private bool _HasData { get; set; } = false;
+        [DontSerialize]
         public bool HasData
         {
             get => _HasData;
@@ -158,8 +158,8 @@ namespace HowLongToBeat
         }
 
 
-        [DontSerialize]
         private long _MainStory { get; set; } = 0;
+        [DontSerialize]
         public long MainStory
         {
             get => _MainStory;
@@ -169,8 +169,8 @@ namespace HowLongToBeat
                 OnPropertyChanged();
             }
         }
-        [DontSerialize]
         private string _MainStoryFormat { get; set; } = string.Empty;
+        [DontSerialize]
         public string MainStoryFormat
         {
             get => _MainStoryFormat;
@@ -181,8 +181,8 @@ namespace HowLongToBeat
             }
         }
 
-        [DontSerialize]
         private long _MainExtra { get; set; } = 0;
+        [DontSerialize]
         public long MainExtra
         {
             get => _MainExtra;
@@ -192,8 +192,8 @@ namespace HowLongToBeat
                 OnPropertyChanged();
             }
         }
-        [DontSerialize]
         private string _MainExtraFormat { get; set; } = string.Empty;
+        [DontSerialize]
         public string MainExtraFormat
         {
             get => _MainExtraFormat;
@@ -204,8 +204,8 @@ namespace HowLongToBeat
             }
         }
 
-        [DontSerialize]
         private long _Completionist { get; set; } = 0;
+        [DontSerialize]
         public long Completionist
         {
             get => _Completionist;
@@ -215,8 +215,8 @@ namespace HowLongToBeat
                 OnPropertyChanged();
             }
         }
-        [DontSerialize]
         private string _CompletionistFormat { get; set; } = string.Empty;
+        [DontSerialize]
         public string CompletionistFormat
         {
             get => _CompletionistFormat;
@@ -227,8 +227,8 @@ namespace HowLongToBeat
             }
         }
 
-        [DontSerialize]
         private long _Solo { get; set; } = 0;
+        [DontSerialize]
         public long Solo
         {
             get => _Solo;
@@ -238,8 +238,8 @@ namespace HowLongToBeat
                 OnPropertyChanged();
             }
         }
-        [DontSerialize]
         private string _SoloFormat { get; set; } = string.Empty;
+        [DontSerialize]
         public string SoloFormat
         {
             get => _SoloFormat;
@@ -250,8 +250,8 @@ namespace HowLongToBeat
             }
         }
 
-        [DontSerialize]
         private long _CoOp { get; set; } = 0;
+        [DontSerialize]
         public long CoOp
         {
             get => _CoOp;
@@ -261,8 +261,8 @@ namespace HowLongToBeat
                 OnPropertyChanged();
             }
         }
-        [DontSerialize]
         private string _CoOpFormat { get; set; } = string.Empty;
+        [DontSerialize]
         public string CoOpFormat
         {
             get => _CoOpFormat;
@@ -273,8 +273,8 @@ namespace HowLongToBeat
             }
         }
 
-        [DontSerialize]
         private long _Vs { get; set; } = 0;
+        [DontSerialize]
         public long Vs
         {
             get => _Vs;
@@ -284,8 +284,8 @@ namespace HowLongToBeat
                 OnPropertyChanged();
             }
         }
-        [DontSerialize]
         private string _VsFormat { get; set; } = string.Empty;
+        [DontSerialize]
         public string VsFormat
         {
             get => _VsFormat;
@@ -297,8 +297,8 @@ namespace HowLongToBeat
         }
 
 
-        [DontSerialize]
         private long _TimeToBeat { get; set; } = 0;
+        [DontSerialize]
         public long TimeToBeat
         {
             get => _TimeToBeat;
@@ -308,8 +308,8 @@ namespace HowLongToBeat
                 OnPropertyChanged();
             }
         }
-        [DontSerialize]
         private string _TimeToBeatFormat { get; set; } = string.Empty;
+        [DontSerialize]
         public string TimeToBeatFormat
         {
             get => _TimeToBeatFormat;
