@@ -9,7 +9,8 @@
         xmlns:controlsShared="clr-namespace:CommonPluginsControls.Controls"
         xmlns:converters="clr-namespace:CommonPluginsPlaynite.Converters"
         xmlns:commonpluginsshared="clr-namespace:CommonPluginsShared"
-        mc:Ignorable="d" d:DesignHeight="80" d:DesignWidth="800">
+        mc:Ignorable="d" d:DesignHeight="80" d:DesignWidth="800"
+        d:DataContext="{d:DesignInstance local:PluginProgressBarDataContext}">
 
     <controls:PluginUserControlExtend.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
@@ -429,25 +430,16 @@
                     </Style.Triggers>
                 </Style>
             </StackPanel.Style>
-            
+
             <StackPanel Name="spHltb_El1" Width="0" Background="Transparent"
-                        IsEnabled="{Binding ElementName=tpHltb_El1, Path=Content, Converter={StaticResource StringNullOrEmptyToBoolConverter}}">
-                <StackPanel.ToolTip>
-                    <ToolTip Name="tpHltb_El1" />
-                </StackPanel.ToolTip>
-            </StackPanel>
+                        ToolTip="{Binding ToolTipFirst, UpdateSourceTrigger=PropertyChanged}"
+                        IsEnabled="{Binding ToolTipFirst, Converter={StaticResource StringNullOrEmptyToBoolConverter}}" />
             <StackPanel Name="spHltb_El2" Width="0" Background="Transparent"
-                        IsEnabled="{Binding ElementName=tpHltb_El2, Path=Content, Converter={StaticResource StringNullOrEmptyToBoolConverter}}">
-                <StackPanel.ToolTip>
-                    <ToolTip Name="tpHltb_El2" />
-                </StackPanel.ToolTip>
-            </StackPanel>
+                        ToolTip="{Binding ToolTipSecond, UpdateSourceTrigger=PropertyChanged}"
+                        IsEnabled="{Binding ToolTipSecond, Converter={StaticResource StringNullOrEmptyToBoolConverter}}" />
             <StackPanel Name="spHltb_El3" Width="0" Background="Transparent"
-                        IsEnabled="{Binding ElementName=tpHltb_El3, Path=Content, Converter={StaticResource StringNullOrEmptyToBoolConverter}}">
-                <StackPanel.ToolTip>
-                    <ToolTip Name="tpHltb_El3" />
-                </StackPanel.ToolTip>
-            </StackPanel>
+                        ToolTip="{Binding ToolTipThird, UpdateSourceTrigger=PropertyChanged}"
+                        IsEnabled="{Binding ToolTipThird, Converter={StaticResource StringNullOrEmptyToBoolConverter}}" />
         </StackPanel>
     </Grid>
 </controls:PluginUserControlExtend>
