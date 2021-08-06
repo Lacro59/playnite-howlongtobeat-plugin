@@ -53,7 +53,7 @@
                             <GridViewColumn Width="0" DisplayMemberBinding="{Binding GameName}">
                                 <controlsShared:GridViewColumnHeaderExtend Style="{StaticResource {x:Type GridViewColumnHeader}}" IsHitTestVisible="False" RefIndex="1" />
                             </GridViewColumn>
-                            <GridViewColumn Width="300">
+                            <GridViewColumn Width="270">
                                 <GridViewColumnHeader Content="{DynamicResource LOCGameNameTitle}" Tag="GameName" />
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
@@ -139,6 +139,10 @@
                             <GridViewColumn Width="100" DisplayMemberBinding="{Binding Platform}" x:Name="lvGamePlatform">
                                 <GridViewColumnHeader Content="{DynamicResource LOCPlatformTitle}" />
                             </GridViewColumn>
+
+                            <GridViewColumn Width="130" DisplayMemberBinding="{Binding Storefront}" x:Name="lvGameStorefront">
+                                <GridViewColumnHeader Content="{DynamicResource LOCHowLongToBeatStorefront}" />
+                            </GridViewColumn>
                         
                             <GridViewColumn Width="100" DisplayMemberBinding="{Binding Completion, Converter={StaticResource LocalDateConverter}}" x:Name="lvGameCompletion">
                                 <GridViewColumnHeader Content="{DynamicResource LOCHowLongToBeatCompleted}" />
@@ -204,23 +208,58 @@
                     <RowDefinition Height="auto" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
-                
-                <Label Grid.Row="0" Content="{DynamicResource LOCHowLongToBeatCompletationProgress}" Margin="0,0,0,10" />
+
+                <Grid Grid.Row="0"  Margin="0,0,0,10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1.8*" />
+                        <ColumnDefinition Width="10" />
+                        <ColumnDefinition Width="0.5*" />
+                        <ColumnDefinition Width="10" />
+                        <ColumnDefinition Width="2.2*" />
+                    </Grid.ColumnDefinitions>
+                    
+                    <Label Grid.Column="0" Content="{DynamicResource LOCHowLongToBeatCompletationStore}" />
+                    <Label Grid.Column="2" Grid.ColumnSpan="4" Content="{DynamicResource LOCHowLongToBeatCompletationProgress}" />
+                </Grid>
 
                 <Grid Grid.Row="1">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="1.8*" />
                         <ColumnDefinition Width="10" />
-                        <ColumnDefinition Width="3*" />
+                        <ColumnDefinition Width="0.5*" />
+                        <ColumnDefinition Width="10" />
+                        <ColumnDefinition Width="2.2*" />
                     </Grid.ColumnDefinitions>
 
-                    <lvc:CartesianChart LegendLocation="none" Name="PART_ChartUserDataYear" Grid.Column="0">
+                    <lvc:CartesianChart LegendLocation="none" Name="PART_ChartUserDataStore" Grid.Column="0">
                         <lvc:CartesianChart.DataTooltip>
                             <livechartscommon:CustomerToolTipForSingle />
                         </lvc:CartesianChart.DataTooltip>
 
                         <lvc:CartesianChart.AxisX>
-                            <lvc:Axis Name="PART_ChartUserDataYearLabelsX" ShowLabels="True" FontSize="{DynamicResource FontSize}" MinValue="0">
+                            <lvc:Axis Name="PART_ChartUserDataStoreLabelsX" ShowLabels="True" 
+                                      LabelsRotation="160"
+                                      FontSize="{DynamicResource FontSize}" MinValue="0">
+                                <lvc:Axis.Separator>
+                                    <lvc:Separator Step="1" />
+                                </lvc:Axis.Separator>
+                            </lvc:Axis>
+                        </lvc:CartesianChart.AxisX>
+
+                        <lvc:CartesianChart.AxisY>
+                            <lvc:Axis Name="PART_ChartUserDataStoreY" MinValue="0" FontSize="{DynamicResource FontSize}"></lvc:Axis>
+                        </lvc:CartesianChart.AxisY>
+                    </lvc:CartesianChart>
+
+                    <lvc:CartesianChart LegendLocation="none" Name="PART_ChartUserDataYear" Grid.Column="2">
+                        <lvc:CartesianChart.DataTooltip>
+                            <livechartscommon:CustomerToolTipForSingle />
+                        </lvc:CartesianChart.DataTooltip>
+
+                        <lvc:CartesianChart.AxisX>
+                            <lvc:Axis Name="PART_ChartUserDataYearLabelsX" ShowLabels="True" 
+                                      LabelsRotation="160"
+                                      FontSize="{DynamicResource FontSize}" MinValue="0">
                                 <lvc:Axis.Separator>
                                     <lvc:Separator Step="1" />
                                 </lvc:Axis.Separator>
@@ -232,13 +271,15 @@
                         </lvc:CartesianChart.AxisY>
                     </lvc:CartesianChart>
 
-                    <lvc:CartesianChart LegendLocation="none" Name="PART_ChartUserData" Grid.Column="2">
+                    <lvc:CartesianChart LegendLocation="none" Name="PART_ChartUserData" Grid.Column="4">
                         <lvc:CartesianChart.DataTooltip>
                             <livechartscommon:CustomerToolTipForSingle />
                         </lvc:CartesianChart.DataTooltip>
 
                         <lvc:CartesianChart.AxisX>
-                            <lvc:Axis Name="PART_ChartUserDataLabelsX" ShowLabels="True" FontSize="{DynamicResource FontSize}" MinValue="0">
+                            <lvc:Axis Name="PART_ChartUserDataLabelsX" ShowLabels="True" 
+                                      LabelsRotation="160"
+                                      FontSize="{DynamicResource FontSize}" MinValue="0">
                                 <lvc:Axis.Separator>
                                     <lvc:Separator Step="1" />
                                 </lvc:Axis.Separator>

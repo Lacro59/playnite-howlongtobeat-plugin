@@ -115,6 +115,7 @@
     <Compile Include="Models\HltbDataExported.cs" />
     <Compile Include="Models\HltbDataUser.cs" />
     <Compile Include="Models\HltbPostData.cs" />
+    <Compile Include="Models\HltbStorefront.cs" />
     <Compile Include="Models\HltbUserStats.cs" />
     <Compile Include="playnite-plugincommon\CommonPluginsControls\Controls\ComboBoxRemovable.xaml.cs">
       <DependentUpon>ComboBoxRemovable.xaml</DependentUpon>

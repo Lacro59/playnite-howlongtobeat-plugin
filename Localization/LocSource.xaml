@@ -48,6 +48,7 @@
 
     <!-- HowLongToBeatUserView -->
 
+    <sys:String x:Key="LOCHowLongToBeatCompletationStore">Games completed by storefront</sys:String>
     <sys:String x:Key="LOCHowLongToBeatCompletationProgress">Games completed over time</sys:String>
     
     <sys:String x:Key="LOCHowLongToBeatUserData">User data</sys:String>
@@ -59,6 +60,8 @@
     <sys:String x:Key="LOCHowLongToBeatTimeSinglePlayer">Single-Player time</sys:String>
     <sys:String x:Key="LOCHowLongToBeatTimeCoOp">Co-Op time</sys:String>
     <sys:String x:Key="LOCHowLongToBeatTimeVs">Vs Multi-Player time</sys:String>
+
+    <sys:String x:Key="LOCHowLongToBeatStorefront">Storefront</sys:String>
 
 
     <!-- MainView -->

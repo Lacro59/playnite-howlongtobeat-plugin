@@ -635,6 +635,13 @@ namespace HowLongToBeat.Services
                         {
                             string Platform = platform.Name;
 
+                            string StorefrontName = string.Empty;
+                            Storefront storefront = PluginSettings.Settings.Storefronts.Where(x => x.SourceId == game.SourceId).FirstOrDefault();
+                            if (storefront != null)
+                            {
+                                StorefrontName = storefront.HltbStorefrontName;
+                            }
+
                             var HltbData = GetUserHltbData(gameHowLongToBeat.GetData().Id);
                             int edit_id = 0;
                             HltbPostData hltbPostData = new HltbPostData();
@@ -670,6 +677,7 @@ namespace HowLongToBeat.Services
                             hltbPostData.game_id = gameHowLongToBeat.GetData().Id;
                             hltbPostData.custom_title = gameHowLongToBeat.GetData().Name;
                             hltbPostData.platform = Platform;
+                            hltbPostData.storefront = StorefrontName;
 
                             hltbPostData.list_p = "1";
 

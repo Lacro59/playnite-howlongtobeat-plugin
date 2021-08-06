@@ -607,6 +607,13 @@ namespace HowLongToBeat.Services
                     iPosUserData = 2;
                 }
 
+                // Storefront
+                IElement elStorefront = htmlDocument.QuerySelectorAll("h5").Where(x => x.InnerHtml.ToLower().Contains("storefront")).FirstOrDefault();
+                if (elStorefront != null)
+                {
+                    titleList.Storefront = WebUtility.HtmlDecode(elStorefront.ParentElement?.QuerySelector("div")?.InnerHtml?.Trim());
+                }
+
                 // User data
                 titleList.HltbUserData = new HltbData();
                 for (int i = 0; i < GameDetails[iPosUserData].Children.Count(); i++)

@@ -78,6 +78,7 @@ namespace HowLongToBeat.Views
 
 
             SetChartDataYear();
+            SetChartDataStore();
             SetChartData();
             SetStats();
         }
@@ -104,6 +105,7 @@ namespace HowLongToBeat.Views
             ListViewGames.Sorting();
 
             SetChartDataYear();
+            SetChartDataStore();
             SetChartData();
             SetStats();
         }
@@ -114,12 +116,12 @@ namespace HowLongToBeat.Views
             if (PluginDatabase.Database.UserHltbData?.TitlesList != null)
             {
                 // Default data
-                string[] ChartDataLabels = new string[7];
+                string[] ChartDataLabels = new string[4];
                 ChartValues<CustomerForSingle> ChartDataSeries = new ChartValues<CustomerForSingle>();
 
-                for (int i = 6; i >= 0; i--)
+                for (int i = 3; i >= 0; i--)
                 {
-                    ChartDataLabels[(6 - i)] = DateTime.Now.AddYears(-i).ToString("yyyy");
+                    ChartDataLabels[(3 - i)] = DateTime.Now.AddYears(-i).ToString("yyyy");
                     ChartDataSeries.Add(new CustomerForSingle
                     {
                         Name = DateTime.Now.AddYears(-i).ToString("yyyy"),
@@ -159,6 +161,43 @@ namespace HowLongToBeat.Views
             }
         }
 
+        private void SetChartDataStore()
+        {
+            if (PluginDatabase.Database.UserHltbData?.TitlesList != null)
+            {
+                var dataLabel = PluginDatabase.Database.UserHltbData.TitlesList
+                    .GroupBy(x => x.Storefront)
+                    .Select(x => new { Storefront = (x.Key.IsNullOrEmpty()) ? "Playnite" : x.Key, Count = x.Count() })
+                    .OrderBy(x => x.Storefront)
+                    .ToList();
+
+                string[] ChartDataLabels = new string[dataLabel.Count];
+                ChartValues<CustomerForSingle> ChartDataSeries = new ChartValues<CustomerForSingle>();
+
+                for (int i = 0; i < dataLabel.Count; i++)
+                {
+                    ChartDataLabels[i] = dataLabel[i].Storefront;
+                    ChartDataSeries.Add(new CustomerForSingle
+                    {
+                        Name = dataLabel[i].Storefront,
+                        Values = dataLabel[i].Count
+                    });
+                }
+
+                // Create chart
+                SeriesCollection ChartSeriesCollection = new SeriesCollection();
+                ChartSeriesCollection.Add(new ColumnSeries
+                {
+                    Title = string.Empty,
+                    Values = ChartDataSeries
+                });
+
+
+                PART_ChartUserDataStore.Series = ChartSeriesCollection;
+                PART_ChartUserDataStoreLabelsX.Labels = ChartDataLabels;
+            }
+        }
+
         private void SetChartData()
         {
             if (PluginDatabase.Database.UserHltbData?.TitlesList != null)
@@ -167,13 +206,13 @@ namespace HowLongToBeat.Views
 
 
                 // Default data
-                string[] ChartDataLabels = new string[18];
+                string[] ChartDataLabels = new string[16];
                 ChartValues<CustomerForSingle> ChartDataSeries = new ChartValues<CustomerForSingle>();
 
 
-                for (int i = 17; i >= 0; i--)
+                for (int i = 15; i >= 0; i--)
                 {
-                    ChartDataLabels[(17 - i)] = (string)localDateYMConverter.Convert(DateTime.Now.AddMonths(-i), null, null, null);
+                    ChartDataLabels[(15 - i)] = (string)localDateYMConverter.Convert(DateTime.Now.AddMonths(-i), null, null, null);
                     ChartDataSeries.Add(new CustomerForSingle
                     {
                         Name = (string)localDateYMConverter.Convert(DateTime.Now.AddMonths(-i), null, null, null),

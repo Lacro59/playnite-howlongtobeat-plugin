@@ -16,6 +16,7 @@ namespace HowLongToBeat.Models
         public int game_id { get; set; }
         public string custom_title { get; set; } = string.Empty;
         public string platform { get; set; } = string.Empty;
+        public string storefront { get; set; } = string.Empty;
 
         // Add to List
         public string list_p { get; set; } = string.Empty;

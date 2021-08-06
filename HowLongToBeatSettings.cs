@@ -140,6 +140,9 @@ namespace HowLongToBeat
 
         public TitleListSort TitleListSort { get; set; } = TitleListSort.Completion;
         public bool IsAsc { get; set; } = false;
+
+
+        public List<Storefront> Storefronts { get; set; } = new List<Storefront>();
         #endregion
 
         // Playnite serializes settings object to a JSON object and saves it as text file.
@@ -356,6 +359,39 @@ namespace HowLongToBeat
             else
             {
                 Settings = new HowLongToBeatSettings();
+            }
+
+            if (Settings.Storefronts.Count == 0)
+            {
+                Settings.Storefronts = new List<Storefront>
+                {
+                    new Storefront { HltbStorefrontId = HltbStorefront.AmazonGameApp },
+                    new Storefront { HltbStorefrontId = HltbStorefront.AppleAppStore },
+                    new Storefront { HltbStorefrontId = HltbStorefront.Arc },
+                    new Storefront { HltbStorefrontId = HltbStorefront.Battlenet },
+                    new Storefront { HltbStorefrontId = HltbStorefront.Bethesda },
+                    new Storefront { HltbStorefrontId = HltbStorefront.DirectDownload },
+                    new Storefront { HltbStorefrontId = HltbStorefront.Discord },
+                    new Storefront { HltbStorefrontId = HltbStorefront.EpicGames },
+                    new Storefront { HltbStorefrontId = HltbStorefront.GameCenter },
+                    new Storefront { HltbStorefrontId = HltbStorefront.GOG },
+                    new Storefront { HltbStorefrontId = HltbStorefront.GooglePlay },
+                    new Storefront { HltbStorefrontId = HltbStorefront.GoogleStadia },
+                    new Storefront { HltbStorefrontId = HltbStorefront.HumbleBundle },
+                    new Storefront { HltbStorefrontId = HltbStorefront.IndieGala },
+                    new Storefront { HltbStorefrontId = HltbStorefront.itchio },
+                    new Storefront { HltbStorefrontId = HltbStorefront.Kartridge },
+                    new Storefront { HltbStorefrontId = HltbStorefront.MicrosoftStore },
+                    new Storefront { HltbStorefrontId = HltbStorefront.NintendoeShop },
+                    new Storefront { HltbStorefrontId = HltbStorefront.Oculus },
+                    new Storefront { HltbStorefrontId = HltbStorefront.Origin },
+                    new Storefront { HltbStorefrontId = HltbStorefront.ParadoxGames },
+                    new Storefront { HltbStorefrontId = HltbStorefront.PlayStationStore },
+                    new Storefront { HltbStorefrontId = HltbStorefront.RockstarGames },
+                    new Storefront { HltbStorefrontId = HltbStorefront.Steam },
+                    new Storefront { HltbStorefrontId = HltbStorefront.UbisoftConnect },
+                    new Storefront { HltbStorefrontId = HltbStorefront.XboxStore }
+                };
             }
         }
 
