@@ -285,11 +285,11 @@ namespace HowLongToBeat.Views
                     TimeCoOp += titleList.HltbUserData.Vs;
                 }
 
-                LongToTimePlayedConverter converter = new LongToTimePlayedConverter();
+                PlayTimeToStringConverter converter = new PlayTimeToStringConverter();
 
-                PART_TimeSinglePlayer.Content = (string)converter.Convert((long)TimeSinglePlayer, null, null, CultureInfo.CurrentCulture);
-                PART_TimeCoOp.Content = (string)converter.Convert((long)TimeCoOp, null, null, CultureInfo.CurrentCulture);
-                PART_TimeVs.Content = (string)converter.Convert((long)TimeVs, null, null, CultureInfo.CurrentCulture);
+                PART_TimeSinglePlayer.Content = (string)converter.Convert(TimeSinglePlayer, null, null, CultureInfo.CurrentCulture);
+                PART_TimeCoOp.Content = (string)converter.Convert(TimeCoOp, null, null, CultureInfo.CurrentCulture);
+                PART_TimeVs.Content = (string)converter.Convert(TimeVs, null, null, CultureInfo.CurrentCulture);
             }
         }
     }

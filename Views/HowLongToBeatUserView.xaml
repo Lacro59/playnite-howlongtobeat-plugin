@@ -14,7 +14,7 @@
 
     <UserControl.Resources>
         <convertersshared:LocalDateConverter x:Key="LocalDateConverter" />
-        <converters:LongToTimePlayedConverter x:Key="LongToTimePlayedConverter" />
+        <converters:PlayTimeToStringConverter x:Key="PlayTimeToStringConverter" />
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
         <converters:InvertedBooleanToVisibilityConverter x:Key="InvertedBooleanToVisibilityConverter" />
     </UserControl.Resources>
@@ -148,7 +148,7 @@
                                 <GridViewColumnHeader Content="{DynamicResource LOCHowLongToBeatCompleted}" />
                             </GridViewColumn>
 
-                            <GridViewColumn Width="120" DisplayMemberBinding="{Binding CurrentTime, Converter={StaticResource LongToTimePlayedConverter}}" x:Name="lvGameCurrentTime">
+                            <GridViewColumn Width="120" DisplayMemberBinding="{Binding CurrentTime, Converter={StaticResource PlayTimeToStringConverter}}" x:Name="lvGameCurrentTime">
                                 <GridViewColumnHeader Content="{DynamicResource LOCTimePlayed}" Tag="CurrentTime" />
                             </GridViewColumn>
                             <GridViewColumn Width="0" DisplayMemberBinding="{Binding CurrentTime}">

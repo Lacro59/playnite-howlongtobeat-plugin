@@ -551,7 +551,7 @@ namespace HowLongToBeat.Services
                 {
                     try
                     {
-                        Serialization.ToFile(UserHltbData, Path.Combine(Paths.PluginUserDataPath, "HltbUserStats.json"), Format.Json);
+                        File.WriteAllText(Path.Combine(Paths.PluginUserDataPath, "HltbUserStats.json"), Serialization.ToJson(UserHltbData), Encoding.UTF8);
                     }
                     catch (Exception ex)
                     {
@@ -573,7 +573,7 @@ namespace HowLongToBeat.Services
                 {
                     try
                     {
-                        Serialization.ToFile(UserHltbData, Path.Combine(Paths.PluginUserDataPath, "HltbUserStats.json"), Format.Json);
+                        File.WriteAllText(Path.Combine(Paths.PluginUserDataPath, "HltbUserStats.json"), Serialization.ToJson(UserHltbData), Encoding.UTF8);
                     }
                     catch (Exception ex)
                     {
@@ -606,7 +606,7 @@ namespace HowLongToBeat.Services
 
                     try
                     {
-                        Serialization.ToFile(Database.UserHltbData, Path.Combine(Paths.PluginUserDataPath, "HltbUserStats.json"), Format.Json);
+                        File.WriteAllText(Path.Combine(Paths.PluginUserDataPath, "HltbUserStats.json"), Serialization.ToJson(Database.UserHltbData), Encoding.UTF8);
                     }
                     catch (Exception ex)
                     {
@@ -617,7 +617,7 @@ namespace HowLongToBeat.Services
         }
 
 
-        public void SetCurrentPlayTime(Game game, long elapsedSeconds)
+        public void SetCurrentPlayTime(Game game, ulong elapsedSeconds)
         {
             try
             {
@@ -629,7 +629,8 @@ namespace HowLongToBeat.Services
                     {
                         TimeSpan time = TimeSpan.FromSeconds(game.Playtime + elapsedSeconds);
 
-                        var platform = hltbPlatforms.FindAll(x => game.Platform.Name.ToLower().Contains(x.Name.ToLower())).First();
+                        // TODO Enough?
+                        var platform = hltbPlatforms.FindAll(x => game.Platforms.FirstOrDefault().Name.ToLower().Contains(x.Name.ToLower())).First();
 
                         if (platform != null)
                         {

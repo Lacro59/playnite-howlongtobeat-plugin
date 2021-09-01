@@ -7,7 +7,7 @@ namespace HowLongToBeat.Models
 {
     public class HltbData : ObservableObject
     {
-        private LongToTimePlayedConverter converter = new LongToTimePlayedConverter();
+        private PlayTimeToStringConverter converter = new PlayTimeToStringConverter();
 
         public long MainStory { get; set; } = 0;
         [DontSerialize]

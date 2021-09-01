@@ -162,7 +162,7 @@ namespace HowLongToBeat.Controls
                 int ElIndicator = 0;
                 double MaxValue = 0;
                 double MaxHltb = 0;
-                long Playtime = gameHowLongToBeat.Playtime;
+                ulong Playtime = gameHowLongToBeat.Playtime;
                 List<ListProgressBar> listProgressBars = new List<ListProgressBar>();
                 TitleList titleList = PluginDatabase.GetUserHltbData(gameHowLongToBeat.GetData().Id);
 

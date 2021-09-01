@@ -177,7 +177,7 @@ namespace HowLongToBeat.Services
 
     public class HltbDataOld
     {
-        private LongToTimePlayedConverter converter = new LongToTimePlayedConverter();
+        private PlayTimeToStringConverter converter = new PlayTimeToStringConverter();
 
         public string Name { get; set; }
         public int Id { get; set; }

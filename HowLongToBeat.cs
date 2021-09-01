@@ -84,34 +84,31 @@ namespace HowLongToBeat
 
         #region Theme integration
         // Button on top panel
-        public override List<TopPanelItem> GetTopPanelItems()
+        public override IEnumerable<TopPanelItem> GetTopPanelItems()
         {
             if (PluginSettings.Settings.EnableIntegrationButtonHeader)
             {
-                return new List<TopPanelItem>
+                yield return new TopPanelItem()
                 {
-                    new TopPanelItem()
+                    Icon = new TextBlock
                     {
-                        Icon = new TextBlock
-                        {
-                            Text = "\ue90d",
-                            FontSize = 20,
-                            FontFamily = resources.GetResource("CommonFont") as FontFamily
-                        },
-                        Title = resources.GetString("LOCHowLongToBeat"),
-                        Activated = () =>
-                        {
-                            var ViewExtension = new HowLongToBeatUserView();
-                            ViewExtension.Height = 660;
-                            ViewExtension.Width = 1290;
-                            Window windowExtension = PlayniteUiHelper.CreateExtensionWindow(PlayniteApi, "HowLongToBeat", ViewExtension);
-                            windowExtension.ShowDialog();
-                        }
+                        Text = "\ue90d",
+                        FontSize = 20,
+                        FontFamily = resources.GetResource("CommonFont") as FontFamily
+                    },
+                    Title = resources.GetString("LOCHowLongToBeat"),
+                    Activated = () =>
+                    {
+                        var ViewExtension = new HowLongToBeatUserView();
+                        ViewExtension.Height = 660;
+                        ViewExtension.Width = 1290;
+                        Window windowExtension = PlayniteUiHelper.CreateExtensionWindow(PlayniteApi, "HowLongToBeat", ViewExtension);
+                        windowExtension.ShowDialog();
                     }
                 };
             }
 
-            return null;
+            yield break;
         }
 
         // List custom controls
@@ -158,7 +155,7 @@ namespace HowLongToBeat
             }
         }
 
-        public override List<SidebarItem> GetSidebarItems()
+        public override IEnumerable<SidebarItem> GetSidebarItems()
         {
             var items = new List<SidebarItem>
             {
@@ -171,7 +168,7 @@ namespace HowLongToBeat
 
         #region Menus
         // To add new game menu items override GetGameMenuItems
-        public override List<GameMenuItem> GetGameMenuItems(GetGameMenuItemsArgs args)
+        public override IEnumerable<GameMenuItem> GetGameMenuItems(GetGameMenuItemsArgs args)
         {
             Game GameMenu = args.Games.First();
             GameHowLongToBeat gameHowLongToBeat = PluginDatabase.Get(GameMenu, true);
@@ -279,7 +276,7 @@ namespace HowLongToBeat
         }
 
         // To add new main menu items override GetMainMenuItems
-        public override List<MainMenuItem> GetMainMenuItems(GetMainMenuItemsArgs args)
+        public override IEnumerable<MainMenuItem> GetMainMenuItems(GetMainMenuItemsArgs args)
         {
             string MenuInExtensions = string.Empty;
             if (PluginSettings.Settings.MenuInExtensions)
@@ -416,7 +413,7 @@ namespace HowLongToBeat
 
 
         #region Game event
-        public override void OnGameSelected(GameSelectionEventArgs args)
+        public override void OnGameSelected(OnGameSelectedEventArgs args)
         {
             // Old database
             if (oldToNew.IsOld)
@@ -439,31 +436,37 @@ namespace HowLongToBeat
         }
 
         // Add code to be executed when game is finished installing.
-        public override void OnGameInstalled(Game game)
+        public override void OnGameInstalled(OnGameInstalledEventArgs args)
+        {
+
+        }
+
+        // Add code to be executed when game is uninstalled.
+        public override void OnGameUninstalled(OnGameUninstalledEventArgs args)
+        {
+
+        }
+
+        // Add code to be executed when game is preparing to be started.
+        public override void OnGameStarting(OnGameStartingEventArgs args)
         {
 
         }
 
         // Add code to be executed when game is started running.
-        public override void OnGameStarted(Game game)
+        public override void OnGameStarted(OnGameStartedEventArgs args)
         {
 
         }
 
         // Add code to be executed when game is preparing to be started.
-        public override void OnGameStarting(Game game)
-        {
-
-        }
-
-        // Add code to be executed when game is preparing to be started.
-        public override void OnGameStopped(Game game, long elapsedSeconds)
+        public override void OnGameStopped(OnGameStoppedEventArgs args)
         {
             try
             {
                 var TaskGameStopped = Task.Run(() =>
                 {
-                    if (game.Id == PluginDatabase.GameContext.Id)
+                    if (args.Game.Id == PluginDatabase.GameContext.Id)
                     {
                         PluginDatabase.SetThemesResources(PluginDatabase.GameContext);
                     }
@@ -489,7 +492,7 @@ namespace HowLongToBeat
                     {
                         Task.Run(() => 
                         {
-                            PluginDatabase.SetCurrentPlayTime(game, elapsedSeconds);
+                            PluginDatabase.SetCurrentPlayTime(args.Game, args.ElapsedSeconds);
                         });
                     }
 
@@ -500,24 +503,18 @@ namespace HowLongToBeat
                 }
             }
         }
-
-        // Add code to be executed when game is uninstalled.
-        public override void OnGameUninstalled(Game game)
-        {
-
-        }
         #endregion
 
 
         #region Application event
         // Add code to be executed when Playnite is initialized.
-        public override void OnApplicationStarted()
+        public override void OnApplicationStarted(OnApplicationStartedEventArgs args)
         {
 
         }
 
         // Add code to be executed when Playnite is shutting down.
-        public override void OnApplicationStopped()
+        public override void OnApplicationStopped(OnApplicationStoppedEventArgs args)
         {
 
         }
@@ -525,7 +522,7 @@ namespace HowLongToBeat
 
 
         // Add code to be executed when library is updated.
-        public override void OnLibraryUpdated()
+        public override void OnLibraryUpdated(OnLibraryUpdatedEventArgs args)
         {
 
         }
