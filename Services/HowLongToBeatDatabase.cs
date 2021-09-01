@@ -261,6 +261,23 @@ namespace HowLongToBeat.Services
             }, globalProgressOptions);
         }
 
+        public override void Refresh(List<Guid> Ids)
+        {
+            GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions(
+                $"{PluginName} - {resources.GetString("LOCCommonProcessing")}",
+                false
+            );
+            globalProgressOptions.IsIndeterminate = true;
+
+            PlayniteApi.Dialogs.ActivateGlobalProgress((activateGlobalProgress) =>
+            {
+                foreach (Guid Id in Ids)
+                {
+                    RefreshElement(Id);
+                }
+            }, globalProgressOptions);
+        }
+
         public void RefreshAll()
         {
             GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions(

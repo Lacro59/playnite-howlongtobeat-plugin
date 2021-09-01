@@ -171,6 +171,7 @@ namespace HowLongToBeat
         public override IEnumerable<GameMenuItem> GetGameMenuItems(GetGameMenuItemsArgs args)
         {
             Game GameMenu = args.Games.First();
+            List<Guid> Ids = args.Games.Select(x => x.Id).ToList();
             GameHowLongToBeat gameHowLongToBeat = PluginDatabase.Get(GameMenu, true);
 
             List<GameMenuItem> gameMenuItems = new List<GameMenuItem>
@@ -236,7 +237,14 @@ namespace HowLongToBeat
                     {
                         var TaskIntegrationUI = Task.Run(() =>
                         {
-                            PluginDatabase.Refresh(GameMenu.Id);
+                            if (Ids.Count == 1)
+                            {
+                                PluginDatabase.Refresh(GameMenu.Id);
+                            }
+                            else
+                            {
+                                PluginDatabase.Refresh(Ids);
+                            }
                         });
                     }
                 });
@@ -253,7 +261,14 @@ namespace HowLongToBeat
                     Description = resources.GetString("LOCCommonDeleteGameData"),
                     Action = (gameMenuItem) =>
                     {
-                        PluginDatabase.Remove(GameMenu.Id);
+                        if (Ids.Count == 1)
+                        {
+                            PluginDatabase.Remove(GameMenu.Id);
+                        }
+                        else
+                        {
+                            PluginDatabase.Remove(Ids);
+                        }
                     }
                 });
             }
