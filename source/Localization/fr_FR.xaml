@@ -1,0 +1,67 @@
+﻿<?xml version="1.0"?>
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:sys="clr-namespace:System;assembly=mscorlib">
+
+    <!-- HowLongToBeatSettingsView -->
+
+    <sys:String x:Key="LOCHowLongToBeatProgressBarTag">Traitement en cours, veuillez patienter...</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatProgressBar">Ajouté(s) {0} - Déjà ajouté(s) {1} - Non ajouté(s) {2}</sys:String>
+
+    <sys:String x:Key="LOCHowLongToBeatAddTagDescription">Ajouter un tag aux jeux avec les informations de temps d'achèvement de l'histoire principale</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoTag">Traitement automatique des étiquettes</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatShowHltbImage">Utiliser l'image originale de couverture du jeu HowLongToBeat dans la fenêtre</sys:String>
+
+    <sys:String x:Key="LOCHowLongToBeatColorSelection">Sélection de couleurs pour la barre de progression :</sys:String>
+    
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarOptions">Options pour la barre de progression</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">Afficher une info-bulle de temps dans la barre de progression</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTime">Afficher le temps dans la barre de progression</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeAbove">Au dessus</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeInterior">Intérieur</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeBelow">En dessous</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeUser">Afficher le temps HowLongToBeat de l'utilisateur</sys:String>
+
+    <sys:String x:Key="LOCHowLongToBeatAutoData">Télécharger les données</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoAccept">Automatiquement accepter lorsqu'il n'y a qu'un jeu trouvé</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatShowWhenMismatch">Voir la fenêtre de sélection lorsqu'il y a plus d'un jeu trouvé</sys:String>
+
+    <!-- HowLongToBeatSelect -->
+
+    <sys:String x:Key="LOCSelection">Sélection HowLongToBeat</sys:String>
+    
+    <sys:String x:Key="LOCHowLongToBeatMainStory">Histoire principal</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatMainExtra">Principal + extra</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatCompletionist">Complétiste</sys:String>
+
+    <sys:String x:Key="LOCHowLongToBeatSolo">Solo</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatCoOp">Co-Op</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatVs">Vs</sys:String>
+
+    <!-- HowLongToBeat -->
+
+    <sys:String x:Key="LOCHowLongToBeatProgression">Progression</sys:String>
+
+    <sys:String x:Key="LOCHowLongToBeatPluginGetUserView">Obtention des données utilisateur HowLongToBeat</sys:String>
+
+    <sys:String x:Key="LOCHowLongToBeat1to5">1 à 5 heures</sys:String>
+    <sys:String x:Key="LOCHowLongToBeat5to10">5 à 10 heures</sys:String>
+    <sys:String x:Key="LOCHowLongToBeat10to20">10 à 20 heures</sys:String>
+    <sys:String x:Key="LOCHowLongToBeat20to30">20 à 30 heures</sys:String>
+    <sys:String x:Key="LOCHowLongToBeat30to40">30 à 40 heures</sys:String>
+    <sys:String x:Key="LOCHowLongToBeat40to50">40 à 50 heures</sys:String>
+    <sys:String x:Key="LOCHowLongToBeat50to60">50 à 60 heures</sys:String>
+    <sys:String x:Key="LOCHowLongToBeat60to70">60 à 70 heures</sys:String>
+    <sys:String x:Key="LOCHowLongToBeat70to80">70 à 80 heures</sys:String>
+    <sys:String x:Key="LOCHowLongToBeat80to90">80 à 90 heures</sys:String>
+    <sys:String x:Key="LOCHowLongToBeat90to100">90 à 100 heures</sys:String>
+    <sys:String x:Key="LOCHowLongToBeat100plus">Plus de 100 hours</sys:String>
+
+    <!-- MainView -->
+
+    <sys:String x:Key="LOCHowLongToBeat">HowLongToBeat</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatTitle">HowLongToBeat</sys:String>
+
+    <sys:String x:Key="LOCHowLongToBeatPluginView">Voir les données HowLongToBeat</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatPluginUserView">Voir les données utilisateur HowLongToBeat</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatActualiseUserData">Actualiser les données utilisateur de HowLongToBeat</sys:String>
+
+</ResourceDictionary>

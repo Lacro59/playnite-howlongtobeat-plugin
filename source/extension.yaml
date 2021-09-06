@@ -1,0 +1,14 @@
+﻿Id: playnite-howlongtobeat-plugin
+Name: HowLongToBeat
+Author: Lacro59
+Version: 1.4.7
+Module: HowLongToBeat.dll
+Type: GenericPlugin
+Icon: icon.png
+Links:
+  - Name: Plugin forum
+    Url: https://playnite.link/forum/thread-309.html
+  - Name: Plugin Github
+    Url: https://github.com/Lacro59/playnite-howlongtobeat-plugin
+  - Name: Plugin translations
+    Url: https://crowdin.com/project/playnite-extensions
