@@ -8,3 +8,5 @@ Packages:
       - Playnite 9 beta version (not compatible with Playnite 8)
       - Custom UI Elements for custom theme integration (see wiki on GitHub)
       - Fixed many bugs
+      - Many UI tweaks
+	  - Added "storefront" data
