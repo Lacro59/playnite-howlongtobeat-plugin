@@ -16,9 +16,9 @@
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarOptions">进度条选项</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">Show time tooltip in progress bar</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTime">Show time labels in progress bar</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeAbove">上部</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeInterior">内部</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeBelow">下部</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeAbove">上</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeInterior">内</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeBelow">下</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeUser">Show user HowLongToBeat time</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatAutoSetCurrentPlayTime">Automatically update current playtime on HowLongToBeat after game session</sys:String>
@@ -40,7 +40,7 @@
 
     <sys:String x:Key="LOCHowLongToBeatSolo">单人</sys:String>
     <sys:String x:Key="LOCHowLongToBeatCoOp">合作</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatVs">竞技</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatVs">竞</sys:String>
 
     <!-- HowLongToBeat -->
 
