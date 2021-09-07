@@ -84,7 +84,7 @@
                                     <ColumnDefinition Width="8" />
                                     <ColumnDefinition Width="100" />
                                 </Grid.ColumnDefinitions>
-                                
+
                                 <Label Grid.Column="0" Grid.Row="0" Content="{DynamicResource LOCCommonDefaultSorting}" />
                                 <ComboBox Name="cbDefaultSorting" Grid.Column="2" Grid.Row="0" Height="30" IsEditable="True" IsReadOnly="True" 
                                           SelectionChanged="CbDefaultSorting_SelectionChanged">
@@ -136,7 +136,7 @@
                                 <ToggleButton Content="{DynamicResource LOCMenuSortAscending}" IsChecked="{Binding Settings.IsAsc}" Grid.Column="4" Grid.Row="0" Height="30" />
                             </Grid>
                         </StackPanel>
-                        
+
                         <Grid Margin="0,30,0,0">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
@@ -189,7 +189,11 @@
         <TabItem Header="{DynamicResource LOCCommonIntegration}">
             <ScrollViewer>
                 <Grid>
-                    <Grid Name="PART_SelectorColor" Width="500" Visibility="Collapsed">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="265*"/>
+                        <ColumnDefinition Width="328*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid Name="PART_SelectorColor" Width="500" Visibility="Collapsed" Grid.ColumnSpan="2" Margin="46,0,47,0">
                         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                             <controls:ControlPickerGradient x:Name="PART_SelectorColorPicker"></controls:ControlPickerGradient>
                         </StackPanel>
@@ -213,7 +217,7 @@
                         </Grid>
                     </Grid>
 
-                    <StackPanel Margin="0,10,0,0" Name="spSettings">
+                    <StackPanel Margin="0,10,0,0" Name="spSettings" Grid.ColumnSpan="2">
                         <Label Content="{DynamicResource LOCCommonControlsAvailable}" />
                         <Separator Margin="0,0,0,10" />
                         <Grid>
@@ -396,8 +400,19 @@
                     </Grid.RowDefinitions>
 
                     <Grid Grid.Row="0" Name="PART_GridStorefront" MinHeight="100">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="10" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+
+                        <StackPanel Grid.Row="0">
+                            <Label Content="{DynamicResource LOCHowLongToBeatStorefront}" />
+                            <Separator />
+                        </StackPanel>
+                        
                         <ListBox Height="{Binding ElementName=PART_GridStorefront, Path=ActualHeight}"
-                                 ItemsSource="{Binding Settings.Storefronts}">
+                                 Grid.Row="2" ItemsSource="{Binding Settings.Storefronts}">
                             <ListBox.ItemContainerStyle>
                                 <Style TargetType="{x:Type ListBoxItem}" BasedOn="{StaticResource {x:Type ListBoxItem}}">
                                     <Setter Property="Focusable" Value="False"/>

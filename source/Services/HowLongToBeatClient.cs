@@ -623,7 +623,7 @@ namespace HowLongToBeat.Services
                     // Completion date
                     if (GameDetails[iPosUserData].Children[i].InnerHtml.ToLower().Contains("completion"))
                     {
-                        if (GameDetails[iPosUserData].Children[i].QuerySelectorAll("p").FirstOrDefault() != null)
+                        if (GameDetails[iPosUserData]?.Children[i]?.QuerySelectorAll("p")?.FirstOrDefault() != null)
                         {
                             tempTime = GameDetails[iPosUserData].Children[i].QuerySelectorAll("p").FirstOrDefault().InnerHtml;
                             titleList.Completion = Convert.ToDateTime(tempTime);
@@ -634,21 +634,21 @@ namespace HowLongToBeat.Services
                     if (GameDetails[iPosUserData].Children[i].InnerHtml.ToLower().Contains("main story"))
                     {
                         i++;
-                        tempTime = GameDetails[iPosUserData].Children[i].QuerySelector("span").InnerHtml;
+                        tempTime = GameDetails[iPosUserData]?.Children[i]?.QuerySelector("span")?.InnerHtml;
                         titleList.HltbUserData.MainStory = ConvertStringToLongUser(tempTime);
                     }
 
                     if (GameDetails[iPosUserData].Children[i].InnerHtml.ToLower().Contains("main+extras"))
                     {
                         i++;
-                        tempTime = GameDetails[iPosUserData].Children[i].QuerySelector("span").InnerHtml;
+                        tempTime = GameDetails[iPosUserData]?.Children[i]?.QuerySelector("span")?.InnerHtml;
                         titleList.HltbUserData.MainExtra = ConvertStringToLongUser(tempTime);
                     }
 
                     if (GameDetails[iPosUserData].Children[i].InnerHtml.ToLower().Contains("completionist"))
                     {
                         i++;
-                        tempTime = GameDetails[iPosUserData].Children[i].QuerySelector("span").InnerHtml;
+                        tempTime = GameDetails[iPosUserData]?.Children[i]?.QuerySelector("span")?.InnerHtml;
                         titleList.HltbUserData.Completionist = ConvertStringToLongUser(tempTime);
                     }
 
@@ -656,21 +656,21 @@ namespace HowLongToBeat.Services
                     if (GameDetails[iPosUserData].Children[i].InnerHtml.ToLower().Contains("solo"))
                     {
                         i++;
-                        tempTime = GameDetails[iPosUserData].Children[i].QuerySelector("span").InnerHtml;
+                        tempTime = GameDetails[iPosUserData]?.Children[i]?.QuerySelector("span")?.InnerHtml;
                         titleList.HltbUserData.Solo = ConvertStringToLongUser(tempTime);
                     }
 
                     if (GameDetails[iPosUserData].Children[i].InnerHtml.ToLower().Contains("co-op"))
                     {
                         i++;
-                        tempTime = GameDetails[iPosUserData].Children[i].QuerySelector("span").InnerHtml;
+                        tempTime = GameDetails[iPosUserData]?.Children[i]?.QuerySelector("span")?.InnerHtml;
                         titleList.HltbUserData.CoOp = ConvertStringToLongUser(tempTime);
                     }
 
                     if (GameDetails[iPosUserData].Children[i].InnerHtml.ToLower().Contains("vs"))
                     {
                         i++;
-                        tempTime = GameDetails[iPosUserData].Children[i].QuerySelector("span").InnerHtml;
+                        tempTime = GameDetails[iPosUserData]?.Children[i]?.QuerySelector("span")?.InnerHtml;
                         titleList.HltbUserData.Vs = ConvertStringToLongUser(tempTime);
                     }
                 }
@@ -757,37 +757,37 @@ namespace HowLongToBeat.Services
 
 
                 var cbList = htmlDocument.QuerySelector("#list_p");
-                if (cbList.OuterHtml.ToLower().Contains(" checked"))
+                if ((bool)cbList?.OuterHtml.ToLower().Contains(" checked"))
                 {
                     hltbPostData.list_p = "1";
                 }
 
                 cbList = htmlDocument.QuerySelector("#list_b");
-                if (cbList.OuterHtml.ToLower().Contains(" checked"))
+                if ((bool)cbList?.OuterHtml.ToLower().Contains(" checked"))
                 {
                     hltbPostData.list_b = "1";
                 }
 
                 cbList = htmlDocument.QuerySelector("#list_r");
-                if (cbList.OuterHtml.ToLower().Contains(" checked"))
+                if ((bool)cbList?.OuterHtml.ToLower().Contains(" checked"))
                 {
                     hltbPostData.list_r = "1";
                 }
 
                 cbList = htmlDocument.QuerySelector("#list_c");
-                if (cbList.OuterHtml.ToLower().Contains(" checked"))
+                if ((bool)cbList?.OuterHtml.ToLower().Contains(" checked"))
                 {
                     hltbPostData.list_c = "1";
                 }
 
                 cbList = htmlDocument.QuerySelector("#list_cp");
-                if (cbList.OuterHtml.ToLower().Contains(" checked"))
+                if ((bool)cbList?.OuterHtml.ToLower().Contains(" checked"))
                 {
                     hltbPostData.list_cp = "1";
                 }
 
                 cbList = htmlDocument.QuerySelector("#list_rt");
-                if (cbList.OuterHtml.ToLower().Contains(" checked"))
+                if ((bool)cbList?.OuterHtml.ToLower().Contains(" checked"))
                 {
                     hltbPostData.list_rt = "1";
                 }
