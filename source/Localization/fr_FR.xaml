@@ -25,8 +25,8 @@
     <sys:String x:Key="LOCHowLongToBeatWithoutConfirmation">Without confirmation message</sys:String>
     
     <sys:String x:Key="LOCHowLongToBeatAutoData">Télécharger les données</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAutoAccept">Automatiquement accepter lorsqu'il n'y a qu'un jeu trouvé</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatShowWhenMismatch">Voir la fenêtre de sélection lorsqu'il y a plus d'un jeu trouvé</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoAccept">Automatiquement accepter lorsqu'il n'y a qu'un jeu trouv</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatShowWhenMismatch">Voir la fenêtre de sélection lorsqu'il y a plus d'un jeu trouv</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBar">Display progress indicator</sys:String>
 
@@ -52,7 +52,7 @@
     <sys:String x:Key="LOCHowLongToBeatCompletationProgress">Jeux complétés au fil du temps</sys:String>
     
     <sys:String x:Key="LOCHowLongToBeatUserData">Données utilisateur</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatCompleted">Terminé</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatCompleted">Termin</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatPluginGetUserView">Récupération des données utilisateur</sys:String>
 
