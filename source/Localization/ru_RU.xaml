@@ -24,7 +24,7 @@
     <sys:String x:Key="LOCHowLongToBeatAutoSetCurrentPlayTime">Automatically update current playtime on HowLongToBeat after game session</sys:String>
     <sys:String x:Key="LOCHowLongToBeatWithoutConfirmation">Without confirmation message</sys:String>
     
-    <sys:String x:Key="LOCHowLongToBeatAutoData">Загрузка информации об играх</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoData">Загрузка информации об игра</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoAccept">Автоматически выбирать, если найдено только одно совпадение</sys:String>
     <sys:String x:Key="LOCHowLongToBeatShowWhenMismatch">Показывать окно выбора, если найдено несколько совпадений</sys:String>
 
@@ -34,7 +34,7 @@
 
     <sys:String x:Key="LOCSelection">Выбор HowLongToBeat</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatMainStory">Основной сюжет</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatMainStory">Основной сюже</sys:String>
     <sys:String x:Key="LOCHowLongToBeatMainExtra">Сюжет+доп. задания</sys:String>
     <sys:String x:Key="LOCHowLongToBeatCompletionist">100% прохождение</sys:String>
 
@@ -44,7 +44,7 @@
 
     <!-- HowLongToBeat -->
 
-    <sys:String x:Key="LOCHowLongToBeatProgression">Прогресс</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatProgression">Прогрес</sys:String>
 
     <!-- HowLongToBeatUserView -->
 
