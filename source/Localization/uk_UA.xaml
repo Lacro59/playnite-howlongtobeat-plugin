@@ -1,67 +1,80 @@
 ﻿<?xml version="1.0"?>
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:sys="clr-namespace:System;assembly=mscorlib">
 
+    <sys:String x:Key="LOCHowLongToBeatTimeToBeat">Час для перемоги</sys:String>
+
     <!-- HowLongToBeatSettingsView -->
 
-    <sys:String x:Key="LOCHowLongToBeatProgressBarTag">Processing, please wait...</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatProgressBar">Added {0} - Already added {1} - Not added {2}</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatProgressBar">Додано {0} - Вже додано {1} - Не додано {2}</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatAddTagDescription">Add a tag to games with Main story completion time information</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAutoTag">Automatic tags processing</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatShowHltbImage">Use HowLongToBeat original game cover image in window</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAddTagDescription">Додати тег до ігор з інформацією про час завершення Основного сюжету</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoTag">Автоматична обробка тегів</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatShowHltbImage">Використовувати у вікні оригінальну обкладинку гри з HowLongToBeat</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatColorSelection">Color selection for progress bar:</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatColorSelection">Color selection:</sys:String>
+
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarOptions">Параметри смуги прогресу</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">Показувати спливаючі підказки з часом на смузі прогресу</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTime">Показувати час на смузі прогресу</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeAbove">Над смугою прогресу</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeInterior">Всередині смуги прогресу</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeBelow">Під смугою прогресу</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeUser">Показувати користувацький час HowLongToBeat</sys:String>
+
+    <sys:String x:Key="LOCHowLongToBeatAutoSetCurrentPlayTime">Автоматично оновлювати поточний час в HowLongToBeat після сеансу гри</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatWithoutConfirmation">Without confirmation message</sys:String>
     
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarOptions">Progress bar options</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">Show time tooltip in progress bar</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTime">Show time labels in progress bar</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeAbove">Above progress bar</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeInterior">Inside progress bar</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeBelow">Below progress bars</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeUser">Show user HowLongToBeat time</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoData">Завантаження даних гри</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoAccept">Автоматично вибирати гру, коли знайдено лише одну гру під час пошуку</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatShowWhenMismatch">Показувати список вибору гри, коли знайдено більше однієї гри під час пошуку</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatAutoData">Game data download</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAutoAccept">Automatically select game when only one game is found during search</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatShowWhenMismatch">Show game selection list when more than one game is found during search</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBar">Display progress indicator</sys:String>
 
     <!-- HowLongToBeatSelect -->
 
-    <sys:String x:Key="LOCSelection">HowLongToBeat selection</sys:String>
-    
-    <sys:String x:Key="LOCHowLongToBeatMainStory">Main story</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatMainExtra">Main + extra</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatCompletionist">Completionist</sys:String>
+    <sys:String x:Key="LOCSelection">Вибір HowLongToBeat</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatSolo">Solo</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatCoOp">Co-Op</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatMainStory">Основний сюжет</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatMainExtra">Основне + додаткове</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatCompletionist">Повне проходження</sys:String>
+
+    <sys:String x:Key="LOCHowLongToBeatSolo">Соло</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatCoOp">Кооператив</sys:String>
     <sys:String x:Key="LOCHowLongToBeatVs">Vs</sys:String>
 
     <!-- HowLongToBeat -->
 
-    <sys:String x:Key="LOCHowLongToBeatProgression">Progression</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatProgression">Прогрес</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatPluginGetUserView">Getting HowLongToBeat user data</sys:String>
+    <!-- HowLongToBeatUserView -->
 
-    <sys:String x:Key="LOCHowLongToBeat1to5">1 to 5 hours</sys:String>
-    <sys:String x:Key="LOCHowLongToBeat5to10">5 to 10 hours</sys:String>
-    <sys:String x:Key="LOCHowLongToBeat10to20">10 to 20 hours</sys:String>
-    <sys:String x:Key="LOCHowLongToBeat20to30">20 to 30 hours</sys:String>
-    <sys:String x:Key="LOCHowLongToBeat30to40">30 to 40 hours</sys:String>
-    <sys:String x:Key="LOCHowLongToBeat40to50">40 to 50 hours</sys:String>
-    <sys:String x:Key="LOCHowLongToBeat50to60">50 to 60 hours</sys:String>
-    <sys:String x:Key="LOCHowLongToBeat60to70">60 to 70 hours</sys:String>
-    <sys:String x:Key="LOCHowLongToBeat70to80">70 to 80 hours</sys:String>
-    <sys:String x:Key="LOCHowLongToBeat80to90">80 to 90 hours</sys:String>
-    <sys:String x:Key="LOCHowLongToBeat90to100">90 to 100 hours</sys:String>
-    <sys:String x:Key="LOCHowLongToBeat100plus">More 100 hours</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatCompletationStore">Games completed by storefront</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatCompletationProgress">Ігри завершено з часом</sys:String>
+    
+    <sys:String x:Key="LOCHowLongToBeatUserData">Дані користувача</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatCompleted">Завершено</sys:String>
+
+    <sys:String x:Key="LOCHowLongToBeatPluginGetUserView">Отримання даних користувача</sys:String>
+
+    <sys:String x:Key="LOCHowLongToBeatCompletions">Завершень</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatTimeSinglePlayer">Час самітної гри</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatTimeCoOp">Час кооперативної гри</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatTimeVs">Час в режимі гравець проти гравця</sys:String>
+
+    <sys:String x:Key="LOCHowLongToBeatStorefront">Storefront</sys:String>
+
 
     <!-- MainView -->
 
     <sys:String x:Key="LOCHowLongToBeat">HowLongToBeat</sys:String>
     <sys:String x:Key="LOCHowLongToBeatTitle">HowLongToBeat</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatPluginView">View HowLongToBeat data</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatPluginUserView">View HowLongToBeat user data</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatActualiseUserData">Actualise HowLongToBeat user data</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatPluginView">Показати дані HowLongToBeat</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatPluginUserView">Показати користувацькі дані HowLongToBeat</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatActualiseUserData">Оновити користувацькі дані HowLongToBeat</sys:String>
+    
+    <sys:String x:Key="LOCHowLongToBeatSetCurrentTimeManual">Set your current playtime</sys:String>
+
+    <sys:String x:Key="LOCHowLongToBeatSetCurrentTime">Хочете відправити свій поточний ігровий час? (експериментально)</sys:String>
 
 </ResourceDictionary>
