@@ -11,7 +11,7 @@
     <sys:String x:Key="LOCHowLongToBeatAutoTag">Traitement automatique des étiquettes</sys:String>
     <sys:String x:Key="LOCHowLongToBeatShowHltbImage">Utiliser l'image originale de couverture du jeu HowLongToBeat dans la fenêtre</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatColorSelection">Color selection:</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatColorSelection">Sélection de couleur:</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarOptions">Options pour la barre de progression</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">Afficher une info-bulle de temps dans la barre de progression</sys:String>
@@ -22,13 +22,13 @@
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeUser">Afficher le temps HowLongToBeat de l'utilisateur</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatAutoSetCurrentPlayTime">Mettre à jour automatiquement le temps de jeu sur HowLongToBeat après une session de jeu</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatWithoutConfirmation">Without confirmation message</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatWithoutConfirmation">Sans message de confirmation</sys:String>
     
     <sys:String x:Key="LOCHowLongToBeatAutoData">Télécharger les données</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoAccept">Automatiquement accepter lorsqu'il n'y a qu'un jeu trouv</sys:String>
     <sys:String x:Key="LOCHowLongToBeatShowWhenMismatch">Voir la fenêtre de sélection lorsqu'il y a plus d'un jeu trouv</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBar">Display progress indicator</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBar">Afficher l'indicateur de progression</sys:String>
 
     <!-- HowLongToBeatSelect -->
 
@@ -48,7 +48,7 @@
 
     <!-- HowLongToBeatUserView -->
 
-    <sys:String x:Key="LOCHowLongToBeatCompletationStore">Games completed by storefront</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatCompletationStore">Jeux terminés par bibliothèque</sys:String>
     <sys:String x:Key="LOCHowLongToBeatCompletationProgress">Jeux complétés au fil du temps</sys:String>
     
     <sys:String x:Key="LOCHowLongToBeatUserData">Données utilisateur</sys:String>
@@ -61,7 +61,7 @@
     <sys:String x:Key="LOCHowLongToBeatTimeCoOp">Temps Co-Op</sys:String>
     <sys:String x:Key="LOCHowLongToBeatTimeVs">Temps Vs.</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatStorefront">Storefront</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatStorefront">Bibliothèque</sys:String>
 
 
     <!-- MainView -->
@@ -73,7 +73,7 @@
     <sys:String x:Key="LOCHowLongToBeatPluginUserView">Voir les données utilisateur HowLongToBeat</sys:String>
     <sys:String x:Key="LOCHowLongToBeatActualiseUserData">Actualiser les données utilisateur de HowLongToBeat</sys:String>
     
-    <sys:String x:Key="LOCHowLongToBeatSetCurrentTimeManual">Set your current playtime</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatSetCurrentTimeManual">Définir votre temps de jeu actuel</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatSetCurrentTime">Voulez-vous envoyer votre temps de jeu actuel ? (expérimental)</sys:String>
 
