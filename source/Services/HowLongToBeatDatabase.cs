@@ -209,6 +209,11 @@ namespace HowLongToBeat.Services
         {
             GameHowLongToBeat gameHowLongToBeat = GetOnlyCache(Id);
 
+            if (!OnlyCache && gameHowLongToBeat != null && !gameHowLongToBeat.HasData)
+            {
+                gameHowLongToBeat = null;
+            }
+
             if ((gameHowLongToBeat == null && !OnlyCache) || Force)
             {
                 gameHowLongToBeat = howLongToBeatClient.SearchData(PlayniteApi.Database.Games.Get(Id));
