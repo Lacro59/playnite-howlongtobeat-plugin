@@ -188,22 +188,7 @@ namespace HowLongToBeat.Services
                         }
 
                         Thread.Sleep(10);
-                        GameHowLongToBeat gameHowLongToBeat = Get(game, true);
-
-                        List<HltbDataUser> dataSearch = HowLongToBeat.PluginDatabase.howLongToBeatClient.Search(game.Name);
-
-                        if (dataSearch.Count == 1 && PluginSettings.Settings.AutoAccept)
-                        {
-                            gameHowLongToBeat.Items = new List<HltbDataUser>() { dataSearch.First() };
-                            AddOrUpdate(gameHowLongToBeat);
-                        }
-                        else
-                        {
-                            if (dataSearch.Count > 0 && PluginSettings.Settings.ShowWhenMismatch)
-                            {
-                                Get(game, false, true);
-                            }
-                        }
+                        AddData(game);
 
                         activateGlobalProgress.CurrentProgressValue++;
                     }
@@ -244,6 +229,27 @@ namespace HowLongToBeat.Services
             }
 
             return gameHowLongToBeat;
+        }
+
+
+        public void AddData(Game game)
+        {
+            GameHowLongToBeat gameHowLongToBeat = Get(game, true);
+
+            List<HltbDataUser> dataSearch = HowLongToBeat.PluginDatabase.howLongToBeatClient.Search(game.Name);
+
+            if (dataSearch.Count == 1 && PluginSettings.Settings.AutoAccept)
+            {
+                gameHowLongToBeat.Items = new List<HltbDataUser>() { dataSearch.First() };
+                AddOrUpdate(gameHowLongToBeat);
+            }
+            else
+            {
+                if (dataSearch.Count > 0 && PluginSettings.Settings.ShowWhenMismatch)
+                {
+                    Get(game, false, true);
+                }
+            }
         }
 
 

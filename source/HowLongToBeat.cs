@@ -79,6 +79,17 @@ namespace HowLongToBeat
                 Common.LogError(ex, false);
             }
         }
+
+        private void Games_ItemCollectionChanged(object sender, ItemCollectionChangedEventArgs<Game> e)
+        {
+            if (PluginSettings.Settings.AutoImport)
+            {
+                foreach (Game game in e.AddedItems)
+                {
+                    PluginDatabase.AddData(game);
+                }
+            }
+        }
         #endregion
 
 
@@ -522,7 +533,7 @@ namespace HowLongToBeat
         // Add code to be executed when Playnite is initialized.
         public override void OnApplicationStarted(OnApplicationStartedEventArgs args)
         {
-
+            PlayniteApi.Database.Games.ItemCollectionChanged += Games_ItemCollectionChanged; 
         }
 
         // Add code to be executed when Playnite is shutting down.

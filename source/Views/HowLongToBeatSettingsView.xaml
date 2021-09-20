@@ -147,6 +147,7 @@
                                 <RowDefinition Height="auto" />
                                 <RowDefinition Height="30" />
                                 <RowDefinition Height="30" />
+                                <RowDefinition Height="30" />
                                 <RowDefinition Height="10" />
                                 <RowDefinition Height="35" />
                             </Grid.RowDefinitions>
@@ -156,16 +157,19 @@
                                 <Separator Margin="0,0,0,10" />
                             </StackPanel>
 
-                            <CheckBox Name="cbAutoAccept" Grid.Row="1" IsChecked="{Binding Settings.AutoAccept}" Grid.Column="0" VerticalAlignment="Center" Grid.ColumnSpan="3" >
+                            <CheckBox Name="cbAutoImport" Grid.Row="1" IsChecked="{Binding Settings.AutoImport}" Grid.Column="0" VerticalAlignment="Center" Grid.ColumnSpan="3" >
+                                <Label Content="{DynamicResource LOCHowLongToBeatAutoImport}" />
+                            </CheckBox>
+
+                            <CheckBox Name="cbAutoAccept" Grid.Row="2" IsChecked="{Binding Settings.AutoAccept}" Grid.Column="0" VerticalAlignment="Center" Grid.ColumnSpan="3" >
                                 <Label Content="{DynamicResource LOCHowLongToBeatAutoAccept}" />
                             </CheckBox>
 
-                            <CheckBox Name="cbShowWhenMismatch" Grid.Row="2" IsChecked="{Binding Settings.ShowWhenMismatch}" Grid.Column="0" Grid.ColumnSpan="3" VerticalAlignment="Center">
+                            <CheckBox Name="cbShowWhenMismatch" Grid.Row="3" IsChecked="{Binding Settings.ShowWhenMismatch}" Grid.Column="0" Grid.ColumnSpan="3" VerticalAlignment="Center">
                                 <Label Content="{DynamicResource LOCHowLongToBeatShowWhenMismatch}" />
                             </CheckBox>
 
-
-                            <Grid Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="4">
+                            <Grid Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="5">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="10" />

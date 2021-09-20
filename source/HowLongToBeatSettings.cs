@@ -23,6 +23,7 @@ namespace HowLongToBeat
         public bool AutoSetCurrentPlayTime { get; set; } = false;
         public bool AutoSetCurrentPlayTimeWithoutConfirmation { get; set; } = false;
 
+        public bool AutoImport { get; set; } = true;
         public bool AutoAccept { get; set; } = true;
         public bool ShowWhenMismatch { get; set; } = false;
 
