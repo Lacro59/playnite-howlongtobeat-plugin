@@ -28,9 +28,9 @@ namespace HowLongToBeat
         public bool ShowWhenMismatch { get; set; } = false;
 
 
-        public bool EnableIntegrationButtonHeader { get; set; } = false;
+        public bool EnableIntegrationButtonHeader { get; set; } = true;
 
-        private bool _EnableIntegrationViewItem { get; set; } = false;
+        private bool _EnableIntegrationViewItem { get; set; } = true;
         public bool EnableIntegrationViewItem
         {
             get => _EnableIntegrationViewItem;
@@ -41,7 +41,7 @@ namespace HowLongToBeat
             }
         }
 
-        private bool _EnableIntegrationButton { get; set; } = false;
+        private bool _EnableIntegrationButton { get; set; } = true;
         public bool EnableIntegrationButton
         {
             get => _EnableIntegrationButton;
@@ -52,7 +52,7 @@ namespace HowLongToBeat
             }
         }
 
-        private bool _EnableIntegrationProgressBar { get; set; } = false;
+        private bool _EnableIntegrationProgressBar { get; set; } = true;
         public bool EnableIntegrationProgressBar
         {
             get => _EnableIntegrationProgressBar;
