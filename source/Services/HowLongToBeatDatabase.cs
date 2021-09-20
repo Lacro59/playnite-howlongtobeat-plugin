@@ -342,6 +342,7 @@ namespace HowLongToBeat.Services
         }
 
 
+        #region Tag
         protected override void GetPluginTags()
         {
             try
@@ -537,6 +538,7 @@ namespace HowLongToBeat.Services
 
             return null;
         }
+        #endregion
 
 
         public TitleList GetUserHltbData(int HltbId)
@@ -558,6 +560,8 @@ namespace HowLongToBeat.Services
             }
         }
 
+
+        #region User data
         public void RefreshUserData()
         {
             GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions(
@@ -638,7 +642,6 @@ namespace HowLongToBeat.Services
                 }
             });
         }
-
 
         public void SetCurrentPlayTime(Game game, ulong elapsedSeconds)
         {
@@ -739,6 +742,7 @@ namespace HowLongToBeat.Services
                     () => Plugin.OpenSettingsView()));
             }
         }
+        #endregion
 
 
         public override void SetThemesResources(Game game)

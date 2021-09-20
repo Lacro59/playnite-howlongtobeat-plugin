@@ -49,7 +49,6 @@ namespace HowLongToBeat.Models
             }
         }
 
-
         public long Solo { get; set; } = 0;
         [DontSerialize]
         public string SoloFormat
@@ -89,7 +88,6 @@ namespace HowLongToBeat.Models
                 return (string)converter.Convert((long)Vs, null, null, CultureInfo.CurrentCulture);
             }
         }
-
 
         [DontSerialize]
         public long TimeToBeat {

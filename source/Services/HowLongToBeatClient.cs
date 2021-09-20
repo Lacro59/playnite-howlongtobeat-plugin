@@ -21,7 +21,6 @@ using System.Threading;
 using System.Reflection;
 using System.Diagnostics;
 using AngleSharp.Dom;
-using TinyCsvParser;
 using System.Text;
 
 namespace HowLongToBeat.Services
@@ -58,23 +57,23 @@ namespace HowLongToBeat.Services
         HowLongToBeat _plugin;
         HowLongToBeatSettings _settings;
 
-        private readonly string UrlBase = "https://howlongtobeat.com/";
+        private const string UrlBase = "https://howlongtobeat.com/";
 
-        private string UrlLogin { get; set; }
-        private string UrlLogOut { get; set; }
+        private const string UrlLogin = UrlBase + "login";
+        private const string UrlLogOut = UrlBase + "login?t=out";
 
-        private string UrlUserStats { get; set; }
-        private string UrlUserStatsMore { get; set; }
-        private string UrlUserStatsGameList { get; set; }
-        private string UrlUserStatsGameDetails { get; set; }
+        private const string UrlUserStats = UrlBase + "user?n={0}&s=stats";
+        private const string UrlUserStatsMore = UrlBase + "user_stats_more";
+        private const string UrlUserStatsGameList = UrlBase + "user_games_list";
+        private const string UrlUserStatsGameDetails = UrlBase + "user_games_detail";
 
-        private string UrlPostData { get; set; }
-        private string UrlPostDataEdit { get; set; }
-        private string UrlSearch { get; set; }
+        private const string UrlPostData = UrlBase + "submit";
+        private const string UrlPostDataEdit = UrlBase + "submit?s=add&eid={0}";
+        private const string UrlSearch = UrlBase + "search_results.php";
 
-        private string UrlGame { get; set; }
+        private const string UrlGame = UrlBase + "game.php?id={0}";
 
-        private string UrlExportAll { get; set; }
+        private const string UrlExportAll = UrlBase + "user_export?all=1";
 
         private bool? _IsConnected = null;
         public bool? IsConnected
@@ -104,23 +103,6 @@ namespace HowLongToBeat.Services
             _settings = settings;
 
             webViews = PlayniteApi.WebViews.CreateOffscreenView();
-
-            UrlPostData = UrlBase + "submit"; 
-            UrlPostDataEdit = UrlBase + "submit?s=add&eid={0}"; 
-
-            UrlLogin = UrlBase + "login";
-            UrlLogOut = UrlBase + "login?t=out";
-
-            UrlUserStats = UrlBase + "user?n={0}&s=stats";
-            UrlUserStatsMore = UrlBase + "user_stats_more";
-            UrlUserStatsGameList = UrlBase + "user_games_list";
-            UrlUserStatsGameDetails = UrlBase + "user_games_detail";
-
-            UrlSearch = UrlBase + "search_results.php";
-
-            UrlGame = UrlBase + "game.php?id={0}";
-
-            UrlExportAll = UrlBase + "user_export?all=1";
 
             UserLogin = _settings.UserLogin;
         }
@@ -968,44 +950,6 @@ namespace HowLongToBeat.Services
             }
         }
 
-        public List<TitleList> GetExportAll()
-        {
-            try
-            {
-                List<HttpCookie> Cookies = webViews.GetCookies();
-                Cookies = Cookies.Where(x => (bool)(x?.Domain?.Contains("howlongtobeat")))?.ToList();
-
-                Stream FileStream = Web.DownloadFileStream(UrlExportAll, Cookies).GetAwaiter().GetResult();
-
-                CsvParserOptions csvParserOptions = new CsvParserOptions(true, ',');
-                CsvHltbDataExportedMapping csvMapper = new CsvHltbDataExportedMapping();
-                CsvParser<HltbDataExported> csvParser = new CsvParser<HltbDataExported>(csvParserOptions, csvMapper);
-
-                List<TitleList> result = new List<TitleList>();
-
-                var ParsedData = csvParser.ReadFromStream(FileStream, Encoding.UTF8).ToList();
-                foreach(var Data in ParsedData)
-                {
-                    TitleList titleList = new TitleList();
-                }
-
-                return result;
-            }
-            catch (Exception ex)
-            {
-                Common.LogError(ex, false);
-
-                _PlayniteApi.Notifications.Add(new NotificationMessage(
-                    "HowLongToBeat-Import-Error",
-                    "HowLongToBeat" + System.Environment.NewLine +
-                    ex.Message,
-                    NotificationType.Error,
-                    () => _plugin.OpenSettingsView()));
-
-                return new List<TitleList>() ;
-            }
-        }
-
 
         public HltbUserStats LoadUserData()
         {
@@ -1037,8 +981,6 @@ namespace HowLongToBeat.Services
                 hltbUserStats.UserId = (UserId == 0) ? HowLongToBeat.PluginDatabase.Database.UserHltbData.UserId : UserId;
                 hltbUserStats.TitlesList = new List<TitleList>();
 
-                //hltbUserStats.TitlesList = GetExportAll();
-                
                 string response = GetUserGamesList();
                 if (response.IsNullOrEmpty())
                 {
@@ -1287,7 +1229,6 @@ namespace HowLongToBeat.Services
                                 break;
 
                             default:
-                                //data.Add(property.Name, WebUtility.UrlEncode(property.GetValue(hltbPostData, null).ToString()));
                                 data.Add(property.Name, property.GetValue(hltbPostData, null).ToString());
                                 break;
                         }

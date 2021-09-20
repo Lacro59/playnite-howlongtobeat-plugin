@@ -1,6 +1,4 @@
-﻿using CommonPluginsShared;
-using HowLongToBeat.Services;
-using Playnite.SDK.Data;
+﻿using Playnite.SDK.Data;
 using Playnite.SDK.Models;
 using System;
 using System.Collections.Generic;
