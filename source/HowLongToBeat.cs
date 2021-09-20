@@ -67,10 +67,18 @@ namespace HowLongToBeat
                 {
                     Common.LogDebug(true, $"OnCustomThemeButtonClick()");
 
+                    var windowOptions = new WindowOptions
+                    {
+                        ShowMinimizeButton = false,
+                        ShowMaximizeButton = true,
+                        ShowCloseButton = true,
+                        Width = 1280,
+                        Height = 740
+                    };
+
                     var ViewExtension = new HowLongToBeatUserView();
-                    ViewExtension.Height = 660;
-                    ViewExtension.Width = 1290;
-                    Window windowExtension = PlayniteUiHelper.CreateExtensionWindow(PlayniteApi, "HowLongToBeat", ViewExtension);
+                    Window windowExtension = PlayniteUiHelper.CreateExtensionWindow(PlayniteApi, "HowLongToBeat", ViewExtension, windowOptions);
+                    windowExtension.ResizeMode = ResizeMode.CanResize;
                     windowExtension.ShowDialog();
                 }
             }
@@ -110,10 +118,18 @@ namespace HowLongToBeat
                     Title = resources.GetString("LOCHowLongToBeat"),
                     Activated = () =>
                     {
+                        var windowOptions = new WindowOptions
+                        {
+                            ShowMinimizeButton = false,
+                            ShowMaximizeButton = true,
+                            ShowCloseButton = true,
+                            Width = 1280,
+                            Height = 740
+                        };
+
                         var ViewExtension = new HowLongToBeatUserView();
-                        ViewExtension.Height = 660;
-                        ViewExtension.Width = 1290;
-                        Window windowExtension = PlayniteUiHelper.CreateExtensionWindow(PlayniteApi, "HowLongToBeat", ViewExtension);
+                        Window windowExtension = PlayniteUiHelper.CreateExtensionWindow(PlayniteApi, "HowLongToBeat", ViewExtension, windowOptions);
+                        windowExtension.ResizeMode = ResizeMode.CanResize;
                         windowExtension.ShowDialog();
                     }
                 };
