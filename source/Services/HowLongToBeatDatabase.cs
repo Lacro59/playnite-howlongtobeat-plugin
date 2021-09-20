@@ -489,55 +489,55 @@ namespace HowLongToBeat.Services
             {
                 if (hltbTime < 3600)
                 {
-                    return (PluginTags.Find(x => x.Name == $"[HLTB] {resources.GetString("LOCPLaytimeLessThenAnHour")}")).Id;
+                    return (PluginTags.Find(x => x.Name == $"[HLTB] {resources.GetString("LOCCommon0to1")}")).Id;
                 }
                 if (hltbTime < 18000)
                 {
-                    return (PluginTags.Find(x => x.Name == $"[HLTB] {resources.GetString("LOCHowLongToBeat1to5")}")).Id;
+                    return (PluginTags.Find(x => x.Name == $"[HLTB] {resources.GetString("LOCCommon1to5")}")).Id;
                 }
                 if (hltbTime < 36000)
                 {
-                    return (PluginTags.Find(x => x.Name == $"[HLTB] {resources.GetString("LOCHowLongToBeat5to10")}")).Id;
+                    return (PluginTags.Find(x => x.Name == $"[HLTB] {resources.GetString("LOCCommon5to10")}")).Id;
                 }
                 if (hltbTime < 72000)
                 {
-                    return (PluginTags.Find(x => x.Name == $"[HLTB] {resources.GetString("LOCHowLongToBeat10to20")}")).Id;
+                    return (PluginTags.Find(x => x.Name == $"[HLTB] {resources.GetString("LOCCommon10to20")}")).Id;
                 }
                 if (hltbTime < 108000)
                 {
-                    return (PluginTags.Find(x => x.Name == $"[HLTB] {resources.GetString("LOCHowLongToBeat20to30")}")).Id;
+                    return (PluginTags.Find(x => x.Name == $"[HLTB] {resources.GetString("LOCCommon20to30")}")).Id;
                 }
                 if (hltbTime < 144000)
                 {
-                    return (PluginTags.Find(x => x.Name == $"[HLTB] {resources.GetString("LOCHowLongToBeat30to40")}")).Id;
+                    return (PluginTags.Find(x => x.Name == $"[HLTB] {resources.GetString("LOCCommon30to40")}")).Id;
                 }
                 if (hltbTime < 180000)
                 {
-                    return (PluginTags.Find(x => x.Name == $"[HLTB] {resources.GetString("LOCHowLongToBeat40to50")}")).Id;
+                    return (PluginTags.Find(x => x.Name == $"[HLTB] {resources.GetString("LOCCommon40to50")}")).Id;
                 }
                 if (hltbTime < 216000)
                 {
-                    return (PluginTags.Find(x => x.Name == $"[HLTB] {resources.GetString("LOCHowLongToBeat50to60")}")).Id;
+                    return (PluginTags.Find(x => x.Name == $"[HLTB] {resources.GetString("LOCCommon50to60")}")).Id;
                 }
                 if (hltbTime < 252000)
                 {
-                    return (PluginTags.Find(x => x.Name == $"[HLTB] {resources.GetString("LOCHowLongToBeat60to70")}")).Id;
+                    return (PluginTags.Find(x => x.Name == $"[HLTB] {resources.GetString("LOCCommon60to70")}")).Id;
                 }
                 if (hltbTime < 288000)
                 {
-                    return (PluginTags.Find(x => x.Name == $"[HLTB] {resources.GetString("LOCHowLongToBeat70to80")}")).Id;
+                    return (PluginTags.Find(x => x.Name == $"[HLTB] {resources.GetString("LOCCommon70to80")}")).Id;
                 }
                 if (hltbTime < 324000)
                 {
-                    return (PluginTags.Find(x => x.Name == $"[HLTB] {resources.GetString("LOCHowLongToBeat80to90")}")).Id;
+                    return (PluginTags.Find(x => x.Name == $"[HLTB] {resources.GetString("LOCCommon80to90")}")).Id;
                 }
                 if (hltbTime < 360000)
                 {
-                    return (PluginTags.Find(x => x.Name == $"[HLTB] {resources.GetString("LOCHowLongToBeat90to100")}")).Id;
+                    return (PluginTags.Find(x => x.Name == $"[HLTB] {resources.GetString("LOCCommon90to100")}")).Id;
                 }
                 if (hltbTime >= 360000)
                 {
-                    return (PluginTags.Find(x => x.Name == $"[HLTB] {resources.GetString("LOCHowLongToBeat100plus")}")).Id;
+                    return (PluginTags.Find(x => x.Name == $"[HLTB] {resources.GetString("LOCCommon100plus")}")).Id;
                 }
             }
 
