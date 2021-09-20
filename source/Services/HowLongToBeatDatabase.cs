@@ -754,8 +754,25 @@ namespace HowLongToBeat.Services
         {
             GameHowLongToBeat gameHowLongToBeat = Get(game, true);
 
-            if (gameHowLongToBeat == null)
+            if (gameHowLongToBeat == null || !gameHowLongToBeat.HasData)
             {
+                PluginSettings.Settings.HasData = false;
+                PluginSettings.Settings.MainStory = 0;
+                PluginSettings.Settings.MainStoryFormat = "--";
+                PluginSettings.Settings.MainExtra = 0;
+                PluginSettings.Settings.MainExtraFormat = "--";
+                PluginSettings.Settings.Completionist = 0;
+                PluginSettings.Settings.CompletionistFormat = "--";
+                PluginSettings.Settings.Solo = 0;
+                PluginSettings.Settings.SoloFormat = "--";
+                PluginSettings.Settings.CoOp = 0;
+                PluginSettings.Settings.CoOpFormat = "--";
+                PluginSettings.Settings.Vs = 0;
+                PluginSettings.Settings.VsFormat = "--";
+
+                PluginSettings.Settings.TimeToBeat = 0;
+                PluginSettings.Settings.TimeToBeatFormat = "--";
+
                 return;
             }
 
