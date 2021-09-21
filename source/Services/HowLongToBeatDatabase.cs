@@ -121,7 +121,7 @@ namespace HowLongToBeat.Services
 
         public HowLongToBeatDatabase(IPlayniteAPI PlayniteApi, HowLongToBeatSettingsViewModel PluginSettings, string PluginUserDataPath) : base(PlayniteApi, PluginSettings, "HowLongToBeat", PluginUserDataPath)
         {
-            
+            TagBefore = "[HLTB]";
         }
 
 
@@ -350,7 +350,7 @@ namespace HowLongToBeat.Services
         #region Tag
         public override void AddTag(Game game, bool noUpdate = false)
         {
-            GetPluginTags("[HLTB]");
+            GetPluginTags();
             GameHowLongToBeat gameHowLongToBeat = Get(game, true);
 
             if (gameHowLongToBeat.HasData)
@@ -403,55 +403,55 @@ namespace HowLongToBeat.Services
             {
                 if (hltbTime < 3600)
                 {
-                    return CheckTagExist("[HLTB]", $"{resources.GetString("LOCCommon0to1")}");
+                    return CheckTagExist($"{resources.GetString("LOCCommon0to1")}");
                 }
                 if (hltbTime < 18000)
                 {
-                    return CheckTagExist("[HLTB]", $"{resources.GetString("LOCCommon1to5")}");
+                    return CheckTagExist($"{resources.GetString("LOCCommon1to5")}");
                 }
                 if (hltbTime < 36000)
                 {
-                    return CheckTagExist("[HLTB]", $"{resources.GetString("LOCCommon5to10")}");
+                    return CheckTagExist($"{resources.GetString("LOCCommon5to10")}");
                 }
                 if (hltbTime < 72000)
                 {
-                    return CheckTagExist("[HLTB]", $"{resources.GetString("LOCCommon10to20")}");
+                    return CheckTagExist($"{resources.GetString("LOCCommon10to20")}");
                 }
                 if (hltbTime < 108000)
                 {
-                    return CheckTagExist("[HLTB]", $"{resources.GetString("LOCCommon20to30")}");
+                    return CheckTagExist($"{resources.GetString("LOCCommon20to30")}");
                 }
                 if (hltbTime < 144000)
                 {
-                    return CheckTagExist("[HLTB]", $"{resources.GetString("LOCCommon30to40")}");
+                    return CheckTagExist($"{resources.GetString("LOCCommon30to40")}");
                 }
                 if (hltbTime < 180000)
                 {
-                    return CheckTagExist("[HLTB]", $"{resources.GetString("LOCCommon40to50")}");
+                    return CheckTagExist($"{resources.GetString("LOCCommon40to50")}");
                 }
                 if (hltbTime < 216000)
                 {
-                    return CheckTagExist("[HLTB]", $"{resources.GetString("LOCCommon50to60")}");
+                    return CheckTagExist($"{resources.GetString("LOCCommon50to60")}");
                 }
                 if (hltbTime < 252000)
                 {
-                    return CheckTagExist("[HLTB]", $"{resources.GetString("LOCCommon60to70")}");
+                    return CheckTagExist($"{resources.GetString("LOCCommon60to70")}");
                 }
                 if (hltbTime < 288000)
                 {
-                    return CheckTagExist("[HLTB]", $"{resources.GetString("LOCCommon70to80")}");
+                    return CheckTagExist($"{resources.GetString("LOCCommon70to80")}");
                 }
                 if (hltbTime < 324000)
                 {
-                    return CheckTagExist("[HLTB]", $"{resources.GetString("LOCCommon80to90")}");
+                    return CheckTagExist($"{resources.GetString("LOCCommon80to90")}");
                 }
                 if (hltbTime < 360000)
                 {
-                    return CheckTagExist("[HLTB]", $"{resources.GetString("LOCCommon90to100")}");
+                    return CheckTagExist($"{resources.GetString("LOCCommon90to100")}");
                 }
                 if (hltbTime >= 360000)
                 {
-                    return CheckTagExist("[HLTB]", $"{resources.GetString("LOCCommon100plus")}");
+                    return CheckTagExist($"{resources.GetString("LOCCommon100plus")}");
                 }
             }
 
