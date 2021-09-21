@@ -348,95 +348,9 @@ namespace HowLongToBeat.Services
 
 
         #region Tag
-        protected override void GetPluginTags()
-        {
-            try
-            {
-                // Get tags in playnite database
-                PluginTags = new List<Tag>();
-
-                foreach (Tag tag in PlayniteApi.Database.Tags)
-                {
-                    if (tag.Name?.IndexOf("[HLTB] ") > -1)
-                    {
-                        PluginTags.Add(tag);
-                    }
-                }
-
-                // Add missing tags
-                if (PluginTags.Count < 13)
-                {
-                    if (PluginTags.Find(x => x.Name == $"[HLTB] {resources.GetString("LOCCommon0to5")}") == null)
-                    {
-                        PlayniteApi.Database.Tags.Add(new Tag { Name = $"[HLTB] {resources.GetString("LOCCommon0to5")}" });
-                    }
-                    if (PluginTags.Find(x => x.Name == $"[HLTB] {resources.GetString("LOCCommon1to5")}") == null)
-                    {
-                        PlayniteApi.Database.Tags.Add(new Tag { Name = $"[HLTB] {resources.GetString("LOCCommon1to5")}" });
-                    }
-                    if (PluginTags.Find(x => x.Name == $"[HLTB] {resources.GetString("LOCCommon5to10")}") == null)
-                    {
-                        PlayniteApi.Database.Tags.Add(new Tag { Name = $"[HLTB] {resources.GetString("LOCCommon5to10")}" });
-                    }
-                    if (PluginTags.Find(x => x.Name == $"[HLTB] {resources.GetString("LOCCommon10to20")}") == null)
-                    {
-                        PlayniteApi.Database.Tags.Add(new Tag { Name = $"[HLTB] {resources.GetString("LOCCommon10to20")}" });
-                    }
-                    if (PluginTags.Find(x => x.Name == $"[HLTB] {resources.GetString("LOCCommon20to30")}") == null)
-                    {
-                        PlayniteApi.Database.Tags.Add(new Tag { Name = $"[HLTB] {resources.GetString("LOCCommon20to30")}" });
-                    }
-                    if (PluginTags.Find(x => x.Name == $"[HLTB] {resources.GetString("LOCCommon30to40")}") == null)
-                    {
-                        PlayniteApi.Database.Tags.Add(new Tag { Name = $"[HLTB] {resources.GetString("LOCCommon30to40")}" });
-                    }
-                    if (PluginTags.Find(x => x.Name == $"[HLTB] {resources.GetString("LOCCommon40to50")}") == null)
-                    {
-                        PlayniteApi.Database.Tags.Add(new Tag { Name = $"[HLTB] {resources.GetString("LOCCommon40to50")}" });
-                    }
-                    if (PluginTags.Find(x => x.Name == $"[HLTB] {resources.GetString("LOCCommon50to60")}") == null)
-                    {
-                        PlayniteApi.Database.Tags.Add(new Tag { Name = $"[HLTB] {resources.GetString("LOCCommon50to60")}" });
-                    }
-                    if (PluginTags.Find(x => x.Name == $"[HLTB] {resources.GetString("LOCCommon60to70")}") == null)
-                    {
-                        PlayniteApi.Database.Tags.Add(new Tag { Name = $"[HLTB] {resources.GetString("LOCCommon60to70")}" });
-                    }
-                    if (PluginTags.Find(x => x.Name == $"[HLTB] {resources.GetString("LOCCommon70to80")}") == null)
-                    {
-                        PlayniteApi.Database.Tags.Add(new Tag { Name = $"[HLTB] {resources.GetString("LOCCommon70to80")}" });
-                    }
-                    if (PluginTags.Find(x => x.Name == $"[HLTB] {resources.GetString("LOCCommon80to90")}") == null)
-                    {
-                        PlayniteApi.Database.Tags.Add(new Tag { Name = $"[HLTB] {resources.GetString("LOCCommon80to90")}" });
-                    }
-                    if (PluginTags.Find(x => x.Name == $"[HLTB] {resources.GetString("LOCCommon90to100")}") == null)
-                    {
-                        PlayniteApi.Database.Tags.Add(new Tag { Name = $"[HLTB] {resources.GetString("LOCCommon90to100")}" });
-                    }
-                    if (PluginTags.Find(x => x.Name == $"[HLTB] {resources.GetString("LOCCommon100plus")}") == null)
-                    {
-                        PlayniteApi.Database.Tags.Add(new Tag { Name = $"[HLTB] {resources.GetString("LOCCommon100plus")}" });
-                    }
-
-                    foreach (Tag tag in PlayniteApi.Database.Tags)
-                    {
-                        if (tag.Name.IndexOf("[HLTB] ") > -1)
-                        {
-                            PluginTags.Add(tag);
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Common.LogError(ex, false);
-            }
-        }
-
         public override void AddTag(Game game, bool noUpdate = false)
         {
-            GetPluginTags();
+            GetPluginTags("[HLTB]");
             GameHowLongToBeat gameHowLongToBeat = Get(game, true);
 
             if (gameHowLongToBeat.HasData)
@@ -489,55 +403,55 @@ namespace HowLongToBeat.Services
             {
                 if (hltbTime < 3600)
                 {
-                    return (PluginTags.Find(x => x.Name == $"[HLTB] {resources.GetString("LOCCommon0to1")}")).Id;
+                    return CheckTagExist("[HLTB]", $"{resources.GetString("LOCCommon0to1")}");
                 }
                 if (hltbTime < 18000)
                 {
-                    return (PluginTags.Find(x => x.Name == $"[HLTB] {resources.GetString("LOCCommon1to5")}")).Id;
+                    return CheckTagExist("[HLTB]", $"{resources.GetString("LOCCommon1to5")}");
                 }
                 if (hltbTime < 36000)
                 {
-                    return (PluginTags.Find(x => x.Name == $"[HLTB] {resources.GetString("LOCCommon5to10")}")).Id;
+                    return CheckTagExist("[HLTB]", $"{resources.GetString("LOCCommon5to10")}");
                 }
                 if (hltbTime < 72000)
                 {
-                    return (PluginTags.Find(x => x.Name == $"[HLTB] {resources.GetString("LOCCommon10to20")}")).Id;
+                    return CheckTagExist("[HLTB]", $"{resources.GetString("LOCCommon10to20")}");
                 }
                 if (hltbTime < 108000)
                 {
-                    return (PluginTags.Find(x => x.Name == $"[HLTB] {resources.GetString("LOCCommon20to30")}")).Id;
+                    return CheckTagExist("[HLTB]", $"{resources.GetString("LOCCommon20to30")}");
                 }
                 if (hltbTime < 144000)
                 {
-                    return (PluginTags.Find(x => x.Name == $"[HLTB] {resources.GetString("LOCCommon30to40")}")).Id;
+                    return CheckTagExist("[HLTB]", $"{resources.GetString("LOCCommon30to40")}");
                 }
                 if (hltbTime < 180000)
                 {
-                    return (PluginTags.Find(x => x.Name == $"[HLTB] {resources.GetString("LOCCommon40to50")}")).Id;
+                    return CheckTagExist("[HLTB]", $"{resources.GetString("LOCCommon40to50")}");
                 }
                 if (hltbTime < 216000)
                 {
-                    return (PluginTags.Find(x => x.Name == $"[HLTB] {resources.GetString("LOCCommon50to60")}")).Id;
+                    return CheckTagExist("[HLTB]", $"{resources.GetString("LOCCommon50to60")}");
                 }
                 if (hltbTime < 252000)
                 {
-                    return (PluginTags.Find(x => x.Name == $"[HLTB] {resources.GetString("LOCCommon60to70")}")).Id;
+                    return CheckTagExist("[HLTB]", $"{resources.GetString("LOCCommon60to70")}");
                 }
                 if (hltbTime < 288000)
                 {
-                    return (PluginTags.Find(x => x.Name == $"[HLTB] {resources.GetString("LOCCommon70to80")}")).Id;
+                    return CheckTagExist("[HLTB]", $"{resources.GetString("LOCCommon70to80")}");
                 }
                 if (hltbTime < 324000)
                 {
-                    return (PluginTags.Find(x => x.Name == $"[HLTB] {resources.GetString("LOCCommon80to90")}")).Id;
+                    return CheckTagExist("[HLTB]", $"{resources.GetString("LOCCommon80to90")}");
                 }
                 if (hltbTime < 360000)
                 {
-                    return (PluginTags.Find(x => x.Name == $"[HLTB] {resources.GetString("LOCCommon90to100")}")).Id;
+                    return CheckTagExist("[HLTB]", $"{resources.GetString("LOCCommon90to100")}");
                 }
                 if (hltbTime >= 360000)
                 {
-                    return (PluginTags.Find(x => x.Name == $"[HLTB] {resources.GetString("LOCCommon100plus")}")).Id;
+                    return CheckTagExist("[HLTB]", $"{resources.GetString("LOCCommon100plus")}");
                 }
             }
 
