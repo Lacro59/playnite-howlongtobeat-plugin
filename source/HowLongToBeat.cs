@@ -407,7 +407,17 @@ namespace HowLongToBeat
                     Description = "-"
                 });
 
-                // Tag menus
+                // Add tag for selected game in database if data exists
+                mainMenuItems.Add(new MainMenuItem
+                {
+                    MenuSection = MenuInExtensions + resources.GetString("LOCHowLongToBeat"),
+                    Description = resources.GetString("LOCCommonAddTPlugin"),
+                    Action = (mainMenuItem) =>
+                    {
+                        PluginDatabase.AddTagSelectData();
+                    }
+                });
+                // Add tag for all games
                 mainMenuItems.Add(new MainMenuItem
                 {
                     MenuSection = MenuInExtensions + resources.GetString("LOCHowLongToBeat"),
@@ -417,6 +427,7 @@ namespace HowLongToBeat
                         PluginDatabase.AddTagAllGame();
                     }
                 });
+                // Remove tag for all game in database
                 mainMenuItems.Add(new MainMenuItem
                 {
                     MenuSection = MenuInExtensions + resources.GetString("LOCHowLongToBeat"),
