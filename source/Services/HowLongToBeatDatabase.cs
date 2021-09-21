@@ -668,6 +668,62 @@ namespace HowLongToBeat.Services
 
             return false;
         }
+
+
+        public double GetAvgGameByMonth()
+        {
+            double result = 0;
+
+            Dictionary<string, int> DataByMonth = new Dictionary<string, int>();
+            foreach (TitleList titleList in Database.UserHltbData.TitlesList)
+            {
+                string Month = titleList.Completion?.ToString("yyyy-MM");
+                if (!Month.IsNullOrEmpty())
+                {
+                    if (DataByMonth.ContainsKey(Month))
+                    {
+                        DataByMonth[Month]++;
+                    }
+                    else
+                    {
+                        DataByMonth.Add(Month, 1);
+                    }
+                }
+            }
+
+            if (DataByMonth.Count > 0)
+            {
+                foreach (var data in DataByMonth)
+                {
+                    result += data.Value;
+                }
+                result = result / DataByMonth.Count;
+            }
+
+            return result;
+        }
+
+        public long GetAvgTimeByGame()
+        {
+            long result = 0;
+            double count = 0;
+            
+            foreach (TitleList titleList in Database.UserHltbData.TitlesList)
+            {
+                if (titleList.Completion != null && titleList.HltbUserData.TimeToBeat != 0)
+                {
+                    count++;
+                    result += titleList.HltbUserData.TimeToBeat;
+                }
+            }
+
+            if (count > 0)
+            {
+                result = (long)(result / count);
+            }
+
+            return result;
+        }
         #endregion
 
 

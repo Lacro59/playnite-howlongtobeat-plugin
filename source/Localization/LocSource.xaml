@@ -65,6 +65,9 @@
     <sys:String x:Key="LOCHowLongToBeatTimeVs">Vs Multi-Player time</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatStorefront">Storefront</sys:String>
+    
+    <sys:String x:Key="LOCHltbAvgTimeByGame">Avg time by game</sys:String>
+    <sys:String x:Key="LOCHltbAvgGameByMonth">Avg game by month</sys:String>
 
 
     <!-- MainView -->
