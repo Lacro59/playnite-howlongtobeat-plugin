@@ -542,7 +542,14 @@ namespace HowLongToBeat
                     {
                         Task.Run(() => 
                         {
-                            PluginDatabase.SetCurrentPlayTime(args.Game, args.ElapsedSeconds);
+                            if (PluginDatabase.SetCurrentPlayTime(args.Game, args.ElapsedSeconds))
+                            {
+                                PlayniteApi.Notifications.Add(new NotificationMessage(
+                                    "HowLongToBeat-SetCurrentPlayTime",
+                                    "HowLongToBeat" + System.Environment.NewLine +
+                                    string.Format(resources.GetString("LOCHowLongToBeatCurrentPlayTimeSetted"), args.Game.Name),
+                                    NotificationType.Info));
+                            }
                         });
                     }
 

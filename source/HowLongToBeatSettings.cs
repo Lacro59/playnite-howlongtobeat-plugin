@@ -21,7 +21,7 @@ namespace HowLongToBeat
         public bool ShowHltbImg { get; set; } = true;
 
         public bool AutoSetCurrentPlayTime { get; set; } = false;
-        public bool AutoSetCurrentPlayTimeWithoutConfirmation { get; set; } = false;
+        public bool AutoSetCurrentPlayTimeWithoutConfirmation { get; set; } = true;
 
         public bool AutoImport { get; set; } = true;
         public bool AutoAccept { get; set; } = true;

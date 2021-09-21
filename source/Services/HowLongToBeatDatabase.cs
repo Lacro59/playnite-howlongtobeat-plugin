@@ -562,7 +562,7 @@ namespace HowLongToBeat.Services
             });
         }
 
-        public void SetCurrentPlayTime(Game game, ulong elapsedSeconds)
+        public bool SetCurrentPlayTime(Game game, ulong elapsedSeconds)
         {
             try
             {
@@ -615,7 +615,7 @@ namespace HowLongToBeat.Services
                             if (hltbPostData == null)
                             {
                                 logger.Warn($"No hltbPostData for {game.Name}");
-                                return;
+                                return false;
                             }
 
                             hltbPostData.user_id = Database.UserHltbData.UserId;
@@ -633,10 +633,13 @@ namespace HowLongToBeat.Services
 
 
                             howLongToBeatClient.PostData(hltbPostData);
+
+                            return true;
                         }
                         else
                         {
                             logger.Warn($"No platform find for {game.Name}");
+                            return false;
                         }
                     }
                 }
@@ -648,6 +651,7 @@ namespace HowLongToBeat.Services
                         resources.GetString("LOCCommonNotLoggedIn"),
                         NotificationType.Error,
                         () => Plugin.OpenSettingsView()));
+                    return false;
                 }
             }
             catch (Exception ex)
@@ -659,7 +663,10 @@ namespace HowLongToBeat.Services
                     ex.Message,
                     NotificationType.Error,
                     () => Plugin.OpenSettingsView()));
+                return false;
             }
+
+            return false;
         }
         #endregion
 

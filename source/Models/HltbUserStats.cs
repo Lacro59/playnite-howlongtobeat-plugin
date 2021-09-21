@@ -65,7 +65,7 @@ namespace HowLongToBeat.Models
             {
                 foreach(var el in PluginDatabase.Database.Items)
                 {
-                    if (el.Value.GetData().Id == Id)
+                    if (el.Value.GetData()?.Id == Id)
                     {
                         return el.Key;
                     }
