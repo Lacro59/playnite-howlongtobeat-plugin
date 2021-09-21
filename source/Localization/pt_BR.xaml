@@ -25,10 +25,13 @@
     <sys:String x:Key="LOCHowLongToBeatWithoutConfirmation">Sem mensagem de confirmação</sys:String>
     
     <sys:String x:Key="LOCHowLongToBeatAutoData">Baixando os dados do jogo</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoImport">Automatically import data when library is updated</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoAccept">Selecionar jogo automaticamente quando apenas um jogo for encontrado durante a busca</sys:String>
     <sys:String x:Key="LOCHowLongToBeatShowWhenMismatch">Mostrar a lista de seleção de jogos, quando mais de um jogo for encontrado, durante a pesquisa</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBar">Exibir indicador de progresso</sys:String>
+    
+    <sys:String x:Key="LOCHowLongToBeatCurrentPlayTimeSetted">The current playtime for {0} is setted.</sys:String>
 
     <!-- HowLongToBeatSelect -->
 
@@ -62,6 +65,9 @@
     <sys:String x:Key="LOCHowLongToBeatTimeVs">Tempo de jogos competitivos</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatStorefront">Loja</sys:String>
+    
+    <sys:String x:Key="LOCHltbAvgTimeByGame">Avg time by game</sys:String>
+    <sys:String x:Key="LOCHltbAvgGameByMonth">Avg game by month</sys:String>
 
 
     <!-- MainView -->
