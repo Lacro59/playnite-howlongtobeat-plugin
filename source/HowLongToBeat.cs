@@ -20,6 +20,7 @@ using System.Windows.Threading;
 using CommonPluginsShared.PlayniteExtended;
 using CommonPluginsShared.Controls;
 using HowLongToBeat.Controls;
+using CommonPluginsControls.Views;
 
 namespace HowLongToBeat
 {
@@ -440,6 +441,30 @@ namespace HowLongToBeat
             }
 
 
+            mainMenuItems.Add(new MainMenuItem
+            {
+                MenuSection = MenuInExtensions + resources.GetString("LOCHowLongToBeat"),
+                Description = "-"
+            });
+            mainMenuItems.Add(new MainMenuItem
+            {
+                MenuSection = MenuInExtensions + resources.GetString("LOCHowLongToBeat"),
+                Description = "LOCCommonViewNoData",
+                Action = (mainMenuItem) =>
+                {
+                    var windowOptions = new WindowOptions
+                    {
+                        ShowMinimizeButton = false,
+                        ShowMaximizeButton = false,
+                        ShowCloseButton = true
+                    };
+
+                    var ViewExtension = new ListWithNoData(PlayniteApi, PluginDatabase.GetGamesWithNoData());
+                    Window windowExtension = PlayniteUiHelper.CreateExtensionWindow(PlayniteApi, "HowLongToBeat", ViewExtension, windowOptions);
+                    windowExtension.ShowDialog();
+                }
+            });
+
 #if DEBUG
             mainMenuItems.Add(new MainMenuItem
             {
@@ -452,7 +477,16 @@ namespace HowLongToBeat
                 Description = "Test",
                 Action = (mainMenuItem) => 
                 {
+                    var windowOptions = new WindowOptions
+                    {
+                        ShowMinimizeButton = false,
+                        ShowMaximizeButton = false,
+                        ShowCloseButton = true
+                    };
 
+                    var ViewExtension = new ListWithNoData(PlayniteApi, PluginDatabase.GetGamesWithNoData());
+                    Window windowExtension = PlayniteUiHelper.CreateExtensionWindow(PlayniteApi, "HowLongToBeat", ViewExtension, windowOptions);
+                    windowExtension.ShowDialog();
                 }
             });
 #endif
