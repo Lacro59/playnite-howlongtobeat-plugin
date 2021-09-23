@@ -459,7 +459,7 @@ namespace HowLongToBeat
                         ShowCloseButton = true
                     };
 
-                    var ViewExtension = new ListWithNoData(PlayniteApi, PluginDatabase.GetGamesWithNoData());
+                    var ViewExtension = new ListWithNoData(PlayniteApi, PluginDatabase);
                     Window windowExtension = PlayniteUiHelper.CreateExtensionWindow(PlayniteApi, "HowLongToBeat", ViewExtension, windowOptions);
                     windowExtension.ShowDialog();
                 }
@@ -477,16 +477,7 @@ namespace HowLongToBeat
                 Description = "Test",
                 Action = (mainMenuItem) => 
                 {
-                    var windowOptions = new WindowOptions
-                    {
-                        ShowMinimizeButton = false,
-                        ShowMaximizeButton = false,
-                        ShowCloseButton = true
-                    };
 
-                    var ViewExtension = new ListWithNoData(PlayniteApi, PluginDatabase.GetGamesWithNoData());
-                    Window windowExtension = PlayniteUiHelper.CreateExtensionWindow(PlayniteApi, "HowLongToBeat", ViewExtension, windowOptions);
-                    windowExtension.ShowDialog();
                 }
             });
 #endif
