@@ -31,7 +31,7 @@
 
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBar">Afficher l'indicateur de progression</sys:String>
     
-    <sys:String x:Key="LOCHowLongToBeatCurrentPlayTimeSetted">The current playtime for {0} is setted.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatCurrentPlayTimeSetted">Le temps de jeu actuel pour {0} est défini.</sys:String>
 
     <!-- HowLongToBeatSelect -->
 
@@ -66,8 +66,8 @@
 
     <sys:String x:Key="LOCHowLongToBeatStorefront">Bibliothèque</sys:String>
     
-    <sys:String x:Key="LOCHltbAvgTimeByGame">Avg time by game</sys:String>
-    <sys:String x:Key="LOCHltbAvgGameByMonth">Avg game by month</sys:String>
+    <sys:String x:Key="LOCHltbAvgTimeByGame">Temps moyen par jeu</sys:String>
+    <sys:String x:Key="LOCHltbAvgGameByMonth">Jeu moyen par mois</sys:String>
 
 
     <!-- MainView -->
