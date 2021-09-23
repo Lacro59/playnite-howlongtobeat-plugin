@@ -276,16 +276,34 @@ namespace HowLongToBeat.Services
         {
             GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions(
                 $"{PluginName} - {resources.GetString("LOCCommonProcessing")}",
-                false
+                true
             );
-            globalProgressOptions.IsIndeterminate = true;
+            globalProgressOptions.IsIndeterminate = false;
 
             PlayniteApi.Dialogs.ActivateGlobalProgress((activateGlobalProgress) =>
             {
+                Stopwatch stopWatch = new Stopwatch();
+                stopWatch.Start();
+
+                activateGlobalProgress.ProgressMaxValue = Ids.Count;
+
+                string CancelText = string.Empty;
+
                 foreach (Guid Id in Ids)
                 {
+                    if (activateGlobalProgress.CancelToken.IsCancellationRequested)
+                    {
+                        CancelText = " canceled";
+                        break;
+                    }
+
                     RefreshElement(Id);
+                    activateGlobalProgress.CurrentProgressValue++;
                 }
+
+                stopWatch.Stop();
+                TimeSpan ts = stopWatch.Elapsed;
+                logger.Info($"Task Refresh(){CancelText} - {string.Format("{0:00}:{1:00}.{2:00}", ts.Minutes, ts.Seconds, ts.Milliseconds / 10)} for {activateGlobalProgress.CurrentProgressValue}/{Ids.Count} items");
             }, globalProgressOptions);
         }
 
