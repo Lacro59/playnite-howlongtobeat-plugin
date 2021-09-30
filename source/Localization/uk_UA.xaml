@@ -25,10 +25,13 @@
     <sys:String x:Key="LOCHowLongToBeatWithoutConfirmation">Without confirmation message</sys:String>
     
     <sys:String x:Key="LOCHowLongToBeatAutoData">Завантаження даних гри</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoImport">Automatically import data when library is updated</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoAccept">Автоматично вибирати гру, коли знайдено лише одну гру під час пошук</sys:String>
     <sys:String x:Key="LOCHowLongToBeatShowWhenMismatch">Показувати список вибору гри, коли знайдено більше однієї гри під час пошук</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBar">Display progress indicator</sys:String>
+    
+    <sys:String x:Key="LOCHowLongToBeatCurrentPlayTimeSetted">The current playtime for {0} is setted.</sys:String>
 
     <!-- HowLongToBeatSelect -->
 
@@ -62,6 +65,9 @@
     <sys:String x:Key="LOCHowLongToBeatTimeVs">Час в режимі гравець проти гравця</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatStorefront">Storefront</sys:String>
+    
+    <sys:String x:Key="LOCHltbAvgTimeByGame">Avg time by game</sys:String>
+    <sys:String x:Key="LOCHltbAvgGameByMonth">Avg game by month</sys:String>
 
 
     <!-- MainView -->
