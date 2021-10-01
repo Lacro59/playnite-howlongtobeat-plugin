@@ -128,7 +128,7 @@ namespace HowLongToBeat.Services
         public void InitializeClient(HowLongToBeat Plugin)
         {
             this.Plugin = Plugin;
-            howLongToBeatClient = new HowLongToBeatClient(Plugin, PlayniteApi, PluginSettings.Settings);
+            howLongToBeatClient = new HowLongToBeatClient();
         }
 
 
@@ -350,7 +350,7 @@ namespace HowLongToBeat.Services
         private void RefreshElement(Guid Id)
         {
             var loadedItem = Get(Id, true);
-            List<HltbDataUser> dataSearch = HowLongToBeat.PluginDatabase.howLongToBeatClient.Search(loadedItem.GetData().Name);
+            List<HltbDataUser> dataSearch = howLongToBeatClient.Search(loadedItem.GetData().Name);
 
             HltbDataUser webDataSearch = dataSearch.Find(x => x.Id == loadedItem.GetData().Id);
             if (webDataSearch != null)
