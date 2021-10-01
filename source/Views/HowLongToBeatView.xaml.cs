@@ -42,9 +42,9 @@ namespace HowLongToBeat.Views
             InitializeComponent();
 
 
-            HltbDataUser gameData = _gameHowLongToBeat.Items.FirstOrDefault();
+            HltbDataUser gameData = _gameHowLongToBeat?.Items?.FirstOrDefault();
 
-            if (gameData == null)
+            if (gameData == null || !gameData.Name.IsNullOrEmpty())
             {
                 return;
             }
