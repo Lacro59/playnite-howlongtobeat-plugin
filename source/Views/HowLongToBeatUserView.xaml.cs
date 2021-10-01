@@ -223,7 +223,7 @@ namespace HowLongToBeat.Views
                 // Set data
                 foreach (TitleList titleList in PluginDatabase.Database.UserHltbData.TitlesList)
                 {
-                    if (titleList.Completion != null)
+                    if (titleList?.Completion != null)
                     {
                         string tempDateTime = (string)localDateYMConverter.Convert((DateTime)titleList.Completion, null, null, null);
 
@@ -257,9 +257,7 @@ namespace HowLongToBeat.Views
             {
                 List<TitleList> titleLists = PluginDatabase.Database.UserHltbData.TitlesList;
 
-
                 PART_CompletionsCount.Content = titleLists.FindAll(x => x.Completion != null).Count;
-
 
                 long TimeSinglePlayer = 0;
                 long TimeCoOp = 0;

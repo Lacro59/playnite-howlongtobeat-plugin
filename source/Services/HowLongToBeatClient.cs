@@ -958,6 +958,7 @@ namespace HowLongToBeat.Services
                 try
                 {
                     hltbDataUser = Serialization.FromJsonFile<HltbUserStats>(PathHltbUserStats);
+                    hltbDataUser.TitlesList = hltbDataUser.TitlesList.Where(x => x != null).ToList();
                 }
                 catch (Exception ex)
                 {

@@ -35,7 +35,7 @@ namespace HowLongToBeat.Models
         public string UserGameId { get; set; }
         public string GameName { get; set; }
         public string Platform { get; set; }
-        public string Storefront { get; set; }
+        public string Storefront { get; set; } = string.Empty;
         public long CurrentTime { get; set; }
 
         public bool IsReplay { get; set; }
