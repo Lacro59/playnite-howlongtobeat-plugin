@@ -44,7 +44,6 @@ namespace HowLongToBeat.Views
 
             if (PluginDatabase.Database.UserHltbData?.TitlesList != null)
             {
-                PluginDatabase.Database.UserHltbData.TitlesList.Sort((x, y) => x.GameName.CompareTo(y.GameName));
                 ListViewGames.ItemsSource = PluginDatabase.Database.UserHltbData.TitlesList;
 
                 string SortingDefaultDataName = string.Empty;
