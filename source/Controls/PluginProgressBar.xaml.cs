@@ -9,7 +9,6 @@ using Playnite.SDK;
 using Playnite.SDK.Models;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -53,7 +52,6 @@ namespace HowLongToBeat.Controls
                 ControlDataContext = (PluginProgressBarDataContext)_ControlDataContext;
             }
         }
-
 
         private bool ShowUserData = true;
 
