@@ -16,7 +16,7 @@ namespace HowLongToBeat.Models
         public string Login { get; set; }
         public int UserId { get; set; }
 
-        public List<TitleList> TitlesList { get; set; }
+        public List<TitleList> TitlesList { get; set; } = new List<TitleList>();
     }
 
 
@@ -55,7 +55,7 @@ namespace HowLongToBeat.Models
             }
         }
 
-        public List<GameStatus> GameStatuses { get; set; }
+        public List<GameStatus> GameStatuses { get; set; } = new List<GameStatus>();
 
         public HltbData HltbUserData { get; set; }
 
