@@ -6,11 +6,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
         xmlns:local="clr-namespace:HowLongToBeat.Controls"
-        mc:Ignorable="d">
+        mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance local:PluginViewItemDataContext, IsDesignTimeCreatable=True}">
 
     <Grid>
         <TextBlock Style="{DynamicResource BaseTextBlockStyle}" 
-                   Text="{Binding Text, Mode=OneWay, FallbackValue='TimeToBeat'}"
+                   Text="{Binding Text}"
+                   VerticalAlignment="Center"
                    Foreground="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=Foreground}"
                    FontSize="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=FontSize}" />
     </Grid>
