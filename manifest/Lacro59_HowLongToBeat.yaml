@@ -21,3 +21,10 @@ Packages:
       - Updated tag system
       - Added more stats
       - View games list without plugin data
+  - Version: 2.1.1
+    RequiredApiVersion: 6.0.0
+    ReleaseDate: 2021-10-01
+    PackageUrl: https://github.com/Lacro59/playnite-howlongtobeat-plugin/releases/download/v2.1.1/playnite-howlongtobeat-plugin_2_1_1.pext
+    Changelog:
+      - Playnite 9 version (not compatible with Playnite 8)
+      - Fixed many bugs
