@@ -12,6 +12,7 @@ using System.Windows.Input;
 using System;
 using CommonPluginsPlaynite.Converters;
 using HowLongToBeat.Controls;
+using System.Collections.Generic;
 
 namespace HowLongToBeat.Views
 {
@@ -25,14 +26,7 @@ namespace HowLongToBeat.Views
 
         private HowLongToBeatDatabase PluginDatabase = HowLongToBeat.PluginDatabase;
 
-        public string CoverImage { get; set; }
-        public string GameName { get; set; }
-        public string HltbName { get; set; }
-
-        public string PlaytimeFormat { get; set; }
-
         private GameHowLongToBeat _gameHowLongToBeat { get; set; }
-        private PluginProgressBar hltbProgressBar;
 
 
         public HowLongToBeatView(GameHowLongToBeat gameHowLongToBeat)
@@ -40,29 +34,31 @@ namespace HowLongToBeat.Views
             _gameHowLongToBeat = gameHowLongToBeat;
 
             InitializeComponent();
+            DataContext = new HowLongToBeatViewData();
 
 
             HltbDataUser gameData = _gameHowLongToBeat?.Items?.FirstOrDefault();
 
-            if (gameData == null || !gameData.Name.IsNullOrEmpty())
+            if (gameData == null || gameData.Name.IsNullOrEmpty())
             {
                 return;
             }
 
+
             if (_gameHowLongToBeat.HasData || _gameHowLongToBeat.HasDataEmpty)
             {
-                CoverImage = gameData.UrlImg;
+                ((HowLongToBeatViewData)DataContext).CoverImage = gameData.UrlImg;
 
                 if (!PluginDatabase.PluginSettings.Settings.ShowHltbImg)
                 {
                     if (!_gameHowLongToBeat.CoverImage.IsNullOrEmpty())
                     {
-                        CoverImage = PluginDatabase.PlayniteApi.Database.GetFullFilePath(_gameHowLongToBeat.CoverImage);
+                        ((HowLongToBeatViewData)DataContext).CoverImage = PluginDatabase.PlayniteApi.Database.GetFullFilePath(_gameHowLongToBeat.CoverImage);
                     }
                 }
 
-                GameName = _gameHowLongToBeat.Name;
-                HltbName = gameData.Name;
+                ((HowLongToBeatViewData)DataContext).GameName = _gameHowLongToBeat.Name;
+                ((HowLongToBeatViewData)DataContext).HltbName = gameData.Name;
             }
 
             if (_gameHowLongToBeat.HasData)
@@ -120,17 +116,12 @@ namespace HowLongToBeat.Views
                     SetColor(ElIndicator, PluginDatabase.PluginSettings.Settings.ColorThirdMulti);
                 }
 
-                hltbProgressBar = new PluginProgressBar();
-                hltbProgressBar.Height = 50;
-                hltbProgressBar.IgnoreSettings = true;
-                PART_HltbProgressBar.Children.Add(hltbProgressBar);
+
+                ((HowLongToBeatViewData)DataContext).GameContext = PluginDatabase.PlayniteApi.Database.Games.Get(_gameHowLongToBeat.Id);
             }
 
             PlayTimeToStringConverter converter = new PlayTimeToStringConverter();
-            PlaytimeFormat = (string)converter.Convert((long)_gameHowLongToBeat.Playtime, null, null, CultureInfo.CurrentCulture);
-
-            // Set Binding data
-            DataContext = this;
+            ((HowLongToBeatViewData)DataContext).PlaytimeFormat = (string)converter.Convert((long)_gameHowLongToBeat.Playtime, null, null, CultureInfo.CurrentCulture);
         }
 
 
@@ -228,13 +219,63 @@ namespace HowLongToBeat.Views
                 ((ToolTip)((TextBlock)sender).ToolTip).Visibility = Visibility.Hidden;
             }
         }
+    }
 
 
-        private void PART_HltbProgressBar_Loaded(object sender, RoutedEventArgs e)
+    public class HowLongToBeatViewData : ObservableObject
+    {
+        private string _CoverImage { get; set; } = string.Empty;
+        public string CoverImage
         {
-            if (_gameHowLongToBeat.HasData)
+            get => _CoverImage;
+            set
             {
-                hltbProgressBar.GameContext = PluginDatabase.PlayniteApi.Database.Games.Get(_gameHowLongToBeat.Id);
+                _CoverImage = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string _GameName { get; set; } = string.Empty;
+        public string GameName
+        {
+            get => _GameName;
+            set
+            {
+                _GameName = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string _HltbName { get; set; } = string.Empty;
+        public string HltbName
+        {
+            get => _HltbName;
+            set
+            {
+                _HltbName = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string _PlaytimeFormat { get; set; } = string.Empty;
+        public string PlaytimeFormat
+        {
+            get => _PlaytimeFormat;
+            set
+            {
+                _PlaytimeFormat = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private Game _GameContext { get; set; }
+        public Game GameContext
+        {
+            get => _GameContext;
+            set
+            {
+                _GameContext = value;
+                OnPropertyChanged();
             }
         }
     }

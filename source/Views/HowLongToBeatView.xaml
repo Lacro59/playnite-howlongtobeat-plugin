@@ -93,7 +93,9 @@
             <TextBlock Grid.Row="0" FontSize="24" FontWeight="Bold" Text="{DynamicResource LOCHowLongToBeatProgression}" 
                        Foreground="{DynamicResource TextBrush}" HorizontalAlignment="Center" />
 
-            <StackPanel Name="PART_HltbProgressBar" Grid.Row="2" Height="50" Loaded="PART_HltbProgressBar_Loaded" />
+            <Grid Grid.Row="2" Name="PART_PluginProgressBarContener" Tag="{Binding GameContext}">
+                <controls:PluginProgressBar Height="50" GameContext="{Binding ElementName=PART_PluginProgressBarContener, Path=Tag}" />
+            </Grid>
 
             <Grid Grid.Row="4">
                 <Grid.ColumnDefinitions>
