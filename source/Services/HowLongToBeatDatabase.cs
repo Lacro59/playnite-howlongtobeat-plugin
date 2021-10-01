@@ -204,7 +204,7 @@ namespace HowLongToBeat.Services
             }, globalProgressOptions);
         }
 
-
+        
         public override GameHowLongToBeat Get(Guid Id, bool OnlyCache = false, bool Force = false)
         {
             GameHowLongToBeat gameHowLongToBeat = GetOnlyCache(Id);
@@ -240,6 +240,12 @@ namespace HowLongToBeat.Services
         public void AddData(Game game)
         {
             GameHowLongToBeat gameHowLongToBeat = Get(game, true);
+
+            if (gameHowLongToBeat.Items.Count > 0)
+            {
+                logger.Warn($"Data is already added for {game.Name}");
+                return;
+            }
 
             List<HltbDataUser> dataSearch = HowLongToBeat.PluginDatabase.howLongToBeatClient.Search(game.Name);
 

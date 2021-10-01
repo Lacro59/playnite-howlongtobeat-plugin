@@ -21,6 +21,7 @@ using CommonPluginsShared.PlayniteExtended;
 using CommonPluginsShared.Controls;
 using HowLongToBeat.Controls;
 using CommonPluginsControls.Views;
+using System.Diagnostics;
 
 namespace HowLongToBeat
 {
@@ -86,17 +87,6 @@ namespace HowLongToBeat
             catch (Exception ex)
             {
                 Common.LogError(ex, false);
-            }
-        }
-
-        private void Games_ItemCollectionChanged(object sender, ItemCollectionChangedEventArgs<Game> e)
-        {
-            if (PluginSettings.Settings.AutoImport)
-            {
-                foreach (Game game in e.AddedItems)
-                {
-                    PluginDatabase.AddData(game);
-                }
             }
         }
         #endregion
@@ -592,7 +582,7 @@ namespace HowLongToBeat
         // Add code to be executed when Playnite is initialized.
         public override void OnApplicationStarted(OnApplicationStartedEventArgs args)
         {
-            PlayniteApi.Database.Games.ItemCollectionChanged += Games_ItemCollectionChanged; 
+
         }
 
         // Add code to be executed when Playnite is shutting down.
@@ -606,7 +596,51 @@ namespace HowLongToBeat
         // Add code to be executed when library is updated.
         public override void OnLibraryUpdated(OnLibraryUpdatedEventArgs args)
         {
+            if (PluginSettings.Settings.AutoImport)
+            {
+                var PlayniteDb = PlayniteApi.Database.Games.Where(x => x.Added != null && ((DateTime)x.Added).ToString("yyyy-MM-dd") == DateTime.Now.ToString("yyyy-MM-dd")).ToList();
 
+                GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions(
+                    $"HowLongToBeat - {resources.GetString("LOCCommonGettingData")}",
+                    true
+                );
+                globalProgressOptions.IsIndeterminate = false;
+
+                PlayniteApi.Dialogs.ActivateGlobalProgress((activateGlobalProgress) =>
+                {
+                    try
+                    {
+                        Stopwatch stopWatch = new Stopwatch();
+                        stopWatch.Start();
+
+                        activateGlobalProgress.ProgressMaxValue = (double)PlayniteDb.Count();
+
+                        string CancelText = string.Empty;
+
+                        foreach (Game game in PlayniteDb)
+                        {
+                            if (activateGlobalProgress.CancelToken.IsCancellationRequested)
+                            {
+                                CancelText = " canceled";
+                                break;
+                            }
+
+                            Thread.Sleep(10);
+                            PluginDatabase.AddData(game);
+
+                            activateGlobalProgress.CurrentProgressValue++;
+                        }
+
+                        stopWatch.Stop();
+                        TimeSpan ts = stopWatch.Elapsed;
+                        logger.Info($"Task OnLibraryUpdated(){CancelText} - {string.Format("{0:00}:{1:00}.{2:00}", ts.Minutes, ts.Seconds, ts.Milliseconds / 10)} for {activateGlobalProgress.CurrentProgressValue}/{(double)PlayniteDb.Count()} items");
+                    }
+                    catch (Exception ex)
+                    {
+                        Common.LogError(ex, false);
+                    }
+                }, globalProgressOptions);
+            }
         }
 
 
