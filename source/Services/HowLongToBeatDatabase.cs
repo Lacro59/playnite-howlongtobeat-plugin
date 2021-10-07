@@ -410,6 +410,7 @@ namespace HowLongToBeat.Services
             }, globalProgressOptions);
         }
 
+
         #region Tag
         public override void AddTag(Game game, bool noUpdate = false)
         {

@@ -3,8 +3,6 @@ using Playnite.SDK.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace HowLongToBeat.Models
 {
@@ -44,6 +42,7 @@ namespace HowLongToBeat.Models
         public Guid SourceId { get; set; }
 
         public HltbStorefront HltbStorefrontId { get; set; }
+
         [DontSerialize]
         public string HltbStorefrontName {
             get

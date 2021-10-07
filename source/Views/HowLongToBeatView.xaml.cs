@@ -5,14 +5,13 @@ using Playnite.SDK.Models;
 using System.Linq;
 using System.Windows;
 using System.Diagnostics;
-using System.Globalization;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Input;
 using System;
-using CommonPluginsPlaynite.Converters;
-using HowLongToBeat.Controls;
 using System.Collections.Generic;
+using System.Windows.Documents;
+using CommonPluginsShared.Models;
 
 namespace HowLongToBeat.Views
 {
@@ -26,42 +25,34 @@ namespace HowLongToBeat.Views
 
         private HowLongToBeatDatabase PluginDatabase = HowLongToBeat.PluginDatabase;
 
-        private GameHowLongToBeat _gameHowLongToBeat { get; set; }
-
 
         public HowLongToBeatView(GameHowLongToBeat gameHowLongToBeat)
         {
-            _gameHowLongToBeat = gameHowLongToBeat;
-
             InitializeComponent();
             DataContext = new HowLongToBeatViewData();
 
 
-            HltbDataUser gameData = _gameHowLongToBeat?.Items?.FirstOrDefault();
+            HltbDataUser gameData = gameHowLongToBeat?.Items?.FirstOrDefault();
 
             if (gameData == null || gameData.Name.IsNullOrEmpty())
             {
                 return;
             }
 
-
-            if (_gameHowLongToBeat.HasData || _gameHowLongToBeat.HasDataEmpty)
+            if (gameHowLongToBeat.HasData || gameHowLongToBeat.HasDataEmpty)
             {
                 ((HowLongToBeatViewData)DataContext).CoverImage = gameData.UrlImg;
 
                 if (!PluginDatabase.PluginSettings.Settings.ShowHltbImg)
                 {
-                    if (!_gameHowLongToBeat.CoverImage.IsNullOrEmpty())
+                    if (!gameHowLongToBeat.CoverImage.IsNullOrEmpty())
                     {
-                        ((HowLongToBeatViewData)DataContext).CoverImage = PluginDatabase.PlayniteApi.Database.GetFullFilePath(_gameHowLongToBeat.CoverImage);
+                        ((HowLongToBeatViewData)DataContext).CoverImage = PluginDatabase.PlayniteApi.Database.GetFullFilePath(gameHowLongToBeat.CoverImage);
                     }
                 }
-
-                ((HowLongToBeatViewData)DataContext).GameName = _gameHowLongToBeat.Name;
-                ((HowLongToBeatViewData)DataContext).HltbName = gameData.Name;
             }
 
-            if (_gameHowLongToBeat.HasData)
+            if (gameHowLongToBeat.HasData)
             {
                 int ElIndicator = 0;
 
@@ -72,7 +63,7 @@ namespace HowLongToBeat.Views
                 Hltb_El3.Visibility = Visibility.Hidden;
                 Hltb_El3_Color.Visibility = Visibility.Hidden;
 
-                TitleList titleList = PluginDatabase.GetUserHltbData(_gameHowLongToBeat.GetData().Id);
+                TitleList titleList = PluginDatabase.GetUserHltbData(gameHowLongToBeat.GetData().Id);
 
                 if (gameData.GameHltbData.MainStory != 0)
                 {
@@ -116,12 +107,10 @@ namespace HowLongToBeat.Views
                     SetColor(ElIndicator, PluginDatabase.PluginSettings.Settings.ColorThirdMulti);
                 }
 
-
-                ((HowLongToBeatViewData)DataContext).GameContext = PluginDatabase.PlayniteApi.Database.Games.Get(_gameHowLongToBeat.Id);
+                
+                ((HowLongToBeatViewData)DataContext).GameContext = PluginDatabase.PlayniteApi.Database.Games.Get(gameHowLongToBeat.Id);
+                ((HowLongToBeatViewData)DataContext).SourceLink = gameHowLongToBeat.SourceLink;
             }
-
-            PlayTimeToStringConverter converter = new PlayTimeToStringConverter();
-            ((HowLongToBeatViewData)DataContext).PlaytimeFormat = (string)converter.Convert((long)_gameHowLongToBeat.Playtime, null, null, CultureInfo.CurrentCulture);
         }
 
 
@@ -176,17 +165,22 @@ namespace HowLongToBeat.Views
 
         private void PART_SourceLink_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            if (!_gameHowLongToBeat.GetData().Url.IsNullOrEmpty())
+            string Url = (string)((Hyperlink)sender).Tag;
+            if (!Url.IsNullOrEmpty())
             {
-                Process.Start(_gameHowLongToBeat.GetData().Url);
+                Process.Start(((string)((Hyperlink)sender).Tag));
             }
         }
 
 
         private void ButtonDelete_Click(object sender, RoutedEventArgs e)
         {
-            HowLongToBeat.PluginDatabase.Remove(_gameHowLongToBeat.Id);
-            ((Window)this.Parent).Close();
+            Guid Id = (Guid)((FrameworkElement)sender).Tag;
+            if (Id != default(Guid))
+            {
+                HowLongToBeat.PluginDatabase.Remove(Id);
+                ((Window)this.Parent).Close();
+            }
         }
 
 
@@ -224,50 +218,6 @@ namespace HowLongToBeat.Views
 
     public class HowLongToBeatViewData : ObservableObject
     {
-        private string _CoverImage { get; set; } = string.Empty;
-        public string CoverImage
-        {
-            get => _CoverImage;
-            set
-            {
-                _CoverImage = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private string _GameName { get; set; } = string.Empty;
-        public string GameName
-        {
-            get => _GameName;
-            set
-            {
-                _GameName = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private string _HltbName { get; set; } = string.Empty;
-        public string HltbName
-        {
-            get => _HltbName;
-            set
-            {
-                _HltbName = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private string _PlaytimeFormat { get; set; } = string.Empty;
-        public string PlaytimeFormat
-        {
-            get => _PlaytimeFormat;
-            set
-            {
-                _PlaytimeFormat = value;
-                OnPropertyChanged();
-            }
-        }
-
         private Game _GameContext { get; set; }
         public Game GameContext
         {
@@ -275,6 +225,28 @@ namespace HowLongToBeat.Views
             set
             {
                 _GameContext = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private SourceLink _SourceLink { get; set; }
+        public SourceLink SourceLink
+        {
+            get => _SourceLink;
+            set
+            {
+                _SourceLink = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string _CoverImage { get; set; } = string.Empty;
+        public string CoverImage
+        {
+            get => _CoverImage;
+            set
+            {
+                _CoverImage = value;
                 OnPropertyChanged();
             }
         }

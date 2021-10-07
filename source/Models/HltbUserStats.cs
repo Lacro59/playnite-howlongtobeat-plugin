@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace HowLongToBeat.Models
 {
@@ -24,6 +23,7 @@ namespace HowLongToBeat.Models
     {
         GameName, Platform, Completion, CurrentTime
     }
+
 
     public class TitleList
     {
@@ -93,6 +93,7 @@ namespace HowLongToBeat.Models
             }
         }
     }
+
 
     public class GameStatus
     {

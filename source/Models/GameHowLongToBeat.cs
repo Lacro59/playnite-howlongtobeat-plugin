@@ -1,10 +1,8 @@
 ﻿using CommonPluginsShared.Collections;
+using CommonPluginsShared.Models;
 using Playnite.SDK.Data;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace HowLongToBeat.Models
 {
@@ -24,6 +22,7 @@ namespace HowLongToBeat.Models
                 OnPropertyChanged();
             }
         }
+
 
         [DontSerialize]
         public override bool HasData
@@ -52,6 +51,21 @@ namespace HowLongToBeat.Models
                 return false;
             }
         }
+
+        [DontSerialize]
+        public SourceLink SourceLink
+        {
+            get
+            {
+                return new SourceLink
+                {
+                    GameName = GetData()?.Name,
+                    Name = "HowLongToBeat",
+                    Url = GetData()?.Url
+                };
+            }
+        }
+
 
         public HltbDataUser GetData()
         {

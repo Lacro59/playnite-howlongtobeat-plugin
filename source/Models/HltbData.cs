@@ -9,6 +9,7 @@ namespace HowLongToBeat.Models
     {
         private PlayTimeToStringConverter converter = new PlayTimeToStringConverter();
 
+
         public long MainStory { get; set; } = 0;
         [DontSerialize]
         public string MainStoryFormat
@@ -22,6 +23,7 @@ namespace HowLongToBeat.Models
                 return (string)converter.Convert((long)MainStory, null, null, CultureInfo.CurrentCulture);
             }
         }
+
         public long MainExtra { get; set; }
         [DontSerialize]
         public string MainExtraFormat
@@ -35,6 +37,7 @@ namespace HowLongToBeat.Models
                 return (string)converter.Convert((long)MainExtra, null, null, CultureInfo.CurrentCulture);
             }
         }
+
         public long Completionist { get; set; }
         [DontSerialize]
         public string CompletionistFormat
@@ -49,6 +52,7 @@ namespace HowLongToBeat.Models
             }
         }
 
+
         public long Solo { get; set; } = 0;
         [DontSerialize]
         public string SoloFormat
@@ -62,6 +66,7 @@ namespace HowLongToBeat.Models
                 return (string)converter.Convert((long)Solo, null, null, CultureInfo.CurrentCulture);
             }
         }
+
         public long CoOp { get; set; } = 0;
         [DontSerialize]
         public string CoOpFormat
@@ -75,6 +80,7 @@ namespace HowLongToBeat.Models
                 return (string)converter.Convert((long)CoOp, null, null, CultureInfo.CurrentCulture);
             }
         }
+
         public long Vs { get; set; } = 0;
         [DontSerialize]
         public string VsFormat
@@ -88,6 +94,7 @@ namespace HowLongToBeat.Models
                 return (string)converter.Convert((long)Vs, null, null, CultureInfo.CurrentCulture);
             }
         }
+
 
         [DontSerialize]
         public long TimeToBeat {

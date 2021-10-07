@@ -1124,6 +1124,11 @@ namespace HowLongToBeat.Services
         #endregion
 
 
+        /// <summary>
+        /// Post current data in HowLongToBeat website.
+        /// </summary>
+        /// <param name="hltbPostData"></param>
+        /// <returns></returns>
         public async Task<bool> PostData(HltbPostData hltbPostData)
         {
             if (GetIsUserLoggedIn() && hltbPostData.user_id != 0 && hltbPostData.game_id != 0)
