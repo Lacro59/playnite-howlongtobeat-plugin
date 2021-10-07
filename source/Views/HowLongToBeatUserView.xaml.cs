@@ -211,17 +211,20 @@ namespace HowLongToBeat.Views
 
 
                 // Set data
-                foreach (TitleList titleList in PluginDatabase.Database.UserHltbData.TitlesList)
+                if (PluginDatabase.Database.UserHltbData?.TitlesList != null)
                 {
-                    if (titleList?.Completion != null)
+                    foreach (TitleList titleList in PluginDatabase.Database.UserHltbData.TitlesList)
                     {
-                        string tempDateTime = (string)localDateYMConverter.Convert((DateTime)titleList.Completion, null, null, null);
-
-                        int index = Array.IndexOf(ChartDataLabels, tempDateTime);
-
-                        if (index > 0)
+                        if (titleList?.Completion != null)
                         {
-                            ChartDataSeries[index].Values += 1;
+                            string tempDateTime = (string)localDateYMConverter.Convert((DateTime)titleList.Completion, null, null, null);
+
+                            int index = Array.IndexOf(ChartDataLabels, tempDateTime);
+
+                            if (index > 0)
+                            {
+                                ChartDataSeries[index].Values += 1;
+                            }
                         }
                     }
                 }
