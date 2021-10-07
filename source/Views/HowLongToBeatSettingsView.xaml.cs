@@ -234,7 +234,8 @@ namespace HowLongToBeat.Views
 
         protected void OnPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            this.Dispatcher.Invoke(new Action(() => {
+            this.Dispatcher.Invoke(new Action(() => 
+            {
                 if ((bool)PluginDatabase.howLongToBeatClient.IsConnected)
                 {
                     PART_LbAuthenticate.Content = resources.GetString("LOCCommonLoggedIn");

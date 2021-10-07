@@ -386,29 +386,28 @@ namespace HowLongToBeat.Services
             Application.Current.Dispatcher.BeginInvoke((Action)delegate
             {
                 logger.Info("Login()");
-
-                WebViewOffscreen.LoadingChanged += (s, e) =>
+                IWebView WebView = PluginDatabase.PlayniteApi.WebViews.CreateView(490, 670);
+                WebView.LoadingChanged += (s, e) =>
                 {
-                    Common.LogDebug(true, $"NavigationChanged - {WebViewOffscreen.GetCurrentAddress()}");
+                    Common.LogDebug(true, $"NavigationChanged - {WebView.GetCurrentAddress()}");
 
-                    if (WebViewOffscreen.GetCurrentAddress().IndexOf("https://howlongtobeat.com/user?n=") > -1)
+                    if (WebView.GetCurrentAddress().StartsWith("https://howlongtobeat.com/user?n="))
                     {
-                        Common.LogDebug(true, $"webView.Close();");
-
-                        UserLogin = WebUtility.HtmlDecode(WebViewOffscreen.GetCurrentAddress().Replace("https://howlongtobeat.com/user?n=", string.Empty));
+                        UserLogin = WebUtility.HtmlDecode(WebView.GetCurrentAddress().Replace("https://howlongtobeat.com/user?n=", string.Empty));
                         IsConnected = true;
 
                         PluginDatabase.PluginSettings.Settings.UserLogin = UserLogin;
                         PluginDatabase.Plugin.SavePluginSettings(PluginDatabase.PluginSettings.Settings);
 
                         Thread.Sleep(1500);
+                        WebView.Close();
                     }
                 };
 
                 IsConnected = false;
-                WebViewOffscreen.Navigate(UrlLogOut);
-                WebViewOffscreen.Navigate(UrlLogin);
-                WebViewOffscreen.OpenDialog();
+                WebView.Navigate(UrlLogOut);
+                WebView.Navigate(UrlLogin);
+                WebView.OpenDialog();
             }).Completed += (s, e) => 
             {
                 if ((bool)IsConnected)
