@@ -659,7 +659,7 @@ namespace HowLongToBeat.Services
                                 if (howLongToBeatClient.EditIdExist(HltbData.UserGameId))
                                 {
                                     edit_id = int.Parse(HltbData.UserGameId);
-                                    hltbPostData = howLongToBeatClient.GetSubmitData(edit_id.ToString());
+                                    hltbPostData = howLongToBeatClient.GetSubmitData(gameHowLongToBeat.Name, edit_id.ToString());
                                 }
                             }
                             else
@@ -670,7 +670,7 @@ namespace HowLongToBeat.Services
                                     if (!tmpEditId.IsNullOrEmpty())
                                     {
                                         edit_id = int.Parse(tmpEditId);
-                                        hltbPostData = howLongToBeatClient.GetSubmitData(tmpEditId);
+                                        hltbPostData = howLongToBeatClient.GetSubmitData(gameHowLongToBeat.Name, tmpEditId);
                                     }
                                 }
                             }

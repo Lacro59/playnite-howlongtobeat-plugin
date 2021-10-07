@@ -522,7 +522,7 @@ namespace HowLongToBeat.Services
                 string sCurrentTime = td[1].InnerHtml;
                 titleList.CurrentTime = ConvertStringToLongUser(sCurrentTime);
 
-                HltbPostData hltbPostData = GetSubmitData(titleList.UserGameId);
+                HltbPostData hltbPostData = GetSubmitData(titleList.GameName, titleList.UserGameId);
                 if (hltbPostData != null)
                 {
                     string tempCurrentTime = (hltbPostData.protime_h.IsNullOrEmpty()) ? string.Empty : hltbPostData.protime_h + "h";
@@ -674,8 +674,9 @@ namespace HowLongToBeat.Services
             }
         }
 
-        public HltbPostData GetSubmitData(string UserGameId)
+        public HltbPostData GetSubmitData(string GameName, string UserGameId)
         {
+            logger.Info($"GetSubmitData({GameName})");
             try
             {
                 List<HttpCookie> Cookies = WebViewOffscreen.GetCookies();
@@ -737,37 +738,37 @@ namespace HowLongToBeat.Services
 
 
                 var cbList = htmlDocument.QuerySelector("#list_p");
-                if ((bool)cbList?.OuterHtml.ToLower().Contains(" checked"))
+                if ((bool)cbList?.OuterHtml?.ToLower()?.Contains(" checked"))
                 {
                     hltbPostData.list_p = "1";
                 }
 
                 cbList = htmlDocument.QuerySelector("#list_b");
-                if ((bool)cbList?.OuterHtml.ToLower().Contains(" checked"))
+                if ((bool)cbList?.OuterHtml?.ToLower()?.Contains(" checked"))
                 {
                     hltbPostData.list_b = "1";
                 }
 
                 cbList = htmlDocument.QuerySelector("#list_r");
-                if ((bool)cbList?.OuterHtml.ToLower().Contains(" checked"))
+                if ((bool)cbList?.OuterHtml?.ToLower()?.Contains(" checked"))
                 {
                     hltbPostData.list_r = "1";
                 }
 
                 cbList = htmlDocument.QuerySelector("#list_c");
-                if ((bool)cbList?.OuterHtml.ToLower().Contains(" checked"))
+                if ((bool)cbList?.OuterHtml?.ToLower()?.Contains(" checked"))
                 {
                     hltbPostData.list_c = "1";
                 }
 
                 cbList = htmlDocument.QuerySelector("#list_cp");
-                if ((bool)cbList?.OuterHtml.ToLower().Contains(" checked"))
+                if ((bool)cbList?.OuterHtml?.ToLower()?.Contains(" checked"))
                 {
                     hltbPostData.list_cp = "1";
                 }
 
                 cbList = htmlDocument.QuerySelector("#list_rt");
-                if ((bool)cbList?.OuterHtml.ToLower().Contains(" checked"))
+                if ((bool)cbList?.OuterHtml?.ToLower()?.Contains(" checked"))
                 {
                     hltbPostData.list_rt = "1";
                 }
@@ -930,7 +931,7 @@ namespace HowLongToBeat.Services
                 if (IsFirst)
                 {
                     IsFirst = false;
-                    return GetSubmitData(UserGameId);
+                    return GetSubmitData(GameName, UserGameId);
                 }
                 else
                 {
