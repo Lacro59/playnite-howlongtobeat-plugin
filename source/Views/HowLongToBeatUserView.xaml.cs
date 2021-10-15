@@ -1,5 +1,5 @@
 ﻿using CommonPluginsControls.LiveChartsCommon;
-using CommonPluginsPlaynite.Converters;
+using CommonPlayniteShared.Converters;
 using CommonPluginsShared.Converters;
 using HowLongToBeat.Models;
 using HowLongToBeat.Services;

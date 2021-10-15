@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:controls="clr-namespace:HowLongToBeat.Controls"
              xmlns:local="clr-namespace:HowLongToBeat.Views"
-             xmlns:converters="clr-namespace:CommonPluginsPlaynite.Converters"
+             xmlns:converters="clr-namespace:CommonPlayniteShared.Converters"
              mc:Ignorable="d" Width="750" Height="350"
              d:DataContext="{d:DesignInstance local:HowLongToBeatViewData}">
 

@@ -1,4 +1,4 @@
-﻿using CommonPluginsPlaynite.Converters;
+﻿using CommonPlayniteShared.Converters;
 using Playnite.SDK.Data;
 using System.Collections.Generic;
 using System.Globalization;

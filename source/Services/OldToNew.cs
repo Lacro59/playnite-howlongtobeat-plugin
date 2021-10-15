@@ -1,4 +1,4 @@
-﻿using CommonPluginsPlaynite.Converters;
+﻿using CommonPlayniteShared.Converters;
 using CommonPluginsShared;
 using HowLongToBeat.Models;
 using Playnite.SDK;
