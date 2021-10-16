@@ -63,10 +63,13 @@ namespace HowLongToBeat.Models
         public Guid GameId {
             get
             {
-                foreach(var el in PluginDatabase.Database.Items)
+                foreach (var el in PluginDatabase.Database.Items)
                 {
                     if (el.Value.GetData()?.Id == Id)
                     {
+                        var a = el.Value.GetData();
+
+
                         return el.Key;
                     }
                 }

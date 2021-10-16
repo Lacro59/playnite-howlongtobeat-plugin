@@ -139,6 +139,8 @@ namespace HowLongToBeat.Services
 
             Database.UserHltbData = howLongToBeatClient.LoadUserData();
 
+            DeleteDataWithDeletedGame();
+
             return true;
         }
 
