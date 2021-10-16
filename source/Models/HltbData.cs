@@ -1,4 +1,4 @@
-﻿using CommonPlayniteShared.Converters;
+﻿using CommonPluginsShared.Converters;
 using Playnite.SDK.Data;
 using System.Collections.Generic;
 using System.Globalization;
@@ -7,7 +7,7 @@ namespace HowLongToBeat.Models
 {
     public class HltbData : ObservableObject
     {
-        private PlayTimeToStringConverter converter = new PlayTimeToStringConverter();
+        private PlayTimeToStringConverterWithZero converter = new PlayTimeToStringConverterWithZero();
 
 
         public long MainStory { get; set; } = 0;

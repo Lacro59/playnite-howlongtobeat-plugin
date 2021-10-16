@@ -34,7 +34,7 @@
                                     <ColumnDefinition Width="auto" />
                                     <ColumnDefinition Width="10" />
                                     <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="auto" />
                                 </Grid.ColumnDefinitions>
 
                                 <Button Name="PART_BtAuthenticate" Content="{DynamicResource LOCCommonAuthenticateLabel}" 

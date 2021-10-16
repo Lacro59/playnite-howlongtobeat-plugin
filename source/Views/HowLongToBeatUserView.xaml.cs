@@ -275,7 +275,7 @@ namespace HowLongToBeat.Views
                     TimeCoOp += titleList.HltbUserData.Vs;
                 }
 
-                PlayTimeToStringConverter converter = new PlayTimeToStringConverter();
+                PlayTimeToStringConverterWithZero converter = new PlayTimeToStringConverterWithZero();
 
                 PART_TimeSinglePlayer.Content = (string)converter.Convert(TimeSinglePlayer, null, null, CultureInfo.CurrentCulture);
                 PART_TimeCoOp.Content = (string)converter.Convert(TimeCoOp, null, null, CultureInfo.CurrentCulture);
