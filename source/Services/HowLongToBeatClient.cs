@@ -448,7 +448,7 @@ namespace HowLongToBeat.Services
             try
             {
                 List<HttpCookie> Cookies = WebViewOffscreen.GetCookies();
-                Cookies = Cookies.Where(x => (bool)(x?.Domain?.Contains("howlongtobeat")))?.ToList();
+                Cookies = Cookies.Where(x => (bool)x?.Domain?.Contains("howlongtobeat"))?.ToList();
 
                 var formContent = new FormUrlEncodedContent(new[]
                 {
@@ -744,31 +744,31 @@ namespace HowLongToBeat.Services
                 }
 
                 cbList = htmlDocument.QuerySelector("#list_b");
-                if ((bool)cbList?.OuterHtml?.ToLower()?.Contains(" checked"))
+                if (cbList != null && (bool)cbList?.OuterHtml?.ToLower()?.Contains(" checked"))
                 {
                     hltbPostData.list_b = "1";
                 }
 
                 cbList = htmlDocument.QuerySelector("#list_r");
-                if ((bool)cbList?.OuterHtml?.ToLower()?.Contains(" checked"))
+                if (cbList != null && (bool)cbList?.OuterHtml?.ToLower()?.Contains(" checked"))
                 {
                     hltbPostData.list_r = "1";
                 }
 
                 cbList = htmlDocument.QuerySelector("#list_c");
-                if ((bool)cbList?.OuterHtml?.ToLower()?.Contains(" checked"))
+                if (cbList != null && (bool)cbList?.OuterHtml?.ToLower()?.Contains(" checked"))
                 {
                     hltbPostData.list_c = "1";
                 }
 
                 cbList = htmlDocument.QuerySelector("#list_cp");
-                if ((bool)cbList?.OuterHtml?.ToLower()?.Contains(" checked"))
+                if (cbList != null && (bool)cbList?.OuterHtml?.ToLower()?.Contains(" checked"))
                 {
                     hltbPostData.list_cp = "1";
                 }
 
                 cbList = htmlDocument.QuerySelector("#list_rt");
-                if ((bool)cbList?.OuterHtml?.ToLower()?.Contains(" checked"))
+                if (cbList != null && (bool)cbList?.OuterHtml?.ToLower()?.Contains(" checked"))
                 {
                     hltbPostData.list_rt = "1";
                 }
@@ -828,75 +828,75 @@ namespace HowLongToBeat.Services
 
 
                 var c_main_h = htmlDocument.QuerySelector("#c_main_h");
-                hltbPostData.c_main_h = c_main_h.GetAttribute("value");
+                hltbPostData.c_main_h = c_main_h?.GetAttribute("value");
 
                 var c_main_m = htmlDocument.QuerySelector("#c_main_m");
-                hltbPostData.c_main_m = c_main_m.GetAttribute("value");
+                hltbPostData.c_main_m = c_main_m?.GetAttribute("value");
 
                 var c_main_s = htmlDocument.QuerySelector("#c_main_s");
-                hltbPostData.c_main_s = c_main_s.GetAttribute("value");
+                hltbPostData.c_main_s = c_main_s?.GetAttribute("value");
 
                 var c_main_notes = htmlDocument.QuerySelector("input[name=c_main_notes]");
-                hltbPostData.c_main_notes = c_main_notes.GetAttribute("value");
+                hltbPostData.c_main_notes = c_main_notes?.GetAttribute("value");
 
 
                 var c_plus_h = htmlDocument.QuerySelector("#c_plus_h");
-                hltbPostData.c_plus_h = c_plus_h.GetAttribute("value");
+                hltbPostData.c_plus_h = c_plus_h?.GetAttribute("value");
 
                 var c_plus_m = htmlDocument.QuerySelector("#c_plus_m");
-                hltbPostData.c_plus_m = c_plus_m.GetAttribute("value");
+                hltbPostData.c_plus_m = c_plus_m?.GetAttribute("value");
 
                 var c_plus_s = htmlDocument.QuerySelector("#c_plus_s");
-                hltbPostData.c_plus_s = c_plus_s.GetAttribute("value");
+                hltbPostData.c_plus_s = c_plus_s?.GetAttribute("value");
 
                 var c_plus_notes = htmlDocument.QuerySelector("input[name=c_plus_notes]");
-                hltbPostData.c_plus_notes = c_plus_notes.GetAttribute("value");
+                hltbPostData.c_plus_notes = c_plus_notes?.GetAttribute("value");
 
 
                 var c_100_h = htmlDocument.QuerySelector("#c_100_h");
-                hltbPostData.c_100_h = c_100_h.GetAttribute("value");
+                hltbPostData.c_100_h = c_100_h?.GetAttribute("value");
 
                 var c_100_m = htmlDocument.QuerySelector("#c_100_m");
-                hltbPostData.c_100_m = c_100_m.GetAttribute("value");
+                hltbPostData.c_100_m = c_100_m?.GetAttribute("value");
 
                 var c_100_s = htmlDocument.QuerySelector("#c_100_s");
-                hltbPostData.c_100_s = c_100_s.GetAttribute("value");
+                hltbPostData.c_100_s = c_100_s?.GetAttribute("value");
 
                 var c_100_notes = htmlDocument.QuerySelector("input[name=c_100_notes]");
-                hltbPostData.c_100_notes = c_100_notes.GetAttribute("value");
+                hltbPostData.c_100_notes = c_100_notes?.GetAttribute("value");
 
 
                 var c_speed_h = htmlDocument.QuerySelector("#c_speed_h");
-                hltbPostData.c_speed_h = c_speed_h.GetAttribute("value");
+                hltbPostData.c_speed_h = c_speed_h?.GetAttribute("value");
 
                 var c_speed_m = htmlDocument.QuerySelector("#c_speed_m");
-                hltbPostData.c_speed_m = c_speed_m.GetAttribute("value");
+                hltbPostData.c_speed_m = c_speed_m?.GetAttribute("value");
 
                 var c_speed_s = htmlDocument.QuerySelector("#c_speed_s");
-                hltbPostData.c_speed_s = c_speed_s.GetAttribute("value");
+                hltbPostData.c_speed_s = c_speed_s?.GetAttribute("value");
 
                 var c_speed_notes = htmlDocument.QuerySelector("input[name=c_speed_notes]");
-                hltbPostData.c_speed_notes = c_speed_notes.GetAttribute("value");
+                hltbPostData.c_speed_notes = c_speed_notes?.GetAttribute("value");
 
 
                 var cotime_h = htmlDocument.QuerySelector("#cotime_h");
-                hltbPostData.cotime_h = cotime_h.GetAttribute("value");
+                hltbPostData.cotime_h = cotime_h?.GetAttribute("value");
 
                 var cotime_m = htmlDocument.QuerySelector("#cotime_m");
-                hltbPostData.cotime_m = cotime_m.GetAttribute("value");
+                hltbPostData.cotime_m = cotime_m?.GetAttribute("value");
 
                 var cotime_s = htmlDocument.QuerySelector("#cotime_s");
-                hltbPostData.cotime_s = cotime_s.GetAttribute("value");
+                hltbPostData.cotime_s = cotime_s?.GetAttribute("value");
 
 
                 var mptime_h = htmlDocument.QuerySelector("#mptime_h");
-                hltbPostData.mptime_h = mptime_h.GetAttribute("value");
+                hltbPostData.mptime_h = mptime_h?.GetAttribute("value");
 
                 var mptime_m = htmlDocument.QuerySelector("#mptime_m");
-                hltbPostData.mptime_m = mptime_m.GetAttribute("value");
+                hltbPostData.mptime_m = mptime_m?.GetAttribute("value");
 
                 var mptime_s = htmlDocument.QuerySelector("#mptime_s");
-                hltbPostData.mptime_s = mptime_s.GetAttribute("value");
+                hltbPostData.mptime_s = mptime_s?.GetAttribute("value");
 
                 var mptime_notes = htmlDocument.QuerySelector("#mptime_notes");
 
@@ -913,15 +913,15 @@ namespace HowLongToBeat.Services
 
 
                 var review_notes = htmlDocument.QuerySelector("textarea[name=review_notes]");
-                hltbPostData.review_notes = review_notes.InnerHtml;
+                hltbPostData.review_notes = review_notes?.InnerHtml;
 
 
                 var play_notes = htmlDocument.QuerySelector("textarea[name=play_notes]");
-                hltbPostData.play_notes = play_notes.InnerHtml;
+                hltbPostData.play_notes = play_notes?.InnerHtml;
 
 
                 var play_video = htmlDocument.QuerySelector("input[name=play_video]");
-                hltbPostData.play_video = play_video.GetAttribute("value");
+                hltbPostData.play_video = play_video?.GetAttribute("value");
 
 
                 return hltbPostData;
