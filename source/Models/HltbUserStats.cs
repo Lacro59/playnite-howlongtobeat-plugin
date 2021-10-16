@@ -67,9 +67,6 @@ namespace HowLongToBeat.Models
                 {
                     if (el.Value.GetData()?.Id == Id)
                     {
-                        var a = el.Value.GetData();
-
-
                         return el.Key;
                     }
                 }
