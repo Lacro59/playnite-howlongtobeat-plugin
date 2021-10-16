@@ -42,3 +42,10 @@ Packages:
     Changelog:
       - Playnite 9 version (not compatible with Playnite 8)
       - Fixed many bugs and crashes
+  - Version: 2.1.4
+    RequiredApiVersion: 6.1.0
+    ReleaseDate: 2021-10-16
+    PackageUrl: https://github.com/Lacro59/playnite-howlongtobeat-plugin/releases/download/v2.1.4/playnite-howlongtobeat-plugin_2_1_4.pext
+    Changelog:
+      - UI tweaks
+      - Fixed many bugs
