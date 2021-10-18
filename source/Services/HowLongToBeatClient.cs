@@ -609,7 +609,15 @@ namespace HowLongToBeat.Services
                         if (GameDetails[iPosUserData]?.Children[i]?.QuerySelectorAll("p")?.FirstOrDefault() != null)
                         {
                             tempTime = GameDetails[iPosUserData].Children[i].QuerySelectorAll("p").FirstOrDefault().InnerHtml;
-                            titleList.Completion = Convert.ToDateTime(tempTime);
+                            if (DateTime.TryParse(tempTime, out DateTime dateValue))
+                            {
+                                titleList.Completion = Convert.ToDateTime(dateValue);
+                            }
+                            else
+                            {
+                                logger.Warn($"Impossible to parse datetime: {tempTime}");
+                                titleList.Completion = null;
+                            }
                         }
                     }
 

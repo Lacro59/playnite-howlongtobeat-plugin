@@ -14,6 +14,7 @@ using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using Playnite.SDK.Data;
 
 namespace HowLongToBeat.Views
 {
@@ -122,7 +123,7 @@ namespace HowLongToBeat.Views
                 // Set data
                 foreach (TitleList titleList in PluginDatabase.Database.UserHltbData.TitlesList)
                 {
-                    if (titleList.Completion != null)
+                    if (titleList?.Completion != null)
                     {
                         string tempDateTime = ((DateTime)titleList.Completion).ToString("yyyy");
 
