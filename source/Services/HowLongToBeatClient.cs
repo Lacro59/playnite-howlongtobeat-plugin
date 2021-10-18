@@ -448,7 +448,7 @@ namespace HowLongToBeat.Services
             try
             {
                 List<HttpCookie> Cookies = WebViewOffscreen.GetCookies();
-                Cookies = Cookies.Where(x => (bool)x?.Domain?.Contains("howlongtobeat"))?.ToList();
+                Cookies = Cookies.Where(x => x != null && x.Domain != null && x.Domain.Contains("howlongtobeat", StringComparison.InvariantCultureIgnoreCase)).ToList();
 
                 var formContent = new FormUrlEncodedContent(new[]
                 {
@@ -456,7 +456,7 @@ namespace HowLongToBeat.Services
                         new KeyValuePair<string, string>("c", "user_beat"),
                         new KeyValuePair<string, string>("p", string.Empty),
                         new KeyValuePair<string, string>("y", string.Empty)
-                    });
+                });
 
                 string response = Web.PostStringDataCookies(UrlUserStatsGameList, formContent, Cookies).GetAwaiter().GetResult();
                 return response;
@@ -480,7 +480,7 @@ namespace HowLongToBeat.Services
             try
             {
                 List<HttpCookie> Cookies = WebViewOffscreen.GetCookies();
-                Cookies = Cookies.Where(x => (bool)(x?.Domain?.Contains("howlongtobeat")))?.ToList();
+                Cookies = Cookies.Where(x => x != null && x.Domain != null && x.Domain.Contains("howlongtobeat", StringComparison.InvariantCultureIgnoreCase)).ToList();
 
                 var formContent = new FormUrlEncodedContent(new[]
                 {
@@ -680,7 +680,7 @@ namespace HowLongToBeat.Services
             try
             {
                 List<HttpCookie> Cookies = WebViewOffscreen.GetCookies();
-                Cookies = Cookies.Where(x => (bool)(x?.Domain?.Contains("howlongtobeat")))?.ToList();
+                Cookies = Cookies.Where(x => x != null && x.Domain != null && x.Domain.Contains("howlongtobeat", StringComparison.InvariantCultureIgnoreCase)).ToList();
 
                 string response = Web.DownloadStringData(string.Format(UrlPostDataEdit, UserGameId), Cookies).GetAwaiter().GetResult();
 
@@ -1232,9 +1232,7 @@ namespace HowLongToBeat.Services
                     
 
                     List<HttpCookie> Cookies = WebViewOffscreen.GetCookies();
-                    Cookies = Cookies.Where(x => (bool)(x?.Domain?.Contains("howlongtobeat")))?.ToList();
-
-                    Common.LogDebug(true, $"Cookies: {Serialization.ToJson(Cookies)}");
+                    Cookies = Cookies.Where(x => x != null && x.Domain != null && x.Domain.Contains("howlongtobeat", StringComparison.InvariantCultureIgnoreCase)).ToList();
 
                     var formContent = new FormUrlEncodedContent(data);
                     string response = await Web.PostStringDataCookies(UrlPostData, formContent, Cookies);
