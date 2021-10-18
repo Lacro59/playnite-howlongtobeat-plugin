@@ -403,9 +403,9 @@
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
 
-                    <Grid Grid.Row="0" Name="PART_GridStorefront" MinHeight="100">
+                    <Grid Grid.Row="0" MinHeight="100">
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="*" />
+                            <RowDefinition Height="auto" />
                             <RowDefinition Height="10" />
                             <RowDefinition Height="*" />
                         </Grid.RowDefinitions>
@@ -414,33 +414,35 @@
                             <Label Content="{DynamicResource LOCHowLongToBeatStorefront}" />
                             <Separator />
                         </StackPanel>
-                        
-                        <ListBox Height="{Binding ElementName=PART_GridStorefront, Path=ActualHeight}"
-                                 Grid.Row="2" ItemsSource="{Binding Settings.Storefronts}">
-                            <ListBox.ItemContainerStyle>
-                                <Style TargetType="{x:Type ListBoxItem}" BasedOn="{StaticResource {x:Type ListBoxItem}}">
-                                    <Setter Property="Focusable" Value="False"/>
-                                </Style>
-                            </ListBox.ItemContainerStyle>
 
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <Grid Margin="0,2">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="200" />
-                                            <ColumnDefinition Width="10" />
-                                            <ColumnDefinition Width="250" />
-                                        </Grid.ColumnDefinitions>
+                        <Grid Name="PART_GridStorefront" Grid.Row="2">
+                            <ListBox Height="{Binding ElementName=PART_GridStorefront, Path=ActualHeight}"
+                                     ItemsSource="{Binding Settings.Storefronts}">
+                                <ListBox.ItemContainerStyle>
+                                    <Style TargetType="{x:Type ListBoxItem}" BasedOn="{StaticResource {x:Type ListBoxItem}}">
+                                        <Setter Property="Focusable" Value="False"/>
+                                    </Style>
+                                </ListBox.ItemContainerStyle>
 
-                                        <TextBlock Grid.Column="0" Text="{Binding HltbStorefrontName}" />
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid Margin="0,2">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="200" />
+                                                <ColumnDefinition Width="10" />
+                                                <ColumnDefinition Width="250" />
+                                            </Grid.ColumnDefinitions>
 
-                                        <ComboBox Grid.Column="2" ItemsSource="{Binding GameSources}"
+                                            <TextBlock Grid.Column="0" Text="{Binding HltbStorefrontName}" />
+
+                                            <ComboBox Grid.Column="2" ItemsSource="{Binding GameSources}"
                                                   SelectedValuePath="Id" DisplayMemberPath="Name"
                                                   SelectedValue="{Binding SourceId}" />
-                                    </Grid>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                        </ListBox>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                        </Grid>
                     </Grid>
                 </Grid>
             </ScrollViewer>
