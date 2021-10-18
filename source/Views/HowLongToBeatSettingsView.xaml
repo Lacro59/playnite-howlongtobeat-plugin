@@ -148,6 +148,7 @@
                                 <RowDefinition Height="30" />
                                 <RowDefinition Height="30" />
                                 <RowDefinition Height="30" />
+                                <RowDefinition Height="30" />
                                 <RowDefinition Height="10" />
                                 <RowDefinition Height="35" />
                             </Grid.RowDefinitions>
@@ -169,7 +170,20 @@
                                 <Label Content="{DynamicResource LOCHowLongToBeatShowWhenMismatch}" />
                             </CheckBox>
 
-                            <Grid Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="5">
+                            <CheckBox Grid.Row="4" IsChecked="{Binding Settings.UseMatchValue}" Grid.Column="0" VerticalAlignment="Center">
+                                <Label Content="{DynamicResource LOCHowLongToBeatUseMatchValue}" />
+                            </CheckBox>
+
+                            <StackPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="2" >
+                                <Slider Width="200" VerticalAlignment="Center" Name="PART_SliderMAtchValue"
+                                        Value="{Binding Settings.MatchValue, FallbackValue=95}" Minimum="75" Maximum="100"
+                                        IsSnapToTickEnabled="True" TickFrequency="1" />
+                                <Label Content="{Binding ElementName=PART_SliderMAtchValue, Path=Value}" 
+                                       ContentStringFormat=" {0}%" Width="50" VerticalAlignment="Center"
+                                       Margin="10,0,0,0" HorizontalAlignment="Center" />
+                            </StackPanel>
+
+                            <Grid Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="6">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="10" />

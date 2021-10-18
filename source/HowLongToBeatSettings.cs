@@ -26,6 +26,8 @@ namespace HowLongToBeat
         public bool AutoImport { get; set; } = true;
         public bool AutoAccept { get; set; } = true;
         public bool ShowWhenMismatch { get; set; } = false;
+        public bool UseMatchValue { get; set; } = false;
+        public double MatchValue { get; set; } = 95;
 
 
         public bool EnableIntegrationButtonHeader { get; set; } = true;

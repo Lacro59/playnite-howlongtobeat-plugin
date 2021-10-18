@@ -18,6 +18,7 @@ using System.Net;
 using CommonPluginsControls.Controls;
 using System.Net.Http;
 using System.Windows.Threading;
+using FuzzySharp;
 
 namespace HowLongToBeat.Services
 {
@@ -258,6 +259,18 @@ namespace HowLongToBeat.Services
             }
             else
             {
+                if (dataSearch.Count > 0 && PluginSettings.Settings.UseMatchValue)
+                {
+                    var FuzzList = dataSearch.Select(x => new { MatchPercent = Fuzz.Ratio(game.Name, x.Name), Data = x }).OrderByDescending(x => x.MatchPercent).ToList();
+
+                    if (FuzzList.First().MatchPercent >= PluginSettings.Settings.MatchValue)
+                    {
+                        gameHowLongToBeat.Items = new List<HltbDataUser>() { FuzzList.First().Data };
+                        AddOrUpdate(gameHowLongToBeat);
+                        return;
+                    }
+                }
+
                 if (dataSearch.Count > 0 && PluginSettings.Settings.ShowWhenMismatch)
                 {
                     Get(game, false, true);
