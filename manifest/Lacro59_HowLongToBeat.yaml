@@ -49,3 +49,12 @@ Packages:
     Changelog:
       - UI tweaks
       - Fixed many bugs
+  - Version: 2.2
+    RequiredApiVersion: 6.1.0
+    ReleaseDate: 2021-10-19
+    PackageUrl: https://github.com/Lacro59/playnite-howlongtobeat-plugin/releases/download/v2.2/playnite-howlongtobeat-plugin_2_2.pext
+    Changelog:
+      - Fixed authentification issue
+      - Added an option to auto-accept with fuzzy matching
+      - Added an option to enbale success notification
+      - Fixed an issue with settings color for custom theme
