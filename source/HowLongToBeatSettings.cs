@@ -29,6 +29,7 @@ namespace HowLongToBeat
         public bool UseMatchValue { get; set; } = false;
         public double MatchValue { get; set; } = 95;
 
+        public bool EnableSucessNotification { get; set; } = true;
 
         public bool EnableIntegrationButtonHeader { get; set; } = true;
 

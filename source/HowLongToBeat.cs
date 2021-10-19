@@ -556,11 +556,14 @@ namespace HowLongToBeat
                         {
                             if (PluginDatabase.SetCurrentPlayTime(args.Game, args.ElapsedSeconds))
                             {
-                                PlayniteApi.Notifications.Add(new NotificationMessage(
-                                    "HowLongToBeat-SetCurrentPlayTime",
-                                    "HowLongToBeat" + System.Environment.NewLine +
-                                    string.Format(resources.GetString("LOCHowLongToBeatCurrentPlayTimeSetted"), args.Game.Name),
-                                    NotificationType.Info));
+                                if (PluginDatabase.PluginSettings.Settings.EnableSucessNotification)
+                                {
+                                    PlayniteApi.Notifications.Add(new NotificationMessage(
+                                        "HowLongToBeat-SetCurrentPlayTime",
+                                        "HowLongToBeat" + System.Environment.NewLine +
+                                        string.Format(resources.GetString("LOCHowLongToBeatCurrentPlayTimeSetted"), args.Game.Name),
+                                        NotificationType.Info));
+                                }
                             }
                         });
                     }

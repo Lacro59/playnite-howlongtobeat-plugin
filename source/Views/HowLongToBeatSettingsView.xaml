@@ -27,6 +27,7 @@
                                 <RowDefinition Height="30" />
                                 <RowDefinition Height="30" />
                                 <RowDefinition Height="30" />
+                                <RowDefinition Height="30" />
                             </Grid.RowDefinitions>
 
                             <Grid Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="0">
@@ -69,6 +70,11 @@
                             <CheckBox Grid.Row="7" Margin="50,0,0,0" IsChecked="{Binding Settings.AutoSetCurrentPlayTimeWithoutConfirmation}" Grid.Column="0" VerticalAlignment="Center"
                                       IsEnabled="{Binding ElementName=PART_AutoSetCurrentPlayTime, Path=IsChecked}">
                                 <Label Content="{DynamicResource LOCHowLongToBeatWithoutConfirmation}" />
+                            </CheckBox>
+
+                            <CheckBox Grid.Row="8" Margin="50,0,0,0" IsChecked="{Binding Settings.EnableSucessNotification}" Grid.Column="0" VerticalAlignment="Center"
+                                      IsEnabled="{Binding ElementName=PART_AutoSetCurrentPlayTime, Path=IsChecked}">
+                                <Label Content="{DynamicResource LOCHowLongToBeatEnableSuccessNotification}" />
                             </CheckBox>
                         </Grid>
 
