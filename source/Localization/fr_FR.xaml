@@ -28,6 +28,7 @@
     <sys:String x:Key="LOCHowLongToBeatAutoImport">Importer automatiquement les données lorsque la bibliothèque est mise à jour</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoAccept">Automatiquement accepter lorsqu'il n'y a qu'un jeu trouv</sys:String>
     <sys:String x:Key="LOCHowLongToBeatShowWhenMismatch">Voir la fenêtre de sélection lorsqu'il y a plus d'un jeu trouv</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatUseMatchValue">Use a percent match</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBar">Afficher l'indicateur de progression</sys:String>
     
