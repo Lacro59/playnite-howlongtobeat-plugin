@@ -45,19 +45,19 @@ namespace HowLongToBeat.Views
             PART_SelectorColorPicker.OnlySimpleColor = true;
             PART_SelectorColorPicker.IsSimpleColor = true;
 
-            ColorFirst = settings.ColorFirst;
-            tbColorFirst.Background = new SolidColorBrush(settings.ColorFirst);
-            ColorSecond = settings.ColorSecond;
-            tbColorSecond.Background = new SolidColorBrush(settings.ColorSecond);
-            ColorThird = settings.ColorThird;
-            tbColorThird.Background = new SolidColorBrush(settings.ColorThird);
+            ColorFirst = settings.ColorFirst.Color;
+            tbColorFirst.Background = settings.ColorFirst;
+            ColorSecond = settings.ColorSecond.Color;
+            tbColorSecond.Background = settings.ColorSecond;
+            ColorThird = settings.ColorThird.Color;
+            tbColorThird.Background = settings.ColorThird;
 
-            ColorFirstMulti = settings.ColorFirstMulti;
-            tbColorFirstMulti.Background = new SolidColorBrush(settings.ColorFirstMulti);
-            ColorSecondMulti = settings.ColorSecondMulti;
-            tbColorSecondMulti.Background = new SolidColorBrush(settings.ColorSecondMulti);
-            ColorThirdMulti = settings.ColorThirdMulti;
-            tbColorThirdMulti.Background = new SolidColorBrush(settings.ColorThirdMulti);
+            ColorFirstMulti = settings.ColorFirstMulti.Color;
+            tbColorFirstMulti.Background = settings.ColorFirstMulti;
+            ColorSecondMulti = settings.ColorSecondMulti.Color;
+            tbColorSecondMulti.Background = settings.ColorSecondMulti;
+            ColorThirdMulti = settings.ColorThirdMulti.Color;
+            tbColorThirdMulti.Background = settings.ColorThirdMulti;
 
             spSettings.Visibility = Visibility.Visible;
 

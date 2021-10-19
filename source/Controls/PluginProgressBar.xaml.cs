@@ -176,7 +176,7 @@ namespace HowLongToBeat.Controls
                         {
                             MaxValue = HltbData.GameHltbData.MainStory;
                         }
-                        SetColor(ElIndicator, PluginDatabase.PluginSettings.Settings.ColorFirst);
+                        SetColor(ElIndicator, PluginDatabase.PluginSettings.Settings.ColorFirst.Color);
 
 
                         // Show user hltb datas
@@ -184,7 +184,7 @@ namespace HowLongToBeat.Controls
                         {
                             if (titleList?.HltbUserData?.MainStory > 0)
                             {
-                                SetUserData(ElIndicator, titleList.HltbUserData.MainStory, PluginDatabase.PluginSettings.Settings.ColorFirst);
+                                SetUserData(ElIndicator, titleList.HltbUserData.MainStory, PluginDatabase.PluginSettings.Settings.ColorFirst.Color);
                             }
                         }
                     }
@@ -197,7 +197,7 @@ namespace HowLongToBeat.Controls
                         {
                             MaxValue = HltbData.GameHltbData.MainExtra;
                         }
-                        SetColor(ElIndicator, PluginDatabase.PluginSettings.Settings.ColorSecond);
+                        SetColor(ElIndicator, PluginDatabase.PluginSettings.Settings.ColorSecond.Color);
 
 
                         // Show user hltb datas
@@ -205,7 +205,7 @@ namespace HowLongToBeat.Controls
                     {
                             if (titleList?.HltbUserData?.MainExtra > 0)
                             {
-                                SetUserData(ElIndicator, titleList.HltbUserData.MainExtra, PluginDatabase.PluginSettings.Settings.ColorSecond);
+                                SetUserData(ElIndicator, titleList.HltbUserData.MainExtra, PluginDatabase.PluginSettings.Settings.ColorSecond.Color);
                             }
                         }
                     }
@@ -218,7 +218,7 @@ namespace HowLongToBeat.Controls
                         {
                             MaxValue = HltbData.GameHltbData.Completionist;
                         }
-                        SetColor(ElIndicator, PluginDatabase.PluginSettings.Settings.ColorThird);
+                        SetColor(ElIndicator, PluginDatabase.PluginSettings.Settings.ColorThird.Color);
 
 
                         // Show user hltb datas
@@ -226,7 +226,7 @@ namespace HowLongToBeat.Controls
                         {
                             if (titleList?.HltbUserData?.Completionist > 0)
                             {
-                                SetUserData(ElIndicator, titleList.HltbUserData.Completionist, PluginDatabase.PluginSettings.Settings.ColorThird);
+                                SetUserData(ElIndicator, titleList.HltbUserData.Completionist, PluginDatabase.PluginSettings.Settings.ColorThird.Color);
                             }
                         }
                     }
@@ -239,7 +239,7 @@ namespace HowLongToBeat.Controls
                         {
                             MaxValue = HltbData.GameHltbData.Solo;
                         }
-                        SetColor(ElIndicator, PluginDatabase.PluginSettings.Settings.ColorFirstMulti);
+                        SetColor(ElIndicator, PluginDatabase.PluginSettings.Settings.ColorFirstMulti.Color);
 
 
                         // Show user hltb datas
@@ -247,7 +247,7 @@ namespace HowLongToBeat.Controls
                         {
                             if (titleList?.HltbUserData?.Solo > 0)
                             {
-                                SetUserData(ElIndicator, titleList.HltbUserData.Solo, PluginDatabase.PluginSettings.Settings.ColorFirstMulti);
+                                SetUserData(ElIndicator, titleList.HltbUserData.Solo, PluginDatabase.PluginSettings.Settings.ColorFirstMulti.Color);
                             }
                         }
                     }
@@ -260,7 +260,7 @@ namespace HowLongToBeat.Controls
                         {
                             MaxValue = HltbData.GameHltbData.CoOp;
                         }
-                        SetColor(ElIndicator, PluginDatabase.PluginSettings.Settings.ColorSecondMulti);
+                        SetColor(ElIndicator, PluginDatabase.PluginSettings.Settings.ColorSecondMulti.Color);
 
 
                         // Show user hltb datas
@@ -268,7 +268,7 @@ namespace HowLongToBeat.Controls
                         {
                             if (titleList?.HltbUserData?.CoOp > 0)
                             {
-                                SetUserData(ElIndicator, titleList.HltbUserData.CoOp, PluginDatabase.PluginSettings.Settings.ColorSecondMulti);
+                                SetUserData(ElIndicator, titleList.HltbUserData.CoOp, PluginDatabase.PluginSettings.Settings.ColorSecondMulti.Color);
                             }
                         }
                     }
@@ -281,7 +281,7 @@ namespace HowLongToBeat.Controls
                         {
                             MaxValue = HltbData.GameHltbData.Vs;
                         }
-                        SetColor(ElIndicator, PluginDatabase.PluginSettings.Settings.ColorThirdMulti);
+                        SetColor(ElIndicator, PluginDatabase.PluginSettings.Settings.ColorThirdMulti.Color);
 
 
                         // Show user hltb datas
@@ -289,7 +289,7 @@ namespace HowLongToBeat.Controls
                         {
                             if (titleList?.HltbUserData?.Vs > 0)
                             {
-                                SetUserData(ElIndicator, titleList.HltbUserData.Vs, PluginDatabase.PluginSettings.Settings.ColorThirdMulti);
+                                SetUserData(ElIndicator, titleList.HltbUserData.Vs, PluginDatabase.PluginSettings.Settings.ColorThirdMulti.Color);
                             }
                         }
                     }

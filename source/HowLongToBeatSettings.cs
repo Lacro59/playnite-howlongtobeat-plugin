@@ -75,8 +75,8 @@ namespace HowLongToBeat
         public bool ProgressBarShowTime { get; set; } = false;
 
 
-        private Color _ColorFirst { get; set; } = Brushes.DarkCyan.Color;
-        public Color ColorFirst
+        private SolidColorBrush _ColorFirst { get; set; } = new SolidColorBrush(Brushes.DarkCyan.Color);
+        public SolidColorBrush ColorFirst
         {
             get => _ColorFirst;
             set
@@ -86,8 +86,8 @@ namespace HowLongToBeat
             }
         }
 
-        private Color _ColorSecond { get; set; } = Brushes.RoyalBlue.Color;
-        public Color ColorSecond
+        private SolidColorBrush _ColorSecond { get; set; } = new SolidColorBrush(Brushes.RoyalBlue.Color);
+        public SolidColorBrush ColorSecond
         {
             get => _ColorSecond;
             set
@@ -97,8 +97,8 @@ namespace HowLongToBeat
             }
         }
 
-        private Color _ColorThird { get; set; } = Brushes.ForestGreen.Color;
-        public Color ColorThird
+        private SolidColorBrush _ColorThird { get; set; } = new SolidColorBrush(Brushes.ForestGreen.Color);
+        public SolidColorBrush ColorThird
         {
             get => _ColorThird;
             set
@@ -108,8 +108,8 @@ namespace HowLongToBeat
             }
         }
 
-        private Color _ColorFirstMulti { get; set; } = Brushes.DarkCyan.Color;
-        public Color ColorFirstMulti
+        private SolidColorBrush _ColorFirstMulti { get; set; } = new SolidColorBrush(Brushes.DarkCyan.Color);
+        public SolidColorBrush ColorFirstMulti
         {
             get => _ColorFirstMulti;
             set
@@ -119,8 +119,8 @@ namespace HowLongToBeat
             }
         }
 
-        private Color _ColorSecondMulti { get; set; } = Brushes.RoyalBlue.Color;
-        public Color ColorSecondMulti
+        private SolidColorBrush _ColorSecondMulti { get; set; } = new SolidColorBrush(Brushes.RoyalBlue.Color);
+        public SolidColorBrush ColorSecondMulti
         {
             get => _ColorSecondMulti;
             set
@@ -130,8 +130,8 @@ namespace HowLongToBeat
             }
         }
 
-        private Color _ColorThirdMulti { get; set; } = Brushes.ForestGreen.Color;
-        public Color ColorThirdMulti
+        private SolidColorBrush _ColorThirdMulti { get; set; } = new SolidColorBrush(Brushes.ForestGreen.Color);
+        public SolidColorBrush ColorThirdMulti
         {
             get => _ColorThirdMulti;
             set
@@ -416,12 +416,12 @@ namespace HowLongToBeat
         // This method should save settings made to Option1 and Option2.
         public void EndEdit()
         {
-            Settings.ColorFirst = HowLongToBeatSettingsView.ColorFirst;
-            Settings.ColorSecond = HowLongToBeatSettingsView.ColorSecond;
-            Settings.ColorThird = HowLongToBeatSettingsView.ColorThird;
-            Settings.ColorFirstMulti = HowLongToBeatSettingsView.ColorFirstMulti;
-            Settings.ColorSecondMulti = HowLongToBeatSettingsView.ColorSecondMulti;
-            Settings.ColorThirdMulti = HowLongToBeatSettingsView.ColorThirdMulti;
+            Settings.ColorFirst = new SolidColorBrush(HowLongToBeatSettingsView.ColorFirst);
+            Settings.ColorSecond = new SolidColorBrush(HowLongToBeatSettingsView.ColorSecond);
+            Settings.ColorThird = new SolidColorBrush(HowLongToBeatSettingsView.ColorThird);
+            Settings.ColorFirstMulti = new SolidColorBrush(HowLongToBeatSettingsView.ColorFirstMulti);
+            Settings.ColorSecondMulti = new SolidColorBrush(HowLongToBeatSettingsView.ColorSecondMulti);
+            Settings.ColorThirdMulti = new SolidColorBrush(HowLongToBeatSettingsView.ColorThirdMulti);
 
             if (!Settings.ProgressBarShowTimeAbove && !Settings.ProgressBarShowTimeInterior && !Settings.ProgressBarShowTimeBelow)
             {
