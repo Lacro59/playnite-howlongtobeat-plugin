@@ -23,12 +23,13 @@
 
     <sys:String x:Key="LOCHowLongToBeatAutoSetCurrentPlayTime">Mettre à jour automatiquement le temps de jeu sur HowLongToBeat après une session de jeu</sys:String>
     <sys:String x:Key="LOCHowLongToBeatWithoutConfirmation">Sans message de confirmation</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatEnableSuccessNotification">Activer la notification de succès</sys:String>
     
     <sys:String x:Key="LOCHowLongToBeatAutoData">Télécharger les données</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoImport">Importer automatiquement les données lorsque la bibliothèque est mise à jour</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoAccept">Automatiquement accepter lorsqu'il n'y a qu'un jeu trouv</sys:String>
     <sys:String x:Key="LOCHowLongToBeatShowWhenMismatch">Voir la fenêtre de sélection lorsqu'il y a plus d'un jeu trouv</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatUseMatchValue">Use a percent match</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatUseMatchValue">Utiliser un pourcentage de correspondance</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBar">Afficher l'indicateur de progression</sys:String>
     
