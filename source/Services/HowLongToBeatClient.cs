@@ -397,7 +397,6 @@ namespace HowLongToBeat.Services
                         IsConnected = true;
 
                         PluginDatabase.PluginSettings.Settings.UserLogin = UserLogin;
-                        PluginDatabase.Plugin.SavePluginSettings(PluginDatabase.PluginSettings.Settings);
 
                         Thread.Sleep(1500);
                         WebView.Close();
@@ -416,6 +415,8 @@ namespace HowLongToBeat.Services
                     {
                         try
                         {
+                            PluginDatabase.Plugin.SavePluginSettings(PluginDatabase.PluginSettings.Settings);
+
                             Task.Run(() => {
                                 string url = @"https://howlongtobeat.com/submit?s=add";
                                 WebViewOffscreen.NavigateAndWait(url);
