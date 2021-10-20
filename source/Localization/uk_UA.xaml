@@ -23,12 +23,13 @@
 
     <sys:String x:Key="LOCHowLongToBeatAutoSetCurrentPlayTime">Автоматично оновлювати поточний час в HowLongToBeat після сеансу гри</sys:String>
     <sys:String x:Key="LOCHowLongToBeatWithoutConfirmation">Без підтвердження</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatEnableSuccessNotification">Увімкнути сповіщення про успіх</sys:String>
     
     <sys:String x:Key="LOCHowLongToBeatAutoData">Завантаження даних гри</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoImport">Автоматично імпортувати дані при оновленні бібліотеки</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoAccept">Автоматично вибирати гру, коли знайдено лише одну гру під час пошуку</sys:String>
     <sys:String x:Key="LOCHowLongToBeatShowWhenMismatch">Показувати список вибору гри, коли знайдено більше однієї гри під час пошуку</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatUseMatchValue">Use a percent match</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatUseMatchValue">Використати відсотковий збіг</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBar">Відображати індикатор прогресу</sys:String>
     
@@ -80,7 +81,7 @@
     <sys:String x:Key="LOCHowLongToBeatPluginUserView">Показати користувацькі дані HowLongToBeat</sys:String>
     <sys:String x:Key="LOCHowLongToBeatActualiseUserData">Оновити користувацькі дані HowLongToBeat</sys:String>
     
-    <sys:String x:Key="LOCHowLongToBeatSetCurrentTimeManual">Встановіть ваш поточний час у грі</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatSetCurrentTimeManual">Встановити ваш поточний час у грі</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatSetCurrentTime">Хочете відправити свій поточний ігровий час? (експериментально)</sys:String>
 
