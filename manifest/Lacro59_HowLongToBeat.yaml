@@ -58,3 +58,9 @@ Packages:
       - Added an option to auto-accept with fuzzy matching
       - Added an option to enbale success notification
       - Fixed an issue with settings color for custom theme
+  - Version: 2.2.1
+    RequiredApiVersion: 6.1.0
+    ReleaseDate: 2021-10-20
+    PackageUrl: https://github.com/Lacro59/playnite-howlongtobeat-plugin/releases/download/v2.2.1/playnite-howlongtobeat-plugin_2_2_1.pext
+    Changelog:
+      - Fixed a crash
