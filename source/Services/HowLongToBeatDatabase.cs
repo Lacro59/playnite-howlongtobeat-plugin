@@ -261,7 +261,7 @@ namespace HowLongToBeat.Services
             {
                 if (dataSearch.Count > 0 && PluginSettings.Settings.UseMatchValue)
                 {
-                    var FuzzList = dataSearch.Select(x => new { MatchPercent = Fuzz.Ratio(game.Name, x.Name), Data = x }).OrderByDescending(x => x.MatchPercent).ToList();
+                    var FuzzList = dataSearch.Select(x => new { MatchPercent = Fuzz.Ratio(game.Name.ToLower(), x.Name.ToLower()), Data = x }).OrderByDescending(x => x.MatchPercent).ToList();
 
                     if (FuzzList.First().MatchPercent >= PluginSettings.Settings.MatchValue)
                     {
