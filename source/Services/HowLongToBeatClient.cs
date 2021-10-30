@@ -467,10 +467,10 @@ namespace HowLongToBeat.Services
                 Common.LogError(ex, false);
                 PluginDatabase.PlayniteApi.Notifications.Add(new NotificationMessage(
                     "HowLongToBeat-Import-Error",
-                    "HowLongToBeat" + System.Environment.NewLine +
-                    ex.Message,
+                    "HowLongToBeat - GetUserGamesList()" + System.Environment.NewLine + ex.Message,
                     NotificationType.Error,
-                    () => PluginDatabase.Plugin.OpenSettingsView()));
+                    () => PlayniteTools.CreateLogPackage("HowLongToBeat")
+                ));
 
                 return string.Empty;
             }
@@ -497,10 +497,10 @@ namespace HowLongToBeat.Services
                 Common.LogError(ex, false);
                 PluginDatabase.PlayniteApi.Notifications.Add(new NotificationMessage(
                     "HowLongToBeat-Import-Error",
-                    "HowLongToBeat" + System.Environment.NewLine +
-                    ex.Message,
+                    "HowLongToBeat" + System.Environment.NewLine + ex.Message,
                     NotificationType.Error,
-                    () => PluginDatabase.Plugin.OpenSettingsView()));
+                    () => PlayniteTools.CreateLogPackage("HowLongToBeat")
+                ));
 
                 return string.Empty;
             }
@@ -675,10 +675,10 @@ namespace HowLongToBeat.Services
                Common.LogError(ex, false);
                PluginDatabase.PlayniteApi.Notifications.Add(new NotificationMessage(
                     "HowLongToBeat-Import-Error",
-                    "HowLongToBeat" + System.Environment.NewLine +
-                    ex.Message,
+                    "HowLongToBeat" + System.Environment.NewLine + ex.Message,
                     NotificationType.Error,
-                    () => PluginDatabase.Plugin.OpenSettingsView()));
+                    () => PlayniteTools.CreateLogPackage("HowLongToBeat")
+                ));
                 return null;
             }
         }
@@ -947,10 +947,10 @@ namespace HowLongToBeat.Services
                     Common.LogError(ex, false);
                     PluginDatabase.PlayniteApi.Notifications.Add(new NotificationMessage(
                         "HowLongToBeat-Import-Error",
-                        "HowLongToBeat" + System.Environment.NewLine +
-                        ex.Message,
+                        "HowLongToBeat" + System.Environment.NewLine + ex.Message,
                         NotificationType.Error,
-                        () => PluginDatabase.Plugin.OpenSettingsView()));
+                        () => PlayniteTools.CreateLogPackage("HowLongToBeat")
+                    ));
                     return null;
                 }
             }
@@ -1011,10 +1011,10 @@ namespace HowLongToBeat.Services
                     Common.LogError(ex, false);
                     PluginDatabase.PlayniteApi.Notifications.Add(new NotificationMessage(
                         "HowLongToBeat-Import-Error",
-                        "HowLongToBeat" + System.Environment.NewLine +
-                        ex.Message,
+                        "HowLongToBeat" + System.Environment.NewLine + ex.Message,
                         NotificationType.Error,
-                        () => PluginDatabase.Plugin.OpenSettingsView()));
+                        () => PlayniteTools.CreateLogPackage("HowLongToBeat")
+                    ));
 
                     return null;
                 }
@@ -1025,10 +1025,10 @@ namespace HowLongToBeat.Services
             {
                 PluginDatabase.PlayniteApi.Notifications.Add(new NotificationMessage(
                     "HowLongToBeat-Import-Error",
-                    "HowLongToBeat" + System.Environment.NewLine +
-                    resources.GetString("LOCCommonNotLoggedIn"),
+                    "HowLongToBeat" + System.Environment.NewLine + resources.GetString("LOCCommonNotLoggedIn"),
                     NotificationType.Error,
-                    () => PluginDatabase.Plugin.OpenSettingsView()));
+                    () => PluginDatabase.Plugin.OpenSettingsView()
+                ));
                 return null;
             }
         }
@@ -1072,10 +1072,10 @@ namespace HowLongToBeat.Services
                     Common.LogError(ex, false);
                     PluginDatabase.PlayniteApi.Notifications.Add(new NotificationMessage(
                         "HowLongToBeat-Import-Error",
-                        "HowLongToBeat" + System.Environment.NewLine +
-                        ex.Message,
+                        "HowLongToBeat" + System.Environment.NewLine + ex.Message,
                         NotificationType.Error,
-                        () => PluginDatabase.Plugin.OpenSettingsView()));
+                        () => PlayniteTools.CreateLogPackage("HowLongToBeat")
+                    ));
                     return null;
                 }
 
@@ -1085,10 +1085,10 @@ namespace HowLongToBeat.Services
             {
                 PluginDatabase.PlayniteApi.Notifications.Add(new NotificationMessage(
                     "HowLongToBeat-Import-Error",
-                    "HowLongToBeat" + System.Environment.NewLine +
-                    resources.GetString("LOCCommonNotLoggedIn"),
+                    "HowLongToBeat" + System.Environment.NewLine + resources.GetString("LOCCommonNotLoggedIn"),
                     NotificationType.Error,
-                    () => PluginDatabase.Plugin.OpenSettingsView()));
+                    () => PluginDatabase.Plugin.OpenSettingsView()
+                ));
                 return null;
             }
         }
@@ -1123,10 +1123,10 @@ namespace HowLongToBeat.Services
                 Common.LogError(ex, false);
                 PluginDatabase.PlayniteApi.Notifications.Add(new NotificationMessage(
                     "HowLongToBeat-Import-Error",
-                    "HowLongToBeat" + System.Environment.NewLine +
-                    ex.Message,
+                    "HowLongToBeat" + System.Environment.NewLine + ex.Message,
                     NotificationType.Error,
-                    () => PluginDatabase.Plugin.OpenSettingsView()));
+                    () => PlayniteTools.CreateLogPackage("HowLongToBeat")
+                ));
                 return null;
             }
         }
@@ -1255,10 +1255,10 @@ namespace HowLongToBeat.Services
                     Common.LogError(ex, false);
                     PluginDatabase.PlayniteApi.Notifications.Add(new NotificationMessage(
                         "HowLongToBeat-DataUpdate-Error",
-                        "HowLongToBeat" + System.Environment.NewLine +
-                        ex.Message,
+                        "HowLongToBeat" + System.Environment.NewLine + ex.Message,
                         NotificationType.Error,
-                        () => PluginDatabase.Plugin.OpenSettingsView()));
+                        () => PlayniteTools.CreateLogPackage("HowLongToBeat")
+                    ));
                     return false;
                 }
             }
@@ -1266,10 +1266,10 @@ namespace HowLongToBeat.Services
             {
                 PluginDatabase.PlayniteApi.Notifications.Add(new NotificationMessage(
                     "HowLongToBeat-DataUpdate-Error",
-                    "HowLongToBeat" + System.Environment.NewLine +
-                    resources.GetString("LOCCommonNotLoggedIn"),
+                    "HowLongToBeat" + System.Environment.NewLine + resources.GetString("LOCCommonNotLoggedIn"),
                     NotificationType.Error,
-                    () => PluginDatabase.Plugin.OpenSettingsView()));
+                    () => PluginDatabase.Plugin.OpenSettingsView()
+                ));
                 return false;
             }
 

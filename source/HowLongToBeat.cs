@@ -436,7 +436,7 @@ namespace HowLongToBeat
             mainMenuItems.Add(new MainMenuItem
             {
                 MenuSection = MenuInExtensions + resources.GetString("LOCHowLongToBeat"),
-                Description = "LOCCommonViewNoData",
+                Description = resources.GetString("LOCCommonViewNoData"),
                 Action = (mainMenuItem) =>
                 {
                     var windowOptions = new WindowOptions

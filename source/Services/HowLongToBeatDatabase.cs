@@ -467,7 +467,8 @@ namespace HowLongToBeat.Services
                     PlayniteApi.Notifications.Add(new NotificationMessage(
                         $"{PluginName}-Tag-Errors",
                         $"{PluginName}\r\n" + resources.GetString("LOCCommonNotificationTagError"),
-                        NotificationType.Error
+                        NotificationType.Error,
+                        () => PlayniteTools.CreateLogPackage(PluginName)
                     ));
                 }
             }
@@ -562,6 +563,8 @@ namespace HowLongToBeat.Services
         #region User data
         public void RefreshUserData()
         {
+            logger.Info("RefreshUserData()");
+
             GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions(
                 $"{PluginName} - {resources.GetString("LOCHowLongToBeatPluginGetUserView")}",
                 false
@@ -570,73 +573,67 @@ namespace HowLongToBeat.Services
 
             PlayniteApi.Dialogs.ActivateGlobalProgress((activateGlobalProgress) =>
             {
-                HltbUserStats UserHltbData = howLongToBeatClient.GetUserData();
-
-                if (UserHltbData != null)
+                try
                 {
-                    try
-                    {
-                        File.WriteAllText(Path.Combine(Paths.PluginUserDataPath, "HltbUserStats.json"), Serialization.ToJson(UserHltbData), Encoding.UTF8);
-                    }
-                    catch (Exception ex)
-                    {
-                        Common.LogError(ex, false);
-                    }
+                    HltbUserStats UserHltbData = howLongToBeatClient.GetUserData();
 
-                    Database.UserHltbData = UserHltbData;
+                    if (UserHltbData != null)
+                    {
+                        logger.Info($"Find {UserHltbData.TitlesList?.Count ?? 0} games");
+                        File.WriteAllText(Path.Combine(Paths.PluginUserDataPath, "HltbUserStats.json"), Serialization.ToJson(UserHltbData), Encoding.UTF8);
+                        Database.UserHltbData = UserHltbData;
+                    }
+                    else
+                    {
+                        logger.Info($"Find no data");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Common.LogError(ex, false);
+                    PlayniteApi.Notifications.Add(new NotificationMessage(
+                        "HowLongToBeat-ImportUserData-Error",
+                        "HowLongToBeat - RefreshUserData()" + System.Environment.NewLine + ex.Message,
+                        NotificationType.Error,
+                        () => PlayniteTools.CreateLogPackage("HowLongToBeat")
+                    ));
                 }
             }, globalProgressOptions);
-        }
-
-        public void RefreshUserDataTask()
-        {
-            Task.Run(() =>
-            {
-                HltbUserStats UserHltbData = howLongToBeatClient.GetUserData();
-
-                if (UserHltbData != null)
-                {
-                    try
-                    {
-                        File.WriteAllText(Path.Combine(Paths.PluginUserDataPath, "HltbUserStats.json"), Serialization.ToJson(UserHltbData), Encoding.UTF8);
-                    }
-                    catch (Exception ex)
-                    {
-                        Common.LogError(ex, false);
-                    }
-
-                    Database.UserHltbData = UserHltbData;
-                }
-            });
         }
 
         public void RefreshUserData(int game_id)
         {
             Task.Run(() => 
             {
-                TitleList titleList = howLongToBeatClient.GetUserData(game_id);
-
-                if (titleList != null)
+                try
                 {
-                    int index = Database.UserHltbData.TitlesList.FindIndex(x => x.Id == game_id);
+                    TitleList titleList = howLongToBeatClient.GetUserData(game_id);
 
-                    if (index > -1)
+                    if (titleList != null)
                     {
-                        Database.UserHltbData.TitlesList[index] = titleList;
-                    }
-                    else
-                    {
-                        Database.UserHltbData.TitlesList.Add(titleList);
-                    }
+                        int index = Database.UserHltbData.TitlesList.FindIndex(x => x.Id == game_id);
 
-                    try
-                    {
+                        if (index > -1)
+                        {
+                            Database.UserHltbData.TitlesList[index] = titleList;
+                        }
+                        else
+                        {
+                            Database.UserHltbData.TitlesList.Add(titleList);
+                        }
+
                         File.WriteAllText(Path.Combine(Paths.PluginUserDataPath, "HltbUserStats.json"), Serialization.ToJson(Database.UserHltbData), Encoding.UTF8);
                     }
-                    catch (Exception ex)
-                    {
-                        Common.LogError(ex, false);
-                    }
+                }
+                catch (Exception ex)
+                {
+                    Common.LogError(ex, false);
+                    PlayniteApi.Notifications.Add(new NotificationMessage(
+                        "HowLongToBeat-RefreshUserData-Id-Error",
+                        $"HowLongToBeat - RefreshUserData({game_id})" + System.Environment.NewLine + ex.Message,
+                        NotificationType.Error,
+                        () => PlayniteTools.CreateLogPackage("HowLongToBeat")
+                    ));
                 }
             });
         }
@@ -725,11 +722,11 @@ namespace HowLongToBeat.Services
                 else
                 {
                     PlayniteApi.Notifications.Add(new NotificationMessage(
-                        "HowLongToBeat-Import-Error",
-                        "HowLongToBeat" + System.Environment.NewLine +
-                        resources.GetString("LOCCommonNotLoggedIn"),
+                        "HowLongToBeat-NotLoggedIn-Error",
+                        "HowLongToBeat" + System.Environment.NewLine + resources.GetString("LOCCommonNotLoggedIn"),
                         NotificationType.Error,
-                        () => Plugin.OpenSettingsView()));
+                        () => Plugin.OpenSettingsView()
+                    ));
                     return false;
                 }
             }
@@ -737,11 +734,11 @@ namespace HowLongToBeat.Services
             {
                 Common.LogError(ex, false);
                 PlayniteApi.Notifications.Add(new NotificationMessage(
-                    "HowLongToBeat-Import-Error",
-                    "HowLongToBeat" + System.Environment.NewLine +
-                    ex.Message,
+                    "HowLongToBeat-SetCurrentPlayTime-Error",
+                    "HowLongToBeat - SetCurrentPlayTime()" + System.Environment.NewLine + ex.Message,
                     NotificationType.Error,
-                    () => Plugin.OpenSettingsView()));
+                    () => PlayniteTools.CreateLogPackage("HowLongToBeat")
+                ));
                 return false;
             }
 
