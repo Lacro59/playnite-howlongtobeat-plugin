@@ -639,72 +639,72 @@ namespace HowLongToBeat.Services
                         TimeSpan time = TimeSpan.FromSeconds(game.Playtime + elapsedSeconds);
 
                         // TODO Enough?
-                        var platform = hltbPlatforms.FindAll(x => game.Platforms.FirstOrDefault().Name.ToLower().Contains(x.Name.ToLower())).First();
-
-                        if (platform != null)
+                        string Platform = string.Empty;
+                        var finded = hltbPlatforms.FindAll(x => game.Platforms?.FirstOrDefault().Name.Contains(x.Name, StringComparison.InvariantCultureIgnoreCase) ?? false);
+                        if (finded?.Count > 0)
                         {
-                            string Platform = platform.Name;
+                            Platform = finded.First().Name ?? string.Empty;
+                        }
+                        
+                        if (Platform.IsNullOrEmpty())
+                        {
+                            logger.Warn($"No platform find for {game.Name}");
+                        }
 
-                            string StorefrontName = string.Empty;
-                            Storefront storefront = PluginSettings.Settings.Storefronts.Where(x => x.SourceId == game.SourceId).FirstOrDefault();
-                            if (storefront != null)
+                        string StorefrontName = string.Empty;
+                        Storefront storefront = PluginSettings.Settings.Storefronts.Where(x => x.SourceId != default(Guid) && x.SourceId == game.SourceId).FirstOrDefault();
+                        if (storefront != null)
+                        {
+                            StorefrontName = storefront.HltbStorefrontName;
+                        }
+
+                        var HltbData = GetUserHltbData(gameHowLongToBeat.GetData().Id);
+                        int edit_id = 0;
+                        HltbPostData hltbPostData = new HltbPostData();
+                        if (HltbData != null)
+                        {
+                            if (howLongToBeatClient.EditIdExist(HltbData.UserGameId))
                             {
-                                StorefrontName = storefront.HltbStorefrontName;
+                                edit_id = int.Parse(HltbData.UserGameId);
+                                hltbPostData = howLongToBeatClient.GetSubmitData(gameHowLongToBeat.Name, edit_id.ToString());
                             }
-
-                            var HltbData = GetUserHltbData(gameHowLongToBeat.GetData().Id);
-                            int edit_id = 0;
-                            HltbPostData hltbPostData = new HltbPostData();
-                            if (HltbData != null)
-                            {
-                                if (howLongToBeatClient.EditIdExist(HltbData.UserGameId))
-                                {
-                                    edit_id = int.Parse(HltbData.UserGameId);
-                                    hltbPostData = howLongToBeatClient.GetSubmitData(gameHowLongToBeat.Name, edit_id.ToString());
-                                }
-                            }
-                            else
-                            {
-                                if (HltbData != null)
-                                {
-                                    string tmpEditId = howLongToBeatClient.FindIdExisting(edit_id.ToString());
-                                    if (!tmpEditId.IsNullOrEmpty())
-                                    {
-                                        edit_id = int.Parse(tmpEditId);
-                                        hltbPostData = howLongToBeatClient.GetSubmitData(gameHowLongToBeat.Name, tmpEditId);
-                                    }
-                                }
-                            }
-
-                            if (hltbPostData == null)
-                            {
-                                logger.Warn($"No hltbPostData for {game.Name}");
-                                return false;
-                            }
-
-                            hltbPostData.user_id = Database.UserHltbData.UserId;
-                            hltbPostData.edit_id = edit_id;
-                            hltbPostData.game_id = gameHowLongToBeat.GetData().Id;
-                            hltbPostData.custom_title = gameHowLongToBeat.GetData().Name;
-                            hltbPostData.platform = Platform;
-                            hltbPostData.storefront = StorefrontName;
-
-                            hltbPostData.list_p = "1";
-
-                            hltbPostData.protime_h = (time.Hours + (24 * time.Days)).ToString();
-                            hltbPostData.protime_m = time.Minutes.ToString();
-                            hltbPostData.protime_s = time.Seconds.ToString();
-
-
-                            howLongToBeatClient.PostData(hltbPostData);
-
-                            return true;
                         }
                         else
                         {
-                            logger.Warn($"No platform find for {game.Name}");
+                            if (HltbData != null)
+                            {
+                                string tmpEditId = howLongToBeatClient.FindIdExisting(edit_id.ToString());
+                                if (!tmpEditId.IsNullOrEmpty())
+                                {
+                                    edit_id = int.Parse(tmpEditId);
+                                    hltbPostData = howLongToBeatClient.GetSubmitData(gameHowLongToBeat.Name, tmpEditId);
+                                }
+                            }
+                        }
+
+                        if (hltbPostData == null)
+                        {
+                            logger.Warn($"No hltbPostData for {game.Name}");
                             return false;
                         }
+
+                        hltbPostData.user_id = Database.UserHltbData.UserId;
+                        hltbPostData.edit_id = edit_id;
+                        hltbPostData.game_id = gameHowLongToBeat.GetData().Id;
+                        hltbPostData.custom_title = gameHowLongToBeat.GetData().Name;
+                        hltbPostData.platform = Platform;
+                        hltbPostData.storefront = StorefrontName;
+
+                        hltbPostData.list_p = "1";
+
+                        hltbPostData.protime_h = (time.Hours + (24 * time.Days)).ToString();
+                        hltbPostData.protime_m = time.Minutes.ToString();
+                        hltbPostData.protime_s = time.Seconds.ToString();
+
+
+                        howLongToBeatClient.PostData(hltbPostData);
+
+                        return true;
                     }
                 }
                 else
