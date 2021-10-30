@@ -15,6 +15,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using Playnite.SDK.Data;
+using Playnite.SDK.Models;
 
 namespace HowLongToBeat.Views
 {
@@ -33,44 +34,53 @@ namespace HowLongToBeat.Views
         {
             InitializeComponent();
 
-            if (PluginDatabase.Database.UserHltbData?.TitlesList != null)
+            if (PluginDatabase.Database.Count == 0)
             {
-                ListViewGames.ItemsSource = PluginDatabase.Database.UserHltbData.TitlesList;
-
-                string SortingDefaultDataName = string.Empty;
-                switch (PluginDatabase.PluginSettings.Settings.TitleListSort)
+                if (PluginDatabase.Database.UserHltbData?.TitlesList != null)
                 {
-                    case TitleListSort.GameName:
-                        SortingDefaultDataName = "GameName";
-                        break;
-                    case TitleListSort.Platform:
-                        SortingDefaultDataName = "Platform";
-                        break;
-                    case TitleListSort.Completion:
-                        SortingDefaultDataName = "Completion";
-                        break;
-                    case TitleListSort.CurrentTime:
-                        SortingDefaultDataName = "CurrentTime";
-                        break;
-                };
-                ListViewGames.SortingDefaultDataName = SortingDefaultDataName;
-                ListViewGames.SortingSortDirection = (PluginDatabase.PluginSettings.Settings.IsAsc) ? ListSortDirection.Ascending : ListSortDirection.Descending;
-                ListViewGames.Sorting();
+                    ListViewGames.ItemsSource = PluginDatabase.Database.UserHltbData.TitlesList;
+
+                    string SortingDefaultDataName = string.Empty;
+                    switch (PluginDatabase.PluginSettings.Settings.TitleListSort)
+                    {
+                        case TitleListSort.GameName:
+                            SortingDefaultDataName = "GameName";
+                            break;
+                        case TitleListSort.Platform:
+                            SortingDefaultDataName = "Platform";
+                            break;
+                        case TitleListSort.Completion:
+                            SortingDefaultDataName = "Completion";
+                            break;
+                        case TitleListSort.CurrentTime:
+                            SortingDefaultDataName = "CurrentTime";
+                            break;
+                    };
+                    ListViewGames.SortingDefaultDataName = SortingDefaultDataName;
+                    ListViewGames.SortingSortDirection = (PluginDatabase.PluginSettings.Settings.IsAsc) ? ListSortDirection.Ascending : ListSortDirection.Descending;
+                    ListViewGames.Sorting();
+                }
+
+                //let create a mapper so LiveCharts know how to plot our CustomerViewModel class
+                var customerVmMapper = Mappers.Xy<CustomerForSingle>()
+                    .X((value, index) => index)
+                    .Y(value => value.Values);
+
+                //lets save the mapper globally
+                Charting.For<CustomerForSingle>(customerVmMapper);
+
+                SetChartDataYear();
+                SetChartDataStore();
+                SetChartData();
+                SetStats();
+            }
+            else
+            {
+                PART_UserData.Visibility = Visibility.Collapsed;
+                PART_TabControl.SelectedIndex = 1;
             }
 
-            //let create a mapper so LiveCharts know how to plot our CustomerViewModel class
-            var customerVmMapper = Mappers.Xy<CustomerForSingle>()
-                .X((value, index) => index)
-                .Y(value => value.Values);
-
-            //lets save the mapper globally
-            Charting.For<CustomerForSingle>(customerVmMapper);
-
-
-            SetChartDataYear();
-            SetChartDataStore();
-            SetChartData();
-            SetStats();
+            SetPlayniteData();
         }
 
 
@@ -285,6 +295,48 @@ namespace HowLongToBeat.Views
 
                 PART_AvgGameByMonth.Content = string.Format("{0:0.0}", PluginDatabase.GetAvgGameByMonth());
                 PART_AvgTimeByGame.Content = (string)converter.Convert(PluginDatabase.GetAvgTimeByGame(), null, null, CultureInfo.CurrentCulture);
+            }
+        }
+
+        private void SetPlayniteData()
+        {
+            var PlayniteData = PluginDatabase.Database.Where(x => x.HasData && !x.HasDataEmpty)
+                    .Select(x => new PlayniteData
+                    {
+                        GameContext = PluginDatabase.PlayniteApi.Database.Games.Get(x.Id)
+                    }).ToList();
+
+            ListViewDataGames.ItemsSource = PlayniteData;
+        }
+    }
+
+
+    public class PlayniteData
+    {
+        private HowLongToBeatDatabase PluginDatabase = HowLongToBeat.PluginDatabase;
+
+        public Game GameContext { get; set; }
+
+        public string GameName { get { return GameContext.Name; } }
+        public Guid GameId { get { return GameContext.Id; } }
+        public string Source { get { return GameContext.Source?.Name ?? string.Empty; } }
+        public string CompletionStatus { get { return GameContext.CompletionStatus?.Name ?? string.Empty; } }
+        public ulong Playtime { get { return GameContext.Playtime; } }
+        public long TimeToBeat { get { return PluginDatabase.Get(GameId, true)?.GetData()?.GameHltbData?.TimeToBeat ?? 0; } }
+
+        public RelayCommand<Guid> GoToGame
+        {
+            get
+            {
+                return PluginDatabase.GoToGame;
+            }
+        }
+
+        public bool GameExist
+        {
+            get
+            {
+                return PluginDatabase.PlayniteApi.Database.Games.Get(GameId) != null;
             }
         }
     }
