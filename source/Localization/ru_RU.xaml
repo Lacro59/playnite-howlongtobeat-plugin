@@ -11,7 +11,7 @@
     <sys:String x:Key="LOCHowLongToBeatAutoTag">Автоматическая обработка тэгов</sys:String>
     <sys:String x:Key="LOCHowLongToBeatShowHltbImage">Использовать HowLongToBeat оригинальное обложку игры в окне</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatColorSelection">Color selection:</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatColorSelection">Выбор цвета:</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarOptions">Настройки шкалы прогресса</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">Показывать время на шкале прогресса</sys:String>
@@ -21,19 +21,19 @@
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeBelow">Под шкалой</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeUser">Show user HowLongToBeat time</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatAutoSetCurrentPlayTime">Automatically update current playtime on HowLongToBeat after game session</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatWithoutConfirmation">Without confirmation message</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatEnableSuccessNotification">Enable success notification</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoSetCurrentPlayTime">Автоматически обновлять текущее время игры на HowLongToBeat после игрового сеанса</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatWithoutConfirmation">Без сообщения подтверждения</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatEnableSuccessNotification">Включить уведомление об успешном завершении</sys:String>
     
     <sys:String x:Key="LOCHowLongToBeatAutoData">Загрузка информации об игра</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAutoImport">Automatically import data when library is updated</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoImport">Автоматически импортировать данные, когда библиотека обновляется</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoAccept">Автоматически выбирать, если найдено только одно совпадение</sys:String>
     <sys:String x:Key="LOCHowLongToBeatShowWhenMismatch">Показывать окно выбора, если найдено несколько совпадений</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatUseMatchValue">Use a percent match</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatUseMatchValue">Использовать процент совпадений</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBar">Display progress indicator</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBar">Отображать индикатор прогресса</sys:String>
     
-    <sys:String x:Key="LOCHowLongToBeatCurrentPlayTimeSetted">The current playtime for {0} is setted.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatCurrentPlayTimeSetted">Текущее время игры для {0} установлено.</sys:String>
 
     <!-- HowLongToBeatSelect -->
 
@@ -53,23 +53,23 @@
 
     <!-- HowLongToBeatUserView -->
 
-    <sys:String x:Key="LOCHowLongToBeatCompletationStore">Games completed by storefront</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatCompletationProgress">Games completed over time</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatCompletationStore">Игры, завершенные магазином</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatCompletationProgress">Игры, завершенные со временем</sys:String>
     
-    <sys:String x:Key="LOCHowLongToBeatUserData">User data</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatCompleted">Completed</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatUserData">Данные пользователя</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatCompleted">Пройдены</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatPluginGetUserView">Getting user datas</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatPluginGetUserView">Получение данных пользователя</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatCompletions">Completions</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatTimeSinglePlayer">Single-Player time</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatTimeCoOp">Co-Op time</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatTimeVs">Vs Multi-Player time</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatCompletions">Завершенность</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatTimeSinglePlayer">Однопользовательское время</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatTimeCoOp">Время коопа</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatTimeVs">Vs мультиплеерное время</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatStorefront">Storefront</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatStorefront">Магазин</sys:String>
     
-    <sys:String x:Key="LOCHltbAvgTimeByGame">Avg time by game</sys:String>
-    <sys:String x:Key="LOCHltbAvgGameByMonth">Avg game by month</sys:String>
+    <sys:String x:Key="LOCHltbAvgTimeByGame">Среднее время игры</sys:String>
+    <sys:String x:Key="LOCHltbAvgGameByMonth">Среднее время игры по месяцам</sys:String>
 
 
     <!-- MainView -->
@@ -77,12 +77,12 @@
     <sys:String x:Key="LOCHowLongToBeat">Время прохождения</sys:String>
     <sys:String x:Key="LOCHowLongToBeatTitle">Время прохождения</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatPluginView">View HowLongToBeat datas</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatPluginUserView">View HowLongToBeat user datas</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatActualiseUserData">Refresh HowLongToBeat user datas</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatPluginView">Просмотр данных HowLongToBeat</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatPluginUserView">Просмотр данных пользователя HowLongToBeat</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatActualiseUserData">Обновить данные пользователя HowLongToBeat</sys:String>
     
-    <sys:String x:Key="LOCHowLongToBeatSetCurrentTimeManual">Set your current playtime</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatSetCurrentTimeManual">Установить текущее время игры</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatSetCurrentTime">Want you send your current playtime? (experimental)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatSetCurrentTime">Хотите отправить текущее время игры? (экспериментально)</sys:String>
 
 </ResourceDictionary>
