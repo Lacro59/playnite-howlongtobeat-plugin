@@ -83,7 +83,7 @@ namespace HowLongToBeat
             }
             catch (Exception ex)
             {
-                Common.LogError(ex, false);
+                Common.LogError(ex, false, true, "HowLongToBeat");
             }
         }
         #endregion
@@ -493,7 +493,7 @@ namespace HowLongToBeat
             }
             catch (Exception ex)
             {
-                Common.LogError(ex, false);
+                Common.LogError(ex, false, true, "HowLongToBeat");
             }
         }
 
@@ -536,7 +536,7 @@ namespace HowLongToBeat
             }
             catch (Exception ex)
             {
-                Common.LogError(ex, false);
+                Common.LogError(ex, false, true, "HowLongToBeat");
             }
 
             // AutoSetCurrentPlayTime
@@ -571,7 +571,7 @@ namespace HowLongToBeat
                 }
                 catch (Exception ex)
                 {
-                    Common.LogError(ex, false);
+                    Common.LogError(ex, false, true, "HowLongToBeat");
                 }
             }
         }
@@ -637,7 +637,7 @@ namespace HowLongToBeat
                     }
                     catch (Exception ex)
                     {
-                        Common.LogError(ex, false);
+                        Common.LogError(ex, false, true, "HowLongToBeat");
                     }
                 }, globalProgressOptions);
             }

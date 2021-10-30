@@ -321,7 +321,7 @@ namespace HowLongToBeat.Controls
             }
             catch (Exception ex)
             {
-                Common.LogError(ex, false);
+                Common.LogError(ex, false, true, "HowLongToBeat");
             }
         }
 
@@ -508,7 +508,7 @@ namespace HowLongToBeat.Controls
             }
             catch (Exception ex)
             {
-                Common.LogError(ex, false);
+                Common.LogError(ex, false, true, "HowLongToBeat");
                 return 0;
             }
         }

@@ -193,7 +193,7 @@ namespace HowLongToBeat.Services
             }
             catch (Exception ex)
             {
-                Common.LogError(ex, false);
+                Common.LogError(ex, false, true, "HowLongToBeat");
                 return string.Empty;
             }
         }
@@ -348,7 +348,7 @@ namespace HowLongToBeat.Services
                 }
                 catch (Exception ex)
                 {
-                    Common.LogError(ex, false);
+                    Common.LogError(ex, false, true, "HowLongToBeat");
                 }
             }
 
@@ -436,7 +436,7 @@ namespace HowLongToBeat.Services
                         }
                         catch (Exception ex)
                         {
-                            Common.LogError(ex, false);
+                            Common.LogError(ex, false, true, "HowLongToBeat");
                         }
                     });
                 }
@@ -464,14 +464,7 @@ namespace HowLongToBeat.Services
             }
             catch (Exception ex)
             {
-                Common.LogError(ex, false);
-                PluginDatabase.PlayniteApi.Notifications.Add(new NotificationMessage(
-                    "HowLongToBeat-Import-Error",
-                    "HowLongToBeat - GetUserGamesList()" + System.Environment.NewLine + ex.Message,
-                    NotificationType.Error,
-                    () => PlayniteTools.CreateLogPackage("HowLongToBeat")
-                ));
-
+                Common.LogError(ex, false, true, "HowLongToBeat");
                 return string.Empty;
             }
         }
@@ -494,14 +487,7 @@ namespace HowLongToBeat.Services
             }
             catch (Exception ex)
             {
-                Common.LogError(ex, false);
-                PluginDatabase.PlayniteApi.Notifications.Add(new NotificationMessage(
-                    "HowLongToBeat-Import-Error",
-                    "HowLongToBeat" + System.Environment.NewLine + ex.Message,
-                    NotificationType.Error,
-                    () => PlayniteTools.CreateLogPackage("HowLongToBeat")
-                ));
-
+                Common.LogError(ex, false, true, "HowLongToBeat");
                 return string.Empty;
             }
         }
@@ -672,13 +658,7 @@ namespace HowLongToBeat.Services
             }
             catch (Exception ex)
             {
-               Common.LogError(ex, false);
-               PluginDatabase.PlayniteApi.Notifications.Add(new NotificationMessage(
-                    "HowLongToBeat-Import-Error",
-                    "HowLongToBeat" + System.Environment.NewLine + ex.Message,
-                    NotificationType.Error,
-                    () => PlayniteTools.CreateLogPackage("HowLongToBeat")
-                ));
+                Common.LogError(ex, false, true, "HowLongToBeat");
                 return null;
             }
         }
@@ -944,13 +924,7 @@ namespace HowLongToBeat.Services
                 }
                 else
                 {
-                    Common.LogError(ex, false);
-                    PluginDatabase.PlayniteApi.Notifications.Add(new NotificationMessage(
-                        "HowLongToBeat-Import-Error",
-                        "HowLongToBeat" + System.Environment.NewLine + ex.Message,
-                        NotificationType.Error,
-                        () => PlayniteTools.CreateLogPackage("HowLongToBeat")
-                    ));
+                    Common.LogError(ex, false, true, "HowLongToBeat");
                     return null;
                 }
             }
@@ -971,7 +945,7 @@ namespace HowLongToBeat.Services
                 }
                 catch (Exception ex)
                 {
-                    Common.LogError(ex, false);
+                    Common.LogError(ex, false, true, "HowLongToBeat");
                 }
             }
 
@@ -1008,14 +982,7 @@ namespace HowLongToBeat.Services
                 }
                 catch (Exception ex)
                 {
-                    Common.LogError(ex, false);
-                    PluginDatabase.PlayniteApi.Notifications.Add(new NotificationMessage(
-                        "HowLongToBeat-Import-Error",
-                        "HowLongToBeat" + System.Environment.NewLine + ex.Message,
-                        NotificationType.Error,
-                        () => PlayniteTools.CreateLogPackage("HowLongToBeat")
-                    ));
-
+                    Common.LogError(ex, false, true, "HowLongToBeat");
                     return null;
                 }
 
@@ -1069,13 +1036,7 @@ namespace HowLongToBeat.Services
                 }
                 catch (Exception ex)
                 {
-                    Common.LogError(ex, false);
-                    PluginDatabase.PlayniteApi.Notifications.Add(new NotificationMessage(
-                        "HowLongToBeat-Import-Error",
-                        "HowLongToBeat" + System.Environment.NewLine + ex.Message,
-                        NotificationType.Error,
-                        () => PlayniteTools.CreateLogPackage("HowLongToBeat")
-                    ));
+                    Common.LogError(ex, false, true, "HowLongToBeat");
                     return null;
                 }
 
@@ -1120,13 +1081,7 @@ namespace HowLongToBeat.Services
             }
             catch (Exception ex)
             {
-                Common.LogError(ex, false);
-                PluginDatabase.PlayniteApi.Notifications.Add(new NotificationMessage(
-                    "HowLongToBeat-Import-Error",
-                    "HowLongToBeat" + System.Environment.NewLine + ex.Message,
-                    NotificationType.Error,
-                    () => PlayniteTools.CreateLogPackage("HowLongToBeat")
-                ));
+                Common.LogError(ex, false, true, "HowLongToBeat");
                 return null;
             }
         }
@@ -1252,13 +1207,7 @@ namespace HowLongToBeat.Services
                 }
                 catch (Exception ex)
                 {
-                    Common.LogError(ex, false);
-                    PluginDatabase.PlayniteApi.Notifications.Add(new NotificationMessage(
-                        "HowLongToBeat-DataUpdate-Error",
-                        "HowLongToBeat" + System.Environment.NewLine + ex.Message,
-                        NotificationType.Error,
-                        () => PlayniteTools.CreateLogPackage("HowLongToBeat")
-                    ));
+                    Common.LogError(ex, false, true, "HowLongToBeat");
                     return false;
                 }
             }

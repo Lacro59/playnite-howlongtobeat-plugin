@@ -119,7 +119,7 @@ namespace HowLongToBeat.Views
                 }
                 catch (Exception ex)
                 {
-                    Common.LogError(ex, false);
+                    Common.LogError(ex, false, true, "HowLongToBeat");
                 }
 
                 Common.LogDebug(true, $"dataSearch: {Serialization.ToJson(dataSearch)}");

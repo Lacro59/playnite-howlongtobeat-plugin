@@ -202,7 +202,7 @@ namespace HowLongToBeat.Services
                 }
                 catch (Exception ex)
                 {
-                    Common.LogError(ex, false);
+                    Common.LogError(ex, false, true, "HowLongToBeat");
                 }
             }, globalProgressOptions);
         }
@@ -590,13 +590,7 @@ namespace HowLongToBeat.Services
                 }
                 catch (Exception ex)
                 {
-                    Common.LogError(ex, false);
-                    PlayniteApi.Notifications.Add(new NotificationMessage(
-                        "HowLongToBeat-ImportUserData-Error",
-                        "HowLongToBeat - RefreshUserData()" + System.Environment.NewLine + ex.Message,
-                        NotificationType.Error,
-                        () => PlayniteTools.CreateLogPackage("HowLongToBeat")
-                    ));
+                    Common.LogError(ex, false, true, "HowLongToBeat");
                 }
             }, globalProgressOptions);
         }
@@ -627,13 +621,7 @@ namespace HowLongToBeat.Services
                 }
                 catch (Exception ex)
                 {
-                    Common.LogError(ex, false);
-                    PlayniteApi.Notifications.Add(new NotificationMessage(
-                        "HowLongToBeat-RefreshUserData-Id-Error",
-                        $"HowLongToBeat - RefreshUserData({game_id})" + System.Environment.NewLine + ex.Message,
-                        NotificationType.Error,
-                        () => PlayniteTools.CreateLogPackage("HowLongToBeat")
-                    ));
+                    Common.LogError(ex, false, true, "HowLongToBeat");
                 }
             });
         }
@@ -732,13 +720,7 @@ namespace HowLongToBeat.Services
             }
             catch (Exception ex)
             {
-                Common.LogError(ex, false);
-                PlayniteApi.Notifications.Add(new NotificationMessage(
-                    "HowLongToBeat-SetCurrentPlayTime-Error",
-                    "HowLongToBeat - SetCurrentPlayTime()" + System.Environment.NewLine + ex.Message,
-                    NotificationType.Error,
-                    () => PlayniteTools.CreateLogPackage("HowLongToBeat")
-                ));
+                Common.LogError(ex, false, true, "HowLongToBeat");
                 return false;
             }
 
