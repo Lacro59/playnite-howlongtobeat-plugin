@@ -210,7 +210,7 @@ namespace HowLongToBeat.Services
         {
             GameHowLongToBeat gameHowLongToBeat = GetOnlyCache(Id);
 
-            if (!OnlyCache && gameHowLongToBeat != null && !gameHowLongToBeat.HasData)
+            if (!OnlyCache && gameHowLongToBeat != null && !gameHowLongToBeat.HasData && !gameHowLongToBeat.HasDataEmpty)
             {
                 gameHowLongToBeat = null;
             }

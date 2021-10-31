@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Windows.Documents;
 using CommonPluginsShared.Models;
+using CommonPluginsShared;
 
 namespace HowLongToBeat.Views
 {
@@ -50,6 +51,15 @@ namespace HowLongToBeat.Views
                         ((HowLongToBeatViewData)DataContext).CoverImage = PluginDatabase.PlayniteApi.Database.GetFullFilePath(gameHowLongToBeat.CoverImage);
                     }
                 }
+
+                ((HowLongToBeatViewData)DataContext).GameContext = PluginDatabase.PlayniteApi.Database.Games.Get(gameHowLongToBeat.Id);
+                ((HowLongToBeatViewData)DataContext).SourceLink = gameHowLongToBeat.SourceLink;
+            }
+
+            if (!gameHowLongToBeat.HasData || gameHowLongToBeat.HasDataEmpty)
+            {
+                PART_GridProgressBar.Visibility = Visibility.Hidden;
+                PART_TextBlock.Visibility = Visibility.Hidden;
             }
 
             if (gameHowLongToBeat.HasData)
@@ -106,10 +116,6 @@ namespace HowLongToBeat.Views
                     SetDataInView(ElIndicator, resources.GetString("LOCHowLongToBeatVs"), gameData.GameHltbData.VsFormat, (titleList != null) ? titleList.HltbUserData.VsFormat : string.Empty);
                     SetColor(ElIndicator, PluginDatabase.PluginSettings.Settings.ColorThirdMulti.Color);
                 }
-
-                
-                ((HowLongToBeatViewData)DataContext).GameContext = PluginDatabase.PlayniteApi.Database.Games.Get(gameHowLongToBeat.Id);
-                ((HowLongToBeatViewData)DataContext).SourceLink = gameHowLongToBeat.SourceLink;
             }
         }
 
@@ -175,11 +181,18 @@ namespace HowLongToBeat.Views
 
         private void ButtonDelete_Click(object sender, RoutedEventArgs e)
         {
-            Guid Id = (Guid)((FrameworkElement)sender).Tag;
-            if (Id != default(Guid))
+            try
             {
-                HowLongToBeat.PluginDatabase.Remove(Id);
-                ((Window)this.Parent).Close();
+                Guid Id = (Guid)((FrameworkElement)sender).Tag;
+                if (Id != default(Guid))
+                {
+                    HowLongToBeat.PluginDatabase.Remove(Id);
+                    ((Window)this.Parent).Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, false, true, "HowLongToBeat");
             }
         }
 

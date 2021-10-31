@@ -40,7 +40,7 @@ namespace HowLongToBeat.Views
         {
             InitializeComponent();
 
-            if (PluginDatabase.Database.Count == 0)
+            if (PluginDatabase.Database.UserHltbData?.TitlesList?.Count != 0)
             {
                 if (PluginDatabase.Database.UserHltbData?.TitlesList != null)
                 {

@@ -97,9 +97,10 @@
             </Grid.RowDefinitions>
 
             <TextBlock Grid.Row="0" FontSize="24" FontWeight="Bold" Text="{DynamicResource LOCHowLongToBeatProgression}" 
+                       Name="PART_TextBlock"
                        Style="{DynamicResource BaseTextBlockStyle}" HorizontalAlignment="Center" />
 
-            <Grid Grid.Row="2">
+            <Grid Grid.Row="2" Name="PART_GridProgressBar" Height="50">
                 <controls:PluginProgressBar Height="50" GameContext="{Binding GameContext}" IgnoreSettings="True" />
             </Grid>
 
