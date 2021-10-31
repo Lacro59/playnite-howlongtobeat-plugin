@@ -599,7 +599,7 @@ namespace HowLongToBeat
             if (PluginSettings.Settings.AutoImport)
             {
                 var PlayniteDb = PlayniteApi.Database.Games
-                        .Where(x => x.Added != null && ((DateTime)x.Added) >= DateTime.Now.AddMinutes(-30) && (!PluginDatabase.Get(x.Id, true).IsSaved))
+                        .Where(x => x.Added != null && x.Added >= PluginSettings.Settings.LastAutoLibUpdateAssetsDownload)
                         .ToList();
 
                 GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions(
@@ -642,6 +642,9 @@ namespace HowLongToBeat
                         Common.LogError(ex, false, true, "HowLongToBeat");
                     }
                 }, globalProgressOptions);
+
+                PluginSettings.Settings.LastAutoLibUpdateAssetsDownload = DateTime.Now;
+                SavePluginSettings(PluginSettings.Settings);
             }
         }
 

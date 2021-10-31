@@ -2,6 +2,7 @@
 using HowLongToBeat.Views;
 using Playnite.SDK;
 using Playnite.SDK.Data;
+using System;
 using System.Collections.Generic;
 using System.Windows.Media;
 
@@ -11,6 +12,7 @@ namespace HowLongToBeat
     {
         #region Settings variables
         public bool MenuInExtensions { get; set; } = true;
+        public DateTime LastAutoLibUpdateAssetsDownload { get; set; } = DateTime.Parse("2021-10-31");
 
         public string UserLogin { get; set; } = string.Empty;
 
