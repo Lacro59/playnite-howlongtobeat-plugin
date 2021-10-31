@@ -67,7 +67,7 @@ Packages:
   - Version: 2.3
     RequiredApiVersion: 6.1.0
     ReleaseDate: 2021-10-31
-    PackageUrl: https://github.com/Lacro59/playnite-howlongtobeat-plugin/releases/download/v2.2.1/playnite-howlongtobeat-plugin_2_2_1.pext
+    PackageUrl: https://github.com/Lacro59/playnite-howlongtobeat-plugin/releases/download/v2.3/playnite-howlongtobeat-plugin_2_3.pext
     Changelog:
       - Updated localizations
       - Added new stats view (optimizations in progress)
