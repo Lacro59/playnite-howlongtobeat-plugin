@@ -57,6 +57,7 @@
     <sys:String x:Key="LOCHowLongToBeatCompletationProgress">Gry ukończone w czasie</sys:String>
     
     <sys:String x:Key="LOCHowLongToBeatUserData">Dane użytkownika</sys:String>
+    <sys:String x:Key="LocHowLongToBeatPlayniteData">Playnite data</sys:String>
     <sys:String x:Key="LOCHowLongToBeatCompleted">Ukończono</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatPluginGetUserView">Wczytywanie danych użytkownika</sys:String>
