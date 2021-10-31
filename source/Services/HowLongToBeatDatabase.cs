@@ -14,9 +14,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using CommonPluginsShared;
-using System.Net;
 using CommonPluginsControls.Controls;
-using System.Net.Http;
 using System.Windows.Threading;
 using FuzzySharp;
 

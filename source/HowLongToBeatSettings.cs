@@ -1,10 +1,8 @@
 ﻿using HowLongToBeat.Models;
-using HowLongToBeat.Services;
 using HowLongToBeat.Views;
 using Playnite.SDK;
 using Playnite.SDK.Data;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using System.Windows.Media;
 
 namespace HowLongToBeat

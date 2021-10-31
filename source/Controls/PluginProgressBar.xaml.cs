@@ -485,37 +485,4 @@ namespace HowLongToBeat.Controls
         public long Value { get; set; }
         public string Format { get; set; }
     }
-
-
-    public class CalcWidthConverter : IValueConverter
-    {
-        private static ILogger logger = LogManager.GetLogger();
-
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            try
-            {
-                double.TryParse(value.ToString(), out double valueDouble);
-
-                if (parameter is ProgressBarExtend)
-                {
-                    double Width = ((ProgressBarExtend)parameter).IndicatorWidth - valueDouble;
-
-                    return (Width > 0) ? Width : 0;
-                }
-
-                return 0;
-            }
-            catch (Exception ex)
-            {
-                Common.LogError(ex, false, true, "HowLongToBeat");
-                return 0;
-            }
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotSupportedException();
-        }
-    }
 }

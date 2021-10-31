@@ -16,6 +16,7 @@
         <convertersshared:PlayTimeToStringConverterWithZero x:Key="PlayTimeToStringConverterWithZero" />
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
         <converters:InvertedBooleanToVisibilityConverter x:Key="InvertedBooleanToVisibilityConverter" />
+        <convertersshared:DefaultIconConverter x:Key="DefaultIconConverter" />
     </UserControl.Resources>
 
     <TabControl Margin="10" Name="PART_TabControl">
@@ -406,11 +407,18 @@
             </Grid>
         </TabItem>
 
-        <TabItem Header="Playnite data" Name="PART_PlayniteData">
+        <TabItem Header="{DynamicResource LocHowLongToBeatPlayniteData}" Name="PART_PlayniteData">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
+
+                <Grid Name="PART_DataLoad">
+                    <ProgressBar IsIndeterminate="True" Width="350" Height="40" />
+                    <TextBlock Text="{DynamicResource LOCLoadingLabel}"
+                               Style="{DynamicResource BaseTextBlockStyle}"
+                               HorizontalAlignment="Center" VerticalAlignment="Center" />
+                </Grid>
 
                 <Grid Grid.Row="0" Name="PART_LvDataContener">
                     <controlsShared:ListViewExtend x:Name="ListViewDataGames" FontSize="24" Height="{Binding ElementName=PART_LvDataContener, Path=ActualHeight}"
@@ -420,11 +428,21 @@
                                                SortingSortDirection="Ascending" SortingDefaultDataName="GameName" SortingEnable="True">
                         <ListView.View>
                             <GridView>
+                                <GridViewColumn Width="50" x:Name="lvGameIcon">
+                                    <GridViewColumnHeader Content="{DynamicResource LOCGameIconTitle}" Tag="noSort" />
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Image HorizontalAlignment="Center" Height="32" VerticalAlignment="Center" Width="32" 
+                                                   Source="{Binding Icon, Converter={StaticResource DefaultIconConverter}}" />
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                
                                 <GridViewColumn Width="0" DisplayMemberBinding="{Binding GameName}">
                                     <controlsShared:GridViewColumnHeaderExtend Style="{StaticResource {x:Type GridViewColumnHeader}}" IsHitTestVisible="False" />
                                 </GridViewColumn>
                                 <GridViewColumn Width="300">
-                                    <GridViewColumnHeader Content="{DynamicResource LOCGameNameTitle}" Tag="GameName" />
+                                    <GridViewColumnHeader Content="{DynamicResource LOCGameNameTitle}" Tag="GameName" Click="GridViewColumnHeader_Click" />
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
                                             <StackPanel>
@@ -441,26 +459,27 @@
                                 </GridViewColumn>
 
                                 <GridViewColumn Width="100" DisplayMemberBinding="{Binding Source}">
-                                    <GridViewColumnHeader Content="{DynamicResource LOCSourceLabel}" />
+                                    <GridViewColumnHeader Content="{DynamicResource LOCSourceLabel}" Click="GridViewColumnHeader_Click" />
                                 </GridViewColumn>
 
                                 <GridViewColumn Width="100" DisplayMemberBinding="{Binding CompletionStatus}">
-                                    <GridViewColumnHeader Content="{DynamicResource LOCHowLongToBeatCompleted}" />
+                                    <GridViewColumnHeader Content="{DynamicResource LOCHowLongToBeatCompleted}" Click="GridViewColumnHeader_Click" />
                                 </GridViewColumn>
 
                                 <GridViewColumn Width="120" DisplayMemberBinding="{Binding Playtime, Converter={StaticResource PlayTimeToStringConverterWithZero}}">
-                                    <GridViewColumnHeader Content="{DynamicResource LOCTimePlayed}" Tag="Playtime" />
+                                        <GridViewColumnHeader Content="{DynamicResource LOCTimePlayed}" Tag="Playtime" Click="GridViewColumnHeader_Click" />
                                 </GridViewColumn>
                                 <GridViewColumn Width="0" DisplayMemberBinding="{Binding Playtime}">
                                     <controlsShared:GridViewColumnHeaderExtend Style="{StaticResource {x:Type GridViewColumnHeader}}" IsHitTestVisible="False" />
                                 </GridViewColumn>
 
                                 <GridViewColumn Width="500">
-                                    <GridViewColumnHeader Content="{DynamicResource LOCHowLongToBeat}" Tag="TimeToBeat" />
+                                    <GridViewColumnHeader Content="{DynamicResource LOCHowLongToBeat}" Tag="TimeToBeat" Click="GridViewColumnHeader_Click" />
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
                                             <StackPanel>
-                                                <controls:PluginProgressBar GameContext="{Binding GameContext}" IgnoreSettings="True" />
+                                                <controls:PluginProgressBar GameContext="{Binding GameContext}" IgnoreSettings="True"
+                                                                            Height="30"/>
                                             </StackPanel>
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>

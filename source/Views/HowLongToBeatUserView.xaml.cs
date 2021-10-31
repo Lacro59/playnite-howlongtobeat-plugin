@@ -16,16 +16,22 @@ using System.Windows;
 using System.Windows.Controls;
 using Playnite.SDK.Data;
 using Playnite.SDK.Models;
+using System.Threading.Tasks;
+using System.Threading;
+using System.Windows.Threading;
 
 namespace HowLongToBeat.Views
 {
     /// <summary>
     /// Logique d'interaction pour HowLongToBeatUserView.xaml
     /// </summary>
+    // TODO Optimize loading
     public partial class HowLongToBeatUserView : UserControl
     {
         private static readonly ILogger logger = LogManager.GetLogger();
         private static IResourceProvider resources = new ResourceProvider();
+
+        private bool DisplayFirst = true;
 
         private HowLongToBeatDatabase PluginDatabase = HowLongToBeat.PluginDatabase;
 
@@ -73,14 +79,17 @@ namespace HowLongToBeat.Views
                 SetChartDataStore();
                 SetChartData();
                 SetStats();
+
+
+                PART_PlayniteData.IsVisibleChanged += PART_PlayniteData_IsVisibleChanged;
             }
             else
             {
+                DisplayPlayniteDataLoader();
+                SetPlayniteData();
                 PART_UserData.Visibility = Visibility.Collapsed;
                 PART_TabControl.SelectedIndex = 1;
             }
-
-            SetPlayniteData();
         }
 
 
@@ -300,13 +309,52 @@ namespace HowLongToBeat.Views
 
         private void SetPlayniteData()
         {
-            var PlayniteData = PluginDatabase.Database.Where(x => x.HasData && !x.HasDataEmpty)
-                    .Select(x => new PlayniteData
-                    {
-                        GameContext = PluginDatabase.PlayniteApi.Database.Games.Get(x.Id)
-                    }).ToList();
+            Task.Run(() =>
+            {
+                var PlayniteData = PluginDatabase.Database.Where(x => x.HasData && !x.HasDataEmpty)
+                           .Select(x => new PlayniteData
+                           {
+                               GameContext = PluginDatabase.PlayniteApi.Database.Games.Get(x.Id)
+                           }).ToList();
 
-            ListViewDataGames.ItemsSource = PlayniteData;
+                this.Dispatcher.BeginInvoke(DispatcherPriority.Background, new ThreadStart(delegate
+                {
+                    ListViewDataGames.ItemsSource = PlayniteData;
+                }));
+            });
+        }
+
+
+        private void DisplayPlayniteDataLoader()
+        {
+            PART_DataLoad.Visibility = Visibility.Visible;
+            PART_LvDataContener.Visibility = Visibility.Hidden;
+
+            Task.Run(() =>
+            {
+                Thread.Sleep(10000);
+                this.Dispatcher.BeginInvoke(DispatcherPriority.Loaded, new ThreadStart(delegate
+                {
+                    PART_DataLoad.Visibility = Visibility.Collapsed;
+                    PART_LvDataContener.Visibility = Visibility.Visible;
+                }));
+            });
+        }
+
+
+        private void PART_PlayniteData_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (((FrameworkElement)sender).Visibility == Visibility.Visible && DisplayFirst)
+            {
+                SetPlayniteData();
+                DisplayPlayniteDataLoader();
+                DisplayFirst = false;
+            }
+        }
+
+        private void GridViewColumnHeader_Click(object sender, RoutedEventArgs e)
+        {
+            DisplayPlayniteDataLoader();
         }
     }
 
@@ -318,6 +366,7 @@ namespace HowLongToBeat.Views
         public Game GameContext { get; set; }
 
         public string GameName { get { return GameContext.Name; } }
+        public string Icon { get { return GameContext.Icon; } }
         public Guid GameId { get { return GameContext.Id; } }
         public string Source { get { return GameContext.Source?.Name ?? string.Empty; } }
         public string CompletionStatus { get { return GameContext.CompletionStatus?.Name ?? string.Empty; } }
