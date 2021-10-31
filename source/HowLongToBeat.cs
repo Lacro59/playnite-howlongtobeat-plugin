@@ -598,7 +598,9 @@ namespace HowLongToBeat
         {
             if (PluginSettings.Settings.AutoImport)
             {
-                var PlayniteDb = PlayniteApi.Database.Games.Where(x => x.Added != null && ((DateTime)x.Added).ToString("yyyy-MM-dd") == DateTime.Now.ToString("yyyy-MM-dd")).ToList();
+                var PlayniteDb = PlayniteApi.Database.Games
+                        .Where(x => x.Added != null && ((DateTime)x.Added) >= DateTime.Now.AddMinutes(-30) && (!PluginDatabase.Get(x.Id, true).IsSaved))
+                        .ToList();
 
                 GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions(
                     $"HowLongToBeat - {resources.GetString("LOCCommonGettingData")}",
