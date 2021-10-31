@@ -57,6 +57,7 @@
     <sys:String x:Key="LOCHowLongToBeatCompletationProgress">Games completed over time</sys:String>
     
     <sys:String x:Key="LOCHowLongToBeatUserData">User data</sys:String>
+    <sys:String x:Key="LocHowLongToBeatPlayniteData">Playnite data</sys:String>
     <sys:String x:Key="LOCHowLongToBeatCompleted">Archived</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatPluginGetUserView">Restoring user data</sys:String>
