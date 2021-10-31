@@ -17,6 +17,7 @@ using CommonPluginsShared;
 using CommonPluginsControls.Controls;
 using System.Windows.Threading;
 using FuzzySharp;
+using CommonPlayniteShared.Common;
 
 namespace HowLongToBeat.Services
 {
@@ -578,7 +579,7 @@ namespace HowLongToBeat.Services
                     if (UserHltbData != null)
                     {
                         logger.Info($"Find {UserHltbData.TitlesList?.Count ?? 0} games");
-                        File.WriteAllText(Path.Combine(Paths.PluginUserDataPath, "HltbUserStats.json"), Serialization.ToJson(UserHltbData), Encoding.UTF8);
+                        FileSystem.WriteStringToFileSafe(Path.Combine(Paths.PluginUserDataPath, "HltbUserStats.json"), Serialization.ToJson(UserHltbData));
                         Database.UserHltbData = UserHltbData;
                     }
                     else
@@ -614,7 +615,7 @@ namespace HowLongToBeat.Services
                             Database.UserHltbData.TitlesList.Add(titleList);
                         }
 
-                        File.WriteAllText(Path.Combine(Paths.PluginUserDataPath, "HltbUserStats.json"), Serialization.ToJson(Database.UserHltbData), Encoding.UTF8);
+                        FileSystem.WriteStringToFileSafe(Path.Combine(Paths.PluginUserDataPath, "HltbUserStats.json"), Serialization.ToJson(Database.UserHltbData));
                     }
                 }
                 catch (Exception ex)

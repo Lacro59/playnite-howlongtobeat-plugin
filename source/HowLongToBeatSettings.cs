@@ -12,7 +12,7 @@ namespace HowLongToBeat
     {
         #region Settings variables
         public bool MenuInExtensions { get; set; } = true;
-        public DateTime LastAutoLibUpdateAssetsDownload { get; set; } = DateTime.Parse("2021-10-31");
+        public DateTime LastAutoLibUpdateAssetsDownload { get; set; } = DateTime.Now;
 
         public string UserLogin { get; set; } = string.Empty;
 

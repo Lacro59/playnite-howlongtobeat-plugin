@@ -599,7 +599,7 @@ namespace HowLongToBeat
             if (PluginSettings.Settings.AutoImport)
             {
                 var PlayniteDb = PlayniteApi.Database.Games
-                        .Where(x => x.Added != null && x.Added >= PluginSettings.Settings.LastAutoLibUpdateAssetsDownload)
+                        .Where(x => x.Added != null && x.Added > PluginSettings.Settings.LastAutoLibUpdateAssetsDownload)
                         .ToList();
 
                 GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions(
