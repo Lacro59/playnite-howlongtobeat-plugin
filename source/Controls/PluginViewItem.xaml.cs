@@ -1,5 +1,4 @@
-﻿using CommonPluginsShared;
-using CommonPluginsShared.Collections;
+﻿using CommonPluginsShared.Collections;
 using CommonPluginsShared.Controls;
 using CommonPluginsShared.Interfaces;
 using HowLongToBeat.Models;
@@ -7,20 +6,10 @@ using HowLongToBeat.Services;
 using Playnite.SDK.Models;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Windows.Threading;
 
 namespace HowLongToBeat.Controls
@@ -43,7 +32,7 @@ namespace HowLongToBeat.Controls
             }
         }
 
-        private PluginViewItemDataContext ControlDataContext;
+        private PluginViewItemDataContext ControlDataContext = new PluginViewItemDataContext();
         internal override IDataContext _ControlDataContext
         {
             get
@@ -60,6 +49,7 @@ namespace HowLongToBeat.Controls
         public PluginViewItem()
         {
             InitializeComponent();
+            this.DataContext = ControlDataContext;
 
             Task.Run(() =>
             {
@@ -82,38 +72,25 @@ namespace HowLongToBeat.Controls
 
         public override void SetDefaultDataContext()
         {
-            ControlDataContext = new PluginViewItemDataContext
-            {
-                IsActivated = PluginDatabase.PluginSettings.Settings.EnableIntegrationViewItem,
-
-                Text = string.Empty
-            };
+            ControlDataContext.IsActivated = PluginDatabase.PluginSettings.Settings.EnableIntegrationViewItem;
+            ControlDataContext.Text = string.Empty;
         }
 
 
-        public override Task<bool> SetData(Game newContext, PluginDataBaseGameBase PluginGameData)
+        public override void SetData(Game newContext, PluginDataBaseGameBase PluginGameData)
         {
-            return Task.Run(() =>
-            {
-                GameHowLongToBeat gameHowLongToBeat = (GameHowLongToBeat)PluginGameData;
-
-                ControlDataContext.Text = gameHowLongToBeat.GetData().GameHltbData.TimeToBeatFormat;
-
-                this.Dispatcher.BeginInvoke(DispatcherPriority.Loaded, new ThreadStart(delegate
-                {
-                    this.DataContext = ControlDataContext;
-                }));
-
-                return true;
-            });
+            GameHowLongToBeat gameHowLongToBeat = (GameHowLongToBeat)PluginGameData;
+            ControlDataContext.Text = gameHowLongToBeat.GetData().GameHltbData.TimeToBeatFormat;
         }
     }
 
 
-    public class PluginViewItemDataContext : IDataContext
+    public class PluginViewItemDataContext : ObservableObjectExtend, IDataContext
     {
-        public bool IsActivated { get; set; }
+        private bool _IsActivated;
+        public bool IsActivated { get => _IsActivated; set => SetValue(ref _IsActivated, value); }
 
-        public string Text { get; set; } = "1h 18m";
+        private string _Text = "1h 18m";
+        public string Text { get => _Text; set => SetValue(ref _Text, value); }
     }
 }

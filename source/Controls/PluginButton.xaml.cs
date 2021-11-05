@@ -7,6 +7,7 @@ using HowLongToBeat.Services;
 using HowLongToBeat.Views;
 using Playnite.SDK.Models;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -34,7 +35,7 @@ namespace HowLongToBeat.Controls
             }
         }
 
-        private PluginButtonDataContext ControlDataContext;
+        private PluginButtonDataContext ControlDataContext =  new PluginButtonDataContext();
         internal override IDataContext _ControlDataContext
         {
             get
@@ -52,6 +53,7 @@ namespace HowLongToBeat.Controls
             AlwaysShow = true;
 
             InitializeComponent();
+            this.DataContext = ControlDataContext;
 
             Task.Run(() =>
             {
@@ -74,28 +76,14 @@ namespace HowLongToBeat.Controls
 
         public override void SetDefaultDataContext()
         {
-            ControlDataContext = new PluginButtonDataContext
-            {
-                IsActivated = PluginDatabase.PluginSettings.Settings.EnableIntegrationButton,
-
-                Text = "\ue90d"
-            };
+            ControlDataContext.IsActivated = PluginDatabase.PluginSettings.Settings.EnableIntegrationButton;
+            ControlDataContext.Text = "\ue90d";
         }
 
 
-        public override Task<bool> SetData(Game newContext, PluginDataBaseGameBase PluginGameData)
+        public override void SetData(Game newContext, PluginDataBaseGameBase PluginGameData)
         {
-            return Task.Run(() =>
-            {
-                GameHowLongToBeat gameHowLongToBeat = (GameHowLongToBeat)PluginGameData;
-
-                this.Dispatcher.BeginInvoke(DispatcherPriority.Loaded, new ThreadStart(delegate
-                {
-                    this.DataContext = ControlDataContext;
-                }));
-
-                return true;
-            });
+            GameHowLongToBeat gameHowLongToBeat = (GameHowLongToBeat)PluginGameData;
         }
 
 
@@ -115,10 +103,12 @@ namespace HowLongToBeat.Controls
     }
 
 
-    public class PluginButtonDataContext : IDataContext
+    public class PluginButtonDataContext : ObservableObjectExtend, IDataContext
     {
-        public bool IsActivated { get; set; }
+        private bool _IsActivated;
+        public bool IsActivated { get => _IsActivated; set => SetValue(ref _IsActivated, value); }
 
-        public string Text { get; set; } = "\ue90d";
+        private string _Text = "\ue90d";
+        public string Text { get => _Text; set => SetValue(ref _Text, value); }
     }
 }

@@ -1,5 +1,4 @@
-﻿using CommonPluginsControls.Controls;
-using CommonPluginsShared;
+﻿using CommonPluginsShared;
 using CommonPluginsShared.Collections;
 using CommonPluginsShared.Controls;
 using CommonPluginsShared.Interfaces;
@@ -9,13 +8,11 @@ using Playnite.SDK;
 using Playnite.SDK.Models;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Data;
 using System.Windows.Media;
 using System.Windows.Threading;
 
@@ -40,7 +37,7 @@ namespace HowLongToBeat.Controls
             }
         }
 
-        private PluginProgressBarDataContext ControlDataContext;
+        private PluginProgressBarDataContext ControlDataContext = new PluginProgressBarDataContext();
         internal override IDataContext _ControlDataContext
         {
             get
@@ -59,6 +56,7 @@ namespace HowLongToBeat.Controls
         public PluginProgressBar()
         {
             InitializeComponent();
+            this.DataContext = ControlDataContext;
 
             Task.Run(() =>
             {
@@ -96,59 +94,91 @@ namespace HowLongToBeat.Controls
                 ShowUserData = true;
             }
 
-            ControlDataContext = new PluginProgressBarDataContext
-            {
-                IsActivated = IsActivated,
-                ShowToolTip = PluginDatabase.PluginSettings.Settings.ProgressBarShowToolTip,
+            ControlDataContext.IsActivated = IsActivated;
+            ControlDataContext.ShowToolTip = PluginDatabase.PluginSettings.Settings.ProgressBarShowToolTip;
 
-                TextAboveVisibility = TextAboveVisibility,
-                TextInsideVisibility = TextInsideVisibility,
-                TextBelowVisibility = TextBelowVisibility,
+            ControlDataContext.TextAboveVisibility = TextAboveVisibility;
+            ControlDataContext.TextInsideVisibility = TextInsideVisibility;
+            ControlDataContext.TextBelowVisibility = TextBelowVisibility;
 
-                PlaytimeValue = 0,
-                MaxValue = 0,
+            ControlDataContext.PlaytimeValue = 0;
+            ControlDataContext.MaxValue = 0;
 
-                ProgressBarFirstValue = 0,
-                ProgressBarFirstVisibility = Visibility.Collapsed,
-                ToolTipFirst = string.Empty,
+            ControlDataContext.ProgressBarFirstValue = 0;
+            ControlDataContext.ProgressBarFirstVisibility = Visibility.Collapsed;
+            ControlDataContext.ToolTipFirst = string.Empty;
 
-                ProgressBarSecondValue = 0,
-                ProgressBarSecondVisibility = Visibility.Collapsed,
-                ToolTipSecond = string.Empty,
+            ControlDataContext.ProgressBarSecondValue = 0;
+            ControlDataContext.ProgressBarSecondVisibility = Visibility.Collapsed;
+            ControlDataContext.ToolTipSecond = string.Empty;
 
-                ProgressBarThirdValue = 0,
-                ProgressBarThirdVisibility = Visibility.Collapsed,
-                ToolTipThird = string.Empty,
+            ControlDataContext.ProgressBarThirdValue = 0;
+            ControlDataContext.ProgressBarThirdVisibility = Visibility.Collapsed;
+            ControlDataContext.ToolTipThird = string.Empty;
 
-                SliderFirstValue = 0,
-                SliderFirstVisibility = Visibility.Collapsed,
-                ThumbFirst = null,
+            ControlDataContext.SliderFirstValue = 0;
+            ControlDataContext.SliderFirstVisibility = Visibility.Collapsed;
+            ControlDataContext.ThumbFirst = null;
 
-                SliderSecondValue = 0,
-                SliderSecondVisibility = Visibility.Collapsed,
-                ThumbSecond = null,
+            ControlDataContext.SliderSecondValue = 0;
+            ControlDataContext.SliderSecondVisibility = Visibility.Collapsed;
+            ControlDataContext.ThumbSecond = null;
 
-                SliderThirdValue = 0,
-                SliderThirdVisibility = Visibility.Collapsed,
-                ThumbThird = null
-            };
+            ControlDataContext.SliderThirdValue = 0;
+            ControlDataContext.SliderThirdVisibility = Visibility.Collapsed;
+            ControlDataContext.ThumbThird = null;
         }
 
 
-        public override Task<bool> SetData(Game newContext, PluginDataBaseGameBase PluginGameData)
+        public override void SetData(Game newContext, PluginDataBaseGameBase PluginGameData)
         {
-            return Task.Run(() =>
-            {
-                GameHowLongToBeat gameHowLongToBeat = (GameHowLongToBeat)PluginGameData;
+            GameHowLongToBeat gameHowLongToBeat = (GameHowLongToBeat)PluginGameData;
+            LoadData(gameHowLongToBeat);
 
-                this.Dispatcher.BeginInvoke(DispatcherPriority.Loaded, new ThreadStart(delegate
-                {
-                    LoadData(gameHowLongToBeat);
-                    this.DataContext = ControlDataContext;
-                }));
 
-                return true;
-            });
+            SliderPlaytime.Maximum = ControlDataContext.MaxValue;
+            SliderPlaytime.Value = ControlDataContext.PlaytimeValue;
+
+
+            PART_ProgressBarFirst.Value = ControlDataContext.ProgressBarFirstValue;
+            PART_ProgressBarFirst.TextValue = ControlDataContext.ToolTipFirst;
+            PART_ProgressBarFirst.Foreground = ControlDataContext.ThumbFirst;
+            PART_ProgressBarFirst.Maximum = ControlDataContext.MaxValue;
+            PART_ProgressBarFirst.TextAboveVisibility = ControlDataContext.TextAboveVisibility;
+            PART_ProgressBarFirst.TextInsideVisibility = ControlDataContext.TextInsideVisibility;
+            PART_ProgressBarFirst.TextBelowVisibility = ControlDataContext.TextBelowVisibility;
+
+            PART_ProgressBarSecond.Value = ControlDataContext.ProgressBarSecondValue;
+            PART_ProgressBarSecond.TextValue = ControlDataContext.ToolTipSecond;
+            PART_ProgressBarSecond.Foreground = ControlDataContext.ThumbSecond;
+            PART_ProgressBarSecond.Maximum = ControlDataContext.MaxValue;
+            PART_ProgressBarSecond.TextAboveVisibility = ControlDataContext.TextAboveVisibility;
+            PART_ProgressBarSecond.TextInsideVisibility = ControlDataContext.TextInsideVisibility;
+            PART_ProgressBarSecond.TextBelowVisibility = ControlDataContext.TextBelowVisibility;
+
+            PART_ProgressBarThird.Value = ControlDataContext.ProgressBarThirdValue;
+            PART_ProgressBarThird.TextValue = ControlDataContext.ToolTipThird;
+            PART_ProgressBarThird.Foreground = ControlDataContext.ThumbThird;
+            PART_ProgressBarThird.Maximum = ControlDataContext.MaxValue;
+            PART_ProgressBarThird.TextAboveVisibility = ControlDataContext.TextAboveVisibility;
+            PART_ProgressBarThird.TextInsideVisibility = ControlDataContext.TextInsideVisibility;
+            PART_ProgressBarThird.TextBelowVisibility = ControlDataContext.TextBelowVisibility;
+
+
+            PartSliderFirst.ThumbFill = ControlDataContext.ThumbSecond;
+            PartSliderFirst.Visibility = ControlDataContext.SliderSecondVisibility;
+            PartSliderFirst.Value = ControlDataContext.SliderSecondValue;
+            PartSliderFirst.Maximum = ControlDataContext.MaxValue;
+
+            PartSliderSecond.ThumbFill = ControlDataContext.ThumbFirst;
+            PartSliderSecond.Visibility = ControlDataContext.SliderFirstVisibility;
+            PartSliderSecond.Value = ControlDataContext.SliderFirstValue;
+            PartSliderSecond.Maximum = ControlDataContext.MaxValue;
+
+            PartSliderThird.ThumbFill = ControlDataContext.ThumbThird;
+            PartSliderThird.Visibility = ControlDataContext.SliderThirdVisibility;
+            PartSliderThird.Value = ControlDataContext.SliderThirdValue;
+            PartSliderThird.Maximum = ControlDataContext.MaxValue;
         }
 
 
@@ -440,44 +470,84 @@ namespace HowLongToBeat.Controls
     }
 
 
-    public class PluginProgressBarDataContext : IDataContext
+    public class PluginProgressBarDataContext : ObservableObjectExtend, IDataContext
     {
-        public bool IsActivated { get; set; }
-        public bool ShowToolTip { get; set; }
+        private bool _IsActivated;
+        public bool IsActivated { get => _IsActivated; set => SetValue(ref _IsActivated, value); }
 
-        public bool TextAboveVisibility { get; set; }
-        public bool TextInsideVisibility { get; set; }
-        public bool TextBelowVisibility { get; set; }
-        public SolidColorBrush ThumbFirst { get; set; }
-        public SolidColorBrush ThumbSecond { get; set; }
-        public SolidColorBrush ThumbThird { get; set; }
+        private bool _ShowToolTip;
+        public bool ShowToolTip { get => _ShowToolTip; set => SetValue(ref _ShowToolTip, value); }
 
-        public double PlaytimeValue { get; set; }
-        public double MaxValue { get; set; }
+        private bool _TextAboveVisibility;
+        public bool TextAboveVisibility { get => _TextAboveVisibility; set => SetValue(ref _TextAboveVisibility, value); }
 
+        private bool _TextInsideVisibility = true;
+        public bool TextInsideVisibility { get => _TextInsideVisibility; set => SetValue(ref _TextInsideVisibility, value); }
 
-        public double ProgressBarFirstValue { get; set; }
-        public Visibility ProgressBarFirstVisibility { get; set; }
-        public string ToolTipFirst { get; set; }
+        private bool _TextBelowVisibility;
+        public bool TextBelowVisibility { get => _TextBelowVisibility; set => SetValue(ref _TextBelowVisibility, value); }
 
-        public double ProgressBarSecondValue { get; set; }
-        public Visibility ProgressBarSecondVisibility { get; set; }
-        public string ToolTipSecond { get; set; }
+        private SolidColorBrush _ThumbFirst = new SolidColorBrush(Brushes.DarkCyan.Color);
+        public SolidColorBrush ThumbFirst { get => _ThumbFirst; set => SetValue(ref _ThumbFirst, value); }
 
-        public double ProgressBarThirdValue { get; set; }
-        public Visibility ProgressBarThirdVisibility { get; set; }
-        public string ToolTipThird { get; set; }
+        private SolidColorBrush _ThumbSecond = new SolidColorBrush(Brushes.RoyalBlue.Color);
+        public SolidColorBrush ThumbSecond { get => _ThumbSecond; set => SetValue(ref _ThumbSecond, value); }
 
+        private SolidColorBrush _ThumbThird = new SolidColorBrush(Brushes.ForestGreen.Color);
+        public SolidColorBrush ThumbThird { get => _ThumbThird; set => SetValue(ref _ThumbThird, value); }
 
-        public double SliderFirstValue { get; set; }
-        public Visibility SliderFirstVisibility { get; set; }
+        private double _PlaytimeValue = 75;
+        public double PlaytimeValue { get => _PlaytimeValue; set => SetValue(ref _PlaytimeValue, value); }
 
-        public double SliderSecondValue { get; set; }
-        public Visibility SliderSecondVisibility { get; set; }
+        private double _MaxValue = 100;
+        public double MaxValue { get => _MaxValue; set => SetValue(ref _MaxValue, value); }
 
-        public double SliderThirdValue { get; set; }
-        public Visibility SliderThirdVisibility { get; set; }
+        private double _ProgressBarFirstValue;
+        public double ProgressBarFirstValue { get => _ProgressBarFirstValue; set => SetValue(ref _ProgressBarFirstValue, value); }
+
+        private Visibility _ProgressBarFirstVisibility;
+        public Visibility ProgressBarFirstVisibility { get => _ProgressBarFirstVisibility; set => SetValue(ref _ProgressBarFirstVisibility, value); }
+
+        private string _ToolTipFirst;
+        public string ToolTipFirst { get => _ToolTipFirst; set => SetValue(ref _ToolTipFirst, value); }
+
+        private double _ProgressBarSecondValue;
+        public double ProgressBarSecondValue { get => _ProgressBarSecondValue; set => SetValue(ref _ProgressBarSecondValue, value); }
+
+        private Visibility _ProgressBarSecondVisibility;
+        public Visibility ProgressBarSecondVisibility { get => _ProgressBarSecondVisibility; set => SetValue(ref _ProgressBarSecondVisibility, value); }
+
+        private string _ToolTipSecond;
+        public string ToolTipSecond { get => _ToolTipSecond; set => SetValue(ref _ToolTipSecond, value); }
+
+        private double _ProgressBarThirdValue;
+        public double ProgressBarThirdValue { get => _ProgressBarThirdValue; set => SetValue(ref _ProgressBarThirdValue, value); }
+
+        private Visibility _ProgressBarThirdVisibility;
+        public Visibility ProgressBarThirdVisibility { get => _ProgressBarThirdVisibility; set => SetValue(ref _ProgressBarThirdVisibility, value); }
+
+        private string _ToolTipThird; 
+        public string ToolTipThird { get => _ToolTipThird; set => SetValue(ref _ToolTipThird, value); }
+
+        private double _SliderFirstValue;
+        public double SliderFirstValue { get => _SliderFirstValue; set => SetValue(ref _SliderFirstValue, value); }
+
+        private Visibility _SliderFirstVisibility;
+        public Visibility SliderFirstVisibility { get => _SliderFirstVisibility; set => SetValue(ref _SliderFirstVisibility, value); }
+
+        private double _SliderSecondValue;
+        public double SliderSecondValue { get => _SliderSecondValue; set => SetValue(ref _SliderSecondValue, value); }
+
+        private Visibility _SliderSecondVisibility;
+        public Visibility SliderSecondVisibility { get => _SliderSecondVisibility; set => SetValue(ref _SliderSecondVisibility, value); }
+
+        private double _SliderThirdValue;
+        public double SliderThirdValue { get => _SliderThirdValue; set => SetValue(ref _SliderThirdValue, value); }
+
+        private Visibility _SliderThirdVisibility;
+        public Visibility SliderThirdVisibility { get => _SliderThirdVisibility; set => SetValue(ref _SliderThirdVisibility, value); }
     }
+
 
     internal class ListProgressBar
     {

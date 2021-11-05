@@ -100,8 +100,8 @@
                        Name="PART_TextBlock"
                        Style="{DynamicResource BaseTextBlockStyle}" HorizontalAlignment="Center" />
 
-            <Grid Grid.Row="2" Name="PART_GridProgressBar" Height="50">
-                <controls:PluginProgressBar Height="50" GameContext="{Binding GameContext}" IgnoreSettings="True" />
+            <Grid Grid.Row="2" Name="PART_GridProgressBar" Height="50" Tag="{Binding GameContext}">
+                <controls:PluginProgressBar Height="50" GameContext="{Binding ElementName=PART_GridProgressBar, Path=Tag}" IgnoreSettings="True" />
             </Grid>
 
             <Grid Grid.Row="4">

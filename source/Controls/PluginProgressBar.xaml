@@ -8,9 +8,8 @@
         xmlns:local="clr-namespace:HowLongToBeat.Controls"
         xmlns:controlsShared="clr-namespace:CommonPluginsControls.Controls"
         xmlns:converters="clr-namespace:CommonPlayniteShared.Converters"
-        xmlns:commonpluginsshared="clr-namespace:CommonPluginsShared"
         mc:Ignorable="d" d:DesignHeight="80" d:DesignWidth="800"
-        d:DataContext="{d:DesignInstance local:PluginProgressBarDataContext}">
+        d:DataContext="{d:DesignInstance local:PluginProgressBarDataContext, IsDesignTimeCreatable=True}">
 
     <controls:PluginUserControlExtend.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
@@ -19,38 +18,11 @@
 
     <Grid Name="PART_GridContener">
         <controlsShared:ProgressBarExtend x:Name="PART_ProgressBarThird" Background="Transparent"
-                                          MarginWidth ="0"
-                                          TextWidth="0"
-                                          Minimum="0" 
-                                          Value="{Binding ProgressBarThirdValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                          TextValue="{Binding ToolTipThird, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                          Foreground="{Binding ThumbThird, FallbackValue=Green}"
-                                          Maximum="{Binding MaxValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                          TextAboveVisibility="{Binding TextAboveVisibility}"
-                                          TextInsideVisibility="{Binding TextInsideVisibility}"
-                                          TextBelowVisibility="{Binding TextBelowVisibility}" />
+                                          MarginWidth ="0" TextWidth="0" Minimum="0" />
         <controlsShared:ProgressBarExtend x:Name="PART_ProgressBarSecond" Background="Transparent"
-                                          MarginWidth ="0"
-                                          TextWidth="0"
-                                          Minimum="0" 
-                                          Value="{Binding ProgressBarSecondValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                          TextValue="{Binding ToolTipSecond, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                          Foreground="{Binding ThumbSecond, FallbackValue=DarkRed}"
-                                          Maximum="{Binding MaxValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                          TextAboveVisibility="{Binding TextAboveVisibility}"
-                                          TextInsideVisibility="{Binding TextInsideVisibility}"
-                                          TextBelowVisibility="{Binding TextBelowVisibility}" />
+                                          MarginWidth ="0" TextWidth="0" Minimum="0" />
         <controlsShared:ProgressBarExtend x:Name="PART_ProgressBarFirst" Background="Transparent" LayoutUpdated="PART_ProgressBarFirst_LayoutUpdated"
-                                          MarginWidth ="0"
-                                          TextWidth="0"
-                                          Minimum="0" 
-                                          Value="{Binding ProgressBarFirstValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                          TextValue="{Binding ToolTipFirst, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                          Foreground="{Binding ThumbFirst, FallbackValue=DarkBlue}"
-                                          Maximum="{Binding MaxValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                          TextAboveVisibility="{Binding TextAboveVisibility}"
-                                          TextInsideVisibility="{Binding TextInsideVisibility}"
-                                          TextBelowVisibility="{Binding TextBelowVisibility}" />
+                                          MarginWidth ="0" TextWidth="0" Minimum="0" />
 
         <Grid Name="PART_SliderContener" Height="{Binding ElementName=PART_ProgressBarFirst, Path=IndicatorHeight}">
             <Grid.Style>
@@ -69,9 +41,7 @@
                 </Style>
             </Grid.Style>
 
-            <Slider Name="SliderPlaytime" Margin="-6,0,-6,0"
-                    Value="{Binding PlaytimeValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, FallbackValue=5}" 
-                    Maximum="{Binding MaxValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+            <Slider Name="SliderPlaytime" Margin="-6,0,-6,0">
                 <Slider.Style>
                     <Style TargetType="{x:Type Slider}" BasedOn="{StaticResource BaseStyle}">
                         <Setter Property="SnapsToDevicePixels" Value="True" />
@@ -165,26 +135,14 @@
             </Grid.Style>
 
             <controlsShared:SliderWithPointer x:Name="PartSliderFirst" VerticalAlignment="Bottom"
-                                              ThumbFill="{Binding ThumbFirst, FallbackValue=DarkBlue}"
-                                              Visibility="{Binding SliderFirstVisibility}"
-                                              Value="{Binding SliderFirstValue, FallbackValue=1}" 
-                                              Maximum="{Binding MaxValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                               Height="{Binding ElementName=PART_ProgressBarFirst, Path=IndicatorDemiHeight}" 
                                               Margin="{Binding ElementName=SliderPlaytime, Path=Margin}" />
 
             <controlsShared:SliderWithPointer x:Name="PartSliderSecond" VerticalAlignment="Bottom"
-                                              ThumbFill="{Binding ThumbSecond, FallbackValue=DarkRed}" 
-                                              Visibility="{Binding SliderSecondVisibility}"
-                                              Value="{Binding SliderSecondValue, FallbackValue=2}" 
-                                              Maximum="{Binding MaxValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                               Height="{Binding ElementName=PART_ProgressBarFirst, Path=IndicatorDemiHeight}" 
                                               Margin="{Binding ElementName=SliderPlaytime, Path=Margin}" />
 
             <controlsShared:SliderWithPointer x:Name="PartSliderThird" VerticalAlignment="Bottom"
-                                              ThumbFill="{Binding ThumbThird, FallbackValue=Green}"
-                                              Visibility="{Binding SliderThirdVisibility}"
-                                              Value="{Binding SliderThirdValue, FallbackValue=3}" 
-                                              Maximum="{Binding MaxValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                               Height="{Binding ElementName=PART_ProgressBarFirst, Path=IndicatorDemiHeight}" 
                                               Margin="{Binding ElementName=SliderPlaytime, Path=Margin}" />
         </Grid>

@@ -437,11 +437,11 @@
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
-                                
+
                                 <GridViewColumn Width="0" DisplayMemberBinding="{Binding GameName}">
-                                    <controlsShared:GridViewColumnHeaderExtend Style="{StaticResource {x:Type GridViewColumnHeader}}" IsHitTestVisible="False" />
+                                    <controlsShared:GridViewColumnHeaderExtend Style="{StaticResource {x:Type GridViewColumnHeader}}" IsHitTestVisible="False" RefIndex="1" />
                                 </GridViewColumn>
-                                <GridViewColumn Width="300">
+                                <GridViewColumn Width="350">
                                     <GridViewColumnHeader Content="{DynamicResource LOCGameNameTitle}" Tag="GameName" Click="GridViewColumnHeader_Click" />
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
@@ -473,13 +473,13 @@
                                     <controlsShared:GridViewColumnHeaderExtend Style="{StaticResource {x:Type GridViewColumnHeader}}" IsHitTestVisible="False" />
                                 </GridViewColumn>
 
-                                <GridViewColumn Width="500">
+                                <GridViewColumn Width="600">
                                     <GridViewColumnHeader Content="{DynamicResource LOCHowLongToBeat}" Tag="TimeToBeat" Click="GridViewColumnHeader_Click" />
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
-                                            <StackPanel>
-                                                <controls:PluginProgressBar GameContext="{Binding GameContext}" IgnoreSettings="True"
-                                                                            Height="30"/>
+                                            <StackPanel Name="PART_SpContener" Tag="{Binding GameContext}">
+                                                <controls:PluginProgressBar GameContext="{Binding ElementName=PART_SpContener, Path=Tag, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                                                            IgnoreSettings="True" Height="30"/>
                                             </StackPanel>
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
