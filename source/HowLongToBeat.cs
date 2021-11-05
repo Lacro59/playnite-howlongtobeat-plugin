@@ -234,11 +234,18 @@ namespace HowLongToBeat
                             $"HowLongToBeat - {resources.GetString("LOCCommonProcessing")}",
                             false
                         );
-                        globalProgressOptions.IsIndeterminate = true;
+
+                        globalProgressOptions.IsIndeterminate = args.Games.Count == 1;
 
                         PlayniteApi.Dialogs.ActivateGlobalProgress((activateGlobalProgress) =>
                         {
-                            PluginDatabase.SetCurrentPlayTime(GameMenu, 0);
+                            activateGlobalProgress.ProgressMaxValue = args.Games.Count;
+                            activateGlobalProgress.CurrentProgressValue = -1;
+                            foreach (Game game in args.Games)
+                            {
+                                activateGlobalProgress.CurrentProgressValue += 1;
+                                PluginDatabase.SetCurrentPlayTime(game, 0);
+                            }
                         }, globalProgressOptions);
                     }
                 });
