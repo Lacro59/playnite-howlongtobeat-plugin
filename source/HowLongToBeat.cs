@@ -375,6 +375,39 @@ namespace HowLongToBeat
                 new MainMenuItem
                 {
                     MenuSection = MenuInExtensions + resources.GetString("LOCHowLongToBeat"),
+                    Description = resources.GetString("LOCHowLongToBeatSetCurrentTimeManualAll"),
+                    Action = (mainMenuItem) =>
+                    {
+                        var db = PlayniteApi.Database.Games.Where(x => !x.Hidden && x.Playtime > 0);
+
+                        GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions(
+                            $"HowLongToBeat - {resources.GetString("LOCCommonProcessing")}",
+                            true
+                        );
+
+                        globalProgressOptions.IsIndeterminate = db.Count() == 1;
+
+                        PlayniteApi.Dialogs.ActivateGlobalProgress((activateGlobalProgress) =>
+                        {
+                            activateGlobalProgress.ProgressMaxValue = db.Count();
+                            activateGlobalProgress.CurrentProgressValue = -1;
+                            foreach (Game game in db)
+                            {
+                                if (activateGlobalProgress.CancelToken.IsCancellationRequested)
+                                {
+                                    break;
+                                }
+
+                                activateGlobalProgress.CurrentProgressValue += 1;
+                                PluginDatabase.SetCurrentPlayTime(game, 0);
+                            }
+                        }, globalProgressOptions);
+                    }
+                },
+
+                new MainMenuItem
+                {
+                    MenuSection = MenuInExtensions + resources.GetString("LOCHowLongToBeat"),
                     Description = resources.GetString("LOCHowLongToBeatActualiseUserData"),
                     Action = (mainMenuItem) =>
                     {
