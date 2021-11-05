@@ -83,6 +83,7 @@
     <sys:String x:Key="LOCHowLongToBeatActualiseUserData">Aggiorna i dati utente HowLongToBeat</sys:String>
     
     <sys:String x:Key="LOCHowLongToBeatSetCurrentTimeManual">Modifica manualmente il tempo di gioco</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatSetCurrentTimeManualAll">Set your current playtime for all games</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatSetCurrentTime">Vuoi inviare il tuo tempo di riproduzione corrente? (sperimentale)</sys:String>
 
