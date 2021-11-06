@@ -83,8 +83,8 @@
     <sys:String x:Key="LOCHowLongToBeatActualiseUserData">Оновити користувацькі дані HowLongToBeat</sys:String>
     
     <sys:String x:Key="LOCHowLongToBeatSetCurrentTimeManual">Встановити ваш поточний час у грі</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatSetCurrentTimeManualAll">Set your current playtime for all games</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatSetCurrentTimeManualAll">Встановити поточний час у грі для всіх ігор</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatSetCurrentTime">Want you send your current playtime?</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatSetCurrentTime">Хочете відправити свій поточний час у грі?</sys:String>
 
 </ResourceDictionary>
