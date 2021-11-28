@@ -10,9 +10,7 @@
         d:DataContext="{d:DesignInstance local:PluginButtonDataContext, IsDesignTimeCreatable=True}">
 
     <Button Name="PART_PluginButton" Click="PART_PluginButton_Click" Style="{StaticResource {x:Type Button}}">
-        <Grid>
-            <TextBlock Text="{Binding Text}" FontFamily="{DynamicResource CommonFont}"
-                       FontSize="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=FontSize}" />
-        </Grid>
+        <TextBlock Text="{Binding Text}" FontFamily="{DynamicResource CommonFont}"
+                   FontSize="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=FontSize}" />
     </Button>
 </controls:PluginUserControlExtend>

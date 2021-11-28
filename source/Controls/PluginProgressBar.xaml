@@ -43,7 +43,7 @@
 
             <Slider Name="SliderPlaytime" Margin="-6,0,-6,0">
                 <Slider.Style>
-                    <Style TargetType="{x:Type Slider}" BasedOn="{StaticResource BaseStyle}">
+                    <Style TargetType="{x:Type Slider}" BasedOn="{StaticResource {x:Type Slider}}">
                         <Setter Property="SnapsToDevicePixels" Value="True" />
                         <Setter Property="Background" Value="{DynamicResource ControlBackgroundBrush}" />
                         <Setter Property="BorderBrush" Value="{DynamicResource NormalBorderBrush}" />
