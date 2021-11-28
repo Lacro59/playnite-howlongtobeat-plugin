@@ -88,3 +88,9 @@ Packages:
     Changelog:
       - Added QuickSearch support
       - Fixed FullScreen issue
+  - Version: 2.5.1
+    RequiredApiVersion: 6.2.0
+    ReleaseDate: 2021-11-28
+    PackageUrl: https://github.com/Lacro59/playnite-howlongtobeat-plugin/releases/download/v2.5.1/playnite-howlongtobeat-plugin_2_5_1.pext
+    Changelog:
+      - Updated localizations
