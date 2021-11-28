@@ -9,7 +9,7 @@
 
     <sys:String x:Key="LOCHowLongToBeatAddTagDescription">Adicionar uma tag aos jogos com informações sobre o tempo de conclusão da história principal</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoTag">Processamento automático de etiquetas</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatShowHltbImage">Usar a imagem original da capa do jogo HowLongToBeat na janela</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatShowHltbImage">Usar a imagem original da capa do jogo &quot;HowLongToBeat&quot; na janela</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatColorSelection">Seleção de cor:</sys:String>
 
@@ -83,8 +83,8 @@
     <sys:String x:Key="LOCHowLongToBeatActualiseUserData">Atualizar os dados do usuário do HowLongToBeat</sys:String>
     
     <sys:String x:Key="LOCHowLongToBeatSetCurrentTimeManual">Defina seu tempo de jogo atual</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatSetCurrentTimeManualAll">Set your current playtime for all games</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatSetCurrentTimeManualAll">Defina seu tempo de jogo atual para todos os jogos</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatSetCurrentTime">Want you send your current playtime?</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatSetCurrentTime">Você quer enviar seu tempo de jogo atual?</sys:String>
 
 </ResourceDictionary>

@@ -58,14 +58,14 @@
     
     <sys:String x:Key="LOCHowLongToBeatUserData">Données utilisateur</sys:String>
     <sys:String x:Key="LocHowLongToBeatPlayniteData">Données de Playnite</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatCompleted">Termin</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatCompleted">Terminé</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatPluginGetUserView">Récupération des données utilisateur</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatCompletions">Complétées</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatTimeSinglePlayer">Temps Single-Player</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatTimeSinglePlayer">Temps Solo</sys:String>
     <sys:String x:Key="LOCHowLongToBeatTimeCoOp">Temps Co-Op</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatTimeVs">Temps Vs.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatTimeVs">Temps Vs Multi-joueur</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatStorefront">Bibliothèque</sys:String>
     
@@ -83,7 +83,7 @@
     <sys:String x:Key="LOCHowLongToBeatActualiseUserData">Actualiser les données utilisateur de HowLongToBeat</sys:String>
     
     <sys:String x:Key="LOCHowLongToBeatSetCurrentTimeManual">Définir votre temps de jeu actuel</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatSetCurrentTimeManualAll">Définissez votre temps de jeu actuel pour toutes les jeux</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatSetCurrentTimeManualAll">Définissez votre temps de jeu actuel pour tous les jeux</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatSetCurrentTime">Voulez-vous envoyer votre temps de jeu actuel ?</sys:String>
 
