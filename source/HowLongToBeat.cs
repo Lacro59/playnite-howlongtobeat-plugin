@@ -19,6 +19,8 @@ using CommonPluginsShared.Controls;
 using HowLongToBeat.Controls;
 using CommonPluginsControls.Views;
 using System.Diagnostics;
+using System.IO;
+using QuickSearch.SearchItems;
 
 namespace HowLongToBeat
 {
@@ -622,7 +624,21 @@ namespace HowLongToBeat
         // Add code to be executed when Playnite is initialized.
         public override void OnApplicationStarted(OnApplicationStartedEventArgs args)
         {
+            // QuickSearch support
+            try
+            {
+                string icon = Path.Combine(PluginDatabase.Paths.PluginPath, "Resources", "hltb.png");
 
+                var HltbSubItemsAction = new SubItemsAction() { Action = () => { }, Name = "", CloseAfterExecute = false, SubItemSource = new QuickSearchItemSource() };
+                var HltbCommand = new CommandItem("HowLongToBeat", new List<CommandAction>(), ResourceProvider.GetString("LOCHltbQuickSearchDescription"), icon);
+                HltbCommand.Keys.Add(new CommandItemKey() { Key = "hltb", Weight = 1 });
+                HltbCommand.Actions.Add(HltbSubItemsAction);
+                QuickSearch.QuickSearchSDK.AddCommand(HltbCommand);
+            }
+            catch (Exception)
+            {
+
+            }
         }
 
         // Add code to be executed when Playnite is shutting down.

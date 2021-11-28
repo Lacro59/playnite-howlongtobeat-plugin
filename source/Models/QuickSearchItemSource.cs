@@ -1,0 +1,228 @@
+﻿using CommonPluginsShared;
+using CommonPluginsShared.Converters;
+using CommonPluginsShared.Extensions;
+using HowLongToBeat.Services;
+using Playnite.SDK;
+using QuickSearch.SearchItems;
+using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace HowLongToBeat.Models
+{
+    class QuickSearchItemSource : ISearchSubItemSource<string>
+    {
+        private HowLongToBeatDatabase PluginDatabase = HowLongToBeat.PluginDatabase;
+
+
+        public string Prefix => "HowLongToBeat";
+
+        public bool DisplayAllIfQueryIsEmpty => true;
+
+        public string Icon
+        {
+            get
+            {
+                return Path.Combine(PluginDatabase.Paths.PluginPath, "Resources", "command-line.png");
+            }
+        }
+
+
+        public IEnumerable<ISearchItem<string>> GetItems()
+        {
+            return null;
+        }
+
+        public IEnumerable<ISearchItem<string>> GetItems(string query)
+        {
+            if (query.IsEqual("ttb"))
+            {
+                return new List<ISearchItem<string>>
+                {
+                    new CommandItem("<", new List<CommandAction>(), "example: ttb < 30 s", Icon),
+                    new CommandItem("<>", new List<CommandAction>(), "example: ttb 30 min <> 1 h", Icon),
+                    new CommandItem(">", new List<CommandAction>(), "example: ttb > 2 h", Icon),
+
+                    new CommandItem("-np (not played) (optional)", new List<CommandAction>(), "example: ttb > 2 h np", Icon),
+                }.AsEnumerable();
+            }
+
+            return new List<ISearchItem<string>>
+            {
+                new CommandItem("ttb", new List<CommandAction>(), ResourceProvider.GetString("LOCHltbQuickSearchByTTB"), Icon)
+            }.AsEnumerable();
+        }
+
+        public Task<IEnumerable<ISearchItem<string>>> GetItemsTask(string query, IReadOnlyList<Candidate> addedItems)
+        {
+            var parameters = GetParameters(query);
+            if (parameters.Count > 0)
+            {
+                switch (parameters[0].ToLower())
+                {
+                    case "ttb":
+                        return SearchByTtb(query);
+                }
+            }
+
+            return null;
+        }
+
+
+        private List<string> GetParameters(string query)
+        {
+            List<string> parameters = query.Split(' ').ToList();
+            if (parameters.Count > 1 && parameters[0].IsNullOrEmpty())
+            {
+                parameters.RemoveAt(0);
+            }
+            return parameters;
+        }
+
+        private CommandItem GetCommandItem(GameHowLongToBeat data, string query)
+        {
+            DefaultIconConverter defaultIconConverter = new DefaultIconConverter();
+
+            LocalDateTimeConverter localDateTimeConverter = new LocalDateTimeConverter();
+
+            var title = data.Name;
+            var TimeToBeat = data.Items[0].GameHltbData.TimeToBeatFormat;
+            var icon = defaultIconConverter.Convert(data.Icon, null, null, null).ToString();
+            var dateSession = localDateTimeConverter.Convert(data.LastActivity, null, null, CultureInfo.CurrentCulture).ToString();
+            var LastSession = data.LastActivity == null ? string.Empty : ResourceProvider.GetString("LOCLastPlayedLabel")
+                    + " " + dateSession;
+
+            var item = new CommandItem(title, () => PluginDatabase.PlayniteApi.MainView.SelectGame(data.Id), "", null, icon)
+            {
+                IconChar = null,
+                BottomLeft = PlayniteTools.GetSourceName(data.Id),
+                BottomCenter = null,
+                BottomRight = ResourceProvider.GetString("LOCHowLongToBeatTimeToBeat") + " " + TimeToBeat,
+                TopLeft = title,
+                TopRight = LastSession,
+                Keys = new List<ISearchKey<string>>() { new CommandItemKey() { Key = query, Weight = 1 } }
+            };
+
+            return item;
+        }
+
+        private double GetElapsedSeconde(string value, string type)
+        {
+            switch (type.ToLower())
+            {
+                case "h":
+                    double h = double.Parse(value);
+                    return h * 3600;
+
+                case "min":
+                    double m = double.Parse(value);
+                    return m * 60;
+
+
+                case "s":
+                    return double.Parse(value);
+            }
+
+            return 0;
+        }
+
+        private List<KeyValuePair<Guid, GameHowLongToBeat>> GetDb(ConcurrentDictionary<Guid, GameHowLongToBeat> db)
+        {
+            return db.Where(x => PluginDatabase.PlayniteApi.Database.Games.Get(x.Key) != null).ToList();
+        }
+
+
+        private Task<IEnumerable<ISearchItem<string>>> SearchByTtb(string query)
+        {
+            bool OnlyNp = query.Contains("-np", StringComparison.OrdinalIgnoreCase);
+            query = query.Replace("-np", string.Empty).Trim();
+
+            var parameters = GetParameters(query);
+            var db = GetDb(PluginDatabase.Database.Items).Where(x => x.Value.Items[0].GameHltbData.TimeToBeat != 0).ToList();
+
+            if (OnlyNp)
+            {
+                db = db.Where(x => x.Value.LastActivity == null).ToList();
+            }
+
+
+            if (parameters.Count == 4)
+            {
+                return Task.Run(() =>
+                {
+                    var search = new List<ISearchItem<string>>();
+                    switch (parameters[1])
+                    {
+                        case ">":
+                            try
+                            {
+                                double s = GetElapsedSeconde(parameters[2], parameters[3]);
+                                foreach (var data in db)
+                                {
+                                    if (data.Value.Items[0].GameHltbData.TimeToBeat >= s)
+                                    {
+                                        search.Add(GetCommandItem(data.Value, query));
+                                    }
+                                }
+                            }
+                            catch { }
+                            break;
+
+
+                        case "<":
+                            try
+                            {
+                                double s = GetElapsedSeconde(parameters[2], parameters[3]);
+                                foreach (var data in db)
+                                {
+                                    if (data.Value.Items[0].GameHltbData.TimeToBeat <= s)
+                                    {
+                                        search.Add(GetCommandItem(data.Value, query));
+                                    }
+                                }
+                            }
+                            catch { }
+                            break;
+                    }
+
+                    return search.AsEnumerable();
+                });
+            }
+
+            if (parameters.Count == 6)
+            {
+                return Task.Run(() =>
+                {
+                    var search = new List<ISearchItem<string>>();
+                    switch (parameters[3])
+                    {
+                        case "<>":
+                            try
+                            {
+                                double sMin = GetElapsedSeconde(parameters[1], parameters[2]);
+                                double sMax = GetElapsedSeconde(parameters[4], parameters[5]);
+                                foreach (var data in db)
+                                {
+                                    if (data.Value.Items[0].GameHltbData.TimeToBeat >= sMin && data.Value.Items[0].GameHltbData.TimeToBeat <= sMax)
+                                    {
+                                        search.Add(GetCommandItem(data.Value, query));
+                                    }
+                                }
+                            }
+                            catch { }
+                            break;
+                    }
+
+                    return search.AsEnumerable();
+                });
+            }
+
+            return null;
+        }
+    }
+}
