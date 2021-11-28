@@ -87,4 +87,10 @@
 
     <sys:String x:Key="LOCHowLongToBeatSetCurrentTime">Möchten Sie Ihre aktuelle Spielzeit senden?</sys:String>
 
+
+    <!-- QuickSearch -->
+
+    <sys:String x:Key="LOCHltbQuickSearchDescription">Search games on HowLongToBeat data</sys:String>
+    <sys:String x:Key="LOCHltbQuickSearchByTTB">Find by Time To Beat</sys:String>
+
 </ResourceDictionary>
