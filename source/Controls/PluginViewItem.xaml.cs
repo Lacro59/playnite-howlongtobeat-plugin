@@ -85,7 +85,7 @@ namespace HowLongToBeat.Controls
     }
 
 
-    public class PluginViewItemDataContext : ObservableObjectExtend, IDataContext
+    public class PluginViewItemDataContext : ObservableObject, IDataContext
     {
         private bool _IsActivated;
         public bool IsActivated { get => _IsActivated; set => SetValue(ref _IsActivated, value); }

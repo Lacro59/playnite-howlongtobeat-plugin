@@ -470,7 +470,7 @@ namespace HowLongToBeat.Controls
     }
 
 
-    public class PluginProgressBarDataContext : ObservableObjectExtend, IDataContext
+    public class PluginProgressBarDataContext : ObservableObject, IDataContext
     {
         private bool _IsActivated;
         public bool IsActivated { get => _IsActivated; set => SetValue(ref _IsActivated, value); }
