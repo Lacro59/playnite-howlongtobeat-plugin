@@ -81,3 +81,10 @@ Packages:
       - Updated localizations
       - Added new menu to set current play time for all games
       - Possibility to set current playtime for selected games (thanks to bburky)
+  - Version: 2.5
+    RequiredApiVersion: 6.2.0
+    ReleaseDate: 2021-11-28
+    PackageUrl: https://github.com/Lacro59/playnite-howlongtobeat-plugin/releases/download/v2.5/playnite-howlongtobeat-plugin_2_5.pext
+    Changelog:
+      - Added QuickSearch support
+      - Fixed FullScreen issue
