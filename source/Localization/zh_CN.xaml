@@ -26,7 +26,6 @@
     <sys:String x:Key="LOCHowLongToBeatEnableSuccessNotification">Enable success notification</sys:String>
     
     <sys:String x:Key="LOCHowLongToBeatAutoData">下载数据</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAutoImport">Automatically import data when library is updated</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoAccept">当只有一个游戏被找到时自动接受</sys:String>
     <sys:String x:Key="LOCHowLongToBeatShowWhenMismatch">当多个游戏被找到时显示选择界面</sys:String>
     <sys:String x:Key="LOCHowLongToBeatUseMatchValue">Use a percent match</sys:String>
