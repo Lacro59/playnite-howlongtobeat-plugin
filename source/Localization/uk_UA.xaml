@@ -26,7 +26,6 @@
     <sys:String x:Key="LOCHowLongToBeatEnableSuccessNotification">Увімкнути сповіщення про успіх</sys:String>
     
     <sys:String x:Key="LOCHowLongToBeatAutoData">Завантаження даних гри</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAutoImport">Автоматично імпортувати дані при оновленні бібліотеки</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoAccept">Автоматично вибирати гру, коли знайдено лише одну гру під час пошуку</sys:String>
     <sys:String x:Key="LOCHowLongToBeatShowWhenMismatch">Показувати список вибору гри, коли знайдено більше однієї гри під час пошуку</sys:String>
     <sys:String x:Key="LOCHowLongToBeatUseMatchValue">Використати відсотковий збіг</sys:String>

@@ -26,7 +26,6 @@
     <sys:String x:Key="LOCHowLongToBeatEnableSuccessNotification">Habilitar notificación de éxito</sys:String>
     
     <sys:String x:Key="LOCHowLongToBeatAutoData">Descarga de datos del juego</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAutoImport">Importar datos automáticamente cuando se actualiza la biblioteca</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoAccept">Seleccionar automáticamente el juego cuando sólo se encuentre un juego durante la búsqueda</sys:String>
     <sys:String x:Key="LOCHowLongToBeatShowWhenMismatch">Mostrar lista de selección de juegos cuando se encuentre más de un juego durante la búsqueda</sys:String>
     <sys:String x:Key="LOCHowLongToBeatUseMatchValue">Usar un porcentaje de coincidencia</sys:String>
@@ -85,12 +84,12 @@
     <sys:String x:Key="LOCHowLongToBeatSetCurrentTimeManual">Establecer el tiempo de juego actual</sys:String>
     <sys:String x:Key="LOCHowLongToBeatSetCurrentTimeManualAll">Establecer tu tiempo de juego actual para todos los juegos</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatSetCurrentTime">¿Quieres enviar tu tiempo de juego actual?</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatSetCurrentTime"></sys:String>
 
 
     <!-- QuickSearch -->
 
-    <sys:String x:Key="LOCHltbQuickSearchDescription">Search games on HowLongToBeat data</sys:String>
-    <sys:String x:Key="LOCHltbQuickSearchByTTB">Find by Time To Beat</sys:String>
+    <sys:String x:Key="LOCHltbQuickSearchDescription">Buscar juegos en los datos de HowLongToBeat</sys:String>
+    <sys:String x:Key="LOCHltbQuickSearchByTTB">Buscar por tiempo para completar</sys:String>
 
 </ResourceDictionary>
