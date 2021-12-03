@@ -14,6 +14,9 @@ namespace HowLongToBeat
         public bool MenuInExtensions { get; set; } = true;
         public DateTime LastAutoLibUpdateAssetsDownload { get; set; } = DateTime.Now;
 
+        public bool EnableIntegrationButtonHeader { get; set; } = false;
+        public bool EnableIntegrationButtonSide { get; set; } = true;
+
         public string UserLogin { get; set; } = string.Empty;
 
         public bool EnableTag { get; set; } = false;
@@ -30,8 +33,6 @@ namespace HowLongToBeat
         public double MatchValue { get; set; } = 95;
 
         public bool EnableSucessNotification { get; set; } = true;
-
-        public bool EnableIntegrationButtonHeader { get; set; } = true;
 
         private bool _EnableIntegrationViewItem { get; set; } = true;
         public bool EnableIntegrationViewItem
@@ -436,6 +437,13 @@ namespace HowLongToBeat
 
             Plugin.SavePluginSettings(Settings);
             HowLongToBeat.PluginDatabase.PluginSettings = this;
+
+            if (API.Instance.ApplicationInfo.Mode == ApplicationMode.Desktop)
+            {
+                Plugin.topPanelItem.Visible = Settings.EnableIntegrationButtonHeader;
+                Plugin.howLongToBeatViewSidebar.Visible = Settings.EnableIntegrationButtonSide;
+            }
+
             this.OnPropertyChanged();
         }
 

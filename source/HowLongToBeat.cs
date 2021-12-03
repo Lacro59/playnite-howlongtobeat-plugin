@@ -28,6 +28,9 @@ namespace HowLongToBeat
     {
         public override Guid Id { get; } = Guid.Parse("e08cd51f-9c9a-4ee3-a094-fde03b55492f");
 
+        internal TopPanelItem topPanelItem;
+        internal HowLongToBeatViewSidebar howLongToBeatViewSidebar;
+
         private OldToNew oldToNew;
 
 
@@ -54,6 +57,40 @@ namespace HowLongToBeat
                 SourceName = "HowLongToBeat",
                 SettingsRoot = $"{nameof(PluginSettings)}.{nameof(PluginSettings.Settings)}"
             });
+
+            // Initialize top & side bar
+            if (API.Instance.ApplicationInfo.Mode == ApplicationMode.Desktop)
+            {
+                topPanelItem = new TopPanelItem()
+                {
+                    Icon = new TextBlock
+                    {
+                        Text = "\ue90d",
+                        FontSize = 20,
+                        FontFamily = resources.GetResource("CommonFont") as FontFamily
+                    },
+                    Title = resources.GetString("LOCHowLongToBeat"),
+                    Activated = () =>
+                    {
+                        var windowOptions = new WindowOptions
+                        {
+                            ShowMinimizeButton = false,
+                            ShowMaximizeButton = true,
+                            ShowCloseButton = true,
+                            Width = 1280,
+                            Height = 740
+                        };
+
+                        var ViewExtension = new HowLongToBeatUserView();
+                        Window windowExtension = PlayniteUiHelper.CreateExtensionWindow(PlayniteApi, "HowLongToBeat", ViewExtension, windowOptions);
+                        windowExtension.ResizeMode = ResizeMode.CanResize;
+                        windowExtension.ShowDialog();
+                    },
+                    Visible = PluginSettings.Settings.EnableIntegrationButtonHeader
+                };
+
+                howLongToBeatViewSidebar = new HowLongToBeatViewSidebar(this);
+            }
         }
 
 
@@ -95,37 +132,7 @@ namespace HowLongToBeat
         // Button on top panel
         public override IEnumerable<TopPanelItem> GetTopPanelItems()
         {
-            if (PluginSettings.Settings.EnableIntegrationButtonHeader)
-            {
-                yield return new TopPanelItem()
-                {
-                    Icon = new TextBlock
-                    {
-                        Text = "\ue90d",
-                        FontSize = 20,
-                        FontFamily = resources.GetResource("CommonFont") as FontFamily
-                    },
-                    Title = resources.GetString("LOCHowLongToBeat"),
-                    Activated = () =>
-                    {
-                        var windowOptions = new WindowOptions
-                        {
-                            ShowMinimizeButton = false,
-                            ShowMaximizeButton = true,
-                            ShowCloseButton = true,
-                            Width = 1280,
-                            Height = 740
-                        };
-
-                        var ViewExtension = new HowLongToBeatUserView();
-                        Window windowExtension = PlayniteUiHelper.CreateExtensionWindow(PlayniteApi, "HowLongToBeat", ViewExtension, windowOptions);
-                        windowExtension.ResizeMode = ResizeMode.CanResize;
-                        windowExtension.ShowDialog();
-                    }
-                };
-            }
-
-            yield break;
+            yield return topPanelItem;
         }
 
         // List custom controls
@@ -152,7 +159,7 @@ namespace HowLongToBeat
         // SidebarItem
         public class HowLongToBeatViewSidebar : SidebarItem
         {
-            public HowLongToBeatViewSidebar()
+            public HowLongToBeatViewSidebar(HowLongToBeat plugin)
             {
                 Type = SiderbarItemType.View;
                 Title = resources.GetString("LOCHowLongToBeat");
@@ -169,16 +176,16 @@ namespace HowLongToBeat
 
                     return sidebarItemControl;
                 };
+                Visible = plugin.PluginSettings.Settings.EnableIntegrationButtonSide;
             }
         }
 
         public override IEnumerable<SidebarItem> GetSidebarItems()
         {
-            var items = new List<SidebarItem>
+            return new List<SidebarItem>
             {
-                new HowLongToBeatViewSidebar()
+                howLongToBeatViewSidebar
             };
-            return items;
         }
         #endregion
 
