@@ -165,7 +165,7 @@
                             </StackPanel>
 
                             <CheckBox Name="cbAutoImport" Grid.Row="1" IsChecked="{Binding Settings.AutoImport}" Grid.Column="0" VerticalAlignment="Center" Grid.ColumnSpan="3" >
-                                <Label Content="{DynamicResource LOCHowLongToBeatAutoImport}" />
+                                <Label Content="{DynamicResource LOCCommonAutoImport}" />
                             </CheckBox>
 
                             <CheckBox Name="cbAutoAccept" Grid.Row="2" IsChecked="{Binding Settings.AutoAccept}" Grid.Column="0" VerticalAlignment="Center" Grid.ColumnSpan="3" >
