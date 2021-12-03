@@ -26,7 +26,6 @@
     <sys:String x:Key="LOCHowLongToBeatEnableSuccessNotification">Erfolgreiche Benachrichtigung aktivieren</sys:String>
     
     <sys:String x:Key="LOCHowLongToBeatAutoData">Spieldaten herunterladen</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAutoImport">Automatically import data when library is updated</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoAccept">Spiel automatisch auswählen, wenn nur ein Spiel während der Suche gefunden wird</sys:String>
     <sys:String x:Key="LOCHowLongToBeatShowWhenMismatch">Spielauswahl anzeigen, wenn mehr als ein Spiel während der Suche gefunden wird</sys:String>
     <sys:String x:Key="LOCHowLongToBeatUseMatchValue">Prozentuale Übereinstimmung verwenden</sys:String>
@@ -90,7 +89,7 @@
 
     <!-- QuickSearch -->
 
-    <sys:String x:Key="LOCHltbQuickSearchDescription">Search games on HowLongToBeat data</sys:String>
-    <sys:String x:Key="LOCHltbQuickSearchByTTB">Find by Time To Beat</sys:String>
+    <sys:String x:Key="LOCHltbQuickSearchDescription">Spiele auf HowLongToBeat Daten durchsuchen</sys:String>
+    <sys:String x:Key="LOCHltbQuickSearchByTTB">Nach Zeit suchen um zu schlagen</sys:String>
 
 </ResourceDictionary>
