@@ -26,7 +26,6 @@
     <sys:String x:Key="LOCHowLongToBeatEnableSuccessNotification">Включить уведомление об успешном завершении</sys:String>
     
     <sys:String x:Key="LOCHowLongToBeatAutoData">Загрузка информации об игра</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAutoImport">Автоматически импортировать данные, когда библиотека обновляется</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoAccept">Автоматически выбирать, если найдено только одно совпадение</sys:String>
     <sys:String x:Key="LOCHowLongToBeatShowWhenMismatch">Показывать окно выбора, если найдено несколько совпадений</sys:String>
     <sys:String x:Key="LOCHowLongToBeatUseMatchValue">Использовать процент совпадений</sys:String>
