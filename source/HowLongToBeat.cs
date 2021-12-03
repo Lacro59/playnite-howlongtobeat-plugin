@@ -246,7 +246,7 @@ namespace HowLongToBeat
                             foreach (Game game in args.Games)
                             {
                                 activateGlobalProgress.CurrentProgressValue += 1;
-                                PluginDatabase.SetCurrentPlayTime(game, 0);
+                                PluginDatabase.SetCurrentPlayTime(game);
                             }
                         }, globalProgressOptions);
                     }
@@ -401,7 +401,7 @@ namespace HowLongToBeat
                                 }
 
                                 activateGlobalProgress.CurrentProgressValue += 1;
-                                PluginDatabase.SetCurrentPlayTime(game, 0);
+                                PluginDatabase.SetCurrentPlayTime(game);
                             }
                         }, globalProgressOptions);
                     }
@@ -596,7 +596,7 @@ namespace HowLongToBeat
                     {
                         Task.Run(() => 
                         {
-                            if (PluginDatabase.SetCurrentPlayTime(args.Game, args.ElapsedSeconds))
+                            if (PluginDatabase.SetCurrentPlayTime(args.Game))
                             {
                                 if (PluginDatabase.PluginSettings.Settings.EnableSucessNotification)
                                 {

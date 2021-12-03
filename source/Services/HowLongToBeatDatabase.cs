@@ -625,7 +625,7 @@ namespace HowLongToBeat.Services
             });
         }
 
-        public bool SetCurrentPlayTime(Game game, ulong elapsedSeconds)
+        public bool SetCurrentPlayTime(Game game)
         {
             try
             {
@@ -635,7 +635,7 @@ namespace HowLongToBeat.Services
 
                     if (gameHowLongToBeat != null)
                     {
-                        TimeSpan time = TimeSpan.FromSeconds(game.Playtime + elapsedSeconds);
+                        TimeSpan time = TimeSpan.FromSeconds(game.Playtime);
 
                         // TODO Enough?
                         string Platform = string.Empty;
