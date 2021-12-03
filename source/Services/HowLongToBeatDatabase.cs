@@ -134,12 +134,27 @@ namespace HowLongToBeat.Services
 
         protected override bool LoadDatabase()
         {
-            Database = new GameHowLongToBeatCollection(Paths.PluginDatabasePath);
-            Database.SetGameInfo<HltbDataUser>(PlayniteApi);
+            try
+            {
+                Stopwatch stopWatch = new Stopwatch();
+                stopWatch.Start();
 
-            Database.UserHltbData = howLongToBeatClient.LoadUserData();
+                Database = new GameHowLongToBeatCollection(Paths.PluginDatabasePath);
+                Database.SetGameInfo<HltbDataUser>(PlayniteApi);
 
-            DeleteDataWithDeletedGame();
+                Database.UserHltbData = howLongToBeatClient.LoadUserData();
+
+                DeleteDataWithDeletedGame();
+
+                stopWatch.Stop();
+                TimeSpan ts = stopWatch.Elapsed;
+                logger.Info($"LoadDatabase with {Database.Count} items - {string.Format("{0:00}:{1:00}.{2:00}", ts.Minutes, ts.Seconds, ts.Milliseconds / 10)}");
+            }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, false, true, "SuccessStory");
+                return false;
+            }
 
             return true;
         }
