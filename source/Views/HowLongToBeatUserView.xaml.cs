@@ -175,6 +175,7 @@ namespace HowLongToBeat.Views
             if (PluginDatabase.Database.UserHltbData?.TitlesList != null)
             {
                 var dataLabel = PluginDatabase.Database.UserHltbData.TitlesList
+                    .Where(x => x.GameStatuses.Where(y => y.Status == StatusType.Completed).Count() > 0)
                     .GroupBy(x => x.Storefront)
                     .Select(x => new { Storefront = (x.Key.IsNullOrEmpty()) ? "Playnite" : x.Key, Count = x.Count() })
                     .OrderBy(x => x.Storefront)
@@ -270,7 +271,7 @@ namespace HowLongToBeat.Views
             {
                 List<TitleList> titleLists = PluginDatabase.Database.UserHltbData.TitlesList;
 
-                PART_CompletionsCount.Content = titleLists.FindAll(x => x.Completion != null).Count;
+                PART_CompletionsCount.Content = titleLists.Where(x => x.GameStatuses.Where(y => y.Status == StatusType.Completed).Count() > 0).Count();
 
                 long TimeSinglePlayer = 0;
                 long TimeCoOp = 0;
