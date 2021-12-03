@@ -90,7 +90,7 @@
 
     <!-- QuickSearch -->
 
-    <sys:String x:Key="LOCHltbQuickSearchDescription">Search games on HowLongToBeat data</sys:String>
-    <sys:String x:Key="LOCHltbQuickSearchByTTB">Find by Time To Beat</sys:String>
+    <sys:String x:Key="LOCHltbQuickSearchDescription">Rechercher des jeux dans les données HowLongToBeat</sys:String>
+    <sys:String x:Key="LOCHltbQuickSearchByTTB">Trouver par temps pour battre</sys:String>
 
 </ResourceDictionary>
