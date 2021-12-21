@@ -603,7 +603,7 @@ namespace HowLongToBeat
                     {
                         Task.Run(() => 
                         {
-                            if (PluginDatabase.SetCurrentPlayTime(args.Game))
+                            if (PluginDatabase.SetCurrentPlayTime(args.Game, args.ElapsedSeconds))
                             {
                                 if (PluginDatabase.PluginSettings.Settings.EnableSucessNotification)
                                 {
