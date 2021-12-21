@@ -685,9 +685,11 @@ namespace HowLongToBeat.Services
                         }
                         else
                         {
-                            if (HltbData != null)
+                            // Find existing in website
+                            HltbDataUser hltbDataUser = gameHowLongToBeat.GetData();
+                            if (hltbDataUser != null)
                             {
-                                string tmpEditId = howLongToBeatClient.FindIdExisting(edit_id.ToString());
+                                string tmpEditId = howLongToBeatClient.FindIdExisting(hltbDataUser.Id.ToString());
                                 if (!tmpEditId.IsNullOrEmpty())
                                 {
                                     edit_id = int.Parse(tmpEditId);
