@@ -32,7 +32,7 @@
 
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBar">Fortschrittsanzeige anzeigen</sys:String>
     
-    <sys:String x:Key="LOCHowLongToBeatCurrentPlayTimeSetted">The current playtime for {0} is setted.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatCurrentPlayTimeSetted">Die aktuelle Spielzeit für {0} ist festgelegt.</sys:String>
 
     <!-- HowLongToBeatSelect -->
 
@@ -52,7 +52,7 @@
 
     <!-- HowLongToBeatUserView -->
 
-    <sys:String x:Key="LOCHowLongToBeatCompletationStore">Games completed by storefront</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatCompletationStore">Spiele abgeschlossen von StoreFront</sys:String>
     <sys:String x:Key="LOCHowLongToBeatCompletationProgress">Spiele im Laufe der Zeit abgeschlossen</sys:String>
     
     <sys:String x:Key="LOCHowLongToBeatUserData">Benutzerdaten</sys:String>
@@ -68,8 +68,8 @@
 
     <sys:String x:Key="LOCHowLongToBeatStorefront">Shopansicht</sys:String>
     
-    <sys:String x:Key="LOCHltbAvgTimeByGame">Avg time by game</sys:String>
-    <sys:String x:Key="LOCHltbAvgGameByMonth">Avg game by month</sys:String>
+    <sys:String x:Key="LOCHltbAvgTimeByGame">Durchschnittliche Zeit pro Spiel</sys:String>
+    <sys:String x:Key="LOCHltbAvgGameByMonth">Durchschnittliches Spiel pro Monat</sys:String>
 
 
     <!-- MainView -->

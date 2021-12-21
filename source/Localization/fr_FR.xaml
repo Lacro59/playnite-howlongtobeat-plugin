@@ -26,8 +26,8 @@
     <sys:String x:Key="LOCHowLongToBeatEnableSuccessNotification">Activer la notification de succès</sys:String>
     
     <sys:String x:Key="LOCHowLongToBeatAutoData">Télécharger les données</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAutoAccept">Automatiquement accepter lorsqu'il n'y a qu'un jeu trouv</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatShowWhenMismatch">Voir la fenêtre de sélection lorsqu'il y a plus d'un jeu trouv</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoAccept">Automatiquement accepter lorsqu'il n'y a qu'un jeu trouvé</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatShowWhenMismatch">Voir la fenêtre de sélection lorsqu'il y a plus d'un jeu trouvé</sys:String>
     <sys:String x:Key="LOCHowLongToBeatUseMatchValue">Utiliser un pourcentage de correspondance</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBar">Afficher l'indicateur de progression</sys:String>
