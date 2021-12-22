@@ -102,3 +102,13 @@ Packages:
       - Updated localizations
       - UI tweaks
       - Fixed minors bugs
+  - Version: 2.6
+    RequiredApiVersion: 6.2.0
+    ReleaseDate: 2021-12-22
+    PackageUrl: https://github.com/Lacro59/playnite-howlongtobeat-plugin/releases/download/v2.6/playnite-howlongtobeat-plugin_2_6.pext
+    Changelog:
+      - Normalized game name before a search
+      - Added filters on user data view
+      - Updated localizations
+      - UI tweaks
+      - Fixed minors bugs
