@@ -263,7 +263,7 @@ namespace HowLongToBeat.Services
                 return;
             }
 
-            List<HltbDataUser> dataSearch = HowLongToBeat.PluginDatabase.howLongToBeatClient.Search(game.Name);
+            List<HltbDataUser> dataSearch = HowLongToBeat.PluginDatabase.howLongToBeatClient.Search(PlayniteTools.NormalizeGameName(game.Name));
 
             if (dataSearch.Count == 1 && PluginSettings.Settings.AutoAccept)
             {

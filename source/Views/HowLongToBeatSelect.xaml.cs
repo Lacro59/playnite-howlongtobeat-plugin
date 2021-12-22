@@ -31,7 +31,7 @@ namespace HowLongToBeat.Views
 
             SetPlatforms();
 
-            SearchElement.Text = _game.Name;
+            SearchElement.Text = PlayniteTools.NormalizeGameName(_game.Name);
 
             if (data == null)
             {
