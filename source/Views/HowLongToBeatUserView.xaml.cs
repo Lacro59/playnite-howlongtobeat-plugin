@@ -1,5 +1,4 @@
 ﻿using CommonPluginsControls.LiveChartsCommon;
-using CommonPlayniteShared.Converters;
 using CommonPluginsShared.Converters;
 using HowLongToBeat.Models;
 using HowLongToBeat.Services;
@@ -14,11 +13,12 @@ using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using Playnite.SDK.Data;
 using Playnite.SDK.Models;
 using System.Threading.Tasks;
 using System.Threading;
 using System.Windows.Threading;
+using CommonPluginsShared.Extensions;
+using System.Collections.ObjectModel;
 
 namespace HowLongToBeat.Views
 {
@@ -34,17 +34,19 @@ namespace HowLongToBeat.Views
         private bool DisplayFirst = true;
 
         private HowLongToBeatDatabase PluginDatabase = HowLongToBeat.PluginDatabase;
+        private UserViewDataContext userViewDataContext = new UserViewDataContext();
 
 
         public HowLongToBeatUserView()
         {
             InitializeComponent();
+            this.DataContext = userViewDataContext;
 
             if (PluginDatabase.Database.UserHltbData?.TitlesList?.Count != 0)
             {
                 if (PluginDatabase.Database.UserHltbData?.TitlesList != null)
                 {
-                    ListViewGames.ItemsSource = PluginDatabase.Database.UserHltbData.TitlesList;
+                    userViewDataContext.ItemsSource = PluginDatabase.Database.UserHltbData.TitlesList.ToObservable();
 
                     string SortingDefaultDataName = string.Empty;
                     switch (PluginDatabase.PluginSettings.Settings.TitleListSort)
@@ -65,6 +67,18 @@ namespace HowLongToBeat.Views
                     ListViewGames.SortingDefaultDataName = SortingDefaultDataName;
                     ListViewGames.SortingSortDirection = (PluginDatabase.PluginSettings.Settings.IsAsc) ? ListSortDirection.Ascending : ListSortDirection.Descending;
                     ListViewGames.Sorting();
+
+
+                    // Filter
+                    var listYear = PluginDatabase.Database.UserHltbData.TitlesList.Select(x => x.Completion?.ToString("yyyy") ?? "----").Distinct().ToList();
+                    PART_CbYear.ItemsSource = listYear;
+                    PART_CbYear.SelectedIndex = 0;
+
+                    var listStoreFront = PluginDatabase.Database.UserHltbData.TitlesList.Where(x => !x.Storefront.IsNullOrEmpty()).Select(y => y.Storefront).Distinct().ToList();
+                    listStoreFront.Add("----");
+                    listStoreFront = listStoreFront.OrderBy(x => x).ToList();
+                    PART_CbStorefront.ItemsSource = listStoreFront;
+                    PART_CbStorefront.SelectedIndex = 0;
                 }
 
                 //let create a mapper so LiveCharts know how to plot our CustomerViewModel class
@@ -95,8 +109,6 @@ namespace HowLongToBeat.Views
 
         private void PART_BtRefreshUserData_Click(object sender, RoutedEventArgs e)
         {
-            ListViewGames.ItemsSource = null;
-
             PART_ChartUserDataYear.Series = null;
             PART_ChartUserDataYearLabelsX.Labels = null;
             PART_ChartUserData.Series = null;
@@ -110,7 +122,9 @@ namespace HowLongToBeat.Views
 
             PluginDatabase.RefreshUserData();
 
-            ListViewGames.ItemsSource = PluginDatabase.Database.UserHltbData.TitlesList;
+            PART_CbYear.SelectedIndex = 0;
+
+            userViewDataContext.ItemsSource = PluginDatabase.Database.UserHltbData.TitlesList.ToObservable();
             ListViewGames.Sorting();
 
             SetChartDataYear();
@@ -357,6 +371,47 @@ namespace HowLongToBeat.Views
         {
             DisplayPlayniteDataLoader();
         }
+
+
+        #region Filter
+        private void PART_CbYear_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            string Year = ((ComboBox)sender).SelectedValue.ToString();
+            FilterData(Year, PART_CbStorefront.Text);
+        }
+
+        private void PART_CbStorefront_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            string StoreFront = ((ComboBox)sender).SelectedValue.ToString();
+            FilterData(PART_CbYear.Text, StoreFront);
+        }
+
+
+        private void FilterData(string Year, string StoreFront)
+        {
+            if ((Year.IsNullOrEmpty() || Year.IsEqual("----")) && (StoreFront.IsNullOrEmpty() || StoreFront.IsEqual("----")))
+            {
+                userViewDataContext.ItemsSource = PluginDatabase.Database.UserHltbData.TitlesList.ToObservable();
+            }
+            else if (Year.IsNullOrEmpty() || Year.IsEqual("----"))
+            {
+                userViewDataContext.ItemsSource = PluginDatabase.Database.UserHltbData.TitlesList
+                    .Where(x => x.Storefront != null && x.Storefront.IsEqual(StoreFront)).ToObservable();
+            }
+            else if (StoreFront.IsNullOrEmpty() || StoreFront.IsEqual("----"))
+            {
+                userViewDataContext.ItemsSource = PluginDatabase.Database.UserHltbData.TitlesList
+                    .Where(x => x.Completion != null && ((DateTime)x.Completion).ToString("yyyy").IsEqual(Year)).ToObservable();
+            }
+            else
+            {
+                userViewDataContext.ItemsSource = PluginDatabase.Database.UserHltbData.TitlesList
+                    .Where(x => x.Completion != null && ((DateTime)x.Completion).ToString("yyyy").IsEqual(Year) && x.Storefront != null && x.Storefront.IsEqual(StoreFront))
+                    .ToObservable();
+            }
+            ListViewGames.Sorting();
+        }
+        #endregion
     }
 
 
@@ -389,5 +444,12 @@ namespace HowLongToBeat.Views
                 return PluginDatabase.PlayniteApi.Database.Games.Get(GameId) != null;
             }
         }
+    }
+
+
+    public class UserViewDataContext : ObservableObject
+    {
+        private ObservableCollection<TitleList> _ItemsSource = new ObservableCollection<TitleList>();
+        public ObservableCollection<TitleList> ItemsSource { get => _ItemsSource; set => SetValue(ref _ItemsSource, value); }
     }
 }

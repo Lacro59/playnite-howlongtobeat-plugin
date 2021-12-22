@@ -1,18 +1,13 @@
 ﻿using CommonPluginsShared;
 using HowLongToBeat.Models;
-using HowLongToBeat.Services;
 using Playnite.SDK;
 using Playnite.SDK.Data;
 using Playnite.SDK.Models;
 using System;
-using System.Linq;
 using System.Collections.Generic;
-using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Input;
 using System.Windows.Media;
 
 namespace HowLongToBeat.Views

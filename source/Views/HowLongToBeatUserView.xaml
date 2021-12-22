@@ -38,18 +38,53 @@
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
 
-                    <DockPanel Grid.Row="0">
-                        <!--Label DockPanel.Dock="Left" Content="{DynamicResource LOCHowLongToBeatUserData}" Margin="0,0,0,10" /-->
-                        <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" Margin="0,0,0,10" HorizontalAlignment="Right">
-                            <Label Content="{DynamicResource LOCCommonTotalFound}" Margin="0,0,10,0"/>
-                            <Label Content="{Binding ElementName=ListViewGames, Path=ItemsSource.Count}" />
+                    <Grid Grid.Row="0" Margin="0,10,0,10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto" />
+                            <ColumnDefinition Width="10" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Grid.Column="0" Orientation="Horizontal">
+                            <Label Content="{DynamicResource LOCCommonYear}" FontSize="16" Margin="0,0,10,0" VerticalAlignment="Center"  />
+                            
+                            <ComboBox Width="70" Name="PART_CbYear" SelectionChanged="PART_CbYear_SelectionChanged">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="{Binding}" />
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
                         </StackPanel>
-                    </DockPanel>
+
+                        <StackPanel Grid.Column="2" Orientation="Horizontal">
+                            <Label Content="{DynamicResource LOCHowLongToBeatStorefront}" FontSize="16" Margin="0,0,10,0" VerticalAlignment="Center"  />
+
+                            <ComboBox Width="200" Name="PART_CbStorefront" SelectionChanged="PART_CbStorefront_SelectionChanged">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="{Binding}" />
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal" Grid.Column="10">
+                            <Label Content="{DynamicResource LOCCommonTotalFound}" Margin="0,0,10,0" VerticalAlignment="Center" />
+                            <Label Content="{Binding ElementName=ListViewGames, Path=ItemsSource.Count}" VerticalAlignment="Center" />
+                        </StackPanel>
+                    </Grid>
 
                     <Grid Grid.Row="1" Name="PART_LvContener">
                         <controlsShared:ListViewExtend x:Name="ListViewGames" FontSize="24" Height="{Binding ElementName=PART_LvContener, Path=ActualHeight}"
-                                               Style="{StaticResource {x:Type ListView}}"
-                                               SortingSortDirection="Descending" SortingDefaultDataName="Completion" SortingEnable="True">
+                                                       Style="{StaticResource {x:Type ListView}}" 
+                                                       ItemsSource="{Binding ItemsSource}"
+                                                       SortingSortDirection="Descending" SortingDefaultDataName="Completion" SortingEnable="True">
                             <ListView.View>
                                 <GridView>
                                     <GridViewColumn Width="0" DisplayMemberBinding="{Binding GameName}">
