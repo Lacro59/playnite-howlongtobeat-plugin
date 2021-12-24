@@ -253,9 +253,7 @@ namespace HowLongToBeat.Views
                         if (titleList?.Completion != null)
                         {
                             string tempDateTime = (string)localDateYMConverter.Convert((DateTime)titleList.Completion, null, null, null);
-
                             int index = Array.IndexOf(ChartDataLabels, tempDateTime);
-
                             if (index > 0)
                             {
                                 ChartDataSeries[index].Values += 1;
