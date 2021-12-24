@@ -89,8 +89,8 @@ namespace HowLongToBeat.Views
                 //lets save the mapper globally
                 Charting.For<CustomerForSingle>(customerVmMapper);
 
-                SetChartDataYear();
                 SetChartDataStore();
+                SetChartDataYear();
                 SetChartData();
                 SetStats();
 
@@ -127,8 +127,9 @@ namespace HowLongToBeat.Views
             userViewDataContext.ItemsSource = PluginDatabase.Database.UserHltbData.TitlesList.ToObservable();
             ListViewGames.Sorting();
 
-            SetChartDataYear();
+
             SetChartDataStore();
+            SetChartDataYear();
             SetChartData();
             SetStats();
         }
@@ -159,9 +160,7 @@ namespace HowLongToBeat.Views
                     if (titleList?.Completion != null)
                     {
                         string tempDateTime = ((DateTime)titleList.Completion).ToString("yyyy");
-
                         int index = Array.IndexOf(ChartDataLabels, tempDateTime);
-
                         if (index > 0)
                         {
                             ChartDataSeries[index].Values += 1;

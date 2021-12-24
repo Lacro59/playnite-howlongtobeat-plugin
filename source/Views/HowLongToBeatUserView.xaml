@@ -295,8 +295,8 @@
 
                                 <lvc:CartesianChart.AxisX>
                                     <lvc:Axis Name="PART_ChartUserDataYearLabelsX" ShowLabels="True" 
-                                      LabelsRotation="160"
-                                      FontSize="{DynamicResource FontSize}" MinValue="0">
+                                              LabelsRotation="160"
+                                              FontSize="{DynamicResource FontSize}" MinValue="0">
                                         <lvc:Axis.Separator>
                                             <lvc:Separator Step="1" />
                                         </lvc:Axis.Separator>
@@ -304,7 +304,8 @@
                                 </lvc:CartesianChart.AxisX>
 
                                 <lvc:CartesianChart.AxisY>
-                                    <lvc:Axis Name="PART_ChartUserDataYearLabelsY" MinValue="0" FontSize="{DynamicResource FontSize}"></lvc:Axis>
+                                    <lvc:Axis Name="PART_ChartUserDataYearLabelsY" MinValue="0"
+                                              FontSize="{DynamicResource FontSize}" />
                                 </lvc:CartesianChart.AxisY>
                             </lvc:CartesianChart>
 
