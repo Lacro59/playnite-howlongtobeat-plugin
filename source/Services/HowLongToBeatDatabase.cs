@@ -797,6 +797,18 @@ namespace HowLongToBeat.Services
 
             return result;
         }
+
+        public int GetCountGameBeatenBeforeTime()
+        {
+            return Database.UserHltbData.TitlesList
+                .Where(x => x.HltbUserData.TimeToBeat != 0 && x.Completion != null && x.HltbUserData.TimeToBeat > x.CurrentTime).Count();
+        }
+
+        public int GetCountGameBeatenAfterTime()
+        {
+            return Database.UserHltbData.TitlesList
+                .Where(x => x.HltbUserData.TimeToBeat != 0 && x.Completion != null && x.HltbUserData.TimeToBeat <= x.CurrentTime).Count();
+        }
         #endregion
 
 
