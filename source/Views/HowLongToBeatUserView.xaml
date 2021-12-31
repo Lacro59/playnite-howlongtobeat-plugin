@@ -438,7 +438,7 @@
 
                 <DockPanel Grid.Row="6">
                     <Button Name="PART_BtRefreshUserData" Content="{DynamicResource LOCHowLongToBeatActualiseUserData}" 
-                    HorizontalAlignment="Right" VerticalAlignment="Bottom" Click="PART_BtRefreshUserData_Click" />
+                            HorizontalAlignment="Right" VerticalAlignment="Bottom" Click="PART_BtRefreshUserData_Click" />
                 </DockPanel>
             </Grid>
         </TabItem>

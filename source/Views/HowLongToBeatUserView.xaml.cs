@@ -69,16 +69,7 @@ namespace HowLongToBeat.Views
                     ListViewGames.Sorting();
 
 
-                    // Filter
-                    var listYear = PluginDatabase.Database.UserHltbData.TitlesList.Select(x => x.Completion?.ToString("yyyy") ?? "----").Distinct().ToList();
-                    PART_CbYear.ItemsSource = listYear;
-                    PART_CbYear.SelectedIndex = 0;
-
-                    var listStoreFront = PluginDatabase.Database.UserHltbData.TitlesList.Where(x => !x.Storefront.IsNullOrEmpty()).Select(y => y.Storefront).Distinct().ToList();
-                    listStoreFront.Add("----");
-                    listStoreFront = listStoreFront.OrderBy(x => x).ToList();
-                    PART_CbStorefront.ItemsSource = listStoreFront;
-                    PART_CbStorefront.SelectedIndex = 0;
+                    SetFilter();
                 }
 
                 //let create a mapper so LiveCharts know how to plot our CustomerViewModel class
@@ -107,6 +98,23 @@ namespace HowLongToBeat.Views
         }
 
 
+        private void SetFilter()
+        {
+            // Filter
+            var listYear = PluginDatabase.Database.UserHltbData.TitlesList.Select(x => x.Completion?.ToString("yyyy") ?? "----").Distinct().OrderBy(x => x).ToList();
+            PART_CbYear.ItemsSource = null;
+            PART_CbYear.ItemsSource = listYear;
+            PART_CbYear.SelectedIndex = 0;
+
+            var listStoreFront = PluginDatabase.Database.UserHltbData.TitlesList.Where(x => !x.Storefront.IsNullOrEmpty()).Select(y => y.Storefront).Distinct().ToList();
+            listStoreFront.Add("----");
+            listStoreFront = listStoreFront.OrderBy(x => x).ToList();
+            PART_CbStorefront.ItemsSource = null;
+            PART_CbStorefront.ItemsSource = listStoreFront;
+            PART_CbStorefront.SelectedIndex = 0;
+        }
+
+
         private void PART_BtRefreshUserData_Click(object sender, RoutedEventArgs e)
         {
             PART_ChartUserDataYear.Series = null;
@@ -132,6 +140,7 @@ namespace HowLongToBeat.Views
             SetChartDataYear();
             SetChartData();
             SetStats();
+            SetFilter();
         }
 
 
