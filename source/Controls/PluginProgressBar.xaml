@@ -41,7 +41,7 @@
                 </Style>
             </Grid.Style>
 
-            <Slider Name="SliderPlaytime" Margin="-6,0,-6,0">
+            <Slider Name="SliderPlaytime" Margin="-6,0,-6,0" Value="2">
                 <Slider.Style>
                     <Style TargetType="{x:Type Slider}" BasedOn="{StaticResource {x:Type Slider}}">
                         <Setter Property="SnapsToDevicePixels" Value="True" />
@@ -62,7 +62,7 @@
                                                 <Thumb Name="SliderPlaytimeThumb" Width="20" SnapsToDevicePixels="True" IsEnabled="False">
                                                     <Thumb.Style>
                                                         <Style TargetType="{x:Type Thumb}">
-                                                            <Setter Property="Background" Value="{DynamicResource NormalBrush}" />
+                                                            <Setter Property="Background" Value="{Binding ThumbColor}" />
                                                             <Setter Property="Template">
                                                                 <Setter.Value>
                                                                     <ControlTemplate TargetType="{x:Type Thumb}">

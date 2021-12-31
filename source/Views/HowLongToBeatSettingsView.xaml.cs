@@ -23,6 +23,8 @@ namespace HowLongToBeat.Views
 
         private TextBlock tbControl;
 
+        public static Color ThumbColor = ((SolidColorBrush)resources.GetResource("NormalBrush")).Color;
+
         public static Color ColorFirst = Brushes.DarkCyan.Color;
         public static Color ColorSecond = Brushes.RoyalBlue.Color;
         public static Color ColorThird = Brushes.ForestGreen.Color;
@@ -42,6 +44,9 @@ namespace HowLongToBeat.Views
 
             PART_SelectorColorPicker.OnlySimpleColor = true;
             PART_SelectorColorPicker.IsSimpleColor = true;
+
+            ThumbColor = settings.ThumbColor.Color;
+            tbThumb.Background = settings.ThumbColor;
 
             ColorFirst = settings.ColorFirst.Color;
             tbColorFirst.Background = settings.ColorFirst;
@@ -119,6 +124,11 @@ namespace HowLongToBeat.Views
 
                 switch ((string)((Button)sender).Tag)
                 {
+                    case "0":
+                        tbControl.Background = (SolidColorBrush)resources.GetResource("NormalBrush");
+                        ThumbColor = ((SolidColorBrush)resources.GetResource("NormalBrush")).Color;
+                        break;
+
                     case "1":
                         tbControl.Background = Brushes.DarkCyan;
                         ColorFirst = Brushes.DarkCyan.Color;
@@ -169,6 +179,10 @@ namespace HowLongToBeat.Views
 
                     switch ((string)tbControl.Tag)
                     {
+                        case "0":
+                            ThumbColor = color;
+                            break;
+
                         case "1":
                             ColorFirst = color;
                             break;

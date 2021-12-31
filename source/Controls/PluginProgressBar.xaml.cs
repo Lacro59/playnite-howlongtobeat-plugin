@@ -4,6 +4,7 @@ using CommonPluginsShared.Controls;
 using CommonPluginsShared.Interfaces;
 using HowLongToBeat.Models;
 using HowLongToBeat.Services;
+using Playnite.SDK;
 using Playnite.SDK.Models;
 using System;
 using System.Collections.Generic;
@@ -122,6 +123,8 @@ namespace HowLongToBeat.Controls
             ControlDataContext.SliderThirdValue = 0;
             ControlDataContext.SliderThirdVisibility = Visibility.Collapsed;
             ControlDataContext.ThumbThird = null;
+
+            ControlDataContext.ThumbColor = PluginDatabase.PluginSettings.Settings.ThumbColor;
         }
 
 
@@ -467,6 +470,7 @@ namespace HowLongToBeat.Controls
 
     public class PluginProgressBarDataContext : ObservableObject, IDataContext
     {
+        private static IResourceProvider resources = new ResourceProvider();
         private bool _IsActivated;
         public bool IsActivated { get => _IsActivated; set => SetValue(ref _IsActivated, value); }
 
@@ -481,6 +485,9 @@ namespace HowLongToBeat.Controls
 
         private bool _TextBelowVisibility;
         public bool TextBelowVisibility { get => _TextBelowVisibility; set => SetValue(ref _TextBelowVisibility, value); }
+
+        private SolidColorBrush _ThumbColor = (SolidColorBrush)ResourceProvider.GetResource("NormalBrush");
+        public SolidColorBrush ThumbColor { get => _ThumbColor; set => SetValue(ref _ThumbColor, value); }
 
         private SolidColorBrush _ThumbFirst = new SolidColorBrush(Brushes.DarkCyan.Color);
         public SolidColorBrush ThumbFirst { get => _ThumbFirst; set => SetValue(ref _ThumbFirst, value); }

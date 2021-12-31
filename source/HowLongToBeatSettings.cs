@@ -76,6 +76,8 @@ namespace HowLongToBeat
         public bool ProgressBarShowTime { get; set; } = false;
 
 
+        public SolidColorBrush ThumbColor { get; set; } = (SolidColorBrush)ResourceProvider.GetResource("NormalBrush");
+
         private SolidColorBrush _ColorFirst { get; set; } = new SolidColorBrush(Brushes.DarkCyan.Color);
         public SolidColorBrush ColorFirst
         {
@@ -417,6 +419,8 @@ namespace HowLongToBeat
         // This method should save settings made to Option1 and Option2.
         public void EndEdit()
         {
+            Settings.ThumbColor = new SolidColorBrush(HowLongToBeatSettingsView.ThumbColor);
+
             Settings.ColorFirst = new SolidColorBrush(HowLongToBeatSettingsView.ColorFirst);
             Settings.ColorSecond = new SolidColorBrush(HowLongToBeatSettingsView.ColorSecond);
             Settings.ColorThird = new SolidColorBrush(HowLongToBeatSettingsView.ColorThird);
