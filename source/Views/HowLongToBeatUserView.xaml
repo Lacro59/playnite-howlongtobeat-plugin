@@ -42,6 +42,9 @@
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="auto" />
                             <ColumnDefinition Width="10" />
+                            <ColumnDefinition Width="auto" />
+                            <ColumnDefinition Width="10" />
+                            <ColumnDefinition Width="auto" />
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="auto" />
                         </Grid.ColumnDefinitions>
@@ -64,6 +67,20 @@
                             <Label Content="{DynamicResource LOCHowLongToBeatStorefront}" FontSize="16" Margin="0,0,10,0" VerticalAlignment="Center"  />
 
                             <ComboBox Width="200" Name="PART_CbStorefront" SelectionChanged="PART_CbStorefront_SelectionChanged">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="{Binding}" />
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="4" Orientation="Horizontal">
+                            <Label Content="{DynamicResource LOCPlatformTitle}" FontSize="16" Margin="0,0,10,0" VerticalAlignment="Center"  />
+
+                            <ComboBox Width="200" Name="PART_CbPlatform" SelectionChanged="PART_CbPlatform_SelectionChanged">
                                 <ComboBox.ItemTemplate>
                                     <DataTemplate>
                                         <StackPanel Orientation="Horizontal">

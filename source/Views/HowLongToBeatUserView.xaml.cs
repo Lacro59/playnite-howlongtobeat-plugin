@@ -98,23 +98,6 @@ namespace HowLongToBeat.Views
         }
 
 
-        private void SetFilter()
-        {
-            // Filter
-            var listYear = PluginDatabase.Database.UserHltbData.TitlesList.Select(x => x.Completion?.ToString("yyyy") ?? "----").Distinct().OrderBy(x => x).ToList();
-            PART_CbYear.ItemsSource = null;
-            PART_CbYear.ItemsSource = listYear;
-            PART_CbYear.SelectedIndex = 0;
-
-            var listStoreFront = PluginDatabase.Database.UserHltbData.TitlesList.Where(x => !x.Storefront.IsNullOrEmpty()).Select(y => y.Storefront).Distinct().ToList();
-            listStoreFront.Add("----");
-            listStoreFront = listStoreFront.OrderBy(x => x).ToList();
-            PART_CbStorefront.ItemsSource = null;
-            PART_CbStorefront.ItemsSource = listStoreFront;
-            PART_CbStorefront.SelectedIndex = 0;
-        }
-
-
         private void PART_BtRefreshUserData_Click(object sender, RoutedEventArgs e)
         {
             PART_ChartUserDataYear.Series = null;
@@ -382,39 +365,96 @@ namespace HowLongToBeat.Views
 
 
         #region Filter
+        private void SetFilter()
+        {
+            // Filter
+            var listYear = PluginDatabase.Database.UserHltbData.TitlesList.Select(x => x.Completion?.ToString("yyyy") ?? "----").Distinct().OrderBy(x => x).ToList();
+            PART_CbYear.ItemsSource = null;
+            PART_CbYear.ItemsSource = listYear;
+            PART_CbYear.SelectedIndex = 0;
+
+            var listStoreFront = PluginDatabase.Database.UserHltbData.TitlesList.Where(x => !x.Storefront.IsNullOrEmpty()).Select(y => y.Storefront).Distinct().ToList();
+            listStoreFront.Add("----");
+            listStoreFront = listStoreFront.OrderBy(x => x).ToList();
+            PART_CbStorefront.ItemsSource = null;
+            PART_CbStorefront.ItemsSource = listStoreFront;
+            PART_CbStorefront.SelectedIndex = 0;
+
+            var listPlatform = PluginDatabase.Database.UserHltbData.TitlesList.Where(x => !x.Platform.IsNullOrEmpty()).Select(y => y.Platform).Distinct().ToList();
+            listPlatform.Add("----");
+            listPlatform = listPlatform.OrderBy(x => x).ToList();
+            PART_CbPlatform.ItemsSource = null;
+            PART_CbPlatform.ItemsSource = listPlatform;
+            PART_CbPlatform.SelectedIndex = 0;
+        }
+
+
         private void PART_CbYear_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             string Year = ((ComboBox)sender).SelectedValue.ToString();
-            FilterData(Year, PART_CbStorefront.Text);
+            FilterData(Year, PART_CbStorefront.Text, PART_CbPlatform.Text);
         }
 
         private void PART_CbStorefront_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             string StoreFront = ((ComboBox)sender).SelectedValue.ToString();
-            FilterData(PART_CbYear.Text, StoreFront);
+            FilterData(PART_CbYear.Text, StoreFront, PART_CbPlatform.Text);
+        }
+
+        private void PART_CbPlatform_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            string Platform = ((ComboBox)sender).SelectedValue.ToString();
+            FilterData(PART_CbYear.Text, PART_CbStorefront.Text, Platform);
         }
 
 
-        private void FilterData(string Year, string StoreFront)
+        private void FilterData(string Year, string StoreFront, string Platform)
         {
-            if ((Year.IsNullOrEmpty() || Year.IsEqual("----")) && (StoreFront.IsNullOrEmpty() || StoreFront.IsEqual("----")))
+            // nothing
+            if ((Year.IsNullOrEmpty() || Year.IsEqual("----")) && (StoreFront.IsNullOrEmpty() || StoreFront.IsEqual("----")) && (Platform.IsNullOrEmpty() || Platform.IsEqual("----")))
             {
                 userViewDataContext.ItemsSource = PluginDatabase.Database.UserHltbData.TitlesList.ToObservable();
             }
-            else if (Year.IsNullOrEmpty() || Year.IsEqual("----"))
+            // StoreFront only
+            else if ((Year.IsNullOrEmpty() || Year.IsEqual("----")) && (Platform.IsNullOrEmpty() || Platform.IsEqual("----")))
             {
                 userViewDataContext.ItemsSource = PluginDatabase.Database.UserHltbData.TitlesList
                     .Where(x => x.Storefront != null && x.Storefront.IsEqual(StoreFront)).ToObservable();
             }
-            else if (StoreFront.IsNullOrEmpty() || StoreFront.IsEqual("----"))
+            // Year only
+            else if ((StoreFront.IsNullOrEmpty() || StoreFront.IsEqual("----")) && (Platform.IsNullOrEmpty() || Platform.IsEqual("----")))
             {
                 userViewDataContext.ItemsSource = PluginDatabase.Database.UserHltbData.TitlesList
                     .Where(x => x.Completion != null && ((DateTime)x.Completion).ToString("yyyy").IsEqual(Year)).ToObservable();
             }
+            // Platform only
+            else if ((Year.IsNullOrEmpty() || Year.IsEqual("----")) && (StoreFront.IsNullOrEmpty() || StoreFront.IsEqual("----")))
+            {
+                userViewDataContext.ItemsSource = PluginDatabase.Database.UserHltbData.TitlesList
+                    .Where(x => x.Platform != null && x.Platform.IsEqual(Platform)).ToObservable();
+            }
+            // StoreFront missing
+            else if (StoreFront.IsNullOrEmpty() || StoreFront.IsEqual("----"))
+            {
+                userViewDataContext.ItemsSource = PluginDatabase.Database.UserHltbData.TitlesList
+                    .Where(x => x.Completion != null && ((DateTime)x.Completion).ToString("yyyy").IsEqual(Year) && x.Platform != null && x.Platform.IsEqual(Platform)).ToObservable();
+            }
+            // Year missing
+            else if (Year.IsNullOrEmpty() || Year.IsEqual("----"))
+            {
+                userViewDataContext.ItemsSource = PluginDatabase.Database.UserHltbData.TitlesList
+                    .Where(x => x.Storefront != null && x.Storefront.IsEqual(StoreFront) && x.Platform != null && x.Platform.IsEqual(Platform)).ToObservable();
+            }
+            // Platform missing
+            else if (Platform.IsNullOrEmpty() || Platform.IsEqual("----"))
+            {
+                userViewDataContext.ItemsSource = PluginDatabase.Database.UserHltbData.TitlesList
+                    .Where(x => x.Completion != null && ((DateTime)x.Completion).ToString("yyyy").IsEqual(Year) && x.Storefront != null && x.Storefront.IsEqual(StoreFront)).ToObservable();
+            }
             else
             {
                 userViewDataContext.ItemsSource = PluginDatabase.Database.UserHltbData.TitlesList
-                    .Where(x => x.Completion != null && ((DateTime)x.Completion).ToString("yyyy").IsEqual(Year) && x.Storefront != null && x.Storefront.IsEqual(StoreFront))
+                    .Where(x => x.Completion != null && ((DateTime)x.Completion).ToString("yyyy").IsEqual(Year) && x.Storefront != null && x.Storefront.IsEqual(StoreFront) && x.Platform != null && x.Platform.IsEqual(Platform))
                     .ToObservable();
             }
             ListViewGames.Sorting();
