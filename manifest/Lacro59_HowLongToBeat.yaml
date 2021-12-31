@@ -112,3 +112,14 @@ Packages:
       - Updated localizations
       - UI tweaks
       - Fixed minors bugs
+  - Version: 2.7
+    RequiredApiVersion: 6.2.0
+    ReleaseDate: 2021-12-31
+    PackageUrl: https://github.com/Lacro59/playnite-howlongtobeat-plugin/releases/download/v2.7/playnite-howlongtobeat-plugin_2_7.pext
+    Changelog:
+      - Updated localizations
+      - UI tweaks
+      - Added new option color for the progress bar
+      - Added new filters in user data view
+      - Added new user data stats
+      - Fixed minors bugs
