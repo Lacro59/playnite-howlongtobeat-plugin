@@ -70,8 +70,8 @@
     
     <sys:String x:Key="LOCHltbAvgTimeByGame">Середній час за грою</sys:String>
     <sys:String x:Key="LOCHltbAvgGameByMonth">Середня гра за місяць</sys:String>
-    <sys:String x:Key="LOCHltbCountGameBeatenBeforeTime">Number of games beaten before time</sys:String>
-    <sys:String x:Key="LOCHltbCountGameBeatenAfterTime">Number of games beaten after time</sys:String>
+    <sys:String x:Key="LOCHltbCountGameBeatenBeforeTime">Кількість ігор, пройдених до часу</sys:String>
+    <sys:String x:Key="LOCHltbCountGameBeatenAfterTime">Кількість ігор, пройдених після часу</sys:String>
 
 
     <!-- MainView -->
