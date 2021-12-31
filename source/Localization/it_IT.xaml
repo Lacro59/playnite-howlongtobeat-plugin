@@ -70,6 +70,8 @@
     
     <sys:String x:Key="LOCHltbAvgTimeByGame">Tempo medio per gioco</sys:String>
     <sys:String x:Key="LOCHltbAvgGameByMonth">Media gioco per mese</sys:String>
+    <sys:String x:Key="LOCHltbCountGameBeatenBeforeTime">Number of games beaten before time</sys:String>
+    <sys:String x:Key="LOCHltbCountGameBeatenAfterTime">Number of games beaten after time</sys:String>
 
 
     <!-- MainView -->
