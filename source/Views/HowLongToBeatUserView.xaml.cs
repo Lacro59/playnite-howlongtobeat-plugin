@@ -391,20 +391,32 @@ namespace HowLongToBeat.Views
 
         private void PART_CbYear_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            string Year = ((ComboBox)sender).SelectedValue.ToString();
-            FilterData(Year, PART_CbStorefront.Text, PART_CbPlatform.Text);
+            try
+            {
+                string Year = ((ComboBox)sender).SelectedValue.ToString();
+                FilterData(Year, PART_CbStorefront.Text, PART_CbPlatform.Text);
+            }
+            catch { }
         }
 
         private void PART_CbStorefront_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            string StoreFront = ((ComboBox)sender).SelectedValue.ToString();
-            FilterData(PART_CbYear.Text, StoreFront, PART_CbPlatform.Text);
+            try
+            {
+                string StoreFront = ((ComboBox)sender).SelectedValue.ToString();
+                FilterData(PART_CbYear.Text, StoreFront, PART_CbPlatform.Text);
+            }
+            catch { }
         }
 
         private void PART_CbPlatform_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            string Platform = ((ComboBox)sender).SelectedValue.ToString();
-            FilterData(PART_CbYear.Text, PART_CbStorefront.Text, Platform);
+            try
+            {
+                string Platform = ((ComboBox)sender).SelectedValue.ToString();
+                FilterData(PART_CbYear.Text, PART_CbStorefront.Text, Platform);
+            }
+            catch { }
         }
 
 
