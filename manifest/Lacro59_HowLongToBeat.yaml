@@ -123,3 +123,9 @@ Packages:
       - Added new filters in user data view
       - Added new user data stats
       - Fixed minors bugs
+  - Version: 2.7.1
+    RequiredApiVersion: 6.2.0
+    ReleaseDate: 2022-01-02
+    PackageUrl: https://github.com/Lacro59/playnite-howlongtobeat-plugin/releases/download/v2.7.1/playnite-howlongtobeat-plugin_2_7_1.pext
+    Changelog:
+      - Fixed a crash
