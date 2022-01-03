@@ -561,8 +561,48 @@ namespace HowLongToBeat.Services
                 {
                     return null;
                 }
+                return Database.UserHltbData.TitlesList.Find(x => x.Id == HltbId);
+            }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, true);
+                logger.Warn($"No HltbData for {HltbId}");
+                return null;
+            }
+        }
+        
+        public TitleList GetUserHltbDataCurrent(int HltbId)
+        {
+            try
+            {
+                var all = GetUserHltbDataAll(HltbId);
+                if (all == null || all.Count == 0)
+                {
+                    return null;
+                }
+
+                //all.Find(x => x.GameStatuses.Where(y => y.Status == StatusType.Playing)?.Count() > 0 )
+
 
                 return Database.UserHltbData.TitlesList.Find(x => x.Id == HltbId);
+            }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, true);
+                logger.Warn($"No HltbData for {HltbId}");
+                return null;
+            }
+        }
+
+        public List<TitleList> GetUserHltbDataAll(int HltbId)
+        {
+            try
+            {
+                if (Database.UserHltbData.TitlesList == null || Database.UserHltbData.TitlesList.Count == 0)
+                {
+                    return null;
+                }
+                return Database.UserHltbData.TitlesList.FindAll(x => x.Id == HltbId).ToList();
             }
             catch (Exception ex)
             {
@@ -671,7 +711,7 @@ namespace HowLongToBeat.Services
                             StorefrontName = storefront.HltbStorefrontName;
                         }
 
-                        var HltbData = GetUserHltbData(gameHowLongToBeat.GetData().Id);
+                        var HltbData = GetUserHltbDataCurrent(gameHowLongToBeat.GetData().Id);
                         int edit_id = 0;
                         HltbPostData hltbPostData = new HltbPostData();
                         if (HltbData != null)
@@ -711,6 +751,11 @@ namespace HowLongToBeat.Services
                         hltbPostData.storefront = StorefrontName;
 
                         if (!NoPlaying)
+                        {
+                            hltbPostData.list_p = "1";
+                        }
+                        else if (hltbPostData.list_b.IsNullOrEmpty() && hltbPostData.list_c.IsNullOrEmpty() && hltbPostData.list_cp.IsNullOrEmpty() 
+                            && hltbPostData.list_p.IsNullOrEmpty() && hltbPostData.list_r.IsNullOrEmpty() &&hltbPostData.list_rt.IsNullOrEmpty())
                         {
                             hltbPostData.list_p = "1";
                         }

@@ -584,6 +584,52 @@ namespace HowLongToBeat.Services
                     titleList.Storefront = WebUtility.HtmlDecode(elStorefront.ParentElement?.QuerySelector("div")?.InnerHtml?.Trim());
                 }
 
+                // Updated - sec - min - hour - day - week - month - year 
+                IElement elUpdated = htmlDocument.QuerySelectorAll("h5").Where(x => x.InnerHtml.ToLower().Contains("updated")).FirstOrDefault();
+                if (elUpdated != null)
+                {
+                    var dataUpdate = WebUtility.HtmlDecode(elUpdated.ParentElement?.QuerySelector("p")?.InnerHtml?.Trim());
+                    var doubleString = Regex.Replace(dataUpdate, @"[^\d.\d]", string.Empty).Replace(".", CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator);
+                    double.TryParse(doubleString, out double doubleData);
+
+                    if (dataUpdate.Contains("sec", StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        titleList.LastUpdate = DateTime.Now.AddSeconds(-1 * doubleData);
+                    }
+
+                    if (dataUpdate.Contains("min", StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        titleList.LastUpdate = DateTime.Now.AddMinutes(-1 * doubleData);
+                    }
+
+                    if (dataUpdate.Contains("hour", StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        titleList.LastUpdate = DateTime.Now.AddHours(-1 * doubleData);
+                    }
+
+                    if (dataUpdate.Contains("day", StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        titleList.LastUpdate = DateTime.Now.AddDays(-1 * doubleData);
+                    }
+
+                    if (dataUpdate.Contains("week", StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        doubleData = doubleData * 7;
+                        titleList.LastUpdate = DateTime.Now.AddDays(-1 * doubleData);
+                    }
+
+                    if (dataUpdate.Contains("month", StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        double days = (doubleData - (int)doubleData) * 30;
+                        titleList.LastUpdate = DateTime.Now.AddMonths((int)(-1 * doubleData)).AddDays(days);
+                    }
+
+                    if (dataUpdate.Contains("year", StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        titleList.LastUpdate = DateTime.Now.AddYears((int)(-1 * doubleData));
+                    }
+                }
+
                 // User data
                 titleList.HltbUserData = new HltbData();
                 for (int i = 0; i < GameDetails[iPosUserData].Children.Count(); i++)
@@ -976,7 +1022,6 @@ namespace HowLongToBeat.Services
                     foreach (var ListGame in htmlDocument.QuerySelectorAll("table.user_game_list tbody"))
                     {
                         TitleList titleList = GetTitleList(ListGame);
-
                         hltbUserStats.TitlesList.Add(titleList);
                     }
                 }

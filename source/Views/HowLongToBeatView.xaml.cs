@@ -13,6 +13,8 @@ using System.Collections.Generic;
 using System.Windows.Documents;
 using CommonPluginsShared.Models;
 using CommonPluginsShared;
+using CommonPluginsShared.Converters;
+using System.Globalization;
 
 namespace HowLongToBeat.Views
 {
@@ -64,8 +66,6 @@ namespace HowLongToBeat.Views
 
             if (gameHowLongToBeat.HasData)
             {
-                int ElIndicator = 0;
-
                 Hltb_El1.Visibility = Visibility.Hidden;
                 Hltb_El1_Color.Visibility = Visibility.Hidden;
                 Hltb_El2.Visibility = Visibility.Hidden;
@@ -73,48 +73,120 @@ namespace HowLongToBeat.Views
                 Hltb_El3.Visibility = Visibility.Hidden;
                 Hltb_El3_Color.Visibility = Visibility.Hidden;
 
-                TitleList titleList = PluginDatabase.GetUserHltbData(gameHowLongToBeat.GetData().Id);
-
-                if (gameData.GameHltbData.MainStory != 0)
+                List<TitleList> titleLists = PluginDatabase.GetUserHltbDataAll(gameHowLongToBeat.GetData().Id);
+                TitleList titleList = null;
+                if (titleLists != null && titleLists.Count > 0)
                 {
-                    ElIndicator += 1;
-                    SetDataInView(ElIndicator, resources.GetString("LOCHowLongToBeatMainStory"), gameData.GameHltbData.MainStoryFormat, (titleList != null) ? titleList.HltbUserData.MainStoryFormat : string.Empty);
-                    SetColor(ElIndicator, PluginDatabase.PluginSettings.Settings.ColorFirst.Color);
+                    for(int idx = 0; idx < titleLists.Count; idx++)
+                    {
+                        int ElIndicator = 0;
+                        titleList = titleLists[idx];
+
+                        TextBlock Hltb_0 = new TextBlock();
+                        switch (idx)
+                        {
+                            case 0:
+                                Hltb_0 = Hltb_El0;
+                                break;
+                            case 1:
+                                Hltb_0 = Hltb_El0_1;
+                                break;
+                            case 2:
+                                Hltb_0 = Hltb_El0_2;
+                                break;
+                            case 3:
+                                Hltb_0 = Hltb_El0_3;
+                                break;
+                        }
+
+                        LocalDateConverter localDateConverter = new LocalDateConverter();
+                        Hltb_0.Text = localDateConverter.Convert(titleList.LastUpdate, null, null, CultureInfo.CurrentCulture).ToString();
+                        Hltb_0.Visibility = Visibility.Visible;
+
+                        if (gameData.GameHltbData.MainStory != 0 || titleList.HltbUserData?.MainStory != 0)
+                        {
+                            ElIndicator += 1;
+                            SetDataInView(ElIndicator, resources.GetString("LOCHowLongToBeatMainStory"), gameData.GameHltbData.MainStoryFormat, (titleList != null) ? titleList.HltbUserData.MainStoryFormat : string.Empty, idx);
+                            SetColor(ElIndicator, PluginDatabase.PluginSettings.Settings.ColorFirst.Color);
+                        }
+
+                        if (gameData.GameHltbData.MainExtra != 0 || titleList.HltbUserData?.MainExtra != 0)
+                        {
+                            ElIndicator += 1;
+                            SetDataInView(ElIndicator, resources.GetString("LOCHowLongToBeatMainExtra"), gameData.GameHltbData.MainExtraFormat, (titleList != null) ? titleList.HltbUserData.MainExtraFormat : string.Empty, idx);
+                            SetColor(ElIndicator, PluginDatabase.PluginSettings.Settings.ColorSecond.Color);
+                        }
+
+                        if (gameData.GameHltbData.Completionist != 0 || titleList.HltbUserData?.Completionist != 0)
+                        {
+                            ElIndicator += 1;
+                            SetDataInView(ElIndicator, resources.GetString("LOCHowLongToBeatCompletionist"), gameData.GameHltbData.CompletionistFormat, (titleList != null) ? titleList.HltbUserData.CompletionistFormat : string.Empty, idx);
+                            SetColor(ElIndicator, PluginDatabase.PluginSettings.Settings.ColorThird.Color);
+                        }
+
+                        if (gameData.GameHltbData.Solo != 0 || titleList.HltbUserData?.Solo != 0)
+                        {
+                            ElIndicator += 1;
+                            SetDataInView(ElIndicator, resources.GetString("LOCHowLongToBeatSolo"), gameData.GameHltbData.SoloFormat, (titleList != null) ? titleList.HltbUserData.SoloFormat : string.Empty, idx);
+                            SetColor(ElIndicator, PluginDatabase.PluginSettings.Settings.ColorFirstMulti.Color);
+                        }
+
+                        if (gameData.GameHltbData.CoOp != 0 || titleList.HltbUserData?.CoOp != 0)
+                        {
+                            ElIndicator += 1;
+                            SetDataInView(ElIndicator, resources.GetString("LOCHowLongToBeatCoOp"), gameData.GameHltbData.CoOpFormat, (titleList != null) ? titleList.HltbUserData.CoOpFormat : string.Empty, idx);
+                        }
+
+                        if (gameData.GameHltbData.Vs != 0 || titleList.HltbUserData?.Vs != 0)
+                        {
+                            ElIndicator += 1;
+                            SetDataInView(ElIndicator, resources.GetString("LOCHowLongToBeatVs"), gameData.GameHltbData.VsFormat, (titleList != null) ? titleList.HltbUserData.VsFormat : string.Empty, idx);
+                        }
+                    }
                 }
-
-                if (gameData.GameHltbData.MainExtra != 0)
+                else
                 {
-                    ElIndicator += 1;
-                    SetDataInView(ElIndicator, resources.GetString("LOCHowLongToBeatMainExtra"), gameData.GameHltbData.MainExtraFormat, (titleList != null) ? titleList.HltbUserData.MainExtraFormat : string.Empty);
-                    SetColor(ElIndicator, PluginDatabase.PluginSettings.Settings.ColorSecond.Color);
-                }
+                    int ElIndicator = 0;
 
-                if (gameData.GameHltbData.Completionist != 0)
-                {
-                    ElIndicator += 1;
-                    SetDataInView(ElIndicator, resources.GetString("LOCHowLongToBeatCompletionist"), gameData.GameHltbData.CompletionistFormat, (titleList != null) ? titleList.HltbUserData.CompletionistFormat : string.Empty);
-                    SetColor(ElIndicator, PluginDatabase.PluginSettings.Settings.ColorThird.Color);
-                }
+                    if (gameData.GameHltbData.MainStory != 0)
+                    {
+                        ElIndicator += 1;
+                        SetDataInView(ElIndicator, resources.GetString("LOCHowLongToBeatMainStory"), gameData.GameHltbData.MainStoryFormat, (titleList != null) ? titleList.HltbUserData.MainStoryFormat : string.Empty, 0);
+                        SetColor(ElIndicator, PluginDatabase.PluginSettings.Settings.ColorFirst.Color);
+                    }
 
-                if (gameData.GameHltbData.Solo != 0)
-                {
-                    ElIndicator += 1;
-                    SetDataInView(ElIndicator, resources.GetString("LOCHowLongToBeatSolo"), gameData.GameHltbData.SoloFormat, (titleList != null) ? titleList.HltbUserData.SoloFormat : string.Empty);
-                    SetColor(ElIndicator, PluginDatabase.PluginSettings.Settings.ColorFirstMulti.Color);
-                }
+                    if (gameData.GameHltbData.MainExtra != 0)
+                    {
+                        ElIndicator += 1;
+                        SetDataInView(ElIndicator, resources.GetString("LOCHowLongToBeatMainExtra"), gameData.GameHltbData.MainExtraFormat, (titleList != null) ? titleList.HltbUserData.MainExtraFormat : string.Empty, 0);
+                        SetColor(ElIndicator, PluginDatabase.PluginSettings.Settings.ColorSecond.Color);
+                    }
 
-                if (gameData.GameHltbData.CoOp != 0)
-                {
-                    ElIndicator += 1;
-                    SetDataInView(ElIndicator, resources.GetString("LOCHowLongToBeatCoOp"), gameData.GameHltbData.CoOpFormat, (titleList != null) ? titleList.HltbUserData.CoOpFormat : string.Empty);
-                    SetColor(ElIndicator, PluginDatabase.PluginSettings.Settings.ColorSecondMulti.Color);
-                }
+                    if (gameData.GameHltbData.Completionist != 0)
+                    {
+                        ElIndicator += 1;
+                        SetDataInView(ElIndicator, resources.GetString("LOCHowLongToBeatCompletionist"), gameData.GameHltbData.CompletionistFormat, (titleList != null) ? titleList.HltbUserData.CompletionistFormat : string.Empty, 0);
+                        SetColor(ElIndicator, PluginDatabase.PluginSettings.Settings.ColorThird.Color);
+                    }
 
-                if (gameData.GameHltbData.Vs != 0)
-                {
-                    ElIndicator += 1;
-                    SetDataInView(ElIndicator, resources.GetString("LOCHowLongToBeatVs"), gameData.GameHltbData.VsFormat, (titleList != null) ? titleList.HltbUserData.VsFormat : string.Empty);
-                    SetColor(ElIndicator, PluginDatabase.PluginSettings.Settings.ColorThirdMulti.Color);
+                    if (gameData.GameHltbData.Solo != 0)
+                    {
+                        ElIndicator += 1;
+                        SetDataInView(ElIndicator, resources.GetString("LOCHowLongToBeatSolo"), gameData.GameHltbData.SoloFormat, (titleList != null) ? titleList.HltbUserData.SoloFormat : string.Empty, 0);
+                        SetColor(ElIndicator, PluginDatabase.PluginSettings.Settings.ColorFirstMulti.Color);
+                    }
+
+                    if (gameData.GameHltbData.CoOp != 0)
+                    {
+                        ElIndicator += 1;
+                        SetDataInView(ElIndicator, resources.GetString("LOCHowLongToBeatCoOp"), gameData.GameHltbData.CoOpFormat, (titleList != null) ? titleList.HltbUserData.CoOpFormat : string.Empty, 0);
+                    }
+
+                    if (gameData.GameHltbData.Vs != 0)
+                    {
+                        ElIndicator += 1;
+                        SetDataInView(ElIndicator, resources.GetString("LOCHowLongToBeatVs"), gameData.GameHltbData.VsFormat, (titleList != null) ? titleList.HltbUserData.VsFormat : string.Empty, 0);
+                    }
                 }
             }
         }
@@ -138,14 +210,44 @@ namespace HowLongToBeat.Views
             }
         }
 
-        private void SetDataInView(int ElIndicator, string ElText, string ElData, string ElDataUser)
+        private void SetDataInView(int ElIndicator, string ElText, string ElData, string ElDataUser, int idx)
         {
+            TextBlock Hltb_1 = new TextBlock();
+            TextBlock Hltb_2 = new TextBlock();
+            TextBlock Hltb_3 = new TextBlock();
+            switch (idx)
+            {
+                case 0:
+                    Hltb_1 = Hltb_El1_DataUser;
+                    Hltb_2 = Hltb_El2_DataUser;
+                    Hltb_3 = Hltb_El3_DataUser;
+                    break;
+                case 1:
+                    Hltb_1 = Hltb_El1_DataUser_1;
+                    Hltb_2 = Hltb_El2_DataUser_1;
+                    Hltb_3 = Hltb_El3_DataUser_1;
+                    break;
+                case 2:
+                    Hltb_1 = Hltb_El1_DataUser_2;
+                    Hltb_2 = Hltb_El2_DataUser_2;
+                    Hltb_3 = Hltb_El3_DataUser_2;
+                    break;
+                case 3:
+                    Hltb_1 = Hltb_El1_DataUser_3;
+                    Hltb_2 = Hltb_El2_DataUser_3;
+                    Hltb_3 = Hltb_El3_DataUser_3;
+                    break;
+            }
+
+
             switch (ElIndicator)
             {
                 case 1:
                     Hltb_El1.Text = ElText;
                     Hltb_El1_Data.Text = ElData;
-                    Hltb_El1_DataUser.Text = ElDataUser;
+                    Hltb_1.Text = ElDataUser;
+
+                    Hltb_1.Visibility = Visibility.Visible;
                     Hltb_El1.Visibility = Visibility.Visible;
                     Hltb_El1_Color.Visibility = Visibility.Visible;
                     break;
@@ -153,7 +255,9 @@ namespace HowLongToBeat.Views
                 case 2:
                     Hltb_El2.Text = ElText;
                     Hltb_El2_Data.Text = ElData;
-                    Hltb_El2_DataUser.Text = ElDataUser;
+                    Hltb_2.Text = ElDataUser;
+
+                    Hltb_2.Visibility = Visibility.Visible;
                     Hltb_El2.Visibility = Visibility.Visible;
                     Hltb_El2_Color.Visibility = Visibility.Visible;
                     break;
@@ -161,7 +265,9 @@ namespace HowLongToBeat.Views
                 case 3:
                     Hltb_El3.Text = ElText;
                     Hltb_El3_Data.Text = ElData;
-                    Hltb_El3_DataUser.Text = ElDataUser;
+                    Hltb_3.Text = ElDataUser;
+
+                    Hltb_3.Visibility = Visibility.Visible;
                     Hltb_El3.Visibility = Visibility.Visible;
                     Hltb_El3_Color.Visibility = Visibility.Visible;
                     break;
