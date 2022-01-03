@@ -1,4 +1,5 @@
-﻿using HowLongToBeat.Models;
+﻿using CommonPluginsShared.Models;
+using HowLongToBeat.Models;
 using HowLongToBeat.Views;
 using Playnite.SDK;
 using Playnite.SDK.Data;
@@ -76,7 +77,27 @@ namespace HowLongToBeat
         public bool ProgressBarShowTime { get; set; } = false;
 
 
-        public SolidColorBrush ThumbColor { get; set; } = (SolidColorBrush)ResourceProvider.GetResource("NormalBrush");
+        public SolidColorBrush ThumbSolidColorBrush { get; set; } = null;
+        public ThemeLinearGradient ThumbLinearGradient { get; set; } = null;
+
+        public SolidColorBrush FirstColorBrush { get; set; } = new SolidColorBrush(Brushes.DarkCyan.Color);
+        public ThemeLinearGradient FirstLinearGradient { get; set; } = null;
+
+        public SolidColorBrush SecondColorBrush { get; set; } = new SolidColorBrush(Brushes.RoyalBlue.Color);
+        public ThemeLinearGradient SecondLinearGradient { get; set; } = null;
+
+        public SolidColorBrush ThirdColorBrush { get; set; } = new SolidColorBrush(Brushes.ForestGreen.Color);
+        public ThemeLinearGradient ThirdLinearGradient { get; set; } = null;
+
+        public SolidColorBrush FirstMultiColorBrush { get; set; } = new SolidColorBrush(Brushes.DarkCyan.Color);
+        public ThemeLinearGradient FirstMultiLinearGradient { get; set; } = null;
+
+        public SolidColorBrush SecondMultiColorBrush { get; set; } = new SolidColorBrush(Brushes.RoyalBlue.Color);
+        public ThemeLinearGradient SecondMultiLinearGradient { get; set; } = null;
+
+        public SolidColorBrush ThirdMultiColorBrush { get; set; } = new SolidColorBrush(Brushes.ForestGreen.Color);
+        public ThemeLinearGradient ThirdMultiLinearGradient { get; set; } = null;
+
 
         private SolidColorBrush _ColorFirst { get; set; } = new SolidColorBrush(Brushes.DarkCyan.Color);
         public SolidColorBrush ColorFirst
@@ -368,6 +389,7 @@ namespace HowLongToBeat
                 Settings = new HowLongToBeatSettings();
             }
 
+
             if (Settings.Storefronts.Count == 0)
             {
                 Settings.Storefronts = new List<Storefront>
@@ -400,6 +422,19 @@ namespace HowLongToBeat
                     new Storefront { HltbStorefrontId = HltbStorefront.XboxStore }
                 };
             }
+
+
+            if (Settings.ThumbLinearGradient == null && Settings.ThumbSolidColorBrush == null)
+            {
+                if (ResourceProvider.GetResource("NormalBrush") is LinearGradientBrush)
+                {
+                    Settings.ThumbLinearGradient = ThemeLinearGradient.ToThemeLinearGradient((LinearGradientBrush)ResourceProvider.GetResource("NormalBrush"));
+                }
+                else
+                {
+                    Settings.ThumbSolidColorBrush = (SolidColorBrush)ResourceProvider.GetResource("NormalBrush");
+                }
+            }
         }
 
         // Code executed when settings view is opened and user starts editing values.
@@ -419,14 +454,23 @@ namespace HowLongToBeat
         // This method should save settings made to Option1 and Option2.
         public void EndEdit()
         {
-            Settings.ThumbColor = new SolidColorBrush(HowLongToBeatSettingsView.ThumbColor);
+            Settings.ThumbSolidColorBrush = HowLongToBeatSettingsView.ThumbSolidColorBrush;
+            Settings.ThumbLinearGradient = HowLongToBeatSettingsView.ThumbLinearGradient;
 
-            Settings.ColorFirst = new SolidColorBrush(HowLongToBeatSettingsView.ColorFirst);
-            Settings.ColorSecond = new SolidColorBrush(HowLongToBeatSettingsView.ColorSecond);
-            Settings.ColorThird = new SolidColorBrush(HowLongToBeatSettingsView.ColorThird);
-            Settings.ColorFirstMulti = new SolidColorBrush(HowLongToBeatSettingsView.ColorFirstMulti);
-            Settings.ColorSecondMulti = new SolidColorBrush(HowLongToBeatSettingsView.ColorSecondMulti);
-            Settings.ColorThirdMulti = new SolidColorBrush(HowLongToBeatSettingsView.ColorThirdMulti);
+            Settings.FirstColorBrush = HowLongToBeatSettingsView.FirstColorBrush;
+            Settings.FirstLinearGradient = HowLongToBeatSettingsView.FirstLinearGradient;
+            Settings.SecondColorBrush = HowLongToBeatSettingsView.SecondColorBrush;
+            Settings.SecondLinearGradient = HowLongToBeatSettingsView.SecondLinearGradient;
+            Settings.ThirdColorBrush = HowLongToBeatSettingsView.ThirdColorBrush;
+            Settings.ThirdLinearGradient = HowLongToBeatSettingsView.ThirdLinearGradient;
+
+            Settings.FirstMultiColorBrush = HowLongToBeatSettingsView.FirstMultiColorBrush;
+            Settings.FirstMultiLinearGradient = HowLongToBeatSettingsView.FirstMultiLinearGradient;
+            Settings.SecondMultiColorBrush = HowLongToBeatSettingsView.SecondMultiColorBrush;
+            Settings.SecondMultiLinearGradient = HowLongToBeatSettingsView.SecondMultiLinearGradient;
+            Settings.ThirdMultiColorBrush = HowLongToBeatSettingsView.ThirdMultiColorBrush;
+            Settings.ThirdMultiLinearGradient = HowLongToBeatSettingsView.ThirdMultiLinearGradient;
+
 
             if (!Settings.ProgressBarShowTimeAbove && !Settings.ProgressBarShowTimeInterior && !Settings.ProgressBarShowTimeBelow)
             {

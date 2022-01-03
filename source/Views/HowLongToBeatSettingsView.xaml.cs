@@ -8,6 +8,7 @@ using System.Windows.Media;
 using HowLongToBeat.Services;
 using CommonPluginsShared;
 using HowLongToBeat.Models;
+using CommonPluginsShared.Models;
 
 namespace HowLongToBeat.Views
 {
@@ -23,14 +24,22 @@ namespace HowLongToBeat.Views
 
         private TextBlock tbControl;
 
-        public static Color ThumbColor = ((SolidColorBrush)resources.GetResource("NormalBrush")).Color;
+        public static SolidColorBrush ThumbSolidColorBrush;
+        public static ThemeLinearGradient ThumbLinearGradient;
 
-        public static Color ColorFirst = Brushes.DarkCyan.Color;
-        public static Color ColorSecond = Brushes.RoyalBlue.Color;
-        public static Color ColorThird = Brushes.ForestGreen.Color;
-        public static Color ColorFirstMulti = Brushes.DarkCyan.Color;
-        public static Color ColorSecondMulti = Brushes.RoyalBlue.Color;
-        public static Color ColorThirdMulti = Brushes.ForestGreen.Color;
+        public static SolidColorBrush FirstColorBrush;
+        public static ThemeLinearGradient FirstLinearGradient;
+        public static SolidColorBrush SecondColorBrush;
+        public static ThemeLinearGradient SecondLinearGradient;
+        public static SolidColorBrush ThirdColorBrush;
+        public static ThemeLinearGradient ThirdLinearGradient;
+
+        public static SolidColorBrush FirstMultiColorBrush;
+        public static ThemeLinearGradient FirstMultiLinearGradient;
+        public static SolidColorBrush SecondMultiColorBrush;
+        public static ThemeLinearGradient SecondMultiLinearGradient;
+        public static SolidColorBrush ThirdMultiColorBrush;
+        public static ThemeLinearGradient ThirdMultiLinearGradient;
 
 
         public HowLongToBeatSettingsView(IPlayniteAPI PlayniteApi, string PluginUserDataPath, HowLongToBeatSettings settings)
@@ -42,25 +51,88 @@ namespace HowLongToBeat.Views
 
             CheckAuthenticate();
 
-            PART_SelectorColorPicker.OnlySimpleColor = true;
-            PART_SelectorColorPicker.IsSimpleColor = true;
+            PART_SelectorColorPicker.OnlySimpleColor = false;
 
-            ThumbColor = settings.ThumbColor.Color;
-            tbThumb.Background = settings.ThumbColor;
 
-            ColorFirst = settings.ColorFirst.Color;
-            tbColorFirst.Background = settings.ColorFirst;
-            ColorSecond = settings.ColorSecond.Color;
-            tbColorSecond.Background = settings.ColorSecond;
-            ColorThird = settings.ColorThird.Color;
-            tbColorThird.Background = settings.ColorThird;
+            ThumbSolidColorBrush = settings.ThumbSolidColorBrush;
+            ThumbLinearGradient = settings.ThumbLinearGradient;
+            if (ThumbSolidColorBrush != null)
+            {
+                tbThumb.Background = ThumbSolidColorBrush;
+            }
+            else
+            {
+                tbThumb.Background = ThumbLinearGradient.ToLinearGradientBrush;
+            }
 
-            ColorFirstMulti = settings.ColorFirstMulti.Color;
-            tbColorFirstMulti.Background = settings.ColorFirstMulti;
-            ColorSecondMulti = settings.ColorSecondMulti.Color;
-            tbColorSecondMulti.Background = settings.ColorSecondMulti;
-            ColorThirdMulti = settings.ColorThirdMulti.Color;
-            tbColorThirdMulti.Background = settings.ColorThirdMulti;
+
+            FirstColorBrush = settings.FirstColorBrush;
+            FirstLinearGradient = settings.FirstLinearGradient;
+            if (FirstColorBrush != null)
+            {
+                tbColorFirst.Background = FirstColorBrush;
+            }
+            else
+            {
+                tbColorFirst.Background = FirstLinearGradient.ToLinearGradientBrush;
+            }
+
+            SecondColorBrush = settings.SecondColorBrush;
+            SecondLinearGradient = settings.SecondLinearGradient;
+            if (SecondColorBrush != null)
+            {
+                tbColorSecond.Background = SecondColorBrush;
+            }
+            else
+            {
+                tbColorSecond.Background = SecondLinearGradient.ToLinearGradientBrush;
+            }
+
+            ThirdColorBrush = settings.ThirdColorBrush;
+            ThirdLinearGradient = settings.ThirdLinearGradient;
+            if (ThirdColorBrush != null)
+            {
+                tbColorThird.Background = ThirdColorBrush;
+            }
+            else
+            {
+                tbColorThird.Background = ThirdLinearGradient.ToLinearGradientBrush;
+            }
+
+
+            FirstMultiColorBrush = settings.FirstMultiColorBrush;
+            FirstMultiLinearGradient = settings.FirstMultiLinearGradient;
+            if (FirstMultiColorBrush != null)
+            {
+                tbColorFirstMulti.Background = FirstMultiColorBrush;
+            }
+            else
+            {
+                tbColorFirstMulti.Background = FirstMultiLinearGradient.ToLinearGradientBrush;
+            }
+
+            SecondMultiColorBrush = settings.SecondMultiColorBrush;
+            SecondMultiLinearGradient = settings.SecondMultiLinearGradient;
+            if (SecondMultiColorBrush != null)
+            {
+                tbColorSecondMulti.Background = SecondMultiColorBrush;
+            }
+            else
+            {
+                tbColorSecondMulti.Background = SecondMultiLinearGradient.ToLinearGradientBrush;
+            }
+
+            ThirdMultiColorBrush = settings.ThirdMultiColorBrush;
+            ThirdMultiLinearGradient = settings.ThirdMultiLinearGradient;
+            if (ThirdMultiColorBrush != null)
+            {
+                tbColorThirdMulti.Background = ThirdMultiColorBrush;
+            }
+            else
+            {
+                tbColorThirdMulti.Background = ThirdMultiLinearGradient.ToLinearGradientBrush;
+            }
+            
 
             spSettings.Visibility = Visibility.Visible;
 
@@ -103,8 +175,17 @@ namespace HowLongToBeat.Views
 
                 if (tbControl.Background is SolidColorBrush)
                 {
+                    PART_SelectorColorPicker.IsSimpleColor = true;
+
                     Color color = ((SolidColorBrush)tbControl.Background).Color;
                     PART_SelectorColorPicker.SetColors(color);
+                }
+                if (tbControl.Background is LinearGradientBrush)
+                {
+                    PART_SelectorColorPicker.IsSimpleColor = false;
+
+                    LinearGradientBrush linearGradientBrush = (LinearGradientBrush)tbControl.Background;
+                    PART_SelectorColorPicker.SetColors(linearGradientBrush);
                 }
 
                 PART_SelectorColor.Visibility = Visibility.Visible;
@@ -125,38 +206,55 @@ namespace HowLongToBeat.Views
                 switch ((string)((Button)sender).Tag)
                 {
                     case "0":
-                        tbControl.Background = (SolidColorBrush)resources.GetResource("NormalBrush");
-                        ThumbColor = ((SolidColorBrush)resources.GetResource("NormalBrush")).Color;
+                        if (ResourceProvider.GetResource("NormalBrush") is LinearGradientBrush)
+                        {
+                            tbThumb.Background = (LinearGradientBrush)ResourceProvider.GetResource("NormalBrush");
+                            ThumbSolidColorBrush = null;
+                            ThumbLinearGradient = ThemeLinearGradient.ToThemeLinearGradient((LinearGradientBrush)ResourceProvider.GetResource("NormalBrush"));
+                        }
+                        else
+                        {
+                            tbThumb.Background = (SolidColorBrush)ResourceProvider.GetResource("NormalBrush");
+                            ThumbSolidColorBrush = (SolidColorBrush)ResourceProvider.GetResource("NormalBrush");
+                            ThumbLinearGradient = null;
+                        }
+
                         break;
 
                     case "1":
                         tbControl.Background = Brushes.DarkCyan;
-                        ColorFirst = Brushes.DarkCyan.Color;
+                        FirstColorBrush = new SolidColorBrush(Brushes.DarkCyan.Color);
+                        FirstLinearGradient = null;
                         break;
 
                     case "2":
                         tbControl.Background = Brushes.RoyalBlue;
-                        ColorSecond = Brushes.RoyalBlue.Color;
+                        SecondColorBrush = new SolidColorBrush(Brushes.RoyalBlue.Color);
+                        SecondLinearGradient = null;
                         break;
 
                     case "3":
                         tbControl.Background = Brushes.ForestGreen;
-                        ColorThird = Brushes.ForestGreen.Color;
+                        ThirdColorBrush = new SolidColorBrush(Brushes.ForestGreen.Color);
+                        ThirdLinearGradient = null;
                         break;
 
                     case "4":
                         tbControl.Background = Brushes.DarkCyan;
-                        ColorFirstMulti = Brushes.DarkCyan.Color;
+                        FirstMultiColorBrush = new SolidColorBrush(Brushes.DarkCyan.Color);
+                        FirstMultiLinearGradient = null;
                         break;
 
                     case "5":
                         tbControl.Background = Brushes.RoyalBlue;
-                        ColorSecondMulti = Brushes.RoyalBlue.Color;
+                        SecondMultiColorBrush = new SolidColorBrush(Brushes.RoyalBlue.Color);
+                        SecondMultiLinearGradient = null;
                         break;
 
                     case "6":
                         tbControl.Background = Brushes.ForestGreen;
-                        ColorThirdMulti = Brushes.ForestGreen.Color;
+                        ThirdMultiColorBrush = new SolidColorBrush(Brushes.ForestGreen.Color);
+                        ThirdMultiLinearGradient = null;
                         break;
                 }
             }
@@ -180,31 +278,80 @@ namespace HowLongToBeat.Views
                     switch ((string)tbControl.Tag)
                     {
                         case "0":
-                            ThumbColor = color;
+                            ThumbSolidColorBrush = new SolidColorBrush(color);
+                            ThumbLinearGradient = null;
                             break;
 
                         case "1":
-                            ColorFirst = color;
+                            FirstColorBrush = new SolidColorBrush(color);
+                            FirstLinearGradient = null;
                             break;
 
                         case "2":
-                            ColorSecond = color;
+                            SecondColorBrush = new SolidColorBrush(color);
+                            SecondLinearGradient = null;
                             break;
 
                         case "3":
-                            ColorThird = color;
+                            ThirdColorBrush = new SolidColorBrush(color);
+                            ThirdLinearGradient = null;
                             break;
 
                         case "4":
-                            ColorFirstMulti = color;
+                            FirstMultiColorBrush = new SolidColorBrush(color);
+                            FirstMultiLinearGradient = null;
                             break;
 
                         case "5":
-                            ColorSecondMulti = color;
+                            SecondMultiColorBrush = new SolidColorBrush(color);
+                            SecondMultiLinearGradient = null;
                             break;
 
                         case "6":
-                            ColorThirdMulti = color;
+                            ThirdMultiColorBrush = new SolidColorBrush(color);
+                            ThirdMultiLinearGradient = null;
+                            break;
+                    }
+                }
+                else
+                {
+                    tbControl.Background = PART_SelectorColorPicker.GetLinearGradientBrush();
+
+                    switch ((string)tbControl.Tag)
+                    {
+                        case "0":
+                            ThumbSolidColorBrush = null;
+                            ThumbLinearGradient = ThemeLinearGradient.ToThemeLinearGradient(PART_SelectorColorPicker.GetLinearGradientBrush());
+                            break;
+
+                        case "1":
+                            FirstColorBrush = null;
+                            FirstLinearGradient = ThemeLinearGradient.ToThemeLinearGradient(PART_SelectorColorPicker.GetLinearGradientBrush());
+                            break;
+
+                        case "2":
+                            SecondColorBrush = null;
+                            SecondLinearGradient = ThemeLinearGradient.ToThemeLinearGradient(PART_SelectorColorPicker.GetLinearGradientBrush());
+                            break;
+
+                        case "3":
+                            ThirdColorBrush = null;
+                            ThirdLinearGradient = ThemeLinearGradient.ToThemeLinearGradient(PART_SelectorColorPicker.GetLinearGradientBrush());
+                            break;
+
+                        case "4":
+                            FirstMultiColorBrush = null;
+                            FirstMultiLinearGradient = ThemeLinearGradient.ToThemeLinearGradient(PART_SelectorColorPicker.GetLinearGradientBrush());
+                            break;
+
+                        case "5":
+                            SecondMultiColorBrush = null;
+                            SecondMultiLinearGradient = ThemeLinearGradient.ToThemeLinearGradient(PART_SelectorColorPicker.GetLinearGradientBrush());
+                            break;
+
+                        case "6":
+                            ThirdMultiColorBrush = null;
+                            ThirdMultiLinearGradient = ThemeLinearGradient.ToThemeLinearGradient(PART_SelectorColorPicker.GetLinearGradientBrush());
                             break;
                     }
                 }

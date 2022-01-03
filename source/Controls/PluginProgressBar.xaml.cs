@@ -124,7 +124,14 @@ namespace HowLongToBeat.Controls
             ControlDataContext.SliderThirdVisibility = Visibility.Collapsed;
             ControlDataContext.ThumbThird = null;
 
-            ControlDataContext.ThumbColor = PluginDatabase.PluginSettings.Settings.ThumbColor;
+            if (PluginDatabase.PluginSettings.Settings.ThumbSolidColorBrush == null)
+            {
+                ControlDataContext.ThumbColor = PluginDatabase.PluginSettings.Settings.ThumbLinearGradient.ToLinearGradientBrush;
+            }
+            else
+            {
+                ControlDataContext.ThumbColor = PluginDatabase.PluginSettings.Settings.ThumbSolidColorBrush;
+            }
         }
 
 
@@ -191,6 +198,7 @@ namespace HowLongToBeat.Controls
                 ulong Playtime = gameHowLongToBeat.Playtime;
                 List<ListProgressBar> listProgressBars = new List<ListProgressBar>();
                 TitleList titleList = PluginDatabase.GetUserHltbData(gameHowLongToBeat.GetData().Id);
+                dynamic color;
 
                 if (gameHowLongToBeat.HasData)
                 {
@@ -204,7 +212,15 @@ namespace HowLongToBeat.Controls
                         {
                             MaxValue = HltbData.GameHltbData.MainStory;
                         }
-                        SetColor(ElIndicator, PluginDatabase.PluginSettings.Settings.ColorFirst.Color);
+                        if (PluginDatabase.PluginSettings.Settings.FirstColorBrush == null)
+                        {
+                            color = PluginDatabase.PluginSettings.Settings.FirstLinearGradient.ToLinearGradientBrush;
+                        }
+                        else
+                        {
+                            color = PluginDatabase.PluginSettings.Settings.FirstColorBrush;
+                        }
+                        SetColor(ElIndicator, color);
 
 
                         // Show user hltb datas
@@ -225,7 +241,15 @@ namespace HowLongToBeat.Controls
                         {
                             MaxValue = HltbData.GameHltbData.MainExtra;
                         }
-                        SetColor(ElIndicator, PluginDatabase.PluginSettings.Settings.ColorSecond.Color);
+                        if (PluginDatabase.PluginSettings.Settings.SecondColorBrush == null)
+                        {
+                            color = PluginDatabase.PluginSettings.Settings.SecondLinearGradient.ToLinearGradientBrush;
+                        }
+                        else
+                        {
+                            color = PluginDatabase.PluginSettings.Settings.SecondColorBrush;
+                        }
+                        SetColor(ElIndicator, color);
 
 
                         // Show user hltb datas
@@ -246,7 +270,15 @@ namespace HowLongToBeat.Controls
                         {
                             MaxValue = HltbData.GameHltbData.Completionist;
                         }
-                        SetColor(ElIndicator, PluginDatabase.PluginSettings.Settings.ColorThird.Color);
+                        if (PluginDatabase.PluginSettings.Settings.ThirdColorBrush == null)
+                        {
+                            color = PluginDatabase.PluginSettings.Settings.ThirdLinearGradient.ToLinearGradientBrush;
+                        }
+                        else
+                        {
+                            color = PluginDatabase.PluginSettings.Settings.ThirdColorBrush;
+                        }
+                        SetColor(ElIndicator, color);
 
 
                         // Show user hltb datas
@@ -267,7 +299,15 @@ namespace HowLongToBeat.Controls
                         {
                             MaxValue = HltbData.GameHltbData.Solo;
                         }
-                        SetColor(ElIndicator, PluginDatabase.PluginSettings.Settings.ColorFirstMulti.Color);
+                        if (PluginDatabase.PluginSettings.Settings.FirstMultiColorBrush == null)
+                        {
+                            color = PluginDatabase.PluginSettings.Settings.FirstMultiLinearGradient.ToLinearGradientBrush;
+                        }
+                        else
+                        {
+                            color = PluginDatabase.PluginSettings.Settings.FirstMultiColorBrush;
+                        }
+                        SetColor(ElIndicator, color);
 
 
                         // Show user hltb datas
@@ -288,7 +328,15 @@ namespace HowLongToBeat.Controls
                         {
                             MaxValue = HltbData.GameHltbData.CoOp;
                         }
-                        SetColor(ElIndicator, PluginDatabase.PluginSettings.Settings.ColorSecondMulti.Color);
+                        if (PluginDatabase.PluginSettings.Settings.SecondMultiColorBrush == null)
+                        {
+                            color = PluginDatabase.PluginSettings.Settings.SecondMultiLinearGradient.ToLinearGradientBrush;
+                        }
+                        else
+                        {
+                            color = PluginDatabase.PluginSettings.Settings.SecondMultiColorBrush;
+                        }
+                        SetColor(ElIndicator, color);
 
 
                         // Show user hltb datas
@@ -309,7 +357,15 @@ namespace HowLongToBeat.Controls
                         {
                             MaxValue = HltbData.GameHltbData.Vs;
                         }
-                        SetColor(ElIndicator, PluginDatabase.PluginSettings.Settings.ColorThirdMulti.Color);
+                        if (PluginDatabase.PluginSettings.Settings.ThirdMultiColorBrush == null)
+                        {
+                            color = PluginDatabase.PluginSettings.Settings.ThirdMultiLinearGradient.ToLinearGradientBrush;
+                        }
+                        else
+                        {
+                            color = PluginDatabase.PluginSettings.Settings.ThirdMultiColorBrush;
+                        }
+                        SetColor(ElIndicator, color);
 
 
                         // Show user hltb datas
@@ -374,20 +430,20 @@ namespace HowLongToBeat.Controls
             }
         }
 
-        private void SetColor(int ElIndicator, Color color)
+        private void SetColor(int ElIndicator, dynamic color)
         {
             switch (ElIndicator)
             {
                 case 1:
-                    ControlDataContext.ThumbFirst = new SolidColorBrush(color);
+                    ControlDataContext.ThumbFirst = color;
                     break;
 
                 case 2:
-                    ControlDataContext.ThumbSecond = new SolidColorBrush(color);
+                    ControlDataContext.ThumbSecond = color;
                     break;
 
                 case 3:
-                    ControlDataContext.ThumbThird = new SolidColorBrush(color);
+                    ControlDataContext.ThumbThird = color;
                     break;
             }
         }
@@ -470,7 +526,6 @@ namespace HowLongToBeat.Controls
 
     public class PluginProgressBarDataContext : ObservableObject, IDataContext
     {
-        private static IResourceProvider resources = new ResourceProvider();
         private bool _IsActivated;
         public bool IsActivated { get => _IsActivated; set => SetValue(ref _IsActivated, value); }
 
@@ -486,17 +541,17 @@ namespace HowLongToBeat.Controls
         private bool _TextBelowVisibility;
         public bool TextBelowVisibility { get => _TextBelowVisibility; set => SetValue(ref _TextBelowVisibility, value); }
 
-        private SolidColorBrush _ThumbColor = (SolidColorBrush)ResourceProvider.GetResource("NormalBrush");
-        public SolidColorBrush ThumbColor { get => _ThumbColor; set => SetValue(ref _ThumbColor, value); }
+        private dynamic _ThumbColor = ResourceProvider.GetResource("NormalBrush");
+        public dynamic ThumbColor { get => _ThumbColor; set => SetValue(ref _ThumbColor, value); }
 
-        private SolidColorBrush _ThumbFirst = new SolidColorBrush(Brushes.DarkCyan.Color);
-        public SolidColorBrush ThumbFirst { get => _ThumbFirst; set => SetValue(ref _ThumbFirst, value); }
+        private dynamic _ThumbFirst = new SolidColorBrush(Brushes.DarkCyan.Color);
+        public dynamic ThumbFirst { get => _ThumbFirst; set => SetValue(ref _ThumbFirst, value); }
 
-        private SolidColorBrush _ThumbSecond = new SolidColorBrush(Brushes.RoyalBlue.Color);
-        public SolidColorBrush ThumbSecond { get => _ThumbSecond; set => SetValue(ref _ThumbSecond, value); }
+        private dynamic _ThumbSecond = new SolidColorBrush(Brushes.RoyalBlue.Color);
+        public dynamic ThumbSecond { get => _ThumbSecond; set => SetValue(ref _ThumbSecond, value); }
 
-        private SolidColorBrush _ThumbThird = new SolidColorBrush(Brushes.ForestGreen.Color);
-        public SolidColorBrush ThumbThird { get => _ThumbThird; set => SetValue(ref _ThumbThird, value); }
+        private dynamic _ThumbThird = new SolidColorBrush(Brushes.ForestGreen.Color);
+        public dynamic ThumbThird { get => _ThumbThird; set => SetValue(ref _ThumbThird, value); }
 
         private double _PlaytimeValue = 75;
         public double PlaytimeValue { get => _PlaytimeValue; set => SetValue(ref _PlaytimeValue, value); }
