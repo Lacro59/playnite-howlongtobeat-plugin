@@ -253,7 +253,7 @@ namespace HowLongToBeat
                             foreach (Game game in args.Games)
                             {
                                 activateGlobalProgress.CurrentProgressValue += 1;
-                                PluginDatabase.SetCurrentPlayTime(game);
+                                PluginDatabase.SetCurrentPlayTime(game, 0, true);
                             }
                         }, globalProgressOptions);
                     }
@@ -408,7 +408,7 @@ namespace HowLongToBeat
                                 }
 
                                 activateGlobalProgress.CurrentProgressValue += 1;
-                                PluginDatabase.SetCurrentPlayTime(game);
+                                PluginDatabase.SetCurrentPlayTime(game, 0, true);
                             }
                         }, globalProgressOptions);
                     }

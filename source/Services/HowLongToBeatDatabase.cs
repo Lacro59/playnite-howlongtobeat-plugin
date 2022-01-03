@@ -639,7 +639,7 @@ namespace HowLongToBeat.Services
             });
         }
 
-        public bool SetCurrentPlayTime(Game game, ulong ElapsedSeconds = 0)
+        public bool SetCurrentPlayTime(Game game, ulong ElapsedSeconds = 0, bool NoPlaying = false)
         {
             try
             {
@@ -710,7 +710,10 @@ namespace HowLongToBeat.Services
                         hltbPostData.platform = Platform;
                         hltbPostData.storefront = StorefrontName;
 
-                        hltbPostData.list_p = "1";
+                        if (!NoPlaying)
+                        {
+                            hltbPostData.list_p = "1";
+                        }
 
                         hltbPostData.protime_h = (time.Hours + (24 * time.Days)).ToString();
                         hltbPostData.protime_m = time.Minutes.ToString();
