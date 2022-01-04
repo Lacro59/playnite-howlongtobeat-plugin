@@ -129,3 +129,12 @@ Packages:
     PackageUrl: https://github.com/Lacro59/playnite-howlongtobeat-plugin/releases/download/v2.7.1/playnite-howlongtobeat-plugin_2_7_1.pext
     Changelog:
       - Fixed a crash
+  - Version: 2.8
+    RequiredApiVersion: 6.2.0
+    ReleaseDate: 2022-01-04
+    PackageUrl: https://github.com/Lacro59/playnite-howlongtobeat-plugin/releases/download/v2.8/playnite-howlongtobeat-plugin_2_8.pext
+    Changelog:
+      - Displayed of several user data for the same game (when there is any)
+      - Setted the playtime manually does not add a "Playing" status
+      - Updated on HowLongToBeat set to more recent user data with "Playing" status (only newer when not in "Playing" status)
+      - Fixed a crash
