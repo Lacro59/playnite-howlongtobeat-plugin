@@ -34,6 +34,9 @@
     
     <sys:String x:Key="LOCHowLongToBeatCurrentPlayTimeSetted">The current playtime for {0} is setted.</sys:String>
 
+    <sys:String x:Key="LOCHowLongToBeatInfoSetPlaytime" xml:space="preserve">If there are several times defined on HowLongToBeat, the plugin will take the most recent one with the status &quot;Playing&quot;.
+If none has this status, it takes the most recent.</sys:String>
+
     <!-- HowLongToBeatSelect -->
 
     <sys:String x:Key="LOCSelection">Wybór HowLongToBeat</sys:String>
