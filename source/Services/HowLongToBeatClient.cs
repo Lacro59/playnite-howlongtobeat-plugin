@@ -1248,7 +1248,6 @@ namespace HowLongToBeat.Services
 
 
                     PluginDatabase.RefreshUserData(hltbPostData.game_id);
-
                 }
                 catch (Exception ex)
                 {

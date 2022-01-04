@@ -761,8 +761,7 @@ namespace HowLongToBeat.Services
                         hltbPostData.protime_s = time.Seconds.ToString();
 
 
-                        howLongToBeatClient.PostData(hltbPostData);
-
+                        howLongToBeatClient.PostData(hltbPostData).GetAwaiter().GetResult();
                         return true;
                     }
                 }
