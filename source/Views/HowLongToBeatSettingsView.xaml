@@ -66,6 +66,8 @@
                                       Name="PART_AutoSetCurrentPlayTime">
                                 <Label Content="{DynamicResource LOCHowLongToBeatAutoSetCurrentPlayTime}" />
                             </CheckBox>
+                            <Label FontFamily="{DynamicResource FontIcoFont}" Content="&#xef19;" Grid.Row="6" HorizontalAlignment="Right"
+                                   ToolTip="{DynamicResource LOCHowLongToBeatInfoSetPlaytime}" />
 
                             <CheckBox Grid.Row="7" Margin="50,0,0,0" IsChecked="{Binding Settings.AutoSetCurrentPlayTimeWithoutConfirmation}" Grid.Column="0" VerticalAlignment="Center"
                                       IsEnabled="{Binding ElementName=PART_AutoSetCurrentPlayTime, Path=IsChecked}">

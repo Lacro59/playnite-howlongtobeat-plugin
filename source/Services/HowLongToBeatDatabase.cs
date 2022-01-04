@@ -553,6 +553,7 @@ namespace HowLongToBeat.Services
         #endregion
 
 
+        #region User data
         public TitleList GetUserHltbData(int HltbId)
         {
             try
@@ -580,11 +581,7 @@ namespace HowLongToBeat.Services
                 {
                     return null;
                 }
-
-                //all.Find(x => x.GameStatuses.Where(y => y.Status == StatusType.Playing)?.Count() > 0 )
-
-
-                return Database.UserHltbData.TitlesList.Find(x => x.Id == HltbId);
+                return all.OrderByDescending(x => x.GameStatuses.Where(y => y.Status == StatusType.Playing)?.Count() > 0).ThenByDescending(x => x.LastUpdate).First();
             }
             catch (Exception ex)
             {
@@ -613,7 +610,6 @@ namespace HowLongToBeat.Services
         }
 
 
-        #region User data
         public void RefreshUserData()
         {
             logger.Info("RefreshUserData()");
