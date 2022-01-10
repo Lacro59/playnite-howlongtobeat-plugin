@@ -34,8 +34,8 @@
     
     <sys:String x:Key="LOCHowLongToBeatCurrentPlayTimeSetted">O tempo de jogo atual para {0} foi definido.</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatInfoSetPlaytime" xml:space="preserve">If there are several times defined on HowLongToBeat, the plugin will take the most recent one with the status &quot;Playing&quot;.
-If none has this status, it takes the most recent.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatInfoSetPlaytime" xml:space="preserve">Se houver vários tempos definidos em HowLongToBeat, o plugin pegará o mais recente com o status &quot;Jogando&quot;.
+Se nenhum tiver este status, pegará o mais recente.</sys:String>
 
     <!-- HowLongToBeatSelect -->
 
