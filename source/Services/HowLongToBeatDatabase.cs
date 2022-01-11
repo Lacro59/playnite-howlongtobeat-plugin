@@ -844,13 +844,17 @@ namespace HowLongToBeat.Services
         public int GetCountGameBeatenBeforeTime()
         {
             return Database.UserHltbData.TitlesList
-                .Where(x => x.HltbUserData.TimeToBeat != 0 && x.Completion != null && x.HltbUserData.TimeToBeat > x.CurrentTime).Count();
+                .Where(x => x.HltbUserData.TimeToBeat != 0 && x.Completion != null 
+                            && Get(x.GameId, true) != null && Get(x.GameId, true).GetData() != null && Get(x.GameId, true).GetData().GameHltbData != null && Get(x.GameId, true).GetData().GameHltbData.TimeToBeat != 0
+                            && Get(x.GameId, true).GetData().GameHltbData.TimeToBeat > x.CurrentTime).Count();
         }
 
         public int GetCountGameBeatenAfterTime()
         {
             return Database.UserHltbData.TitlesList
-                .Where(x => x.HltbUserData.TimeToBeat != 0 && x.Completion != null && x.HltbUserData.TimeToBeat <= x.CurrentTime).Count();
+                .Where(x => x.HltbUserData.TimeToBeat != 0 && x.Completion != null
+                        && Get(x.GameId, true) != null && Get(x.GameId, true).GetData() != null && Get(x.GameId, true).GetData().GameHltbData != null && Get(x.GameId, true).GetData().GameHltbData.TimeToBeat != 0
+                        && Get(x.GameId, true).GetData().GameHltbData.TimeToBeat <= x.CurrentTime).Count();
         }
         #endregion
 
