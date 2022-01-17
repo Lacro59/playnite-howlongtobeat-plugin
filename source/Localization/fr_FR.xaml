@@ -3,6 +3,8 @@
 
     <sys:String x:Key="LOCHowLongToBeatTimeToBeat">Temps à battre</sys:String>
 
+    <sys:String x:Key="LOCPlayedHoursOnly">{0}h</sys:String>
+
     <!-- HowLongToBeatSettingsView -->
 
     <sys:String x:Key="LOCHowLongToBeatProgressBar">Ajouté(s) {0} - Déjà ajouté(s) {1} - Non ajouté(s) {2}</sys:String>
@@ -30,6 +32,8 @@
     <sys:String x:Key="LOCHowLongToBeatShowWhenMismatch">Voir la fenêtre de sélection lorsqu'il y a plus d'un jeu trouvé</sys:String>
     <sys:String x:Key="LOCHowLongToBeatUseMatchValue">Utiliser un pourcentage de correspondance</sys:String>
 
+    <sys:String x:Key="LOCHowLongToBeatTimeOnlyHour">Time format with only hour</sys:String>
+    
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBar">Afficher l'indicateur de progression</sys:String>
     
     <sys:String x:Key="LOCHowLongToBeatCurrentPlayTimeSetted">Le temps de jeu actuel pour {0} est défini.</sys:String>
@@ -85,9 +89,11 @@ Si aucun n'a ce statut, il prend le plus récent.</sys:String>
     <sys:String x:Key="LOCHowLongToBeatPluginView">Voir les données HowLongToBeat</sys:String>
     <sys:String x:Key="LOCHowLongToBeatPluginUserView">Voir les données utilisateur HowLongToBeat</sys:String>
     <sys:String x:Key="LOCHowLongToBeatActualiseUserData">Actualiser les données utilisateur de HowLongToBeat</sys:String>
-    
+
     <sys:String x:Key="LOCHowLongToBeatSetCurrentTimeManual">Définir votre temps de jeu actuel</sys:String>
     <sys:String x:Key="LOCHowLongToBeatSetCurrentTimeManualAll">Définissez votre temps de jeu actuel pour tous les jeux</sys:String>
+
+    <sys:String x:Key="LOCHowLongToBeatSetCurrentCompletedTimeManualOn">Set your current completed playtime on</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatSetCurrentTime">Voulez-vous envoyer votre temps de jeu actuel ?</sys:String>
 
