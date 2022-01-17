@@ -138,3 +138,12 @@ Packages:
       - Setted the playtime manually does not add a "Playing" status
       - Updated on HowLongToBeat set to more recent user data with "Playing" status (only newer when not in "Playing" status)
       - Fixed a crash
+  - Version: 2.9
+    RequiredApiVersion: 6.2.1
+    ReleaseDate: 2022-01-17
+    PackageUrl: https://github.com/Lacro59/playnite-howlongtobeat-plugin/releases/download/v2.9/playnite-howlongtobeat-plugin_2_9.pext
+    Changelog:
+      - Added new option for plugin control in game list
+      - Added new game menus to set time on some completed type
+      - Fixed an issue on count for game beat after and before
+      - Updated localizations
