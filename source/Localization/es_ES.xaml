@@ -34,8 +34,8 @@
     
     <sys:String x:Key="LOCHowLongToBeatCurrentPlayTimeSetted">Se ha establecido el tiempo de juego actual para {0}.</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatInfoSetPlaytime" xml:space="preserve">If there are several times defined on HowLongToBeat, the plugin will take the most recent one with the status &quot;Playing&quot;.
-If none has this status, it takes the most recent.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatInfoSetPlaytime" xml:space="preserve">Si hay varios tiempos definidos en HowLongToBeat, el plugin tomará el más reciente con el estado &quot;Jugando&quot;.
+Si ninguno tiene este estado, tomara el más reciente.</sys:String>
 
     <!-- HowLongToBeatSelect -->
 
@@ -73,8 +73,8 @@ If none has this status, it takes the most recent.</sys:String>
     
     <sys:String x:Key="LOCHltbAvgTimeByGame">Tiempo medio por juego</sys:String>
     <sys:String x:Key="LOCHltbAvgGameByMonth">Media del juego por mes</sys:String>
-    <sys:String x:Key="LOCHltbCountGameBeatenBeforeTime">Number of games beaten before time</sys:String>
-    <sys:String x:Key="LOCHltbCountGameBeatenAfterTime">Number of games beaten after time</sys:String>
+    <sys:String x:Key="LOCHltbCountGameBeatenBeforeTime">Número de juegos finalizados antes de tiempo</sys:String>
+    <sys:String x:Key="LOCHltbCountGameBeatenAfterTime">Número de juegos finalizados después de tiempo</sys:String>
 
 
     <!-- MainView -->
@@ -89,7 +89,7 @@ If none has this status, it takes the most recent.</sys:String>
     <sys:String x:Key="LOCHowLongToBeatSetCurrentTimeManual">Establecer el tiempo de juego actual</sys:String>
     <sys:String x:Key="LOCHowLongToBeatSetCurrentTimeManualAll">Establecer tu tiempo de juego actual para todos los juegos</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatSetCurrentTime"></sys:String>
+    <sys:String x:Key="LOCHowLongToBeatSetCurrentTime">¿Quieres enviar tu tiempo de juego actual?</sys:String>
 
 
     <!-- QuickSearch -->
