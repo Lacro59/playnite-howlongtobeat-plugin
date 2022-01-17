@@ -1,11 +1,13 @@
 ﻿using CommonPluginsShared.Collections;
 using CommonPluginsShared.Controls;
+using CommonPluginsShared.Converters;
 using CommonPluginsShared.Interfaces;
 using HowLongToBeat.Models;
 using HowLongToBeat.Services;
 using Playnite.SDK.Models;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Threading.Tasks;
 
 namespace HowLongToBeat.Controls
@@ -76,7 +78,10 @@ namespace HowLongToBeat.Controls
         public override void SetData(Game newContext, PluginDataBaseGameBase PluginGameData)
         {
             GameHowLongToBeat gameHowLongToBeat = (GameHowLongToBeat)PluginGameData;
-            ControlDataContext.Text = gameHowLongToBeat.GetData().GameHltbData.TimeToBeatFormat;
+
+            PlayTimeToStringConverterWithZero converter = new PlayTimeToStringConverterWithZero();
+            PlayTimeFormat playTimeFormat = PluginDatabase.PluginSettings.Settings.IntegrationViewItemOnlyHour ? PlayTimeFormat.OnlyHour : PlayTimeFormat.DefaultFormat;
+            ControlDataContext.Text = (string)converter.Convert(gameHowLongToBeat.GetData().GameHltbData.TimeToBeat, null, playTimeFormat, CultureInfo.CurrentCulture);
         }
     }
 

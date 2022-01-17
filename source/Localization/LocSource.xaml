@@ -3,6 +3,8 @@
 
     <sys:String x:Key="LOCHowLongToBeatTimeToBeat">Time to beat</sys:String>
 
+    <sys:String x:Key="LOCPlayedHoursOnly">{0}h</sys:String>
+
     <!-- HowLongToBeatSettingsView -->
 
     <sys:String x:Key="LOCHowLongToBeatProgressBar">Added {0} - Already added {1} - Not added {2}</sys:String>
@@ -30,6 +32,8 @@
     <sys:String x:Key="LOCHowLongToBeatShowWhenMismatch">Show game selection list when more than one game is found during search</sys:String>
     <sys:String x:Key="LOCHowLongToBeatUseMatchValue">Use a percent match</sys:String>
 
+    <sys:String x:Key="LOCHowLongToBeatTimeOnlyHour">Time format with only hour</sys:String>
+    
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBar">Display progress indicator</sys:String>
     
     <sys:String x:Key="LOCHowLongToBeatCurrentPlayTimeSetted">The current playtime for {0} is setted.</sys:String>

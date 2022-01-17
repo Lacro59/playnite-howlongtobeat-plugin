@@ -304,7 +304,7 @@
                                     </Expander.Header>
                                 </Expander>
 
-                                <Expander Grid.Row="4" AttachedProperties:ExpanderAttachedProperties.HideExpanderArrow="True">
+                                <Expander Grid.Row="4">
                                     <Expander.Style>
                                         <Style TargetType="{x:Type Expander}" BasedOn="{StaticResource {x:Type Expander}}">
                                             <Setter Property="Background" Value="Transparent" />
@@ -316,6 +316,20 @@
                                             <Label Content="{DynamicResource LOCCommonControlsPluginViewItemShow}" />
                                         </CheckBox>
                                     </Expander.Header>
+
+
+                                    <Expander.Content>
+                                        <Border IsEnabled="{Binding ElementName=PART_IntegrationProgressBar, Path=IsChecked}"
+				                                Margin="5" Padding="10"
+				                                BorderBrush="{DynamicResource PopupBorderBrush}"
+				                                BorderThickness="{DynamicResource PopupBorderThickness}">
+                                            <Grid>
+                                                <CheckBox IsChecked="{Binding Settings.IntegrationViewItemOnlyHour}" Grid.Row="0">
+                                                    <Label Content="{DynamicResource LOCHowLongToBeatTimeOnlyHour}" />
+                                                </CheckBox>
+                                            </Grid>
+                                        </Border>
+                                    </Expander.Content>
                                 </Expander>
 
                                 <Expander Grid.Row="6">
@@ -333,9 +347,9 @@
 
                                     <Expander.Content>
                                         <Border IsEnabled="{Binding ElementName=PART_IntegrationProgressBar, Path=IsChecked}"
-				                        Margin="5" Padding="10"
-				                        BorderBrush="{DynamicResource PopupBorderBrush}"
-				                        BorderThickness="{DynamicResource PopupBorderThickness}">
+				                                Margin="5" Padding="10"
+				                                BorderBrush="{DynamicResource PopupBorderBrush}"
+				                                BorderThickness="{DynamicResource PopupBorderThickness}">
                                             <Grid>
                                                 <Grid.RowDefinitions>
                                                     <RowDefinition Height="auto" />
@@ -395,7 +409,7 @@
                                                         <Button Click="BtPickColor_Click" Content="&#x270f;" Width="41" Tag="0" Margin="5,0,0,0" VerticalAlignment="Center" />
                                                         <Button Click="BtRestore_Click" Content="&#x1f5d9;" Width="41" Tag="0" Margin="5,0,0,0" VerticalAlignment="Center" />
                                                     </StackPanel>
-                                                    
+
                                                     <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="2" HorizontalAlignment="center" VerticalAlignment="Center">
                                                         <Label Width="120" Content="{DynamicResource LOCHowLongToBeatMainStory}" VerticalAlignment="Center" Margin="25,0,0,0" />
                                                         <TextBlock Height="28" Width="28" Background="DarkCyan" Tag="1" Name="tbColorFirst" VerticalAlignment="Center" />

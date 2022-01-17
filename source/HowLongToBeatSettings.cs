@@ -46,6 +46,8 @@ namespace HowLongToBeat
             }
         }
 
+        public bool IntegrationViewItemOnlyHour { get; set; } = false;
+
         private bool _EnableIntegrationButton { get; set; } = true;
         public bool EnableIntegrationButton
         {
