@@ -20,7 +20,7 @@ using CommonPlayniteShared.Common;
 
 namespace HowLongToBeat.Services
 {
-    public class HowLongToBeatDatabase : PluginDatabaseObject<HowLongToBeatSettingsViewModel, GameHowLongToBeatCollection, GameHowLongToBeat>
+    public class HowLongToBeatDatabase : PluginDatabaseObject<HowLongToBeatSettingsViewModel, GameHowLongToBeatCollection, GameHowLongToBeat, HltbDataUser>
     {
         public HowLongToBeat Plugin;
         public HowLongToBeatClient howLongToBeatClient;
@@ -901,14 +901,6 @@ namespace HowLongToBeat.Services
 
             PluginSettings.Settings.TimeToBeat = gameHowLongToBeat.GetData().GameHltbData.TimeToBeat;
             PluginSettings.Settings.TimeToBeatFormat = gameHowLongToBeat.GetData().GameHltbData.TimeToBeatFormat;
-        }
-
-        public override void Games_ItemUpdated(object sender, ItemUpdatedEventArgs<Game> e)
-        {
-            foreach (var GameUpdated in e.UpdatedItems)
-            {
-                Database.SetGameInfo<HltbDataUser>(PlayniteApi, GameUpdated.NewData.Id);
-            }
         }
     }
 }
