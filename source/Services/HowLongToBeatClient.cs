@@ -1138,7 +1138,7 @@ namespace HowLongToBeat.Services
         /// </summary>
         /// <param name="hltbPostData"></param>
         /// <returns></returns>
-        public async Task<bool> PostData(HltbPostData hltbPostData)
+        public async Task<bool> PostData(Game game, HltbPostData hltbPostData)
         {
             if (GetIsUserLoggedIn() && hltbPostData.user_id != 0 && hltbPostData.game_id != 0)
             {
@@ -1247,7 +1247,36 @@ namespace HowLongToBeat.Services
                     string response = await Web.PostStringDataCookies(UrlPostData, formContent, Cookies);
 
 
-                    PluginDatabase.RefreshUserData(hltbPostData.game_id);
+                    // Check errors
+                    HtmlParser parser = new HtmlParser();
+                    IHtmlDocument htmlDocument = parser.Parse(response);
+
+                    string errorMessage = string.Empty;
+                    foreach (var el in htmlDocument.QuerySelectorAll("div.in.back_red.shadow_box li"))
+                    {
+                        if (errorMessage.IsNullOrEmpty())
+                        {
+                            errorMessage += el.InnerHtml;
+                        }
+                        else
+                        {
+                            errorMessage += System.Environment.NewLine + el.InnerHtml;
+                        }
+                    }
+
+
+                    if (!errorMessage.IsNullOrEmpty())
+                    {
+                        PluginDatabase.PlayniteApi.Notifications.Add(new NotificationMessage(
+                            $"HowLongToBeat-{game.Id}-Error",
+                            $"HowLongToBeat" + System.Environment.NewLine + game.Name + System.Environment.NewLine + errorMessage,
+                            NotificationType.Error
+                        ));
+                    }
+                    else
+                    {
+                        PluginDatabase.RefreshUserData(hltbPostData.game_id);
+                    }
                 }
                 catch (Exception ex)
                 {

@@ -675,7 +675,8 @@ namespace HowLongToBeat.Services
             });
         }
 
-        public bool SetCurrentPlayTime(Game game, ulong ElapsedSeconds = 0, bool NoPlaying = false)
+        public bool SetCurrentPlayTime(Game game, ulong ElapsedSeconds = 0, bool NoPlaying = false, 
+            bool IsCompleted = false, bool IsMain = false, bool IsMainSide = false, bool Is100 = false)
         {
             try
             {
@@ -756,12 +757,57 @@ namespace HowLongToBeat.Services
                             hltbPostData.list_p = "1";
                         }
 
+                        if (IsCompleted)
+                        {
+                            hltbPostData.list_cp = "1";
+                            hltbPostData.play_num = hltbPostData.play_num == 0 ? 1 : hltbPostData.play_num;
+
+                            if (IsMain)
+                            {
+                                hltbPostData.c_main_h = (time.Hours + (24 * time.Days)).ToString();
+                                hltbPostData.c_main_m = time.Minutes.ToString();
+                                hltbPostData.c_main_s = time.Seconds.ToString();
+
+                                hltbPostData.compday = ((DateTime)game.LastActivity).Day.ToString();
+                                hltbPostData.compmonth = ((DateTime)game.LastActivity).Month.ToString();
+                                hltbPostData.compyear = ((DateTime)game.LastActivity).Year.ToString();
+                            }
+
+                            if (IsMainSide)
+                            {
+                                hltbPostData.c_plus_h = (time.Hours + (24 * time.Days)).ToString();
+                                hltbPostData.c_plus_m = time.Minutes.ToString();
+                                hltbPostData.c_plus_s = time.Seconds.ToString();
+
+                                if (hltbPostData.compday.IsNullOrEmpty())
+                                {
+                                    hltbPostData.compday = ((DateTime)game.LastActivity).Day.ToString();
+                                    hltbPostData.compmonth = ((DateTime)game.LastActivity).Month.ToString();
+                                    hltbPostData.compyear = ((DateTime)game.LastActivity).Year.ToString();
+                                }
+                            }
+
+                            if (Is100)
+                            {
+                                hltbPostData.c_100_h = (time.Hours + (24 * time.Days)).ToString();
+                                hltbPostData.c_100_m = time.Minutes.ToString();
+                                hltbPostData.c_100_s = time.Seconds.ToString();
+
+                                if (hltbPostData.compday.IsNullOrEmpty())
+                                {
+                                    hltbPostData.compday = ((DateTime)game.LastActivity).Day.ToString();
+                                    hltbPostData.compmonth = ((DateTime)game.LastActivity).Month.ToString();
+                                    hltbPostData.compyear = ((DateTime)game.LastActivity).Year.ToString();
+                                }
+                            }
+                        }
+
                         hltbPostData.protime_h = (time.Hours + (24 * time.Days)).ToString();
                         hltbPostData.protime_m = time.Minutes.ToString();
                         hltbPostData.protime_s = time.Seconds.ToString();
 
 
-                        howLongToBeatClient.PostData(hltbPostData).GetAwaiter().GetResult();
+                        howLongToBeatClient.PostData(game, hltbPostData).GetAwaiter().GetResult();
                         return true;
                     }
                 }
