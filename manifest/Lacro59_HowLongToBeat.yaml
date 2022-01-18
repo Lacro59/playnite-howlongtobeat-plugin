@@ -147,3 +147,11 @@ Packages:
       - Added new game menus to set time on some completed type
       - Fixed an issue on count for game beat after and before
       - Updated localizations
+  - Version: 2.9.1
+    RequiredApiVersion: 6.2.1
+    ReleaseDate: 2022-01-18
+    PackageUrl: https://github.com/Lacro59/playnite-howlongtobeat-plugin/releases/download/v2.9.1/playnite-howlongtobeat-plugin_2_9_1.pext
+    Changelog:
+      - Added new button to refresh data on plugin game view
+      - Fixed an issue on game event
+      - Updated localizations
