@@ -34,6 +34,30 @@ namespace HowLongToBeat.Views
             InitializeComponent();
             DataContext = new HowLongToBeatViewData();
 
+            Init(gameHowLongToBeat);
+        }
+
+
+        private void Init(GameHowLongToBeat gameHowLongToBeat)
+        {
+            Hltb_El1_Data.Text = string.Empty;
+            Hltb_El1_DataUser.Text = string.Empty;
+            Hltb_El1_DataUser_1.Text = string.Empty;
+            Hltb_El1_DataUser_2.Text = string.Empty;
+            Hltb_El1_DataUser_3.Text = string.Empty;
+
+            Hltb_El2_Data.Text = string.Empty;
+            Hltb_El2_DataUser.Text = string.Empty;
+            Hltb_El2_DataUser_1.Text = string.Empty;
+            Hltb_El2_DataUser_2.Text = string.Empty;
+            Hltb_El2_DataUser_3.Text = string.Empty;
+
+            Hltb_El3_Data.Text = string.Empty;
+            Hltb_El3_DataUser.Text = string.Empty;
+            Hltb_El3_DataUser_1.Text = string.Empty;
+            Hltb_El3_DataUser_2.Text = string.Empty;
+            Hltb_El3_DataUser_3.Text = string.Empty;
+
 
             HltbDataUser gameData = gameHowLongToBeat?.Items?.FirstOrDefault();
 
@@ -77,7 +101,7 @@ namespace HowLongToBeat.Views
                 TitleList titleList = null;
                 if (titleLists != null && titleLists.Count > 0)
                 {
-                    for(int idx = 0; idx < titleLists.Count; idx++)
+                    for (int idx = 0; idx < titleLists.Count; idx++)
                     {
                         int ElIndicator = 0;
                         titleList = titleLists[idx];
@@ -294,6 +318,24 @@ namespace HowLongToBeat.Views
                 {
                     HowLongToBeat.PluginDatabase.Remove(Id);
                     ((Window)this.Parent).Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, false, true, "HowLongToBeat");
+            }
+        }
+
+        private void ButtonRefresh_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                Guid Id = (Guid)((FrameworkElement)sender).Tag;
+                if (Id != default(Guid))
+                {
+                    HowLongToBeat.PluginDatabase.Refresh(Id);
+                    GameHowLongToBeat gameHowLongToBeat = PluginDatabase.Get(Id, true);
+                    Init(gameHowLongToBeat);
                 }
             }
             catch (Exception ex)
