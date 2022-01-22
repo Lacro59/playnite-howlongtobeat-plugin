@@ -32,7 +32,7 @@
     <sys:String x:Key="LOCHowLongToBeatShowWhenMismatch">Mostrar a lista de seleção de jogos, quando mais de um jogo for encontrado, durante a pesquisa</sys:String>
     <sys:String x:Key="LOCHowLongToBeatUseMatchValue">Usar correspondência percentual</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatTimeOnlyHour">Time format with only hour</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatTimeOnlyHour">Formato da tempo com apenas hora</sys:String>
     
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBar">Exibir indicador de progresso</sys:String>
     
@@ -93,7 +93,7 @@ Se nenhum tiver este status, pegará o mais recente.</sys:String>
     <sys:String x:Key="LOCHowLongToBeatSetCurrentTimeManual">Defina seu tempo de jogo atual</sys:String>
     <sys:String x:Key="LOCHowLongToBeatSetCurrentTimeManualAll">Defina seu tempo de jogo atual para todos os jogos</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatSetCurrentCompletedTimeManualOn">Set your current completed playtime on</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatSetCurrentCompletedTimeManualOn">Definir seu atual tempo de jogo em</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatSetCurrentTime">Você quer enviar seu tempo de jogo atual?</sys:String>
 
