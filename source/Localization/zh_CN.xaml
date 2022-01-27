@@ -83,8 +83,8 @@ If none has this status, it takes the most recent.</sys:String>
 
     <!-- MainView -->
 
-    <sys:String x:Key="LOCHowLongToBeat">通关时长HowLongToBeat</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatTitle">通关时长How long to beat</sys:String>
+    <sys:String x:Key="LOCHowLongToBeat">攻关历时-HowLongToBeat</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatTitle">攻关历时 - How Long To Beat</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatPluginView">View HowLongToBeat datas</sys:String>
     <sys:String x:Key="LOCHowLongToBeatPluginUserView">View HowLongToBeat user datas</sys:String>
