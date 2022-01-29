@@ -23,7 +23,7 @@
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeBelow">进度条下方</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeUser">显示用户的攻关历时（HowLongToBeat）时间</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatAutoSetCurrentPlayTime">结束游戏会话后，自动将当前观访时间更新到攻关历时上</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoSetCurrentPlayTime">结束游戏会话后，自动将当前游玩时间更新到攻关历时上</sys:String>
     <sys:String x:Key="LOCHowLongToBeatWithoutConfirmation">无需确认消息</sys:String>
     <sys:String x:Key="LOCHowLongToBeatEnableSuccessNotification">启用成功通知</sys:String>
     
@@ -36,9 +36,9 @@
     
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBar">显示进度指示器</sys:String>
     
-    <sys:String x:Key="LOCHowLongToBeatCurrentPlayTimeSetted">{0} 的当前观访时间已设置。</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatCurrentPlayTimeSetted">{0} 的当前游玩时间已设置。</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatInfoSetPlaytime" xml:space="preserve">如果在攻关历时上有多个时间被定义，此插件将会选取最近的一个具有“正在观访”状态的时间。
+    <sys:String x:Key="LOCHowLongToBeatInfoSetPlaytime" xml:space="preserve">如果在攻关历时上有多个时间被定义，此插件将会选取最近的一个具有“正在游玩”状态的时间。
 如果没有时间具有此状态，则选取最近的时间。</sys:String>
 
     <!-- HowLongToBeatSelect -->
@@ -90,12 +90,12 @@
     <sys:String x:Key="LOCHowLongToBeatPluginUserView">查看攻关历时用户数据</sys:String>
     <sys:String x:Key="LOCHowLongToBeatActualiseUserData">刷新攻关历时用户数据</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatSetCurrentTimeManual">设置您当前的观访时间</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatSetCurrentTimeManualAll">为所有游戏设置您当前的观访时间</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatSetCurrentTimeManual">设置您当前的游玩时间</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatSetCurrentTimeManualAll">为所有游戏设置您当前的游玩时间</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatSetCurrentCompletedTimeManualOn">将您当前完成的观访时间设置于</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatSetCurrentCompletedTimeManualOn">将您当前完成的游玩时间设置于</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatSetCurrentTime">您想要发送当前观访时间吗？</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatSetCurrentTime">您想要发送当前游玩时间吗？</sys:String>
 
 
     <!-- QuickSearch -->
