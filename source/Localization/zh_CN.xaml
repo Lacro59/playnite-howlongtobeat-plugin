@@ -28,8 +28,8 @@
     <sys:String x:Key="LOCHowLongToBeatEnableSuccessNotification">启用成功通知</sys:String>
     
     <sys:String x:Key="LOCHowLongToBeatAutoData">下载数据</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAutoAccept">当只有一个游戏被找到时自动接受</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatShowWhenMismatch">当多个游戏被找到时显示选择界面</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoAccept">当只搜索到一个游戏时自动选择</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatShowWhenMismatch">当搜索到多个游戏时显示选择界面</sys:String>
     <sys:String x:Key="LOCHowLongToBeatUseMatchValue">使用百分率匹配</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatTimeOnlyHour">仅有小时的时间格式</sys:String>
