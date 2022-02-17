@@ -475,14 +475,7 @@ namespace HowLongToBeat.Services
                 }
                 catch (Exception ex)
                 {
-                    Common.LogError(ex, true);
-                    logger.Error($"Tag insert error with {game.Name}");
-                    PlayniteApi.Notifications.Add(new NotificationMessage(
-                        $"{PluginName}-Tag-Errors",
-                        $"{PluginName}\r\n" + resources.GetString("LOCCommonNotificationTagError"),
-                        NotificationType.Error,
-                        () => PlayniteTools.CreateLogPackage(PluginName)
-                    ));
+                    Common.LogError(ex, false, $"Tag insert error with {game.Name}", true, PluginName, string.Format(resources.GetString("LOCCommonNotificationTagError"), game.Name));
                 }
             }
         }
