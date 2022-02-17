@@ -45,11 +45,19 @@
                             <ColumnDefinition Width="auto" />
                             <ColumnDefinition Width="10" />
                             <ColumnDefinition Width="auto" />
+                            <ColumnDefinition Width="10" />
+                            <ColumnDefinition Width="auto" />
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="auto" />
                         </Grid.ColumnDefinitions>
 
                         <StackPanel Grid.Column="0" Orientation="Horizontal">
+                            <Label Content="{DynamicResource LOCNameLabel}" FontSize="16" Margin="0,0,10,0" VerticalAlignment="Center"  />
+
+                            <TextBox TextChanged="TextBox_TextChanged" Name="PART_NameSearch" Width="150" />
+                        </StackPanel>
+                        
+                        <StackPanel Grid.Column="2" Orientation="Horizontal">
                             <Label Content="{DynamicResource LOCCommonYear}" FontSize="16" Margin="0,0,10,0" VerticalAlignment="Center"  />
                             
                             <ComboBox Width="70" Name="PART_CbYear" SelectionChanged="PART_CbYear_SelectionChanged">
@@ -63,7 +71,7 @@
                             </ComboBox>
                         </StackPanel>
 
-                        <StackPanel Grid.Column="2" Orientation="Horizontal">
+                        <StackPanel Grid.Column="4" Orientation="Horizontal">
                             <Label Content="{DynamicResource LOCHowLongToBeatStorefront}" FontSize="16" Margin="0,0,10,0" VerticalAlignment="Center"  />
 
                             <ComboBox Width="200" Name="PART_CbStorefront" SelectionChanged="PART_CbStorefront_SelectionChanged">
@@ -77,7 +85,7 @@
                             </ComboBox>
                         </StackPanel>
 
-                        <StackPanel Grid.Column="4" Orientation="Horizontal">
+                        <StackPanel Grid.Column="6" Orientation="Horizontal">
                             <Label Content="{DynamicResource LOCPlatformTitle}" FontSize="16" Margin="0,0,10,0" VerticalAlignment="Center"  />
 
                             <ComboBox Width="200" Name="PART_CbPlatform" SelectionChanged="PART_CbPlatform_SelectionChanged">

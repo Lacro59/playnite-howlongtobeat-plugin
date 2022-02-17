@@ -389,12 +389,21 @@ namespace HowLongToBeat.Views
         }
 
 
+        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            try
+            {
+                FilterData(PART_NameSearch.Text, PART_CbYear.Text, PART_CbStorefront.Text, PART_CbPlatform.Text);
+            }
+            catch { }
+        }
+
         private void PART_CbYear_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             try
             {
                 string Year = ((ComboBox)sender).SelectedValue.ToString();
-                FilterData(Year, PART_CbStorefront.Text, PART_CbPlatform.Text);
+                FilterData(PART_NameSearch.Text, Year, PART_CbStorefront.Text, PART_CbPlatform.Text);
             }
             catch { }
         }
@@ -404,7 +413,7 @@ namespace HowLongToBeat.Views
             try
             {
                 string StoreFront = ((ComboBox)sender).SelectedValue.ToString();
-                FilterData(PART_CbYear.Text, StoreFront, PART_CbPlatform.Text);
+                FilterData(PART_NameSearch.Text, PART_CbYear.Text, StoreFront, PART_CbPlatform.Text);
             }
             catch { }
         }
@@ -414,13 +423,13 @@ namespace HowLongToBeat.Views
             try
             {
                 string Platform = ((ComboBox)sender).SelectedValue.ToString();
-                FilterData(PART_CbYear.Text, PART_CbStorefront.Text, Platform);
+                FilterData(PART_NameSearch.Text, PART_CbYear.Text, PART_CbStorefront.Text, Platform);
             }
             catch { }
         }
 
 
-        private void FilterData(string Year, string StoreFront, string Platform)
+        private void FilterData(string Name, string Year, string StoreFront, string Platform)
         {
             // nothing
             if ((Year.IsNullOrEmpty() || Year.IsEqual("----")) && (StoreFront.IsNullOrEmpty() || StoreFront.IsEqual("----")) && (Platform.IsNullOrEmpty() || Platform.IsEqual("----")))
@@ -460,7 +469,7 @@ namespace HowLongToBeat.Views
             // Platform missing
             else if (Platform.IsNullOrEmpty() || Platform.IsEqual("----"))
             {
-                userViewDataContext.ItemsSource = PluginDatabase.Database.UserHltbData.TitlesList
+                userViewDastaContext.ItemsSource = PluginDatabase.Database.UserHltbData.TitlesList
                     .Where(x => x.Completion != null && ((DateTime)x.Completion).ToString("yyyy").IsEqual(Year) && x.Storefront != null && x.Storefront.IsEqual(StoreFront)).ToObservable();
             }
             else
@@ -469,6 +478,12 @@ namespace HowLongToBeat.Views
                     .Where(x => x.Completion != null && ((DateTime)x.Completion).ToString("yyyy").IsEqual(Year) && x.Storefront != null && x.Storefront.IsEqual(StoreFront) && x.Platform != null && x.Platform.IsEqual(Platform))
                     .ToObservable();
             }
+
+            if (!Name.IsNullOrEmpty())
+            {
+                userViewDataContext.ItemsSource = userViewDataContext.ItemsSource.Where(x => x.GameName.Contains(Name, StringComparison.InvariantCultureIgnoreCase)).ToObservable();
+            }
+
             ListViewGames.Sorting();
         }
         #endregion
