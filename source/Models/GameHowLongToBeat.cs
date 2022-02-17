@@ -67,6 +67,9 @@ namespace HowLongToBeat.Models
         }
 
 
+        public string UserGameId { get; set; }
+
+
         public HltbDataUser GetData()
         {
             if (Items?.Count == 0)

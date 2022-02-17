@@ -15,6 +15,7 @@ using CommonPluginsShared.Models;
 using CommonPluginsShared;
 using CommonPluginsShared.Converters;
 using System.Globalization;
+using CommonPluginsShared.Extensions;
 
 namespace HowLongToBeat.Views
 {
@@ -27,10 +28,13 @@ namespace HowLongToBeat.Views
         private static IResourceProvider resources = new ResourceProvider();
 
         private HowLongToBeatDatabase PluginDatabase = HowLongToBeat.PluginDatabase;
+        private GameHowLongToBeat gameHowLongToBeat;
 
 
         public HowLongToBeatView(GameHowLongToBeat gameHowLongToBeat)
         {
+            this.gameHowLongToBeat = gameHowLongToBeat;
+
             InitializeComponent();
             DataContext = new HowLongToBeatViewData();
 
@@ -106,7 +110,7 @@ namespace HowLongToBeat.Views
                         int ElIndicator = 0;
                         titleList = titleLists[idx];
 
-                        TextBlock Hltb_0 = new TextBlock();
+                        RadioButton Hltb_0 = new RadioButton();
                         switch (idx)
                         {
                             case 0:
@@ -123,9 +127,30 @@ namespace HowLongToBeat.Views
                                 break;
                         }
 
+
+                        if (!gameHowLongToBeat.UserGameId.IsNullOrEmpty() && gameHowLongToBeat.UserGameId.IsEqual(titleList.UserGameId))
+                        {
+                            Hltb_0.IsChecked = true;
+                        }
+
+
                         LocalDateConverter localDateConverter = new LocalDateConverter();
-                        Hltb_0.Text = localDateConverter.Convert(titleList.LastUpdate, null, null, CultureInfo.CurrentCulture).ToString();
+                        Hltb_0.Content = localDateConverter.Convert(titleList.LastUpdate, null, null, CultureInfo.CurrentCulture).ToString();
+                        Hltb_0.Tag = titleList.UserGameId;
                         Hltb_0.Visibility = Visibility.Visible;
+
+                        if (idx == 0)
+                        {
+                            Hltb_El0_tb.Text = localDateConverter.Convert(titleList.LastUpdate, null, null, CultureInfo.CurrentCulture).ToString();
+                            Hltb_El0_tb.Tag = titleList.UserGameId;
+                            Hltb_El0_tb.Visibility = Visibility.Visible;
+                            Hltb_0.Visibility = Visibility.Collapsed;
+                        }
+                        else
+                        {
+                            Hltb_El0.Visibility = Visibility.Visible;
+                            Hltb_El0_tb.Visibility = Visibility.Collapsed;
+                        }
 
                         if (gameData.GameHltbData.MainStory != 0 || titleList.HltbUserData?.MainStory != 0)
                         {
@@ -372,6 +397,24 @@ namespace HowLongToBeat.Views
             else
             {
                 ((ToolTip)((TextBlock)sender).ToolTip).Visibility = Visibility.Hidden;
+            }
+        }
+
+
+        private void Hltb_El0_Checked(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                RadioButton rb = sender as RadioButton;
+                if (rb.Tag != null)
+                {
+                    gameHowLongToBeat.UserGameId = rb.Tag.ToString();
+                    PluginDatabase.Update(gameHowLongToBeat);
+                }
+            }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, false, true, PluginDatabase.PluginName);
             }
         }
     }

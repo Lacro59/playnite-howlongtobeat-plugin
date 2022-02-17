@@ -3,8 +3,10 @@ using HowLongToBeat.Services;
 using Playnite.SDK;
 using Playnite.SDK.Data;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Globalization;
+using CommonPluginsShared.Extensions;
 
 namespace HowLongToBeat.Models
 {
@@ -63,15 +65,14 @@ namespace HowLongToBeat.Models
         public Guid GameId {
             get
             {
-                foreach (var el in PluginDatabase.Database.Items)
+                var result = PluginDatabase.Database.Items.Where(x => x.Value.GetData()?.Id == Id
+                                    && (x.Value.UserGameId.IsNullOrEmpty() ? true : x.Value.UserGameId.IsEqual(UserGameId)))?            
+                    .FirstOrDefault().Key;
+                if (result == null || (Guid)result == default(Guid))
                 {
-                    if (el.Value.GetData()?.Id == Id)
-                    {
-                        return el.Key;
-                    }
+                    return new Guid();
                 }
-
-                return new Guid();
+                return (Guid)result;
             }
         }
 

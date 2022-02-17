@@ -63,10 +63,11 @@
                             <RowDefinition Height="*" />
                         </Grid.RowDefinitions>
 
-                        <TextBlock Name="Hltb_El0" Grid.Column="3" Grid.Row="0" Style="{DynamicResource BaseTextBlockStyle}" FontSize="16"  VerticalAlignment="Center" HorizontalAlignment="Center" />
-                        <TextBlock Name="Hltb_El0_1" Margin="10,0,0,0" Visibility="Collapsed" Grid.Column="4" Grid.Row="0" Style="{DynamicResource BaseTextBlockStyle}" FontSize="16"  VerticalAlignment="Center" HorizontalAlignment="Center" />
-                        <TextBlock Name="Hltb_El0_2" Margin="10,0,0,0" Visibility="Collapsed" Grid.Column="5" Grid.Row="0" Style="{DynamicResource BaseTextBlockStyle}" FontSize="16"  VerticalAlignment="Center" HorizontalAlignment="Center" />
-                        <TextBlock Name="Hltb_El0_3" Margin="10,0,0,0" Visibility="Collapsed" Grid.Column="6" Grid.Row="0" Style="{DynamicResource BaseTextBlockStyle}" FontSize="16"  VerticalAlignment="Center" HorizontalAlignment="Center" />
+                        <TextBlock Name="Hltb_El0_tb" Grid.Column="3" Grid.Row="0" FontSize="16" Style="{DynamicResource BaseTextBlockStyle}" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                        <RadioButton GroupName="DataUser" Checked="Hltb_El0_Checked" Name="Hltb_El0" Grid.Column="3" Grid.Row="0" FontSize="16"  VerticalAlignment="Center" HorizontalAlignment="Center" />
+                        <RadioButton GroupName="DataUser" Checked="Hltb_El0_Checked" Name="Hltb_El0_1" Margin="10,0,0,0" Visibility="Collapsed" Grid.Column="4" Grid.Row="0" FontSize="16"  VerticalAlignment="Center" HorizontalAlignment="Center" />
+                        <RadioButton GroupName="DataUser" Checked="Hltb_El0_Checked" Name="Hltb_El0_2" Margin="10,0,0,0" Visibility="Collapsed" Grid.Column="5" Grid.Row="0" FontSize="16"  VerticalAlignment="Center" HorizontalAlignment="Center" />
+                        <RadioButton GroupName="DataUser" Checked="Hltb_El0_Checked" Name="Hltb_El0_3" Margin="10,0,0,0" Visibility="Collapsed" Grid.Column="6" Grid.Row="0" FontSize="16"  VerticalAlignment="Center" HorizontalAlignment="Center" />
 
                         <StackPanel Name="Hltb_El1_Color" Grid.Column="0" Grid.Row="1" Background="DarkCyan" Width="25" Height="25" />
                         <TextBlock Name="Hltb_El1" Grid.Column="1" Grid.Row="1" Text="{DynamicResource LOCHowLongToBeatMainStory}" Style="{DynamicResource BaseTextBlockStyle}" FontSize="16" VerticalAlignment="Center" />

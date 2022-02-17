@@ -197,7 +197,7 @@ namespace HowLongToBeat.Controls
                 double MaxHltb = 0;
                 ulong Playtime = gameHowLongToBeat.Playtime;
                 List<ListProgressBar> listProgressBars = new List<ListProgressBar>();
-                TitleList titleList = PluginDatabase.GetUserHltbDataCurrent(gameHowLongToBeat.GetData().Id);
+                TitleList titleList = PluginDatabase.GetUserHltbDataCurrent(gameHowLongToBeat.GetData().Id, gameHowLongToBeat.UserGameId);
                 dynamic color;
 
                 if (gameHowLongToBeat.HasData)

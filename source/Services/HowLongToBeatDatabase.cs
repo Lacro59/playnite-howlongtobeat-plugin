@@ -17,6 +17,7 @@ using CommonPluginsControls.Controls;
 using System.Windows.Threading;
 using FuzzySharp;
 using CommonPlayniteShared.Common;
+using CommonPluginsShared.Extensions;
 
 namespace HowLongToBeat.Services
 {
@@ -565,7 +566,7 @@ namespace HowLongToBeat.Services
             }
         }
         
-        public TitleList GetUserHltbDataCurrent(int HltbId)
+        public TitleList GetUserHltbDataCurrent(int HltbId, string UserGameId = "")
         {
             try
             {
@@ -574,7 +575,15 @@ namespace HowLongToBeat.Services
                 {
                     return null;
                 }
-                return all.OrderByDescending(x => x.GameStatuses.Where(y => y.Status == StatusType.Playing)?.Count() > 0).ThenByDescending(x => x.LastUpdate).First();
+
+                if (UserGameId.IsNullOrEmpty())
+                {
+                    return all.OrderByDescending(x => x.GameStatuses.Where(y => y.Status == StatusType.Playing)?.Count() > 0).ThenByDescending(x => x.LastUpdate).First();
+                }
+                else
+                {
+                    return all.Where(x => x.UserGameId.IsEqual(UserGameId)).FirstOrDefault();
+                }
             }
             catch (Exception ex)
             {
@@ -701,7 +710,7 @@ namespace HowLongToBeat.Services
                             StorefrontName = storefront.HltbStorefrontName;
                         }
 
-                        var HltbData = GetUserHltbDataCurrent(gameHowLongToBeat.GetData().Id);
+                        var HltbData = GetUserHltbDataCurrent(gameHowLongToBeat.GetData().Id, gameHowLongToBeat.UserGameId);
                         int edit_id = 0;
                         HltbPostData hltbPostData = new HltbPostData();
                         if (HltbData != null)
