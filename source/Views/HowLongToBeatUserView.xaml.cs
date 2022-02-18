@@ -428,6 +428,15 @@ namespace HowLongToBeat.Views
             catch { }
         }
 
+        private void CheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                FilterData(PART_NameSearch.Text, PART_CbYear.Text, PART_CbStorefront.Text, PART_CbPlatform.Text);
+            }
+            catch { }
+        }
+
 
         private void FilterData(string Name, string Year, string StoreFront, string Platform)
         {
@@ -469,7 +478,7 @@ namespace HowLongToBeat.Views
             // Platform missing
             else if (Platform.IsNullOrEmpty() || Platform.IsEqual("----"))
             {
-                userViewDastaContext.ItemsSource = PluginDatabase.Database.UserHltbData.TitlesList
+                userViewDataContext.ItemsSource = PluginDatabase.Database.UserHltbData.TitlesList
                     .Where(x => x.Completion != null && ((DateTime)x.Completion).ToString("yyyy").IsEqual(Year) && x.Storefront != null && x.Storefront.IsEqual(StoreFront)).ToObservable();
             }
             else
@@ -481,7 +490,12 @@ namespace HowLongToBeat.Views
 
             if (!Name.IsNullOrEmpty())
             {
-                userViewDataContext.ItemsSource = userViewDataContext.ItemsSource.Where(x => x.GameName.Contains(Name, StringComparison.InvariantCultureIgnoreCase)).ToObservable();
+                userViewDataContext.ItemsSource = userViewDataContext.ItemsSource.Where(x => x.GameName.Contains(Name, StringComparison.InvariantCultureIgnoreCase))                    .ToObservable();
+            }
+
+            if ((bool)PART_Replays.IsChecked)
+            {
+                userViewDataContext.ItemsSource = userViewDataContext.ItemsSource.Where(x => x.IsReplay).ToObservable();
             }
 
             ListViewGames.Sorting();

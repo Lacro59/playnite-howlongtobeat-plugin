@@ -47,6 +47,8 @@
                             <ColumnDefinition Width="auto" />
                             <ColumnDefinition Width="10" />
                             <ColumnDefinition Width="auto" />
+                            <ColumnDefinition Width="10" />
+                            <ColumnDefinition Width="auto" />
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="auto" />
                         </Grid.ColumnDefinitions>
@@ -98,6 +100,12 @@
                                 </ComboBox.ItemTemplate>
                             </ComboBox>
                         </StackPanel>
+
+                        <StackPanel Grid.Column="8" Orientation="Horizontal">
+                            <CheckBox Content="{DynamicResource LOCHltbOnlyReplays}" Checked="CheckBox_Checked" Unchecked="CheckBox_Checked"
+                                      Name="PART_Replays" VerticalAlignment="Center" />
+                        </StackPanel>
+
 
                         <StackPanel Orientation="Horizontal" Grid.Column="10">
                             <Label Content="{DynamicResource LOCCommonTotalFound}" Margin="0,0,10,0" VerticalAlignment="Center" />
