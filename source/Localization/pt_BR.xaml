@@ -66,6 +66,8 @@ Se nenhum tiver este status, pegará o mais recente.</sys:String>
     <sys:String x:Key="LocHowLongToBeatPlayniteData">Dados do Playnite</sys:String>
     <sys:String x:Key="LOCHowLongToBeatCompleted">Completado</sys:String>
 
+    <sys:String x:Key="LOCHltbOnlyReplays">Only replays</sys:String>
+
     <sys:String x:Key="LOCHowLongToBeatPluginGetUserView">Obtendo dados do usuário</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatCompletions">Conclusões</sys:String>

@@ -66,6 +66,8 @@
     <sys:String x:Key="LocHowLongToBeatPlayniteData">Данные Playnite</sys:String>
     <sys:String x:Key="LOCHowLongToBeatCompleted">Пройдено</sys:String>
 
+    <sys:String x:Key="LOCHltbOnlyReplays">Only replays</sys:String>
+
     <sys:String x:Key="LOCHowLongToBeatPluginGetUserView">Получение данных пользователя</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatCompletions">Завершенность</sys:String>
