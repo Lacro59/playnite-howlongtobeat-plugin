@@ -904,6 +904,16 @@ namespace HowLongToBeat.Services
                         && Get(x.GameId, true) != null && Get(x.GameId, true).GetData() != null && Get(x.GameId, true).GetData().GameHltbData != null && Get(x.GameId, true).GetData().GameHltbData.TimeToBeat != 0
                         && Get(x.GameId, true).GetData().GameHltbData.TimeToBeat <= x.CurrentTime).Count();
         }
+
+        public int GetCountGameBeatenReplays()
+        {
+            return Database.UserHltbData.TitlesList.Where(x => x.IsReplay).Count();
+        }
+
+        public int GetCountGameRetired()
+        {
+            return Database.UserHltbData.TitlesList.Where(x => x.IsRetired).Count();
+        }
         #endregion
 
 

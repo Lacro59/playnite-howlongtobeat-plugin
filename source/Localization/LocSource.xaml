@@ -83,6 +83,8 @@ If none has this status, it takes the most recent.</sys:String>
     <sys:String x:Key="LOCHltbAvgGameByMonth">Avg game by month</sys:String>
     <sys:String x:Key="LOCHltbCountGameBeatenBeforeTime">Number of games beaten before time</sys:String>
     <sys:String x:Key="LOCHltbCountGameBeatenAfterTime">Number of games beaten after time</sys:String>
+    <sys:String x:Key="LOCHltbCountGameBeatenReplays">Number of games beaten replayed</sys:String>
+    <sys:String x:Key="LOCHltbCountGameRetired">Number of games retired</sys:String>
 
 
     <!-- MainView -->

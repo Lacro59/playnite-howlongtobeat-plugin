@@ -345,6 +345,9 @@
                                               FontSize="{DynamicResource FontSize}" />
                                 </lvc:CartesianChart.AxisY>
                             </lvc:CartesianChart>
+                            <Button Content="&#xe9a8;" FontFamily="{DynamicResource CommonFont}" Grid.Column="2" 
+                                    Name="PART_ExpandChartYear" Click="PART_ExpandChartYear_Click" Tag="0"
+                                    VerticalAlignment="Top" HorizontalAlignment="Right" />
 
                             <lvc:CartesianChart LegendLocation="none" Name="PART_ChartUserData" Grid.Column="4">
                                 <lvc:CartesianChart.DataTooltip>
@@ -380,8 +383,8 @@
 
                     <Grid Grid.Row="2" Grid.Column="1">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="30" />
+                            <ColumnDefinition Width=".8*" />
+                            <ColumnDefinition Width="100" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
 
@@ -448,6 +451,8 @@
                                 <RowDefinition Height="auto" />
                                 <RowDefinition Height="10" />
                                 <RowDefinition Height="auto" />
+                                <RowDefinition Height="10" />
+                                <RowDefinition Height="auto" />
                             </Grid.RowDefinitions>
 
                             <Grid Grid.Column="0" Grid.Row="0">
@@ -470,6 +475,16 @@
                                 <Label Name="PART_CountGameBeatenAfterTime" Content="--" Grid.Column="1" HorizontalAlignment="Right" />
                             </Grid>
 
+                            <Grid Grid.Column="0" Grid.Row="4">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+
+                                <Label Content="{DynamicResource LOCHltbCountGameBeatenReplays}" Grid.Column="0" />
+                                <Label Name="PART_CountGameBeatenReplays" Content="--" Grid.Column="1" HorizontalAlignment="Right" />
+                            </Grid>
+
                             <Grid Grid.Column="2" Grid.Row="0">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="auto" />
@@ -488,6 +503,16 @@
 
                                 <Label Content="{DynamicResource LOCHltbAvgTimeByGame}" Grid.Column="0" />
                                 <Label Name="PART_AvgTimeByGame" Content="--" Grid.Column="1" HorizontalAlignment="Right" />
+                            </Grid>
+
+                            <Grid Grid.Column="2" Grid.Row="4">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+
+                                <Label Content="{DynamicResource LOCHltbCountGameRetired}" Grid.Column="0" />
+                                <Label Name="PART_CountGameRetired" Content="--" Grid.Column="1" HorizontalAlignment="Right" />
                             </Grid>
                         </Grid>
                     </Grid>

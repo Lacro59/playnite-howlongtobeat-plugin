@@ -139,17 +139,17 @@ namespace HowLongToBeat.Views
         }
 
 
-        private void SetChartDataYear()
+        private void SetChartDataYear(int axis = 4)
         {
             if (PluginDatabase.Database.UserHltbData?.TitlesList != null)
             {
                 // Default data
-                string[] ChartDataLabels = new string[4];
+                string[] ChartDataLabels = new string[axis];
                 ChartValues<CustomerForSingle> ChartDataSeries = new ChartValues<CustomerForSingle>();
 
-                for (int i = 3; i >= 0; i--)
+                for (int i = (axis - 1); i >= 0; i--)
                 {
-                    ChartDataLabels[(3 - i)] = DateTime.Now.AddYears(-i).ToString("yyyy");
+                    ChartDataLabels[((axis - 1) - i)] = DateTime.Now.AddYears(-i).ToString("yyyy");
                     ChartDataSeries.Add(new CustomerForSingle
                     {
                         Name = DateTime.Now.AddYears(-i).ToString("yyyy"),
@@ -322,6 +322,8 @@ namespace HowLongToBeat.Views
                 PART_CountGameBeatenAfterTime.Content = PluginDatabase.GetCountGameBeatenAfterTime();
                 PART_AvgGameByMonth.Content = string.Format("{0:0.0}", PluginDatabase.GetAvgGameByMonth());
                 PART_AvgTimeByGame.Content = (string)converter.Convert(PluginDatabase.GetAvgTimeByGame(), null, null, CultureInfo.CurrentCulture);
+                PART_CountGameBeatenReplays.Content = PluginDatabase.GetCountGameBeatenReplays();
+                PART_CountGameRetired.Content = PluginDatabase.GetCountGameRetired();
             }
         }
 
@@ -517,7 +519,34 @@ namespace HowLongToBeat.Views
 
             ListViewGames.Sorting();
         }
+
         #endregion
+
+
+        private void PART_ExpandChartYear_Click(object sender, RoutedEventArgs e)
+        {
+            Button bt = sender as Button;
+            switch (bt.Tag.ToString())
+            {
+                case "0":
+                    SetChartDataYear(12);
+                    PART_ChartUserData.Visibility = Visibility.Collapsed;
+                    Grid.SetColumnSpan(PART_ChartUserDataYear, 3);
+                    Grid.SetColumnSpan(PART_ExpandChartYear, 3);
+                    bt.Content = "\ue9b0";
+                    bt.Tag = "1";
+                    break;
+
+                case "1":
+                    SetChartDataYear(4);
+                    PART_ChartUserData.Visibility = Visibility.Visible;
+                    Grid.SetColumnSpan(PART_ChartUserDataYear, 1);
+                    Grid.SetColumnSpan(PART_ExpandChartYear, 1);
+                    bt.Content = "\ue9a8";
+                    bt.Tag = "0";
+                    break;
+            }
+        }
     }
 
 
