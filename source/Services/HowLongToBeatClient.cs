@@ -19,6 +19,8 @@ using CommonPluginsShared;
 using System.Threading;
 using System.Reflection;
 using AngleSharp.Dom;
+using CommonPluginsShared.Converters;
+using CommonPluginsShared.Extensions;
 
 namespace HowLongToBeat.Services
 {
@@ -444,20 +446,62 @@ namespace HowLongToBeat.Services
         }
 
 
-        private string GetUserGamesList()
+        private Dictionary<string, DateTime> GetListGameWithDateUpdate()
+        {
+            string webData = GetUserGamesList(true);
+            HtmlParser parser = new HtmlParser();
+            IHtmlDocument htmlDocument = parser.Parse(webData);
+
+            Dictionary<string, DateTime> data = new Dictionary<string, DateTime>();
+            foreach (var ListGame in htmlDocument.QuerySelectorAll("table.user_game_list tbody"))
+            {
+                var tr = ListGame.QuerySelectorAll("tr");
+                var td = tr[0].QuerySelectorAll("td");
+
+                string UserGameId = ListGame.GetAttribute("id").Replace("user_sel_", string.Empty).Trim();
+                string sDateTime = td[1].InnerHtml;
+                DateTime.TryParseExact(sDateTime, "MMM dd, yyyy", new CultureInfo("en-US"), DateTimeStyles.None, out DateTime dateTime);
+
+                if (dateTime == default(DateTime))
+                {
+                    DateTime.TryParseExact(sDateTime, "MMMM dd, yyyy", new CultureInfo("en-US"), DateTimeStyles.None, out dateTime);
+                }
+
+                data.Add(UserGameId, dateTime);
+            }
+
+            return data;
+        }
+
+        private string GetUserGamesList(bool WithDateUpdate = false)
         {
             try
             {
                 List<HttpCookie> Cookies = WebViewOffscreen.GetCookies();
                 Cookies = Cookies.Where(x => x != null && x.Domain != null && x.Domain.Contains("howlongtobeat", StringComparison.InvariantCultureIgnoreCase)).ToList();
 
-                var formContent = new FormUrlEncodedContent(new[]
+                FormUrlEncodedContent formContent;
+                if (WithDateUpdate)
                 {
+                    formContent = new FormUrlEncodedContent(new[]
+                    {
+                        new KeyValuePair<string, string>("n", UserLogin),
+                        new KeyValuePair<string, string>("c", "user_beat"),
+                        new KeyValuePair<string, string>("p", string.Empty),
+                        new KeyValuePair<string, string>("y", string.Empty),
+                        new KeyValuePair<string, string>("h", "date_updated")
+                    });
+                }
+                else
+                {
+                    formContent = new FormUrlEncodedContent(new[]
+                    {
                         new KeyValuePair<string, string>("n", UserLogin),
                         new KeyValuePair<string, string>("c", "user_beat"),
                         new KeyValuePair<string, string>("p", string.Empty),
                         new KeyValuePair<string, string>("y", string.Empty)
-                });
+                    });
+                }
 
                 string response = Web.PostStringDataCookies(UrlUserStatsGameList, formContent, Cookies).GetAwaiter().GetResult();
                 return response;
@@ -1014,6 +1058,8 @@ namespace HowLongToBeat.Services
                     return null;
                 }
 
+                var ListGameWithDateUpdate = GetListGameWithDateUpdate();
+
                 try
                 {
                     HtmlParser parser = new HtmlParser();
@@ -1022,6 +1068,13 @@ namespace HowLongToBeat.Services
                     foreach (var ListGame in htmlDocument.QuerySelectorAll("table.user_game_list tbody"))
                     {
                         TitleList titleList = GetTitleList(ListGame);
+
+                        var dateUpdate = ListGameWithDateUpdate.Where(x => x.Key.IsEqual(titleList.UserGameId))?.FirstOrDefault().Value;
+                        if (dateUpdate != null && (DateTime)dateUpdate != default(DateTime))
+                        {
+                            titleList.LastUpdate = (DateTime)dateUpdate;
+                        }
+
                         hltbUserStats.TitlesList.Add(titleList);
                     }
                 }
@@ -1055,6 +1108,8 @@ namespace HowLongToBeat.Services
                     return null;
                 }
 
+                var ListGameWithDateUpdate = GetListGameWithDateUpdate();
+
                 try
                 {
                     HtmlParser parser = new HtmlParser();
@@ -1073,6 +1128,12 @@ namespace HowLongToBeat.Services
                         }
 
                         TitleList titleList = GetTitleList(ListGame);
+
+                        var dateUpdate = ListGameWithDateUpdate.Where(x => x.Key.IsEqual(titleList.UserGameId))?.FirstOrDefault().Value;
+                        if (dateUpdate != null)
+                        {
+                            titleList.LastUpdate = (DateTime)dateUpdate;
+                        }
 
                         Common.LogDebug(true, $"titleList: {Serialization.ToJson(titleList)}");
 

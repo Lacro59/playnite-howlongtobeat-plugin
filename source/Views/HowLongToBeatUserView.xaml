@@ -117,7 +117,7 @@
                         <controlsShared:ListViewExtend x:Name="ListViewGames" FontSize="24" Height="{Binding ElementName=PART_LvContener, Path=ActualHeight}"
                                                        Style="{StaticResource {x:Type ListView}}" 
                                                        ItemsSource="{Binding ItemsSource}"
-                                                       SortingSortDirection="Descending" SortingDefaultDataName="Completion" SortingEnable="True">
+                                                       SortingSortDirection="Descending" SortingDefaultDataName="LastUpdate" SortingEnable="True">
                             <ListView.View>
                                 <GridView>
                                     <GridViewColumn Width="0" DisplayMemberBinding="{Binding GameName}">
@@ -206,6 +206,10 @@
                                         </GridViewColumn.CellTemplate>
                                     </GridViewColumn>
 
+                                    <GridViewColumn Width="120" DisplayMemberBinding="{Binding LastUpdate, Converter={StaticResource LocalDateConverter}}" x:Name="lvGameCompletion">
+                                        <GridViewColumnHeader Content="{DynamicResource LOCCommonLastUpdate}" />
+                                    </GridViewColumn>
+
                                     <GridViewColumn Width="100" DisplayMemberBinding="{Binding Platform}" x:Name="lvGamePlatform">
                                         <GridViewColumnHeader Content="{DynamicResource LOCPlatformTitle}" />
                                     </GridViewColumn>
@@ -214,7 +218,7 @@
                                         <GridViewColumnHeader Content="{DynamicResource LOCHowLongToBeatStorefront}" />
                                     </GridViewColumn>
 
-                                    <GridViewColumn Width="100" DisplayMemberBinding="{Binding Completion, Converter={StaticResource LocalDateConverter}}" x:Name="lvGameCompletion">
+                                    <GridViewColumn Width="120" DisplayMemberBinding="{Binding Completion, Converter={StaticResource LocalDateConverter}}">
                                         <GridViewColumnHeader Content="{DynamicResource LOCHowLongToBeatCompleted}" />
                                     </GridViewColumn>
 

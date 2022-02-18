@@ -434,6 +434,9 @@ namespace HowLongToBeat.Views
                 case "3":
                     PluginDatabase.PluginSettings.Settings.TitleListSort = TitleListSort.CurrentTime;
                     break;
+                case "4":
+                    PluginDatabase.PluginSettings.Settings.TitleListSort = TitleListSort.LastUpdate;
+                    break;
             }
         }
     }

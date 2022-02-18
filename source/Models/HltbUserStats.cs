@@ -21,7 +21,7 @@ namespace HowLongToBeat.Models
 
     public enum TitleListSort
     {
-        GameName, Platform, Completion, CurrentTime
+        GameName, Platform, Completion, CurrentTime, LastUpdate
     }
 
 

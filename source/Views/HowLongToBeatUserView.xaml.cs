@@ -60,6 +60,9 @@ namespace HowLongToBeat.Views
                         case TitleListSort.Completion:
                             SortingDefaultDataName = "Completion";
                             break;
+                        case TitleListSort.LastUpdate:
+                            SortingDefaultDataName = "LastUpdate";
+                            break;
                         case TitleListSort.CurrentTime:
                             SortingDefaultDataName = "CurrentTime";
                             break;
