@@ -42,6 +42,15 @@ namespace HowLongToBeat.Views
             InitializeComponent();
             this.DataContext = userViewDataContext;
 
+
+            if (!PluginDatabase.PluginSettings.Settings.EnableProgressBarInDataView)
+            {
+                GridView lvView = (GridView)ListViewDataGames.View;
+                lvView.Columns.RemoveAt(lvView.Columns.Count - 1);
+                lvView.Columns.RemoveAt(lvView.Columns.Count - 1);
+            }
+
+
             if (PluginDatabase.Database.UserHltbData?.TitlesList?.Count != 0)
             {
                 if (PluginDatabase.Database.UserHltbData?.TitlesList != null)
@@ -323,7 +332,8 @@ namespace HowLongToBeat.Views
                 var PlayniteData = PluginDatabase.Database.Where(x => x.HasData && !x.HasDataEmpty)
                            .Select(x => new PlayniteData
                            {
-                               GameContext = PluginDatabase.PlayniteApi.Database.Games.Get(x.Id)
+                               GameContext = PluginDatabase.PlayniteApi.Database.Games.Get(x.Id),
+                               ViewProgressBar = PluginDatabase.PluginSettings.Settings.EnableProgressBarInDataView
                            }).ToList();
 
                 this.Dispatcher.BeginInvoke(DispatcherPriority.Background, new ThreadStart(delegate
@@ -341,7 +351,11 @@ namespace HowLongToBeat.Views
 
             Task.Run(() =>
             {
-                Thread.Sleep(10000);
+                if (PluginDatabase.PluginSettings.Settings.EnableProgressBarInDataView)
+                {
+                    Thread.Sleep(10000);
+                }
+
                 this.Dispatcher.BeginInvoke(DispatcherPriority.Loaded, new ThreadStart(delegate
                 {
                     PART_DataLoad.Visibility = Visibility.Collapsed;
@@ -512,6 +526,7 @@ namespace HowLongToBeat.Views
         private HowLongToBeatDatabase PluginDatabase = HowLongToBeat.PluginDatabase;
 
         public Game GameContext { get; set; }
+        public bool ViewProgressBar { get; set; }
 
         public string GameName { get { return GameContext.Name; } }
         public string Icon { get { return GameContext.Icon; } }

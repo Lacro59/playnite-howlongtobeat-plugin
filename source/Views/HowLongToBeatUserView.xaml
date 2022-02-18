@@ -526,7 +526,7 @@
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
                                             <Image HorizontalAlignment="Center" Height="32" VerticalAlignment="Center" Width="32" 
-                                                   Source="{Binding Icon, Converter={StaticResource DefaultIconConverter}}" />
+                                                   Source="{Binding Icon, Converter={StaticResource DefaultIconConverter}, IsAsync=True}" />
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
@@ -534,7 +534,7 @@
                                 <GridViewColumn Width="0" DisplayMemberBinding="{Binding GameName}">
                                     <controlsShared:GridViewColumnHeaderExtend Style="{StaticResource {x:Type GridViewColumnHeader}}" IsHitTestVisible="False" RefIndex="1" />
                                 </GridViewColumn>
-                                <GridViewColumn Width="350">
+                                <GridViewColumn Width="300">
                                     <GridViewColumnHeader Content="{DynamicResource LOCGameNameTitle}" Tag="GameName" Click="GridViewColumnHeader_Click" />
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
@@ -551,19 +551,23 @@
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
 
-                                <GridViewColumn Width="100" DisplayMemberBinding="{Binding Source}">
+                                <GridViewColumn Width="150" DisplayMemberBinding="{Binding Source}">
                                     <GridViewColumnHeader Content="{DynamicResource LOCSourceLabel}" Click="GridViewColumnHeader_Click" />
                                 </GridViewColumn>
 
-                                <GridViewColumn Width="100" DisplayMemberBinding="{Binding CompletionStatus}">
+                                <GridViewColumn Width="130" DisplayMemberBinding="{Binding CompletionStatus}">
                                     <GridViewColumnHeader Content="{DynamicResource LOCHowLongToBeatCompleted}" Click="GridViewColumnHeader_Click" />
                                 </GridViewColumn>
 
-                                <GridViewColumn Width="120" DisplayMemberBinding="{Binding Playtime, Converter={StaticResource PlayTimeToStringConverterWithZero}}">
+                                <GridViewColumn Width="130" DisplayMemberBinding="{Binding Playtime, Converter={StaticResource PlayTimeToStringConverterWithZero}}">
                                         <GridViewColumnHeader Content="{DynamicResource LOCTimePlayed}" Tag="Playtime" Click="GridViewColumnHeader_Click" />
                                 </GridViewColumn>
                                 <GridViewColumn Width="0" DisplayMemberBinding="{Binding Playtime}">
                                     <controlsShared:GridViewColumnHeaderExtend Style="{StaticResource {x:Type GridViewColumnHeader}}" IsHitTestVisible="False" />
+                                </GridViewColumn>
+
+                                <GridViewColumn Width="130" DisplayMemberBinding="{Binding TimeToBeat, Converter={StaticResource PlayTimeToStringConverterWithZero}}">
+                                    <GridViewColumnHeader Content="{DynamicResource LOCHowLongToBeatTimeToBeat}" Click="GridViewColumnHeader_Click" />
                                 </GridViewColumn>
 
                                 <GridViewColumn Width="600">
