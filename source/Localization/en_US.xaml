@@ -66,6 +66,8 @@ If none has this status, it takes the most recent.</sys:String>
     <sys:String x:Key="LocHowLongToBeatPlayniteData">Playnite data</sys:String>
     <sys:String x:Key="LOCHowLongToBeatCompleted">Done</sys:String>
 
+    <sys:String x:Key="LOCHltbOnlyReplays">Only replays</sys:String>
+
     <sys:String x:Key="LOCHowLongToBeatPluginGetUserView">Syncing user data</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatCompletions">Completion</sys:String>
