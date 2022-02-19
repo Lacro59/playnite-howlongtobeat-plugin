@@ -15,6 +15,8 @@
 
     <sys:String x:Key="LOCHowLongToBeatColorSelection">Sélection de couleur :</sys:String>
 
+    <sys:String x:Key="LOCHltbEnableProgressBarInDataView">View progress bar in Playnite data view</sys:String>
+
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarOptions">Options pour la barre de progression</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">Afficher une info-bulle de temps dans la barre de progression</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTime">Afficher le temps dans la barre de progression</sys:String>
@@ -66,7 +68,7 @@ Si aucun n'a ce statut, il prend le plus récent.</sys:String>
     <sys:String x:Key="LocHowLongToBeatPlayniteData">Données de Playnite</sys:String>
     <sys:String x:Key="LOCHowLongToBeatCompleted">Terminé</sys:String>
 
-    <sys:String x:Key="LOCHltbOnlyReplays">Only replays</sys:String>
+    <sys:String x:Key="LOCHltbOnlyReplays">Seulement les rejoués</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatPluginGetUserView">Récupération des données utilisateur</sys:String>
 
@@ -81,6 +83,8 @@ Si aucun n'a ce statut, il prend le plus récent.</sys:String>
     <sys:String x:Key="LOCHltbAvgGameByMonth">Jeu moyen par mois</sys:String>
     <sys:String x:Key="LOCHltbCountGameBeatenBeforeTime">Nombre de jeux battus avant le temps</sys:String>
     <sys:String x:Key="LOCHltbCountGameBeatenAfterTime">Nombre de jeux battus après le temps</sys:String>
+    <sys:String x:Key="LOCHltbCountGameBeatenReplays">Number of games beaten replayed</sys:String>
+    <sys:String x:Key="LOCHltbCountGameRetired">Number of games retired</sys:String>
 
 
     <!-- MainView -->
