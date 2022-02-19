@@ -15,6 +15,8 @@
 
     <sys:String x:Key="LOCHowLongToBeatColorSelection">Farbauswahl:</sys:String>
 
+    <sys:String x:Key="LOCHltbEnableProgressBarInDataView">View progress bar in Playnite data view</sys:String>
+
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarOptions">Optionen der Fortschrittsanzeige</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">Zeit-Tooltip in der Fortschrittsleiste anzeigen</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTime">Zeitangaben in der Fortschrittsleiste anzeigen</sys:String>
@@ -81,6 +83,8 @@ Wenn keiner diesen Status hat, wird der aktuellste genommen.</sys:String>
     <sys:String x:Key="LOCHltbAvgGameByMonth">Durchschnittliches Spiel pro Monat</sys:String>
     <sys:String x:Key="LOCHltbCountGameBeatenBeforeTime">Anzahl der Spiele die vor der Zeit geschlagen wurden</sys:String>
     <sys:String x:Key="LOCHltbCountGameBeatenAfterTime">Anzahl der Spiele die nach der Zeit geschlagen wurden</sys:String>
+    <sys:String x:Key="LOCHltbCountGameBeatenReplays">Number of games beaten replayed</sys:String>
+    <sys:String x:Key="LOCHltbCountGameRetired">Number of games retired</sys:String>
 
 
     <!-- MainView -->
