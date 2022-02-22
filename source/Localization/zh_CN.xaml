@@ -15,6 +15,8 @@
 
     <sys:String x:Key="LOCHowLongToBeatColorSelection">颜色选择：</sys:String>
 
+    <sys:String x:Key="LOCHltbEnableProgressBarInDataView">在 Playnite 数据视图中查看进度</sys:String>
+
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarOptions">进度条选项</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">在进度条中显示时间工具提示</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTime">在进度条中显示时间标记</sys:String>
@@ -66,7 +68,7 @@
     <sys:String x:Key="LocHowLongToBeatPlayniteData">Playnite 数据</sys:String>
     <sys:String x:Key="LOCHowLongToBeatCompleted">已完成</sys:String>
 
-    <sys:String x:Key="LOCHltbOnlyReplays">Only replays</sys:String>
+    <sys:String x:Key="LOCHltbOnlyReplays">仅回放</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatPluginGetUserView">获取用户数据</sys:String>
 
@@ -81,6 +83,8 @@
     <sys:String x:Key="LOCHltbAvgGameByMonth">每月平均游戏</sys:String>
     <sys:String x:Key="LOCHltbCountGameBeatenBeforeTime">时间前通过的游戏数量</sys:String>
     <sys:String x:Key="LOCHltbCountGameBeatenAfterTime">时间后通过的游戏数量</sys:String>
+    <sys:String x:Key="LOCHltbCountGameBeatenReplays">重玩后通关的游戏数量</sys:String>
+    <sys:String x:Key="LOCHltbCountGameRetired">已退役游戏数量</sys:String>
 
 
     <!-- MainView -->
