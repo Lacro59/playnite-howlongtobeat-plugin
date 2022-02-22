@@ -9,6 +9,8 @@ using HowLongToBeat.Services;
 using CommonPluginsShared;
 using HowLongToBeat.Models;
 using CommonPluginsShared.Models;
+using System.Drawing.Imaging;
+using System.IO;
 
 namespace HowLongToBeat.Views
 {
@@ -137,6 +139,9 @@ namespace HowLongToBeat.Views
             spSettings.Visibility = Visibility.Visible;
 
             PluginDatabase.howLongToBeatClient.PropertyChanged += OnPropertyChanged;
+
+
+            PART_TTB.Source = BitmapExtensions.BitmapFromFile(Path.Combine(PluginDatabase.Paths.PluginPath, "Resources", "ttb.png"));
         }
 
 
