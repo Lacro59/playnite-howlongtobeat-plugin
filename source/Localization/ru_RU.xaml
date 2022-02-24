@@ -86,6 +86,8 @@
     <sys:String x:Key="LOCHltbCountGameBeatenReplays">Number of games beaten replayed</sys:String>
     <sys:String x:Key="LOCHltbCountGameRetired">Number of games retired</sys:String>
 
+    <sys:String x:Key="LOCHltbUsedFilteredGames">Currently filtered games used</sys:String>
+    <sys:String x:Key="LOCHltbOnlyNotPlayedGames">Only game not played</sys:String>
 
     <!-- MainView -->
 
