@@ -18,11 +18,19 @@
 
     <Grid Name="PART_GridContener">
         <controlsShared:ProgressBarExtend x:Name="PART_ProgressBarThird" Background="Transparent"
-                                          MarginWidth ="0" TextWidth="0" Minimum="0" />
+                                          MarginLeft="0"
+                                          MarginRight="0" 
+                                          TextWidth="0" 
+                                          Minimum="0" />
         <controlsShared:ProgressBarExtend x:Name="PART_ProgressBarSecond" Background="Transparent"
-                                          MarginWidth ="0" TextWidth="0" Minimum="0" />
+                                          MarginLeft="0"
+                                          MarginRight="0" 
+                                          TextWidth="0" 
+                                          Minimum="0" />
         <controlsShared:ProgressBarExtend x:Name="PART_ProgressBarFirst" Background="Transparent" LayoutUpdated="PART_ProgressBarFirst_LayoutUpdated"
-                                          MarginWidth ="0" TextWidth="0" Minimum="0" />
+                                          MarginLeft="0" 
+                                          MarginRight="0" 
+                                          Minimum="0" />
 
         <Grid Name="PART_SliderContener" Height="{Binding ElementName=PART_ProgressBarFirst, Path=IndicatorHeight}">
             <Grid.Style>
@@ -147,11 +155,11 @@
                                               Margin="{Binding ElementName=SliderPlaytime, Path=Margin}" />
         </Grid>
 
-        <StackPanel Name="PART_ShowToolTip" Orientation="Horizontal" 
+        <Grid Name="PART_ShowToolTip"
                     Visibility="{Binding ShowToolTip, Converter={StaticResource BooleanToVisibilityConverter}}" 
                     Height="{Binding ElementName=PART_ProgressBarFirst, Path=IndicatorHeight}">
-            <StackPanel.Style>
-                <Style TargetType="{x:Type StackPanel}">
+            <Grid.Style>
+                <Style TargetType="{x:Type Grid}">
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding TextInsideVisibility}" Value="True">
                             <Setter Property="VerticalAlignment" Value="Stretch"/>
@@ -164,17 +172,17 @@
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
-            </StackPanel.Style>
+            </Grid.Style>
 
-            <StackPanel Name="spHltb_El1" Width="0" Background="Transparent"
-                        ToolTip="{Binding ToolTipFirst, UpdateSourceTrigger=PropertyChanged}"
-                        IsEnabled="{Binding ToolTipFirst, Converter={StaticResource StringNullOrEmptyToBoolConverter}}" />
-            <StackPanel Name="spHltb_El2" Width="0" Background="Transparent"
-                        ToolTip="{Binding ToolTipSecond, UpdateSourceTrigger=PropertyChanged}"
-                        IsEnabled="{Binding ToolTipSecond, Converter={StaticResource StringNullOrEmptyToBoolConverter}}" />
-            <StackPanel Name="spHltb_El3" Width="0" Background="Transparent"
+            <StackPanel Name="spHltb_El3" Background="Transparent" HorizontalAlignment="Left"
                         ToolTip="{Binding ToolTipThird, UpdateSourceTrigger=PropertyChanged}"
                         IsEnabled="{Binding ToolTipThird, Converter={StaticResource StringNullOrEmptyToBoolConverter}}" />
-        </StackPanel>
+            <StackPanel Name="spHltb_El2" Background="Transparent" HorizontalAlignment="Left"
+                        ToolTip="{Binding ToolTipSecond, UpdateSourceTrigger=PropertyChanged}"
+                        IsEnabled="{Binding ToolTipSecond, Converter={StaticResource StringNullOrEmptyToBoolConverter}}" />
+            <StackPanel Name="spHltb_El1" Background="Transparent" HorizontalAlignment="Left"
+                        ToolTip="{Binding ToolTipFirst, UpdateSourceTrigger=PropertyChanged}"
+                        IsEnabled="{Binding ToolTipFirst, Converter={StaticResource StringNullOrEmptyToBoolConverter}}" />
+        </Grid>
     </Grid>
 </controls:PluginUserControlExtend>

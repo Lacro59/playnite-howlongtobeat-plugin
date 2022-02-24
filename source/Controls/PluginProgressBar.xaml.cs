@@ -495,30 +495,16 @@ namespace HowLongToBeat.Controls
         #region Events
         private void PART_ProgressBarFirst_LayoutUpdated(object sender, EventArgs e)
         {
-            double Width1 = PART_ProgressBarFirst.GetIndicatorWidth();
-            double Width2 = PART_ProgressBarSecond.GetIndicatorWidth();
-            double Width3 = PART_ProgressBarThird.GetIndicatorWidth();
+            double width1 = PART_ProgressBarFirst.IndicatorWidth;
+            double width2 = PART_ProgressBarSecond.IndicatorWidth;
+            double width3 = PART_ProgressBarThird.IndicatorWidth;
 
+            PART_ProgressBarSecond.MarginLeft = width1;
+            PART_ProgressBarThird.MarginLeft = width2;
 
-            if (PART_ProgressBarThird.IsVisible)
-            {
-                spHltb_El3.Width = (Width3 - Width2 > 0) ? Width3 - Width2 : 0;
-                PART_ProgressBarThird.MarginWidth = Width2;
-                PART_ProgressBarThird.TextWidth = (Width3 - Width2 > 0) ? Width3 - Width2 : 0;
-            }
-
-            if (PART_ProgressBarSecond.IsVisible)
-            {
-                spHltb_El2.Width = (Width2 - Width1 > 0) ? Width2 - Width1 : 0;
-                PART_ProgressBarSecond.MarginWidth = Width1;
-                PART_ProgressBarSecond.TextWidth = (Width2 - Width1 > 0) ? Width2 - Width1 : 0;
-            }
-
-            if (PART_ProgressBarFirst.IsVisible)
-            {
-                spHltb_El1.Width = Width1;
-                PART_ProgressBarFirst.TextWidth = Width1;
-            }
+            spHltb_El1.Width = width1;
+            spHltb_El2.Width = width2;
+            spHltb_El3.Width = width3;
         }
         #endregion
     }

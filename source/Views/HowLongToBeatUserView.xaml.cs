@@ -19,6 +19,7 @@ using System.Threading;
 using System.Windows.Threading;
 using CommonPluginsShared.Extensions;
 using System.Collections.ObjectModel;
+using CommonPluginsShared;
 
 namespace HowLongToBeat.Views
 {
@@ -102,7 +103,6 @@ namespace HowLongToBeat.Views
             }
             else
             {
-                DisplayPlayniteDataLoader();
                 SetPlayniteData();
                 PART_UserData.Visibility = Visibility.Collapsed;
                 PART_TabControl.SelectedIndex = 1;
@@ -329,41 +329,20 @@ namespace HowLongToBeat.Views
 
         private void SetPlayniteData()
         {
-            Task.Run(() =>
-            {
-                var PlayniteData = PluginDatabase.Database.Where(x => x.HasData && !x.HasDataEmpty)
-                           .Select(x => new PlayniteData
-                           {
-                               GameContext = PluginDatabase.PlayniteApi.Database.Games.Get(x.Id),
-                               ViewProgressBar = PluginDatabase.PluginSettings.Settings.EnableProgressBarInDataView
-                           }).ToList();
+            ListViewDataGames.ItemsSource = null;
+            ObservableCollection<PlayniteData> PlayniteData = null;
 
-                this.Dispatcher.BeginInvoke(DispatcherPriority.Background, new ThreadStart(delegate
-                {
-                    ListViewDataGames.ItemsSource = PlayniteData;
-                }));
-            });
-        }
+            PlayniteData = PluginDatabase.Database.Where(x => x.HasData && !x.HasDataEmpty && !x.Hidden
+                                        && ((bool)PART_FilteredGames.IsChecked ? API.Instance.MainView.FilteredGames.Find(y => y.Id == x.Id) != null : true)
+                                        && ((bool)PART_HidePlayedGames.IsChecked ? x.Playtime == 0 : true))
+                  .Select(x => new PlayniteData
+                  {
+                      GameContext = PluginDatabase.PlayniteApi.Database.Games.Get(x.Id),
+                      ViewProgressBar = PluginDatabase.PluginSettings.Settings.EnableProgressBarInDataView
+                  }).ToObservable();
 
-
-        private void DisplayPlayniteDataLoader()
-        {
-            PART_DataLoad.Visibility = Visibility.Visible;
-            PART_LvDataContener.Visibility = Visibility.Hidden;
-
-            Task.Run(() =>
-            {
-                if (PluginDatabase.PluginSettings.Settings.EnableProgressBarInDataView)
-                {
-                    Thread.Sleep(10000);
-                }
-
-                this.Dispatcher.BeginInvoke(DispatcherPriority.Loaded, new ThreadStart(delegate
-                {
-                    PART_DataLoad.Visibility = Visibility.Collapsed;
-                    PART_LvDataContener.Visibility = Visibility.Visible;
-                }));
-            });
+            ListViewDataGames.ItemsSource = PlayniteData;
+            ListViewDataGames.Sorting();
         }
 
 
@@ -372,14 +351,8 @@ namespace HowLongToBeat.Views
             if (((FrameworkElement)sender).Visibility == Visibility.Visible && DisplayFirst)
             {
                 SetPlayniteData();
-                DisplayPlayniteDataLoader();
                 DisplayFirst = false;
             }
-        }
-
-        private void GridViewColumnHeader_Click(object sender, RoutedEventArgs e)
-        {
-            DisplayPlayniteDataLoader();
         }
 
 
@@ -547,10 +520,22 @@ namespace HowLongToBeat.Views
                     break;
             }
         }
+
+
+
+        private void PART_FilteredGames_Click(object sender, RoutedEventArgs e)
+        {
+            SetPlayniteData();
+        }
+
+        private void PART_HidePlayedGames_Click(object sender, RoutedEventArgs e)
+        {
+            SetPlayniteData();
+        }
     }
 
 
-    public class PlayniteData
+    public class PlayniteData : ObservableObject
     {
         private HowLongToBeatDatabase PluginDatabase = HowLongToBeat.PluginDatabase;
 
@@ -560,7 +545,7 @@ namespace HowLongToBeat.Views
         public string GameName { get { return GameContext.Name; } }
         public string Icon { get { return GameContext.Icon; } }
         public Guid GameId { get { return GameContext.Id; } }
-        public string Source { get { return GameContext.Source?.Name ?? string.Empty; } }
+        public string Source { get { return PlayniteTools.GetSourceName(GameContext); } }
         public string CompletionStatus { get { return GameContext.CompletionStatus?.Name ?? string.Empty; } }
         public ulong Playtime { get { return GameContext.Playtime; } }
         public long TimeToBeat { get { return PluginDatabase.Get(GameId, true)?.GetData()?.GameHltbData?.TimeToBeat ?? 0; } }
