@@ -109,4 +109,11 @@
     <sys:String x:Key="LOCHltbQuickSearchDescription">用攻关历时数据搜索游戏</sys:String>
     <sys:String x:Key="LOCHltbQuickSearchByTTB">按打通需时搜索</sys:String>
 
+    <sys:String x:Key="LOCHltbQuickSearchInfo" xml:space="preserve">The plugin uses the functionality of the QuickSearch plugin.
+To use it, you must validate the &quot;howlongtobeat&quot; or &quot;hltb&quot; command.    
+        
+Here is the list of commands:</sys:String>
+
+    <sys:String x:Key="LOCHltbQuickSearchCmd1" xml:space="preserve">This command searches for a list of games with a specific time to beat.</sys:String>
+
 </ResourceDictionary>
