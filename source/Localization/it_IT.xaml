@@ -86,6 +86,8 @@ Se nessuno ha questo stato, richiede il più recente.</sys:String>
     <sys:String x:Key="LOCHltbCountGameBeatenReplays">Numero di partite finito riprodotte</sys:String>
     <sys:String x:Key="LOCHltbCountGameRetired">Numero di giochi ritirati</sys:String>
 
+    <sys:String x:Key="LOCHltbUsedFilteredGames">Currently filtered games used</sys:String>
+    <sys:String x:Key="LOCHltbOnlyNotPlayedGames">Only game not played</sys:String>
 
     <!-- MainView -->
 
