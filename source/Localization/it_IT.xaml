@@ -109,4 +109,11 @@ Se nessuno ha questo stato, richiede il più recente.</sys:String>
     <sys:String x:Key="LOCHltbQuickSearchDescription">Cerca giochi tra i dati HowLongToBeat</sys:String>
     <sys:String x:Key="LOCHltbQuickSearchByTTB">Trova per Tempo di completamento</sys:String>
 
+    <sys:String x:Key="LOCHltbQuickSearchInfo" xml:space="preserve">Il plugin usa la funzionalità del plugin QuickSearch.
+Per usarlo, devi convalidare il comando &quot;howlongtobeat&quot; o &quot;hltb&quot;.    
+        
+Ecco l'elenco dei comandi:</sys:String>
+
+    <sys:String x:Key="LOCHltbQuickSearchCmd1" xml:space="preserve">Questo comando cerca un elenco di giochi con un tempo specifico da battere.</sys:String>
+
 </ResourceDictionary>
