@@ -20,6 +20,7 @@ using System.Windows.Threading;
 using CommonPluginsShared.Extensions;
 using System.Collections.ObjectModel;
 using CommonPluginsShared;
+using System.Windows.Data;
 
 namespace HowLongToBeat.Views
 {
@@ -36,6 +37,12 @@ namespace HowLongToBeat.Views
 
         private HowLongToBeatDatabase PluginDatabase = HowLongToBeat.PluginDatabase;
         private UserViewDataContext userViewDataContext = new UserViewDataContext();
+
+        private bool PlayniteDataFilter(object item)
+        {
+            return ((bool)PART_FilteredGames.IsChecked ? API.Instance.MainView.FilteredGames.Find(y => y.Id == (item as PlayniteData).GameContext.Id) != null : true)
+                && ((bool)PART_HidePlayedGames.IsChecked ? (item as PlayniteData).Playtime == 0 : true);
+        }
 
 
         public HowLongToBeatUserView()
@@ -107,6 +114,18 @@ namespace HowLongToBeat.Views
                 PART_UserData.Visibility = Visibility.Collapsed;
                 PART_TabControl.SelectedIndex = 1;
             }
+
+
+
+            ListViewDataGames.ItemsSource = PluginDatabase.Database.Where(x => x.HasData && !x.HasDataEmpty && !x.Hidden)
+                  .Select(x => new PlayniteData
+                  {
+                      GameContext = PluginDatabase.PlayniteApi.Database.Games.Get(x.Id),
+                      ViewProgressBar = PluginDatabase.PluginSettings.Settings.EnableProgressBarInDataView
+                  }).ToObservable();
+
+            CollectionView view = (CollectionView)CollectionViewSource.GetDefaultView(ListViewDataGames.ItemsSource);
+            view.Filter = PlayniteDataFilter;
         }
 
 
@@ -329,19 +348,21 @@ namespace HowLongToBeat.Views
 
         private void SetPlayniteData()
         {
-            ListViewDataGames.ItemsSource = null;
-            ObservableCollection<PlayniteData> PlayniteData = null;
+            CollectionViewSource.GetDefaultView(ListViewDataGames.ItemsSource).Refresh();
 
-            PlayniteData = PluginDatabase.Database.Where(x => x.HasData && !x.HasDataEmpty && !x.Hidden
-                                        && ((bool)PART_FilteredGames.IsChecked ? API.Instance.MainView.FilteredGames.Find(y => y.Id == x.Id) != null : true)
-                                        && ((bool)PART_HidePlayedGames.IsChecked ? x.Playtime == 0 : true))
-                  .Select(x => new PlayniteData
-                  {
-                      GameContext = PluginDatabase.PlayniteApi.Database.Games.Get(x.Id),
-                      ViewProgressBar = PluginDatabase.PluginSettings.Settings.EnableProgressBarInDataView
-                  }).ToObservable();
-
-            ListViewDataGames.ItemsSource = PlayniteData;
+            //ListViewDataGames.ItemsSource = null;
+            //ObservableCollection<PlayniteData> PlayniteData = null;
+            //
+            //PlayniteData = PluginDatabase.Database.Where(x => x.HasData && !x.HasDataEmpty && !x.Hidden
+            //                            && ((bool)PART_FilteredGames.IsChecked ? API.Instance.MainView.FilteredGames.Find(y => y.Id == x.Id) != null : true)
+            //                            && ((bool)PART_HidePlayedGames.IsChecked ? x.Playtime == 0 : true))
+            //      .Select(x => new PlayniteData
+            //      {
+            //          GameContext = PluginDatabase.PlayniteApi.Database.Games.Get(x.Id),
+            //          ViewProgressBar = PluginDatabase.PluginSettings.Settings.EnableProgressBarInDataView
+            //      }).ToObservable();
+            //
+            //ListViewDataGames.ItemsSource = PlayniteData;
             ListViewDataGames.Sorting();
         }
 

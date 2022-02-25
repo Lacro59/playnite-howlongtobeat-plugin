@@ -550,6 +550,9 @@
                             <ColumnDefinition Width="auto" />
                             <ColumnDefinition Width="30" />
                             <ColumnDefinition Width="auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="10" />
+                            <ColumnDefinition Width="auto" />
                         </Grid.ColumnDefinitions>
 
                         <CheckBox Grid.Column="0" IsChecked="True" Name="PART_FilteredGames" Click="PART_FilteredGames_Click">
@@ -559,6 +562,11 @@
                         <CheckBox Grid.Column="2" IsChecked="True" Name="PART_HidePlayedGames" Click="PART_HidePlayedGames_Click">
                             <Label Content="{DynamicResource LOCHltbOnlyNotPlayedGames}" />
                         </CheckBox>
+
+                        <StackPanel Grid.Column="6" Orientation="Horizontal">
+                            <Label Content="{DynamicResource LOCCommonTotalFound}" />
+                            <Label Margin="10,0,0,0" Content="{Binding ElementName=ListViewDataGames, Path=Items.Count,  Mode=OneWay}" />
+                        </StackPanel>
                     </Grid>
 
                     <Grid Grid.Row="2" Name="PART_LvGridContener">
