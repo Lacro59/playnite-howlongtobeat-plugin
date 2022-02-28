@@ -86,6 +86,8 @@
     <sys:String x:Key="LOCHltbCountGameBeatenReplays">重玩后通关的游戏数量</sys:String>
     <sys:String x:Key="LOCHltbCountGameRetired">已退役游戏数量</sys:String>
 
+    <sys:String x:Key="LOCHltbUsedFilteredGames">Currently filtered games used</sys:String>
+    <sys:String x:Key="LOCHltbOnlyNotPlayedGames">Only game not played</sys:String>
 
     <!-- MainView -->
 
