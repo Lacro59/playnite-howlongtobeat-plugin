@@ -59,6 +59,17 @@ namespace HowLongToBeat.Views
             }
 
 
+            ListViewDataGames.ItemsSource = PluginDatabase.Database.Where(x => x.HasData && !x.HasDataEmpty && !x.Hidden)
+              .Select(x => new PlayniteData
+              {
+                  GameContext = PluginDatabase.PlayniteApi.Database.Games.Get(x.Id),
+                  ViewProgressBar = PluginDatabase.PluginSettings.Settings.EnableProgressBarInDataView
+              }).ToObservable();
+
+            CollectionView view = (CollectionView)CollectionViewSource.GetDefaultView(ListViewDataGames.ItemsSource);
+            view.Filter = PlayniteDataFilter;
+
+
             if (PluginDatabase.Database.UserHltbData?.TitlesList?.Count != 0)
             {
                 if (PluginDatabase.Database.UserHltbData?.TitlesList != null)
@@ -88,7 +99,6 @@ namespace HowLongToBeat.Views
                     ListViewGames.SortingSortDirection = (PluginDatabase.PluginSettings.Settings.IsAsc) ? ListSortDirection.Ascending : ListSortDirection.Descending;
                     ListViewGames.Sorting();
 
-
                     SetFilter();
                 }
 
@@ -114,18 +124,6 @@ namespace HowLongToBeat.Views
                 PART_UserData.Visibility = Visibility.Collapsed;
                 PART_TabControl.SelectedIndex = 1;
             }
-
-
-
-            ListViewDataGames.ItemsSource = PluginDatabase.Database.Where(x => x.HasData && !x.HasDataEmpty && !x.Hidden)
-                  .Select(x => new PlayniteData
-                  {
-                      GameContext = PluginDatabase.PlayniteApi.Database.Games.Get(x.Id),
-                      ViewProgressBar = PluginDatabase.PluginSettings.Settings.EnableProgressBarInDataView
-                  }).ToObservable();
-
-            CollectionView view = (CollectionView)CollectionViewSource.GetDefaultView(ListViewDataGames.ItemsSource);
-            view.Filter = PlayniteDataFilter;
         }
 
 
