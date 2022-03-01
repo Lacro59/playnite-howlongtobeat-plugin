@@ -570,8 +570,8 @@ namespace HowLongToBeat.Services
         {
             try
             {
-                var all = GetUserHltbDataAll(HltbId);
-                if (all == null || all.Count == 0)
+                List<TitleList> all = GetUserHltbDataAll(HltbId);
+                if (all?.Count == 0)
                 {
                     return null;
                 }
@@ -677,8 +677,7 @@ namespace HowLongToBeat.Services
             });
         }
 
-        public bool SetCurrentPlayTime(Game game, ulong ElapsedSeconds = 0, bool NoPlaying = false, 
-            bool IsCompleted = false, bool IsMain = false, bool IsMainSide = false, bool Is100 = false)
+        public bool SetCurrentPlayTime(Game game, ulong ElapsedSeconds = 0, bool NoPlaying = false, bool IsCompleted = false, bool IsMain = false, bool IsMainSide = false, bool Is100 = false)
         {
             try
             {
@@ -692,7 +691,7 @@ namespace HowLongToBeat.Services
 
                         // TODO Enough?
                         string Platform = string.Empty;
-                        var finded = hltbPlatforms.FindAll(x => game.Platforms?.FirstOrDefault().Name.Contains(x.Name, StringComparison.InvariantCultureIgnoreCase) ?? false);
+                        List<HltbPlatform> finded = hltbPlatforms.FindAll(x => game.Platforms?.FirstOrDefault().Name.Contains(x.Name, StringComparison.InvariantCultureIgnoreCase) ?? false);
                         if (finded?.Count > 0)
                         {
                             Platform = finded.First().Name ?? string.Empty;
@@ -710,7 +709,7 @@ namespace HowLongToBeat.Services
                             StorefrontName = storefront.HltbStorefrontName;
                         }
 
-                        var HltbData = GetUserHltbDataCurrent(gameHowLongToBeat.GetData().Id, gameHowLongToBeat.UserGameId);
+                        TitleList HltbData = GetUserHltbDataCurrent(gameHowLongToBeat.GetData().Id, gameHowLongToBeat.UserGameId);
                         int edit_id = 0;
                         HltbPostData hltbPostData = new HltbPostData();
                         if (HltbData != null)
@@ -732,6 +731,10 @@ namespace HowLongToBeat.Services
                                 {
                                     edit_id = int.Parse(tmpEditId);
                                     hltbPostData = howLongToBeatClient.GetSubmitData(gameHowLongToBeat.Name, tmpEditId);
+                                }
+                                else
+                                {
+                                    logger.Info($"No existing data in website find for {game.Name}");
                                 }
                             }
                         }
@@ -809,8 +812,7 @@ namespace HowLongToBeat.Services
                         hltbPostData.protime_s = time.Seconds.ToString();
 
 
-                        howLongToBeatClient.PostData(game, hltbPostData).GetAwaiter().GetResult();
-                        return true;
+                        return howLongToBeatClient.PostData(game, hltbPostData).GetAwaiter().GetResult(); ;
                     }
                 }
                 else
@@ -827,7 +829,6 @@ namespace HowLongToBeat.Services
             catch (Exception ex)
             {
                 Common.LogError(ex, false, true, PluginName);
-                return false;
             }
 
             return false;
@@ -857,11 +858,11 @@ namespace HowLongToBeat.Services
 
             if (DataByMonth.Count > 0)
             {
-                foreach (var data in DataByMonth)
+                foreach (KeyValuePair<string, int> data in DataByMonth)
                 {
                     result += data.Value;
                 }
-                result = result / DataByMonth.Count;
+                result /= DataByMonth.Count;
             }
 
             return result;

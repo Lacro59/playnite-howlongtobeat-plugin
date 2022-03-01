@@ -762,7 +762,6 @@ namespace HowLongToBeat.Services
                 Cookies = Cookies.Where(x => x != null && x.Domain != null && x.Domain.Contains("howlongtobeat", StringComparison.InvariantCultureIgnoreCase)).ToList();
 
                 string response = Web.DownloadStringData(string.Format(UrlPostDataEdit, UserGameId), Cookies).GetAwaiter().GetResult();
-
                 if (response.IsNullOrEmpty())
                 {
                     logger.Warn($"No SubmitData for {GameName} - {UserGameId}");
@@ -772,9 +771,7 @@ namespace HowLongToBeat.Services
                 HtmlParser parser = new HtmlParser();
                 IHtmlDocument htmlDocument = parser.Parse(response);
 
-
                 HltbPostData hltbPostData = new HltbPostData();
-
 
                 IElement user_id = htmlDocument.QuerySelector("input[name=user_id]");
                 int.TryParse(user_id.GetAttribute("value"), out int user_id_value);
@@ -787,6 +784,20 @@ namespace HowLongToBeat.Services
                 IElement game_id = htmlDocument.QuerySelector("input[name=game_id]");
                 int.TryParse(game_id.GetAttribute("value"), out int game_id_value);
                 hltbPostData.game_id = game_id_value;
+
+
+                if (hltbPostData.user_id == 0)
+                {
+                    throw new Exception($"No user_id for {GameName} - {UserGameId}");
+                }
+                if (hltbPostData.edit_id == 0)
+                {
+                    throw new Exception($"No edit_id for {GameName} - {UserGameId}");
+                }
+                if (hltbPostData.game_id == 0)
+                {
+                    throw new Exception($"No game_id for {GameName} - {UserGameId}");
+                }
 
 
                 IElement CustomTitle = htmlDocument.QuerySelector("input[name=custom_title]");
@@ -993,10 +1004,8 @@ namespace HowLongToBeat.Services
                 IElement review_notes = htmlDocument.QuerySelector("textarea[name=review_notes]");
                 hltbPostData.review_notes = review_notes?.InnerHtml;
 
-
                 IElement play_notes = htmlDocument.QuerySelector("textarea[name=play_notes]");
                 hltbPostData.play_notes = play_notes?.InnerHtml;
-
 
                 IElement play_video = htmlDocument.QuerySelector("input[name=play_video]");
                 hltbPostData.play_video = play_video?.GetAttribute("value");
@@ -1206,16 +1215,18 @@ namespace HowLongToBeat.Services
                 {
                     Type type = typeof(HltbPostData);
                     PropertyInfo[] properties = type.GetProperties();
-                    var data = new Dictionary<string, string>();
+                    Dictionary<string, string> data = new Dictionary<string, string>();
 
 
                     // Get existing data
                     if (hltbPostData.edit_id != 0)
                     {
+                        logger.Info($"Edit {game.Name} - {hltbPostData.edit_id}");
                         data.Add("edited", "Save Edit");
                     }
                     else
                     {
+                        logger.Info($"Submit {game.Name}");
                         data.Add("submitted", "Submit");
                     }
 
@@ -1303,7 +1314,7 @@ namespace HowLongToBeat.Services
                     List<HttpCookie> Cookies = WebViewOffscreen.GetCookies();
                     Cookies = Cookies.Where(x => x != null && x.Domain != null && x.Domain.Contains("howlongtobeat", StringComparison.InvariantCultureIgnoreCase)).ToList();
 
-                    var formContent = new FormUrlEncodedContent(data);
+                    FormUrlEncodedContent formContent = new FormUrlEncodedContent(data);
                     string response = await Web.PostStringDataCookies(UrlPostData, formContent, Cookies);
 
 
@@ -1312,7 +1323,7 @@ namespace HowLongToBeat.Services
                     IHtmlDocument htmlDocument = parser.Parse(response);
 
                     string errorMessage = string.Empty;
-                    foreach (var el in htmlDocument.QuerySelectorAll("div.in.back_red.shadow_box li"))
+                    foreach (IElement el in htmlDocument.QuerySelectorAll("div.in.back_red.shadow_box li"))
                     {
                         if (errorMessage.IsNullOrEmpty())
                         {
