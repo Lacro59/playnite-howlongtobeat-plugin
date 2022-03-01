@@ -68,7 +68,7 @@ Se nenhum tiver este status, pegará o mais recente.</sys:String>
     <sys:String x:Key="LocHowLongToBeatPlayniteData">Dados do Playnite</sys:String>
     <sys:String x:Key="LOCHowLongToBeatCompleted">Completado</sys:String>
 
-    <sys:String x:Key="LOCHltbOnlyReplays">Only replays</sys:String>
+    <sys:String x:Key="LOCHltbOnlyReplays">Apenas replays</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatPluginGetUserView">Obtendo dados do usuário</sys:String>
 
@@ -86,8 +86,8 @@ Se nenhum tiver este status, pegará o mais recente.</sys:String>
     <sys:String x:Key="LOCHltbCountGameBeatenReplays">Números de jogos finalizados rejogados</sys:String>
     <sys:String x:Key="LOCHltbCountGameRetired">Números de jogos retirados</sys:String>
 
-    <sys:String x:Key="LOCHltbUsedFilteredGames">Currently filtered games used</sys:String>
-    <sys:String x:Key="LOCHltbOnlyNotPlayedGames">Only game not played</sys:String>
+    <sys:String x:Key="LOCHltbUsedFilteredGames">Jogos filtrados atualmente usados</sys:String>
+    <sys:String x:Key="LOCHltbOnlyNotPlayedGames">Apenas jogo não jogados</sys:String>
 
     <!-- MainView -->
 
@@ -111,11 +111,11 @@ Se nenhum tiver este status, pegará o mais recente.</sys:String>
     <sys:String x:Key="LOCHltbQuickSearchDescription">Pesquisar jogos nos dados HowLongToBeat</sys:String>
     <sys:String x:Key="LOCHltbQuickSearchByTTB">Encontrar por tempo de conclusão</sys:String>
 
-    <sys:String x:Key="LOCHltbQuickSearchInfo" xml:space="preserve">The plugin uses the functionality of the QuickSearch plugin.
-To use it, you must validate the &quot;howlongtobeat&quot; or &quot;hltb&quot; command.    
+    <sys:String x:Key="LOCHltbQuickSearchInfo" xml:space="preserve">O plugin usa a funcionalidade do plugin Quicksearch.
+Para usá-lo, você deve validar o comando &quot;howlongtobeat&quot; ou &quot;hltb&quot;.    
         
-Here is the list of commands:</sys:String>
+Aqui está a lista de comandos:</sys:String>
 
-    <sys:String x:Key="LOCHltbQuickSearchCmd1" xml:space="preserve">This command searches for a list of games with a specific time to beat.</sys:String>
+    <sys:String x:Key="LOCHltbQuickSearchCmd1" xml:space="preserve">Este comando procura por uma lista de jogos com um tempo específico para conclusão.</sys:String>
 
 </ResourceDictionary>
