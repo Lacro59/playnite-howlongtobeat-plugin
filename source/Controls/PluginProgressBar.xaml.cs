@@ -405,7 +405,7 @@ namespace HowLongToBeat.Controls
             }
             catch (Exception ex)
             {
-                Common.LogError(ex, false, true, "HowLongToBeat");
+                Common.LogError(ex, false, true, PluginDatabase.PluginName);
             }
         }
 

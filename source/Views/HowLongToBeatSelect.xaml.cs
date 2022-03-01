@@ -1,5 +1,6 @@
 ﻿using CommonPluginsShared;
 using HowLongToBeat.Models;
+using HowLongToBeat.Services;
 using Playnite.SDK;
 using Playnite.SDK.Data;
 using Playnite.SDK.Models;
@@ -18,6 +19,8 @@ namespace HowLongToBeat.Views
     public partial class HowLongToBeatSelect : UserControl
     {
         private static readonly ILogger logger = LogManager.GetLogger();
+
+        private HowLongToBeatDatabase PluginDatabase = HowLongToBeat.PluginDatabase;
 
         public GameHowLongToBeat gameHowLongToBeat;
         private Game _game;
@@ -114,7 +117,7 @@ namespace HowLongToBeat.Views
                 }
                 catch (Exception ex)
                 {
-                    Common.LogError(ex, false, true, "HowLongToBeat");
+                    Common.LogError(ex, false, true, PluginDatabase.PluginName);
                 }
 
                 Common.LogDebug(true, $"dataSearch: {Serialization.ToJson(dataSearch)}");

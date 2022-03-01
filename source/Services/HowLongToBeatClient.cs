@@ -195,7 +195,7 @@ namespace HowLongToBeat.Services
             }
             catch (Exception ex)
             {
-                Common.LogError(ex, false, true, "HowLongToBeat");
+                Common.LogError(ex, false, true, PluginDatabase.PluginName);
                 return string.Empty;
             }
         }
@@ -350,7 +350,7 @@ namespace HowLongToBeat.Services
                 }
                 catch (Exception ex)
                 {
-                    Common.LogError(ex, false, true, "HowLongToBeat");
+                    Common.LogError(ex, false, true, PluginDatabase.PluginName);
                 }
             }
 
@@ -438,7 +438,7 @@ namespace HowLongToBeat.Services
                         }
                         catch (Exception ex)
                         {
-                            Common.LogError(ex, false, true, "HowLongToBeat");
+                            Common.LogError(ex, false, true, PluginDatabase.PluginName);
                         }
                     });
                 }
@@ -508,7 +508,7 @@ namespace HowLongToBeat.Services
             }
             catch (Exception ex)
             {
-                Common.LogError(ex, false, true, "HowLongToBeat");
+                Common.LogError(ex, false, true, PluginDatabase.PluginName);
                 return string.Empty;
             }
         }
@@ -531,7 +531,7 @@ namespace HowLongToBeat.Services
             }
             catch (Exception ex)
             {
-                Common.LogError(ex, false, true, "HowLongToBeat");
+                Common.LogError(ex, false, true, PluginDatabase.PluginName);
                 return string.Empty;
             }
         }
@@ -748,14 +748,14 @@ namespace HowLongToBeat.Services
             }
             catch (Exception ex)
             {
-                Common.LogError(ex, false, true, "HowLongToBeat");
+                Common.LogError(ex, false, true, PluginDatabase.PluginName);
                 return null;
             }
         }
 
         public HltbPostData GetSubmitData(string GameName, string UserGameId)
         {
-            logger.Info($"GetSubmitData({GameName})");
+            logger.Info($"GetSubmitData({GameName}, {UserGameId})");
             try
             {
                 List<HttpCookie> Cookies = WebViewOffscreen.GetCookies();
@@ -765,7 +765,7 @@ namespace HowLongToBeat.Services
 
                 if (response.IsNullOrEmpty())
                 {
-                    logger.Warn($"No SubmitData for {UserGameId}");
+                    logger.Warn($"No SubmitData for {GameName} - {UserGameId}");
                     return null;
                 }
 
@@ -776,24 +776,24 @@ namespace HowLongToBeat.Services
                 HltbPostData hltbPostData = new HltbPostData();
 
 
-                var user_id = htmlDocument.QuerySelector("input[name=user_id]");
+                IElement user_id = htmlDocument.QuerySelector("input[name=user_id]");
                 int.TryParse(user_id.GetAttribute("value"), out int user_id_value);
                 hltbPostData.user_id = user_id_value;
 
-                var edit_id = htmlDocument.QuerySelector("input[name=edit_id]");
+                IElement edit_id = htmlDocument.QuerySelector("input[name=edit_id]");
                 int.TryParse(edit_id.GetAttribute("value"), out int edit_id_value);
                 hltbPostData.edit_id = edit_id_value;
 
-                var game_id = htmlDocument.QuerySelector("input[name=game_id]");
+                IElement game_id = htmlDocument.QuerySelector("input[name=game_id]");
                 int.TryParse(game_id.GetAttribute("value"), out int game_id_value);
                 hltbPostData.game_id = game_id_value;
 
 
-                var CustomTitle = htmlDocument.QuerySelector("input[name=custom_title]");
+                IElement CustomTitle = htmlDocument.QuerySelector("input[name=custom_title]");
                 hltbPostData.custom_title = CustomTitle.GetAttribute("value");
 
                 // TODO No selected....
-                var SelectPlatform = htmlDocument.QuerySelectorAll("select[name=platform]");
+                IHtmlCollection<IElement> SelectPlatform = htmlDocument.QuerySelectorAll("select[name=platform]");
                 foreach(var option in SelectPlatform[0].QuerySelectorAll("option"))
                 {
                     if (option.GetAttribute("selected") == "selected")
@@ -816,7 +816,7 @@ namespace HowLongToBeat.Services
                 }
 
 
-                var cbList = htmlDocument.QuerySelector("#list_p");
+                IElement cbList = htmlDocument.QuerySelector("#list_p");
                 if ((bool)cbList?.OuterHtml?.ToLower()?.Contains(" checked"))
                 {
                     hltbPostData.list_p = "1";
@@ -852,22 +852,22 @@ namespace HowLongToBeat.Services
                     hltbPostData.list_rt = "1";
                 }
 
-                var cp_pull_h = htmlDocument.QuerySelector("#cp_pull_h");
+                IElement cp_pull_h = htmlDocument.QuerySelector("#cp_pull_h");
                 hltbPostData.protime_h = cp_pull_h.GetAttribute("value");
 
-                var cp_pull_m = htmlDocument.QuerySelector("#cp_pull_m");
+                IElement cp_pull_m = htmlDocument.QuerySelector("#cp_pull_m");
                 hltbPostData.protime_m = cp_pull_m.GetAttribute("value");
 
-                var cp_pull_s = htmlDocument.QuerySelector("#cp_pull_s");
+                IElement cp_pull_s = htmlDocument.QuerySelector("#cp_pull_s");
                 hltbPostData.protime_s = cp_pull_s.GetAttribute("value");
 
 
-                var rt_notes = htmlDocument.QuerySelector("input[name=rt_notes]");
+                IElement rt_notes = htmlDocument.QuerySelector("input[name=rt_notes]");
                 hltbPostData.rt_notes = rt_notes.GetAttribute("value");
 
 
-                var compmonth = htmlDocument.QuerySelector("#compmonth");
-                foreach (var option in compmonth.QuerySelectorAll("option"))
+                IElement compmonth = htmlDocument.QuerySelector("#compmonth");
+                foreach (IElement option in compmonth.QuerySelectorAll("option"))
                 {
                     if (option.GetAttribute("selected") == "selected")
                     {
@@ -875,9 +875,8 @@ namespace HowLongToBeat.Services
                     }
                 }
 
-                var compday = htmlDocument.QuerySelector("#compday");
-                var a = compday.InnerHtml;
-                foreach (var option in compday.QuerySelectorAll("option"))
+                IElement compday = htmlDocument.QuerySelector("#compday");
+                foreach (IElement option in compday.QuerySelectorAll("option"))
                 {
                     if (option.GetAttribute("selected") == "selected")
                     {
@@ -885,8 +884,8 @@ namespace HowLongToBeat.Services
                     }
                 }
 
-                var compyear = htmlDocument.QuerySelector("#compyear");
-                foreach (var option in compyear.QuerySelectorAll("option"))
+                IElement compyear = htmlDocument.QuerySelector("#compyear");
+                foreach (IElement option in compyear.QuerySelectorAll("option"))
                 {
                     if (option.GetAttribute("selected") == "selected")
                     {
@@ -895,8 +894,8 @@ namespace HowLongToBeat.Services
                 }
 
 
-                var play_num = htmlDocument.QuerySelector("#play_num");
-                foreach (var option in play_num.QuerySelectorAll("option"))
+                IElement play_num = htmlDocument.QuerySelector("#play_num");
+                foreach (IElement option in play_num.QuerySelectorAll("option"))
                 {
                     if (option.GetAttribute("selected") == "selected")
                     {
@@ -906,82 +905,82 @@ namespace HowLongToBeat.Services
                 }
 
 
-                var c_main_h = htmlDocument.QuerySelector("#c_main_h");
+                IElement c_main_h = htmlDocument.QuerySelector("#c_main_h");
                 hltbPostData.c_main_h = c_main_h?.GetAttribute("value");
 
-                var c_main_m = htmlDocument.QuerySelector("#c_main_m");
+                IElement c_main_m = htmlDocument.QuerySelector("#c_main_m");
                 hltbPostData.c_main_m = c_main_m?.GetAttribute("value");
 
-                var c_main_s = htmlDocument.QuerySelector("#c_main_s");
+                IElement c_main_s = htmlDocument.QuerySelector("#c_main_s");
                 hltbPostData.c_main_s = c_main_s?.GetAttribute("value");
 
-                var c_main_notes = htmlDocument.QuerySelector("input[name=c_main_notes]");
+                IElement c_main_notes = htmlDocument.QuerySelector("input[name=c_main_notes]");
                 hltbPostData.c_main_notes = c_main_notes?.GetAttribute("value");
 
 
-                var c_plus_h = htmlDocument.QuerySelector("#c_plus_h");
+                IElement c_plus_h = htmlDocument.QuerySelector("#c_plus_h");
                 hltbPostData.c_plus_h = c_plus_h?.GetAttribute("value");
 
-                var c_plus_m = htmlDocument.QuerySelector("#c_plus_m");
+                IElement c_plus_m = htmlDocument.QuerySelector("#c_plus_m");
                 hltbPostData.c_plus_m = c_plus_m?.GetAttribute("value");
 
-                var c_plus_s = htmlDocument.QuerySelector("#c_plus_s");
+                IElement c_plus_s = htmlDocument.QuerySelector("#c_plus_s");
                 hltbPostData.c_plus_s = c_plus_s?.GetAttribute("value");
 
-                var c_plus_notes = htmlDocument.QuerySelector("input[name=c_plus_notes]");
+                IElement c_plus_notes = htmlDocument.QuerySelector("input[name=c_plus_notes]");
                 hltbPostData.c_plus_notes = c_plus_notes?.GetAttribute("value");
 
 
-                var c_100_h = htmlDocument.QuerySelector("#c_100_h");
+                IElement c_100_h = htmlDocument.QuerySelector("#c_100_h");
                 hltbPostData.c_100_h = c_100_h?.GetAttribute("value");
 
-                var c_100_m = htmlDocument.QuerySelector("#c_100_m");
+                IElement c_100_m = htmlDocument.QuerySelector("#c_100_m");
                 hltbPostData.c_100_m = c_100_m?.GetAttribute("value");
 
-                var c_100_s = htmlDocument.QuerySelector("#c_100_s");
+                IElement c_100_s = htmlDocument.QuerySelector("#c_100_s");
                 hltbPostData.c_100_s = c_100_s?.GetAttribute("value");
 
-                var c_100_notes = htmlDocument.QuerySelector("input[name=c_100_notes]");
+                IElement c_100_notes = htmlDocument.QuerySelector("input[name=c_100_notes]");
                 hltbPostData.c_100_notes = c_100_notes?.GetAttribute("value");
 
 
-                var c_speed_h = htmlDocument.QuerySelector("#c_speed_h");
+                IElement c_speed_h = htmlDocument.QuerySelector("#c_speed_h");
                 hltbPostData.c_speed_h = c_speed_h?.GetAttribute("value");
 
-                var c_speed_m = htmlDocument.QuerySelector("#c_speed_m");
+                IElement c_speed_m = htmlDocument.QuerySelector("#c_speed_m");
                 hltbPostData.c_speed_m = c_speed_m?.GetAttribute("value");
 
-                var c_speed_s = htmlDocument.QuerySelector("#c_speed_s");
+                IElement c_speed_s = htmlDocument.QuerySelector("#c_speed_s");
                 hltbPostData.c_speed_s = c_speed_s?.GetAttribute("value");
 
-                var c_speed_notes = htmlDocument.QuerySelector("input[name=c_speed_notes]");
+                IElement c_speed_notes = htmlDocument.QuerySelector("input[name=c_speed_notes]");
                 hltbPostData.c_speed_notes = c_speed_notes?.GetAttribute("value");
 
 
-                var cotime_h = htmlDocument.QuerySelector("#cotime_h");
+                IElement cotime_h = htmlDocument.QuerySelector("#cotime_h");
                 hltbPostData.cotime_h = cotime_h?.GetAttribute("value");
 
-                var cotime_m = htmlDocument.QuerySelector("#cotime_m");
+                IElement cotime_m = htmlDocument.QuerySelector("#cotime_m");
                 hltbPostData.cotime_m = cotime_m?.GetAttribute("value");
 
-                var cotime_s = htmlDocument.QuerySelector("#cotime_s");
+                IElement cotime_s = htmlDocument.QuerySelector("#cotime_s");
                 hltbPostData.cotime_s = cotime_s?.GetAttribute("value");
 
 
-                var mptime_h = htmlDocument.QuerySelector("#mptime_h");
+                IElement mptime_h = htmlDocument.QuerySelector("#mptime_h");
                 hltbPostData.mptime_h = mptime_h?.GetAttribute("value");
 
-                var mptime_m = htmlDocument.QuerySelector("#mptime_m");
+                IElement mptime_m = htmlDocument.QuerySelector("#mptime_m");
                 hltbPostData.mptime_m = mptime_m?.GetAttribute("value");
 
-                var mptime_s = htmlDocument.QuerySelector("#mptime_s");
+                IElement mptime_s = htmlDocument.QuerySelector("#mptime_s");
                 hltbPostData.mptime_s = mptime_s?.GetAttribute("value");
 
-                var mptime_notes = htmlDocument.QuerySelector("#mptime_notes");
+                IElement mptime_notes = htmlDocument.QuerySelector("#mptime_notes");
 
 
-                var review_score = htmlDocument.QuerySelector("select[name=review_score]");
-                foreach (var option in review_score.QuerySelectorAll("option"))
+                IElement review_score = htmlDocument.QuerySelector("select[name=review_score]");
+                foreach (IElement option in review_score.QuerySelectorAll("option"))
                 {
                     if (option.GetAttribute("selected") == "selected")
                     {
@@ -991,15 +990,15 @@ namespace HowLongToBeat.Services
                 }
 
 
-                var review_notes = htmlDocument.QuerySelector("textarea[name=review_notes]");
+                IElement review_notes = htmlDocument.QuerySelector("textarea[name=review_notes]");
                 hltbPostData.review_notes = review_notes?.InnerHtml;
 
 
-                var play_notes = htmlDocument.QuerySelector("textarea[name=play_notes]");
+                IElement play_notes = htmlDocument.QuerySelector("textarea[name=play_notes]");
                 hltbPostData.play_notes = play_notes?.InnerHtml;
 
 
-                var play_video = htmlDocument.QuerySelector("input[name=play_video]");
+                IElement play_video = htmlDocument.QuerySelector("input[name=play_video]");
                 hltbPostData.play_video = play_video?.GetAttribute("value");
 
 
@@ -1014,7 +1013,7 @@ namespace HowLongToBeat.Services
                 }
                 else
                 {
-                    Common.LogError(ex, false, true, "HowLongToBeat");
+                    Common.LogError(ex, false, true, PluginDatabase.PluginName);
                     return null;
                 }
             }
@@ -1035,7 +1034,7 @@ namespace HowLongToBeat.Services
                 }
                 catch (Exception ex)
                 {
-                    Common.LogError(ex, false, true, "HowLongToBeat");
+                    Common.LogError(ex, false, true, PluginDatabase.PluginName);
                 }
             }
 
@@ -1080,7 +1079,7 @@ namespace HowLongToBeat.Services
                 }
                 catch (Exception ex)
                 {
-                    Common.LogError(ex, false, true, "HowLongToBeat");
+                    Common.LogError(ex, false, true, PluginDatabase.PluginName);
                     return null;
                 }
 
@@ -1089,8 +1088,8 @@ namespace HowLongToBeat.Services
             else
             {
                 PluginDatabase.PlayniteApi.Notifications.Add(new NotificationMessage(
-                    "HowLongToBeat-Import-Error",
-                    "HowLongToBeat" + System.Environment.NewLine + resources.GetString("LOCCommonNotLoggedIn"),
+                    $"{PluginDatabase.PluginName}-Import-Error",
+                    PluginDatabase.PluginName + System.Environment.NewLine + resources.GetString("LOCCommonNotLoggedIn"),
                     NotificationType.Error,
                     () => PluginDatabase.Plugin.OpenSettingsView()
                 ));
@@ -1142,7 +1141,7 @@ namespace HowLongToBeat.Services
                 }
                 catch (Exception ex)
                 {
-                    Common.LogError(ex, false, true, "HowLongToBeat");
+                    Common.LogError(ex, false, true, PluginDatabase.PluginName);
                     return null;
                 }
 
@@ -1151,8 +1150,8 @@ namespace HowLongToBeat.Services
             else
             {
                 PluginDatabase.PlayniteApi.Notifications.Add(new NotificationMessage(
-                    "HowLongToBeat-Import-Error",
-                    "HowLongToBeat" + System.Environment.NewLine + resources.GetString("LOCCommonNotLoggedIn"),
+                    $"{PluginDatabase.PluginName}-Import-Error",
+                    PluginDatabase.PluginName + System.Environment.NewLine + resources.GetString("LOCCommonNotLoggedIn"),
                     NotificationType.Error,
                     () => PluginDatabase.Plugin.OpenSettingsView()
                 ));
@@ -1187,7 +1186,7 @@ namespace HowLongToBeat.Services
             }
             catch (Exception ex)
             {
-                Common.LogError(ex, false, true, "HowLongToBeat");
+                Common.LogError(ex, false, true, PluginDatabase.PluginName);
                 return null;
             }
         }
@@ -1329,8 +1328,8 @@ namespace HowLongToBeat.Services
                     if (!errorMessage.IsNullOrEmpty())
                     {
                         PluginDatabase.PlayniteApi.Notifications.Add(new NotificationMessage(
-                            $"HowLongToBeat-{game.Id}-Error",
-                            $"HowLongToBeat" + System.Environment.NewLine + game.Name + System.Environment.NewLine + errorMessage,
+                            $"{PluginDatabase.PluginName}-{game.Id}-Error",
+                            PluginDatabase.PluginName + System.Environment.NewLine + game.Name + System.Environment.NewLine + errorMessage,
                             NotificationType.Error
                         ));
                     }
@@ -1341,15 +1340,15 @@ namespace HowLongToBeat.Services
                 }
                 catch (Exception ex)
                 {
-                    Common.LogError(ex, false, true, "HowLongToBeat");
+                    Common.LogError(ex, false, true, PluginDatabase.PluginName);
                     return false;
                 }
             }
             else
             {
                 PluginDatabase.PlayniteApi.Notifications.Add(new NotificationMessage(
-                    "HowLongToBeat-DataUpdate-Error",
-                    "HowLongToBeat" + System.Environment.NewLine + resources.GetString("LOCCommonNotLoggedIn"),
+                    $"{PluginDatabase.PluginName}-DataUpdate-Error",
+                    PluginDatabase.PluginName + System.Environment.NewLine + resources.GetString("LOCCommonNotLoggedIn"),
                     NotificationType.Error,
                     () => PluginDatabase.Plugin.OpenSettingsView()
                 ));

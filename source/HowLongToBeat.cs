@@ -82,7 +82,7 @@ namespace HowLongToBeat
                         };
 
                         var ViewExtension = new HowLongToBeatUserView();
-                        Window windowExtension = PlayniteUiHelper.CreateExtensionWindow(PlayniteApi, "HowLongToBeat", ViewExtension, windowOptions);
+                        Window windowExtension = PlayniteUiHelper.CreateExtensionWindow(PlayniteApi, PluginDatabase.PluginName, ViewExtension, windowOptions);
                         windowExtension.ResizeMode = ResizeMode.CanResize;
                         windowExtension.ShowDialog();
                     },
@@ -115,14 +115,14 @@ namespace HowLongToBeat
                     };
 
                     var ViewExtension = new HowLongToBeatUserView();
-                    Window windowExtension = PlayniteUiHelper.CreateExtensionWindow(PlayniteApi, "HowLongToBeat", ViewExtension, windowOptions);
+                    Window windowExtension = PlayniteUiHelper.CreateExtensionWindow(PlayniteApi, PluginDatabase.PluginName, ViewExtension, windowOptions);
                     windowExtension.ResizeMode = ResizeMode.CanResize;
                     windowExtension.ShowDialog();
                 }
             }
             catch (Exception ex)
             {
-                Common.LogError(ex, false, true, "HowLongToBeat");
+                Common.LogError(ex, false, true, PluginDatabase.PluginName);
             }
         }
         #endregion
@@ -212,14 +212,14 @@ namespace HowLongToBeat
                             if (gameHowLongToBeat.HasData || gameHowLongToBeat.HasDataEmpty)
                             {
                                 var ViewExtension = new HowLongToBeatView(gameHowLongToBeat);
-                                Window windowExtension = PlayniteUiHelper.CreateExtensionWindow(PlayniteApi, "HowLongToBeat", ViewExtension);
+                                Window windowExtension = PlayniteUiHelper.CreateExtensionWindow(PlayniteApi, PluginDatabase.PluginName, ViewExtension);
                                 windowExtension.ShowDialog();
                             }
                         }
                         catch (Exception ex)
                         {
                             Common.LogError(ex, false, $"Error to load game data for {args.Games.First().Name}");
-                            PlayniteApi.Dialogs.ShowErrorMessage(resources.GetString("LOCDatabaseErroTitle"), "HowLongToBeat");
+                            PlayniteApi.Dialogs.ShowErrorMessage(resources.GetString("LOCDatabaseErroTitle"), PluginDatabase.PluginName);
                         }
                     }
                 }
@@ -241,7 +241,7 @@ namespace HowLongToBeat
                     Action = (mainMenuItem) =>
                     {
                         GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions(
-                            $"HowLongToBeat - {resources.GetString("LOCCommonProcessing")}",
+                            $"{PluginDatabase.PluginName} - {resources.GetString("LOCCommonProcessing")}",
                             false
                         );
 
@@ -270,7 +270,7 @@ namespace HowLongToBeat
                         Action = (mainMenuItem) =>
                         {
                             GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions(
-                                $"HowLongToBeat - {resources.GetString("LOCCommonProcessing")}",
+                                $"{PluginDatabase.PluginName} - {resources.GetString("LOCCommonProcessing")}",
                                 false
                             );
 
@@ -296,7 +296,7 @@ namespace HowLongToBeat
                         Action = (mainMenuItem) =>
                         {
                             GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions(
-                                $"HowLongToBeat - {resources.GetString("LOCCommonProcessing")}",
+                                $"{PluginDatabase.PluginName} - {resources.GetString("LOCCommonProcessing")}",
                                 false
                             );
 
@@ -322,7 +322,7 @@ namespace HowLongToBeat
                         Action = (mainMenuItem) =>
                         {
                             GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions(
-                                $"HowLongToBeat - {resources.GetString("LOCCommonProcessing")}",
+                                $"{PluginDatabase.PluginName} - {resources.GetString("LOCCommonProcessing")}",
                                 false
                             );
 
@@ -421,7 +421,7 @@ namespace HowLongToBeat
                         var ViewExtension = new HowLongToBeatUserView();
                         ViewExtension.Height = 660;
                         ViewExtension.Width = 1290;
-                        Window windowExtension = PlayniteUiHelper.CreateExtensionWindow(PlayniteApi, "HowLongToBeat", ViewExtension);
+                        Window windowExtension = PlayniteUiHelper.CreateExtensionWindow(PlayniteApi, PluginDatabase.PluginName, ViewExtension);
                         windowExtension.ShowDialog();
                     }
                 },
@@ -449,11 +449,11 @@ namespace HowLongToBeat
                     {
                         if (PluginDatabase.ClearDatabase())
                         {
-                            PlayniteApi.Dialogs.ShowMessage(resources.GetString("LOCCommonDataRemove"), "HowLongToBeat");
+                            PlayniteApi.Dialogs.ShowMessage(resources.GetString("LOCCommonDataRemove"), PluginDatabase.PluginName);
                         }
                         else
                         {
-                            PlayniteApi.Dialogs.ShowErrorMessage(resources.GetString("LOCCommonDataErrorRemove"), "HowLongToBeat");
+                            PlayniteApi.Dialogs.ShowErrorMessage(resources.GetString("LOCCommonDataErrorRemove"), PluginDatabase.PluginName);
                         }
                     }
                 },
@@ -473,7 +473,7 @@ namespace HowLongToBeat
                         var db = PlayniteApi.Database.Games.Where(x => !x.Hidden && x.Playtime > 0);
 
                         GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions(
-                            $"HowLongToBeat - {resources.GetString("LOCCommonProcessing")}",
+                            $"{PluginDatabase.PluginName} - {resources.GetString("LOCCommonProcessing")}",
                             true
                         );
 
@@ -579,7 +579,7 @@ namespace HowLongToBeat
                     };
 
                     var ViewExtension = new ListWithNoData(PlayniteApi, PluginDatabase);
-                    Window windowExtension = PlayniteUiHelper.CreateExtensionWindow(PlayniteApi, "HowLongToBeat", ViewExtension, windowOptions);
+                    Window windowExtension = PlayniteUiHelper.CreateExtensionWindow(PlayniteApi, PluginDatabase.PluginName, ViewExtension, windowOptions);
                     windowExtension.ShowDialog();
                 }
             });
@@ -625,7 +625,7 @@ namespace HowLongToBeat
             }
             catch (Exception ex)
             {
-                Common.LogError(ex, false, true, "HowLongToBeat");
+                Common.LogError(ex, false, true, PluginDatabase.PluginName);
             }
         }
 
@@ -668,7 +668,7 @@ namespace HowLongToBeat
             }
             catch (Exception ex)
             {
-                Common.LogError(ex, false, true, "HowLongToBeat");
+                Common.LogError(ex, false, true, PluginDatabase.PluginName);
             }
 
             // AutoSetCurrentPlayTime
@@ -679,7 +679,7 @@ namespace HowLongToBeat
                     MessageBoxResult result = MessageBoxResult.Yes;
                     if (!PluginSettings.Settings.AutoSetCurrentPlayTimeWithoutConfirmation)
                     {
-                        result = PlayniteApi.Dialogs.ShowMessage(resources.GetString("LOCHowLongToBeatSetCurrentTime"), "HowLongToBeat", MessageBoxButton.YesNo);
+                        result = PlayniteApi.Dialogs.ShowMessage(resources.GetString("LOCHowLongToBeatSetCurrentTime"), PluginDatabase.PluginName, MessageBoxButton.YesNo);
                     }
                     
                     if (result == MessageBoxResult.Yes)
@@ -692,8 +692,8 @@ namespace HowLongToBeat
                                 if (PluginDatabase.PluginSettings.Settings.EnableSucessNotification)
                                 {
                                     PlayniteApi.Notifications.Add(new NotificationMessage(
-                                        "HowLongToBeat-SetCurrentPlayTime",
-                                        "HowLongToBeat" + System.Environment.NewLine +
+                                        $"{PluginDatabase.PluginName}-SetCurrentPlayTime",
+                                        PluginDatabase.PluginName + System.Environment.NewLine +
                                         string.Format(resources.GetString("LOCHowLongToBeatCurrentPlayTimeSetted"), args.Game.Name),
                                         NotificationType.Info));
                                 }
@@ -704,7 +704,7 @@ namespace HowLongToBeat
                 }
                 catch (Exception ex)
                 {
-                    Common.LogError(ex, false, true, "HowLongToBeat");
+                    Common.LogError(ex, false, true, PluginDatabase.PluginName);
                 }
             }
         }
@@ -721,7 +721,7 @@ namespace HowLongToBeat
                 string icon = Path.Combine(PluginDatabase.Paths.PluginPath, "Resources", "hltb.png");
 
                 var HltbSubItemsAction = new SubItemsAction() { Action = () => { }, Name = "", CloseAfterExecute = false, SubItemSource = new QuickSearchItemSource() };
-                var HltbCommand = new CommandItem("HowLongToBeat", new List<CommandAction>(), ResourceProvider.GetString("LOCHltbQuickSearchDescription"), icon);
+                var HltbCommand = new CommandItem(PluginDatabase.PluginName, new List<CommandAction>(), ResourceProvider.GetString("LOCHltbQuickSearchDescription"), icon);
                 HltbCommand.Keys.Add(new CommandItemKey() { Key = "hltb", Weight = 1 });
                 HltbCommand.Actions.Add(HltbSubItemsAction);
                 QuickSearch.QuickSearchSDK.AddCommand(HltbCommand);
@@ -750,7 +750,7 @@ namespace HowLongToBeat
                         .ToList();
 
                 GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions(
-                    $"HowLongToBeat - {resources.GetString("LOCCommonGettingData")}",
+                    $"{PluginDatabase.PluginName} - {resources.GetString("LOCCommonGettingData")}",
                     true
                 );
                 globalProgressOptions.IsIndeterminate = false;
@@ -786,7 +786,7 @@ namespace HowLongToBeat
                     }
                     catch (Exception ex)
                     {
-                        Common.LogError(ex, false, true, "HowLongToBeat");
+                        Common.LogError(ex, false, true, PluginDatabase.PluginName);
                     }
                 }, globalProgressOptions);
 

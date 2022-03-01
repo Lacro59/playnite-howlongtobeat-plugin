@@ -198,7 +198,7 @@ namespace HowLongToBeat.Views
             }
             catch (Exception ex)
             {
-                Common.LogError(ex, false, true, "HowLongToBeat");
+                Common.LogError(ex, false, true, PluginDatabase.PluginName);
             }
         }
 
@@ -265,7 +265,7 @@ namespace HowLongToBeat.Views
             }
             catch (Exception ex)
             {
-                Common.LogError(ex, false, true, "HowLongToBeat");
+                Common.LogError(ex, false, true, PluginDatabase.PluginName);
             }
         }
 

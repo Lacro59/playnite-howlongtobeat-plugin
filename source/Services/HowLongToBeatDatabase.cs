@@ -216,7 +216,7 @@ namespace HowLongToBeat.Services
                 }
                 catch (Exception ex)
                 {
-                    Common.LogError(ex, false, true, "HowLongToBeat");
+                    Common.LogError(ex, false, true, PluginName);
                 }
             }, globalProgressOptions);
         }
@@ -641,7 +641,7 @@ namespace HowLongToBeat.Services
                 }
                 catch (Exception ex)
                 {
-                    Common.LogError(ex, false, true, "HowLongToBeat");
+                    Common.LogError(ex, false, true, PluginName);
                 }
             }, globalProgressOptions);
         }
@@ -672,7 +672,7 @@ namespace HowLongToBeat.Services
                 }
                 catch (Exception ex)
                 {
-                    Common.LogError(ex, false, true, "HowLongToBeat");
+                    Common.LogError(ex, false, true, PluginName);
                 }
             });
         }
@@ -816,8 +816,8 @@ namespace HowLongToBeat.Services
                 else
                 {
                     PlayniteApi.Notifications.Add(new NotificationMessage(
-                        "HowLongToBeat-NotLoggedIn-Error",
-                        "HowLongToBeat" + System.Environment.NewLine + resources.GetString("LOCCommonNotLoggedIn"),
+                        $"{PluginName}-NotLoggedIn-Error",
+                        PluginName + System.Environment.NewLine + resources.GetString("LOCCommonNotLoggedIn"),
                         NotificationType.Error,
                         () => Plugin.OpenSettingsView()
                     ));
@@ -826,7 +826,7 @@ namespace HowLongToBeat.Services
             }
             catch (Exception ex)
             {
-                Common.LogError(ex, false, true, "HowLongToBeat");
+                Common.LogError(ex, false, true, PluginName);
                 return false;
             }
 
