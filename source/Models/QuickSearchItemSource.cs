@@ -41,7 +41,7 @@ namespace HowLongToBeat.Models
                     new CommandItem("<>", new List<CommandAction>(), "example: ttb 30 min <> 1 h", Icon),
                     new CommandItem(">", new List<CommandAction>(), "example: ttb > 2 h", Icon),
 
-                    new CommandItem("-np (not played) (optional)", new List<CommandAction>(), "example: ttb > 2 h np", Icon),
+                    new CommandItem("-np (not played) (optional)", new List<CommandAction>(), "example: ttb > 2 h -np", Icon),
                 }.AsEnumerable();
             }
 
@@ -62,7 +62,6 @@ namespace HowLongToBeat.Models
                         return SearchByTtb(query);
                 }
             }
-
             return null;
         }
 
@@ -80,7 +79,6 @@ namespace HowLongToBeat.Models
         private CommandItem GetCommandItem(GameHowLongToBeat data, string query)
         {
             DefaultIconConverter defaultIconConverter = new DefaultIconConverter();
-
             LocalDateTimeConverter localDateTimeConverter = new LocalDateTimeConverter();
 
             string title = data.Name;
@@ -124,7 +122,7 @@ namespace HowLongToBeat.Models
 
         private List<KeyValuePair<Guid, GameHowLongToBeat>> GetDb(ConcurrentDictionary<Guid, GameHowLongToBeat> db)
         {
-            return db.Where(x => PluginDatabase.PlayniteApi.Database.Games.Get(x.Key) != null).ToList();
+            return db.Where(x => PluginDatabase.PlayniteApi.Database.Games.Get(x.Key) != null && x.Value.HasData).ToList();
         }
 
 
@@ -141,7 +139,6 @@ namespace HowLongToBeat.Models
                 db = db.Where(x => x.Value.LastActivity == null).ToList();
             }
 
-
             if (parameters.Count == 4)
             {
                 return Task.Run(() =>
@@ -153,7 +150,7 @@ namespace HowLongToBeat.Models
                             try
                             {
                                 double s = GetElapsedSeconde(parameters[2], parameters[3]);
-                                foreach (var data in db)
+                                foreach (KeyValuePair<Guid, GameHowLongToBeat> data in db)
                                 {
                                     if (data.Value.Items[0].GameHltbData.TimeToBeat >= s)
                                     {
@@ -168,7 +165,7 @@ namespace HowLongToBeat.Models
                             try
                             {
                                 double s = GetElapsedSeconde(parameters[2], parameters[3]);
-                                foreach (var data in db)
+                                foreach (KeyValuePair<Guid, GameHowLongToBeat> data in db)
                                 {
                                     if (data.Value.Items[0].GameHltbData.TimeToBeat <= s)
                                     {
