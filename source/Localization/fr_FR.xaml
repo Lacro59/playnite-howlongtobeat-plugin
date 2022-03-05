@@ -15,7 +15,7 @@
 
     <sys:String x:Key="LOCHowLongToBeatColorSelection">Sélection de couleur :</sys:String>
 
-    <sys:String x:Key="LOCHltbEnableProgressBarInDataView">View progress bar in Playnite data view</sys:String>
+    <sys:String x:Key="LOCHltbEnableProgressBarInDataView">Afficher la barre de progression dans la vue avec les données Playnite</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarOptions">Options pour la barre de progression</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">Afficher une info-bulle de temps dans la barre de progression</sys:String>
@@ -83,11 +83,11 @@ Si aucun n'a ce statut, il prend le plus récent.</sys:String>
     <sys:String x:Key="LOCHltbAvgGameByMonth">Jeu moyen par mois</sys:String>
     <sys:String x:Key="LOCHltbCountGameBeatenBeforeTime">Nombre de jeux battus avant le temps</sys:String>
     <sys:String x:Key="LOCHltbCountGameBeatenAfterTime">Nombre de jeux battus après le temps</sys:String>
-    <sys:String x:Key="LOCHltbCountGameBeatenReplays">Number of games beaten replayed</sys:String>
-    <sys:String x:Key="LOCHltbCountGameRetired">Number of games retired</sys:String>
+    <sys:String x:Key="LOCHltbCountGameBeatenReplays">Nombre de jeux battus avant le temps</sys:String>
+    <sys:String x:Key="LOCHltbCountGameRetired">Nombre de jeux retirés</sys:String>
 
-    <sys:String x:Key="LOCHltbUsedFilteredGames">Currently filtered games used</sys:String>
-    <sys:String x:Key="LOCHltbOnlyNotPlayedGames">Only game not played</sys:String>
+    <sys:String x:Key="LOCHltbUsedFilteredGames">Jeux actuellement filtrés utilisés</sys:String>
+    <sys:String x:Key="LOCHltbOnlyNotPlayedGames">Uniquement les jeux non joués</sys:String>
 
     <!-- MainView -->
 
@@ -111,11 +111,11 @@ Si aucun n'a ce statut, il prend le plus récent.</sys:String>
     <sys:String x:Key="LOCHltbQuickSearchDescription">Rechercher des jeux dans les données HowLongToBeat</sys:String>
     <sys:String x:Key="LOCHltbQuickSearchByTTB">Trouver par temps pour battre</sys:String>
 
-    <sys:String x:Key="LOCHltbQuickSearchInfo" xml:space="preserve">The plugin uses the functionality of the QuickSearch plugin.
-To use it, you must validate the &quot;howlongtobeat&quot; or &quot;hltb&quot; command.    
+    <sys:String x:Key="LOCHltbQuickSearchInfo" xml:space="preserve">Le plugin utilise les fonctionnalités du plugin QuickSearch.
+Pour l'utiliser, vous devez valider la commande &quot;howlongtobeat&quot; ou &quot;hltb&quot;.    
         
-Here is the list of commands:</sys:String>
+Voici la liste des commandes :</sys:String>
 
-    <sys:String x:Key="LOCHltbQuickSearchCmd1" xml:space="preserve">This command searches for a list of games with a specific time to beat.</sys:String>
+    <sys:String x:Key="LOCHltbQuickSearchCmd1" xml:space="preserve">Cette commande recherche une liste de jeux avec un temps spécifique pour le déblocage complet.</sys:String>
 
 </ResourceDictionary>
