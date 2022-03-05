@@ -167,7 +167,7 @@ Packages:
       - Added new settings options
       - Added QuickSearch informations
       - Updated localizations
-  - Version: 2.10
+  - Version: 2.10.1
     RequiredApiVersion: 6.2.2
     ReleaseDate: 2022-03-01
     PackageUrl: https://github.com/Lacro59/playnite-howlongtobeat-plugin/releases/download/v2.10.1/playnite-howlongtobeat-plugin_2_10_1.pext
