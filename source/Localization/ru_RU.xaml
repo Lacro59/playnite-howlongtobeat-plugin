@@ -47,17 +47,17 @@
 
     <sys:String x:Key="LOCSelection">Выбор HowLongToBeat</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatMainStory">Основной сюжет</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatMainStory">Основной сюже</sys:String>
     <sys:String x:Key="LOCHowLongToBeatMainExtra">Сюжет и дополнительные задания</sys:String>
     <sys:String x:Key="LOCHowLongToBeatCompletionist">Полностью завершено</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatSolo">Одиночная игра</sys:String>
     <sys:String x:Key="LOCHowLongToBeatCoOp">Кооператив</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatVs">ПвП</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatVs">Пв</sys:String>
 
     <!-- HowLongToBeat -->
 
-    <sys:String x:Key="LOCHowLongToBeatProgression">Прогресс</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatProgression">Прогрес</sys:String>
 
     <!-- HowLongToBeatUserView -->
 
@@ -99,7 +99,7 @@
     <sys:String x:Key="LOCHowLongToBeatActualiseUserData">Обновить данные пользователя HowLongToBeat</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatSetCurrentTimeManual">Установить текущее время игры</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatSetCurrentTimeManualAll">Установить текущее время для всех игр</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatSetCurrentTimeManualAll">Установить текущее время для всех иг</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatSetCurrentCompletedTimeManualOn">Set your current completed playtime on</sys:String>
 
