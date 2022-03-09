@@ -86,8 +86,8 @@ Wenn keiner diesen Status hat, wird der aktuellste genommen.</sys:String>
     <sys:String x:Key="LOCHltbCountGameBeatenReplays">Anzahl der geschlagenen Spiele, die wiederholt werden</sys:String>
     <sys:String x:Key="LOCHltbCountGameRetired">Anzahl der ausgelassenen Spiele</sys:String>
 
-    <sys:String x:Key="LOCHltbUsedFilteredGames">Currently filtered games used</sys:String>
-    <sys:String x:Key="LOCHltbOnlyNotPlayedGames">Only game not played</sys:String>
+    <sys:String x:Key="LOCHltbUsedFilteredGames">Derzeit gefilterte Spiele verwendet</sys:String>
+    <sys:String x:Key="LOCHltbOnlyNotPlayedGames">Nur Spiele, die noch nicht gespielt wurden</sys:String>
 
     <!-- MainView -->
 
@@ -111,11 +111,11 @@ Wenn keiner diesen Status hat, wird der aktuellste genommen.</sys:String>
     <sys:String x:Key="LOCHltbQuickSearchDescription">Spiele auf HowLongToBeat Daten durchsuchen</sys:String>
     <sys:String x:Key="LOCHltbQuickSearchByTTB">Nach Zeit suchen um zu schlagen</sys:String>
 
-    <sys:String x:Key="LOCHltbQuickSearchInfo" xml:space="preserve">The plugin uses the functionality of the QuickSearch plugin.
-To use it, you must validate the &quot;howlongtobeat&quot; or &quot;hltb&quot; command.    
+    <sys:String x:Key="LOCHltbQuickSearchInfo" xml:space="preserve">Das Plugin verwendet die Funktionalität des QuickSearch-Plugins.
+Um es zu verwenden, müssen Sie den Befehl &quot;howlongtobeat&quot; oder &quot;hltb&quot; überprüfen.    
         
-Here is the list of commands:</sys:String>
+Hier ist die Liste von Befehlen:</sys:String>
 
-    <sys:String x:Key="LOCHltbQuickSearchCmd1" xml:space="preserve">This command searches for a list of games with a specific time to beat.</sys:String>
+    <sys:String x:Key="LOCHltbQuickSearchCmd1" xml:space="preserve">Dieser Befehl sucht nach einer Liste von Spielen mit einer bestimmten zu schlagenden Zeit.</sys:String>
 
 </ResourceDictionary>
