@@ -57,7 +57,7 @@
 
     <!-- HowLongToBeat -->
 
-    <sys:String x:Key="LOCHowLongToBeatProgression">Прогрес</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatProgression">Прогре</sys:String>
 
     <!-- HowLongToBeatUserView -->
 
