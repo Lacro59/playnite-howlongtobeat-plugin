@@ -165,7 +165,7 @@ namespace HowLongToBeat.Services
         public List<HltbDataUser> Search(string Name, string Platform = "")
         {
             string data = GameSearch(Name, Platform).GetAwaiter().GetResult();
-            var dataParsed = SearchParser(data);
+            List<HltbDataUser> dataParsed = SearchParser(data);
             return dataParsed;
         }
 
@@ -178,7 +178,7 @@ namespace HowLongToBeat.Services
         { 
             try
             {
-                var content = new FormUrlEncodedContent(new[]
+                FormUrlEncodedContent content = new FormUrlEncodedContent(new[]
                 {
                     new KeyValuePair<string, string>("queryString", Name),
                     new KeyValuePair<string, string>("t", "games"),
@@ -243,10 +243,10 @@ namespace HowLongToBeat.Services
                     string UrlImg = string.Empty;
                     string Url = string.Empty;
 
-                    foreach (var SearchElement in htmlDocument.QuerySelectorAll("li.back_darkish"))
+                    foreach (IElement SearchElement in htmlDocument.QuerySelectorAll("li.back_darkish"))
                     {
-                        var ElementA = SearchElement.QuerySelector(".search_list_image a");
-                        var ElementImg = SearchElement.QuerySelector(".search_list_image a img");
+                        IElement ElementA = SearchElement.QuerySelector(".search_list_image a");
+                        IElement ElementImg = SearchElement.QuerySelector(".search_list_image a img");
                         Name = WebUtility.HtmlDecode(ElementA.GetAttribute("title"));
                         Id = int.Parse(ElementA.GetAttribute("href").Replace("game?id=", string.Empty));
                         UrlImg = ElementImg.GetAttribute("src");
@@ -266,8 +266,8 @@ namespace HowLongToBeat.Services
                             Url = UrlBase + Url;
                         }
 
-                        var ElementDetails = SearchElement.QuerySelector(".search_list_details_block");
-                        var Details = ElementDetails.QuerySelectorAll(".search_list_tidbit");
+                        IElement ElementDetails = SearchElement.QuerySelector(".search_list_details_block");
+                        IHtmlCollection<IElement> Details = ElementDetails.QuerySelectorAll(".search_list_tidbit");
                         if (Details.Length == 0)
                         {
                             Details = ElementDetails.QuerySelectorAll("div");
@@ -288,7 +288,7 @@ namespace HowLongToBeat.Services
                         bool IsSolo = true;
 
                         int iElement = 0;
-                        foreach (var El in Details)
+                        foreach (IElement El in Details)
                         {
                             if (iElement % 2 == 0)
                             {
@@ -453,10 +453,10 @@ namespace HowLongToBeat.Services
             IHtmlDocument htmlDocument = parser.Parse(webData);
 
             Dictionary<string, DateTime> data = new Dictionary<string, DateTime>();
-            foreach (var ListGame in htmlDocument.QuerySelectorAll("table.user_game_list tbody"))
+            foreach (IElement ListGame in htmlDocument.QuerySelectorAll("table.user_game_list tbody"))
             {
-                var tr = ListGame.QuerySelectorAll("tr");
-                var td = tr[0].QuerySelectorAll("td");
+                IHtmlCollection<IElement> tr = ListGame.QuerySelectorAll("tr");
+                IHtmlCollection<IElement> td = tr[0].QuerySelectorAll("td");
 
                 string UserGameId = ListGame.GetAttribute("id").Replace("user_sel_", string.Empty).Trim();
                 string sDateTime = td[1].InnerHtml;
@@ -520,7 +520,7 @@ namespace HowLongToBeat.Services
                 List<HttpCookie> Cookies = WebViewOffscreen.GetCookies();
                 Cookies = Cookies.Where(x => x != null && x.Domain != null && x.Domain.Contains("howlongtobeat", StringComparison.InvariantCultureIgnoreCase)).ToList();
 
-                var formContent = new FormUrlEncodedContent(new[]
+                FormUrlEncodedContent formContent = new FormUrlEncodedContent(new[]
                 {
                     new KeyValuePair<string, string>("option", UserGameId),
                     new KeyValuePair<string, string>("option_b", "comp_all")
@@ -542,8 +542,8 @@ namespace HowLongToBeat.Services
             {
                 TitleList titleList = new TitleList();
 
-                var tr = element.QuerySelectorAll("tr");
-                var td = tr[0].QuerySelectorAll("td");
+                IHtmlCollection<IElement> tr = element.QuerySelectorAll("tr");
+                IHtmlCollection<IElement> td = tr[0].QuerySelectorAll("td");
 
                 titleList.UserGameId = element.GetAttribute("id").Replace("user_sel_", string.Empty).Trim();
                 titleList.GameName = WebUtility.HtmlDecode(td[0].QuerySelector("a").InnerHtml.Trim());
@@ -576,11 +576,11 @@ namespace HowLongToBeat.Services
                 HtmlParser parser = new HtmlParser();
                 IHtmlDocument htmlDocument = parser.Parse(response);
 
-                var GameDetails = htmlDocument.QuerySelectorAll("div.user_game_detail > div");
+                IHtmlCollection<IElement> GameDetails = htmlDocument.QuerySelectorAll("div.user_game_detail > div");
 
                 // Game status type
                 titleList.GameStatuses = new List<GameStatus>();
-                foreach (var GameStatus in GameDetails[0].QuerySelectorAll("span"))
+                foreach (IElement GameStatus in GameDetails[0].QuerySelectorAll("span"))
                 {
                     switch (GameStatus.InnerHtml.ToLower())
                     {
@@ -632,8 +632,8 @@ namespace HowLongToBeat.Services
                 IElement elUpdated = htmlDocument.QuerySelectorAll("h5").Where(x => x.InnerHtml.ToLower().Contains("updated")).FirstOrDefault();
                 if (elUpdated != null)
                 {
-                    var dataUpdate = WebUtility.HtmlDecode(elUpdated.ParentElement?.QuerySelector("p")?.InnerHtml?.Trim());
-                    var doubleString = Regex.Replace(dataUpdate, @"[^\d.\d]", string.Empty).Replace(".", CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator);
+                    string dataUpdate = WebUtility.HtmlDecode(elUpdated.ParentElement?.QuerySelector("p")?.InnerHtml?.Trim());
+                    string doubleString = Regex.Replace(dataUpdate, @"[^\d.\d]", string.Empty).Replace(".", CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator);
                     double.TryParse(doubleString, out double doubleData);
 
                     if (dataUpdate.Contains("sec", StringComparison.InvariantCultureIgnoreCase))
@@ -805,7 +805,7 @@ namespace HowLongToBeat.Services
 
                 // TODO No selected....
                 IHtmlCollection<IElement> SelectPlatform = htmlDocument.QuerySelectorAll("select[name=platform]");
-                foreach(var option in SelectPlatform[0].QuerySelectorAll("option"))
+                foreach(IElement option in SelectPlatform[0].QuerySelectorAll("option"))
                 {
                     if (option.GetAttribute("selected") == "selected")
                     {
@@ -816,7 +816,7 @@ namespace HowLongToBeat.Services
                 {
                     if (SelectPlatform.Count() > 1)
                     {
-                        foreach (var option in SelectPlatform[1].QuerySelectorAll("option"))
+                        foreach (IElement option in SelectPlatform[1].QuerySelectorAll("option"))
                         {
                             if (option.GetAttribute("selected") == "selected")
                             {
@@ -1066,18 +1066,18 @@ namespace HowLongToBeat.Services
                     return null;
                 }
 
-                var ListGameWithDateUpdate = GetListGameWithDateUpdate();
+                Dictionary<string, DateTime> ListGameWithDateUpdate = GetListGameWithDateUpdate();
 
                 try
                 {
                     HtmlParser parser = new HtmlParser();
                     IHtmlDocument htmlDocument = parser.Parse(response);
 
-                    foreach (var ListGame in htmlDocument.QuerySelectorAll("table.user_game_list tbody"))
+                    foreach (IElement ListGame in htmlDocument.QuerySelectorAll("table.user_game_list tbody"))
                     {
                         TitleList titleList = GetTitleList(ListGame);
 
-                        var dateUpdate = ListGameWithDateUpdate.Where(x => x.Key.IsEqual(titleList.UserGameId))?.FirstOrDefault().Value;
+                        DateTime? dateUpdate = ListGameWithDateUpdate.Where(x => x.Key.IsEqual(titleList.UserGameId))?.FirstOrDefault().Value;
                         if (dateUpdate != null && (DateTime)dateUpdate != default(DateTime))
                         {
                             titleList.LastUpdate = (DateTime)dateUpdate;
@@ -1116,17 +1116,17 @@ namespace HowLongToBeat.Services
                     return null;
                 }
 
-                var ListGameWithDateUpdate = GetListGameWithDateUpdate();
+                Dictionary<string, DateTime> ListGameWithDateUpdate = GetListGameWithDateUpdate();
 
                 try
                 {
                     HtmlParser parser = new HtmlParser();
                     IHtmlDocument htmlDocument = parser.Parse(response);
 
-                    foreach (var ListGame in htmlDocument.QuerySelectorAll("table.user_game_list tbody"))
+                    foreach (IElement ListGame in htmlDocument.QuerySelectorAll("table.user_game_list tbody"))
                     {
-                        var tr = ListGame.QuerySelectorAll("tr");
-                        var td = tr[0].QuerySelectorAll("td");
+                        IHtmlCollection<IElement> tr = ListGame.QuerySelectorAll("tr");
+                        IHtmlCollection<IElement> td = tr[0].QuerySelectorAll("td");
 
                         int Id = int.Parse(td[0].QuerySelector("a").GetAttribute("href").Replace("game?id=", string.Empty));
 
@@ -1137,7 +1137,7 @@ namespace HowLongToBeat.Services
 
                         TitleList titleList = GetTitleList(ListGame);
 
-                        var dateUpdate = ListGameWithDateUpdate.Where(x => x.Key.IsEqual(titleList.UserGameId))?.FirstOrDefault().Value;
+                        DateTime? dateUpdate = ListGameWithDateUpdate.Where(x => x.Key.IsEqual(titleList.UserGameId))?.FirstOrDefault().Value;
                         if (dateUpdate != null)
                         {
                             titleList.LastUpdate = (DateTime)dateUpdate;
@@ -1182,7 +1182,7 @@ namespace HowLongToBeat.Services
                 HtmlParser parser = new HtmlParser();
                 IHtmlDocument htmlDocument = parser.Parse(UserGamesList);
 
-                var element = htmlDocument.QuerySelectorAll("a").Where(x => x.GetAttribute("href").Contains($"game?id={GameId}")).FirstOrDefault();
+                IElement element = htmlDocument.QuerySelectorAll("a").Where(x => x.GetAttribute("href").Contains($"game?id={GameId}")).FirstOrDefault();
 
                 if (element != null)
                 {
