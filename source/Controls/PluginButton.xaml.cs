@@ -21,27 +21,15 @@ namespace HowLongToBeat.Controls
         private HowLongToBeatDatabase PluginDatabase = HowLongToBeat.PluginDatabase;
         internal override IPluginDatabase _PluginDatabase
         {
-            get
-            {
-                return PluginDatabase;
-            }
-            set
-            {
-                PluginDatabase = (HowLongToBeatDatabase)_PluginDatabase;
-            }
+            get => PluginDatabase;
+            set => PluginDatabase = (HowLongToBeatDatabase)_PluginDatabase;
         }
 
         private PluginButtonDataContext ControlDataContext =  new PluginButtonDataContext();
         internal override IDataContext _ControlDataContext
         {
-            get
-            {
-                return ControlDataContext;
-            }
-            set
-            {
-                ControlDataContext = (PluginButtonDataContext)_ControlDataContext;
-            }
+            get => ControlDataContext;
+            set => ControlDataContext = (PluginButtonDataContext)_ControlDataContext;
         }
 
         public PluginButton()

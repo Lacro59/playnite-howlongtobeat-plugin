@@ -65,7 +65,7 @@ namespace HowLongToBeat.Models
         public Guid GameId {
             get
             {
-                var result = PluginDatabase.Database.Items.Where(x => x.Value.GetData()?.Id == Id
+                Guid? result = PluginDatabase.Database.Items.Where(x => x.Value.GetData()?.Id == Id
                                     && (x.Value.UserGameId.IsNullOrEmpty() ? true : x.Value.UserGameId.IsEqual(UserGameId)))?            
                     .FirstOrDefault().Key;
                 if (result == null || (Guid)result == default(Guid))
@@ -77,22 +77,10 @@ namespace HowLongToBeat.Models
         }
 
         [DontSerialize]
-        public RelayCommand<Guid> GoToGame
-        {
-            get
-            {
-                return PluginDatabase.GoToGame;
-            }
-        }
+        public RelayCommand<Guid> GoToGame => PluginDatabase.GoToGame;
 
         [DontSerialize]
-        public bool GameExist
-        {
-            get
-            {
-                return PluginDatabase.PlayniteApi.Database.Games.Get(GameId) != null;
-            }
-        }
+        public bool GameExist => PluginDatabase.PlayniteApi.Database.Games.Get(GameId) != null;
     }
 
 

@@ -9,19 +9,7 @@ namespace HowLongToBeat.Models
     public class GameHowLongToBeat : PluginDataBaseGame<HltbDataUser>
     {
         private List<HltbDataUser> _Items = new List<HltbDataUser>();
-        public override List<HltbDataUser> Items
-        {
-            get
-            {
-                return _Items;
-            }
-
-            set
-            {
-                _Items = value;
-                OnPropertyChanged();
-            }
-        }
+        public override List<HltbDataUser> Items { get => _Items; set => SetValue(ref _Items, value); }
 
 
         [DontSerialize]

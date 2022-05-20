@@ -108,12 +108,6 @@ namespace HowLongToBeat.Models
         }
 
         [DontSerialize]
-        public List<GameSource> GameSources
-        {
-            get
-            {
-                return HowLongToBeat.PluginDatabase.PlayniteApi.Database.Sources.Distinct().OrderBy(x => x.Name).ToList();
-            }
-        }
+        public List<GameSource> GameSources => HowLongToBeat.PluginDatabase.PlayniteApi.Database.Sources.Distinct().OrderBy(x => x.Name).ToList();
     }
 }

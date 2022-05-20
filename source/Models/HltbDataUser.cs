@@ -13,7 +13,8 @@ namespace HowLongToBeat.Models
         public HltbData GameHltbData { get; set; }
 
         [DontSerialize]
-        public bool IsEmpty {
+        public bool IsEmpty 
+        {
             get
             {
                 if (GameHltbData == null)
