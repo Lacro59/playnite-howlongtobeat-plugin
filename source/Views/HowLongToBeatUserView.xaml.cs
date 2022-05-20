@@ -379,19 +379,19 @@ namespace HowLongToBeat.Views
         private void SetFilter()
         {
             // Filter
-            var listYear = PluginDatabase.Database.UserHltbData.TitlesList.Select(x => x.Completion?.ToString("yyyy") ?? "----").Distinct().OrderBy(x => x).ToList();
+            List<string> listYear = PluginDatabase.Database.UserHltbData.TitlesList.Select(x => x.Completion?.ToString("yyyy") ?? "----").Distinct().OrderBy(x => x).ToList();
             PART_CbYear.ItemsSource = null;
             PART_CbYear.ItemsSource = listYear;
             PART_CbYear.SelectedIndex = 0;
 
-            var listStoreFront = PluginDatabase.Database.UserHltbData.TitlesList.Where(x => !x.Storefront.IsNullOrEmpty()).Select(y => y.Storefront).Distinct().ToList();
+            List<string> listStoreFront = PluginDatabase.Database.UserHltbData.TitlesList.Where(x => !x.Storefront.IsNullOrEmpty()).Select(y => y.Storefront).Distinct().ToList();
             listStoreFront.Add("----");
             listStoreFront = listStoreFront.OrderBy(x => x).ToList();
             PART_CbStorefront.ItemsSource = null;
             PART_CbStorefront.ItemsSource = listStoreFront;
             PART_CbStorefront.SelectedIndex = 0;
 
-            var listPlatform = PluginDatabase.Database.UserHltbData.TitlesList.Where(x => !x.Platform.IsNullOrEmpty()).Select(y => y.Platform).Distinct().ToList();
+            List<string> listPlatform = PluginDatabase.Database.UserHltbData.TitlesList.Where(x => !x.Platform.IsNullOrEmpty()).Select(y => y.Platform).Distinct().ToList();
             listPlatform.Add("----");
             listPlatform = listPlatform.OrderBy(x => x).ToList();
             PART_CbPlatform.ItemsSource = null;
@@ -413,8 +413,11 @@ namespace HowLongToBeat.Views
         {
             try
             {
-                string Year = ((ComboBox)sender).SelectedValue.ToString();
-                FilterData(PART_NameSearch.Text, Year, PART_CbStorefront.Text, PART_CbPlatform.Text);
+                if (((ComboBox)sender).SelectedValue != null)
+                {
+                    string Year = ((ComboBox)sender).SelectedValue.ToString();
+                    FilterData(PART_NameSearch.Text, Year, PART_CbStorefront.Text, PART_CbPlatform.Text);
+                }
             }
             catch { }
         }
@@ -423,8 +426,11 @@ namespace HowLongToBeat.Views
         {
             try
             {
-                string StoreFront = ((ComboBox)sender).SelectedValue.ToString();
-                FilterData(PART_NameSearch.Text, PART_CbYear.Text, StoreFront, PART_CbPlatform.Text);
+                if (((ComboBox)sender).SelectedValue != null)
+                {
+                    string StoreFront = ((ComboBox)sender).SelectedValue.ToString();
+                    FilterData(PART_NameSearch.Text, PART_CbYear.Text, StoreFront, PART_CbPlatform.Text);
+                }
             }
             catch { }
         }
@@ -433,8 +439,11 @@ namespace HowLongToBeat.Views
         {
             try
             {
-                string Platform = ((ComboBox)sender).SelectedValue.ToString();
-                FilterData(PART_NameSearch.Text, PART_CbYear.Text, PART_CbStorefront.Text, Platform);
+                if (((ComboBox)sender).SelectedValue != null)
+                {
+                    string Platform = ((ComboBox)sender).SelectedValue.ToString();
+                    FilterData(PART_NameSearch.Text, PART_CbYear.Text, PART_CbStorefront.Text, Platform);
+                }
             }
             catch { }
         }
@@ -561,29 +570,17 @@ namespace HowLongToBeat.Views
         public Game GameContext { get; set; }
         public bool ViewProgressBar { get; set; }
 
-        public string GameName { get { return GameContext.Name; } }
-        public string Icon { get { return GameContext.Icon; } }
-        public Guid GameId { get { return GameContext.Id; } }
-        public string Source { get { return PlayniteTools.GetSourceName(GameContext); } }
-        public string CompletionStatus { get { return GameContext.CompletionStatus?.Name ?? string.Empty; } }
-        public ulong Playtime { get { return GameContext.Playtime; } }
-        public long TimeToBeat { get { return PluginDatabase.Get(GameId, true)?.GetData()?.GameHltbData?.TimeToBeat ?? 0; } }
+        public string GameName => GameContext.Name;
+        public string Icon => GameContext.Icon;
+        public Guid GameId => GameContext.Id;
+        public string Source => PlayniteTools.GetSourceName(GameContext);
+        public string CompletionStatus => GameContext.CompletionStatus?.Name ?? string.Empty;
+        public ulong Playtime => GameContext.Playtime;
+        public long TimeToBeat => PluginDatabase.Get(GameId, true)?.GetData()?.GameHltbData?.TimeToBeat ?? 0;
 
-        public RelayCommand<Guid> GoToGame
-        {
-            get
-            {
-                return PluginDatabase.GoToGame;
-            }
-        }
+        public RelayCommand<Guid> GoToGame => PluginDatabase.GoToGame;
 
-        public bool GameExist
-        {
-            get
-            {
-                return PluginDatabase.PlayniteApi.Database.Games.Get(GameId) != null;
-            }
-        }
+        public bool GameExist => PluginDatabase.PlayniteApi.Database.Games.Get(GameId) != null;
     }
 
 
