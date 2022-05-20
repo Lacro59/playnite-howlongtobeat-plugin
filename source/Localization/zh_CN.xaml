@@ -10,10 +10,10 @@
     <sys:String x:Key="LOCHowLongToBeatProgressBar">添加了 {0} - 已经添加 {1} - 未添加 {2}</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatAddTagDescription">为游戏添加一个包含主线完成时间信息的标签</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAutoTag">自动标签处理</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoTag">自动标签处</sys:String>
     <sys:String x:Key="LOCHowLongToBeatShowHltbImage">在窗口中使用攻关历时原始游戏封面图像</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatColorSelection">颜色选择：</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatColorSelection">颜色选择</sys:String>
 
     <sys:String x:Key="LOCHltbEnableProgressBarInDataView">在 Playnite 数据视图中查看进度</sys:String>
 
@@ -21,22 +21,22 @@
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">在进度条中显示时间工具提示</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTime">在进度条中显示时间标记</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeAbove">进度条上方</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeInterior">进度条内部</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeInterior">进度条内</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeBelow">进度条下方</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeUser">显示用户的攻关历时（HowLongToBeat）时间</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatAutoSetCurrentPlayTime">结束游戏会话后，自动将当前游玩时间更新到攻关历时上</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatWithoutConfirmation">无需确认消息</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoSetCurrentPlayTime">结束游戏会话后，自动将当前游玩时间更新到攻关历时</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatWithoutConfirmation">无需确认消</sys:String>
     <sys:String x:Key="LOCHowLongToBeatEnableSuccessNotification">启用成功通知</sys:String>
     
     <sys:String x:Key="LOCHowLongToBeatAutoData">下载数据</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAutoAccept">当只搜索到一个游戏时自动选择</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoAccept">当只搜索到一个游戏时自动选</sys:String>
     <sys:String x:Key="LOCHowLongToBeatShowWhenMismatch">当搜索到多个游戏时显示选择界面</sys:String>
     <sys:String x:Key="LOCHowLongToBeatUseMatchValue">使用百分率匹配</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatTimeOnlyHour">仅有小时的时间格式</sys:String>
     
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBar">显示进度指示器</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBar">显示进度指示</sys:String>
     
     <sys:String x:Key="LOCHowLongToBeatCurrentPlayTimeSetted">{0} 的当前游玩时间已设置。</sys:String>
 
@@ -45,7 +45,7 @@
 
     <!-- HowLongToBeatSelect -->
 
-    <sys:String x:Key="LOCSelection">攻关历时选择</sys:String>
+    <sys:String x:Key="LOCSelection">攻关历时选</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatMainStory">主线</sys:String>
     <sys:String x:Key="LOCHowLongToBeatMainExtra">主线+支线</sys:String>
@@ -77,7 +77,7 @@
     <sys:String x:Key="LOCHowLongToBeatTimeCoOp">合作模式时间</sys:String>
     <sys:String x:Key="LOCHowLongToBeatTimeVs">多人对抗时间</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatStorefront">前端</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatStorefront">前</sys:String>
     
     <sys:String x:Key="LOCHltbAvgTimeByGame">每次游戏平均时间</sys:String>
     <sys:String x:Key="LOCHltbAvgGameByMonth">每月平均游戏</sys:String>
@@ -103,7 +103,7 @@
 
     <sys:String x:Key="LOCHowLongToBeatSetCurrentCompletedTimeManualOn">将您当前完成的游玩时间设置于</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatSetCurrentTime">您想要发送当前游玩时间吗？</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatSetCurrentTime">您想要发送当前游玩时间吗</sys:String>
 
 
     <!-- QuickSearch -->
@@ -114,8 +114,8 @@
     <sys:String x:Key="LOCHltbQuickSearchInfo" xml:space="preserve">该插件使用 QuickSearch 插件的功能。
 要使用它，您必须使“howlongtobeat”或“hltb”命令生效。
 
-这里是命令列表：</sys:String>
+这里是命令列表</sys:String>
 
-    <sys:String x:Key="LOCHltbQuickSearchCmd1" xml:space="preserve">此命令搜索具有所指定的通关所需时间的游戏列表。</sys:String>
+    <sys:String x:Key="LOCHltbQuickSearchCmd1" xml:space="preserve">此命令搜索具有所指定的通关所需时间的游戏列</sys:String>
 
 </ResourceDictionary>
