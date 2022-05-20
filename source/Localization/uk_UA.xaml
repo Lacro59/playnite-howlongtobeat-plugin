@@ -15,7 +15,7 @@
 
     <sys:String x:Key="LOCHowLongToBeatColorSelection">Вибір кольору:</sys:String>
 
-    <sys:String x:Key="LOCHltbEnableProgressBarInDataView">View progress bar in Playnite data view</sys:String>
+    <sys:String x:Key="LOCHltbEnableProgressBarInDataView">Показувати шкалу прогресу в режимі перегляду даних Playnite</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarOptions">Параметри смуги прогресу</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">Показувати спливаючі підказки з часом на смузі прогресу</sys:String>
@@ -83,11 +83,11 @@
     <sys:String x:Key="LOCHltbAvgGameByMonth">Середня гра за місяць</sys:String>
     <sys:String x:Key="LOCHltbCountGameBeatenBeforeTime">Кількість ігор, пройдених до часу</sys:String>
     <sys:String x:Key="LOCHltbCountGameBeatenAfterTime">Кількість ігор, пройдених після часу</sys:String>
-    <sys:String x:Key="LOCHltbCountGameBeatenReplays">Number of games beaten replayed</sys:String>
-    <sys:String x:Key="LOCHltbCountGameRetired">Number of games retired</sys:String>
+    <sys:String x:Key="LOCHltbCountGameBeatenReplays">Кількість перепройдених ігор</sys:String>
+    <sys:String x:Key="LOCHltbCountGameRetired">Кількість закинутих ігор</sys:String>
 
-    <sys:String x:Key="LOCHltbUsedFilteredGames">Currently filtered games used</sys:String>
-    <sys:String x:Key="LOCHltbOnlyNotPlayedGames">Only game not played</sys:String>
+    <sys:String x:Key="LOCHltbUsedFilteredGames">Наразі використано відфільтрованих ігор</sys:String>
+    <sys:String x:Key="LOCHltbOnlyNotPlayedGames">Лише незіграні ігри</sys:String>
 
     <!-- MainView -->
 
@@ -111,11 +111,11 @@
     <sys:String x:Key="LOCHltbQuickSearchDescription">Шукати ігри за даними HowLongToBeat</sys:String>
     <sys:String x:Key="LOCHltbQuickSearchByTTB">Знайти за часом для проходження</sys:String>
 
-    <sys:String x:Key="LOCHltbQuickSearchInfo" xml:space="preserve">The plugin uses the functionality of the QuickSearch plugin.
-To use it, you must validate the &quot;howlongtobeat&quot; or &quot;hltb&quot; command.    
+    <sys:String x:Key="LOCHltbQuickSearchInfo" xml:space="preserve">Плагін використовує функціональність плагіну QuickSearch.
+Щоб використовувати його, потрібно підтвердити команду &quot;howlongtobeat&quot; або &quot;hltb&quot;.    
         
-Here is the list of commands:</sys:String>
+Ось список команд:</sys:String>
 
-    <sys:String x:Key="LOCHltbQuickSearchCmd1" xml:space="preserve">This command searches for a list of games with a specific time to beat.</sys:String>
+    <sys:String x:Key="LOCHltbQuickSearchCmd1" xml:space="preserve">Ця команда шукає список ігор з певним часом для проходження.</sys:String>
 
 </ResourceDictionary>
