@@ -195,6 +195,7 @@ namespace HowLongToBeat.Views
                 }
                 else
                 {
+                    Hltb_El0.Visibility = Visibility.Collapsed;
                     int ElIndicator = 0;
 
                     if (gameData.GameHltbData.MainStory != 0)
