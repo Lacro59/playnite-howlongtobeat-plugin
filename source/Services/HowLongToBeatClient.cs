@@ -676,70 +676,53 @@ namespace HowLongToBeat.Services
 
                 // User data
                 titleList.HltbUserData = new HltbData();
+                if (hltbPostData != null)
+                {
+                    // Completion date
+                    string tempTime = hltbPostData.compyear + "-" + hltbPostData.compmonth + "-" + hltbPostData.compday;
+                    if (DateTime.TryParse(tempTime, out DateTime dateValue))
+                    {
+                        titleList.Completion = Convert.ToDateTime(dateValue);
+                    }
+                    else
+                    {
+                        logger.Warn($"Impossible to parse datetime: {tempTime}");
+                        titleList.Completion = null;
+                    }
+
+                    int.TryParse(hltbPostData.c_main_h, out int c_main_h);
+                    int.TryParse(hltbPostData.c_main_m, out int c_main_m);
+                    int.TryParse(hltbPostData.c_main_s, out int c_main_s);
+                    titleList.HltbUserData.MainStory = c_main_h * 3600 + c_main_m * 60 + c_main_s;
+
+                    int.TryParse(hltbPostData.c_plus_h, out int c_plus_h);
+                    int.TryParse(hltbPostData.c_plus_m, out int c_plus_m);
+                    int.TryParse(hltbPostData.c_plus_s, out int c_plus_s);
+                    titleList.HltbUserData.MainExtra = c_plus_h * 3600 + c_plus_m * 60 + c_plus_s;
+
+                    int.TryParse(hltbPostData.c_100_h, out int c_100_h);
+                    int.TryParse(hltbPostData.c_100_m, out int c_100_m);
+                    int.TryParse(hltbPostData.c_100_s, out int c_100_s);
+                    titleList.HltbUserData.Completionist = c_100_h * 3600 + c_100_m * 60 + c_100_s;
+
+                    int.TryParse(hltbPostData.cotime_h, out int cotime_h);
+                    int.TryParse(hltbPostData.cotime_m, out int cotime_m);
+                    int.TryParse(hltbPostData.cotime_s, out int cotime_s);
+                    titleList.HltbUserData.CoOp = cotime_h * 3600 + cotime_m * 60 + cotime_s;
+
+                    int.TryParse(hltbPostData.mptime_h, out int mptime_h);
+                    int.TryParse(hltbPostData.mptime_m, out int mptime_m);
+                    int.TryParse(hltbPostData.mptime_s, out int mptime_s);
+                    titleList.HltbUserData.Vs = mptime_h * 3600 + mptime_m * 60 + mptime_s;
+                }
+
                 for (int i = 0; i < GameDetails[iPosUserData].Children.Count(); i++)
                 {
-                    string tempTime = string.Empty;
-
-                    // Completion date
-                    if (GameDetails[iPosUserData].Children[i].InnerHtml.ToLower().Contains("completion"))
-                    {
-                        if (GameDetails[iPosUserData]?.Children[i]?.QuerySelectorAll("p")?.FirstOrDefault() != null)
-                        {
-                            tempTime = GameDetails[iPosUserData].Children[i].QuerySelectorAll("p").FirstOrDefault().InnerHtml;
-                            if (DateTime.TryParse(tempTime, out DateTime dateValue))
-                            {
-                                titleList.Completion = Convert.ToDateTime(dateValue);
-                            }
-                            else
-                            {
-                                logger.Warn($"Impossible to parse datetime: {tempTime}");
-                                titleList.Completion = null;
-                            }
-                        }
-                    }
-
-
-                    if (GameDetails[iPosUserData].Children[i].InnerHtml.ToLower().Contains("main story"))
-                    {
-                        i++;
-                        tempTime = GameDetails[iPosUserData]?.Children[i]?.QuerySelector("span")?.InnerHtml;
-                        titleList.HltbUserData.MainStory = ConvertStringToLongUser(tempTime);
-                    }
-
-                    if (GameDetails[iPosUserData].Children[i].InnerHtml.ToLower().Contains("main+extras"))
-                    {
-                        i++;
-                        tempTime = GameDetails[iPosUserData]?.Children[i]?.QuerySelector("span")?.InnerHtml;
-                        titleList.HltbUserData.MainExtra = ConvertStringToLongUser(tempTime);
-                    }
-
-                    if (GameDetails[iPosUserData].Children[i].InnerHtml.ToLower().Contains("completionist"))
-                    {
-                        i++;
-                        tempTime = GameDetails[iPosUserData]?.Children[i]?.QuerySelector("span")?.InnerHtml;
-                        titleList.HltbUserData.Completionist = ConvertStringToLongUser(tempTime);
-                    }
-
-
                     if (GameDetails[iPosUserData].Children[i].InnerHtml.ToLower().Contains("solo"))
                     {
                         i++;
-                        tempTime = GameDetails[iPosUserData]?.Children[i]?.QuerySelector("span")?.InnerHtml;
+                        string tempTime = GameDetails[iPosUserData]?.Children[i]?.QuerySelector("span")?.InnerHtml;
                         titleList.HltbUserData.Solo = ConvertStringToLongUser(tempTime);
-                    }
-
-                    if (GameDetails[iPosUserData].Children[i].InnerHtml.ToLower().Contains("co-op"))
-                    {
-                        i++;
-                        tempTime = GameDetails[iPosUserData]?.Children[i]?.QuerySelector("span")?.InnerHtml;
-                        titleList.HltbUserData.CoOp = ConvertStringToLongUser(tempTime);
-                    }
-
-                    if (GameDetails[iPosUserData].Children[i].InnerHtml.ToLower().Contains("vs"))
-                    {
-                        i++;
-                        tempTime = GameDetails[iPosUserData]?.Children[i]?.QuerySelector("span")?.InnerHtml;
-                        titleList.HltbUserData.Vs = ConvertStringToLongUser(tempTime);
                     }
                 }
 
@@ -1076,7 +1059,6 @@ namespace HowLongToBeat.Services
                     foreach (IElement ListGame in htmlDocument.QuerySelectorAll("table.user_game_list tbody"))
                     {
                         TitleList titleList = GetTitleList(ListGame);
-
                         DateTime? dateUpdate = ListGameWithDateUpdate.Where(x => x.Key.IsEqual(titleList.UserGameId))?.FirstOrDefault().Value;
                         if (dateUpdate != null && (DateTime)dateUpdate != default(DateTime))
                         {

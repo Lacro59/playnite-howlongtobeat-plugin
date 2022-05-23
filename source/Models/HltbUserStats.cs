@@ -62,7 +62,8 @@ namespace HowLongToBeat.Models
         public HltbData HltbUserData { get; set; }
 
         [DontSerialize]
-        public Guid GameId {
+        public Guid GameId 
+        {
             get
             {
                 Guid? result = PluginDatabase.Database.Items.Where(x => x.Value.GetData()?.Id == Id
