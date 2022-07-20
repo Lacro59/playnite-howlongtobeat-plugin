@@ -1,16 +1,16 @@
 ﻿<?xml version="1.0"?>
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:sys="clr-namespace:System;assembly=mscorlib">
 
-    <sys:String x:Key="LOCHowLongToBeatTimeToBeat">Time to beat</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatTimeToBeat">الوقت للإكمال</sys:String>
 
-    <sys:String x:Key="LOCPlayedHoursOnly">{0}h</sys:String>
+    <sys:String x:Key="LOCPlayedHoursOnly">{0} ساعة</sys:String>
 
     <!-- HowLongToBeatSettingsView -->
 
     <sys:String x:Key="LOCHowLongToBeatProgressBar">Added {0} - Already added {1} - Not added {2}</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatAddTagDescription">Add a tag to games with Main story completion time information</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAutoTag">Automatic tags processing</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAddTagDescription">إضافة علامة إلى الألعاب مع معلومات وقت إكمال القصة الرئيسية</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoTag">معالجة تلقائية للوسوم</sys:String>
     <sys:String x:Key="LOCHowLongToBeatShowHltbImage">Use HowLongToBeat original game cover image in window</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatColorSelection">اختيار اللون:</sys:String>
@@ -29,7 +29,7 @@
     <sys:String x:Key="LOCHowLongToBeatWithoutConfirmation">بدون رسالة تأكيد</sys:String>
     <sys:String x:Key="LOCHowLongToBeatEnableSuccessNotification">تمكين إشعار النجاح</sys:String>
     
-    <sys:String x:Key="LOCHowLongToBeatAutoData">Game data download</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoData">تنزيل بيانات اللعبة</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoAccept">Automatically select game when only one game is found during search</sys:String>
     <sys:String x:Key="LOCHowLongToBeatShowWhenMismatch">Show game selection list when more than one game is found during search</sys:String>
     <sys:String x:Key="LOCHowLongToBeatUseMatchValue">Use a percent match</sys:String>
@@ -109,7 +109,7 @@ If none has this status, it takes the most recent.</sys:String>
     <!-- QuickSearch -->
 
     <sys:String x:Key="LOCHltbQuickSearchDescription">البحث عن الألعاب على بيانات HowLongToBeat</sys:String>
-    <sys:String x:Key="LOCHltbQuickSearchByTTB">Find by Time To Beat</sys:String>
+    <sys:String x:Key="LOCHltbQuickSearchByTTB">البحث حسب الوقت للإكمال</sys:String>
 
     <sys:String x:Key="LOCHltbQuickSearchInfo" xml:space="preserve">The plugin uses the functionality of the QuickSearch plugin.
 To use it, you must validate the &quot;howlongtobeat&quot; or &quot;hltb&quot; command.    
