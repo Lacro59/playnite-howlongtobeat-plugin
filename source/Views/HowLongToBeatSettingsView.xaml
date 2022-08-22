@@ -7,6 +7,7 @@
              xmlns:controls="clr-namespace:CommonPluginsControls.Controls"
              xmlns:HowLongToBeat="clr-namespace:HowLongToBeat"
              xmlns:hltm="clr-namespace:HowLongToBeat.Models"
+             xmlns:hltb="clr-namespace:HowLongToBeat.Behaviors"
              mc:Ignorable="d" d:DesignWidth="650"
              d:DataContext="{d:DesignInstance HowLongToBeat:HowLongToBeatSettingsViewModel}">
 
@@ -515,8 +516,8 @@
 
                                             <TextBlock Grid.Column="0" Text="{Binding Platform}" />
 
-                                            <ComboBox Grid.Column="2" ItemsSource="{Binding HltbPlatformList}"
-                                                  SelectedValuePath="Id" DisplayMemberPath="Name"
+                                            <ComboBox Grid.Column="2"
+                                                  hltb:SelectorBehaviors.EnumSource="{x:Type hltm:HltbPlatform}"
                                                   SelectedValue="{Binding HltbPlatform}" />
                                         </Grid>
                                     </DataTemplate>

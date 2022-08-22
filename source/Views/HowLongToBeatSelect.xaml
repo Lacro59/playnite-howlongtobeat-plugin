@@ -112,7 +112,7 @@
                 <TextBlock Grid.Column="0" Text="{DynamicResource LOCPlatformsTitle}" Style="{StaticResource BaseTextBlockStyle}" 
                            VerticalAlignment="Center" />
                 <controls:ComboBoxRemovable x:Name="PART_SelectPlatform" Grid.Column="2" VerticalAlignment="Center"
-                                            IsEditable="True" TextSearch.TextPath="GetDescription"
+                                            IsEditable="True" TextSearch.TextPath="DisplayText"
                                             IsTextSearchCaseSensitive="False" StaysOpenOnEdit="True"
                                             hltb:SelectorBehaviors.EnumSource="{x:Type hltm:HltbPlatform}">
                 </controls:ComboBoxRemovable>

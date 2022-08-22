@@ -8,7 +8,7 @@ namespace HowLongToBeat.Behaviors {
 
         public class EnumSelector {
             public Enum Value { get; set; }
-            public string DisplayName { get; set; }
+            public string DisplayText { get; set; }
         }
 
         private static readonly DependencyProperty EnumSourceProperty =
@@ -31,13 +31,13 @@ namespace HowLongToBeat.Behaviors {
             }
 
             var select = (System.Windows.Controls.Primitives.Selector)obj;
-            select.DisplayMemberPath = nameof(EnumSelector.DisplayName);
+            select.DisplayMemberPath = nameof(EnumSelector.DisplayText);
             select.SelectedValuePath = nameof(EnumSelector.Value);
             select.Items.Clear();
 
             var values = Enum.GetValues((Type)args.NewValue);
             foreach (Enum value in values) {
-                select.Items.Add(new EnumSelector { Value = value, DisplayName = value.GetDescription() });
+                select.Items.Add(new EnumSelector { Value = value, DisplayText = value.GetDescription() });
             }
         }
 
