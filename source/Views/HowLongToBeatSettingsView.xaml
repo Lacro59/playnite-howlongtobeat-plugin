@@ -6,6 +6,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:controls="clr-namespace:CommonPluginsControls.Controls"
              xmlns:HowLongToBeat="clr-namespace:HowLongToBeat"
+             xmlns:hltm="clr-namespace:HowLongToBeat.Models"
              mc:Ignorable="d" d:DesignWidth="650"
              d:DataContext="{d:DesignInstance HowLongToBeat:HowLongToBeatSettingsViewModel}">
 
@@ -302,7 +303,7 @@
                                     <RowDefinition Height="10" />
                                     <RowDefinition Height="auto" />
                                 </Grid.RowDefinitions>
-                                
+
                                 <Expander Grid.Row="2" AttachedProperties:ExpanderAttachedProperties.HideExpanderArrow="True">
                                     <Expander.Style>
                                         <Style TargetType="{x:Type Expander}" BasedOn="{StaticResource {x:Type Expander}}">
@@ -472,6 +473,61 @@
             </ScrollViewer>
         </TabItem>
 
+        <TabItem Header="{DynamicResource LOCPlatformsTitle}" IsEnabled="True">
+            <ScrollViewer Margin="0,10,0,0">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="63*"/>
+                        <ColumnDefinition Width="85*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+
+                    <Grid Grid.Row="0" MinHeight="100" Grid.ColumnSpan="2" Margin="0,0,-0.001,0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="10" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+
+                        <Grid Name="PART_GridPlatforms" Grid.Row="2">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="45*"/>
+                                <ColumnDefinition Width="547*"/>
+                            </Grid.ColumnDefinitions>
+                            <ListBox Height="{Binding ElementName=PART_GridPlatforms, Path=ActualHeight}"
+                                     Name="PART_GridPlatformsList" Grid.ColumnSpan="2" Margin="0,0,-0.001,-0.001">
+                                <ListBox.ItemContainerStyle>
+                                    <Style TargetType="{x:Type ListBoxItem}" BasedOn="{StaticResource {x:Type ListBoxItem}}">
+                                        <Setter Property="Focusable" Value="False"/>
+                                    </Style>
+                                </ListBox.ItemContainerStyle>
+
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid Margin="0,2">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="200" />
+                                                <ColumnDefinition Width="10" />
+                                                <ColumnDefinition Width="250" />
+                                            </Grid.ColumnDefinitions>
+
+                                            <TextBlock Grid.Column="0" Text="{Binding Platform}" />
+
+                                            <ComboBox Grid.Column="2" ItemsSource="{Binding HltbPlatformList}"
+                                                  SelectedValuePath="Id" DisplayMemberPath="Name"
+                                                  SelectedValue="{Binding HltbPlatform}" />
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                        </Grid>
+                    </Grid>
+                </Grid>
+            </ScrollViewer>
+        </TabItem>
+
         <TabItem Header="{DynamicResource LOCMenuConfigurationTitle}" 
                  IsEnabled="{Binding ElementName=PART_AutoSetCurrentPlayTime, Path=IsChecked}">
             <ScrollViewer Margin="0,10,0,0">
@@ -493,8 +549,12 @@
                         </StackPanel>
 
                         <Grid Name="PART_GridStorefront" Grid.Row="2">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="45*"/>
+                                <ColumnDefinition Width="547*"/>
+                            </Grid.ColumnDefinitions>
                             <ListBox Height="{Binding ElementName=PART_GridStorefront, Path=ActualHeight}"
-                                     ItemsSource="{Binding Settings.Storefronts}">
+                                     ItemsSource="{Binding Settings.Storefronts}" Grid.ColumnSpan="2" Margin="0,0,-0.001,-0.001">
                                 <ListBox.ItemContainerStyle>
                                     <Style TargetType="{x:Type ListBoxItem}" BasedOn="{StaticResource {x:Type ListBoxItem}}">
                                         <Setter Property="Focusable" Value="False"/>

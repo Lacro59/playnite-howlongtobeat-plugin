@@ -11,6 +11,8 @@ using HowLongToBeat.Models;
 using CommonPluginsShared.Models;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Collections.Generic;
+using Playnite.SDK.Models;
 
 namespace HowLongToBeat.Views
 {
@@ -43,6 +45,8 @@ namespace HowLongToBeat.Views
         public static SolidColorBrush ThirdMultiColorBrush;
         public static ThemeLinearGradient ThirdMultiLinearGradient;
 
+        public static List<HltbPlatformMatch> PlatformMatches = new List<HltbPlatformMatch>();
+
 
         public HowLongToBeatSettingsView(IPlayniteAPI PlayniteApi, string PluginUserDataPath, HowLongToBeatSettings settings)
         {
@@ -52,6 +56,8 @@ namespace HowLongToBeat.Views
             InitializeComponent();
 
             CheckAuthenticate();
+
+            SetPlatforms(settings);
 
             PART_SelectorColorPicker.OnlySimpleColor = false;
 
@@ -422,6 +428,18 @@ namespace HowLongToBeat.Views
         #endregion
 
 
+        private void SetPlatforms(HowLongToBeatSettings settings) {
+            List<Platform> platforms = PluginDatabase.PlayniteApi.Database
+                    .Platforms.Distinct().OrderBy(x => x.Name).ToList();
+
+            settings.Platforms.RemoveAll(m => !platforms.Contains(m.Platform));
+            platforms.Where(p => settings.Platforms.Exists(m => m.Platform == p))
+                    .ForEach(p => settings.Platforms.Add(
+                            new HltbPlatformMatch { Platform = p }));
+                    
+            PART_GridPlatformsList.ItemsSource = settings.Platforms;
+        }
+
         private void CbDefaultSorting_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             string index = ((ComboBoxItem)cbDefaultSorting.SelectedItem).Tag.ToString();
@@ -445,4 +463,5 @@ namespace HowLongToBeat.Views
             }
         }
     }
+
 }
