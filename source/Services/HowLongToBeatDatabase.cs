@@ -599,15 +599,19 @@ namespace HowLongToBeat.Services
                         TimeSpan time = TimeSpan.FromSeconds(game.Playtime + ElapsedSeconds);
 
                         // TODO Enough?
-                        string platform = game.Platforms?.FirstOrDefault().Name;
-                        /*int hltbMatches = platform == null ? 0 : HltbPlatforms.Values.Where(p => p.Name().Equals(platform)).Count();
-                        if (hltbMatches == 0) {
-                            platform = null;
-                            Guid gamePlatformGuid = game.PlatformIds.FirstOrDefault();
-                            if (PluginSettings.Settings.Platforms.ContainsKey(gamePlatformGuid)) {
-                                platform = PluginSettings.Settings.Platforms[gamePlatformGuid].Name();
-                            }
-                        }*/
+                        string platform = string.Empty;
+                        Platform gamePlatform = game.Platforms?.FirstOrDefault();
+                        if (gamePlatform == default(Platform)) {
+                            logger.Warn($"Cannot submit data for a game without platform ({game.Name})");
+                            return false;
+                        }
+                        HltbPlatform? match = PluginSettings.Settings.Platforms
+                                .Where(p => p.Platform == gamePlatform).FirstOrDefault()?.HltbPlatform;
+                        if (match != null) {
+                            platform = match.GetDescription();
+                        } else {
+                            platform = gamePlatform.Name;
+                        }
 
                         if (platform.IsNullOrEmpty())
                         {
