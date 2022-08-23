@@ -19,6 +19,7 @@ using System.Windows.Threading;
 using FuzzySharp;
 using CommonPlayniteShared.Common;
 using CommonPluginsShared.Extensions;
+using System.Net;
 
 namespace HowLongToBeat.Services
 {
@@ -665,7 +666,7 @@ namespace HowLongToBeat.Services
                         hltbPostData.edit_id = edit_id;
                         hltbPostData.game_id = gameHowLongToBeat.GetData().Id;
                         hltbPostData.custom_title = gameHowLongToBeat.GetData().Name;
-                        hltbPostData.platform = platform;
+                        hltbPostData.platform = WebUtility.HtmlEncode(platform);
                         hltbPostData.storefront = StorefrontName;
 
                         if (!NoPlaying)
