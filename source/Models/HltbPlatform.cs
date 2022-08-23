@@ -190,14 +190,8 @@ namespace HowLongToBeat.Models {
 
     public class HltbPlatformMatch : IComparable<HltbPlatformMatch> {
 
-        private static readonly List<HltbPlatform> HLTB_PLATFORMS
-            = Enum.GetValues(typeof(HltbPlatform)).Cast<HltbPlatform>().ToList();
-
         public Platform Platform { get; set; }
         public HltbPlatform? HltbPlatform { get; set; } = null;
-
-        [DontSerialize]
-        public List<HltbPlatform> HltbPlatformList => HLTB_PLATFORMS;
 
         public int CompareTo(HltbPlatformMatch other) {
             return other == null ? 1 : Platform.Name.CompareTo(other.Platform.Name);
