@@ -45,9 +45,6 @@ namespace HowLongToBeat.Views
         public static SolidColorBrush ThirdMultiColorBrush;
         public static ThemeLinearGradient ThirdMultiLinearGradient;
 
-        public static List<HltbPlatformMatch> PlatformMatches = new List<HltbPlatformMatch>();
-
-
         public HowLongToBeatSettingsView(IPlayniteAPI PlayniteApi, string PluginUserDataPath, HowLongToBeatSettings settings)
         {
             _PlayniteApi = PlayniteApi;
@@ -437,6 +434,7 @@ namespace HowLongToBeat.Views
                     .ForEach(p => settings.Platforms.Add(
                             new HltbPlatformMatch { Platform = p }));
 
+            settings.Platforms.Sort();
             PART_GridPlatformsList.ItemsSource = settings.Platforms;
         }
 
