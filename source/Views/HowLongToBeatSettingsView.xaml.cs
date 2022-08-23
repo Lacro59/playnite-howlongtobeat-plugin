@@ -424,15 +424,20 @@ namespace HowLongToBeat.Views
         }
         #endregion
 
-
+        // TODO: Probably better to react to library metadata edits
+        // Although this method might not be invoked so many times as to make a difference in performance
         private void SetPlatforms(HowLongToBeatSettings settings) {
             List<Platform> platforms = PluginDatabase.PlayniteApi.Database
                     .Platforms.Distinct().OrderBy(x => x.Name).ToList();
 
+            // Remove from settings game platforms that were deleted
             settings.Platforms.RemoveAll(m => !platforms.Contains(m.Platform));
-            platforms.Where(p => !settings.Platforms.Exists(m => m.Platform.Equals(p)))
-                    .ForEach(p => settings.Platforms.Add(
-                            new HltbPlatformMatch { Platform = p }));
+            // Add an empty match for game platforms not in the settings
+            platforms.Where(p => !settings.Platforms.Exists(m => p.Equals(m.Platform)))
+                    .ForEach(p => settings.Platforms.Add(new HltbPlatformMatch { Platform = p }));
+            // Replace game platform in settings where GUID matches to actualize names
+            platforms.ForEach(p => settings.Platforms.Where(m => p.Equals(m.Platform))
+                    .ForEach(m => m.Platform = p));
 
             settings.Platforms.Sort();
             PART_GridPlatformsList.ItemsSource = settings.Platforms;
