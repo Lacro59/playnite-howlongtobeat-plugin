@@ -430,7 +430,7 @@ namespace HowLongToBeat.Views
                     .Platforms.Distinct().OrderBy(x => x.Name).ToList();
 
             settings.Platforms.RemoveAll(m => !platforms.Contains(m.Platform));
-            platforms.Where(p => !settings.Platforms.Exists(m => m.Platform == p))
+            platforms.Where(p => !settings.Platforms.Exists(m => m.Platform.Equals(p)))
                     .ForEach(p => settings.Platforms.Add(
                             new HltbPlatformMatch { Platform = p }));
 

@@ -606,7 +606,7 @@ namespace HowLongToBeat.Services
                             return false;
                         }
                         HltbPlatform? match = PluginSettings.Settings.Platforms
-                                .Where(p => p.Platform == gamePlatform).FirstOrDefault()?.HltbPlatform;
+                                .Where(p => p.Platform.Equals(gamePlatform)).FirstOrDefault()?.HltbPlatform;
                         if (match != null) {
                             platform = match.GetDescription();
                         } else {
