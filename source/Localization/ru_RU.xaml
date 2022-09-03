@@ -47,17 +47,17 @@
 
     <sys:String x:Key="LOCSelection">Выбор HowLongToBeat</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatMainStory">Основной сюже</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatMainStory">Основной сюжет</sys:String>
     <sys:String x:Key="LOCHowLongToBeatMainExtra">Сюжет и дополнительные задания</sys:String>
     <sys:String x:Key="LOCHowLongToBeatCompletionist">Полностью завершено</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatSolo">Одиночная игра</sys:String>
     <sys:String x:Key="LOCHowLongToBeatCoOp">Кооператив</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatVs">Пв</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatVs">ПвП</sys:String>
 
     <!-- HowLongToBeat -->
 
-    <sys:String x:Key="LOCHowLongToBeatProgression">Прогре</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatProgression">Прогресс</sys:String>
 
     <!-- HowLongToBeatUserView -->
 
