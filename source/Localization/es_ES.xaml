@@ -103,7 +103,7 @@ Si ninguno tiene este estado, tomara el más reciente.</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatSetCurrentCompletedTimeManualOn">Establece tu tiempo de juego actual completado</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatSetCurrentTime"></sys:String>
+    <sys:String x:Key="LOCHowLongToBeatSetCurrentTime">¿Quieres enviar tu tiempo de juego actual?</sys:String>
 
 
     <!-- QuickSearch -->
