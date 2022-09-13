@@ -29,10 +29,8 @@ namespace HowLongToBeat.Views
         public HowLongToBeatSelect(List<HltbData> data, Game game)
         {
             _game = game;
-
+            
             InitializeComponent();
-
-            SetPlatforms();
 
             SearchElement.Text = PlayniteTools.NormalizeGameName(_game.Name);
 
@@ -51,13 +49,6 @@ namespace HowLongToBeat.Views
             // Set Binding data
             DataContext = this;
         }
-
-
-        private void SetPlatforms()
-        {
-            PART_SelectPlatform.ItemsSource = HowLongToBeat.PluginDatabase.hltbPlatforms;
-        }
-
 
         private void ButtonCancel_Click(object sender, RoutedEventArgs e)
         {
@@ -105,9 +96,10 @@ namespace HowLongToBeat.Views
 
             PART_DataLoadWishlist.Visibility = Visibility.Visible;
             SelectableContent.IsEnabled = false;
-
+            
             string GameSearch = SearchElement.Text;
-            string GamePlatform = ((HltbPlatform)PART_SelectPlatform.SelectedValue == null) ? string.Empty : ((HltbPlatform)PART_SelectPlatform.SelectedValue).Name;
+            string GamePlatform = (PART_SelectPlatform.SelectedValue == null) 
+                  ? string.Empty : ((HltbPlatform) PART_SelectPlatform.SelectedValue).GetDescription();
             Task task = Task.Run(() =>
             {
                 List<HltbDataUser> dataSearch = new List<HltbDataUser>();
@@ -182,11 +174,4 @@ namespace HowLongToBeat.Views
         }
     }
 
-
-
-    public class HltbPlatform
-    {
-        public string Name { get; set; }
-        public string Category { get; set; }
-    }
 }

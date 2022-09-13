@@ -11,6 +11,8 @@ using HowLongToBeat.Models;
 using CommonPluginsShared.Models;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Collections.Generic;
+using Playnite.SDK.Models;
 
 namespace HowLongToBeat.Views
 {
@@ -43,7 +45,6 @@ namespace HowLongToBeat.Views
         public static SolidColorBrush ThirdMultiColorBrush;
         public static ThemeLinearGradient ThirdMultiLinearGradient;
 
-
         public HowLongToBeatSettingsView(IPlayniteAPI PlayniteApi, string PluginUserDataPath, HowLongToBeatSettings settings)
         {
             _PlayniteApi = PlayniteApi;
@@ -52,6 +53,8 @@ namespace HowLongToBeat.Views
             InitializeComponent();
 
             CheckAuthenticate();
+
+            SetPlatforms(settings);
 
             PART_SelectorColorPicker.OnlySimpleColor = false;
 
@@ -421,6 +424,24 @@ namespace HowLongToBeat.Views
         }
         #endregion
 
+        // TODO: Probably better to react to library metadata edits
+        // Although this method might not be invoked so many times as to make a difference in performance
+        private void SetPlatforms(HowLongToBeatSettings settings) {
+            List<Platform> platforms = PluginDatabase.PlayniteApi.Database
+                    .Platforms.Distinct().OrderBy(x => x.Name).ToList();
+
+            // Remove from settings game platforms that were deleted
+            settings.Platforms.RemoveAll(m => !platforms.Contains(m.Platform));
+            // Add an empty match for game platforms not in the settings
+            platforms.Where(p => !settings.Platforms.Exists(m => p.Equals(m.Platform)))
+                    .ForEach(p => settings.Platforms.Add(new HltbPlatformMatch { Platform = p }));
+            // Replace game platform in settings where GUID matches to actualize names
+            platforms.ForEach(p => settings.Platforms.Where(m => p.Equals(m.Platform))
+                    .ForEach(m => m.Platform = p));
+
+            settings.Platforms.Sort();
+            PART_GridPlatformsList.ItemsSource = settings.Platforms;
+        }
 
         private void CbDefaultSorting_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -445,4 +466,5 @@ namespace HowLongToBeat.Views
             }
         }
     }
+
 }
