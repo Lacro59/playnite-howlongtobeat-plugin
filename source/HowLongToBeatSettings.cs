@@ -175,6 +175,7 @@ namespace HowLongToBeat
 
 
         public List<Storefront> Storefronts { get; set; } = new List<Storefront>();
+        public List<HltbPlatformMatch> Platforms { get; set; } = new List<HltbPlatformMatch>();
         #endregion
 
         // Playnite serializes settings object to a JSON object and saves it as text file.
@@ -426,7 +427,6 @@ namespace HowLongToBeat
                     new Storefront { HltbStorefrontId = HltbStorefront.XboxStore }
                 };
             }
-
 
             if (Settings.ThumbLinearGradient == null && Settings.ThumbSolidColorBrush == null)
             {

@@ -8,6 +8,8 @@
              xmlns:converters="clr-namespace:CommonPlayniteShared.Converters"
              xmlns:controls="clr-namespace:CommonPluginsControls.Controls"
              xmlns:convertersshared="clr-namespace:CommonPluginsShared.Converters"
+             xmlns:hltm="clr-namespace:HowLongToBeat.Models"
+             xmlns:hltb="clr-namespace:HowLongToBeat.Behaviors"
              mc:Ignorable="d" Width="500" Height="470">
 
     <UserControl.Resources>
@@ -105,16 +107,14 @@
                     <ColumnDefinition Width="150" />
                 </Grid.ColumnDefinitions>
 
+
+
                 <TextBlock Grid.Column="0" Text="{DynamicResource LOCPlatformsTitle}" Style="{StaticResource BaseTextBlockStyle}" 
                            VerticalAlignment="Center" />
                 <controls:ComboBoxRemovable x:Name="PART_SelectPlatform" Grid.Column="2" VerticalAlignment="Center"
-                                            IsEditable="True" TextSearch.TextPath="Name"
-                                            IsTextSearchCaseSensitive="False" StaysOpenOnEdit="True">
-                    <ComboBox.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding Name}" />
-                        </DataTemplate>
-                    </ComboBox.ItemTemplate>
+                                            IsEditable="True" TextSearch.TextPath="DisplayText"
+                                            IsTextSearchCaseSensitive="False" StaysOpenOnEdit="True"
+                                            hltb:SelectorBehaviors.EnumSource="{x:Type hltm:HltbPlatform}">
                 </controls:ComboBoxRemovable>
             </Grid>
 
