@@ -11,7 +11,7 @@
 
     <sys:String x:Key="LOCHowLongToBeatAddTagDescription">إضافة علامة إلى الألعاب مع معلومات وقت إكمال القصة الرئيسية</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoTag">معالجة تلقائية للوسوم</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatShowHltbImage">Use HowLongToBeat original game cover image in window</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatShowHltbImage">استعمل صورة غلاف اللعبة الأصلي من HowLongToBeat في النافذة</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatColorSelection">اختيار اللون:</sys:String>
 
@@ -23,7 +23,7 @@
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeAbove">فوق شريط التقد</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeInterior">داخل شريط التقد</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeBelow">تحت شريط التقد</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeUser">Show user HowLongToBeat time</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeUser">أظهر للمستخدم وقت HowLongToBeat</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatAutoSetCurrentPlayTime">Automatically update current playtime on HowLongToBeat after game session</sys:String>
     <sys:String x:Key="LOCHowLongToBeatWithoutConfirmation">بدون رسالة تأكي</sys:String>
@@ -32,11 +32,11 @@
     <sys:String x:Key="LOCHowLongToBeatAutoData">تنزيل بيانات اللعبة</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoAccept">Automatically select game when only one game is found during search</sys:String>
     <sys:String x:Key="LOCHowLongToBeatShowWhenMismatch">Show game selection list when more than one game is found during search</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatUseMatchValue">Use a percent match</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatUseMatchValue">استخدام مطابقة بنسبة مئوية</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatTimeOnlyHour">Time format with only hour</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatTimeOnlyHour">تنسيق الوقت بالساعات فقط</sys:String>
     
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBar">Display progress indicator</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBar">عرض مؤشر التقدم</sys:String>
     
     <sys:String x:Key="LOCHowLongToBeatCurrentPlayTimeSetted">تم ضبط وقت التشغيل الحالي لـ {0}.</sys:String>
 
@@ -49,35 +49,35 @@ If none has this status, it takes the most recent.</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatMainStory">القصة الرئيسي</sys:String>
     <sys:String x:Key="LOCHowLongToBeatMainExtra">الرئيسية + الإضافي</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatCompletionist">Completionist</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatCompletionist">استكمالي</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatSolo">Solo</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatCoOp">Co-Op</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatVs">Vs</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatSolo">منفرد</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatCoOp">تعاوني</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatVs">تواجهي</sys:String>
 
     <!-- HowLongToBeat -->
 
-    <sys:String x:Key="LOCHowLongToBeatProgression">Progression</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatProgression">التقدّم</sys:String>
 
     <!-- HowLongToBeatUserView -->
 
-    <sys:String x:Key="LOCHowLongToBeatCompletationStore">Games completed by storefront</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatCompletationStore">الألعاب المكتملة من قبل المتجر</sys:String>
     <sys:String x:Key="LOCHowLongToBeatCompletationProgress">الألعاب المكتملة بمرور الوقت</sys:String>
     
     <sys:String x:Key="LOCHowLongToBeatUserData">بيانات المستخد</sys:String>
-    <sys:String x:Key="LocHowLongToBeatPlayniteData">Playnite data</sys:String>
+    <sys:String x:Key="LocHowLongToBeatPlayniteData">بيانات بلاي نايت</sys:String>
     <sys:String x:Key="LOCHowLongToBeatCompleted">اكتم</sys:String>
 
-    <sys:String x:Key="LOCHltbOnlyReplays">Only replays</sys:String>
+    <sys:String x:Key="LOCHltbOnlyReplays">إعادة العرض فقط</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatPluginGetUserView">الحصول على بيانات المستخدمي</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatCompletions">الاكتما</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatTimeSinglePlayer">Single-Player time</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatTimeCoOp">Co-Op time</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatTimeVs">Vs Multi-Player time</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatTimeSinglePlayer">وقت اللعب الانفرادي</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatTimeCoOp">وقت اللعب التعاوني</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatTimeVs">وقت اللعب الجماعي التواجهي</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatStorefront">Storefront</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatStorefront">واجهة المتجر</sys:String>
     
     <sys:String x:Key="LOCHltbAvgTimeByGame">متوسط الوقت حسب اللعب</sys:String>
     <sys:String x:Key="LOCHltbAvgGameByMonth">Avg game by month</sys:String>
