@@ -24,6 +24,7 @@ using CommonPluginsShared.Extensions;
 using System.Text;
 using Newtonsoft;
 using Newtonsoft.Json;
+using System.Net.Http.Headers;
 
 namespace HowLongToBeat.Services
 {
@@ -81,7 +82,7 @@ namespace HowLongToBeat.Services
 
         private const string UrlUserStats = UrlBase + "user?n={0}&s=stats";
         private const string UrlUserStatsMore = UrlBase + "user_stats_more";
-        private const string UrlUserStatsGameList = UrlBase + "user_games_list";
+        private const string UrlUserStatsGameList = UrlBase + "api/user/{0}/stats";
         private const string UrlUserStatsGameDetails = UrlBase + "user_games_detail";
 
         private const string UrlPostData = UrlBase + "submit";
@@ -169,7 +170,7 @@ namespace HowLongToBeat.Services
         #region Search
         public List<HltbDataUser> Search(string Name, string Platform = "")
         {
-            HowLongToBeatSearchRoot data = GameSearch(Name, Platform).Result;
+            HltbSearchRoot data = GameSearch(Name, Platform).Result;
             List<HltbDataUser> dataParsed = SearchParser(data);
             return dataParsed;
         }
@@ -179,7 +180,7 @@ namespace HowLongToBeat.Services
         /// </summary>
         /// <param name="Name"></param>
         /// <returns></returns>
-        private async Task<HowLongToBeatSearchRoot> GameSearch(string Name, string Platform = "")
+        private async Task<HltbSearchRoot> GameSearch(string Name, string Platform = "")
         {
             try
             {
@@ -194,20 +195,18 @@ namespace HowLongToBeat.Services
 
                 requestMessage.Content = new StringContent("{\"searchType\":\"games\",\"searchTerms\":[\"" + Name + "\"],\"searchPage\":1,\"size\":20,\"searchOptions\":{\"games\":{\"userId\":0,\"platform\":\"" + Platform + "\",\"sortCategory\":\"popular\",\"rangeCategory\":\"main\",\"rangeTime\":{\"min\":0,\"max\":0},\"gameplay\":{\"perspective\":\"\",\"flow\":\"\",\"genre\":\"\"},\"modifier\":\"\"},\"users\":{\"sortCategory\":\"postcount\"},\"filter\":\"\",\"sort\":0,\"randomizer\":0}}", Encoding.UTF8, "application/json");
 
-
-
                 HttpResponseMessage response = await httpClient.PostAsync(UrlSearch, requestMessage.Content);
                 var json = await response.Content.ReadAsStringAsync();
 
-                HowLongToBeatSearchRoot hltbSearchObj = new HowLongToBeatSearchRoot();
-                hltbSearchObj = JsonConvert.DeserializeObject<HowLongToBeatSearchRoot>(json);
+                HltbSearchRoot hltbSearchObj = new HltbSearchRoot();
+                hltbSearchObj = JsonConvert.DeserializeObject<HltbSearchRoot>(json);
                 return hltbSearchObj;
             }
 
             catch (Exception ex)
             {
                 Common.LogError(ex, false, true, PluginDatabase.PluginName);
-                return new HowLongToBeatSearchRoot();
+                return new HltbSearchRoot();
             }
         }
 
@@ -239,7 +238,7 @@ namespace HowLongToBeat.Services
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
-        private List<HltbDataUser> SearchParser(HowLongToBeatSearchRoot data)
+        private List<HltbDataUser> SearchParser(HltbSearchRoot data)
         {
             List<HltbDataUser> ReturnData = new List<HltbDataUser>();
 
@@ -251,19 +250,19 @@ namespace HowLongToBeat.Services
                     string UrlImg = string.Empty;
                     string Url = string.Empty;
 
-                    foreach (HowLongToBeatSearchData entry in data.data)
+                    foreach (HltbSearchData entry in data.data)
                     {
                         Name = entry.game_name;
                         Id = entry.game_id;
                         UrlImg = string.Format(UrlGameImg, entry.game_image);
                         Url = string.Format(UrlGame, Id);
 
-                        long MainStory = entry.comp_main;
-                        long MainExtra = entry.comp_plus;
-                        long Completionist = entry.comp_100;
-                        long Solo = entry.comp_all;
-                        long CoOp = entry.invested_co;
-                        long Vs = entry.invested_mp;
+                        long MainStory = entry.comp_lvl_combine == 0 ? entry.comp_main : 0;
+                        long MainExtra = entry.comp_lvl_combine == 0 ? entry.comp_plus : 0;
+                        long Completionist = entry.comp_lvl_combine == 0 ? entry.comp_100 : 0;
+                        long Solo = (entry.comp_lvl_combine == 1 && entry.comp_lvl_sp == 1) ? entry.comp_all : 0;
+                        long CoOp = (entry.comp_lvl_combine == 1 && entry.comp_lvl_co == 1) ? entry.invested_co : 0;
+                        long Vs = (entry.comp_lvl_combine == 1 && entry.comp_lvl_mp == 1) ? entry.invested_mp : 0;
                         
                         ReturnData.Add(new HltbDataUser
                         {
@@ -328,9 +327,9 @@ namespace HowLongToBeat.Services
                 {
                     Common.LogDebug(true, $"NavigationChanged - {WebView.GetCurrentAddress()}");
 
-                    if (WebView.GetCurrentAddress().StartsWith("https://howlongtobeat.com/user?n="))
+                    if (WebView.GetCurrentAddress().StartsWith("https://howlongtobeat.com/user/"))
                     {
-                        UserLogin = WebUtility.HtmlDecode(WebView.GetCurrentAddress().Replace("https://howlongtobeat.com/user?n=", string.Empty));
+                        UserLogin = WebUtility.HtmlDecode(WebView.GetCurrentAddress().Replace("https://howlongtobeat.com/user/", string.Empty));
                         IsConnected = true;
 
                         PluginDatabase.PluginSettings.Settings.UserLogin = UserLogin;
@@ -355,7 +354,7 @@ namespace HowLongToBeat.Services
                             PluginDatabase.Plugin.SavePluginSettings(PluginDatabase.PluginSettings.Settings);
 
                             Task.Run(() => {
-                                string url = @"https://howlongtobeat.com/submit?s=add";
+                                string url = @"https://howlongtobeat.com/submit";
                                 WebViewOffscreen.NavigateAndWait(url);
 
                                 HtmlParser parser = new HtmlParser();
@@ -383,7 +382,8 @@ namespace HowLongToBeat.Services
 
         private Dictionary<string, DateTime> GetListGameWithDateUpdate()
         {
-            string webData = GetUserGamesList(true);
+            //string webData = GetUserGamesList(true);
+            string webData = "";
             HtmlParser parser = new HtmlParser();
             IHtmlDocument htmlDocument = parser.Parse(webData);
 
@@ -408,43 +408,36 @@ namespace HowLongToBeat.Services
             return data;
         }
 
-        private string GetUserGamesList(bool WithDateUpdate = false)
+        private List<HltbUserGameList> GetUserGamesList(bool WithDateUpdate = false)
         {
             try
             {
                 List<HttpCookie> Cookies = WebViewOffscreen.GetCookies();
-                Cookies = Cookies.Where(x => x != null && x.Domain != null && x.Domain.Contains("howlongtobeat", StringComparison.InvariantCultureIgnoreCase)).ToList();
+                Cookies = Cookies.Where(x => x != null && x.Domain != null && x.Domain.Contains("hltb", StringComparison.InvariantCultureIgnoreCase)).ToList();
 
-                FormUrlEncodedContent formContent;
-                if (WithDateUpdate)
-                {
-                    formContent = new FormUrlEncodedContent(new[]
-                    {
-                        new KeyValuePair<string, string>("n", UserLogin),
-                        new KeyValuePair<string, string>("c", "user_beat"),
-                        new KeyValuePair<string, string>("p", string.Empty),
-                        new KeyValuePair<string, string>("y", string.Empty),
-                        new KeyValuePair<string, string>("h", "date_updated")
-                    });
-                }
-                else
-                {
-                    formContent = new FormUrlEncodedContent(new[]
-                    {
-                        new KeyValuePair<string, string>("n", UserLogin),
-                        new KeyValuePair<string, string>("c", "user_beat"),
-                        new KeyValuePair<string, string>("p", string.Empty),
-                        new KeyValuePair<string, string>("y", string.Empty)
-                    });
-                }
+                HttpClient httpClient = new HttpClient();
 
-                string response = Web.PostStringDataCookies(UrlUserStatsGameList, formContent, Cookies).GetAwaiter().GetResult();
-                return response;
+                httpClient.DefaultRequestHeaders.Add("User-Agent", Web.UserAgent);
+                httpClient.DefaultRequestHeaders.Add("origin", "https://howlongtobeat.com");
+                httpClient.DefaultRequestHeaders.Add("referer", "https://howlongtobeat.com");
+
+                HttpRequestMessage requestMessage = new HttpRequestMessage();
+
+                requestMessage.Content = new StringContent("{\"category\":\"user_beat\",\"platform\":\"\",\"storefront\":\"\",\"year\":\"\"}", Encoding.UTF8, "application/json");
+                
+                HttpResponseMessage response = httpClient.PostAsync(string.Format(UrlUserStatsGameList, "168540"), requestMessage.Content).GetAwaiter().GetResult();
+                var json = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+
+                List<HltbUserGameList> hltbUserGameList = new List<HltbUserGameList>();
+
+                hltbUserGameList = JsonConvert.DeserializeObject<List<HltbUserGameList>>(json);
+
+                return hltbUserGameList;
             }
             catch (Exception ex)
             {
                 Common.LogError(ex, false, true, PluginDatabase.PluginName);
-                return string.Empty;
+                return new List<HltbUserGameList>();
             }
         }
 
@@ -978,8 +971,8 @@ namespace HowLongToBeat.Services
                 hltbUserStats.UserId = (UserId == 0) ? HowLongToBeat.PluginDatabase.Database.UserHltbData.UserId : UserId;
                 hltbUserStats.TitlesList = new List<TitleList>();
 
-                string response = GetUserGamesList();
-                if (response.IsNullOrEmpty())
+                List<HltbUserGameList> response = GetUserGamesList();
+                if (response == null)
                 {
                     return null;
                 }
@@ -989,7 +982,7 @@ namespace HowLongToBeat.Services
                 try
                 {
                     HtmlParser parser = new HtmlParser();
-                    IHtmlDocument htmlDocument = parser.Parse(response);
+                    IHtmlDocument htmlDocument = parser.Parse("");
 
                     foreach (IElement ListGame in htmlDocument.QuerySelectorAll("table.user_game_list tbody"))
                     {
@@ -1027,8 +1020,8 @@ namespace HowLongToBeat.Services
         {
             if (GetIsUserLoggedIn())
             {
-                string response = GetUserGamesList();
-                if (response.IsNullOrEmpty())
+                List<HltbUserGameList> response = GetUserGamesList();
+                if (response == null)
                 {
                     return null;
                 }
@@ -1038,7 +1031,7 @@ namespace HowLongToBeat.Services
                 try
                 {
                     HtmlParser parser = new HtmlParser();
-                    IHtmlDocument htmlDocument = parser.Parse(response);
+                    IHtmlDocument htmlDocument = parser.Parse("");
 
                     foreach (IElement ListGame in htmlDocument.QuerySelectorAll("table.user_game_list tbody"))
                     {
@@ -1088,16 +1081,16 @@ namespace HowLongToBeat.Services
 
         public bool EditIdExist(string UserGameId)
         {
-            return GetUserGamesList().ToLower().Contains("user_sel_" + UserGameId);
+            return GetUserGamesList().FirstOrDefault().game_id.Equals(UserGameId);
         }
 
         public string FindIdExisting(string GameId)
         {
             try
             {
-                string UserGamesList = GetUserGamesList();
+                List<HltbUserGameList> UserGamesList = GetUserGamesList();
                 HtmlParser parser = new HtmlParser();
-                IHtmlDocument htmlDocument = parser.Parse(UserGamesList);
+                IHtmlDocument htmlDocument = parser.Parse("");
 
                 IElement element = htmlDocument.QuerySelectorAll("a").Where(x => x.GetAttribute("href").Contains($"game?id={GameId}")).FirstOrDefault();
 

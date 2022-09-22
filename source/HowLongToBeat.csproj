@@ -125,6 +125,7 @@
     <Compile Include="Models\HltbDataUser.cs" />
     <Compile Include="Models\HltbPostData.cs" />
     <Compile Include="Models\HltbStorefront.cs" />
+    <Compile Include="Models\HltbUserGameList.cs" />
     <Compile Include="Models\HltbUserStats.cs" />
     <Compile Include="Models\QuickSearchItemSource.cs" />
     <Compile Include="playnite-plugincommon\CommonPluginsControls\Controls\ComboBoxRemovable.xaml.cs">
@@ -168,9 +169,9 @@
     <Compile Include="playnite-plugincommon\CommonPluginsControls\PlayniteControls\SearchBox.xaml.cs">
       <DependentUpon>SearchBox.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Services\HowLongToBeatSearchData.cs" />
+    <Compile Include="Models\HltbSearchData.cs" />
     <Compile Include="Services\HowLongToBeatDatabase.cs" />
-    <Compile Include="Services\HowLongToBeatSearchRoot.cs" />
+    <Compile Include="Models\HltbSearchRoot.cs" />
     <Compile Include="Services\OldToNew.cs" />
     <Compile Include="Views\HowLongToBeatSelect.xaml.cs">
       <DependentUpon>HowLongToBeatSelect.xaml</DependentUpon>

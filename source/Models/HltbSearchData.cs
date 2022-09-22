@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HowLongToBeat.Services
+namespace HowLongToBeat.Models
 {
-    class HowLongToBeatSearchData
+    class HltbSearchData
     {
         public int count { get; set; }
         public int game_id { get; set; }
