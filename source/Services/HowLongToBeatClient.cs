@@ -21,6 +21,9 @@ using System.Reflection;
 using AngleSharp.Dom;
 using CommonPluginsShared.Converters;
 using CommonPluginsShared.Extensions;
+using System.Text;
+using Newtonsoft;
+using Newtonsoft.Json;
 
 namespace HowLongToBeat.Services
 {
@@ -83,9 +86,11 @@ namespace HowLongToBeat.Services
 
         private const string UrlPostData = UrlBase + "submit";
         private const string UrlPostDataEdit = UrlBase + "submit?s=add&eid={0}";
-        private const string UrlSearch = UrlBase + "search_results.php";
+        private const string UrlSearch = UrlBase + "api/search";
 
-        private const string UrlGame = UrlBase + "game.php?id={0}";
+        private const string UrlGameImg = UrlBase + "games/{0}";
+
+        private const string UrlGame = UrlBase + "game/{0}";
 
         private const string UrlExportAll = UrlBase + "user_export?all=1";
 
@@ -164,7 +169,7 @@ namespace HowLongToBeat.Services
         #region Search
         public List<HltbDataUser> Search(string Name, string Platform = "")
         {
-            string data = GameSearch(Name, Platform).GetAwaiter().GetResult();
+            HowLongToBeatSearchRoot data = GameSearch(Name, Platform).Result;
             List<HltbDataUser> dataParsed = SearchParser(data);
             return dataParsed;
         }
@@ -174,29 +179,35 @@ namespace HowLongToBeat.Services
         /// </summary>
         /// <param name="Name"></param>
         /// <returns></returns>
-        private async Task<string> GameSearch(string Name, string Platform = "")
-        { 
+        private async Task<HowLongToBeatSearchRoot> GameSearch(string Name, string Platform = "")
+        {
             try
             {
-                FormUrlEncodedContent content = new FormUrlEncodedContent(new[]
-                {
-                    new KeyValuePair<string, string>("queryString", Name),
-                    new KeyValuePair<string, string>("t", "games"),
-                    new KeyValuePair<string, string>("sorthead", "popular"),
-                    new KeyValuePair<string, string>("sortd", "Normal Order"),
-                    new KeyValuePair<string, string>("plat", Platform),
-                    new KeyValuePair<string, string>("length_type", "main"),
-                    new KeyValuePair<string, string>("length_min", string.Empty),
-                    new KeyValuePair<string, string>("length_max", string.Empty),
-                    new KeyValuePair<string, string>("detail", "0")
-                });
 
-                return await Web.PostStringDataCookies(UrlSearch, content);
+                HttpClient httpClient = new HttpClient();
+
+                httpClient.DefaultRequestHeaders.Add("User-Agent", Web.UserAgent);
+                httpClient.DefaultRequestHeaders.Add("origin", "https://howlongtobeat.com");
+                httpClient.DefaultRequestHeaders.Add("referer", "https://howlongtobeat.com");
+
+                HttpRequestMessage requestMessage = new HttpRequestMessage();
+
+                requestMessage.Content = new StringContent("{\"searchType\":\"games\",\"searchTerms\":[\"" + Name + "\"],\"searchPage\":1,\"size\":20,\"searchOptions\":{\"games\":{\"userId\":0,\"platform\":\"" + Platform + "\",\"sortCategory\":\"popular\",\"rangeCategory\":\"main\",\"rangeTime\":{\"min\":0,\"max\":0},\"gameplay\":{\"perspective\":\"\",\"flow\":\"\",\"genre\":\"\"},\"modifier\":\"\"},\"users\":{\"sortCategory\":\"postcount\"},\"filter\":\"\",\"sort\":0,\"randomizer\":0}}", Encoding.UTF8, "application/json");
+
+
+
+                HttpResponseMessage response = await httpClient.PostAsync(UrlSearch, requestMessage.Content);
+                var json = await response.Content.ReadAsStringAsync();
+
+                HowLongToBeatSearchRoot hltbSearchObj = new HowLongToBeatSearchRoot();
+                hltbSearchObj = JsonConvert.DeserializeObject<HowLongToBeatSearchRoot>(json);
+                return hltbSearchObj;
             }
+
             catch (Exception ex)
             {
                 Common.LogError(ex, false, true, PluginDatabase.PluginName);
-                return string.Empty;
+                return new HowLongToBeatSearchRoot();
             }
         }
 
@@ -228,108 +239,32 @@ namespace HowLongToBeat.Services
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
-        private List<HltbDataUser> SearchParser(string data)
+        private List<HltbDataUser> SearchParser(HowLongToBeatSearchRoot data)
         {
             List<HltbDataUser> ReturnData = new List<HltbDataUser>();
 
-            if (data != string.Empty)
+            if (data != null)
             {
                 try {
-                    HtmlParser parser = new HtmlParser();
-                    IHtmlDocument htmlDocument = parser.Parse(data);
-
                     string Name = string.Empty;
                     int Id = 0;
                     string UrlImg = string.Empty;
                     string Url = string.Empty;
 
-                    foreach (IElement SearchElement in htmlDocument.QuerySelectorAll("li.back_darkish"))
+                    foreach (HowLongToBeatSearchData entry in data.data)
                     {
-                        IElement ElementA = SearchElement.QuerySelector(".search_list_image a");
-                        IElement ElementImg = SearchElement.QuerySelector(".search_list_image a img");
-                        Name = WebUtility.HtmlDecode(ElementA.GetAttribute("title"));
-                        Id = int.Parse(ElementA.GetAttribute("href").Replace("game?id=", string.Empty));
-                        UrlImg = ElementImg.GetAttribute("src");
-                        Url = ElementA.GetAttribute("href");
+                        Name = entry.game_name;
+                        Id = entry.game_id;
+                        UrlImg = string.Format(UrlGameImg, entry.game_image);
+                        Url = string.Format(UrlGame, Id);
 
-                        if (!UrlImg.ToLower().Contains(UrlBase.ToLower()))
-                        {
-                            if (UrlImg.Substring(0, 1) == "/")
-                            {
-                                UrlImg = UrlImg.Substring(1, UrlImg.Length - 1);
-                            }
-
-                            UrlImg = UrlBase + UrlImg;
-                        }
-                        if (!Url.ToLower().Contains(UrlBase.ToLower()))
-                        {
-                            Url = UrlBase + Url;
-                        }
-
-                        IElement ElementDetails = SearchElement.QuerySelector(".search_list_details_block");
-                        IHtmlCollection<IElement> Details = ElementDetails.QuerySelectorAll(".search_list_tidbit");
-                        if (Details.Length == 0)
-                        {
-                            Details = ElementDetails.QuerySelectorAll("div");
-                        }
-
-                        long MainStory = 0;
-                        long MainExtra = 0;
-                        long Completionist = 0;
-                        long Solo = 0;
-                        long CoOp = 0;
-                        long Vs = 0;
-
-                        bool IsMainStory = true;
-                        bool IsMainExtra = true;
-                        bool IsCompletionist = true;
-                        bool IsCoOp = true;
-                        bool IsVs = true;
-                        bool IsSolo = true;
-
-                        int iElement = 0;
-                        foreach (IElement El in Details)
-                        {
-                            if (iElement % 2 == 0)
-                            {
-                                IsMainStory = (El.InnerHtml == "Main Story");
-                                IsMainExtra = (El.InnerHtml == "Main + Extra");
-                                IsCompletionist = (El.InnerHtml == "Completionist");
-                                IsCoOp = (El.InnerHtml == "Co-Op");
-                                IsVs = (El.InnerHtml == "Vs.");
-                                IsSolo = (El.InnerHtml == "Solo");
-                            }
-                            else
-                            {
-                                if (IsMainStory)
-                                {
-                                    MainStory = ConvertStringToLong(El.InnerHtml);
-                                }
-                                if (IsMainExtra)
-                                {
-                                    MainExtra = ConvertStringToLong(El.InnerHtml);
-                                }
-                                if (IsCompletionist)
-                                {
-                                    Completionist = ConvertStringToLong(El.InnerHtml);
-                                }
-                                if (IsCoOp)
-                                {
-                                    CoOp = ConvertStringToLong(El.InnerHtml);
-                                }
-                                if (IsVs)
-                                {
-                                    Vs = ConvertStringToLong(El.InnerHtml);
-                                }
-                                if (IsSolo)
-                                {
-                                    Solo = ConvertStringToLong(El.InnerHtml);
-                                }
-                            }
-
-                            iElement += 1;
-                        }
-
+                        long MainStory = entry.comp_main;
+                        long MainExtra = entry.comp_plus;
+                        long Completionist = entry.comp_100;
+                        long Solo = entry.comp_all;
+                        long CoOp = entry.invested_co;
+                        long Vs = entry.invested_mp;
+                        
                         ReturnData.Add(new HltbDataUser
                         {
                             Name = Name,
