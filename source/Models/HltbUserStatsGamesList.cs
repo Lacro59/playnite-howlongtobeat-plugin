@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace HowLongToBeat.Models
 {
-    class HltbUserGameList
+    class HltbUserStatsGamesList
     {
         public int game_id { get; set; }
         public string custom_title { get; set; }
@@ -25,7 +25,7 @@ namespace HowLongToBeat.Models
         public int invested_mp { get; set; }
         public string date_complete { get; set; }
         public string date_added { get; set; }
-        public int release_year { get; set; }
+        public int? release_year { get; set; }
         public string release_world { get; set; }
     }
 }

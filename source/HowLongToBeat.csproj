@@ -125,7 +125,8 @@
     <Compile Include="Models\HltbDataUser.cs" />
     <Compile Include="Models\HltbPostData.cs" />
     <Compile Include="Models\HltbStorefront.cs" />
-    <Compile Include="Models\HltbUserGameList.cs" />
+    <Compile Include="Models\HltbUserGamesList.cs" />
+    <Compile Include="Models\HltbUserStatsGamesList.cs" />
     <Compile Include="Models\HltbUserStats.cs" />
     <Compile Include="Models\QuickSearchItemSource.cs" />
     <Compile Include="playnite-plugincommon\CommonPluginsControls\Controls\ComboBoxRemovable.xaml.cs">
