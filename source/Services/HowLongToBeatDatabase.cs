@@ -131,7 +131,7 @@ namespace HowLongToBeat.Services
             }, globalProgressOptions);
         }
 
-        
+
         public override GameHowLongToBeat Get(Guid Id, bool OnlyCache = false, bool Force = false)
         {
             GameHowLongToBeat gameHowLongToBeat = GetOnlyCache(Id);
@@ -339,7 +339,7 @@ namespace HowLongToBeat.Services
                     {
                         AddData(game);
                     }
-                    
+
                     activateGlobalProgress.CurrentProgressValue++;
                 }
 
@@ -388,8 +388,30 @@ namespace HowLongToBeat.Services
                 {
                     Common.LogError(ex, false, $"Tag insert error with {game.Name}", true, PluginName, string.Format(resources.GetString("LOCCommonNotificationTagError"), game.Name));
                 }
+            } 
+            else if (TagMissing)
+            {
+                if (game.TagIds != null)
+                {
+                    game.TagIds.Add((Guid)AddNoDataTag());
+                }
+                else
+                {
+                    game.TagIds = new List<Guid> { (Guid)AddNoDataTag() };
+                }
+
+                if (!noUpdate)
+                {
+                    Application.Current.Dispatcher?.Invoke(() =>
+                    {
+                        PlayniteApi.Database.Games.Update(game);
+                        game.OnPropertyChanged();
+                    }, DispatcherPriority.Send);
+                }
+
             }
         }
+
 
         private Guid? FindGoodPluginTags(HltbDataUser hltbDataUser)
         {
