@@ -388,15 +388,16 @@ namespace HowLongToBeat.Services
                 {
                     Common.LogError(ex, false, $"Tag insert error with {game.Name}", true, PluginName, string.Format(resources.GetString("LOCCommonNotificationTagError"), game.Name));
                 }
-            } else
+            } 
+            else if (TagMissing)
             {
                 if (game.TagIds != null)
                 {
-                    game.TagIds.Add((Guid)AddNoHltbDataTag());
+                    game.TagIds.Add((Guid)AddNoDataTag());
                 }
                 else
                 {
-                    game.TagIds = new List<Guid> { (Guid)AddNoHltbDataTag() };
+                    game.TagIds = new List<Guid> { (Guid)AddNoDataTag() };
                 }
 
                 if (!noUpdate)
@@ -411,10 +412,6 @@ namespace HowLongToBeat.Services
             }
         }
 
-        private Guid? AddNoHltbDataTag()
-        {
-            return CheckTagExist($"{resources.GetString("LOCNoData")}");
-        }
 
         private Guid? FindGoodPluginTags(HltbDataUser hltbDataUser)
         {
