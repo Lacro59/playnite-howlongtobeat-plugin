@@ -22,8 +22,6 @@ using AngleSharp.Dom;
 using CommonPluginsShared.Converters;
 using CommonPluginsShared.Extensions;
 using System.Text;
-using Newtonsoft;
-using Newtonsoft.Json;
 using System.Net.Http.Headers;
 
 namespace HowLongToBeat.Services
@@ -199,9 +197,8 @@ namespace HowLongToBeat.Services
 
                 HttpResponseMessage response = await httpClient.PostAsync(UrlSearch, requestMessage.Content);
                 var json = await response.Content.ReadAsStringAsync();
+                Serialization.TryFromJson(json, out HltbSearchRoot hltbSearchObj);
 
-                HltbSearchRoot hltbSearchObj = new HltbSearchRoot();
-                hltbSearchObj = JsonConvert.DeserializeObject<HltbSearchRoot>(json);
                 return hltbSearchObj;
             }
 
@@ -420,9 +417,7 @@ namespace HowLongToBeat.Services
                 string payload = "{\"user_id\":" + UserId + ",\"lists\":[\"playing\",\"completed\",\"retired\"],\"set_playstyle\":\"comp_all\",\"name\":\"\",\"platform\":\"\",\"storefront\":\"\",\"sortBy\":\"\",\"sortFlip\":0,\"view\":\"\",\"limit\":1000,\"currentUserHome\":true}";
                 string json = Web.PostStringDataPayload(string.Format(UrlUserGamesList, UserId), payload, Cookies).GetAwaiter().GetResult();
 
-                HltbUserGamesList hltbUserGameList = new HltbUserGamesList();
-                hltbUserGameList = JsonConvert.DeserializeObject<HltbUserGamesList>(json);
-
+                Serialization.TryFromJson(json, out HltbUserGamesList hltbUserGameList);
                 return hltbUserGameList;
             }
             catch (Exception ex)
