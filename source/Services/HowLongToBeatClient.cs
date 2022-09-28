@@ -193,7 +193,8 @@ namespace HowLongToBeat.Services
 
                 HttpRequestMessage requestMessage = new HttpRequestMessage();
 
-                requestMessage.Content = new StringContent("{\"searchType\":\"games\",\"searchTerms\":[\"" + Name + "\"],\"searchPage\":1,\"size\":20,\"searchOptions\":{\"games\":{\"userId\":0,\"platform\":\"" + Platform + "\",\"sortCategory\":\"popular\",\"rangeCategory\":\"main\",\"rangeTime\":{\"min\":0,\"max\":0},\"gameplay\":{\"perspective\":\"\",\"flow\":\"\",\"genre\":\"\"},\"modifier\":\"\"},\"users\":{\"sortCategory\":\"postcount\"},\"filter\":\"\",\"sort\":0,\"randomizer\":0}}", Encoding.UTF8, "application/json");
+                var searchTerms = Name.Split(' ');
+                requestMessage.Content = new StringContent("{\"searchType\":\"games\",\"searchTerms\":[" + String.Join(",", searchTerms.Select(x => "\"" + x + "\"")) + "],\"searchPage\":1,\"size\":20,\"searchOptions\":{\"games\":{\"userId\":0,\"platform\":\"" + Platform + "\",\"sortCategory\":\"popular\",\"rangeCategory\":\"main\",\"rangeTime\":{\"min\":0,\"max\":0},\"gameplay\":{\"perspective\":\"\",\"flow\":\"\",\"genre\":\"\"},\"modifier\":\"\"},\"users\":{\"sortCategory\":\"postcount\"},\"filter\":\"\",\"sort\":0,\"randomizer\":0}}", Encoding.UTF8, "application/json");
 
                 HttpResponseMessage response = await httpClient.PostAsync(UrlSearch, requestMessage.Content);
                 var json = await response.Content.ReadAsStringAsync();
