@@ -66,10 +66,7 @@ namespace HowLongToBeat.Services
                 return _WebViewOffscreen;
             }
 
-            set
-            {
-                _WebViewOffscreen = value;
-            }
+            set => _WebViewOffscreen = value;
         }
 
 
@@ -96,18 +93,8 @@ namespace HowLongToBeat.Services
 
 
         private bool? _IsConnected = null;
-        public bool? IsConnected
-        {
-            get
-            {
-                return _IsConnected;
-            }
-            set
-            {
-                _IsConnected = value;
-                OnPropertyChanged();
-            }
-        }
+        public bool? IsConnected { get => _IsConnected; set => SetValue(ref _IsConnected, value); }
+
 
         public string UserLogin = string.Empty;
         public int UserId = 0;
@@ -119,50 +106,6 @@ namespace HowLongToBeat.Services
         public HowLongToBeatClient()
         {
             UserLogin = PluginDatabase.PluginSettings.Settings.UserLogin;
-        }
-
-
-        /// <summary>
-        /// Convert Time string from hltb to long seconds.
-        /// </summary>
-        /// <param name="Time"></param>
-        /// <returns></returns>
-        private long ConvertStringToLong(string Time)
-        {
-            if (Time.IndexOf("Hours") > -1)
-            {
-                Time = Time.Replace("Hours", string.Empty);
-                Time = Time.Replace("&#189;", ".5");
-                Time = Time.Replace("½", ".5");
-                Time = Time.Trim();
-
-                return (long)(Convert.ToDouble(Time, new NumberFormatInfo { NumberGroupSeparator = "." }) * 3600);
-            }
-
-            if (Time.IndexOf("Mins") > -1)
-            {
-                Time = Time.Replace("Mins", string.Empty);
-                Time = Time.Replace("&#189;", ".5");
-                Time = Time.Replace("½", ".5");
-                Time = Time.Trim();
-
-                return (long)(Convert.ToDouble(Time, new NumberFormatInfo { NumberGroupSeparator = "." }) * 60);
-            }
-
-            return 0;
-        }
-
-        private long ConvertStringToLongUser(string Time)
-        {
-            long.TryParse(Regex.Match(Time, @"\d+h").Value.Replace("h", string.Empty).Trim(), out long hours);
-            long.TryParse(Regex.Match(Time, @"\d+m").Value.Replace("m", string.Empty).Trim(), out long minutes);
-            long.TryParse(Regex.Match(Time, @"\d+s").Value.Replace("s", string.Empty).Trim(), out long secondes);
-
-            long TimeConverted = hours * 3600 + minutes * 60 + secondes;
-
-            Common.LogDebug(true, $"ConvertStringToLongUser: {Time.Trim()} - {TimeConverted}");
-
-            return TimeConverted;
         }
 
 
@@ -379,34 +322,6 @@ namespace HowLongToBeat.Services
         }
 
 
-        private Dictionary<string, DateTime> GetListGameWithDateUpdate()
-        {
-            //string webData = GetUserGamesList(true);
-            string webData = "";
-            HtmlParser parser = new HtmlParser();
-            IHtmlDocument htmlDocument = parser.Parse(webData);
-
-            Dictionary<string, DateTime> data = new Dictionary<string, DateTime>();
-            foreach (IElement ListGame in htmlDocument.QuerySelectorAll("table.user_game_list tbody"))
-            {
-                IHtmlCollection<IElement> tr = ListGame.QuerySelectorAll("tr");
-                IHtmlCollection<IElement> td = tr[0].QuerySelectorAll("td");
-
-                string UserGameId = ListGame.GetAttribute("id").Replace("user_sel_", string.Empty).Trim();
-                string sDateTime = td[1].InnerHtml;
-                DateTime.TryParseExact(sDateTime, "MMM dd, yyyy", new CultureInfo("en-US"), DateTimeStyles.None, out DateTime dateTime);
-
-                if (dateTime == default(DateTime))
-                {
-                    DateTime.TryParseExact(sDateTime, "MMMM dd, yyyy", new CultureInfo("en-US"), DateTimeStyles.None, out dateTime);
-                }
-
-                data.Add(UserGameId, dateTime);
-            }
-
-            return data;
-        }
-
         private HltbUserGamesList GetUserGamesList(bool WithDateUpdate = false)
         {
             try
@@ -427,28 +342,6 @@ namespace HowLongToBeat.Services
             }
         }
 
-        private string GetUserGamesDetail(string UserGameId)
-        {
-            try
-            {
-                List<HttpCookie> Cookies = WebViewOffscreen.GetCookies();
-                Cookies = Cookies.Where(x => x != null && x.Domain != null && (x.Domain.Contains("howlongtobeat", StringComparison.InvariantCultureIgnoreCase) || x.Domain.Contains("hltb", StringComparison.InvariantCultureIgnoreCase))).ToList();
-
-                FormUrlEncodedContent formContent = new FormUrlEncodedContent(new[]
-                {
-                    new KeyValuePair<string, string>("option", UserGameId),
-                    new KeyValuePair<string, string>("option_b", "comp_all")
-                });
-
-                string response = Web.PostStringDataCookies(UrlUserStatsGameDetails, formContent, Cookies).GetAwaiter().GetResult();
-                return response;
-            }
-            catch (Exception ex)
-            {
-                Common.LogError(ex, false, true, PluginDatabase.PluginName);
-                return string.Empty;
-            }
-        }
 
         private TitleList GetTitleList(GamesList x)
         {

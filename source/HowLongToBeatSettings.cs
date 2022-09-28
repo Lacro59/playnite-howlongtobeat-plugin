@@ -365,15 +365,7 @@ namespace HowLongToBeat
         private HowLongToBeatSettings EditingClone { get; set; }
 
         private HowLongToBeatSettings _Settings;
-        public HowLongToBeatSettings Settings
-        {
-            get => _Settings;
-            set
-            {
-                _Settings = value;
-                OnPropertyChanged();
-            }
-        }
+        public HowLongToBeatSettings Settings { get => _Settings; set => SetValue(ref _Settings, value); }
 
 
         public HowLongToBeatSettingsViewModel(HowLongToBeat plugin)
