@@ -182,3 +182,15 @@ Packages:
       - UI tweaks
       - Fixed data download issue 
       - Changed QuickSearch command image
+  - Version: 3.0
+    RequiredApiVersion: 6.5.0
+    ReleaseDate: 2022-10-02
+    PackageUrl: https://github.com/Lacro59/playnite-howlongtobeat-plugin/releases/download/v3.0/playnite-howlongtobeat-plugin_3_0.pext
+    Changelog:
+      - Playnite 10 only
+      - Updated localizations
+      - Updated for use the new api (thanks to Jhanlon95)
+      - Fixed many bugs (thanks to xunkar)
+      - Added many optimizations (thanks to xunkar)
+      - Added new option to tag with no data (thanks to RandomNinja)
+      - Fixed search
