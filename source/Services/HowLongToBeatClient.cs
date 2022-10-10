@@ -72,24 +72,24 @@ namespace HowLongToBeat.Services
 
         private const string UrlBase = "https://howlongtobeat.com/";
 
-        private const string UrlLogin = UrlBase + "login";
-        private const string UrlLogOut = UrlBase + "login?t=out";
+        private string UrlLogin { get; set; } = UrlBase + "login";
+        private string UrlLogOut { get; set; } = UrlBase + "login?t=out";
 
-        private const string UrlUserStats = UrlBase + "user?n={0}&s=stats";
-        private const string UrlUserStatsMore = UrlBase + "user_stats_more";
-        private const string UrlUserStatsGamesList = UrlBase + "api/user/{0}/stats";
-        private const string UrlUserGamesList = UrlBase + "api/user/{0}/games/list";
-        private const string UrlUserStatsGameDetails = UrlBase + "user_games_detail";
+        private string UrlUserStats { get; set; } = UrlBase + "user?n={0}&s=stats";
+        private string UrlUserStatsMore { get; set; } = UrlBase + "user_stats_more";
+        private string UrlUserStatsGamesList { get; set; } = UrlBase + "api/user/{0}/stats";
+        private string UrlUserGamesList { get; set; } = UrlBase + "api/user/{0}/games/list";
+        private string UrlUserStatsGameDetails { get; set; } = UrlBase + "user_games_detail";
 
-        private const string UrlPostData = UrlBase + "submit";
-        private const string UrlPostDataEdit = UrlBase + "submit?s=add&eid={0}";
-        private const string UrlSearch = UrlBase + "api/search";
+        private string UrlPostData { get; set; } = UrlBase + "submit";
+        private string UrlPostDataEdit { get; set; } = UrlBase + "submit?s=add&eid={0}";
+        private string UrlSearch { get; set; } = UrlBase + "api/search";
 
-        private const string UrlGameImg = UrlBase + "games/{0}";
+        private string UrlGameImg { get; set; } = UrlBase + "games/{0}";
 
-        private const string UrlGame = UrlBase + "game/{0}";
+        private string UrlGame { get; set; } = UrlBase + "game/{0}";
 
-        private const string UrlExportAll = UrlBase + "user_export?all=1";
+        private string UrlExportAll { get; set; } = UrlBase + "user_export?all=1";
 
 
         private bool? _IsConnected = null;
@@ -251,8 +251,7 @@ namespace HowLongToBeat.Services
 
             if (IsConnected == null)
             {
-                WebViewOffscreen.NavigateAndWait(UrlBase);
-                IsConnected = WebViewOffscreen.GetPageSource().ToLower().IndexOf("log in") == -1;
+                IsConnected = GetUserId() != 0;
             }
 
             IsConnected = (bool)IsConnected;
@@ -296,19 +295,7 @@ namespace HowLongToBeat.Services
                             PluginDatabase.Plugin.SavePluginSettings(PluginDatabase.PluginSettings.Settings);
 
                             Task.Run(() => {
-                                string url = @"https://howlongtobeat.com/submit";
-                                WebViewOffscreen.NavigateAndWait(url);
-
-                                HtmlParser parser = new HtmlParser();
-                                IHtmlDocument htmlDocument = parser.Parse(WebViewOffscreen.GetPageSource());
-
-                                var el = htmlDocument.QuerySelector("input[name=user_id]");
-                                if (el != null)
-                                {
-                                    string stringUserId = el.GetAttribute("value");
-                                    int.TryParse(stringUserId, out UserId);
-                                }
-
+                                UserId = GetUserId();
                                 HowLongToBeat.PluginDatabase.RefreshUserData();
                             });
                         }
@@ -319,6 +306,24 @@ namespace HowLongToBeat.Services
                     });
                 }
             };
+        }
+
+
+        private int GetUserId()
+        {
+            try
+            {
+                List<Playnite.SDK.HttpCookie> Cookies = WebViewOffscreen.GetCookies();
+                Cookies = Cookies.Where(x => x != null && x.Domain != null && (x.Domain.Contains("howlongtobeat", StringComparison.InvariantCultureIgnoreCase) || x.Domain.Contains("hltb", StringComparison.InvariantCultureIgnoreCase))).ToList();
+
+                string response = Web.DownloadStringData("https://howlongtobeat.com/api/user", Cookies).GetAwaiter().GetResult();
+                var t = Serialization.FromJson<dynamic>(response);
+                return t.data[0].user_id;
+            }
+            catch (Exception ex)
+            {
+                return 0;
+            }
         }
 
 
