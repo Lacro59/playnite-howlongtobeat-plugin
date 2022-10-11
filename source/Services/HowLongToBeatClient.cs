@@ -362,10 +362,10 @@ namespace HowLongToBeat.Services
 
                 TitleList titleList = new TitleList
                 {
-                    UserGameId = x.game_id.ToString(),
+                    UserGameId = x.id.ToString(),
                     GameName = x.custom_title,
                     Platform = x.platform,
-                    Id = x.id,
+                    Id = x.game_id,
                     CurrentTime = x.invested_pro,
                     IsReplay = x.list_replay == 1,
                     IsRetired = x.list_retired == 1,

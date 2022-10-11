@@ -242,7 +242,7 @@ namespace HowLongToBeat.Controls
 
                         // Show user hltb datas
                         if (gameHowLongToBeat.HasData && ShowUserData)
-                    {
+                        {
                             if (titleList?.HltbUserData?.MainExtra > 0)
                             {
                                 SetUserData(ElIndicator, titleList.HltbUserData.MainExtra, PluginDatabase.PluginSettings.Settings.ColorSecond.Color);
