@@ -194,3 +194,11 @@ Packages:
       - Added many optimizations (thanks to xunkar)
       - Added new option to tag with no data (thanks to RandomNinja)
       - Fixed search
+  - Version: 3.0.1
+    RequiredApiVersion: 6.5.0
+    ReleaseDate: 2022-10-12
+    PackageUrl: https://github.com/Lacro59/playnite-howlongtobeat-plugin/releases/download/v3.0.1/playnite-howlongtobeat-plugin_3_0_1.pext
+    Changelog:
+      - Fixed issue to associate data with games
+      - Fixed authentification (thanks to SquishyMochi514)
+      - Fixed post data
