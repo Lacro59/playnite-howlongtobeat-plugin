@@ -82,7 +82,6 @@ namespace HowLongToBeat.Services
         private string UrlUserStatsGameDetails { get; set; } = UrlBase + "user_games_detail";
 
         private string UrlPostData { get; set; } = UrlBase + "api/submit";
-        //private string UrlPostDataEdit { get; set; } = UrlBase + "submit?s=add&eid={0}";
         private string UrlPostDataEdit { get; set; } = UrlBase + "submit/edit/{0}";
         private string UrlSearch { get; set; } = UrlBase + "api/search";
 

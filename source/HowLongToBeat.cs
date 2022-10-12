@@ -31,15 +31,10 @@ namespace HowLongToBeat
         internal TopPanelItem topPanelItem;
         internal HowLongToBeatViewSidebar howLongToBeatViewSidebar;
 
-        private OldToNew oldToNew;
-
 
         public HowLongToBeat(IPlayniteAPI api) : base(api)
         {
             PluginDatabase.InitializeClient(this);
-
-            // Old database
-            oldToNew = new OldToNew(this.GetPluginUserDataPath());
 
             // Custom theme button
             EventManager.RegisterClassHandler(typeof(Button), Button.ClickEvent, new RoutedEventHandler(OnCustomThemeButtonClick));
@@ -609,12 +604,6 @@ namespace HowLongToBeat
         #region Game event
         public override void OnGameSelected(OnGameSelectedEventArgs args)
         {
-            // Old database
-            if (oldToNew.IsOld)
-            {
-                oldToNew.ConvertDB(PlayniteApi);
-            }
-
             try
             {
                 if (args.NewValue?.Count == 1 && PluginDatabase.IsLoaded)
