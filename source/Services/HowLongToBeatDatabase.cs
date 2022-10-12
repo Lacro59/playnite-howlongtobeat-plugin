@@ -585,11 +585,9 @@ namespace HowLongToBeat.Services
                 try
                 {
                     TitleList titleList = howLongToBeatClient.GetUserData(game_id);
-
                     if (titleList != null)
                     {
                         int index = Database.UserHltbData.TitlesList.FindIndex(x => x.Id == game_id);
-
                         if (index > -1)
                         {
                             Database.UserHltbData.TitlesList[index] = titleList;
@@ -632,7 +630,8 @@ namespace HowLongToBeat.Services
                                 .Where(p => p.Platform.Equals(gamePlatform)).FirstOrDefault()?.HltbPlatform;
                         if (match != null) {
                             platform = match.GetDescription();
-                        } else {
+                        } 
+                        else {
                             platform = gamePlatform.Name;
                         }
 
@@ -704,7 +703,6 @@ namespace HowLongToBeat.Services
                         if (IsCompleted)
                         {
                             hltbPostData.list_cp = "1";
-                            hltbPostData.play_num = hltbPostData.play_num == 0 ? 1 : hltbPostData.play_num;
 
                             if (IsMain)
                             {
@@ -723,7 +721,7 @@ namespace HowLongToBeat.Services
                                 hltbPostData.c_plus_m = time.Minutes.ToString();
                                 hltbPostData.c_plus_s = time.Seconds.ToString();
 
-                                if (hltbPostData.compday.IsNullOrEmpty())
+                                if (hltbPostData.compday.IsNullOrEmpty() || hltbPostData.compday == "00")
                                 {
                                     hltbPostData.compday = ((DateTime)game.LastActivity).Day.ToString();
                                     hltbPostData.compmonth = ((DateTime)game.LastActivity).Month.ToString();
@@ -737,7 +735,7 @@ namespace HowLongToBeat.Services
                                 hltbPostData.c_100_m = time.Minutes.ToString();
                                 hltbPostData.c_100_s = time.Seconds.ToString();
 
-                                if (hltbPostData.compday.IsNullOrEmpty())
+                                if (hltbPostData.compday.IsNullOrEmpty() || hltbPostData.compday == "00")
                                 {
                                     hltbPostData.compday = ((DateTime)game.LastActivity).Day.ToString();
                                     hltbPostData.compmonth = ((DateTime)game.LastActivity).Month.ToString();

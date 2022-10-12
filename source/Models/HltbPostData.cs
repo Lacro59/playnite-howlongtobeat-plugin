@@ -33,7 +33,9 @@
         public string compyear { get; set; } = string.Empty;
 
         // First Playthrough?
-        public int play_num { get; set; }
+        public int playCount { get; set; } = 1;
+
+        public string includesDLC { get; set; } = string.Empty;
 
         // Main Story Only
         public string c_main_h { get; set; } = "0";

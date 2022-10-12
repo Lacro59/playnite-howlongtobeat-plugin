@@ -81,8 +81,9 @@ namespace HowLongToBeat.Services
         private string UrlUserGamesList { get; set; } = UrlBase + "api/user/{0}/games/list";
         private string UrlUserStatsGameDetails { get; set; } = UrlBase + "user_games_detail";
 
-        private string UrlPostData { get; set; } = UrlBase + "submit";
-        private string UrlPostDataEdit { get; set; } = UrlBase + "submit?s=add&eid={0}";
+        private string UrlPostData { get; set; } = UrlBase + "api/submit";
+        //private string UrlPostDataEdit { get; set; } = UrlBase + "submit?s=add&eid={0}";
+        private string UrlPostDataEdit { get; set; } = UrlBase + "submit/edit/{0}";
         private string UrlSearch { get; set; } = UrlBase + "api/search";
 
         private string UrlGameImg { get; set; } = UrlBase + "games/{0}";
@@ -439,248 +440,67 @@ namespace HowLongToBeat.Services
                     return null;
                 }
 
-                HtmlParser parser = new HtmlParser();
-                IHtmlDocument htmlDocument = parser.Parse(response);
+                var jsonData = Tools.GetJsonInString(response, "<script id=\"__NEXT_DATA__\" type=\"application/json\">", "</script></body>");
+                Serialization.TryFromJson(jsonData, out NEXT_DATA data);
 
                 HltbPostData hltbPostData = new HltbPostData();
-
-                IElement user_id = htmlDocument.QuerySelector("input[name=user_id]");
-                int.TryParse(user_id.GetAttribute("value"), out int user_id_value);
-                hltbPostData.user_id = user_id_value;
-
-                IElement edit_id = htmlDocument.QuerySelector("input[name=edit_id]");
-                int.TryParse(edit_id.GetAttribute("value"), out int edit_id_value);
-                hltbPostData.edit_id = edit_id_value;
-
-                IElement game_id = htmlDocument.QuerySelector("input[name=game_id]");
-                int.TryParse(game_id.GetAttribute("value"), out int game_id_value);
-                hltbPostData.game_id = game_id_value;
-
-
-                if (hltbPostData.user_id == 0)
+                if (data != null && data?.props?.pageProps?.editData?.userId != null)
                 {
-                    throw new Exception($"No user_id for {GameName} - {UserGameId}");
+                    hltbPostData.user_id = data.props.pageProps.editData.userId;
+                    hltbPostData.edit_id = data.props.pageProps.editData.submissionId;
+                    hltbPostData.game_id = data.props.pageProps.gameData.game_id;
+                    hltbPostData.custom_title = data.props.pageProps.gameData.game_name;
+                    hltbPostData.platform = data.props.pageProps.editData.platform;                    
+                    hltbPostData.list_p = data.props.pageProps.editData.lists.playing ? "1" : "0";
+                    hltbPostData.list_b = data.props.pageProps.editData.lists.backlog ? "1" : "0";
+                    hltbPostData.list_r = data.props.pageProps.editData.lists.replay ? "1" : "0";
+                    hltbPostData.list_c = data.props.pageProps.editData.lists.custom ? "1" : "0";
+                    hltbPostData.list_cp = data.props.pageProps.editData.lists.completed ? "1" : "0";
+                    hltbPostData.list_rt = data.props.pageProps.editData.lists.retired ? "1" : "0";                    
+                    hltbPostData.protime_h = data.props.pageProps.editData.general.progress.hours?.ToString() ?? "0";
+                    hltbPostData.protime_m = data.props.pageProps.editData.general.progress.minutes?.ToString() ?? "0";
+                    hltbPostData.protime_s = data.props.pageProps.editData.general.progress.seconds?.ToString() ?? "0";
+                    hltbPostData.rt_notes = data.props.pageProps.editData.general.retirementNotes;
+                    hltbPostData.compyear = data.props.pageProps.editData.general.completionDate.year;
+                    hltbPostData.compmonth = data.props.pageProps.editData.general.completionDate.month;
+                    hltbPostData.compday = data.props.pageProps.editData.general.completionDate.day;
+                    hltbPostData.playCount = data.props.pageProps.editData.singlePlayer.playCount;
+                    hltbPostData.includesDLC = data.props.pageProps.editData.singlePlayer.includesDLC ? "1" : "0";
+                    hltbPostData.c_main_h = data.props.pageProps.editData.singlePlayer.compMain.time.hours?.ToString() ?? "0";
+                    hltbPostData.c_main_m = data.props.pageProps.editData.singlePlayer.compMain.time.minutes?.ToString() ?? "0";
+                    hltbPostData.c_main_s = data.props.pageProps.editData.singlePlayer.compMain.time.seconds?.ToString() ?? "0";
+                    hltbPostData.c_main_notes = data.props.pageProps.editData.singlePlayer.compMain.notes;
+                    hltbPostData.c_plus_h = data.props.pageProps.editData.singlePlayer.compPlus.time.hours?.ToString() ?? "0";
+                    hltbPostData.c_plus_m = data.props.pageProps.editData.singlePlayer.compPlus.time.minutes?.ToString() ?? "0";
+                    hltbPostData.c_plus_s = data.props.pageProps.editData.singlePlayer.compPlus.time.seconds?.ToString() ?? "0";
+                    hltbPostData.c_plus_notes = data.props.pageProps.editData.singlePlayer.compPlus.notes;
+                    hltbPostData.c_100_h = data.props.pageProps.editData.singlePlayer.comp100.time.hours?.ToString() ?? "0";
+                    hltbPostData.c_100_m = data.props.pageProps.editData.singlePlayer.comp100.time.minutes?.ToString() ?? "0";
+                    hltbPostData.c_100_s = data.props.pageProps.editData.singlePlayer.comp100.time.seconds?.ToString() ?? "0";
+                    hltbPostData.c_100_notes = data.props.pageProps.editData.singlePlayer.comp100.notes;
+                    hltbPostData.c_speed_h = data.props.pageProps.editData.speedRuns.percAny.time.hours?.ToString() ?? "0";
+                    hltbPostData.c_speed_m = data.props.pageProps.editData.speedRuns.percAny.time.minutes?.ToString() ?? "0";
+                    hltbPostData.c_speed_s = data.props.pageProps.editData.speedRuns.percAny.time.seconds?.ToString() ?? "0";
+                    hltbPostData.c_speed_notes = data.props.pageProps.editData.speedRuns.percAny.notes;
+                    hltbPostData.c_speed100_h = data.props.pageProps.editData.speedRuns.perc100.time.hours?.ToString() ?? "0";
+                    hltbPostData.c_speed100_m = data.props.pageProps.editData.speedRuns.perc100.time.minutes?.ToString() ?? "0";
+                    hltbPostData.c_speed100_s = data.props.pageProps.editData.speedRuns.perc100.time.seconds?.ToString() ?? "0";
+                    hltbPostData.c_speed100_notes = data.props.pageProps.editData.speedRuns.perc100.notes;
+                    hltbPostData.cotime_h = data.props.pageProps.editData.multiPlayer.coOp.time.hours?.ToString() ?? "0";
+                    hltbPostData.cotime_m = data.props.pageProps.editData.multiPlayer.coOp.time.minutes?.ToString() ?? "0";
+                    hltbPostData.cotime_s = data.props.pageProps.editData.multiPlayer.coOp.time.seconds?.ToString() ?? "0";
+                    hltbPostData.mptime_h = data.props.pageProps.editData.multiPlayer.vs.time.hours?.ToString() ?? "0";
+                    hltbPostData.mptime_m = data.props.pageProps.editData.multiPlayer.vs.time.minutes?.ToString() ?? "0";
+                    hltbPostData.mptime_s = data.props.pageProps.editData.multiPlayer.vs.time.seconds?.ToString() ?? "0";
+                    hltbPostData.review_score = data.props.pageProps.editData.review.score;
+                    hltbPostData.review_notes = data.props.pageProps.editData.review.notes;
+                    hltbPostData.play_notes = data.props.pageProps.editData.additionals.notes;
+                    hltbPostData.play_video = data.props.pageProps.editData.additionals.video;
                 }
-                if (hltbPostData.edit_id == 0)
+                else
                 {
-                    throw new Exception($"No edit_id for {GameName} - {UserGameId}");
+                    throw new Exception($"No submit data find for {GameName} - {UserGameId}");
                 }
-                if (hltbPostData.game_id == 0)
-                {
-                    throw new Exception($"No game_id for {GameName} - {UserGameId}");
-                }
-
-
-                IElement CustomTitle = htmlDocument.QuerySelector("input[name=custom_title]");
-                hltbPostData.custom_title = CustomTitle.GetAttribute("value");
-
-                // TODO No selected....
-                IHtmlCollection<IElement> SelectPlatform = htmlDocument.QuerySelectorAll("select[name=platform]");
-                foreach(IElement option in SelectPlatform[0].QuerySelectorAll("option"))
-                {
-                    if (option.GetAttribute("selected") == "selected")
-                    {
-                        hltbPostData.platform = option.InnerHtml;
-                    }
-                }
-                if (hltbPostData.platform.IsNullOrEmpty())
-                {
-                    if (SelectPlatform.Count() > 1)
-                    {
-                        foreach (IElement option in SelectPlatform[1].QuerySelectorAll("option"))
-                        {
-                            if (option.GetAttribute("selected") == "selected")
-                            {
-                                hltbPostData.platform = option.InnerHtml;
-                            }
-                        }
-                    }
-                }
-
-
-                IElement cbList = htmlDocument.QuerySelector("#list_p");
-                if ((bool)cbList?.OuterHtml?.ToLower()?.Contains(" checked"))
-                {
-                    hltbPostData.list_p = "1";
-                }
-
-                cbList = htmlDocument.QuerySelector("#list_b");
-                if (cbList != null && (bool)cbList?.OuterHtml?.ToLower()?.Contains(" checked"))
-                {
-                    hltbPostData.list_b = "1";
-                }
-
-                cbList = htmlDocument.QuerySelector("#list_r");
-                if (cbList != null && (bool)cbList?.OuterHtml?.ToLower()?.Contains(" checked"))
-                {
-                    hltbPostData.list_r = "1";
-                }
-
-                cbList = htmlDocument.QuerySelector("#list_c");
-                if (cbList != null && (bool)cbList?.OuterHtml?.ToLower()?.Contains(" checked"))
-                {
-                    hltbPostData.list_c = "1";
-                }
-
-                cbList = htmlDocument.QuerySelector("#list_cp");
-                if (cbList != null && (bool)cbList?.OuterHtml?.ToLower()?.Contains(" checked"))
-                {
-                    hltbPostData.list_cp = "1";
-                }
-
-                cbList = htmlDocument.QuerySelector("#list_rt");
-                if (cbList != null && (bool)cbList?.OuterHtml?.ToLower()?.Contains(" checked"))
-                {
-                    hltbPostData.list_rt = "1";
-                }
-
-                IElement cp_pull_h = htmlDocument.QuerySelector("#cp_pull_h");
-                hltbPostData.protime_h = cp_pull_h.GetAttribute("value");
-
-                IElement cp_pull_m = htmlDocument.QuerySelector("#cp_pull_m");
-                hltbPostData.protime_m = cp_pull_m.GetAttribute("value");
-
-                IElement cp_pull_s = htmlDocument.QuerySelector("#cp_pull_s");
-                hltbPostData.protime_s = cp_pull_s.GetAttribute("value");
-
-
-                IElement rt_notes = htmlDocument.QuerySelector("input[name=rt_notes]");
-                hltbPostData.rt_notes = rt_notes.GetAttribute("value");
-
-
-                IElement compmonth = htmlDocument.QuerySelector("#compmonth");
-                foreach (IElement option in compmonth.QuerySelectorAll("option"))
-                {
-                    if (option.GetAttribute("selected") == "selected")
-                    {
-                        hltbPostData.compmonth = option.GetAttribute("value");
-                    }
-                }
-
-                IElement compday = htmlDocument.QuerySelector("#compday");
-                foreach (IElement option in compday.QuerySelectorAll("option"))
-                {
-                    if (option.GetAttribute("selected") == "selected")
-                    {
-                        hltbPostData.compday = option.GetAttribute("value");
-                    }
-                }
-
-                IElement compyear = htmlDocument.QuerySelector("#compyear");
-                foreach (IElement option in compyear.QuerySelectorAll("option"))
-                {
-                    if (option.GetAttribute("selected") == "selected")
-                    {
-                        hltbPostData.compyear = option.GetAttribute("value");
-                    }
-                }
-
-
-                IElement play_num = htmlDocument.QuerySelector("#play_num");
-                foreach (IElement option in play_num.QuerySelectorAll("option"))
-                {
-                    if (option.GetAttribute("selected") == "selected")
-                    {
-                        int.TryParse(option.GetAttribute("value"), out int play_num_value);
-                        hltbPostData.play_num = play_num_value;
-                    }
-                }
-
-
-                IElement c_main_h = htmlDocument.QuerySelector("#c_main_h");
-                hltbPostData.c_main_h = c_main_h?.GetAttribute("value");
-
-                IElement c_main_m = htmlDocument.QuerySelector("#c_main_m");
-                hltbPostData.c_main_m = c_main_m?.GetAttribute("value");
-
-                IElement c_main_s = htmlDocument.QuerySelector("#c_main_s");
-                hltbPostData.c_main_s = c_main_s?.GetAttribute("value");
-
-                IElement c_main_notes = htmlDocument.QuerySelector("input[name=c_main_notes]");
-                hltbPostData.c_main_notes = c_main_notes?.GetAttribute("value");
-
-
-                IElement c_plus_h = htmlDocument.QuerySelector("#c_plus_h");
-                hltbPostData.c_plus_h = c_plus_h?.GetAttribute("value");
-
-                IElement c_plus_m = htmlDocument.QuerySelector("#c_plus_m");
-                hltbPostData.c_plus_m = c_plus_m?.GetAttribute("value");
-
-                IElement c_plus_s = htmlDocument.QuerySelector("#c_plus_s");
-                hltbPostData.c_plus_s = c_plus_s?.GetAttribute("value");
-
-                IElement c_plus_notes = htmlDocument.QuerySelector("input[name=c_plus_notes]");
-                hltbPostData.c_plus_notes = c_plus_notes?.GetAttribute("value");
-
-
-                IElement c_100_h = htmlDocument.QuerySelector("#c_100_h");
-                hltbPostData.c_100_h = c_100_h?.GetAttribute("value");
-
-                IElement c_100_m = htmlDocument.QuerySelector("#c_100_m");
-                hltbPostData.c_100_m = c_100_m?.GetAttribute("value");
-
-                IElement c_100_s = htmlDocument.QuerySelector("#c_100_s");
-                hltbPostData.c_100_s = c_100_s?.GetAttribute("value");
-
-                IElement c_100_notes = htmlDocument.QuerySelector("input[name=c_100_notes]");
-                hltbPostData.c_100_notes = c_100_notes?.GetAttribute("value");
-
-
-                IElement c_speed_h = htmlDocument.QuerySelector("#c_speed_h");
-                hltbPostData.c_speed_h = c_speed_h?.GetAttribute("value");
-
-                IElement c_speed_m = htmlDocument.QuerySelector("#c_speed_m");
-                hltbPostData.c_speed_m = c_speed_m?.GetAttribute("value");
-
-                IElement c_speed_s = htmlDocument.QuerySelector("#c_speed_s");
-                hltbPostData.c_speed_s = c_speed_s?.GetAttribute("value");
-
-                IElement c_speed_notes = htmlDocument.QuerySelector("input[name=c_speed_notes]");
-                hltbPostData.c_speed_notes = c_speed_notes?.GetAttribute("value");
-
-
-                IElement cotime_h = htmlDocument.QuerySelector("#cotime_h");
-                hltbPostData.cotime_h = cotime_h?.GetAttribute("value");
-
-                IElement cotime_m = htmlDocument.QuerySelector("#cotime_m");
-                hltbPostData.cotime_m = cotime_m?.GetAttribute("value");
-
-                IElement cotime_s = htmlDocument.QuerySelector("#cotime_s");
-                hltbPostData.cotime_s = cotime_s?.GetAttribute("value");
-
-
-                IElement mptime_h = htmlDocument.QuerySelector("#mptime_h");
-                hltbPostData.mptime_h = mptime_h?.GetAttribute("value");
-
-                IElement mptime_m = htmlDocument.QuerySelector("#mptime_m");
-                hltbPostData.mptime_m = mptime_m?.GetAttribute("value");
-
-                IElement mptime_s = htmlDocument.QuerySelector("#mptime_s");
-                hltbPostData.mptime_s = mptime_s?.GetAttribute("value");
-
-                IElement mptime_notes = htmlDocument.QuerySelector("#mptime_notes");
-
-
-                IElement review_score = htmlDocument.QuerySelector("select[name=review_score]");
-                foreach (IElement option in review_score.QuerySelectorAll("option"))
-                {
-                    if (option.GetAttribute("selected") == "selected")
-                    {
-                        int.TryParse(option.GetAttribute("value"), out int review_score_value);
-                        hltbPostData.review_score = review_score_value;
-                    }
-                }
-
-
-                IElement review_notes = htmlDocument.QuerySelector("textarea[name=review_notes]");
-                hltbPostData.review_notes = review_notes?.InnerHtml;
-
-                IElement play_notes = htmlDocument.QuerySelector("textarea[name=play_notes]");
-                hltbPostData.play_notes = play_notes?.InnerHtml;
-
-                IElement play_video = htmlDocument.QuerySelector("input[name=play_video]");
-                hltbPostData.play_video = play_video?.GetAttribute("value");
-
 
                 return hltbPostData;
             }
@@ -772,7 +592,7 @@ namespace HowLongToBeat.Services
                 try
                 {
                     HltbUserStats data = GetUserData();
-                    return data?.TitlesList?.Find(x => x.UserGameId.IsEqual(game_id.ToString()));
+                    return data?.TitlesList?.Find(x => x.Id == game_id);
                 }
                 catch (Exception ex)
                 {
@@ -796,12 +616,12 @@ namespace HowLongToBeat.Services
 
         public bool EditIdExist(string UserGameId)
         {
-            return GetUserGamesList().data.gamesList.FirstOrDefault().game_id.Equals(UserGameId);
+            return GetUserGamesList()?.data?.gamesList?.Find(x => x.id.ToString().IsEqual(UserGameId))?.id != null;
         }
 
         public string FindIdExisting(string GameId)
         {
-            return GetUserGamesList()?.data?.gamesList?.Find(x => x.game_id.Equals(GameId))?.id.ToString() ?? null;
+            return GetUserGamesList()?.data?.gamesList?.Find(x => x.game_id.ToString().IsEqual(GameId))?.id.ToString() ?? null;
         }
         #endregion
 
@@ -816,137 +636,60 @@ namespace HowLongToBeat.Services
             if (GetIsUserLoggedIn() && hltbPostData.user_id != 0 && hltbPostData.game_id != 0)
             {
                 try
-                {
-                    Type type = typeof(HltbPostData);
-                    PropertyInfo[] properties = type.GetProperties();
-                    Dictionary<string, string> data = new Dictionary<string, string>();
-
-
-                    // Get existing data
-                    if (hltbPostData.edit_id != 0)
-                    {
-                        logger.Info($"Edit {game.Name} - {hltbPostData.edit_id}");
-                        data.Add("edited", "Save Edit");
-                    }
-                    else
-                    {
-                        logger.Info($"Submit {game.Name}");
-                        data.Add("submitted", "Submit");
-                    }
-
-
-                    foreach (PropertyInfo property in properties)
-                    {
-                        switch (property.Name)
-                        {
-                            case "list_p":
-                                if (property.GetValue(hltbPostData, null).ToString() != string.Empty)
-                                {
-                                    data.Add(property.Name, property.GetValue(hltbPostData, null).ToString());
-                                }
-                                break;
-                            case "list_b":
-                                if (property.GetValue(hltbPostData, null).ToString() != string.Empty)
-                                {
-                                    data.Add(property.Name, property.GetValue(hltbPostData, null).ToString());
-                                }
-                                break;
-                            case "list_r":
-                                if (property.GetValue(hltbPostData, null).ToString() != string.Empty)
-                                {
-                                    data.Add(property.Name, property.GetValue(hltbPostData, null).ToString());
-                                }
-                                break;
-                            case "list_c":
-                                if (property.GetValue(hltbPostData, null).ToString() != string.Empty)
-                                {
-                                    data.Add(property.Name, property.GetValue(hltbPostData, null).ToString());
-                                }
-                                break;
-                            case "list_cp":
-                                if (property.GetValue(hltbPostData, null).ToString() != string.Empty)
-                                {
-                                    data.Add(property.Name, property.GetValue(hltbPostData, null).ToString());
-                                }
-                                break;
-                            case "list_rt":
-                                if (property.GetValue(hltbPostData, null).ToString() != string.Empty)
-                                {
-                                    data.Add(property.Name, property.GetValue(hltbPostData, null).ToString());
-                                }
-                                break;
-
-
-                            case "compmonth":
-                                if (property.GetValue(hltbPostData, null).ToString() == string.Empty)
-                                {
-                                    data.Add(property.Name, DateTime.Now.ToString("MM"));
-                                }
-                                else
-                                {
-                                    data.Add(property.Name, property.GetValue(hltbPostData, null).ToString());
-                                }
-                                break;
-                            case "compday":
-                                if (property.GetValue(hltbPostData, null).ToString() == string.Empty)
-                                {
-                                    data.Add(property.Name, DateTime.Now.ToString("dd"));
-                                }
-                                else
-                                {
-                                    data.Add(property.Name, property.GetValue(hltbPostData, null).ToString());
-                                }
-                                break;
-                            case "compyear":
-                                if (property.GetValue(hltbPostData, null).ToString() == string.Empty)
-                                {
-                                    data.Add(property.Name, DateTime.Now.ToString("yyyy"));
-                                }
-                                else
-                                {
-                                    data.Add(property.Name, property.GetValue(hltbPostData, null).ToString());
-                                }
-                                break;
-
-                            default:
-                                data.Add(property.Name, property.GetValue(hltbPostData, null).ToString());
-                                break;
-                        }
-                    }
-                    
-
+                {           
                     List<HttpCookie> Cookies = WebViewOffscreen.GetCookies();
                     Cookies = Cookies.Where(x => x != null && x.Domain != null && (x.Domain.Contains("howlongtobeat", StringComparison.InvariantCultureIgnoreCase) || x.Domain.Contains("hltb", StringComparison.InvariantCultureIgnoreCase))).ToList();
 
-                    FormUrlEncodedContent formContent = new FormUrlEncodedContent(data);
-                    string response = await Web.PostStringDataCookies(UrlPostData, formContent, Cookies);
+                    string payload = "{\"submissionId\":" + hltbPostData.edit_id + ",\"userId\":" + hltbPostData.user_id + ",\"userName\":\"" + UserLogin
+                        + "\",\"gameId\":" + hltbPostData.game_id + ",\"title\":\"" + hltbPostData.custom_title + "\",\"platform\":\"" + hltbPostData.platform
+                        + "\",\"storefront\":\"" + hltbPostData.storefront + "\",\"lists\":{\"playing\":" + (hltbPostData.list_p == "1" ? "true" : "false")
+                        + ",\"backlog\":" + (hltbPostData.list_b == "1" ? "true" : "false")
+                        + ",\"replay\":" + (hltbPostData.list_r == "1" ? "true" : "false")
+                        + ",\"custom\":" + (hltbPostData.list_c == "1" ? "true" : "false")
+                        + ",\"custom2\":false,\"custom3\":false,\"completed\":" + (hltbPostData.list_cp == "1" ? "true" : "false")
+                        + ",\"retired\":" + (hltbPostData.list_rt == "1" ? "true" : "false")
+                        + "},\"general\":{\"progress\":{\"hours\":" + hltbPostData.protime_h + ",\"minutes\":" + hltbPostData.protime_m
+                        + ",\"seconds\":" + hltbPostData.protime_s + "},\"retirementNotes\":\"" + hltbPostData.rt_notes
+                        + "\",\"completionDate\":{\"year\":\"" + hltbPostData.compyear
+                        + "\",\"month\":\"" + hltbPostData.compmonth + "\",\"day\":\"" + hltbPostData.compday
+                        + "\"},"
+                        + "\"progressBefore\":{\"hours\":0,\"minutes\":0,\"seconds\":0}"
+                        + "},\"singlePlayer\":{\"playCount\":" + hltbPostData.playCount
+                        + ",\"includesDLC\":" + (hltbPostData.includesDLC == "1" ? "true" : "false") + ",\"compMain\":{\"time\":{\"hours\":" + hltbPostData.c_main_h
+                        + ",\"minutes\":" + hltbPostData.c_main_m + ",\"seconds\":" + hltbPostData.c_main_s + "},\"notes\":\"" + hltbPostData.c_main_notes
+                        + "\"},\"compPlus\":{\"time\":{\"hours\":" + hltbPostData.c_plus_h + ",\"minutes\":" + hltbPostData.c_plus_m + ",\"seconds\":" + hltbPostData.c_plus_s
+                        + "},\"notes\":\"" + hltbPostData.c_plus_notes + "\"},\"comp100\":{\"time\":{\"hours\":" + hltbPostData.c_100_h
+                        + ",\"minutes\":" + hltbPostData.c_100_m + ",\"seconds\":" + hltbPostData.c_100_s + "},\"notes\":\"" + hltbPostData.c_100_notes
+                        + "\"}},\"speedRuns\":{\"percAny\":{\"time\":{\"hours\":" + hltbPostData.c_speed_h + ",\"minutes\":" + hltbPostData.c_speed_m
+                        + ",\"seconds\":" + hltbPostData.c_speed_s + "},\"notes\":\"" + hltbPostData.c_speed_notes + "\"},\"perc100\":{\"time\":{\"hours\":" + hltbPostData.c_speed100_h
+                        + ",\"minutes\":" + hltbPostData.c_speed100_m + ",\"seconds\":" + hltbPostData.c_speed100_s + "},\"notes\":\"" + hltbPostData.c_speed100_notes
+                        + "\"}},\"multiPlayer\":{\"coOp\":{\"time\":{\"hours\":" + hltbPostData.cotime_h + ",\"minutes\":" + hltbPostData.cotime_m
+                        + ",\"seconds\":" + hltbPostData.cotime_s + "}},\"vs\":{\"time\":{\"hours\":" + hltbPostData.mptime_h + ",\"minutes\":" + hltbPostData.mptime_m
+                        + ",\"seconds\":" + hltbPostData.mptime_s + "}}},\"review\":{\"score\":" + hltbPostData.review_score + ",\"notes\":\"" + hltbPostData.review_notes
+                        + "\"},\"additionals\":{\"notes\":\"" + hltbPostData.play_notes + "\",\"video\":\"" + hltbPostData.play_video
+                        + "\"},\"manualTimer\":{\"time\":{\"hours\":null,\"minutes\":null,\"seconds\":null}},\"adminId\":null}";
+
+                    string response = await Web.PostStringDataPayload(UrlPostData, payload, Cookies);
 
 
                     // Check errors
-                    HtmlParser parser = new HtmlParser();
-                    IHtmlDocument htmlDocument = parser.Parse(response);
-
-                    string errorMessage = string.Empty;
-                    foreach (IElement el in htmlDocument.QuerySelectorAll("div.in.back_red.shadow_box li"))
+                    // TODO Rewrite
+                    if (response.Contains("error"))
                     {
-                        if (errorMessage.IsNullOrEmpty())
-                        {
-                            errorMessage += el.InnerHtml;
-                        }
-                        else
-                        {
-                            errorMessage += System.Environment.NewLine + el.InnerHtml;
-                        }
-                    }
-
-
-                    if (!errorMessage.IsNullOrEmpty())
-                    {
+                        Serialization.TryFromJson(response, out dynamic error);
                         PluginDatabase.PlayniteApi.Notifications.Add(new NotificationMessage(
                             $"{PluginDatabase.PluginName}-{game.Id}-Error",
-                            PluginDatabase.PluginName + System.Environment.NewLine + game.Name + System.Environment.NewLine + errorMessage,
+                            PluginDatabase.PluginName + System.Environment.NewLine + game.Name + (error?["error"]?[0] != null ? System.Environment.NewLine + error["error"][0] : string.Empty),
                             NotificationType.Error
                         ));
+                    }
+                    else if (response.IsNullOrEmpty())
+                    {
+                        PluginDatabase.PlayniteApi.Notifications.Add(new NotificationMessage(
+                              $"{PluginDatabase.PluginName}-{game.Id}-Error",
+                              PluginDatabase.PluginName + System.Environment.NewLine + game.Name,
+                              NotificationType.Error
+                          ));
                     }
                     else
                     {
