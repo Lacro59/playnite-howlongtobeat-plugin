@@ -50,10 +50,11 @@ namespace HowLongToBeat.Views
             _PlayniteApi = PlayniteApi;
             _PluginUserDataPath = PluginUserDataPath;
 
+            PluginDatabase.howLongToBeatClient.PropertyChanged += OnPropertyChanged;
+
             InitializeComponent();
 
             CheckAuthenticate();
-
             SetPlatforms(settings);
 
             PART_SelectorColorPicker.OnlySimpleColor = false;
@@ -140,10 +141,7 @@ namespace HowLongToBeat.Views
             
 
             spSettings.Visibility = Visibility.Visible;
-
-            PluginDatabase.howLongToBeatClient.PropertyChanged += OnPropertyChanged;
-
-
+           
             PART_TTB.Source = BitmapExtensions.BitmapFromFile(Path.Combine(PluginDatabase.Paths.PluginPath, "Resources", "ttb.png"));
         }
 

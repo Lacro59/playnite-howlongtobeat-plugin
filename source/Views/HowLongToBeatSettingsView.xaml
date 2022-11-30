@@ -42,7 +42,7 @@
 
                                 <Button Name="PART_BtAuthenticate" Content="{DynamicResource LOCCommonAuthenticateLabel}" 
                                             Grid.Column="0"
-                                            VerticalAlignment="Center" MinWidth="110" Click="PART_BtAuthenticate_Click" />
+                                            VerticalAlignment="Top" MinWidth="110" Click="PART_BtAuthenticate_Click" Margin="0,1,0,0" />
                                 <Label Name="PART_LbAuthenticate" VerticalAlignment="Center" Grid.Column="2" />
                                 <Label Name="PART_LbUserLogin" Content="{Binding Settings.UserLogin}" VerticalAlignment="Center" Grid.Column="3" />
                             </Grid>

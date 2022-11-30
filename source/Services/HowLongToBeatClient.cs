@@ -1,6 +1,4 @@
-﻿using AngleSharp.Dom.Html;
-using AngleSharp.Parser.Html;
-using HowLongToBeat.Models;
+﻿using HowLongToBeat.Models;
 using HowLongToBeat.Views;
 using Playnite.SDK;
 using Playnite.SDK.Data;
@@ -8,21 +6,17 @@ using Playnite.SDK.Models;
 using System;
 using System.Linq;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Text.RegularExpressions;
 using System.IO;
 using CommonPluginsShared;
 using System.Threading;
-using System.Reflection;
-using AngleSharp.Dom;
-using CommonPluginsShared.Converters;
 using CommonPluginsShared.Extensions;
 using System.Text;
-using System.Net.Http.Headers;
+using CommonPlayniteShared.Common;
+using System.Security.Principal;
 
 namespace HowLongToBeat.Services
 {
@@ -54,22 +48,11 @@ namespace HowLongToBeat.Services
 
         private static HowLongToBeatDatabase PluginDatabase = HowLongToBeat.PluginDatabase;
 
-        protected static IWebView _WebViewOffscreen;
-        internal static IWebView WebViewOffscreen
-        {
-            get
-            {
-                if (_WebViewOffscreen == null)
-                {
-                    _WebViewOffscreen = PluginDatabase.PlayniteApi.WebViews.CreateOffscreenView();
-                }
-                return _WebViewOffscreen;
-            }
 
-            set => _WebViewOffscreen = value;
-        }
+        internal string FileCookies { get; }
 
 
+        #region Urls
         private const string UrlBase = "https://howlongtobeat.com/";
 
         private string UrlLogin { get; set; } = UrlBase + "login";
@@ -90,6 +73,7 @@ namespace HowLongToBeat.Services
         private string UrlGame { get; set; } = UrlBase + "game/{0}";
 
         private string UrlExportAll { get; set; } = UrlBase + "user_export?all=1";
+        #endregion
 
 
         private bool? _IsConnected = null;
@@ -106,6 +90,9 @@ namespace HowLongToBeat.Services
         public HowLongToBeatClient()
         {
             UserLogin = PluginDatabase.PluginSettings.Settings.UserLogin;
+            
+            string PathData = PluginDatabase.Paths.PluginUserDataPath;
+            FileCookies = Path.Combine(PathData, CommonPlayniteShared.Common.Paths.GetSafePathName($"HowLongToBeat.json"));
         }
 
 
@@ -255,7 +242,7 @@ namespace HowLongToBeat.Services
             }
 
             IsConnected = (bool)IsConnected;
-            return !!(bool)IsConnected;
+            return (bool)IsConnected;
         }
 
         public void Login()
@@ -263,27 +250,28 @@ namespace HowLongToBeat.Services
             Application.Current.Dispatcher.BeginInvoke((Action)delegate
             {
                 logger.Info("Login()");
-                IWebView WebView = PluginDatabase.PlayniteApi.WebViews.CreateView(490, 670);
-                WebView.LoadingChanged += (s, e) =>
+                using (IWebView WebView = PluginDatabase.PlayniteApi.WebViews.CreateView(490, 670))
                 {
-                    Common.LogDebug(true, $"NavigationChanged - {WebView.GetCurrentAddress()}");
-
-                    if (WebView.GetCurrentAddress().StartsWith("https://howlongtobeat.com/user/"))
+                    WebView.LoadingChanged += (s, e) =>
                     {
-                        UserLogin = WebUtility.HtmlDecode(WebView.GetCurrentAddress().Replace("https://howlongtobeat.com/user/", string.Empty));
-                        IsConnected = true;
+                        Common.LogDebug(true, $"NavigationChanged - {WebView.GetCurrentAddress()}");
 
-                        PluginDatabase.PluginSettings.Settings.UserLogin = UserLogin;
+                        if (WebView.GetCurrentAddress().StartsWith("https://howlongtobeat.com/user/"))
+                        {
+                            UserLogin = WebUtility.HtmlDecode(WebView.GetCurrentAddress().Replace("https://howlongtobeat.com/user/", string.Empty));
+                            IsConnected = true;
 
-                        Thread.Sleep(1500);
-                        WebView.Close();
-                    }
-                };
+                            PluginDatabase.PluginSettings.Settings.UserLogin = UserLogin;
 
-                IsConnected = false;
-                WebView.Navigate(UrlLogOut);
-                WebView.Navigate(UrlLogin);
-                WebView.OpenDialog();
+                            Thread.Sleep(1500);
+                            WebView.Close();
+                        }
+                    };
+
+                    IsConnected = false;
+                    WebView.Navigate(UrlLogOut);
+                    WebView.OpenDialog();
+                }
             }).Completed += (s, e) => 
             {
                 if ((bool)IsConnected)
@@ -292,6 +280,9 @@ namespace HowLongToBeat.Services
                     {
                         try
                         {
+                            List<HttpCookie> Cookies = GetWebCookies();
+                            SetStoredCookies(Cookies);
+
                             PluginDatabase.Plugin.SavePluginSettings(PluginDatabase.PluginSettings.Settings);
 
                             Task.Run(() => {
@@ -313,15 +304,14 @@ namespace HowLongToBeat.Services
         {
             try
             {
-                List<Playnite.SDK.HttpCookie> Cookies = WebViewOffscreen.GetCookies();
-                Cookies = Cookies.Where(x => x != null && x.Domain != null && (x.Domain.Contains("howlongtobeat", StringComparison.InvariantCultureIgnoreCase) || x.Domain.Contains("hltb", StringComparison.InvariantCultureIgnoreCase))).ToList();
-
+                List<HttpCookie> Cookies = GetStoredCookies();
                 string response = Web.DownloadStringData("https://howlongtobeat.com/api/user", Cookies).GetAwaiter().GetResult();
-                var t = Serialization.FromJson<dynamic>(response);
+                dynamic t = Serialization.FromJson<dynamic>(response);
                 return t.data[0].user_id;
             }
             catch (Exception ex)
             {
+                Common.LogError(ex, false);
                 return 0;
             }
         }
@@ -331,8 +321,7 @@ namespace HowLongToBeat.Services
         {
             try
             {
-                List<HttpCookie> Cookies = WebViewOffscreen.GetCookies();
-                Cookies = Cookies.Where(x => x != null && x.Domain != null && (x.Domain.Contains("howlongtobeat", StringComparison.InvariantCultureIgnoreCase) || x.Domain.Contains("hltb", StringComparison.InvariantCultureIgnoreCase))).ToList();
+                List<HttpCookie> Cookies = GetStoredCookies();
 
                 string payload = "{\"user_id\":" + UserId + ",\"lists\":[\"playing\",\"completed\",\"retired\"],\"set_playstyle\":\"comp_all\",\"name\":\"\",\"platform\":\"\",\"storefront\":\"\",\"sortBy\":\"\",\"sortFlip\":0,\"view\":\"\",\"limit\":1000,\"currentUserHome\":true}";
                 string json = Web.PostStringDataPayload(string.Format(UrlUserGamesList, UserId), payload, Cookies).GetAwaiter().GetResult();
@@ -429,8 +418,7 @@ namespace HowLongToBeat.Services
             logger.Info($"GetSubmitData({GameName}, {UserGameId})");
             try
             {
-                List<HttpCookie> Cookies = WebViewOffscreen.GetCookies();
-                Cookies = Cookies.Where(x => x != null && x.Domain != null && (x.Domain.Contains("howlongtobeat", StringComparison.InvariantCultureIgnoreCase) || x.Domain.Contains("hltb", StringComparison.InvariantCultureIgnoreCase))).ToList();
+                List<HttpCookie> Cookies = GetStoredCookies();
 
                 string response = Web.DownloadStringData(string.Format(UrlPostDataEdit, UserGameId), Cookies).GetAwaiter().GetResult();
                 if (response.IsNullOrEmpty())
@@ -636,8 +624,7 @@ namespace HowLongToBeat.Services
             {
                 try
                 {           
-                    List<HttpCookie> Cookies = WebViewOffscreen.GetCookies();
-                    Cookies = Cookies.Where(x => x != null && x.Domain != null && (x.Domain.Contains("howlongtobeat", StringComparison.InvariantCultureIgnoreCase) || x.Domain.Contains("hltb", StringComparison.InvariantCultureIgnoreCase))).ToList();
+                    List<HttpCookie> Cookies = GetStoredCookies();
 
                     string payload = "{\"submissionId\":" + hltbPostData.edit_id + ",\"userId\":" + hltbPostData.user_id + ",\"userName\":\"" + UserLogin
                         + "\",\"gameId\":" + hltbPostData.game_id + ",\"title\":\"" + hltbPostData.custom_title + "\",\"platform\":\"" + hltbPostData.platform
@@ -714,5 +701,95 @@ namespace HowLongToBeat.Services
 
             return false;
         }
+
+
+        #region Cookies
+        /// <summary>
+        /// Read the last identified cookies stored.
+        /// </summary>
+        /// <returns></returns>
+        internal List<HttpCookie> GetStoredCookies()
+        {
+            string InfoMessage = "No stored cookies";
+
+            if (File.Exists(FileCookies))
+            {
+                try
+                {
+                    List<HttpCookie> StoredCookies = Serialization.FromJson<List<HttpCookie>>(
+                        Encryption.DecryptFromFile(
+                            FileCookies,
+                            Encoding.UTF8,
+                            WindowsIdentity.GetCurrent().User.Value));
+
+                    var findExpired = StoredCookies.FindAll(x => x.Expires != null && (DateTime)x.Expires <= DateTime.Now);
+
+                    FileInfo fileInfo = new FileInfo(FileCookies);
+                    bool isExpired = (fileInfo.LastWriteTime.AddDays(1) < DateTime.Now);
+
+                    if (findExpired?.Count > 0 || isExpired)
+                    {
+                        InfoMessage = "Expired cookies";
+                    }
+                    else
+                    {
+                        return StoredCookies;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Common.LogError(ex, false, "Failed to load saved cookies");
+                }
+            }
+
+            logger.Info(InfoMessage);
+            List<HttpCookie> httpCookies = GetWebCookies();
+            if (httpCookies?.Count > 0)
+            {
+                SetStoredCookies(httpCookies);
+                return httpCookies;
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Save the last identified cookies stored.
+        /// </summary>
+        /// <param name="httpCookies"></param>
+        internal bool SetStoredCookies(List<HttpCookie> httpCookies)
+        {
+            try 
+            { 
+                FileSystem.CreateDirectory(Path.GetDirectoryName(FileCookies));
+                Encryption.EncryptToFile(
+                    FileCookies,
+                    Serialization.ToJson(httpCookies),
+                    Encoding.UTF8,
+                    WindowsIdentity.GetCurrent().User.Value);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, false, "Failed to save cookies");
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Get cookies in WebView or another method.
+        /// </summary>
+        /// <returns></returns>
+        internal virtual List<HttpCookie> GetWebCookies()
+        {
+            List<HttpCookie> httpCookies = null;
+            using (IWebView WebViewOffscreen = API.Instance.WebViews.CreateOffscreenView())
+            {
+                httpCookies = WebViewOffscreen.GetCookies()?.Where(x => (x?.Domain?.Contains("howlongtobeat") ?? false) || (x?.Domain?.Contains("hltb") ?? false))?.ToList() ?? new List<HttpCookie>();
+            }
+            return httpCookies;
+        }
+        #endregion
     }
 }
