@@ -565,6 +565,7 @@ namespace HowLongToBeat.Services
                         logger.Info($"Find {UserHltbData.TitlesList?.Count ?? 0} games");
                         FileSystem.WriteStringToFileSafe(Path.Combine(Paths.PluginUserDataPath, "HltbUserStats.json"), Serialization.ToJson(UserHltbData));
                         Database.UserHltbData = UserHltbData;
+                        Database.OnCollectionChanged(null, null);
                     }
                     else
                     {
@@ -596,6 +597,7 @@ namespace HowLongToBeat.Services
                         {
                             Database.UserHltbData.TitlesList.Add(titleList);
                         }
+                        Database.OnCollectionChanged(null, null);
 
                         FileSystem.WriteStringToFileSafe(Path.Combine(Paths.PluginUserDataPath, "HltbUserStats.json"), Serialization.ToJson(Database.UserHltbData));
                     }
@@ -624,14 +626,21 @@ namespace HowLongToBeat.Services
                         Platform gamePlatform = game.Platforms?.FirstOrDefault();
                         if (gamePlatform == default(Platform)) {
                             logger.Warn($"Cannot submit data for a game without platform ({game.Name})");
+                            PlayniteApi.Notifications.Add(new NotificationMessage(
+                               $"{PluginName}-NoPlatform-Error-{new Guid()}",
+                               PluginName + System.Environment.NewLine + string.Format(resources.GetString("LOCHowLongToBeatErrorNoPlatform"), game.Name),
+                               NotificationType.Error,
+                               () => Plugin.OpenSettingsView()
+                            ));
                             return false;
                         }
-                        HltbPlatform? match = PluginSettings.Settings.Platforms
-                                .Where(p => p.Platform.Equals(gamePlatform)).FirstOrDefault()?.HltbPlatform;
-                        if (match != null) {
+                        HltbPlatform? match = PluginSettings.Settings.Platforms.Where(p => p.Platform.Equals(gamePlatform)).FirstOrDefault()?.HltbPlatform;
+                        if (match != null) 
+                        {
                             platform = match.GetDescription();
                         } 
-                        else {
+                        else 
+                        {
                             platform = gamePlatform.Name;
                         }
 
@@ -749,7 +758,7 @@ namespace HowLongToBeat.Services
                         hltbPostData.protime_s = time.Seconds.ToString();
 
 
-                        return howLongToBeatClient.PostData(game, hltbPostData).GetAwaiter().GetResult(); ;
+                        return howLongToBeatClient.PostData(game, hltbPostData).GetAwaiter().GetResult(); 
                     }
                 }
                 else
