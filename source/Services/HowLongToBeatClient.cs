@@ -514,7 +514,10 @@ namespace HowLongToBeat.Services
             {
                 try
                 {
-                    hltbDataUser = Serialization.FromJsonFile<HltbUserStats>(PathHltbUserStats);
+                    if (!Serialization.TryFromJsonFile(PathHltbUserStats, out hltbDataUser))
+                    {
+                        return new HltbUserStats();
+                    }
                     hltbDataUser.TitlesList = hltbDataUser.TitlesList.Where(x => x != null).ToList();
                 }
                 catch (Exception ex)
