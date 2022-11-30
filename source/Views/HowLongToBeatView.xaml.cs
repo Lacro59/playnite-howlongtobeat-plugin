@@ -239,6 +239,10 @@ namespace HowLongToBeat.Views
                     }
                 }
             }
+            else
+            {
+                Hltb_El0.Visibility = Visibility.Collapsed;
+            }
         }
 
 
