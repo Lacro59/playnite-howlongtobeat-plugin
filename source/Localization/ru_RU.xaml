@@ -3,7 +3,7 @@
 
     <sys:String x:Key="LOCHowLongToBeatTimeToBeat">Время на прохождение</sys:String>
 
-    <sys:String x:Key="LOCPlayedHoursOnly">{0}ч</sys:String>
+    <sys:String x:Key="LOCPlayedHoursOnly">{0}</sys:String>
 
     <!-- HowLongToBeatSettingsView -->
 
@@ -34,7 +34,7 @@
     <sys:String x:Key="LOCHowLongToBeatShowWhenMismatch">Показывать окно выбора, если найдено несколько совпадений</sys:String>
     <sys:String x:Key="LOCHowLongToBeatUseMatchValue">Использовать процент совпадений</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatTimeOnlyHour">Формат времени только в часах</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatTimeOnlyHour">Формат времени только в часа</sys:String>
     
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBar">Отображать индикатор прогресса</sys:String>
     
@@ -84,7 +84,7 @@
     <sys:String x:Key="LOCHltbCountGameBeatenBeforeTime">Количество игр, пройденных досрочно</sys:String>
     <sys:String x:Key="LOCHltbCountGameBeatenAfterTime">Количество игр, пройденных позже времени</sys:String>
     <sys:String x:Key="LOCHltbCountGameBeatenReplays">Количество игр повторно сыграно</sys:String>
-    <sys:String x:Key="LOCHltbCountGameRetired">Количество заброшенных игр</sys:String>
+    <sys:String x:Key="LOCHltbCountGameRetired">Количество заброшенных иг</sys:String>
 
     <sys:String x:Key="LOCHltbUsedFilteredGames">Используется отфильтрованные игры</sys:String>
     <sys:String x:Key="LOCHltbOnlyNotPlayedGames">Только ни разу не запущенные игры</sys:String>
