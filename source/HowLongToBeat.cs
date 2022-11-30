@@ -86,6 +86,12 @@ namespace HowLongToBeat
 
                 howLongToBeatViewSidebar = new HowLongToBeatViewSidebar(this);
             }
+
+            //Playnite search integration
+            Searches = new List<SearchSupport>
+            {
+                new SearchSupport("hltb", "HowLongToBeat", new HowLongToBeatSearch())
+            };
         }
 
 

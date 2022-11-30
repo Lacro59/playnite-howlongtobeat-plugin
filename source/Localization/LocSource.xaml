@@ -118,4 +118,15 @@ Here is the list of commands:</sys:String>
 
     <sys:String x:Key="LOCHltbQuickSearchCmd1" xml:space="preserve">This command searches for a list of games with a specific time to beat.</sys:String>
 
+
+    <!-- HowLongToBeatSearch -->
+
+    <sys:String x:Key="LOCHowLongToBeatSearchDescription">Search on HowLongToBeat data</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatSearchHint" xml:space="preserve">Parameters:
+    -time&#x09;&#x09;Time to beat (ex:-time=5h / -time=&lt;50min / -time=&gt;50s / -time=10min&lt;&gt;5h)
+    -np&#x09;&#x09;You didn't play the game
+    -fav&#x09;&#x09;The game must be a favorite
+    -stores={n}&#x09;Filter by store name (ex:-stores=steam / -stores=steam,epic)
+    -status={n}&#x09;Filter by status name (ex:-status=played / -status=played,playing)</sys:String>
+
 </ResourceDictionary>
