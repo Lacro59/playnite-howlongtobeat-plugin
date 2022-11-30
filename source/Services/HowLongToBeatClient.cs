@@ -322,10 +322,8 @@ namespace HowLongToBeat.Services
             try
             {
                 List<HttpCookie> Cookies = GetStoredCookies();
-
                 string payload = "{\"user_id\":" + UserId + ",\"lists\":[\"playing\",\"completed\",\"retired\"],\"set_playstyle\":\"comp_all\",\"name\":\"\",\"platform\":\"\",\"storefront\":\"\",\"sortBy\":\"\",\"sortFlip\":0,\"view\":\"\",\"limit\":1000,\"currentUserHome\":true}";
                 string json = Web.PostStringDataPayload(string.Format(UrlUserGamesList, UserId), payload, Cookies).GetAwaiter().GetResult();
-
                 Serialization.TryFromJson(json, out HltbUserGamesList hltbUserGameList);
                 return hltbUserGameList;
             }
@@ -356,7 +354,7 @@ namespace HowLongToBeat.Services
                     Platform = x.platform,
                     Id = x.game_id,
                     CurrentTime = x.invested_pro,
-                    IsReplay = x.list_replay == 1,
+                    IsReplay = x.play_count == 2,
                     IsRetired = x.list_retired == 1,
                     Storefront = x.play_storefront,
                     LastUpdate = LastUpdate,
