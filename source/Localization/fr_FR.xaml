@@ -83,7 +83,7 @@ Si aucun n'a ce statut, il prend le plus récent.</sys:String>
     <sys:String x:Key="LOCHltbAvgGameByMonth">Jeu moyen par mois</sys:String>
     <sys:String x:Key="LOCHltbCountGameBeatenBeforeTime">Nombre de jeux battus avant le temps</sys:String>
     <sys:String x:Key="LOCHltbCountGameBeatenAfterTime">Nombre de jeux battus après le temps</sys:String>
-    <sys:String x:Key="LOCHltbCountGameBeatenReplays">Nombre de jeux battus avant le temps</sys:String>
+    <sys:String x:Key="LOCHltbCountGameBeatenReplays">Nombre de jeux battus (rejoués)</sys:String>
     <sys:String x:Key="LOCHltbCountGameRetired">Nombre de jeux retirés</sys:String>
 
     <sys:String x:Key="LOCHltbUsedFilteredGames">Jeux actuellement filtrés utilisés</sys:String>
