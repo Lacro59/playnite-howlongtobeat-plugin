@@ -213,3 +213,9 @@ Packages:
       - Added ChartStats for StartPage plugin
       - Fixed issue on user data
       - Fixed minors bugs
+  - Version: 3.1.1
+    RequiredApiVersion: 6.7.0
+    ReleaseDate: 2022-12-07
+    PackageUrl: https://github.com/Lacro59/playnite-howlongtobeat-plugin/releases/download/v3.1.1/playnite-howlongtobeat-plugin_3_1_1.pext
+    Changelog:
+      - Fixed issue on refresh user data
