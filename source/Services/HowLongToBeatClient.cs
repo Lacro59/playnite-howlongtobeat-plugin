@@ -321,8 +321,9 @@ namespace HowLongToBeat.Services
         {
             try
             {
+                //1715
                 List<HttpCookie> Cookies = GetStoredCookies();
-                string payload = "{\"user_id\":" + UserId + ",\"lists\":[\"playing\",\"completed\",\"retired\"],\"set_playstyle\":\"comp_all\",\"name\":\"\",\"platform\":\"\",\"storefront\":\"\",\"sortBy\":\"\",\"sortFlip\":0,\"view\":\"\",\"limit\":1000,\"currentUserHome\":true}";
+                string payload = "{\"user_id\":" + UserId + ",\"lists\":[\"playing\",\"completed\",\"retired\"],\"set_playstyle\":\"comp_all\",\"name\":\"\",\"platform\":\"\",\"storefront\":\"\",\"sortBy\":\"\",\"sortFlip\":0,\"view\":\"\",\"limit\":10000,\"currentUserHome\":true}";
                 string json = Web.PostStringDataPayload(string.Format(UrlUserGamesList, UserId), payload, Cookies).GetAwaiter().GetResult();
                 Serialization.TryFromJson(json, out HltbUserGamesList hltbUserGameList);
                 return hltbUserGameList;
