@@ -600,7 +600,10 @@ namespace HowLongToBeat.Services
                         {
                             Database.UserHltbData.TitlesList.Add(titleList);
                         }
-                        Database.OnCollectionChanged(null, null);
+                        Application.Current.Dispatcher?.Invoke(() =>
+                        {
+                            Database.OnCollectionChanged(null, null);
+                        });
 
                         FileSystem.WriteStringToFileSafe(Path.Combine(Paths.PluginUserDataPath, "HltbUserStats.json"), Serialization.ToJson(Database.UserHltbData));
                     }
