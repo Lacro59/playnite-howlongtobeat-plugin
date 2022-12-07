@@ -83,7 +83,7 @@
     <sys:String x:Key="LOCHltbAvgGameByMonth">Среднее время игры по месяцам</sys:String>
     <sys:String x:Key="LOCHltbCountGameBeatenBeforeTime">Количество игр, пройденных досрочно</sys:String>
     <sys:String x:Key="LOCHltbCountGameBeatenAfterTime">Количество игр, пройденных позже времени</sys:String>
-    <sys:String x:Key="LOCHltbCountGameBeatenReplays">Количество игр повторно сыграно</sys:String>
+    <sys:String x:Key="LOCHltbCountGameBeatenReplays">Number of games beaten (replayed)</sys:String>
     <sys:String x:Key="LOCHltbCountGameRetired">Количество заброшенных иг</sys:String>
 
     <sys:String x:Key="LOCHltbUsedFilteredGames">Используется отфильтрованные игры</sys:String>
@@ -105,6 +105,8 @@
 
     <sys:String x:Key="LOCHowLongToBeatSetCurrentTime">Хотите отправить свое текущее игровое время?</sys:String>
 
+    <sys:String x:Key="LOCHowLongToBeatErrorNoPlatform">Cannot submit data for a game without platform ({0})</sys:String>
+
 
     <!-- QuickSearch -->
 
@@ -117,5 +119,26 @@
 Вот список команд:</sys:String>
 
     <sys:String x:Key="LOCHltbQuickSearchCmd1" xml:space="preserve">Эта команда ищет список игр с определенным временем прохождения.</sys:String>
+
+
+    <!-- StartPage -->
+
+    <sys:String x:Key="LOCHtlbChartStats">Chart stats</sys:String>
+    <sys:String x:Key="LOCHtlbChartStatsChartTitle">Show title</sys:String>
+    <sys:String x:Key="LOCHtlbChartStatsChartLabels">Show labels on horizontal axis</sys:String>
+    <sys:String x:Key="LOCHtlbChartStatsChartLabelsOrdinates">Show labels on vertical axis</sys:String>
+    <sys:String x:Key="LOCHtlbChartStatsChartType">Chart type</sys:String>
+    <sys:String x:Key="LOCHtlbChartStatsChartDataNumber">Data number</sys:String>
+
+
+    <!-- HowLongToBeatSearch -->
+
+    <sys:String x:Key="LOCHowLongToBeatSearchDescription">Search on HowLongToBeat data</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatSearchHint" xml:space="preserve">Parameters:
+    -time		Time to beat (ex:-time=5h / -time=&lt;50min / -time=&gt;50s / -time=10min&lt;&gt;5h)
+    -np		You didn't play the game
+    -fav		The game must be a favorite
+    -stores={n}	Filter by store name (ex:-stores=steam / -stores=steam,epic)
+    -status={n}	Filter by status name (ex:-status=played / -status=played,playing)</sys:String>
 
 </ResourceDictionary>
