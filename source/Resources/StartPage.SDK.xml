@@ -1,0 +1,112 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>StartPage.SDK</name>
+    </assembly>
+    <members>
+        <member name="T:StartPage.SDK.StartPageViewArgsBase">
+            <summary>
+            Corresponds to an available view.
+            </summary>
+        </member>
+        <member name="P:StartPage.SDK.StartPageViewArgsBase.ViewId">
+            <summary>
+            Uniquely identifying a custom view within an extension.
+            </summary>
+        </member>
+        <member name="P:StartPage.SDK.StartPageViewArgsBase.Name">
+            <summary>
+            Name shown for this view in StartPage.
+            </summary>
+        </member>
+        <member name="P:StartPage.SDK.StartPageViewArgsBase.Description">
+            <summary>
+            Optional description of the view.
+            </summary>
+        </member>
+        <member name="P:StartPage.SDK.StartPageViewArgsBase.HasSettings">
+            <summary>
+            Indicates whether there are settings to customize this view.
+            </summary>
+        </member>
+        <member name="P:StartPage.SDK.StartPageViewArgsBase.AllowMultipleInstances">
+            <summary>
+            Indicates whether multiple instances of this view can be added to StartPage.
+            Each instance will have its own unique, persistent InstanceID.
+            </summary>
+        </member>
+        <member name="T:StartPage.SDK.StartPageExtensionArgs">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:StartPage.SDK.StartPageExtensionArgs.ExtensionName">
+            <summary>
+            Name of the extionsion that is shown as the header for the
+            submenu containing the available views.
+            </summary>
+        </member>
+        <member name="P:StartPage.SDK.StartPageExtensionArgs.Views">
+            <summary>
+            All views that this extension can add to the StartPage.
+            </summary>
+        </member>
+        <member name="T:StartPage.SDK.IStartPageControl">
+            <summary>
+            Interface that a control or its DataContext can implement to be notified of some events.
+            </summary>
+        </member>
+        <member name="M:StartPage.SDK.IStartPageControl.OnStartPageOpened">
+            <summary>
+            Called when the StartPage view is opened.
+            </summary>
+        </member>
+        <member name="M:StartPage.SDK.IStartPageControl.OnStartPageClosed">
+            <summary>
+            Called when the StartPage view is closed.
+            </summary>
+        </member>
+        <member name="M:StartPage.SDK.IStartPageControl.OnDayChanged(System.DateTime)">
+            <summary>
+            Called when a day ends after 11:59 pm or 23:59.
+            </summary>
+            <param name="newTime">Time of the new day.</param>
+        </member>
+        <member name="T:StartPage.SDK.IStartPageExtension">
+            <summary>
+            A generic plugin can implement this interface to provide custom views for StartPage.
+            </summary>
+        </member>
+        <member name="M:StartPage.SDK.IStartPageExtension.GetAvailableStartPageViews">
+            <summary>
+            Returns a list of <see cref="T:StartPage.SDK.StartPageViewArgsBase"/> of available views and the extension name. Each <see cref="T:StartPage.SDK.StartPageViewArgsBase"/> can be 
+            used as the parameter to <see cref="M:StartPage.SDK.IStartPageExtension.GetStartPageView(System.String,System.Guid)"/> to retrieve a custom view.
+            </summary>
+            <returns>A <see cref="T:StartPage.SDK.StartPageExtensionArgs"/> containing the extension name and its available views.</returns>
+        </member>
+        <member name="M:StartPage.SDK.IStartPageExtension.GetStartPageView(System.String,System.Guid)">
+            <summary>
+            Used to request a view to be inserted into StartPage.
+            </summary>
+            <param name="viewId">The id of the requested view.</param>
+            <param name="instanceId">Optional instanceId if multiple instances can be added.</param>
+            <returns>A <see cref="T:System.Windows.FrameworkElement"/>. Returns <see langword="null"/> if the <paramref name="viewId"/> is invalid.
+            </returns>
+        </member>
+        <member name="M:StartPage.SDK.IStartPageExtension.GetStartPageViewSettings(System.String,System.Guid)">
+            <summary>
+            Can provide a settings view to customize the view with Id <paramref name="viewId"/>.
+            </summary>
+            <param name="viewId">ID of the view that the settings customize.</param>
+            <param name="instanceId">Optional instanceId if multiple instances can be managed.</param>
+            <returns>A settings view for the view with ID <paramref name="viewId"/> if it valid and the view has settings. Otherwise <see langword="null"/>.</returns>
+        </member>
+        <member name="M:StartPage.SDK.IStartPageExtension.OnViewRemoved(System.String,System.Guid)">
+            <summary>
+            Called when a view is removed from StartPage.
+            </summary>
+            <param name="viewId">The viewId of the removed view.</param>
+            <param name="instanceId">InstanceId of the removed view.</param>
+        </member>
+    </members>
+</doc>

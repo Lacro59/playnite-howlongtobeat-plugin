@@ -121,6 +121,16 @@ Here is the list of commands:</sys:String>
     <sys:String x:Key="LOCHltbQuickSearchCmd1" xml:space="preserve">This command searches for a list of games with a specific time to beat.</sys:String>
 
 
+    <!-- StartPage -->
+
+    <sys:String x:Key="LOCHtlbChartStats">Chart stats</sys:String>
+    <sys:String x:Key="LOCHtlbChartStatsChartTitle">Show title</sys:String>
+    <sys:String x:Key="LOCHtlbChartStatsChartLabels">Show labels on horizontal axis</sys:String>
+    <sys:String x:Key="LOCHtlbChartStatsChartLabelsOrdinates">Show labels on vertical axis</sys:String>
+    <sys:String x:Key="LOCHtlbChartStatsChartType">Chart type</sys:String>
+    <sys:String x:Key="LOCHtlbChartStatsChartDataNumber">Data number</sys:String>
+
+
     <!-- HowLongToBeatSearch -->
 
     <sys:String x:Key="LOCHowLongToBeatSearchDescription">Search on HowLongToBeat data</sys:String>

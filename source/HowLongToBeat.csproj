@@ -79,6 +79,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>Resources\QuickSearchSDK.Attributes.dll</HintPath>
     </Reference>
+    <Reference Include="StartPage.SDK, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Resources\StartPage.SDK.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
@@ -128,6 +132,7 @@
     <Compile Include="Models\HltbUserStats.cs" />
     <Compile Include="Models\NEXT_DATA.cs" />
     <Compile Include="Models\QuickSearchItemSource.cs" />
+    <Compile Include="Models\StartPage\HltbChartStatsOptions.cs" />
     <Compile Include="playnite-plugincommon\CommonPluginsControls\Controls\ComboBoxRemovable.xaml.cs">
       <DependentUpon>ComboBoxRemovable.xaml</DependentUpon>
     </Compile>
@@ -187,6 +192,12 @@
     </Compile>
     <Compile Include="Views\HowLongToBeatView.xaml.cs">
       <DependentUpon>HowLongToBeatView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\StartPage\HltbChartStats.xaml.cs">
+      <DependentUpon>HltbChartStats.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\StartPage\HltbChartStatsSettings.xaml.cs">
+      <DependentUpon>HltbChartStatsSettings.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -375,6 +386,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\StartPage\HltbChartStats.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\StartPage\HltbChartStatsSettings.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <None Include="icon.png">
@@ -407,6 +426,11 @@
     <None Include="Resources\ttb.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\StartPage.SDK.dll" />
+    <None Include="Resources\StartPage.SDK.pdb" />
+    <None Include="Resources\StartPage.SDK.xml" />
   </ItemGroup>
   <Import Project="playnite-plugincommon\CommonPlayniteShared\CommonPlayniteShared.projitems" Label="Shared" />
   <Import Project="playnite-plugincommon\CommonPluginsShared\CommonPluginsShared.projitems" Label="Shared" />

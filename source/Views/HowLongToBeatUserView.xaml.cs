@@ -102,13 +102,6 @@ namespace HowLongToBeat.Views
                     SetFilter();
                 }
 
-                //let create a mapper so LiveCharts know how to plot our CustomerViewModel class
-                var customerVmMapper = Mappers.Xy<CustomerForSingle>()
-                    .X((value, index) => index)
-                    .Y(value => value.Values);
-
-                //lets save the mapper globally
-                Charting.For<CustomerForSingle>(customerVmMapper);
 
                 SetChartDataStore();
                 SetChartDataYear();

@@ -21,10 +21,14 @@ using CommonPluginsControls.Views;
 using System.Diagnostics;
 using System.IO;
 using QuickSearch.SearchItems;
+using StartPage.SDK;
+using LiveCharts.Configurations;
+using CommonPluginsControls.LiveChartsCommon;
+using LiveCharts;
 
 namespace HowLongToBeat
 {
-    public class HowLongToBeat : PluginExtended<HowLongToBeatSettingsViewModel, HowLongToBeatDatabase>
+    public class HowLongToBeat : PluginExtended<HowLongToBeatSettingsViewModel, HowLongToBeatDatabase>, StartPage.SDK.IStartPageExtension
     {
         public override Guid Id { get; } = Guid.Parse("e08cd51f-9c9a-4ee3-a094-fde03b55492f");
 
@@ -92,6 +96,15 @@ namespace HowLongToBeat
             {
                 new SearchSupport("hltb", "HowLongToBeat", new HowLongToBeatSearch())
             };
+
+
+            //let create a mapper so LiveCharts know how to plot our CustomerViewModel class
+            var customerVmMapper = Mappers.Xy<CustomerForSingle>()
+                .X((value, index) => index)
+                .Y(value => value.Values);
+
+            //lets save the mapper globally
+            Charting.For<CustomerForSingle>(customerVmMapper);
         }
 
 
@@ -187,6 +200,46 @@ namespace HowLongToBeat
             {
                 howLongToBeatViewSidebar
             };
+        }
+        #endregion
+
+
+        #region StartPageExtension
+        public StartPageExtensionArgs GetAvailableStartPageViews()
+        {
+            List<StartPageViewArgsBase> views = new List<StartPageViewArgsBase> {
+                new StartPageViewArgsBase { Name = resources.GetString("LOCHtlbChartStats"), ViewId = "HltbChartStats", HasSettings = true }
+            };
+            return new StartPageExtensionArgs { ExtensionName = PluginDatabase.PluginName, Views = views };
+        }
+
+        public object GetStartPageView(string viewId, Guid instanceId)
+        {
+            switch (viewId)
+            {
+                case "HltbChartStats":
+                    return new Views.StartPage.HltbChartStats();
+
+                default:
+                    return null;
+            }
+        }
+
+        public Control GetStartPageViewSettings(string viewId, Guid instanceId)
+        {
+            switch (viewId)
+            {
+                case "HltbChartStats":
+                    return new Views.StartPage.HltbChartStatsSettings(this);
+
+                default:
+                    return null;
+            }
+        }
+
+        public void OnViewRemoved(string viewId, Guid instanceId)
+        {
+
         }
         #endregion
 

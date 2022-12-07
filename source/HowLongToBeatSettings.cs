@@ -1,5 +1,6 @@
 ﻿using CommonPluginsShared.Models;
 using HowLongToBeat.Models;
+using HowLongToBeat.Models.StartPage;
 using HowLongToBeat.Views;
 using Playnite.SDK;
 using Playnite.SDK.Data;
@@ -177,6 +178,21 @@ namespace HowLongToBeat
         public List<Storefront> Storefronts { get; set; } = new List<Storefront>();
         public List<HltbPlatformMatch> Platforms { get; set; } = new List<HltbPlatformMatch>();
         #endregion
+
+
+        #region Settings StartPage
+        private HltbChartStatsOptions _hltbChartStatsOptions { get; set; } = new HltbChartStatsOptions();
+        public HltbChartStatsOptions hltbChartStatsOptions
+        {
+            get => _hltbChartStatsOptions;
+            set
+            {
+                _hltbChartStatsOptions = value;
+                OnPropertyChanged();
+            }
+        }
+        #endregion
+
 
         // Playnite serializes settings object to a JSON object and saves it as text file.
         // If you want to exclude some property from being saved then use `JsonDontSerialize` ignore attribute.
