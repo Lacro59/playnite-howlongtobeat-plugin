@@ -83,7 +83,7 @@ Wenn keiner diesen Status hat, wird der aktuellste genommen.</sys:String>
     <sys:String x:Key="LOCHltbAvgGameByMonth">Durchschnittliches Spiel pro Monat</sys:String>
     <sys:String x:Key="LOCHltbCountGameBeatenBeforeTime">Anzahl der Spiele die vor der Zeit geschlagen wurden</sys:String>
     <sys:String x:Key="LOCHltbCountGameBeatenAfterTime">Anzahl der Spiele die nach der Zeit geschlagen wurden</sys:String>
-    <sys:String x:Key="LOCHltbCountGameBeatenReplays">Anzahl der geschlagenen Spiele, die wiederholt werden</sys:String>
+    <sys:String x:Key="LOCHltbCountGameBeatenReplays">Number of games beaten (replayed)</sys:String>
     <sys:String x:Key="LOCHltbCountGameRetired">Anzahl der ausgelassenen Spiele</sys:String>
 
     <sys:String x:Key="LOCHltbUsedFilteredGames">Derzeit gefilterte Spiele verwendet</sys:String>
@@ -105,6 +105,8 @@ Wenn keiner diesen Status hat, wird der aktuellste genommen.</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatSetCurrentTime">Möchten Sie Ihre aktuelle Spielzeit senden?</sys:String>
 
+    <sys:String x:Key="LOCHowLongToBeatErrorNoPlatform">Cannot submit data for a game without platform ({0})</sys:String>
+
 
     <!-- QuickSearch -->
 
@@ -117,5 +119,26 @@ Um es zu verwenden, müssen Sie den Befehl &quot;howlongtobeat&quot; oder &quot;
 Hier ist die Liste von Befehlen:</sys:String>
 
     <sys:String x:Key="LOCHltbQuickSearchCmd1" xml:space="preserve">Dieser Befehl sucht nach einer Liste von Spielen mit einer bestimmten zu schlagenden Zeit.</sys:String>
+
+
+    <!-- StartPage -->
+
+    <sys:String x:Key="LOCHtlbChartStats">Chart stats</sys:String>
+    <sys:String x:Key="LOCHtlbChartStatsChartTitle">Show title</sys:String>
+    <sys:String x:Key="LOCHtlbChartStatsChartLabels">Show labels on horizontal axis</sys:String>
+    <sys:String x:Key="LOCHtlbChartStatsChartLabelsOrdinates">Show labels on vertical axis</sys:String>
+    <sys:String x:Key="LOCHtlbChartStatsChartType">Chart type</sys:String>
+    <sys:String x:Key="LOCHtlbChartStatsChartDataNumber">Data number</sys:String>
+
+
+    <!-- HowLongToBeatSearch -->
+
+    <sys:String x:Key="LOCHowLongToBeatSearchDescription">Search on HowLongToBeat data</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatSearchHint" xml:space="preserve">Parameters:
+    -time		Time to beat (ex:-time=5h / -time=&lt;50min / -time=&gt;50s / -time=10min&lt;&gt;5h)
+    -np		You didn't play the game
+    -fav		The game must be a favorite
+    -stores={n}	Filter by store name (ex:-stores=steam / -stores=steam,epic)
+    -status={n}	Filter by status name (ex:-status=played / -status=played,playing)</sys:String>
 
 </ResourceDictionary>
