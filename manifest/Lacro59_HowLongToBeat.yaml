@@ -202,3 +202,14 @@ Packages:
       - Fixed issue to associate data with games
       - Fixed authentification (thanks to SquishyMochi514)
       - Fixed post data
+  - Version: 3.1
+    RequiredApiVersion: 6.7.0
+    ReleaseDate: 2022-12-07
+    PackageUrl: https://github.com/Lacro59/playnite-howlongtobeat-plugin/releases/download/v3.1/playnite-howlongtobeat-plugin_3_1.pext
+    Changelog:
+      - Updated localizations
+      - Fixed issue on stats data
+      - Fixed UI issue
+      - Added ChartStats for StartPage plugin
+      - Fixed issue on user data
+      - Fixed minors bugs
