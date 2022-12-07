@@ -1,4 +1,5 @@
 ﻿using CommonPluginsShared.Models;
+using FuzzySharp;
 using HowLongToBeat.Models;
 using HowLongToBeat.Models.StartPage;
 using HowLongToBeat.Views;
@@ -6,6 +7,7 @@ using Playnite.SDK;
 using Playnite.SDK.Data;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Windows.Media;
 
 namespace HowLongToBeat
@@ -402,7 +404,6 @@ namespace HowLongToBeat
                 Settings = new HowLongToBeatSettings();
             }
 
-
             if (Settings.Storefronts.Count == 0)
             {
                 Settings.Storefronts = new List<Storefront>
@@ -434,6 +435,61 @@ namespace HowLongToBeat
                     new Storefront { HltbStorefrontId = HltbStorefront.UbisoftConnect },
                     new Storefront { HltbStorefrontId = HltbStorefront.XboxStore }
                 };
+            }
+
+            if (Settings.Platforms.Count == 0)
+            {
+                Task.Run(() => 
+                {
+                    System.Threading.SpinWait.SpinUntil(() => API.Instance.Database.IsOpen, -1);
+                    API.Instance.Database.Platforms.ForEach(x =>
+                    {
+                        foreach (HltbPlatform hltbPlatform in (HltbPlatform[])Enum.GetValues(typeof(HltbPlatform)))
+                        {
+                            string tmpName = string.Empty;
+                            if (x.Name.Contains("Sony", StringComparison.InvariantCultureIgnoreCase) && x.Name.Contains("PlayStation", StringComparison.InvariantCultureIgnoreCase))
+                            {
+                                tmpName = x.Name.Replace("Sony", "").Replace("sony", "").Trim();
+                            }
+                            if (x.Name.Contains("SNK", StringComparison.InvariantCultureIgnoreCase) && x.Name.Contains("Neo Geo", StringComparison.InvariantCultureIgnoreCase))
+                            {
+                                tmpName = x.Name.Replace("SNK", "").Replace("snk", "").Trim();
+                            }
+                            if (x.Name.Contains("Nintendo", StringComparison.InvariantCultureIgnoreCase))
+                            {
+                                tmpName = x.Name.Replace("Nintendo", "").Replace("nintendo", "").Trim();
+                            }
+                            if (x.Name.Contains("Microsoft", StringComparison.InvariantCultureIgnoreCase))
+                            {
+                                tmpName = x.Name.Replace("Microsoft", "").Replace("microsoft", "").Trim();
+                            }
+
+                            if (Fuzz.Ratio(x.Name, hltbPlatform.GetDescription()) >= 99 || Fuzz.Ratio(tmpName, hltbPlatform.GetDescription()) >= 99)
+                            {
+                                HltbPlatformMatch a = new HltbPlatformMatch();
+                                a.HltbPlatform = hltbPlatform;
+                                a.Platform = x;
+                                Settings.Platforms.Add(a);
+                            }
+
+                            if (x.Name == "PC (DOS)" && hltbPlatform == HltbPlatform.PC)
+                            {
+                                HltbPlatformMatch a = new HltbPlatformMatch();
+                                a.HltbPlatform = hltbPlatform;
+                                a.Platform = x;
+                                Settings.Platforms.Add(a);
+                            }
+
+                            if (x.Name == "PC (Windows)" && hltbPlatform == HltbPlatform.PC)
+                            {
+                                HltbPlatformMatch a = new HltbPlatformMatch();
+                                a.HltbPlatform = hltbPlatform;
+                                a.Platform = x;
+                                Settings.Platforms.Add(a);
+                            }
+                        }
+                    });
+                });
             }
 
             if (Settings.ThumbLinearGradient == null && Settings.ThumbSolidColorBrush == null)
