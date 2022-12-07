@@ -565,7 +565,10 @@ namespace HowLongToBeat.Services
                         logger.Info($"Find {UserHltbData.TitlesList?.Count ?? 0} games");
                         FileSystem.WriteStringToFileSafe(Path.Combine(Paths.PluginUserDataPath, "HltbUserStats.json"), Serialization.ToJson(UserHltbData));
                         Database.UserHltbData = UserHltbData;
-                        Database.OnCollectionChanged(null, null);
+                        Application.Current.Dispatcher?.Invoke(() =>
+                        {
+                            Database.OnCollectionChanged(null, null);
+                        });
                     }
                     else
                     {
