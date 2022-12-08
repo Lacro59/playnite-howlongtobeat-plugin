@@ -83,7 +83,7 @@ Se nessuno ha questo stato, richiede il più recente.</sys:String>
     <sys:String x:Key="LOCHltbAvgGameByMonth">Media gioco per mese</sys:String>
     <sys:String x:Key="LOCHltbCountGameBeatenBeforeTime">Numero di giochi battuti prima del tempo</sys:String>
     <sys:String x:Key="LOCHltbCountGameBeatenAfterTime">Numero di giochi battuti dopo il tempo</sys:String>
-    <sys:String x:Key="LOCHltbCountGameBeatenReplays">Number of games beaten (replayed)</sys:String>
+    <sys:String x:Key="LOCHltbCountGameBeatenReplays">Numero di giochi finiti (rigiocati)</sys:String>
     <sys:String x:Key="LOCHltbCountGameRetired">Numero di giochi ritirati</sys:String>
 
     <sys:String x:Key="LOCHltbUsedFilteredGames">Giochi attualmente filtrati utilizzati</sys:String>
@@ -105,7 +105,7 @@ Se nessuno ha questo stato, richiede il più recente.</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatSetCurrentTime">Vuoi inviare il tuo tempo di riproduzione corrente?</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatErrorNoPlatform">Cannot submit data for a game without platform ({0})</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatErrorNoPlatform">Impossibile inviare i dati per un gioco senza piattaforma ({0})</sys:String>
 
 
     <!-- QuickSearch -->
@@ -123,22 +123,22 @@ Ecco l'elenco dei comandi:</sys:String>
 
     <!-- StartPage -->
 
-    <sys:String x:Key="LOCHtlbChartStats">Chart stats</sys:String>
-    <sys:String x:Key="LOCHtlbChartStatsChartTitle">Show title</sys:String>
-    <sys:String x:Key="LOCHtlbChartStatsChartLabels">Show labels on horizontal axis</sys:String>
-    <sys:String x:Key="LOCHtlbChartStatsChartLabelsOrdinates">Show labels on vertical axis</sys:String>
-    <sys:String x:Key="LOCHtlbChartStatsChartType">Chart type</sys:String>
-    <sys:String x:Key="LOCHtlbChartStatsChartDataNumber">Data number</sys:String>
+    <sys:String x:Key="LOCHtlbChartStats">Statistiche grafico</sys:String>
+    <sys:String x:Key="LOCHtlbChartStatsChartTitle">Mostra il titolo</sys:String>
+    <sys:String x:Key="LOCHtlbChartStatsChartLabels">Visualizza etichette sull'asse orizzontale</sys:String>
+    <sys:String x:Key="LOCHtlbChartStatsChartLabelsOrdinates">Visualizza le etichette sull'asse verticale</sys:String>
+    <sys:String x:Key="LOCHtlbChartStatsChartType">Tipologia grafico</sys:String>
+    <sys:String x:Key="LOCHtlbChartStatsChartDataNumber">Numero dati</sys:String>
 
 
     <!-- HowLongToBeatSearch -->
 
-    <sys:String x:Key="LOCHowLongToBeatSearchDescription">Search on HowLongToBeat data</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatSearchHint" xml:space="preserve">Parameters:
-    -time		Time to beat (ex:-time=5h / -time=&lt;50min / -time=&gt;50s / -time=10min&lt;&gt;5h)
-    -np		You didn't play the game
-    -fav		The game must be a favorite
-    -stores={n}	Filter by store name (ex:-stores=steam / -stores=steam,epic)
-    -status={n}	Filter by status name (ex:-status=played / -status=played,playing)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatSearchDescription">Ricerca sui dati di HowLongToBeat</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatSearchHint" xml:space="preserve">Parametri:
+    -time&lt;unk&gt; &lt;unk&gt; Tempo da battere (ex:-time=5h / -time=&lt;50min / -time=&gt;50s / -time=10min&lt;&gt;5h)
+    -np&lt;unk&gt; &lt;unk&gt; &lt;unk&gt; Non hai giocato al gioco
+    -fav&lt;unk&gt; &lt;unk&gt; Il gioco deve essere un preferito
+    -stores={n}	&lt;unk&gt; Filtra per nome negozio (ex:-stores=vapore / -stores=steam, epic)
+    -status={n}	&lt;unk&gt; Filtra per nome di stato (ex:-status=played / -status=played,playing)</sys:String>
 
 </ResourceDictionary>
