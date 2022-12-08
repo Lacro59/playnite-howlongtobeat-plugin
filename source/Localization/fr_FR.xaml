@@ -83,7 +83,7 @@ Si aucun n'a ce statut, il prend le plus récent.</sys:String>
     <sys:String x:Key="LOCHltbAvgGameByMonth">Jeu moyen par mois</sys:String>
     <sys:String x:Key="LOCHltbCountGameBeatenBeforeTime">Nombre de jeux battus avant le temps</sys:String>
     <sys:String x:Key="LOCHltbCountGameBeatenAfterTime">Nombre de jeux battus après le temps</sys:String>
-    <sys:String x:Key="LOCHltbCountGameBeatenReplays">Number of games beaten (replayed)</sys:String>
+    <sys:String x:Key="LOCHltbCountGameBeatenReplays">Nombre de jeux battus (rejoués)</sys:String>
     <sys:String x:Key="LOCHltbCountGameRetired">Nombre de jeux retirés</sys:String>
 
     <sys:String x:Key="LOCHltbUsedFilteredGames">Jeux actuellement filtrés utilisés</sys:String>
@@ -105,7 +105,7 @@ Si aucun n'a ce statut, il prend le plus récent.</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatSetCurrentTime">Voulez-vous envoyer votre temps de jeu actuel ?</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatErrorNoPlatform">Cannot submit data for a game without platform ({0})</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatErrorNoPlatform">Impossible de soumettre des données pour un jeu sans plateforme ({0})</sys:String>
 
 
     <!-- QuickSearch -->
@@ -123,17 +123,17 @@ Voici la liste des commandes :</sys:String>
 
     <!-- StartPage -->
 
-    <sys:String x:Key="LOCHtlbChartStats">Chart stats</sys:String>
-    <sys:String x:Key="LOCHtlbChartStatsChartTitle">Show title</sys:String>
-    <sys:String x:Key="LOCHtlbChartStatsChartLabels">Show labels on horizontal axis</sys:String>
-    <sys:String x:Key="LOCHtlbChartStatsChartLabelsOrdinates">Show labels on vertical axis</sys:String>
-    <sys:String x:Key="LOCHtlbChartStatsChartType">Chart type</sys:String>
-    <sys:String x:Key="LOCHtlbChartStatsChartDataNumber">Data number</sys:String>
+    <sys:String x:Key="LOCHtlbChartStats">Graphique statistiques</sys:String>
+    <sys:String x:Key="LOCHtlbChartStatsChartTitle">Afficher le titre</sys:String>
+    <sys:String x:Key="LOCHtlbChartStatsChartLabels">Afficher les libellés sur l'axe horizontal</sys:String>
+    <sys:String x:Key="LOCHtlbChartStatsChartLabelsOrdinates">Afficher les libellés sur l'axe vertical</sys:String>
+    <sys:String x:Key="LOCHtlbChartStatsChartType">Type de graphique</sys:String>
+    <sys:String x:Key="LOCHtlbChartStatsChartDataNumber">Nombre de données</sys:String>
 
 
     <!-- HowLongToBeatSearch -->
 
-    <sys:String x:Key="LOCHowLongToBeatSearchDescription">Search on HowLongToBeat data</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatSearchDescription">Rechercher sur les données HowLongToBeat</sys:String>
     <sys:String x:Key="LOCHowLongToBeatSearchHint" xml:space="preserve">Parameters:
     -time		Time to beat (ex:-time=5h / -time=&lt;50min / -time=&gt;50s / -time=10min&lt;&gt;5h)
     -np		You didn't play the game
