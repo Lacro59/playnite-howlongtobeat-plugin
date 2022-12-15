@@ -134,11 +134,11 @@ Aquí está la lista de comandos:</sys:String>
     <!-- HowLongToBeatSearch -->
 
     <sys:String x:Key="LOCHowLongToBeatSearchDescription">Buscar en datos de HowLongToBeat</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatSearchHint" xml:space="preserve">Parameters:
-    -time		Time to beat (ex:-time=5h / -time=&lt;50min / -time=&gt;50s / -time=10min&lt;&gt;5h)
-    -np		You didn't play the game
-    -fav		The game must be a favorite
-    -stores={n}	Filter by store name (ex:-stores=steam / -stores=steam,epic)
-    -status={n}	Filter by status name (ex:-status=played / -status=played,playing)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatSearchHint" xml:space="preserve">Parámetros:
+    -time		Tiempo para finalizar (ej:-time=5h / -time=&lt;50min / -time=&gt;50s / -time=10min&lt;&gt;5h)
+    -np		No haz jugado al juego
+    -fav		El juego debe ser favorito
+    -stores={n}	Filtrar por nombre de tienda (ej:-stores=steam / -stores=steam,epic)
+    -status={n}	Filtrar por nombre de estado (ej:-status=played / -status=played,playing)</sys:String>
 
 </ResourceDictionary>
