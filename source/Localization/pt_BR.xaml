@@ -83,7 +83,7 @@ Se nenhum tiver este status, pegará o mais recente.</sys:String>
     <sys:String x:Key="LOCHltbAvgGameByMonth">Média de jogos por mês</sys:String>
     <sys:String x:Key="LOCHltbCountGameBeatenBeforeTime">Número de jogos vencidos antes do tempo</sys:String>
     <sys:String x:Key="LOCHltbCountGameBeatenAfterTime">Número de jogos vencidos após o tempo</sys:String>
-    <sys:String x:Key="LOCHltbCountGameBeatenReplays">Number of games beaten (replayed)</sys:String>
+    <sys:String x:Key="LOCHltbCountGameBeatenReplays">Número de jogos completados (rejogados)</sys:String>
     <sys:String x:Key="LOCHltbCountGameRetired">Números de jogos retirados</sys:String>
 
     <sys:String x:Key="LOCHltbUsedFilteredGames">Jogos filtrados atualmente usados</sys:String>
@@ -105,7 +105,7 @@ Se nenhum tiver este status, pegará o mais recente.</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatSetCurrentTime">Você quer enviar seu tempo de jogo atual?</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatErrorNoPlatform">Cannot submit data for a game without platform ({0})</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatErrorNoPlatform">Não é possível enviar dados de um jogo sem plataforma ({0})</sys:String>
 
 
     <!-- QuickSearch -->
