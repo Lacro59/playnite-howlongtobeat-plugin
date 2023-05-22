@@ -30,7 +30,7 @@
     <sys:String x:Key="LOCHowLongToBeatEnableSuccessNotification">تمكين إشعار النجاح</sys:String>
     
     <sys:String x:Key="LOCHowLongToBeatAutoData">تنزيل بيانات اللعب</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAutoAccept">Automatically select game when only one game is found during search</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoAccept">اختيار اللعبة تلقائياً عند العثور على لعبة واحدة فقط أثناء البحث</sys:String>
     <sys:String x:Key="LOCHowLongToBeatShowWhenMismatch">Show game selection list when more than one game is found during search</sys:String>
     <sys:String x:Key="LOCHowLongToBeatUseMatchValue">استخدام مطابقة بنسبة مئوي</sys:String>
 
@@ -124,7 +124,7 @@ Here is the list of commands:</sys:String>
     <!-- StartPage -->
 
     <sys:String x:Key="LOCHtlbChartStats">Chart stats</sys:String>
-    <sys:String x:Key="LOCHtlbChartStatsChartTitle">Show title</sys:String>
+    <sys:String x:Key="LOCHtlbChartStatsChartTitle">إظهار العنوا</sys:String>
     <sys:String x:Key="LOCHtlbChartStatsChartLabels">Show labels on horizontal axis</sys:String>
     <sys:String x:Key="LOCHtlbChartStatsChartLabelsOrdinates">Show labels on vertical axis</sys:String>
     <sys:String x:Key="LOCHtlbChartStatsChartType">Chart type</sys:String>
