@@ -197,5 +197,4 @@ namespace HowLongToBeat.Models {
             return other == null ? 1 : Platform.Name.CompareTo(other.Platform.Name);
         }
     }
-
 }

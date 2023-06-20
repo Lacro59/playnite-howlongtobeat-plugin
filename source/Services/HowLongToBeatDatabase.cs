@@ -644,12 +644,13 @@ namespace HowLongToBeat.Services
                             logger.Warn($"Cannot submit data for a game without platform ({game.Name})");
                             PlayniteApi.Notifications.Add(new NotificationMessage(
                                $"{PluginName}-NoPlatform-Error-{new Guid()}",
-                               PluginName + System.Environment.NewLine + string.Format(resources.GetString("LOCHowLongToBeatErrorNoPlatform"), game.Name),
+                               PluginName + Environment.NewLine + string.Format(resources.GetString("LOCHowLongToBeatErrorNoPlatform"), game.Name),
                                NotificationType.Error,
                                () => Plugin.OpenSettingsView()
                             ));
                             return false;
                         }
+
                         HltbPlatform? match = PluginSettings.Settings.Platforms.Where(p => p.Platform.Equals(gamePlatform)).FirstOrDefault()?.HltbPlatform;
                         if (match != null) 
                         {
@@ -657,12 +658,15 @@ namespace HowLongToBeat.Services
                         } 
                         else 
                         {
-                            platform = gamePlatform.Name;
-                        }
+                            platform = HltbPlatform.PC.GetDescription();
 
-                        if (platform.IsNullOrEmpty())
-                        {
-                            logger.Warn($"No platform find for {game.Name}");
+                            logger.Warn($"No platform find for {game.Name} - Default \"PC\" used");
+                            PlayniteApi.Notifications.Add(new NotificationMessage(
+                               $"{PluginName}-NoPlatformDefined-Error-{new Guid()}",
+                               PluginName + Environment.NewLine + string.Format(resources.GetString("LOCHowLongToBeatErrorNoPlatformDefaultUsed"), gamePlatform.Name, game.Name),
+                               NotificationType.Error,
+                               () => Plugin.OpenSettingsView()
+                            ));
                         }
 
                         string StorefrontName = string.Empty;
