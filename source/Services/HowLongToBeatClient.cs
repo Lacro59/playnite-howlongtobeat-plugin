@@ -104,6 +104,18 @@ namespace HowLongToBeat.Services
             return dataParsed;
         }
 
+        public List<HltbDataUser> SearchTwoMethod(string Name, string Platform = "")
+        {
+            List<HltbDataUser> dataSearchNormalized = Search(PlayniteTools.NormalizeGameName(Name), Platform);
+            List<HltbDataUser> dataSearch = HowLongToBeat.PluginDatabase.howLongToBeatClient.Search(Name, Platform);
+
+            List<HltbDataUser> dataSearchFinal = new List<HltbDataUser>();
+            dataSearchFinal.AddRange(dataSearchNormalized);
+            dataSearchFinal.AddRange(dataSearch);
+            return dataSearchFinal.GroupBy(x => x.Id).Select(x => x.First()).ToList();
+        }
+
+
         /// <summary>
         /// Download search data.
         /// </summary>

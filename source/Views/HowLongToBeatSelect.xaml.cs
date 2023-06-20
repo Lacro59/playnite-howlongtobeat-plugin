@@ -1,4 +1,5 @@
 ﻿using CommonPluginsShared;
+using FuzzySharp;
 using HowLongToBeat.Models;
 using HowLongToBeat.Services;
 using Playnite.SDK;
@@ -6,6 +7,7 @@ using Playnite.SDK.Data;
 using Playnite.SDK.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -32,7 +34,7 @@ namespace HowLongToBeat.Views
             
             InitializeComponent();
 
-            SearchElement.Text = PlayniteTools.NormalizeGameName(_game.Name);
+            SearchElement.Text = _game.Name;
 
             if (data == null)
             {
@@ -98,14 +100,24 @@ namespace HowLongToBeat.Views
             SelectableContent.IsEnabled = false;
             
             string GameSearch = SearchElement.Text;
-            string GamePlatform = (PART_SelectPlatform.SelectedValue == null) 
+            string GamePlatform = (PART_SelectPlatform.SelectedValue == null)
                   ? string.Empty : ((HltbPlatform) PART_SelectPlatform.SelectedValue).GetDescription();
+
             Task task = Task.Run(() =>
             {
                 List<HltbDataUser> dataSearch = new List<HltbDataUser>();
                 try
                 {
-                    dataSearch = HowLongToBeat.PluginDatabase.howLongToBeatClient.Search(GameSearch, GamePlatform);
+                    dataSearch = HowLongToBeat.PluginDatabase.howLongToBeatClient.SearchTwoMethod(GameSearch, GamePlatform);
+
+                    // Sort
+                    this.Dispatcher.Invoke(new Action(() =>
+                    {
+                        dataSearch = dataSearch.Select(x => new { MatchPercent = Fuzz.Ratio(_game.Name.ToLower(), x.Name.ToLower()), Data = x })
+                                        .OrderByDescending(x => x.MatchPercent)
+                                        .Select(x => x.Data)
+                                        .ToList();
+                    }));
                 }
                 catch (Exception ex)
                 {

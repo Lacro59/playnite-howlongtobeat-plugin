@@ -174,16 +174,7 @@ namespace HowLongToBeat.Services
                 return;
             }
 
-            List<HltbDataUser> dataSearchNormalized = HowLongToBeat.PluginDatabase.howLongToBeatClient.Search(PlayniteTools.NormalizeGameName(game.Name));
-            List<HltbDataUser> dataSearch = HowLongToBeat.PluginDatabase.howLongToBeatClient.Search(game.Name);
-
-            List<HltbDataUser> dataSearchFinal = new List<HltbDataUser>();
-            dataSearchFinal.AddRange(dataSearchNormalized);
-            dataSearchFinal.AddRange(dataSearch);
-            List<HltbDataUser> data = dataSearchFinal.GroupBy(x => x.Id)
-                   .Select(x => x.First())
-                   .ToList();
-
+            List<HltbDataUser> data = HowLongToBeat.PluginDatabase.howLongToBeatClient.SearchTwoMethod(game.Name);
             if (data.Count == 1 && PluginSettings.Settings.AutoAccept)
             {
                 gameHowLongToBeat.Items = new List<HltbDataUser>() { data.First() };
