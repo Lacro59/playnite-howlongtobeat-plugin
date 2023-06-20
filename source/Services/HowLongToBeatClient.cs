@@ -450,7 +450,7 @@ namespace HowLongToBeat.Services
                     hltbPostData.compyear = data.props.pageProps.editData.general.completionDate.year;
                     hltbPostData.compmonth = data.props.pageProps.editData.general.completionDate.month;
                     hltbPostData.compday = data.props.pageProps.editData.general.completionDate.day;
-                    hltbPostData.playCount = data.props.pageProps.editData.singlePlayer.playCount;
+                    hltbPostData.playCount = data.props.pageProps.editData.singlePlayer.playCount ? "1" : "0";
                     hltbPostData.includesDLC = data.props.pageProps.editData.singlePlayer.includesDLC ? "1" : "0";
                     hltbPostData.c_main_h = data.props.pageProps.editData.singlePlayer.compMain.time.hours?.ToString() ?? "0";
                     hltbPostData.c_main_m = data.props.pageProps.editData.singlePlayer.compMain.time.minutes?.ToString() ?? "0";
@@ -642,7 +642,7 @@ namespace HowLongToBeat.Services
                         + "\",\"month\":\"" + hltbPostData.compmonth + "\",\"day\":\"" + hltbPostData.compday
                         + "\"},"
                         + "\"progressBefore\":{\"hours\":0,\"minutes\":0,\"seconds\":0}"
-                        + "},\"singlePlayer\":{\"playCount\":" + hltbPostData.playCount
+                        + "},\"singlePlayer\":{\"playCount\":" + (hltbPostData.playCount == "1" ? "true" : "false")
                         + ",\"includesDLC\":" + (hltbPostData.includesDLC == "1" ? "true" : "false") + ",\"compMain\":{\"time\":{\"hours\":" + hltbPostData.c_main_h
                         + ",\"minutes\":" + hltbPostData.c_main_m + ",\"seconds\":" + hltbPostData.c_main_s + "},\"notes\":\"" + hltbPostData.c_main_notes
                         + "\"},\"compPlus\":{\"time\":{\"hours\":" + hltbPostData.c_plus_h + ",\"minutes\":" + hltbPostData.c_plus_m + ",\"seconds\":" + hltbPostData.c_plus_s

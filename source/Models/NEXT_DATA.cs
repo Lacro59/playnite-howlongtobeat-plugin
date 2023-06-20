@@ -87,7 +87,7 @@ namespace HowLongToBeat.Models
         public int profile_steam { get; set; }
         public int profile_steam_alt { get; set; }
         public int profile_itch { get; set; }
-        public string profile_ign { get; set; }
+        public object profile_ign { get; set; }
         public string release_world { get; set; }
         public string release_na { get; set; }
         public string release_eu { get; set; }
@@ -247,7 +247,7 @@ namespace HowLongToBeat.Models
 
     public class SinglePlayer
     {
-        public int playCount { get; set; }
+        public bool playCount { get; set; }
         public bool includesDLC { get; set; }
         public CompMain compMain { get; set; }
         public CompPlus compPlus { get; set; }
