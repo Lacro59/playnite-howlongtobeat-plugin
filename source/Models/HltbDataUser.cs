@@ -9,6 +9,7 @@ namespace HowLongToBeat.Models
         public int Id { get; set; } = 0;
         public string UrlImg { get; set; } = string.Empty;
         public string Url { get; set; } = string.Empty;
+        public string Platform { get; set; } = string.Empty;
 
         public HltbData GameHltbData { get; set; }
 

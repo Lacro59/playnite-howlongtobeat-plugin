@@ -161,7 +161,7 @@ namespace HowLongToBeat.Services
                 Application.Current.Dispatcher.BeginInvoke((Action)delegate
                 {
                     ViewExtension = new HowLongToBeatSelect(null, game);
-                    Window windowExtension = PlayniteUiHelper.CreateExtensionWindow(PluginDatabase.PlayniteApi, resources.GetString("LOCSelection"), ViewExtension);
+                    Window windowExtension = PlayniteUiHelper.CreateExtensionWindow(PluginDatabase.PlayniteApi, resources.GetString("LOCSelection") + " - " + game.Name + " - " + (game.Source?.Name ?? "Playnite"), ViewExtension);
                     windowExtension.ShowDialog();
                 }).Wait();
 
@@ -190,6 +190,7 @@ namespace HowLongToBeat.Services
                     int Id = 0;
                     string UrlImg = string.Empty;
                     string Url = string.Empty;
+                    string Platform = string.Empty;
 
                     foreach (HltbSearchData entry in data.data)
                     {
@@ -197,6 +198,8 @@ namespace HowLongToBeat.Services
                         Id = entry.game_id;
                         UrlImg = string.Format(UrlGameImg, entry.game_image);
                         Url = string.Format(UrlGame, Id);
+                        Url = string.Format(UrlGame, Id);
+                        Platform = entry.profile_platform;
 
                         long MainStory = entry.comp_lvl_combine == 0 ? entry.comp_main : 0;
                         long MainExtra = entry.comp_lvl_combine == 0 ? entry.comp_plus : 0;
@@ -211,6 +214,7 @@ namespace HowLongToBeat.Services
                             Id = Id,
                             UrlImg = UrlImg,
                             Url = Url,
+                            Platform = Platform,
                             GameHltbData = new HltbData
                             {
                                 MainStory = MainStory,
