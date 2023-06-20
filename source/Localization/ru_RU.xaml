@@ -106,6 +106,9 @@
     <sys:String x:Key="LOCHowLongToBeatSetCurrentTime">Хотите отправить свое текущее игровое время?</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatErrorNoPlatform">Невозможно отправить данные для игры без платформы ({0})</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatErrorNoPlatformDefaultUsed" xml:space="preserve">Game ({1}) without platform ({0}) defined in plugin settings.
+Please configure one.
+Default used (PC)</sys:String>
 
 
     <!-- QuickSearch -->
