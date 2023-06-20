@@ -174,18 +174,28 @@ namespace HowLongToBeat.Services
                 return;
             }
 
-            List<HltbDataUser> dataSearch = HowLongToBeat.PluginDatabase.howLongToBeatClient.Search(PlayniteTools.NormalizeGameName(game.Name));
+            List<HltbDataUser> dataSearchNormalized = HowLongToBeat.PluginDatabase.howLongToBeatClient.Search(PlayniteTools.NormalizeGameName(game.Name));
+            List<HltbDataUser> dataSearch = HowLongToBeat.PluginDatabase.howLongToBeatClient.Search(game.Name);
 
-            if (dataSearch.Count == 1 && PluginSettings.Settings.AutoAccept)
+            List<HltbDataUser> dataSearchFinal = new List<HltbDataUser>();
+            dataSearchFinal.AddRange(dataSearchNormalized);
+            dataSearchFinal.AddRange(dataSearch);
+            List<HltbDataUser> data = dataSearchFinal.GroupBy(x => x.Id)
+                   .Select(x => x.First())
+                   .ToList();
+
+            if (data.Count == 1 && PluginSettings.Settings.AutoAccept)
             {
-                gameHowLongToBeat.Items = new List<HltbDataUser>() { dataSearch.First() };
+                gameHowLongToBeat.Items = new List<HltbDataUser>() { data.First() };
                 AddOrUpdate(gameHowLongToBeat);
             }
             else
             {
-                if (dataSearch.Count > 0 && PluginSettings.Settings.UseMatchValue)
+                if (data.Count > 0 && PluginSettings.Settings.UseMatchValue)
                 {
-                    var FuzzList = dataSearch.Select(x => new { MatchPercent = Fuzz.Ratio(game.Name.ToLower(), x.Name.ToLower()), Data = x }).OrderByDescending(x => x.MatchPercent).ToList();
+                    var FuzzList = data.Select(x => new { MatchPercent = Fuzz.Ratio(game.Name.ToLower(), x.Name.ToLower()), Data = x })
+                        .OrderByDescending(x => x.MatchPercent)
+                        .ToList();
 
                     if (FuzzList.First().MatchPercent >= PluginSettings.Settings.MatchValue)
                     {
@@ -195,7 +205,7 @@ namespace HowLongToBeat.Services
                     }
                 }
 
-                if (dataSearch.Count > 0 && PluginSettings.Settings.ShowWhenMismatch)
+                if (data.Count > 0 && PluginSettings.Settings.ShowWhenMismatch)
                 {
                     Get(game, false, true);
                 }
