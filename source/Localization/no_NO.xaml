@@ -106,9 +106,9 @@ Hvis ingen har denne statusen, velges bare den nyeste.</sys:String>
     <sys:String x:Key="LOCHowLongToBeatSetCurrentTime">Vil du sende din nåværende spilletid?</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatErrorNoPlatform">Cannot submit data for a game without platform ({0})</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatErrorNoPlatformDefaultUsed" xml:space="preserve">Game ({1}) without platform ({0}) defined in plugin settings.
-Please configure one.
-Default used (PC)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatErrorNoPlatformDefaultUsed" xml:space="preserve">Spill ({1}) uten plattform ({0}) definert i instillingene for utvidelsen.
+Vennligst konfigurer en plattform.
+Standard brukt (PC)</sys:String>
 
 
     <!-- QuickSearch -->
