@@ -1,88 +1,88 @@
 ﻿<?xml version="1.0"?>
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:sys="clr-namespace:System;assembly=mscorlib">
 
-    <sys:String x:Key="LOCHowLongToBeatTimeToBeat">Time to beat</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatTimeToBeat">Yenme süresi</sys:String>
 
-    <sys:String x:Key="LOCPlayedHoursOnly">{0}h</sys:String>
+    <sys:String x:Key="LOCPlayedHoursOnly">{0}s</sys:String>
 
     <!-- HowLongToBeatSettingsView -->
 
-    <sys:String x:Key="LOCHowLongToBeatProgressBar">Added {0} - Already added {1} - Not added {2}</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatProgressBar">Eklenen {0} - Önceden eklenmiş {1} - Eklenmemiş {2}</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatAddTagDescription">Add a tag to games with Main story completion time information</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAutoTag">Automatic tags processing</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatShowHltbImage">Use HowLongToBeat original game cover image in window</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAddTagDescription">Ana hikaye tamamlanma bilgisi sunan oyunlara bir etiket ekle</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoTag">Otomatik etiketler işleniyor</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatShowHltbImage">Pencerede YenmekNeKadarSürdü özgün kapak görselini kullan</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatColorSelection">Color selection:</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatColorSelection">Renk seçimi:</sys:String>
 
-    <sys:String x:Key="LOCHltbEnableProgressBarInDataView">View progress bar in Playnite data view</sys:String>
+    <sys:String x:Key="LOCHltbEnableProgressBarInDataView">Playnite veri görünümünde ilerleme çubuğunu görüntüle</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarOptions">Progress bar options</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">Show time tooltip in progress bar</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTime">Show time labels in progress bar</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeAbove">Above progress bar</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeInterior">Inside progress bar</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeBelow">Below progress bars</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeUser">Show user HowLongToBeat time</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarOptions">İlerleme çubuğu seçenekleri</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">İlerleme çubuğunda süre ipucunu göster</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTime">İlerleme çubuğunda süre etiketlerini göster</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeAbove">İlerleme çubuğu üzerinde</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeInterior">İlerleme çubuğu içinde</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeBelow">İlerleme çubukları altında</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeUser">Kullanıcının YenmekNeKadarSürdü süresini göster</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatAutoSetCurrentPlayTime">Automatically update current playtime on HowLongToBeat after game session</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatWithoutConfirmation">Without confirmation message</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatEnableSuccessNotification">Enable success notification</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoSetCurrentPlayTime">Oyun oturumundan sonra YenmekNeKadarSürdü üzerinde şimdiki oyun süresini otomatik güncelle</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatWithoutConfirmation">Onaylama iletisi olmaksızın</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatEnableSuccessNotification">Başarı iletisini etkinleştir</sys:String>
     
-    <sys:String x:Key="LOCHowLongToBeatAutoData">Game data download</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAutoAccept">Automatically select game when only one game is found during search</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatShowWhenMismatch">Show game selection list when more than one game is found during search</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatUseMatchValue">Use a percent match</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoData">Oyun verisi indirme</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoAccept">Arama sırasında sadece tek oyun bulunduğunda otomatik olarak oyunu seç</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatShowWhenMismatch">Arama sırasında birden fazla oyun bulunduğunda oyun seçimi listesi göster</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatUseMatchValue">Bir yüzdelik uyuşma göster</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatTimeOnlyHour">Time format with only hour</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatTimeOnlyHour">Sadece saat cinsinden süre biçimi</sys:String>
     
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBar">Display progress indicator</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBar">İlerleme işaretçisini göster</sys:String>
     
-    <sys:String x:Key="LOCHowLongToBeatCurrentPlayTimeSetted">The current playtime for {0} is setted.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatCurrentPlayTimeSetted">{0} için şimdiki oyun süresi ayarlandı.</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatInfoSetPlaytime" xml:space="preserve">If there are several times defined on HowLongToBeat, the plugin will take the most recent one with the status &quot;Playing&quot;.
-If none has this status, it takes the most recent.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatInfoSetPlaytime" xml:space="preserve">YenmekNeKadarSürer üzerinde birden fazla süre tanımlanmışsa; eklenti, &quot;Oynanıyor&quot; durumundaki en son süreyi alacaktır.
+Hiç biri bu durumda değilse, en son süre alınır.</sys:String>
 
     <!-- HowLongToBeatSelect -->
 
-    <sys:String x:Key="LOCSelection">HowLongToBeat selection</sys:String>
+    <sys:String x:Key="LOCSelection">YenmekNeKadarSürer seçimi</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatMainStory">Main story</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatMainExtra">Main + extra</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatCompletionist">Completionist</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatMainStory">Ana hikaye</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatMainExtra">Ana + fazlası</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatCompletionist">Tamamlayıcı</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatSolo">Solo</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatCoOp">Co-Op</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatVs">Vs</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatSolo">Tekli</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatCoOp">Eşli</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatVs">Karşı</sys:String>
 
     <!-- HowLongToBeat -->
 
-    <sys:String x:Key="LOCHowLongToBeatProgression">Progression</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatProgression">İlerleme</sys:String>
 
     <!-- HowLongToBeatUserView -->
 
-    <sys:String x:Key="LOCHowLongToBeatCompletationStore">Games completed by storefront</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatCompletationProgress">Games completed over time</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatCompletationStore">Mağaza vitrinine göre tamamlanmış oyunlar</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatCompletationProgress">Zamanında tamamlanmış oyunlar</sys:String>
     
-    <sys:String x:Key="LOCHowLongToBeatUserData">User data</sys:String>
-    <sys:String x:Key="LocHowLongToBeatPlayniteData">Playnite data</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatCompleted">Completed</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatUserData">Kullanıcı verisi</sys:String>
+    <sys:String x:Key="LocHowLongToBeatPlayniteData">Playnite verisi</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatCompleted">Tamamlanmış</sys:String>
 
-    <sys:String x:Key="LOCHltbOnlyReplays">Only replays</sys:String>
+    <sys:String x:Key="LOCHltbOnlyReplays">Sadece yeniden oynamalar</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatPluginGetUserView">Getting user datas</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatPluginGetUserView">Kullanıcı verileri getiriliyor</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatCompletions">Completions</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatTimeSinglePlayer">Single-Player time</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatTimeCoOp">Co-Op time</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatTimeVs">Vs Multi-Player time</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatCompletions">Tamamlanmalar</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatTimeSinglePlayer">Tek Kişilik süre</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatTimeCoOp">Eşli süre</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatTimeVs">Çok Oyuncuya Karşı süre</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatStorefront">Storefront</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatStorefront">Mağaza Vitrini</sys:String>
     
-    <sys:String x:Key="LOCHltbAvgTimeByGame">Avg time by game</sys:String>
-    <sys:String x:Key="LOCHltbAvgGameByMonth">Avg game by month</sys:String>
-    <sys:String x:Key="LOCHltbCountGameBeatenBeforeTime">Number of games beaten before time</sys:String>
-    <sys:String x:Key="LOCHltbCountGameBeatenAfterTime">Number of games beaten after time</sys:String>
+    <sys:String x:Key="LOCHltbAvgTimeByGame">Oyun bazında ortalama süre</sys:String>
+    <sys:String x:Key="LOCHltbAvgGameByMonth">Ay bazında ortalama oyun</sys:String>
+    <sys:String x:Key="LOCHltbCountGameBeatenBeforeTime">Süresinden önce yenerek tamamlanan oyun sayısı</sys:String>
+    <sys:String x:Key="LOCHltbCountGameBeatenAfterTime">Süresinden sonra yenerek tamamlanan oyun sayısı</sys:String>
     <sys:String x:Key="LOCHltbCountGameBeatenReplays">Number of games beaten (replayed)</sys:String>
     <sys:String x:Key="LOCHltbCountGameRetired">Number of games retired</sys:String>
 
