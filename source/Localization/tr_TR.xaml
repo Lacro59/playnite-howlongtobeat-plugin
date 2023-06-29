@@ -83,65 +83,65 @@ Hiç biri bu durumda değilse, en son süre alınır.</sys:String>
     <sys:String x:Key="LOCHltbAvgGameByMonth">Ay bazında ortalama oyun</sys:String>
     <sys:String x:Key="LOCHltbCountGameBeatenBeforeTime">Süresinden önce yenerek tamamlanan oyun sayısı</sys:String>
     <sys:String x:Key="LOCHltbCountGameBeatenAfterTime">Süresinden sonra yenerek tamamlanan oyun sayısı</sys:String>
-    <sys:String x:Key="LOCHltbCountGameBeatenReplays">Number of games beaten (replayed)</sys:String>
-    <sys:String x:Key="LOCHltbCountGameRetired">Number of games retired</sys:String>
+    <sys:String x:Key="LOCHltbCountGameBeatenReplays">Yenerek tamamlanan oyun sayısı (yeniden oynandı)</sys:String>
+    <sys:String x:Key="LOCHltbCountGameRetired">Emekli edilen oyun sayısı</sys:String>
 
-    <sys:String x:Key="LOCHltbUsedFilteredGames">Currently filtered games used</sys:String>
-    <sys:String x:Key="LOCHltbOnlyNotPlayedGames">Only game not played</sys:String>
+    <sys:String x:Key="LOCHltbUsedFilteredGames">Şu anda kullanılan filtrelenmiş oyunlar</sys:String>
+    <sys:String x:Key="LOCHltbOnlyNotPlayedGames">Sadece oynanmayan oyun</sys:String>
 
     <!-- MainView -->
 
-    <sys:String x:Key="LOCHowLongToBeat">HowLongToBeat</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatTitle">HowLongToBeat</sys:String>
+    <sys:String x:Key="LOCHowLongToBeat">YenmekNeKadarSürdü</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatTitle">YenmekNeKadarSürdü</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatPluginView">View HowLongToBeat datas</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatPluginUserView">View HowLongToBeat user datas</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatActualiseUserData">Refresh HowLongToBeat user datas</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatPluginView">YenmekNeKadarSürdü verilerini görüntüle</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatPluginUserView">YenmekNeKadarSürdü kullanıcı verilerini görüntüle</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatActualiseUserData">YenmekNeKadarSürdü kullanıcı verilerini yenile</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatSetCurrentTimeManual">Set your current playtime</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatSetCurrentTimeManualAll">Set your current playtime for all games</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatSetCurrentTimeManual">Şu anki oyun süresini ayarla</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatSetCurrentTimeManualAll">Tüm oyunlar için şu anki oyun süresini ayarla</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatSetCurrentCompletedTimeManualOn">Set your current completed playtime on</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatSetCurrentCompletedTimeManualOn">Mevcut tamamlanmış oyun süresini şu ayarla:</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatSetCurrentTime">Want you send your current playtime?</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatSetCurrentTime">Şu anki oyun süresini göndermek ister misiniz?</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatErrorNoPlatform">Cannot submit data for a game without platform ({0})</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatErrorNoPlatformDefaultUsed" xml:space="preserve">Game ({1}) without platform ({0}) defined in plugin settings.
-Please configure one.
-Default used (PC)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatErrorNoPlatform">Platform içermeyen bir oyun verisi gönderilemiyor ({0})</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatErrorNoPlatformDefaultUsed" xml:space="preserve">Eklenti ayarlarında platform ({0}) içermeyen oyun ({1}) belirlenmiş.
+Lütfen bir tane platform ayarlayın.
+Öntanımlı kullanıldı (PC)</sys:String>
 
 
     <!-- QuickSearch -->
 
-    <sys:String x:Key="LOCHltbQuickSearchDescription">Search games on HowLongToBeat data</sys:String>
-    <sys:String x:Key="LOCHltbQuickSearchByTTB">Find by Time To Beat</sys:String>
+    <sys:String x:Key="LOCHltbQuickSearchDescription">YenmekNeKadarSürdü verisinde oyun ara</sys:String>
+    <sys:String x:Key="LOCHltbQuickSearchByTTB">Yenme Süresine göre bul</sys:String>
 
-    <sys:String x:Key="LOCHltbQuickSearchInfo" xml:space="preserve">The plugin uses the functionality of the QuickSearch plugin.
-To use it, you must validate the &quot;howlongtobeat&quot; or &quot;hltb&quot; command.    
+    <sys:String x:Key="LOCHltbQuickSearchInfo" xml:space="preserve">Eklenti HızlıArama(QuickSearch) eklentisi işlevi kullanmaktadır.
+Bunu kullanmak için, &quot;howlongtobeat&quot; veya &quot;hltb&quot; komutunu doğrulamalısınız.    
         
-Here is the list of commands:</sys:String>
+Komutlar şunlardır:</sys:String>
 
-    <sys:String x:Key="LOCHltbQuickSearchCmd1" xml:space="preserve">This command searches for a list of games with a specific time to beat.</sys:String>
+    <sys:String x:Key="LOCHltbQuickSearchCmd1" xml:space="preserve">Bu komut, belirli yenme süresi içeren oyunların listesini arar.</sys:String>
 
 
     <!-- StartPage -->
 
-    <sys:String x:Key="LOCHtlbChartStats">Chart stats</sys:String>
-    <sys:String x:Key="LOCHtlbChartStatsChartTitle">Show title</sys:String>
-    <sys:String x:Key="LOCHtlbChartStatsChartLabels">Show labels on horizontal axis</sys:String>
-    <sys:String x:Key="LOCHtlbChartStatsChartLabelsOrdinates">Show labels on vertical axis</sys:String>
-    <sys:String x:Key="LOCHtlbChartStatsChartType">Chart type</sys:String>
-    <sys:String x:Key="LOCHtlbChartStatsChartDataNumber">Data number</sys:String>
+    <sys:String x:Key="LOCHtlbChartStats">Çizelge istatistikleri</sys:String>
+    <sys:String x:Key="LOCHtlbChartStatsChartTitle">Başlığı göster</sys:String>
+    <sys:String x:Key="LOCHtlbChartStatsChartLabels">Yatay eksende etiketleri göster</sys:String>
+    <sys:String x:Key="LOCHtlbChartStatsChartLabelsOrdinates">Dikey eksende etiketleri göster</sys:String>
+    <sys:String x:Key="LOCHtlbChartStatsChartType">Çizelge türü</sys:String>
+    <sys:String x:Key="LOCHtlbChartStatsChartDataNumber">Veri sayısı</sys:String>
 
 
     <!-- HowLongToBeatSearch -->
 
-    <sys:String x:Key="LOCHowLongToBeatSearchDescription">Search on HowLongToBeat data</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatSearchDescription">YenmekNeKadarSürdü verisinde ara</sys:String>
     <sys:String x:Key="LOCHowLongToBeatSearchHint" xml:space="preserve">Parameters:
-    -time		Time to beat (ex:-time=5h / -time=&lt;50min / -time=&gt;50s / -time=10min&lt;&gt;5h)
-    -np		You didn't play the game
-    -fav		The game must be a favorite
-    -stores={n}	Filter by store name (ex:-stores=steam / -stores=steam,epic)
-    -status={n}	Filter by status name (ex:-status=played / -status=played,playing)</sys:String>
+    -time		Yenme süresi (örn:-time=5h / -time=&lt;50min / -time=&gt;50s / -time=10min&lt;&gt;5h)
+    -np		Oyunu oynamadınız
+    -fav		Oyun favori bir oyun olmalıdır
+    -stores={n}	Mağaza adıyla filtrele (örn:-stores=steam / -stores=steam,epic)
+    -status={n}	Durum adıyla filtrele (örn:-status=played / -status=played,playing)</sys:String>
 
 </ResourceDictionary>
