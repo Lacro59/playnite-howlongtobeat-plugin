@@ -71,7 +71,7 @@ namespace HowLongToBeat
                     Title = resources.GetString("LOCHowLongToBeat"),
                     Activated = () =>
                     {
-                        var windowOptions = new WindowOptions
+                        WindowOptions windowOptions = new WindowOptions
                         {
                             ShowMinimizeButton = false,
                             ShowMaximizeButton = true,
@@ -80,7 +80,7 @@ namespace HowLongToBeat
                             Height = 740
                         };
 
-                        var ViewExtension = new HowLongToBeatUserView();
+                        HowLongToBeatUserView ViewExtension = new HowLongToBeatUserView(this);
                         Window windowExtension = PlayniteUiHelper.CreateExtensionWindow(PlayniteApi, PluginDatabase.PluginName, ViewExtension, windowOptions);
                         windowExtension.ResizeMode = ResizeMode.CanResize;
                         windowExtension.ShowDialog();
@@ -119,7 +119,7 @@ namespace HowLongToBeat
                 {
                     Common.LogDebug(true, $"OnCustomThemeButtonClick()");
 
-                    var windowOptions = new WindowOptions
+                    WindowOptions windowOptions = new WindowOptions
                     {
                         ShowMinimizeButton = false,
                         ShowMaximizeButton = true,
@@ -128,7 +128,7 @@ namespace HowLongToBeat
                         Height = 740
                     };
 
-                    var ViewExtension = new HowLongToBeatUserView();
+                    HowLongToBeatUserView ViewExtension = new HowLongToBeatUserView(this);
                     Window windowExtension = PlayniteUiHelper.CreateExtensionWindow(PlayniteApi, PluginDatabase.PluginName, ViewExtension, windowOptions);
                     windowExtension.ResizeMode = ResizeMode.CanResize;
                     windowExtension.ShowDialog();
@@ -186,7 +186,7 @@ namespace HowLongToBeat
                 {
                     SidebarItemControl sidebarItemControl = new SidebarItemControl(PluginDatabase.PlayniteApi);
                     sidebarItemControl.SetTitle(resources.GetString("LOCHowLongToBeat"));
-                    sidebarItemControl.AddContent(new HowLongToBeatUserView());
+                    sidebarItemControl.AddContent(new HowLongToBeatUserView(plugin));
 
                     return sidebarItemControl;
                 };
@@ -472,7 +472,7 @@ namespace HowLongToBeat
                     Description = resources.GetString("LOCHowLongToBeatPluginUserView"),
                     Action = (mainMenuItem) =>
                     {
-                        var ViewExtension = new HowLongToBeatUserView();
+                        HowLongToBeatUserView ViewExtension = new HowLongToBeatUserView(this);
                         ViewExtension.Height = 660;
                         ViewExtension.Width = 1290;
                         Window windowExtension = PlayniteUiHelper.CreateExtensionWindow(PlayniteApi, PluginDatabase.PluginName, ViewExtension);

@@ -33,6 +33,8 @@ namespace HowLongToBeat.Views
         private static readonly ILogger logger = LogManager.GetLogger();
         private static IResourceProvider resources = new ResourceProvider();
 
+        private readonly HowLongToBeat Plugin;
+
         private bool DisplayFirst = true;
 
         private HowLongToBeatDatabase PluginDatabase = HowLongToBeat.PluginDatabase;
@@ -45,8 +47,10 @@ namespace HowLongToBeat.Views
         }
 
 
-        public HowLongToBeatUserView()
+        public HowLongToBeatUserView(HowLongToBeat plugin)
         {
+            Plugin = plugin;
+
             InitializeComponent();
             this.DataContext = userViewDataContext;
 
@@ -362,6 +366,9 @@ namespace HowLongToBeat.Views
         {
             if (((FrameworkElement)sender).Visibility == Visibility.Visible && DisplayFirst)
             {
+                PART_FilteredGames.IsChecked = PluginDatabase.PluginSettings.Settings.filterSettings.UsedFilteredGames;
+                PART_HidePlayedGames.IsChecked = PluginDatabase.PluginSettings.Settings.filterSettings.OnlyNotPlayedGames;
+
                 SetPlayniteData();
                 DisplayFirst = false;
             }
@@ -390,6 +397,18 @@ namespace HowLongToBeat.Views
             PART_CbPlatform.ItemsSource = null;
             PART_CbPlatform.ItemsSource = listPlatform;
             PART_CbPlatform.SelectedIndex = 0;
+
+            // Saved settings
+            int index = listYear.FindIndex(x => x == PluginDatabase.PluginSettings.Settings.filterSettings.Year);
+            PART_CbYear.SelectedIndex = index == -1 ? 0 : index;
+
+            index = listStoreFront.FindIndex(x => x == PluginDatabase.PluginSettings.Settings.filterSettings.Storefront);
+            PART_CbStorefront.SelectedIndex = index == -1 ? 0 : index;
+
+            index = listPlatform.FindIndex(x => x == PluginDatabase.PluginSettings.Settings.filterSettings.Platform);
+            PART_CbPlatform.SelectedIndex = index == -1 ? 0 : index;
+
+            PART_Replays.IsChecked = PluginDatabase.PluginSettings.Settings.filterSettings.OnlyReplays;
         }
 
 
@@ -552,6 +571,33 @@ namespace HowLongToBeat.Views
         private void PART_HidePlayedGames_Click(object sender, RoutedEventArgs e)
         {
             SetPlayniteData();
+        }
+
+
+        private void ClearFilter1_Click(object sender, RoutedEventArgs e)
+        {
+            PART_NameSearch.Text = string.Empty;
+            PART_CbYear.SelectedIndex = 0;
+            PART_CbStorefront.SelectedIndex = 0;
+            PART_CbPlatform.SelectedIndex = 0;
+            PART_Replays.IsChecked = false;
+        }
+        private void SavedFilter1_Click(object sender, RoutedEventArgs e)
+        {
+            PluginDatabase.PluginSettings.Settings.filterSettings.Year = PART_CbYear.SelectedItem.ToString();
+            PluginDatabase.PluginSettings.Settings.filterSettings.Storefront = PART_CbStorefront.SelectedItem.ToString();
+            PluginDatabase.PluginSettings.Settings.filterSettings.Platform = PART_CbPlatform.SelectedItem.ToString();
+            PluginDatabase.PluginSettings.Settings.filterSettings.OnlyReplays = (bool)PART_Replays.IsChecked;
+            
+            Plugin.SavePluginSettings(PluginDatabase.PluginSettings.Settings);
+        }
+
+        private void SavedFilter2_Click(object sender, RoutedEventArgs e)
+        {
+            PluginDatabase.PluginSettings.Settings.filterSettings.UsedFilteredGames = (bool)PART_FilteredGames.IsChecked;
+            PluginDatabase.PluginSettings.Settings.filterSettings.OnlyNotPlayedGames = (bool)PART_HidePlayedGames.IsChecked;
+            
+            Plugin.SavePluginSettings(PluginDatabase.PluginSettings.Settings);
         }
     }
 

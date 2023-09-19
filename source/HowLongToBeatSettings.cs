@@ -107,200 +107,75 @@ namespace HowLongToBeat
 
         public List<Storefront> Storefronts { get; set; } = new List<Storefront>();
         public List<HltbPlatformMatch> Platforms { get; set; } = new List<HltbPlatformMatch>();
+
+
+        public FilterSettings filterSettings { get; set; } = new FilterSettings();
         #endregion
 
 
         #region Settings StartPage
-        private HltbChartStatsOptions _hltbChartStatsOptions { get; set; } = new HltbChartStatsOptions();
-        public HltbChartStatsOptions hltbChartStatsOptions
-        {
-            get => _hltbChartStatsOptions;
-            set
-            {
-                _hltbChartStatsOptions = value;
-                OnPropertyChanged();
-            }
-        }
+        private HltbChartStatsOptions _hltbChartStatsOptions = new HltbChartStatsOptions();
+        public HltbChartStatsOptions hltbChartStatsOptions { get => _hltbChartStatsOptions; set => SetValue(ref _hltbChartStatsOptions, value); }
         #endregion
 
 
         // Playnite serializes settings object to a JSON object and saves it as text file.
         // If you want to exclude some property from being saved then use `JsonDontSerialize` ignore attribute.
         #region Variables exposed
-        private bool _HasData { get; set; } = false;
+        private bool _HasData = false;
         [DontSerialize]
-        public bool HasData
-        {
-            get => _HasData;
-            set
-            {
-                _HasData = value;
-                OnPropertyChanged();
-            }
-        }
+        public bool HasData { get => _HasData; set => SetValue(ref _HasData, value); }
 
 
-        private long _MainStory { get; set; } = 0;
+        private long _MainStory = 0;
         [DontSerialize]
-        public long MainStory
-        {
-            get => _MainStory;
-            set
-            {
-                _MainStory = value;
-                OnPropertyChanged();
-            }
-        }
-        private string _MainStoryFormat { get; set; } = string.Empty;
+        public long MainStory { get => _MainStory; set => SetValue(ref _MainStory, value); }
+        private string _MainStoryFormat = string.Empty;
         [DontSerialize]
-        public string MainStoryFormat
-        {
-            get => _MainStoryFormat;
-            set
-            {
-                _MainStoryFormat = value;
-                OnPropertyChanged();
-            }
-        }
+        public string MainStoryFormat { get => _MainStoryFormat; set => SetValue(ref _MainStoryFormat, value); }
 
-        private long _MainExtra { get; set; } = 0;
+        private long _MainExtra = 0;
         [DontSerialize]
-        public long MainExtra
-        {
-            get => _MainExtra;
-            set
-            {
-                _MainExtra = value;
-                OnPropertyChanged();
-            }
-        }
-        private string _MainExtraFormat { get; set; } = string.Empty;
+        public long MainExtra { get => _MainExtra; set => SetValue(ref _MainExtra, value); }
+        private string _MainExtraFormat = string.Empty;
         [DontSerialize]
-        public string MainExtraFormat
-        {
-            get => _MainExtraFormat;
-            set
-            {
-                _MainExtraFormat = value;
-                OnPropertyChanged();
-            }
-        }
+        public string MainExtraFormat { get => _MainExtraFormat; set => SetValue(ref _MainExtraFormat, value); }
 
-        private long _Completionist { get; set; } = 0;
+        private long _Completionist = 0;
         [DontSerialize]
-        public long Completionist
-        {
-            get => _Completionist;
-            set
-            {
-                _Completionist = value;
-                OnPropertyChanged();
-            }
-        }
-        private string _CompletionistFormat { get; set; } = string.Empty;
+        public long Completionist { get => _Completionist; set => SetValue(ref _Completionist, value); }
+        private string _CompletionistFormat = string.Empty;
         [DontSerialize]
-        public string CompletionistFormat
-        {
-            get => _CompletionistFormat;
-            set
-            {
-                _CompletionistFormat = value;
-                OnPropertyChanged();
-            }
-        }
+        public string CompletionistFormat { get => _CompletionistFormat; set => SetValue(ref _CompletionistFormat, value); }
 
-        private long _Solo { get; set; } = 0;
+        private long _Solo = 0;
         [DontSerialize]
-        public long Solo
-        {
-            get => _Solo;
-            set
-            {
-                _Solo = value;
-                OnPropertyChanged();
-            }
-        }
-        private string _SoloFormat { get; set; } = string.Empty;
+        public long Solo { get => _Solo; set => SetValue(ref _Solo, value); }
+        private string _SoloFormat = string.Empty;
         [DontSerialize]
-        public string SoloFormat
-        {
-            get => _SoloFormat;
-            set
-            {
-                _SoloFormat = value;
-                OnPropertyChanged();
-            }
-        }
+        public string SoloFormat { get => _SoloFormat; set => SetValue(ref _SoloFormat, value); }
 
-        private long _CoOp { get; set; } = 0;
+        private long _CoOp = 0;
         [DontSerialize]
-        public long CoOp
-        {
-            get => _CoOp;
-            set
-            {
-                _CoOp = value;
-                OnPropertyChanged();
-            }
-        }
-        private string _CoOpFormat { get; set; } = string.Empty;
+        public long CoOp { get => _CoOp; set => SetValue(ref _CoOp, value); }
+        private string _CoOpFormat = string.Empty;
         [DontSerialize]
-        public string CoOpFormat
-        {
-            get => _CoOpFormat;
-            set
-            {
-                _CoOpFormat = value;
-                OnPropertyChanged();
-            }
-        }
+        public string CoOpFormat { get => _CoOpFormat; set => SetValue(ref _CoOpFormat, value); }
 
-        private long _Vs { get; set; } = 0;
+        private long _Vs = 0;
         [DontSerialize]
-        public long Vs
-        {
-            get => _Vs;
-            set
-            {
-                _Vs = value;
-                OnPropertyChanged();
-            }
-        }
-        private string _VsFormat { get; set; } = string.Empty;
+        public long Vs { get => _Vs; set => SetValue(ref _Vs, value); }
+        private string _VsFormat = string.Empty;
         [DontSerialize]
-        public string VsFormat
-        {
-            get => _VsFormat;
-            set
-            {
-                _VsFormat = value;
-                OnPropertyChanged();
-            }
-        }
+        public string VsFormat { get => _VsFormat; set => SetValue(ref _VsFormat, value); }
 
 
-        private long _TimeToBeat { get; set; } = 0;
+        private long _TimeToBeat = 0;
         [DontSerialize]
-        public long TimeToBeat
-        {
-            get => _TimeToBeat;
-            set
-            {
-                _TimeToBeat = value;
-                OnPropertyChanged();
-            }
-        }
-        private string _TimeToBeatFormat { get; set; } = string.Empty;
+        public long TimeToBeat { get => _TimeToBeat; set => SetValue(ref _TimeToBeat, value); }
+        private string _TimeToBeatFormat = string.Empty;
         [DontSerialize]
-        public string TimeToBeatFormat
-        {
-            get => _TimeToBeatFormat;
-            set
-            {
-                _TimeToBeatFormat = value;
-                OnPropertyChanged();
-            }
-        }
+        public string TimeToBeatFormat { get => _TimeToBeatFormat; set => SetValue(ref _TimeToBeatFormat, value); }
         #endregion  
     }
 
@@ -320,17 +195,10 @@ namespace HowLongToBeat
             Plugin = plugin;
 
             // Load saved settings.
-            var savedSettings = plugin.LoadPluginSettings<HowLongToBeatSettings>();
+            HowLongToBeatSettings savedSettings = plugin.LoadPluginSettings<HowLongToBeatSettings>();
 
             // LoadPluginSettings returns null if not saved data is available.
-            if (savedSettings != null)
-            {
-                Settings = savedSettings;
-            }
-            else
-            {
-                Settings = new HowLongToBeatSettings();
-            }
+            Settings = savedSettings != null ? savedSettings : new HowLongToBeatSettings();
 
             if (Settings.Storefronts.Count == 0)
             {
@@ -470,7 +338,7 @@ namespace HowLongToBeat
 
             if (!Settings.ProgressBarShowTimeAbove && !Settings.ProgressBarShowTimeInterior && !Settings.ProgressBarShowTimeBelow)
             {
-                var savedSettings = Plugin.LoadPluginSettings<HowLongToBeatSettings>();
+                HowLongToBeatSettings savedSettings = Plugin.LoadPluginSettings<HowLongToBeatSettings>();
                 if (savedSettings != null)
                 {
                     Settings.ProgressBarShowTimeAbove = savedSettings.ProgressBarShowTimeAbove;
@@ -500,4 +368,15 @@ namespace HowLongToBeat
             return true;
         }
     }
+}
+
+public class FilterSettings
+{
+    public string Year { get; set; } = "----";
+    public string Storefront { get; set; } = "----";
+    public string Platform { get; set; } = "----";
+    public bool OnlyReplays { get; set; } = false;
+
+    public bool UsedFilteredGames { get; set; } = true;
+    public bool OnlyNotPlayedGames { get; set; } = false;
 }
