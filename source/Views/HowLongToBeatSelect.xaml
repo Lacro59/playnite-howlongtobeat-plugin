@@ -9,7 +9,7 @@
              xmlns:controls="clr-namespace:CommonPluginsControls.Controls"
              xmlns:convertersshared="clr-namespace:CommonPluginsShared.Converters"
              xmlns:hltm="clr-namespace:HowLongToBeat.Models"
-             xmlns:hltb="clr-namespace:HowLongToBeat.Behaviors"
+             xmlns:hltb="clr-namespace:HowLongToBeat.Behaviors" xmlns:controls1="clr-namespace:CommonPluginsShared.Controls"
              mc:Ignorable="d" Width="600" Height="600">
 
     <UserControl.Resources>
@@ -25,7 +25,52 @@
                        HorizontalAlignment="Center" VerticalAlignment="Center" />
         </Grid>
 
-        <StackPanel Margin="10" Name="SelectableContent">
+        <DockPanel LastChildFill="True" Margin="10" Name="SelectableContent">
+            <!-- Actions -->
+            <Grid Margin="0,10,0,0" DockPanel.Dock="Bottom">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="100" />
+                    <ColumnDefinition Width="6" />
+                    <ColumnDefinition Width="100" />
+                </Grid.ColumnDefinitions>
+
+                <Button Name="ButtonSelect" IsEnabled="False" Grid.Column="1" Content="{DynamicResource LOCSelect}" VerticalAlignment="Center" Click="ButtonSelect_Click"></Button>
+                <Button Grid.Column="3" Content="{DynamicResource LOCCancelLabel}" VerticalAlignment="Center" Click="ButtonCancel_Click"></Button>
+            </Grid>
+
+            <!-- Name -->
+            <Grid Margin="0,10,0,0" DockPanel.Dock="Bottom">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="6" />
+                    <ColumnDefinition Width="150" />
+                </Grid.ColumnDefinitions>
+
+                <playnitecontrols:SearchBox Grid.Column="0" x:Name="SearchElement" KeyUp="SearchElement_KeyUp" />
+                <Button Name="PART_BtSearch" Grid.Column="3" Content="{DynamicResource LOCSearchLabel}" Click="ButtonSearch_Click"
+                        IsEnabled="{Binding ElementName=SearchElement, Path=Text, Converter={StaticResource StringNullOrEmptyToBoolConverter}}"/>
+            </Grid>
+
+            <!-- Platforms -->
+            <Grid Margin="0,10,0,0" DockPanel.Dock="Bottom">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="6" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="6" />
+                    <ColumnDefinition Width="150" />
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Column="0" Text="{DynamicResource LOCPlatformsTitle}" Style="{StaticResource BaseTextBlockStyle}" 
+                           VerticalAlignment="Center" />
+                <controls:ComboBoxRemovable x:Name="PART_SelectPlatform" Grid.Column="2" VerticalAlignment="Center"
+                                            IsEditable="True" TextSearch.TextPath="DisplayText"
+                                            IsTextSearchCaseSensitive="False" StaysOpenOnEdit="True"
+                                            hltb:SelectorBehaviors.EnumSource="{x:Type hltm:HltbPlatform}">
+                </controls:ComboBoxRemovable>
+            </Grid>
+
             <ListBox x:Name="lbSelectable" Height="465" SelectionChanged="LbSelectable_SelectionChanged"
                      ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto">
                 <ListBox.ItemTemplate>
@@ -36,7 +81,8 @@
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
 
-                            <Image x:Name="HltbImage" Grid.Column="0" Height="150" Width="100" HorizontalAlignment="Left" Source="{Binding UrlImg}" Stretch="Fill"></Image>
+                            <controls1:ImageAsync x:Name="HltbImage" Grid.Column="0" Height="150" Width="100" HorizontalAlignment="Left" 
+                                                  Source="{Binding UrlImg}" Stretch="Uniform" />
 
                             <Grid Grid.Column="1" VerticalAlignment="Top">
                                 <Grid.ColumnDefinitions>
@@ -105,54 +151,6 @@
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
-
-            <!-- Platforms -->
-            <Grid Margin="0, 10, 0, 0">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="auto" />
-                    <ColumnDefinition Width="6" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="6" />
-                    <ColumnDefinition Width="150" />
-                </Grid.ColumnDefinitions>
-
-
-
-                <TextBlock Grid.Column="0" Text="{DynamicResource LOCPlatformsTitle}" Style="{StaticResource BaseTextBlockStyle}" 
-                           VerticalAlignment="Center" />
-                <controls:ComboBoxRemovable x:Name="PART_SelectPlatform" Grid.Column="2" VerticalAlignment="Center"
-                                            IsEditable="True" TextSearch.TextPath="DisplayText"
-                                            IsTextSearchCaseSensitive="False" StaysOpenOnEdit="True"
-                                            hltb:SelectorBehaviors.EnumSource="{x:Type hltm:HltbPlatform}">
-                </controls:ComboBoxRemovable>
-            </Grid>
-
-            <!-- Name -->
-            <Grid Margin="0, 10, 0, 0">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="6" />
-                    <ColumnDefinition Width="150" />
-                </Grid.ColumnDefinitions>
-
-                <playnitecontrols:SearchBox Grid.Column="0" x:Name="SearchElement" KeyUp="SearchElement_KeyUp" />
-                <Button Name="PART_BtSearch" Grid.Column="3" Content="{DynamicResource LOCSearchLabel}" Click="ButtonSearch_Click"
-                        IsEnabled="{Binding ElementName=SearchElement, Path=Text, Converter={StaticResource StringNullOrEmptyToBoolConverter}}"/>
-            </Grid>
-
-            <!-- Actions -->
-            <Grid Margin="0, 10, 0, 0">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="100" />
-                    <ColumnDefinition Width="6" />
-                    <ColumnDefinition Width="100" />
-                </Grid.ColumnDefinitions>
-
-                <Button Name="ButtonSelect" IsEnabled="False" Grid.Column="1" Content="{DynamicResource LOCSelect}" VerticalAlignment="Center" Click="ButtonSelect_Click"></Button>
-                <Button Grid.Column="3" Content="{DynamicResource LOCCancelLabel}" VerticalAlignment="Center" Click="ButtonCancel_Click"></Button>
-            </Grid>
-        </StackPanel>
+        </DockPanel>
     </Grid>
 </UserControl >
-
