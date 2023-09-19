@@ -706,7 +706,7 @@ namespace HowLongToBeat
         {
             try
             {
-                var TaskGameStopped = Task.Run(() =>
+                Task TaskGameStopped = Task.Run(() =>
                 {
                     if (args.Game.Id == PluginDatabase.GameContext.Id)
                     {
@@ -768,8 +768,8 @@ namespace HowLongToBeat
             {
                 string icon = Path.Combine(PluginDatabase.Paths.PluginPath, "Resources", "hltb.png");
 
-                var HltbSubItemsAction = new SubItemsAction() { Action = () => { }, Name = "", CloseAfterExecute = false, SubItemSource = new QuickSearchItemSource() };
-                var HltbCommand = new CommandItem(PluginDatabase.PluginName, new List<CommandAction>(), ResourceProvider.GetString("LOCHltbQuickSearchDescription"), icon);
+                SubItemsAction HltbSubItemsAction = new SubItemsAction() { Action = () => { }, Name = "", CloseAfterExecute = false, SubItemSource = new QuickSearchItemSource() };
+                CommandItem HltbCommand = new CommandItem(PluginDatabase.PluginName, new List<CommandAction>(), ResourceProvider.GetString("LOCHltbQuickSearchDescription"), icon);
                 HltbCommand.Keys.Add(new CommandItemKey() { Key = "hltb", Weight = 1 });
                 HltbCommand.Actions.Add(HltbSubItemsAction);
                 QuickSearch.QuickSearchSDK.AddCommand(HltbCommand);
@@ -778,12 +778,14 @@ namespace HowLongToBeat
             {
 
             }
+
+            PluginDatabase.UpdatedCookies();
         }
 
         // Add code to be executed when Playnite is shutting down.
         public override void OnApplicationStopped(OnApplicationStoppedEventArgs args)
         {
-
+            
         }
         #endregion
 
@@ -793,7 +795,7 @@ namespace HowLongToBeat
         {
             if (PluginSettings.Settings.AutoImport)
             {
-                var PlayniteDb = PlayniteApi.Database.Games
+                List<Game> PlayniteDb = PlayniteApi.Database.Games
                         .Where(x => x.Added != null && x.Added > PluginSettings.Settings.LastAutoLibUpdateAssetsDownload)
                         .ToList();
 

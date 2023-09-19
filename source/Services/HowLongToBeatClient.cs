@@ -740,12 +740,8 @@ namespace HowLongToBeat.Services
                             Encoding.UTF8,
                             WindowsIdentity.GetCurrent().User.Value));
 
-                    var findExpired = StoredCookies.FindAll(x => x.Expires != null && (DateTime)x.Expires <= DateTime.Now);
-
-                    FileInfo fileInfo = new FileInfo(FileCookies);
-                    bool isExpired = (fileInfo.LastWriteTime.AddDays(1) < DateTime.Now);
-
-                    if (findExpired?.Count > 0 || isExpired)
+                    bool isExpired = StoredCookies.Find(x => x.Name == "hltb_alive")?.Expires < DateTime.Now;
+                    if (isExpired)
                     {
                         InfoMessage = "Expired cookies";
                     }
