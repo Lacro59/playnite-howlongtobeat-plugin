@@ -106,9 +106,9 @@
     <sys:String x:Key="LOCHowLongToBeatSetCurrentTime">Хочете відправити свій поточний час у грі?</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatErrorNoPlatform">Неможливо відправити дані для гри без платформи ({0})</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatErrorNoPlatformDefaultUsed" xml:space="preserve">Game ({1}) without platform ({0}) defined in plugin settings.
-Please configure one.
-Default used (PC)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatErrorNoPlatformDefaultUsed" xml:space="preserve">Гра ({1}) не має визначеної в налаштуваннях плагіну платформи ({0}).
+Будь ласка, визначте платформу.
+Наразі призначено платформу за замовчуванням (ПК)</sys:String>
 
 
     <!-- QuickSearch -->

@@ -40,8 +40,8 @@
     
     <sys:String x:Key="LOCHowLongToBeatCurrentPlayTimeSetted">The current playtime for {0} is setted.</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatInfoSetPlaytime" xml:space="preserve">Hvis HowLongToBeat har flere definerte tider, velger utvidelsen den nyeste med statusen &quot;Playing&quot;.
-Hvis ingen har denne statusen, velges bare den nyeste.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatInfoSetPlaytime" xml:space="preserve">If there are several times defined on HowLongToBeat, the plugin will take the most recent one with the status &quot;Playing&quot;.
+If none has this status, it takes the most recent.</sys:String>
 
     <!-- HowLongToBeatSelect -->
 
@@ -99,16 +99,16 @@ Hvis ingen har denne statusen, velges bare den nyeste.</sys:String>
     <sys:String x:Key="LOCHowLongToBeatActualiseUserData">Refresh HowLongToBeat user datas</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatSetCurrentTimeManual">Set your current playtime</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatSetCurrentTimeManualAll">Angi din nåværende spilletid for alle spill</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatSetCurrentTimeManualAll">Set your current playtime for all games</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatSetCurrentCompletedTimeManualOn">Set your current completed playtime on</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatSetCurrentTime">Vil du sende din nåværende spilletid?</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatSetCurrentTime">Want you send your current playtime?</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatErrorNoPlatform">Cannot submit data for a game without platform ({0})</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatErrorNoPlatformDefaultUsed" xml:space="preserve">Spill ({1}) uten plattform ({0}) definert i instillingene for utvidelsen.
-Vennligst konfigurer en plattform.
-Standard brukt (PC)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatErrorNoPlatformDefaultUsed" xml:space="preserve">Game ({1}) without platform ({0}) defined in plugin settings.
+Please configure one.
+Default used (PC)</sys:String>
 
 
     <!-- QuickSearch -->

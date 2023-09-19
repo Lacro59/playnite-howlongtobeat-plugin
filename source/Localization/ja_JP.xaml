@@ -29,7 +29,7 @@
     <sys:String x:Key="LOCHowLongToBeatWithoutConfirmation">Without confirmation message</sys:String>
     <sys:String x:Key="LOCHowLongToBeatEnableSuccessNotification">Enable success notification</sys:String>
     
-    <sys:String x:Key="LOCHowLongToBeatAutoData">Game data download</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoData">ゲームデータのダウンロード</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoAccept">Automatically select game when only one game is found during search</sys:String>
     <sys:String x:Key="LOCHowLongToBeatShowWhenMismatch">Show game selection list when more than one game is found during search</sys:String>
     <sys:String x:Key="LOCHowLongToBeatUseMatchValue">Use a percent match</sys:String>
@@ -64,7 +64,7 @@ If none has this status, it takes the most recent.</sys:String>
     <sys:String x:Key="LOCHowLongToBeatCompletationStore">Games completed by storefront</sys:String>
     <sys:String x:Key="LOCHowLongToBeatCompletationProgress">Games completed over time</sys:String>
     
-    <sys:String x:Key="LOCHowLongToBeatUserData">User data</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatUserData">ユーザーデータ</sys:String>
     <sys:String x:Key="LocHowLongToBeatPlayniteData">Playnite data</sys:String>
     <sys:String x:Key="LOCHowLongToBeatCompleted">Completed</sys:String>
 
@@ -127,9 +127,9 @@ Here is the list of commands:</sys:String>
     <!-- StartPage -->
 
     <sys:String x:Key="LOCHtlbChartStats">Chart stats</sys:String>
-    <sys:String x:Key="LOCHtlbChartStatsChartTitle">Show title</sys:String>
-    <sys:String x:Key="LOCHtlbChartStatsChartLabels">Show labels on horizontal axis</sys:String>
-    <sys:String x:Key="LOCHtlbChartStatsChartLabelsOrdinates">Show labels on vertical axis</sys:String>
+    <sys:String x:Key="LOCHtlbChartStatsChartTitle">タイトルを表示</sys:String>
+    <sys:String x:Key="LOCHtlbChartStatsChartLabels">横軸にラベルを表示</sys:String>
+    <sys:String x:Key="LOCHtlbChartStatsChartLabelsOrdinates">縦軸にラベルを表示</sys:String>
     <sys:String x:Key="LOCHtlbChartStatsChartType">Chart type</sys:String>
     <sys:String x:Key="LOCHtlbChartStatsChartDataNumber">Data number</sys:String>
 
