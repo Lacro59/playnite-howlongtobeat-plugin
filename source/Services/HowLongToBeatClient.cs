@@ -658,7 +658,7 @@ namespace HowLongToBeat.Services
                         + "\",\"month\":\"" + hltbPostData.compmonth + "\",\"day\":\"" + hltbPostData.compday
                         + "\"},"
                         + "\"progressBefore\":{\"hours\":0,\"minutes\":0,\"seconds\":0}"
-                        + "},\"singlePlayer\":{\"playCount\":" + (hltbPostData.playCount == "1" ? "true" : "false")
+                        + "},\"singlePlayer\":{\"playCount\":" + (hltbPostData.playCount == "1" ? "false" : "true")
                         + ",\"includesDLC\":" + (hltbPostData.includesDLC == "1" ? "true" : "false") + ",\"compMain\":{\"time\":{\"hours\":" + hltbPostData.c_main_h
                         + ",\"minutes\":" + hltbPostData.c_main_m + ",\"seconds\":" + hltbPostData.c_main_s + "},\"notes\":\"" + hltbPostData.c_main_notes
                         + "\"},\"compPlus\":{\"time\":{\"hours\":" + hltbPostData.c_plus_h + ",\"minutes\":" + hltbPostData.c_plus_m + ",\"seconds\":" + hltbPostData.c_plus_s
