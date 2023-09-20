@@ -190,179 +190,167 @@ namespace HowLongToBeat.Controls
 
                 if (gameHowLongToBeat.HasData)
                 {
-                    var HltbData = gameHowLongToBeat.GetData();
+                    HltbDataUser HltbData = gameHowLongToBeat.GetData();
 
-                    if (HltbData.GameHltbData.MainStory > 0)
+                    if (HltbData.GameHltbData.MainStory > 0 || (titleList?.HltbUserData?.MainStory > 0 && ShowUserData))
                     {
                         ElIndicator += 1;
-                        listProgressBars.Add(new ListProgressBar { Indicator = ElIndicator, Value = HltbData.GameHltbData.MainStory, Format = HltbData.GameHltbData.MainStoryFormat });
+
+                        if (HltbData.GameHltbData.MainStory > 0)
+                        {
+                            listProgressBars.Add(new ListProgressBar { Indicator = ElIndicator, Value = HltbData.GameHltbData.MainStory, Format = HltbData.GameHltbData.MainStoryFormat });
+                        }
+
                         if (MaxValue < HltbData.GameHltbData.MainStory)
                         {
                             MaxValue = HltbData.GameHltbData.MainStory;
                         }
-                        if (PluginDatabase.PluginSettings.Settings.FirstColorBrush == null)
-                        {
-                            color = PluginDatabase.PluginSettings.Settings.FirstLinearGradient.ToLinearGradientBrush;
-                        }
-                        else
-                        {
-                            color = PluginDatabase.PluginSettings.Settings.FirstColorBrush;
-                        }
+
+                        color = PluginDatabase.PluginSettings.Settings.FirstColorBrush == null
+                            ? (dynamic)PluginDatabase.PluginSettings.Settings.FirstLinearGradient.ToLinearGradientBrush
+                            : (dynamic)PluginDatabase.PluginSettings.Settings.FirstColorBrush;
+
                         SetColor(ElIndicator, color);
 
-
                         // Show user hltb datas
-                        if (gameHowLongToBeat.HasData && ShowUserData)
+                        if (titleList?.HltbUserData?.MainStory > 0 && ShowUserData)
                         {
-                            if (titleList?.HltbUserData?.MainStory > 0)
-                            {
-                                SetUserData(ElIndicator, titleList.HltbUserData.MainStory, PluginDatabase.PluginSettings.Settings.ColorFirst.Color);
-                            }
+                            SetUserData(ElIndicator, titleList.HltbUserData.MainStory, PluginDatabase.PluginSettings.Settings.ColorFirst.Color);
                         }
                     }
 
-                    if (HltbData.GameHltbData.MainExtra > 0)
+                    if (HltbData.GameHltbData.MainExtra > 0 || (titleList?.HltbUserData?.MainExtra > 0 && ShowUserData))
                     {
                         ElIndicator += 1;
-                        listProgressBars.Add(new ListProgressBar { Indicator = ElIndicator, Value = HltbData.GameHltbData.MainExtra, Format = HltbData.GameHltbData.MainExtraFormat });
+
+                        if (HltbData.GameHltbData.MainExtra > 0)
+                        {
+                            listProgressBars.Add(new ListProgressBar { Indicator = ElIndicator, Value = HltbData.GameHltbData.MainExtra, Format = HltbData.GameHltbData.MainExtraFormat });
+                        }
+
                         if (MaxValue < HltbData.GameHltbData.MainExtra)
                         {
                             MaxValue = HltbData.GameHltbData.MainExtra;
                         }
-                        if (PluginDatabase.PluginSettings.Settings.SecondColorBrush == null)
-                        {
-                            color = PluginDatabase.PluginSettings.Settings.SecondLinearGradient.ToLinearGradientBrush;
-                        }
-                        else
-                        {
-                            color = PluginDatabase.PluginSettings.Settings.SecondColorBrush;
-                        }
+
+                        color = PluginDatabase.PluginSettings.Settings.SecondColorBrush == null
+                            ? (dynamic)PluginDatabase.PluginSettings.Settings.SecondLinearGradient.ToLinearGradientBrush
+                            : (dynamic)PluginDatabase.PluginSettings.Settings.SecondColorBrush;
+
                         SetColor(ElIndicator, color);
 
-
                         // Show user hltb datas
-                        if (gameHowLongToBeat.HasData && ShowUserData)
+                        if (titleList?.HltbUserData?.MainExtra > 0 && ShowUserData)
                         {
-                            if (titleList?.HltbUserData?.MainExtra > 0)
-                            {
-                                SetUserData(ElIndicator, titleList.HltbUserData.MainExtra, PluginDatabase.PluginSettings.Settings.ColorSecond.Color);
-                            }
+                            SetUserData(ElIndicator, titleList.HltbUserData.MainExtra, PluginDatabase.PluginSettings.Settings.ColorSecond.Color);
                         }
                     }
 
-                    if (HltbData.GameHltbData.Completionist != 0)
+                    if (HltbData.GameHltbData.Completionist != 0 || (titleList?.HltbUserData?.Completionist > 0 && ShowUserData))
                     {
                         ElIndicator += 1;
-                        listProgressBars.Add(new ListProgressBar { Indicator = ElIndicator, Value = HltbData.GameHltbData.Completionist, Format = HltbData.GameHltbData.CompletionistFormat });
+
+                        if (HltbData.GameHltbData.Completionist != 0)
+                        {
+                            listProgressBars.Add(new ListProgressBar { Indicator = ElIndicator, Value = HltbData.GameHltbData.Completionist, Format = HltbData.GameHltbData.CompletionistFormat });
+                        }
+
                         if (MaxValue < HltbData.GameHltbData.Completionist)
                         {
                             MaxValue = HltbData.GameHltbData.Completionist;
                         }
-                        if (PluginDatabase.PluginSettings.Settings.ThirdColorBrush == null)
-                        {
-                            color = PluginDatabase.PluginSettings.Settings.ThirdLinearGradient.ToLinearGradientBrush;
-                        }
-                        else
-                        {
-                            color = PluginDatabase.PluginSettings.Settings.ThirdColorBrush;
-                        }
+
+                        color = PluginDatabase.PluginSettings.Settings.ThirdColorBrush == null
+                            ? (dynamic)PluginDatabase.PluginSettings.Settings.ThirdLinearGradient.ToLinearGradientBrush
+                            : (dynamic)PluginDatabase.PluginSettings.Settings.ThirdColorBrush;
+
                         SetColor(ElIndicator, color);
 
-
                         // Show user hltb datas
-                        if (gameHowLongToBeat.HasData && ShowUserData)
+                        if (titleList?.HltbUserData?.Completionist > 0 && ShowUserData)
                         {
-                            if (titleList?.HltbUserData?.Completionist > 0)
-                            {
-                                SetUserData(ElIndicator, titleList.HltbUserData.Completionist, PluginDatabase.PluginSettings.Settings.ColorThird.Color);
-                            }
+                            SetUserData(ElIndicator, titleList.HltbUserData.Completionist, PluginDatabase.PluginSettings.Settings.ColorThird.Color);
                         }
                     }
 
-                    if (HltbData.GameHltbData.Solo != 0)
+                    if (HltbData.GameHltbData.Solo != 0 || (titleList?.HltbUserData?.Solo > 0 && ShowUserData))
                     {
                         ElIndicator += 1;
-                        listProgressBars.Add(new ListProgressBar { Indicator = ElIndicator, Value = HltbData.GameHltbData.Solo, Format = HltbData.GameHltbData.SoloFormat });
+
+                        if (HltbData.GameHltbData.Solo != 0)
+                        {
+                            listProgressBars.Add(new ListProgressBar { Indicator = ElIndicator, Value = HltbData.GameHltbData.Solo, Format = HltbData.GameHltbData.SoloFormat });
+                        }
+
                         if (MaxValue < HltbData.GameHltbData.Solo)
                         {
                             MaxValue = HltbData.GameHltbData.Solo;
                         }
-                        if (PluginDatabase.PluginSettings.Settings.FirstMultiColorBrush == null)
-                        {
-                            color = PluginDatabase.PluginSettings.Settings.FirstMultiLinearGradient.ToLinearGradientBrush;
-                        }
-                        else
-                        {
-                            color = PluginDatabase.PluginSettings.Settings.FirstMultiColorBrush;
-                        }
+
+                        color = PluginDatabase.PluginSettings.Settings.FirstMultiColorBrush == null
+                            ? (dynamic)PluginDatabase.PluginSettings.Settings.FirstMultiLinearGradient.ToLinearGradientBrush
+                            : (dynamic)PluginDatabase.PluginSettings.Settings.FirstMultiColorBrush;
+
                         SetColor(ElIndicator, color);
 
-
                         // Show user hltb datas
-                        if (gameHowLongToBeat.HasData && ShowUserData)
+                        if (titleList?.HltbUserData?.Solo > 0 && ShowUserData)
                         {
-                            if (titleList?.HltbUserData?.Solo > 0)
-                            {
-                                SetUserData(ElIndicator, titleList.HltbUserData.Solo, PluginDatabase.PluginSettings.Settings.ColorFirstMulti.Color);
-                            }
+                            SetUserData(ElIndicator, titleList.HltbUserData.Solo, PluginDatabase.PluginSettings.Settings.ColorFirstMulti.Color);
                         }
                     }
 
-                    if (HltbData.GameHltbData.CoOp != 0)
+                    if (HltbData.GameHltbData.CoOp != 0 || (titleList?.HltbUserData?.CoOp > 0 && ShowUserData))
                     {
                         ElIndicator += 1;
-                        listProgressBars.Add(new ListProgressBar { Indicator = ElIndicator, Value = HltbData.GameHltbData.CoOp, Format = HltbData.GameHltbData.CoOpFormat });
+
+                        if (HltbData.GameHltbData.CoOp != 0)
+                        {
+                            listProgressBars.Add(new ListProgressBar { Indicator = ElIndicator, Value = HltbData.GameHltbData.CoOp, Format = HltbData.GameHltbData.CoOpFormat });
+                        }
+
                         if (MaxValue < HltbData.GameHltbData.CoOp)
                         {
                             MaxValue = HltbData.GameHltbData.CoOp;
                         }
-                        if (PluginDatabase.PluginSettings.Settings.SecondMultiColorBrush == null)
-                        {
-                            color = PluginDatabase.PluginSettings.Settings.SecondMultiLinearGradient.ToLinearGradientBrush;
-                        }
-                        else
-                        {
-                            color = PluginDatabase.PluginSettings.Settings.SecondMultiColorBrush;
-                        }
+
+                        color = PluginDatabase.PluginSettings.Settings.SecondMultiColorBrush == null
+                            ? (dynamic)PluginDatabase.PluginSettings.Settings.SecondMultiLinearGradient.ToLinearGradientBrush
+                            : (dynamic)PluginDatabase.PluginSettings.Settings.SecondMultiColorBrush;
+
                         SetColor(ElIndicator, color);
 
-
                         // Show user hltb datas
-                        if (gameHowLongToBeat.HasData && ShowUserData)
+                        if (titleList?.HltbUserData?.CoOp > 0 && ShowUserData)
                         {
-                            if (titleList?.HltbUserData?.CoOp > 0)
-                            {
-                                SetUserData(ElIndicator, titleList.HltbUserData.CoOp, PluginDatabase.PluginSettings.Settings.ColorSecondMulti.Color);
-                            }
+                            SetUserData(ElIndicator, titleList.HltbUserData.CoOp, PluginDatabase.PluginSettings.Settings.ColorSecondMulti.Color);
                         }
                     }
 
-                    if (HltbData.GameHltbData.Vs != 0)
+                    if (HltbData.GameHltbData.Vs != 0 || (titleList?.HltbUserData?.Vs > 0 && ShowUserData))
                     {
                         ElIndicator += 1;
-                        listProgressBars.Add(new ListProgressBar { Indicator = ElIndicator, Value = HltbData.GameHltbData.Vs, Format = HltbData.GameHltbData.VsFormat });
+
+                        if (HltbData.GameHltbData.Vs != 0)
+                        {
+                            listProgressBars.Add(new ListProgressBar { Indicator = ElIndicator, Value = HltbData.GameHltbData.Vs, Format = HltbData.GameHltbData.VsFormat });
+                        }
+
                         if (MaxValue < HltbData.GameHltbData.Vs)
                         {
                             MaxValue = HltbData.GameHltbData.Vs;
                         }
-                        if (PluginDatabase.PluginSettings.Settings.ThirdMultiColorBrush == null)
-                        {
-                            color = PluginDatabase.PluginSettings.Settings.ThirdMultiLinearGradient.ToLinearGradientBrush;
-                        }
-                        else
-                        {
-                            color = PluginDatabase.PluginSettings.Settings.ThirdMultiColorBrush;
-                        }
+
+                        color = PluginDatabase.PluginSettings.Settings.ThirdMultiColorBrush == null
+                            ? (dynamic)PluginDatabase.PluginSettings.Settings.ThirdMultiLinearGradient.ToLinearGradientBrush
+                            : (dynamic)PluginDatabase.PluginSettings.Settings.ThirdMultiColorBrush;
+
                         SetColor(ElIndicator, color);
 
-
                         // Show user hltb datas
-                        if (gameHowLongToBeat.HasData && ShowUserData)
+                        if (titleList?.HltbUserData?.Vs > 0 && ShowUserData)
                         {
-                            if (titleList?.HltbUserData?.Vs > 0)
-                            {
-                                SetUserData(ElIndicator, titleList.HltbUserData.Vs, PluginDatabase.PluginSettings.Settings.ColorThirdMulti.Color);
-                            }
+                            SetUserData(ElIndicator, titleList.HltbUserData.Vs, PluginDatabase.PluginSettings.Settings.ColorThirdMulti.Color);
                         }
                     }
                 }
@@ -381,12 +369,10 @@ namespace HowLongToBeat.Controls
                     MaxValue = MaxHltb + MaxPercent;
                 }
 
-
-                foreach (var listProgressBar in listProgressBars)
+                foreach (ListProgressBar listProgressBar in listProgressBars)
                 {
                     SetDataInView(listProgressBar.Indicator, listProgressBar.Value, listProgressBar.Format);
                 }
-
 
                 ControlDataContext.MaxValue = MaxValue;
                 ControlDataContext.PlaytimeValue = Playtime;
@@ -406,14 +392,18 @@ namespace HowLongToBeat.Controls
                     ControlDataContext.SliderFirstValue = Value;
                     ControlDataContext.SliderFirstVisibility = Visibility.Visible;
                     break;
+
                 case 2:
                     ControlDataContext.SliderSecondValue = Value;
                     ControlDataContext.SliderSecondVisibility = Visibility.Visible;
-
                     break;
                 case 3:
+
                     ControlDataContext.SliderThirdValue = Value;
                     ControlDataContext.SliderThirdVisibility = Visibility.Visible;
+                    break;
+
+                default:
                     break;
             }
         }
@@ -433,6 +423,9 @@ namespace HowLongToBeat.Controls
                 case 3:
                     ControlDataContext.ThumbThird = color;
                     break;
+
+                default:
+                    break;
             }
         }
 
@@ -449,7 +442,6 @@ namespace HowLongToBeat.Controls
                             ControlDataContext.ProgressBarFirstValue = ElValue;
                             ControlDataContext.ToolTipFirst = ElFormat;
                         }
-
                         break;
 
                     case 2:
@@ -459,7 +451,6 @@ namespace HowLongToBeat.Controls
                             ControlDataContext.ProgressBarSecondValue = ElValue;
                             ControlDataContext.ToolTipSecond = ElFormat;
                         }
-
                         break;
 
                     case 3:
@@ -469,7 +460,9 @@ namespace HowLongToBeat.Controls
                             ControlDataContext.ProgressBarThirdValue = ElValue;
                             ControlDataContext.ToolTipThird = ElFormat;
                         }
+                        break;
 
+                    default:
                         break;
                 }
             }
