@@ -33,7 +33,12 @@ namespace HowLongToBeat.Models
         RockstarGames,
         Steam,
         UbisoftConnect,
-        XboxStore
+        XboxStore,
+        AmazonLuma,
+        GameJolt,
+        JastUsa,
+        LegacyGames,
+        RobotCache
     }
 
 
@@ -101,6 +106,16 @@ namespace HowLongToBeat.Models
                         return "Ubisoft Connect";
                     case HltbStorefront.XboxStore:
                         return "Xbox Store";
+                    case HltbStorefront.AmazonLuma:
+                        return "Amazon Luma";
+                    case HltbStorefront.GameJolt:
+                        return "Game Jolt";
+                    case HltbStorefront.JastUsa:
+                        return "JAST USA";
+                    case HltbStorefront.LegacyGames:
+                        return "Legacy Games";
+                    case HltbStorefront.RobotCache:
+                        return "Robot Cache";
                 }
 
                 return string.Empty;

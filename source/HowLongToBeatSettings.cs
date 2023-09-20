@@ -6,6 +6,7 @@ using HowLongToBeat.Views;
 using Playnite.SDK;
 using Playnite.SDK.Data;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Media;
@@ -198,7 +199,7 @@ namespace HowLongToBeat
             HowLongToBeatSettings savedSettings = plugin.LoadPluginSettings<HowLongToBeatSettings>();
 
             // LoadPluginSettings returns null if not saved data is available.
-            Settings = savedSettings != null ? savedSettings : new HowLongToBeatSettings();
+            Settings = savedSettings ?? new HowLongToBeatSettings();
 
             if (Settings.Storefronts.Count == 0)
             {
@@ -231,6 +232,18 @@ namespace HowLongToBeat
                     new Storefront { HltbStorefrontId = HltbStorefront.UbisoftConnect },
                     new Storefront { HltbStorefrontId = HltbStorefront.XboxStore }
                 };
+            }
+
+            // TODO TMP
+            if (Settings.Storefronts.Find(x => x.HltbStorefrontId == HltbStorefront.AmazonLuma) == null)
+            {
+                Settings.Storefronts.Add(new Storefront { HltbStorefrontId = HltbStorefront.AmazonLuma });
+                Settings.Storefronts.Add(new Storefront { HltbStorefrontId = HltbStorefront.GameJolt });
+                Settings.Storefronts.Add(new Storefront { HltbStorefrontId = HltbStorefront.JastUsa });
+                Settings.Storefronts.Add(new Storefront { HltbStorefrontId = HltbStorefront.LegacyGames });
+                Settings.Storefronts.Add(new Storefront { HltbStorefrontId = HltbStorefront.RobotCache });
+
+                Settings.Storefronts = Settings.Storefronts.OrderBy(x => x.HltbStorefrontName).ToList();
             }
 
             if (Settings.Platforms.Count == 0)
@@ -290,9 +303,9 @@ namespace HowLongToBeat
 
             if (Settings.ThumbLinearGradient == null && Settings.ThumbSolidColorBrush == null)
             {
-                if (ResourceProvider.GetResource("NormalBrush") is LinearGradientBrush)
+                if (ResourceProvider.GetResource("NormalBrush") is LinearGradientBrush brush)
                 {
-                    Settings.ThumbLinearGradient = ThemeLinearGradient.ToThemeLinearGradient((LinearGradientBrush)ResourceProvider.GetResource("NormalBrush"));
+                    Settings.ThumbLinearGradient = ThemeLinearGradient.ToThemeLinearGradient(brush);
                 }
                 else
                 {
