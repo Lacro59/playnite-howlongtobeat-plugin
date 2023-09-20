@@ -44,9 +44,9 @@ namespace HowLongToBeat.Services
     public class HowLongToBeatClient : ObservableObject
     {
         private static readonly ILogger logger = LogManager.GetLogger();
-        private static IResourceProvider resources = new ResourceProvider();
+        private static readonly IResourceProvider resources = new ResourceProvider();
 
-        private static HowLongToBeatDatabase PluginDatabase = HowLongToBeat.PluginDatabase;
+        private static readonly HowLongToBeatDatabase PluginDatabase = HowLongToBeat.PluginDatabase;
 
 
         internal string FileCookies { get; }
@@ -134,16 +134,15 @@ namespace HowLongToBeat.Services
 
                 HttpRequestMessage requestMessage = new HttpRequestMessage();
 
-                var searchTerms = Name.Split(' ');
+                string[] searchTerms = Name.Split(' ');
                 requestMessage.Content = new StringContent("{\"searchType\":\"games\",\"searchTerms\":[" + String.Join(",", searchTerms.Select(x => "\"" + x + "\"")) + "],\"searchPage\":1,\"size\":20,\"searchOptions\":{\"games\":{\"userId\":0,\"platform\":\"" + Platform + "\",\"sortCategory\":\"popular\",\"rangeCategory\":\"main\",\"rangeTime\":{\"min\":0,\"max\":0},\"gameplay\":{\"perspective\":\"\",\"flow\":\"\",\"genre\":\"\"},\"modifier\":\"\"},\"users\":{\"sortCategory\":\"postcount\"},\"filter\":\"\",\"sort\":0,\"randomizer\":0}}", Encoding.UTF8, "application/json");
 
                 HttpResponseMessage response = await httpClient.PostAsync(UrlSearch, requestMessage.Content);
-                var json = await response.Content.ReadAsStringAsync();
+                string json = await response.Content.ReadAsStringAsync();
                 Serialization.TryFromJson(json, out HltbSearchRoot hltbSearchObj);
 
                 return hltbSearchObj;
             }
-
             catch (Exception ex)
             {
                 Common.LogError(ex, false, true, PluginDatabase.PluginName);
@@ -288,7 +287,7 @@ namespace HowLongToBeat.Services
                     WebView.Navigate(UrlLogOut);
                     WebView.OpenDialog();
                 }
-            }).Completed += (s, e) => 
+            }).Completed += (s, e) =>
             {
                 if ((bool)IsConnected)
                 {
@@ -337,7 +336,6 @@ namespace HowLongToBeat.Services
         {
             try
             {
-                //1715
                 List<HttpCookie> Cookies = GetStoredCookies();
                 string payload = "{\"user_id\":" + UserId + ",\"lists\":[\"playing\",\"completed\",\"retired\"],\"set_playstyle\":\"comp_all\",\"name\":\"\",\"platform\":\"\",\"storefront\":\"\",\"sortBy\":\"\",\"sortFlip\":0,\"view\":\"\",\"limit\":10000,\"currentUserHome\":true}";
                 string json = Web.PostStringDataPayload(string.Format(UrlUserGamesList, UserId), payload, Cookies).GetAwaiter().GetResult();
@@ -359,7 +357,7 @@ namespace HowLongToBeat.Services
                 DateTime.TryParse(x.date_updated, out DateTime LastUpdate);
                 DateTime.TryParse(x.date_complete, out DateTime Completion);
                 DateTime? CompletionFinal = null;
-                if (Completion != default) 
+                if (Completion != default)
                 {
                     CompletionFinal = Completion;
                 }
@@ -442,11 +440,10 @@ namespace HowLongToBeat.Services
                     return null;
                 }
 
-                var jsonData = Tools.GetJsonInString(response, "<script id=\"__NEXT_DATA__\" type=\"application/json\">", "</script></body>");
-                Serialization.TryFromJson(jsonData, out NEXT_DATA data);
-
+                string jsonData = Tools.GetJsonInString(response, "<script id=\"__NEXT_DATA__\" type=\"application/json\">", "</script></body>");
                 HltbPostData hltbPostData = new HltbPostData();
-                if (data != null && data?.props?.pageProps?.editData?.userId != null)
+
+                if (Serialization.TryFromJson(jsonData, out NEXT_DATA data) && data?.props?.pageProps?.editData?.userId != null)
                 {
                     hltbPostData.user_id = data.props.pageProps.editData.userId;
                     hltbPostData.edit_id = data.props.pageProps.editData.submissionId;
@@ -641,7 +638,7 @@ namespace HowLongToBeat.Services
             if (GetIsUserLoggedIn() && hltbPostData.user_id != 0 && hltbPostData.game_id != 0)
             {
                 try
-                {           
+                {
                     List<HttpCookie> Cookies = GetStoredCookies();
 
                     string payload = "{\"submissionId\":" + hltbPostData.edit_id + ",\"userId\":" + hltbPostData.user_id + ",\"userName\":\"" + UserLogin
@@ -773,8 +770,8 @@ namespace HowLongToBeat.Services
         /// <param name="httpCookies"></param>
         internal bool SetStoredCookies(List<HttpCookie> httpCookies)
         {
-            try 
-            { 
+            try
+            {
                 FileSystem.CreateDirectory(Path.GetDirectoryName(FileCookies));
                 Encryption.EncryptToFile(
                     FileCookies,
