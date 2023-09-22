@@ -1,4 +1,5 @@
-﻿using Playnite.SDK.Data;
+﻿using Playnite.SDK;
+using Playnite.SDK.Data;
 using Playnite.SDK.Models;
 using System;
 using System.Collections.Generic;
@@ -38,18 +39,18 @@ namespace HowLongToBeat.Models
         GameJolt,
         JastUsa,
         LegacyGames,
-        RobotCache
+        RobotCache,
+        None
     }
 
 
-    public class Storefront
+    public class StoreFrontElement
     {
-        public Guid SourceId { get; set; }
-
-        public HltbStorefront HltbStorefrontId { get; set; }
-
+        public HltbStorefront HltbStorefrontId { get; set; } = HltbStorefront.None;
+        
         [DontSerialize]
-        public string HltbStorefrontName {
+        public string HltbStorefrontName
+        {
             get
             {
                 switch (HltbStorefrontId)
@@ -116,13 +117,34 @@ namespace HowLongToBeat.Models
                         return "Legacy Games";
                     case HltbStorefront.RobotCache:
                         return "Robot Cache";
+                    case HltbStorefront.None:
+                    default:
+                        return "----";
                 }
-
-                return string.Empty;
             }
         }
+    }
+
+
+    public class Storefront : StoreFrontElement
+    {
+        public Guid SourceId { get; set; } = default;
 
         [DontSerialize]
-        public List<GameSource> GameSources => HowLongToBeat.PluginDatabase.PlayniteApi.Database.Sources.Distinct().OrderBy(x => x.Name).ToList();
+        public string SourceName => API.Instance.Database.Sources?.Get(SourceId)?.Name;
+
+        [DontSerialize]
+        public List<StoreFrontElement> StoreFrontElements
+        {
+            get
+            {
+                List<StoreFrontElement> storeFronts = new List<StoreFrontElement>();
+                foreach (int i in Enum.GetValues(typeof(HltbStorefront)))
+                {
+                    storeFronts.Add(new StoreFrontElement { HltbStorefrontId = (HltbStorefront)i });
+                }
+                return storeFronts.OrderBy(x => x.HltbStorefrontName).ToList();
+            }
+        }
     }
 }

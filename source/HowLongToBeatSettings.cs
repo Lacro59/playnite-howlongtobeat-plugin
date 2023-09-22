@@ -10,6 +10,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Media;
+using System.Windows;
 
 namespace HowLongToBeat
 {
@@ -105,7 +106,9 @@ namespace HowLongToBeat
         public TitleListSort TitleListSort { get; set; } = TitleListSort.Completion;
         public bool IsAsc { get; set; } = false;
 
-
+        // TODO TMP
+        public bool IsConverted { get; set; } = false;
+        public List<Storefront> StorefrontElements { get; set; } = new List<Storefront>();
         public List<Storefront> Storefronts { get; set; } = new List<Storefront>();
         public List<HltbPlatformMatch> Platforms { get; set; } = new List<HltbPlatformMatch>();
 
@@ -201,6 +204,7 @@ namespace HowLongToBeat
             // LoadPluginSettings returns null if not saved data is available.
             Settings = savedSettings ?? new HowLongToBeatSettings();
 
+            // TODO TMP
             if (Settings.Storefronts.Count == 0)
             {
                 Settings.Storefronts = new List<Storefront>
@@ -230,8 +234,15 @@ namespace HowLongToBeat
                     new Storefront { HltbStorefrontId = HltbStorefront.RockstarGames },
                     new Storefront { HltbStorefrontId = HltbStorefront.Steam },
                     new Storefront { HltbStorefrontId = HltbStorefront.UbisoftConnect },
-                    new Storefront { HltbStorefrontId = HltbStorefront.XboxStore }
+                    new Storefront { HltbStorefrontId = HltbStorefront.XboxStore },
+                    new Storefront { HltbStorefrontId = HltbStorefront.AmazonLuma },
+                    new Storefront { HltbStorefrontId = HltbStorefront.GameJolt },
+                    new Storefront { HltbStorefrontId = HltbStorefront.JastUsa },
+                    new Storefront { HltbStorefrontId = HltbStorefront.LegacyGames },
+                    new Storefront { HltbStorefrontId = HltbStorefront.RobotCache }
                 };
+
+                Settings.Storefronts = Settings.Storefronts.OrderBy(x => x.HltbStorefrontName).ToList();
             }
 
             // TODO TMP
@@ -245,6 +256,40 @@ namespace HowLongToBeat
 
                 Settings.Storefronts = Settings.Storefronts.OrderBy(x => x.HltbStorefrontName).ToList();
             }
+
+            Task.Run(() =>
+            {
+                System.Threading.SpinWait.SpinUntil(() => API.Instance.Database.IsOpen, -1);
+                if (Settings.StorefrontElements.Count == 0)
+                {
+                    API.Instance.Database.Sources.ForEach(x =>
+                    {
+                        Settings.StorefrontElements.Add(new Storefront { SourceId = x.Id });
+                    });
+
+                    // TODO TMP
+                    if (!Settings.IsConverted)
+                    {
+                        Settings.Storefronts.ForEach(x =>
+                        {
+                            if (x.HltbStorefrontId != HltbStorefront.None)
+                            {
+                                if (Settings.StorefrontElements.Find(y => y.SourceId == x.SourceId) != null)
+                                {
+                                    Settings.StorefrontElements.Find(y => y.SourceId == x.SourceId).HltbStorefrontId = x.HltbStorefrontId;
+                                }
+                            }
+                        });
+                        Settings.IsConverted = true;
+                        Application.Current.Dispatcher?.Invoke(() => { Plugin.SavePluginSettings(Settings); });
+                    }
+                }
+
+                // Delete missing source
+                Settings.StorefrontElements = Settings.StorefrontElements.Where(x => !x.SourceName.IsNullOrEmpty()).ToList();
+                Settings.StorefrontElements = Settings.StorefrontElements.OrderBy(x => x.SourceName).ToList();
+            });
+
 
             if (Settings.Platforms.Count == 0)
             {

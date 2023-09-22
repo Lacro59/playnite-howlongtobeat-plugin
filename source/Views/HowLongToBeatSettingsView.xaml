@@ -60,8 +60,8 @@
                             </CheckBox>
 
                             <StackPanel Grid.Row="5" Orientation="Horizontal" HorizontalAlignment="Right">
-                                <Button Content="{DynamicResource LOCAddTitle}" Margin="0,0,10,0" IsEnabled="{Binding Settings.EnableTagAuto}" VerticalAlignment="Center" Click="ButtonAddTag_Click" />
-                                <Button Content="{DynamicResource LOCRemoveTitle}" IsEnabled="{Binding Settings.EnableTagAuto}" VerticalAlignment="Bottom" Click="ButtonRemoveTag_Click" Margin="0,0,0,1" />
+                                <Button Content="{DynamicResource LOCAddTitle}" Margin="0,0,10,0" IsEnabled="{Binding Settings.EnableTag}" VerticalAlignment="Center" Click="ButtonAddTag_Click" />
+                                <Button Content="{DynamicResource LOCRemoveTitle}" IsEnabled="{Binding Settings.EnableTag}" VerticalAlignment="Bottom" Click="ButtonRemoveTag_Click" Margin="0,0,0,1" />
                             </StackPanel>
 
                             <CheckBox Grid.Row="6" IsChecked="{Binding Settings.AutoSetCurrentPlayTime}" Grid.Column="0" VerticalAlignment="Center" 
@@ -506,7 +506,7 @@
 
         <TabItem Header="{DynamicResource LOCHowLongToBeatStorefront}" IsEnabled="{Binding ElementName=PART_AutoSetCurrentPlayTime, Path=IsChecked}">
             <DockPanel LastChildFill="True" Margin="0,10,0,0">
-                <ListBox ItemsSource="{Binding Settings.Storefronts}" MinHeight="100">
+                <ListBox ItemsSource="{Binding Settings.StorefrontElements}" MinHeight="100">
                     <ListBox.ItemContainerStyle>
                         <Style TargetType="{x:Type ListBoxItem}" BasedOn="{StaticResource {x:Type ListBoxItem}}">
                             <Setter Property="Focusable" Value="False"/>
@@ -522,11 +522,11 @@
                                     <ColumnDefinition Width="250" />
                                 </Grid.ColumnDefinitions>
 
-                                <TextBlock Grid.Column="0" Text="{Binding HltbStorefrontName}" />
+                                <TextBlock Grid.Column="0" Text="{Binding SourceName}" />
 
-                                <ComboBox Grid.Column="2" ItemsSource="{Binding GameSources}"
-                                                  SelectedValuePath="Id" DisplayMemberPath="Name"
-                                                  SelectedValue="{Binding SourceId}" />
+                                <ComboBox Grid.Column="2" ItemsSource="{Binding StoreFrontElements}"
+                                          SelectedValuePath="HltbStorefrontId" DisplayMemberPath="HltbStorefrontName"
+                                          SelectedValue="{Binding HltbStorefrontId}" />
                             </Grid>
                         </DataTemplate>
                     </ListBox.ItemTemplate>

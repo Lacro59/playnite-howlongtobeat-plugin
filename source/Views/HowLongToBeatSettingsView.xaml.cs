@@ -74,71 +74,29 @@ namespace HowLongToBeat.Views
 
             FirstColorBrush = settings.FirstColorBrush;
             FirstLinearGradient = settings.FirstLinearGradient;
-            if (FirstColorBrush != null)
-            {
-                tbColorFirst.Background = FirstColorBrush;
-            }
-            else
-            {
-                tbColorFirst.Background = FirstLinearGradient.ToLinearGradientBrush;
-            }
+            tbColorFirst.Background = FirstColorBrush != null ? FirstColorBrush : (Brush)FirstLinearGradient.ToLinearGradientBrush;
 
             SecondColorBrush = settings.SecondColorBrush;
             SecondLinearGradient = settings.SecondLinearGradient;
-            if (SecondColorBrush != null)
-            {
-                tbColorSecond.Background = SecondColorBrush;
-            }
-            else
-            {
-                tbColorSecond.Background = SecondLinearGradient.ToLinearGradientBrush;
-            }
+            tbColorSecond.Background = SecondColorBrush != null ? SecondColorBrush : (Brush)SecondLinearGradient.ToLinearGradientBrush;
 
             ThirdColorBrush = settings.ThirdColorBrush;
             ThirdLinearGradient = settings.ThirdLinearGradient;
-            if (ThirdColorBrush != null)
-            {
-                tbColorThird.Background = ThirdColorBrush;
-            }
-            else
-            {
-                tbColorThird.Background = ThirdLinearGradient.ToLinearGradientBrush;
-            }
+            tbColorThird.Background = ThirdColorBrush != null ? ThirdColorBrush : (Brush)ThirdLinearGradient.ToLinearGradientBrush;
 
 
             FirstMultiColorBrush = settings.FirstMultiColorBrush;
             FirstMultiLinearGradient = settings.FirstMultiLinearGradient;
-            if (FirstMultiColorBrush != null)
-            {
-                tbColorFirstMulti.Background = FirstMultiColorBrush;
-            }
-            else
-            {
-                tbColorFirstMulti.Background = FirstMultiLinearGradient.ToLinearGradientBrush;
-            }
+            tbColorFirstMulti.Background = FirstMultiColorBrush != null ? FirstMultiColorBrush : (Brush)FirstMultiLinearGradient.ToLinearGradientBrush;
 
             SecondMultiColorBrush = settings.SecondMultiColorBrush;
             SecondMultiLinearGradient = settings.SecondMultiLinearGradient;
-            if (SecondMultiColorBrush != null)
-            {
-                tbColorSecondMulti.Background = SecondMultiColorBrush;
-            }
-            else
-            {
-                tbColorSecondMulti.Background = SecondMultiLinearGradient.ToLinearGradientBrush;
-            }
+            tbColorSecondMulti.Background = SecondMultiColorBrush != null ? SecondMultiColorBrush : (Brush)SecondMultiLinearGradient.ToLinearGradientBrush;
 
             ThirdMultiColorBrush = settings.ThirdMultiColorBrush;
             ThirdMultiLinearGradient = settings.ThirdMultiLinearGradient;
-            if (ThirdMultiColorBrush != null)
-            {
-                tbColorThirdMulti.Background = ThirdMultiColorBrush;
-            }
-            else
-            {
-                tbColorThirdMulti.Background = ThirdMultiLinearGradient.ToLinearGradientBrush;
-            }
-            
+            tbColorThirdMulti.Background = ThirdMultiColorBrush != null ? ThirdMultiColorBrush : (Brush)ThirdMultiLinearGradient.ToLinearGradientBrush;
+
 
             spSettings.Visibility = Visibility.Visible;
            
@@ -179,18 +137,18 @@ namespace HowLongToBeat.Views
             {
                 tbControl = ((StackPanel)((FrameworkElement)sender).Parent).Children.OfType<TextBlock>().FirstOrDefault();
 
-                if (tbControl.Background is SolidColorBrush)
+                if (tbControl.Background is SolidColorBrush sBrush)
                 {
                     PART_SelectorColorPicker.IsSimpleColor = true;
 
-                    Color color = ((SolidColorBrush)tbControl.Background).Color;
+                    Color color = sBrush.Color;
                     PART_SelectorColorPicker.SetColors(color);
                 }
-                if (tbControl.Background is LinearGradientBrush)
+                if (tbControl.Background is LinearGradientBrush lBrush)
                 {
                     PART_SelectorColorPicker.IsSimpleColor = false;
 
-                    LinearGradientBrush linearGradientBrush = (LinearGradientBrush)tbControl.Background;
+                    LinearGradientBrush linearGradientBrush = lBrush;
                     PART_SelectorColorPicker.SetColors(linearGradientBrush);
                 }
 
@@ -262,6 +220,9 @@ namespace HowLongToBeat.Views
                         ThirdMultiColorBrush = new SolidColorBrush(Brushes.ForestGreen.Color);
                         ThirdMultiLinearGradient = null;
                         break;
+
+                    default:
+                        break;
                 }
             }
             catch (Exception ex)
@@ -317,6 +278,9 @@ namespace HowLongToBeat.Views
                             ThirdMultiColorBrush = new SolidColorBrush(color);
                             ThirdMultiLinearGradient = null;
                             break;
+
+                        default:
+                            break;
                     }
                 }
                 else
@@ -358,6 +322,9 @@ namespace HowLongToBeat.Views
                         case "6":
                             ThirdMultiColorBrush = null;
                             ThirdMultiLinearGradient = ThemeLinearGradient.ToThemeLinearGradient(PART_SelectorColorPicker.GetLinearGradientBrush());
+                            break;
+
+                        default:
                             break;
                     }
                 }
@@ -449,17 +416,24 @@ namespace HowLongToBeat.Views
                 case "0":
                     PluginDatabase.PluginSettings.Settings.TitleListSort = TitleListSort.GameName;
                     break;
+
                 case "1":
                     PluginDatabase.PluginSettings.Settings.TitleListSort = TitleListSort.Platform;
                     break;
+
                 case "2":
                     PluginDatabase.PluginSettings.Settings.TitleListSort = TitleListSort.Completion;
                     break;
+
                 case "3":
                     PluginDatabase.PluginSettings.Settings.TitleListSort = TitleListSort.CurrentTime;
                     break;
+
                 case "4":
                     PluginDatabase.PluginSettings.Settings.TitleListSort = TitleListSort.LastUpdate;
+                    break;
+
+                default:
                     break;
             }
         }
