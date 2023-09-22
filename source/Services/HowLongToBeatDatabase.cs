@@ -920,9 +920,9 @@ namespace HowLongToBeat.Services
 
         public void UpdatedCookies()
         {
-            if (howLongToBeatClient.GetIsUserLoggedIn())
+            Task.Run(() =>
             {
-                Task.Run(() =>
+                if (howLongToBeatClient.GetIsUserLoggedIn())
                 {
                     using (IWebView WebViewOffscreen = API.Instance.WebViews.CreateOffscreenView())
                     {
@@ -930,8 +930,8 @@ namespace HowLongToBeat.Services
                     }
                     List<HttpCookie> Cookies = howLongToBeatClient.GetWebCookies();
                     howLongToBeatClient.SetStoredCookies(Cookies);
-                });
-            }
+                }
+            });
         }
     }
 }
