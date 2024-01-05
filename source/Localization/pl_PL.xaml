@@ -7,15 +7,15 @@
 
     <!-- HowLongToBeatSettingsView -->
 
-    <sys:String x:Key="LOCHowLongToBeatProgressBar">Added {0} - Already added {1} - Not added {2}</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatProgressBar">Dodano {0} - Już dodano {1} - Nie dodano {2}</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatAddTagDescription">Dodaj tag do gier z informacjami o czasie ukończenia głównej historii</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoTag">Automatyczne przetwarzanie tagów</sys:String>
     <sys:String x:Key="LOCHowLongToBeatShowHltbImage">Używaj oryginalnej okładki gry z HowLongToBeat w oknie</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatColorSelection">Color selection:</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatColorSelection">Wybór kolorów:</sys:String>
 
-    <sys:String x:Key="LOCHltbEnableProgressBarInDataView">View progress bar in Playnite data view</sys:String>
+    <sys:String x:Key="LOCHltbEnableProgressBarInDataView">Pokaż pasek postępu w widoku danych Playnite</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarOptions">Opcje paska postępu</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">Wyświetlaj dymek z czasem na pasku postępu</sys:String>
@@ -26,19 +26,19 @@
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeUser">Pokaż czas HowLongToBeat użytkownika</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatAutoSetCurrentPlayTime">Automatycznie aktualizuj bieżący czas grania w HowLongToBeat po każdej sesji</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatWithoutConfirmation">Without confirmation message</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatEnableSuccessNotification">Enable success notification</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatWithoutConfirmation">Bez wiadomości potwierdzającej</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatEnableSuccessNotification">Włącz powiadomienia o powodzeniu</sys:String>
     
     <sys:String x:Key="LOCHowLongToBeatAutoData">Download datas</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoAccept">Automatic accept when only a game is find</sys:String>
     <sys:String x:Key="LOCHowLongToBeatShowWhenMismatch">Show the selection view when there is more a game found</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatUseMatchValue">Use a percent match</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatUseMatchValue">Użyj procentowego dopasowania</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatTimeOnlyHour">Time format with only hour</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatTimeOnlyHour">Format czasu tylko z godziną</sys:String>
     
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBar">Display progress indicator</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBar">Wyświetl wskaźnik postępu</sys:String>
     
-    <sys:String x:Key="LOCHowLongToBeatCurrentPlayTimeSetted">The current playtime for {0} is setted.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatCurrentPlayTimeSetted">Aktualny czas gry dla {0} jest ustawiony.</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatInfoSetPlaytime" xml:space="preserve">If there are several times defined on HowLongToBeat, the plugin will take the most recent one with the status &quot;Playing&quot;.
 If none has this status, it takes the most recent.</sys:String>
@@ -65,10 +65,10 @@ If none has this status, it takes the most recent.</sys:String>
     <sys:String x:Key="LOCHowLongToBeatCompletationProgress">Gry ukończone w czasie</sys:String>
     
     <sys:String x:Key="LOCHowLongToBeatUserData">Dane użytkownika</sys:String>
-    <sys:String x:Key="LocHowLongToBeatPlayniteData">Playnite data</sys:String>
+    <sys:String x:Key="LocHowLongToBeatPlayniteData">Dane Playnite</sys:String>
     <sys:String x:Key="LOCHowLongToBeatCompleted">Ukończono</sys:String>
 
-    <sys:String x:Key="LOCHltbOnlyReplays">Only replays</sys:String>
+    <sys:String x:Key="LOCHltbOnlyReplays">Tylko powtórki</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatPluginGetUserView">Wczytywanie danych użytkownika</sys:String>
 
