@@ -79,8 +79,8 @@ If none has this status, it takes the most recent.</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatStorefront">Storefront</sys:String>
     
-    <sys:String x:Key="LOCHltbAvgTimeByGame">Avg time by game</sys:String>
-    <sys:String x:Key="LOCHltbAvgGameByMonth">Avg game by month</sys:String>
+    <sys:String x:Key="LOCHltbAvgTimeByGame">Średni czas na grę</sys:String>
+    <sys:String x:Key="LOCHltbAvgGameByMonth">Średnia gier na miesiąc</sys:String>
     <sys:String x:Key="LOCHltbCountGameBeatenBeforeTime">Number of games beaten before time</sys:String>
     <sys:String x:Key="LOCHltbCountGameBeatenAfterTime">Number of games beaten after time</sys:String>
     <sys:String x:Key="LOCHltbCountGameBeatenReplays">Number of games beaten (replayed)</sys:String>
