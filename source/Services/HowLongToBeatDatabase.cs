@@ -661,7 +661,7 @@ namespace HowLongToBeat.Services
                         }
 
                         string StorefrontName = string.Empty;
-                        Storefront storefront = PluginSettings.Settings.Storefronts.Where(x => x.SourceId != default(Guid) && x.SourceId == game.SourceId).FirstOrDefault();
+                        Storefront storefront = PluginSettings.Settings.StorefrontElements.Where(x => x.SourceId != default && x.SourceId == game.SourceId).FirstOrDefault();
                         if (storefront != null)
                         {
                             StorefrontName = storefront.HltbStorefrontName;

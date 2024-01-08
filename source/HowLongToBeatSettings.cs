@@ -109,6 +109,7 @@ namespace HowLongToBeat
         // TODO TMP
         public bool IsConverted { get; set; } = false;
         public List<Storefront> StorefrontElements { get; set; } = new List<Storefront>();
+        // TODO TMP
         public List<Storefront> Storefronts { get; set; } = new List<Storefront>();
         public List<HltbPlatformMatch> Platforms { get; set; } = new List<HltbPlatformMatch>();
 
