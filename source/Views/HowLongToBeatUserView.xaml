@@ -236,6 +236,13 @@
                                         <controlsShared:GridViewColumnHeaderExtend Style="{StaticResource {x:Type GridViewColumnHeader}}" IsHitTestVisible="False" RefIndex="4" />
                                     </GridViewColumn>
 
+                                    <GridViewColumn Width="120" DisplayMemberBinding="{Binding RemainingTimeFormat}" x:Name="lvGameRemainingTime">
+                                        <GridViewColumnHeader Content="{DynamicResource LOCHltbRemainingTime}" Tag="RemainingTime" />
+                                    </GridViewColumn>
+                                    <GridViewColumn Width="0" DisplayMemberBinding="{Binding RemainingTime}">
+                                        <controlsShared:GridViewColumnHeaderExtend Style="{StaticResource {x:Type GridViewColumnHeader}}" IsHitTestVisible="False" RefIndex="5" />
+                                    </GridViewColumn>
+
                                     <GridViewColumn Width="120" DisplayMemberBinding="{Binding HltbUserData.MainStoryFormat}">
                                         <GridViewColumnHeader Content="{DynamicResource LOCHowLongToBeatMainStory}" Tag="HltbUserData.MainStory" />
                                     </GridViewColumn>

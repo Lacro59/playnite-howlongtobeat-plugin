@@ -60,6 +60,8 @@
                             <RowDefinition Height="30" />
                             <RowDefinition Height="30" />
                             <RowDefinition Height="30" />
+                            <RowDefinition Height="30" />
+                            <RowDefinition Height="30" />
                             <RowDefinition Height="*" />
                         </Grid.RowDefinitions>
 
@@ -96,6 +98,12 @@
                         <TextBlock Grid.Column="1" Grid.Row="4" Text="{DynamicResource LOCTimePlayed}" 
                                    Style="{DynamicResource BaseTextBlockStyle}" FontSize="16" VerticalAlignment="Bottom" />
                         <TextBlock Grid.Column="2" Grid.Row="4" Text="{Binding GameContext.Playtime, Converter={StaticResource PlayTimeToStringConverter}}" 
+                                   Style="{DynamicResource BaseTextBlockStyle}" FontSize="16" HorizontalAlignment="Center" 
+                                   VerticalAlignment="Bottom" />
+
+                        <TextBlock Grid.Column="1" Grid.Row="5" Text="{DynamicResource LOCHltbRemainingTime}" 
+                                   Style="{DynamicResource BaseTextBlockStyle}" FontSize="16" VerticalAlignment="Bottom" />
+                        <TextBlock Grid.Column="2" Grid.Row="5" Name="TbRemainingTime"
                                    Style="{DynamicResource BaseTextBlockStyle}" FontSize="16" HorizontalAlignment="Center" 
                                    VerticalAlignment="Bottom" />
                     </Grid>

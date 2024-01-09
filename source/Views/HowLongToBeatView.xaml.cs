@@ -125,6 +125,8 @@ namespace HowLongToBeat.Views
                             case 3:
                                 Hltb_0 = Hltb_El0_3;
                                 break;
+                            default:
+                                break;
                         }
 
 
@@ -238,6 +240,10 @@ namespace HowLongToBeat.Views
                         SetDataInView(ElIndicator, resources.GetString("LOCHowLongToBeatVs"), gameData.GameHltbData.VsFormat, (titleList != null) ? titleList.HltbUserData.VsFormat : string.Empty, 0);
                     }
                 }
+
+                long rt = (gameHowLongToBeat.GetData()?.GameHltbData?.TimeToBeat ?? 0) - (long)gameHowLongToBeat.Game.Playtime;
+                PlayTimeToStringConverterWithZero playTimeToStringConverterWithZero = new PlayTimeToStringConverterWithZero();
+                TbRemainingTime.Text = rt > 0 ? (string)playTimeToStringConverterWithZero.Convert(rt, null, null, CultureInfo.CurrentCulture) : string.Empty;
             }
             else
             {
@@ -261,6 +267,8 @@ namespace HowLongToBeat.Views
                 case 3:
                     Hltb_El3_Color.Background = new SolidColorBrush(color);
                     break;
+                default:
+                    break;
             }
         }
 
@@ -269,6 +277,7 @@ namespace HowLongToBeat.Views
             TextBlock Hltb_1 = new TextBlock();
             TextBlock Hltb_2 = new TextBlock();
             TextBlock Hltb_3 = new TextBlock();
+
             switch (idx)
             {
                 case 0:
@@ -276,20 +285,26 @@ namespace HowLongToBeat.Views
                     Hltb_2 = Hltb_El2_DataUser;
                     Hltb_3 = Hltb_El3_DataUser;
                     break;
+
                 case 1:
                     Hltb_1 = Hltb_El1_DataUser_1;
                     Hltb_2 = Hltb_El2_DataUser_1;
                     Hltb_3 = Hltb_El3_DataUser_1;
                     break;
+
                 case 2:
                     Hltb_1 = Hltb_El1_DataUser_2;
                     Hltb_2 = Hltb_El2_DataUser_2;
                     Hltb_3 = Hltb_El3_DataUser_2;
                     break;
+
                 case 3:
                     Hltb_1 = Hltb_El1_DataUser_3;
                     Hltb_2 = Hltb_El2_DataUser_3;
                     Hltb_3 = Hltb_El3_DataUser_3;
+                    break;
+
+                default:
                     break;
             }
 
@@ -324,6 +339,9 @@ namespace HowLongToBeat.Views
                     Hltb_3.Visibility = Visibility.Visible;
                     Hltb_El3.Visibility = Visibility.Visible;
                     Hltb_El3_Color.Visibility = Visibility.Visible;
+                    break;
+
+                default:
                     break;
             }
         }
@@ -395,14 +413,7 @@ namespace HowLongToBeat.Views
                 textBlock.Foreground,
                 VisualTreeHelper.GetDpi(this).PixelsPerDip);
 
-            if (formattedText.Width > textBlock.DesiredSize.Width)
-            {
-                ((ToolTip)((TextBlock)sender).ToolTip).Visibility = Visibility.Visible;
-            }
-            else
-            {
-                ((ToolTip)((TextBlock)sender).ToolTip).Visibility = Visibility.Hidden;
-            }
+            ((ToolTip)((TextBlock)sender).ToolTip).Visibility = formattedText.Width > textBlock.DesiredSize.Width ? Visibility.Visible : Visibility.Hidden;
         }
 
 
@@ -427,37 +438,13 @@ namespace HowLongToBeat.Views
 
     public class HowLongToBeatViewData : ObservableObject
     {
-        private Game _GameContext { get; set; }
-        public Game GameContext
-        {
-            get => _GameContext;
-            set
-            {
-                _GameContext = value;
-                OnPropertyChanged();
-            }
-        }
+        private Game _GameContext;
+        public Game GameContext { get => _GameContext; set => SetValue(ref _GameContext, value); }
 
-        private SourceLink _SourceLink { get; set; }
-        public SourceLink SourceLink
-        {
-            get => _SourceLink;
-            set
-            {
-                _SourceLink = value;
-                OnPropertyChanged();
-            }
-        }
+        private SourceLink _SourceLink;
+        public SourceLink SourceLink { get => _SourceLink; set => SetValue(ref _SourceLink, value); }
 
-        private string _CoverImage { get; set; } = string.Empty;
-        public string CoverImage
-        {
-            get => _CoverImage;
-            set
-            {
-                _CoverImage = value;
-                OnPropertyChanged();
-            }
-        }
+        private string _CoverImage = string.Empty;
+        public string CoverImage { get => _CoverImage; set => SetValue(ref _CoverImage, value); }
     }
 }

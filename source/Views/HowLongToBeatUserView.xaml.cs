@@ -98,6 +98,8 @@ namespace HowLongToBeat.Views
                         case TitleListSort.CurrentTime:
                             SortingDefaultDataName = "CurrentTime";
                             break;
+                        default:
+                            break;
                     };
                     ListViewGames.SortingDefaultDataName = SortingDefaultDataName;
                     ListViewGames.SortingSortDirection = (PluginDatabase.PluginSettings.Settings.IsAsc) ? ListSortDirection.Ascending : ListSortDirection.Descending;

@@ -30,6 +30,7 @@ namespace HowLongToBeat.Models
         private HowLongToBeatDatabase PluginDatabase = HowLongToBeat.PluginDatabase;
 
         private LocalDateConverter converter = new LocalDateConverter();
+        private PlayTimeToStringConverterWithZero playTimeToStringConverterWithZero = new PlayTimeToStringConverterWithZero();
 
         public int Id { get; set; }
         public string UserGameId { get; set; }
@@ -37,43 +38,32 @@ namespace HowLongToBeat.Models
         public string Platform { get; set; }
         public string Storefront { get; set; } = string.Empty;
         public long CurrentTime { get; set; }
+        public long RemainingTime => (PluginDatabase.Get(GameId, true)?.GetData()?.GameHltbData?.TimeToBeat ?? 0) - CurrentTime > 0 ? PluginDatabase.Get(GameId, true).GetData().GameHltbData.TimeToBeat - CurrentTime : 0;
+        public string RemainingTimeFormat => RemainingTime > 0 ? (string)playTimeToStringConverterWithZero.Convert(RemainingTime, null, null, CultureInfo.CurrentCulture) : string.Empty;
 
         public bool IsReplay { get; set; }
         public bool IsRetired { get; set; }
 
-        public DateTime LastUpdate { get; set; } = default(DateTime);
+        public DateTime LastUpdate { get; set; } = default;
 
         public DateTime? Completion { get; set; }
         [DontSerialize]
-        public string CompletionFormat
-        {
-            get
-            {
-                if (Completion == null)
-                {
-                    return string.Empty;
-                }
-                return (string)converter.Convert((DateTime)Completion, null, null, CultureInfo.CurrentCulture);
-            }
-        }
+        public string CompletionFormat => Completion == null ? string.Empty : (string)converter.Convert((DateTime)Completion, null, null, CultureInfo.CurrentCulture);
 
         public List<GameStatus> GameStatuses { get; set; } = new List<GameStatus>();
 
         public HltbData HltbUserData { get; set; }
 
         [DontSerialize]
-        public Guid GameId 
+        public Guid GameId
         {
             get
             {
                 Guid? result = PluginDatabase.Database.Items.Where(x => x.Value.GetData()?.Id == Id
                                     && (x.Value.UserGameId.IsNullOrEmpty() ? true : x.Value.UserGameId.IsEqual(UserGameId)))?            
                     .FirstOrDefault().Key;
-                if (result == null || (Guid)result == default(Guid))
-                {
-                    return new Guid();
-                }
-                return (Guid)result;
+
+                return result == null || (Guid)result == default(Guid) ? new Guid() : (Guid)result;
             }
         }
 
