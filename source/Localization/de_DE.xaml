@@ -70,6 +70,8 @@ Wenn keiner diesen Status hat, wird der aktuellste genommen.</sys:String>
 
     <sys:String x:Key="LOCHltbOnlyReplays">Nur Wiederholungen</sys:String>
 
+    <sys:String x:Key="LOCHltbRemainingTime">Remaining time</sys:String>
+
     <sys:String x:Key="LOCHowLongToBeatPluginGetUserView">Benutzerdaten werden abgerufen</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatCompletions">Abschlüsse</sys:String>
