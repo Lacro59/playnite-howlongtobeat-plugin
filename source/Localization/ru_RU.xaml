@@ -70,6 +70,8 @@
 
     <sys:String x:Key="LOCHltbOnlyReplays">Только повторяющиеся</sys:String>
 
+    <sys:String x:Key="LOCHltbRemainingTime">Remaining time</sys:String>
+
     <sys:String x:Key="LOCHowLongToBeatPluginGetUserView">Получение данных пользователя</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatCompletions">Завершенность</sys:String>
