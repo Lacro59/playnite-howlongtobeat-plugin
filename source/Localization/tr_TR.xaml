@@ -70,6 +70,8 @@ Hiç biri bu durumda değilse, en son süre alınır.</sys:String>
 
     <sys:String x:Key="LOCHltbOnlyReplays">Sadece yeniden oynamalar</sys:String>
 
+    <sys:String x:Key="LOCHltbRemainingTime">Remaining time</sys:String>
+
     <sys:String x:Key="LOCHowLongToBeatPluginGetUserView">Kullanıcı verileri getiriliyor</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatCompletions">Tamamlanmalar</sys:String>
