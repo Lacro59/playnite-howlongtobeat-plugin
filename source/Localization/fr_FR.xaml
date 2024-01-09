@@ -70,6 +70,8 @@ Si aucun n'a ce statut, il prend le plus récent.</sys:String>
 
     <sys:String x:Key="LOCHltbOnlyReplays">Seulement les rejoués</sys:String>
 
+    <sys:String x:Key="LOCHltbRemainingTime">Remaining time</sys:String>
+
     <sys:String x:Key="LOCHowLongToBeatPluginGetUserView">Récupération des données utilisateur</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatCompletions">Complétées</sys:String>
