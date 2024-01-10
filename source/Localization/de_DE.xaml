@@ -69,6 +69,7 @@ Wenn keiner diesen Status hat, wird der aktuellste genommen.</sys:String>
     <sys:String x:Key="LOCHowLongToBeatCompleted">Abgeschlossen</sys:String>
 
     <sys:String x:Key="LOCHltbOnlyReplays">Nur Wiederholungen</sys:String>
+    <sys:String x:Key="LOCHltbOnlyNotPlayed">Only not played</sys:String>
 
     <sys:String x:Key="LOCHltbRemainingTime">Remaining time</sys:String>
 
