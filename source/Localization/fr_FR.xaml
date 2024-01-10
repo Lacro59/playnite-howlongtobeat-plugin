@@ -10,14 +10,14 @@
     <sys:String x:Key="LOCHowLongToBeatProgressBar">Ajouté(s) {0} - Déjà ajouté(s) {1} - Non ajouté(s) {2}</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatAddTagDescription">Ajouter un tag aux jeux avec les informations de temps d'achèvement de l'histoire principale</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAutoTag">Traitement automatique des étiquettes</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoTag">Traitement automatique des tags</sys:String>
     <sys:String x:Key="LOCHowLongToBeatShowHltbImage">Utiliser l'image originale de couverture du jeu HowLongToBeat dans la fenêtre</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatColorSelection">Sélection de couleur :</sys:String>
 
     <sys:String x:Key="LOCHltbEnableProgressBarInDataView">Afficher la barre de progression dans la vue avec les données Playnite</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarOptions">Options pour la barre de progression</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarOptions">Options de la barre de progression</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">Afficher une info-bulle de temps dans la barre de progression</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTime">Afficher le temps dans la barre de progression</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeAbove">Au dessus</sys:String>
@@ -47,7 +47,7 @@ Si aucun n'a ce statut, il prend le plus récent.</sys:String>
 
     <sys:String x:Key="LOCSelection">Sélection HowLongToBeat</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatMainStory">Histoire principal</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatMainStory">Histoire principale</sys:String>
     <sys:String x:Key="LOCHowLongToBeatMainExtra">Principal + extra</sys:String>
     <sys:String x:Key="LOCHowLongToBeatCompletionist">Complétiste</sys:String>
 
@@ -69,6 +69,9 @@ Si aucun n'a ce statut, il prend le plus récent.</sys:String>
     <sys:String x:Key="LOCHowLongToBeatCompleted">Terminé</sys:String>
 
     <sys:String x:Key="LOCHltbOnlyReplays">Seulement les rejoués</sys:String>
+    <sys:String x:Key="LOCHltbOnlyNotPlayed">Uniquement non joué</sys:String>
+
+    <sys:String x:Key="LOCHltbRemainingTime">Temps restant</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatPluginGetUserView">Récupération des données utilisateur</sys:String>
 
