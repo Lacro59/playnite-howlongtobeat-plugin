@@ -35,6 +35,8 @@ namespace HowLongToBeat
         internal TopPanelItem topPanelItem;
         internal HowLongToBeatViewSidebar howLongToBeatViewSidebar;
 
+        private bool preventLibraryUpdatedOnStart { get; set; } = true;
+
 
         public HowLongToBeat(IPlayniteAPI api) : base(api)
         {
@@ -763,6 +765,12 @@ namespace HowLongToBeat
         // Add code to be executed when Playnite is initialized.
         public override void OnApplicationStarted(OnApplicationStartedEventArgs args)
         {
+            Task.Run(() =>
+            {
+                Thread.Sleep(30000);
+                preventLibraryUpdatedOnStart = false;
+            });
+
             // QuickSearch support
             try
             {
@@ -793,7 +801,7 @@ namespace HowLongToBeat
         // Add code to be executed when library is updated.
         public override void OnLibraryUpdated(OnLibraryUpdatedEventArgs args)
         {
-            if (PluginSettings.Settings.AutoImport)
+            if (PluginSettings.Settings.AutoImport && !preventLibraryUpdatedOnStart)
             {
                 List<Game> PlayniteDb = PlayniteApi.Database.Games
                         .Where(x => x.Added != null && x.Added > PluginSettings.Settings.LastAutoLibUpdateAssetsDownload)
