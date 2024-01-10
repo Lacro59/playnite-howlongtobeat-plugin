@@ -69,8 +69,9 @@ If none has this status, it takes the most recent.</sys:String>
     <sys:String x:Key="LOCHowLongToBeatCompleted">Ukończono</sys:String>
 
     <sys:String x:Key="LOCHltbOnlyReplays">Tylko powtórki</sys:String>
+    <sys:String x:Key="LOCHltbOnlyNotPlayed">Only not played</sys:String>
 
-    <sys:String x:Key="LOCHltbRemainingTime">Remaining time</sys:String>
+    <sys:String x:Key="LOCHltbRemainingTime">Pozostały czas</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatPluginGetUserView">Wczytywanie danych użytkownika</sys:String>
 
