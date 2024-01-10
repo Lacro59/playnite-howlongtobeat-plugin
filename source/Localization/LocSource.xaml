@@ -69,6 +69,7 @@ If none has this status, it takes the most recent.</sys:String>
     <sys:String x:Key="LOCHowLongToBeatCompleted">Completed</sys:String>
 
     <sys:String x:Key="LOCHltbOnlyReplays">Only replays</sys:String>
+    <sys:String x:Key="LOCHltbOnlyNotPlayed">Only not played</sys:String>
 
     <sys:String x:Key="LOCHltbRemainingTime">Remaining time</sys:String>
 

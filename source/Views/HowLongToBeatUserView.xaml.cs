@@ -411,6 +411,7 @@ namespace HowLongToBeat.Views
             PART_CbPlatform.SelectedIndex = index == -1 ? 0 : index;
 
             PART_Replays.IsChecked = PluginDatabase.PluginSettings.Settings.filterSettings.OnlyReplays;
+            PART_OnlyNotPlayed.IsChecked = PluginDatabase.PluginSettings.Settings.filterSettings.OnlyNotPlayed;
         }
 
 
@@ -532,6 +533,11 @@ namespace HowLongToBeat.Views
                 userViewDataContext.ItemsSource = userViewDataContext.ItemsSource.Where(x => x.IsReplay).ToObservable();
             }
 
+            if ((bool)PART_OnlyNotPlayed.IsChecked)
+            {
+                userViewDataContext.ItemsSource = userViewDataContext.ItemsSource.Where(x => x.Completion == null).ToObservable();
+            }
+
             ListViewGames.Sorting();
         }
 
@@ -583,6 +589,7 @@ namespace HowLongToBeat.Views
             PART_CbStorefront.SelectedIndex = 0;
             PART_CbPlatform.SelectedIndex = 0;
             PART_Replays.IsChecked = false;
+            PART_OnlyNotPlayed.IsChecked = false;
         }
         private void SavedFilter1_Click(object sender, RoutedEventArgs e)
         {
@@ -590,6 +597,7 @@ namespace HowLongToBeat.Views
             PluginDatabase.PluginSettings.Settings.filterSettings.Storefront = PART_CbStorefront.SelectedItem.ToString();
             PluginDatabase.PluginSettings.Settings.filterSettings.Platform = PART_CbPlatform.SelectedItem.ToString();
             PluginDatabase.PluginSettings.Settings.filterSettings.OnlyReplays = (bool)PART_Replays.IsChecked;
+            PluginDatabase.PluginSettings.Settings.filterSettings.OnlyNotPlayed = (bool)PART_OnlyNotPlayed.IsChecked;
             
             Plugin.SavePluginSettings(PluginDatabase.PluginSettings.Settings);
         }
@@ -600,6 +608,16 @@ namespace HowLongToBeat.Views
             PluginDatabase.PluginSettings.Settings.filterSettings.OnlyNotPlayedGames = (bool)PART_HidePlayedGames.IsChecked;
             
             Plugin.SavePluginSettings(PluginDatabase.PluginSettings.Settings);
+        }
+
+
+        private void PART_TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            try
+            {
+                Part_Found.Visibility = PART_TabControl.SelectedIndex == 0 ? Visibility.Visible : Visibility.Collapsed;
+            }
+            catch { }
         }
     }
 

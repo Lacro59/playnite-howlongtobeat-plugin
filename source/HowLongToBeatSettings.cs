@@ -435,6 +435,7 @@ public class FilterSettings
     public string Storefront { get; set; } = "----";
     public string Platform { get; set; } = "----";
     public bool OnlyReplays { get; set; } = false;
+    public bool OnlyNotPlayed { get; set; } = false;
 
     public bool UsedFilteredGames { get; set; } = true;
     public bool OnlyNotPlayedGames { get; set; } = false;
