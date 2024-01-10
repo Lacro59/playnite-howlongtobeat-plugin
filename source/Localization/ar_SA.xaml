@@ -69,6 +69,9 @@ If none has this status, it takes the most recent.</sys:String>
     <sys:String x:Key="LOCHowLongToBeatCompleted">اكت</sys:String>
 
     <sys:String x:Key="LOCHltbOnlyReplays">إعادة العرض فقط</sys:String>
+    <sys:String x:Key="LOCHltbOnlyNotPlayed">Only not played</sys:String>
+
+    <sys:String x:Key="LOCHltbRemainingTime">Remaining time</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatPluginGetUserView">الحصول على بيانات المستخدم</sys:String>
 

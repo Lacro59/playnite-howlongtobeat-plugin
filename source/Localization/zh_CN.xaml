@@ -69,6 +69,9 @@
     <sys:String x:Key="LOCHowLongToBeatCompleted">已完成</sys:String>
 
     <sys:String x:Key="LOCHltbOnlyReplays">仅回放</sys:String>
+    <sys:String x:Key="LOCHltbOnlyNotPlayed">Only not played</sys:String>
+
+    <sys:String x:Key="LOCHltbRemainingTime">Remaining time</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatPluginGetUserView">获取用户数据</sys:String>
 

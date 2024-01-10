@@ -69,6 +69,9 @@ Si ninguno tiene este estado, tomara el más reciente.</sys:String>
     <sys:String x:Key="LOCHowLongToBeatCompleted">Completado</sys:String>
 
     <sys:String x:Key="LOCHltbOnlyReplays">Sólo re-jugados</sys:String>
+    <sys:String x:Key="LOCHltbOnlyNotPlayed">Only not played</sys:String>
+
+    <sys:String x:Key="LOCHltbRemainingTime">Tiempo restante</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatPluginGetUserView">Obteniendo datos del usuario</sys:String>
 

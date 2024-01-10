@@ -69,6 +69,9 @@
     <sys:String x:Key="LOCHowLongToBeatCompleted">Пройдено</sys:String>
 
     <sys:String x:Key="LOCHltbOnlyReplays">Только повторяющиеся</sys:String>
+    <sys:String x:Key="LOCHltbOnlyNotPlayed">Only not played</sys:String>
+
+    <sys:String x:Key="LOCHltbRemainingTime">Remaining time</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatPluginGetUserView">Получение данных пользователя</sys:String>
 
@@ -106,9 +109,9 @@
     <sys:String x:Key="LOCHowLongToBeatSetCurrentTime">Хотите отправить свое текущее игровое время?</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatErrorNoPlatform">Невозможно отправить данные для игры без платформы ({0})</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatErrorNoPlatformDefaultUsed" xml:space="preserve">Game ({1}) without platform ({0}) defined in plugin settings.
-Please configure one.
-Default used (PC)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatErrorNoPlatformDefaultUsed" xml:space="preserve">Игра ({1}) без платформы ({0}) определена в настройках плагина.
+Пожалуйста, настройте его.
+Использовано по умолчанию (PC)</sys:String>
 
 
     <!-- QuickSearch -->
