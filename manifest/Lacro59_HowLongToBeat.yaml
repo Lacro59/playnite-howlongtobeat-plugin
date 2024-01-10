@@ -229,3 +229,15 @@ Packages:
       - Optimized search
       - UI optimizations
       - Fixed no platform bug
+  - Version: 3.2.0
+    RequiredApiVersion: 6.11.0
+    ReleaseDate: 2024-01-10
+    PackageUrl: https://github.com/Lacro59/playnite-howlongtobeat-plugin/releases/download/v3.2.0/playnite-howlongtobeat-plugin_3_2_0.pext
+    Changelog:
+      - Updated localizations
+      - UI optimizations
+      - Optimized storefront management
+      - Added new options to filter data
+      - Optimized authentification
+      - Added missing storefronts
+      - Fixed minors bugs
