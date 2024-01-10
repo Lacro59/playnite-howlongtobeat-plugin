@@ -69,6 +69,7 @@
     <sys:String x:Key="LOCHowLongToBeatCompleted">Пройдено</sys:String>
 
     <sys:String x:Key="LOCHltbOnlyReplays">Только повторяющиеся</sys:String>
+    <sys:String x:Key="LOCHltbOnlyNotPlayed">Only not played</sys:String>
 
     <sys:String x:Key="LOCHltbRemainingTime">Remaining time</sys:String>
 
