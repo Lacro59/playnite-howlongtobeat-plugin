@@ -37,6 +37,8 @@ namespace HowLongToBeat
 
         private bool preventLibraryUpdatedOnStart { get; set; } = true;
 
+        private SidebarItemControl sidebarItemControl { get; set; }
+
 
         public HowLongToBeat(IPlayniteAPI api) : base(api)
         {
@@ -186,11 +188,14 @@ namespace HowLongToBeat
                 };
                 Opened = () =>
                 {
-                    SidebarItemControl sidebarItemControl = new SidebarItemControl(PluginDatabase.PlayniteApi);
-                    sidebarItemControl.SetTitle(resources.GetString("LOCHowLongToBeat"));
-                    sidebarItemControl.AddContent(new HowLongToBeatUserView(plugin));
+                    if (plugin.sidebarItemControl == null)
+                    {
+                        plugin.sidebarItemControl = new SidebarItemControl(PluginDatabase.PlayniteApi);
+                        plugin.sidebarItemControl.SetTitle(resources.GetString("LOCHowLongToBeat"));
+                        plugin.sidebarItemControl.AddContent(new HowLongToBeatUserView(plugin));
+                    }
 
-                    return sidebarItemControl;
+                    return plugin.sidebarItemControl;
                 };
                 Visible = plugin.PluginSettings.Settings.EnableIntegrationButtonSide;
             }

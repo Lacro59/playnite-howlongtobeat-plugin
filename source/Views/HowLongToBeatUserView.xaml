@@ -229,35 +229,42 @@
                                             <GridViewColumnHeader Content="{DynamicResource LOCHowLongToBeatCompleted}" />
                                         </GridViewColumn>
 
-                                        <GridViewColumn Width="120" DisplayMemberBinding="{Binding CurrentTime, Converter={StaticResource PlayTimeToStringConverterWithZero}}" x:Name="lvGameCurrentTime">
+                                        <GridViewColumn Width="130" DisplayMemberBinding="{Binding CurrentTime, Converter={StaticResource PlayTimeToStringConverterWithZero}}" x:Name="lvGameCurrentTime">
                                             <GridViewColumnHeader Content="{DynamicResource LOCTimePlayed}" Tag="CurrentTime" />
                                         </GridViewColumn>
                                         <GridViewColumn Width="0" DisplayMemberBinding="{Binding CurrentTime}">
                                             <controlsShared:GridViewColumnHeaderExtend Style="{StaticResource {x:Type GridViewColumnHeader}}" IsHitTestVisible="False" RefIndex="4" />
                                         </GridViewColumn>
 
-                                        <GridViewColumn Width="120" DisplayMemberBinding="{Binding RemainingTimeFormat}" x:Name="lvGameRemainingTime">
+                                        <GridViewColumn Width="130" DisplayMemberBinding="{Binding TimeToBeat, Converter={StaticResource PlayTimeToStringConverterWithZero}}">
+                                            <GridViewColumnHeader Content="{DynamicResource LOCHowLongToBeatTimeToBeat}" />
+                                        </GridViewColumn>
+                                        <GridViewColumn Width="0" DisplayMemberBinding="{Binding TimeToBeat}">
+                                            <controlsShared:GridViewColumnHeaderExtend Style="{StaticResource {x:Type GridViewColumnHeader}}" IsHitTestVisible="False" />
+                                        </GridViewColumn>
+
+                                        <GridViewColumn Width="130" DisplayMemberBinding="{Binding RemainingTimeFormat}" x:Name="lvGameRemainingTime">
                                             <GridViewColumnHeader Content="{DynamicResource LOCHltbRemainingTime}" Tag="RemainingTime" />
                                         </GridViewColumn>
                                         <GridViewColumn Width="0" DisplayMemberBinding="{Binding RemainingTime}">
                                             <controlsShared:GridViewColumnHeaderExtend Style="{StaticResource {x:Type GridViewColumnHeader}}" IsHitTestVisible="False" RefIndex="5" />
                                         </GridViewColumn>
 
-                                        <GridViewColumn Width="120" DisplayMemberBinding="{Binding HltbUserData.MainStoryFormat}">
+                                        <GridViewColumn Width="130" DisplayMemberBinding="{Binding HltbUserData.MainStoryFormat}">
                                             <GridViewColumnHeader Content="{DynamicResource LOCHowLongToBeatMainStory}" Tag="HltbUserData.MainStory" />
                                         </GridViewColumn>
                                         <GridViewColumn Width="0" DisplayMemberBinding="{Binding HltbUserData.MainStory}">
                                             <controlsShared:GridViewColumnHeaderExtend Style="{StaticResource {x:Type GridViewColumnHeader}}" IsHitTestVisible="False" RefIndex="6" />
                                         </GridViewColumn>
 
-                                        <GridViewColumn Width="120" DisplayMemberBinding="{Binding HltbUserData.MainExtraFormat}">
+                                        <GridViewColumn Width="130" DisplayMemberBinding="{Binding HltbUserData.MainExtraFormat}">
                                             <GridViewColumnHeader Content="{DynamicResource LOCHowLongToBeatMainExtra}" Tag="HltbUserData.MainExtra" />
                                         </GridViewColumn>
                                         <GridViewColumn Width="0" DisplayMemberBinding="{Binding HltbUserData.MainExtra}">
                                             <controlsShared:GridViewColumnHeaderExtend Style="{StaticResource {x:Type GridViewColumnHeader}}" IsHitTestVisible="False" RefIndex="9" />
                                         </GridViewColumn>
 
-                                        <GridViewColumn Width="120" DisplayMemberBinding="{Binding HltbUserData.CompletionistFormat}">
+                                        <GridViewColumn Width="130" DisplayMemberBinding="{Binding HltbUserData.CompletionistFormat}">
                                             <GridViewColumnHeader Content="{DynamicResource LOCHowLongToBeatCompletionist}" Tag="HltbUserData.Completionist" />
                                         </GridViewColumn>
                                         <GridViewColumn Width="0" DisplayMemberBinding="{Binding HltbUserData.Completionist}">
@@ -588,11 +595,14 @@
                         </Grid>
 
                         <Grid Grid.Row="2" Name="PART_LvGridContener">
-                            <controlsShared:ListViewExtend x:Name="ListViewDataGames" FontSize="24" Height="{Binding ElementName=PART_LvGridContener, Path=ActualHeight}"
-                                                   Style="{StaticResource {x:Type ListView}}"
-                                                   VirtualizingStackPanel.IsVirtualizing="True" 
-                                                   VirtualizingStackPanel.VirtualizationMode="Recycling"
-                                                   SortingSortDirection="Ascending" SortingDefaultDataName="GameName" SortingEnable="True">
+                            <controlsShared:ListViewExtend x:Name="ListViewDataGames" FontSize="24" 
+                                                           Height="{Binding ElementName=PART_LvGridContener, Path=ActualHeight}"
+                                                           Style="{StaticResource {x:Type ListView}}"
+                                                           VirtualizingStackPanel.IsVirtualizing="True" 
+                                                           VirtualizingStackPanel.VirtualizationMode="Recycling"
+                                                           SortingSortDirection="Ascending" 
+                                                           SortingDefaultDataName="GameName" 
+                                                           SortingEnable="True">
                                 <ListView.View>
                                     <GridView>
                                         <GridViewColumn Width="50" x:Name="lvGameIcon">
@@ -642,6 +652,13 @@
 
                                         <GridViewColumn Width="130" DisplayMemberBinding="{Binding TimeToBeat, Converter={StaticResource PlayTimeToStringConverterWithZero}}">
                                             <GridViewColumnHeader Content="{DynamicResource LOCHowLongToBeatTimeToBeat}" />
+                                        </GridViewColumn>
+
+                                        <GridViewColumn Width="130" DisplayMemberBinding="{Binding RemainingTimeFormat}">
+                                            <GridViewColumnHeader Content="{DynamicResource LOCHltbRemainingTime}" Tag="RemainingTime" />
+                                        </GridViewColumn>
+                                        <GridViewColumn Width="0" DisplayMemberBinding="{Binding RemainingTime}">
+                                            <controlsShared:GridViewColumnHeaderExtend Style="{StaticResource {x:Type GridViewColumnHeader}}" IsHitTestVisible="False" />
                                         </GridViewColumn>
 
                                         <GridViewColumn Width="500">

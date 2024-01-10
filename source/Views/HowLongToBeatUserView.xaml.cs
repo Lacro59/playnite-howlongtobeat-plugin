@@ -626,6 +626,8 @@ namespace HowLongToBeat.Views
     {
         private HowLongToBeatDatabase PluginDatabase = HowLongToBeat.PluginDatabase;
 
+        private PlayTimeToStringConverterWithZero playTimeToStringConverterWithZero = new PlayTimeToStringConverterWithZero();
+
         public Game GameContext { get; set; }
         public bool ViewProgressBar { get; set; }
 
@@ -636,6 +638,8 @@ namespace HowLongToBeat.Views
         public string CompletionStatus => GameContext.CompletionStatus?.Name ?? string.Empty;
         public ulong Playtime => GameContext.Playtime;
         public long TimeToBeat => PluginDatabase.Get(GameId, true)?.GetData()?.GameHltbData?.TimeToBeat ?? 0;
+        public long RemainingTime => (PluginDatabase.Get(GameId, true)?.GetData()?.GameHltbData?.TimeToBeat ?? 0) - (long)Playtime > 0 ? PluginDatabase.Get(GameId, true).GetData().GameHltbData.TimeToBeat - (long)Playtime : 0;
+        public string RemainingTimeFormat => RemainingTime > 0 ? (string)playTimeToStringConverterWithZero.Convert(RemainingTime, null, null, CultureInfo.CurrentCulture) : string.Empty;
 
         public RelayCommand<Guid> GoToGame => PluginDatabase.GoToGame;
 
