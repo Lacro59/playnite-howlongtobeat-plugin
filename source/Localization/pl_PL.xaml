@@ -40,8 +40,8 @@
     
     <sys:String x:Key="LOCHowLongToBeatCurrentPlayTimeSetted">Aktualny czas gry dla {0} jest ustawiony.</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatInfoSetPlaytime" xml:space="preserve">If there are several times defined on HowLongToBeat, the plugin will take the most recent one with the status &quot;Playing&quot;.
-If none has this status, it takes the most recent.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatInfoSetPlaytime" xml:space="preserve">Jeżeli czasy są wielokrotnie zdefiniowane w HowLongToBeat, to wtyczka wybierze najnowszy ze statusem &quot;Playing&quot;.
+Jeżeli żaden z nich nie ma takiego statusu, to pobierze najnowszy.</sys:String>
 
     <!-- HowLongToBeatSelect -->
 
@@ -61,7 +61,7 @@ If none has this status, it takes the most recent.</sys:String>
 
     <!-- HowLongToBeatUserView -->
 
-    <sys:String x:Key="LOCHowLongToBeatCompletationStore">Games completed by storefront</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatCompletationStore">Gry ukończone wg sklepu</sys:String>
     <sys:String x:Key="LOCHowLongToBeatCompletationProgress">Gry ukończone w czasie</sys:String>
     
     <sys:String x:Key="LOCHowLongToBeatUserData">Dane użytkownika</sys:String>
@@ -80,17 +80,17 @@ If none has this status, it takes the most recent.</sys:String>
     <sys:String x:Key="LOCHowLongToBeatTimeCoOp">Czas kooperacji</sys:String>
     <sys:String x:Key="LOCHowLongToBeatTimeVs">Vs czas trybu wieloosobowego</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatStorefront">Storefront</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatStorefront">Sklep</sys:String>
     
     <sys:String x:Key="LOCHltbAvgTimeByGame">Średni czas na grę</sys:String>
     <sys:String x:Key="LOCHltbAvgGameByMonth">Średnia gier na miesiąc</sys:String>
-    <sys:String x:Key="LOCHltbCountGameBeatenBeforeTime">Number of games beaten before time</sys:String>
-    <sys:String x:Key="LOCHltbCountGameBeatenAfterTime">Number of games beaten after time</sys:String>
-    <sys:String x:Key="LOCHltbCountGameBeatenReplays">Number of games beaten (replayed)</sys:String>
-    <sys:String x:Key="LOCHltbCountGameRetired">Number of games retired</sys:String>
+    <sys:String x:Key="LOCHltbCountGameBeatenBeforeTime">Ilość gier ukończonych przed czasem</sys:String>
+    <sys:String x:Key="LOCHltbCountGameBeatenAfterTime">Ilość gier ukończonych po czasie</sys:String>
+    <sys:String x:Key="LOCHltbCountGameBeatenReplays">Ilosć ukończonych (powtórzonych) gier</sys:String>
+    <sys:String x:Key="LOCHltbCountGameRetired">Ilość porzuconych gier</sys:String>
 
-    <sys:String x:Key="LOCHltbUsedFilteredGames">Currently filtered games used</sys:String>
-    <sys:String x:Key="LOCHltbOnlyNotPlayedGames">Only game not played</sys:String>
+    <sys:String x:Key="LOCHltbUsedFilteredGames">Aktualnie przefiltrowane gry</sys:String>
+    <sys:String x:Key="LOCHltbOnlyNotPlayedGames">Jedynie gry nie grane</sys:String>
 
     <!-- MainView -->
 
@@ -101,50 +101,50 @@ If none has this status, it takes the most recent.</sys:String>
     <sys:String x:Key="LOCHowLongToBeatPluginUserView">Wyświetl dane użytkownika serwisu HowLongToBeat</sys:String>
     <sys:String x:Key="LOCHowLongToBeatActualiseUserData">Odśwież dane użytkownika serwisu HowLongToBeat</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatSetCurrentTimeManual">Set your current playtime</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatSetCurrentTimeManualAll">Set your current playtime for all games</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatSetCurrentTimeManual">Ustaw swój bieżący czas grania</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatSetCurrentTimeManualAll">Ustaw swój aktualny czas grania dla wszystkich gier</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatSetCurrentCompletedTimeManualOn">Set your current completed playtime on</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatSetCurrentCompletedTimeManualOn">Ustaw swój aktualny czas ukończenia rozgrywki</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatSetCurrentTime">Want you send your current playtime?</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatSetCurrentTime">Chcesz wysłać swój aktualny czas grania?</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatErrorNoPlatform">Cannot submit data for a game without platform ({0})</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatErrorNoPlatformDefaultUsed" xml:space="preserve">Game ({1}) without platform ({0}) defined in plugin settings.
-Please configure one.
-Default used (PC)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatErrorNoPlatform">Nie można przesłać danych dla gry bez platformy ({0})</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatErrorNoPlatformDefaultUsed" xml:space="preserve">Gra ({1}) bez platformy ({0}) zdefiniowana w ustawieniach wtyczki.
+Skonfiguruj jedną.
+Domyślnie użyto (PC)</sys:String>
 
 
     <!-- QuickSearch -->
 
-    <sys:String x:Key="LOCHltbQuickSearchDescription">Search games on HowLongToBeat data</sys:String>
-    <sys:String x:Key="LOCHltbQuickSearchByTTB">Find by Time To Beat</sys:String>
+    <sys:String x:Key="LOCHltbQuickSearchDescription">Szukaj gier w danych HowLongToBeat</sys:String>
+    <sys:String x:Key="LOCHltbQuickSearchByTTB">Znajdź według czasu do przejścia</sys:String>
 
-    <sys:String x:Key="LOCHltbQuickSearchInfo" xml:space="preserve">The plugin uses the functionality of the QuickSearch plugin.
-To use it, you must validate the &quot;howlongtobeat&quot; or &quot;hltb&quot; command.    
+    <sys:String x:Key="LOCHltbQuickSearchInfo" xml:space="preserve">Wtyczka używa funkcjonalności wtyczki QuickSearch
+Aby ją użyć, musisz zatwierdzić polecenie &quot;howlongtobeat&quot; lub &quot;hlb&quot;.   
         
-Here is the list of commands:</sys:String>
+Oto lista poleceń:</sys:String>
 
-    <sys:String x:Key="LOCHltbQuickSearchCmd1" xml:space="preserve">This command searches for a list of games with a specific time to beat.</sys:String>
+    <sys:String x:Key="LOCHltbQuickSearchCmd1" xml:space="preserve">Ta komenda wyszukuje listę gier z określonym czasem do przejścia.</sys:String>
 
 
     <!-- StartPage -->
 
-    <sys:String x:Key="LOCHtlbChartStats">Chart stats</sys:String>
-    <sys:String x:Key="LOCHtlbChartStatsChartTitle">Show title</sys:String>
-    <sys:String x:Key="LOCHtlbChartStatsChartLabels">Show labels on horizontal axis</sys:String>
-    <sys:String x:Key="LOCHtlbChartStatsChartLabelsOrdinates">Show labels on vertical axis</sys:String>
-    <sys:String x:Key="LOCHtlbChartStatsChartType">Chart type</sys:String>
-    <sys:String x:Key="LOCHtlbChartStatsChartDataNumber">Data number</sys:String>
+    <sys:String x:Key="LOCHtlbChartStats">Statystyki wykresów</sys:String>
+    <sys:String x:Key="LOCHtlbChartStatsChartTitle">Wyświetlaj tytuł</sys:String>
+    <sys:String x:Key="LOCHtlbChartStatsChartLabels">Wyświetlaj etykiety na osi poziomej</sys:String>
+    <sys:String x:Key="LOCHtlbChartStatsChartLabelsOrdinates">Wyświetlaj etykiety na osi pionowej</sys:String>
+    <sys:String x:Key="LOCHtlbChartStatsChartType">Typ wykresu</sys:String>
+    <sys:String x:Key="LOCHtlbChartStatsChartDataNumber">Numer danych</sys:String>
 
 
     <!-- HowLongToBeatSearch -->
 
-    <sys:String x:Key="LOCHowLongToBeatSearchDescription">Search on HowLongToBeat data</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatSearchHint" xml:space="preserve">Parameters:
-    -time		Time to beat (ex:-time=5h / -time=&lt;50min / -time=&gt;50s / -time=10min&lt;&gt;5h)
-    -np		You didn't play the game
-    -fav		The game must be a favorite
-    -stores={n}	Filter by store name (ex:-stores=steam / -stores=steam,epic)
-    -status={n}	Filter by status name (ex:-status=played / -status=played,playing)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatSearchDescription">Szukaj w danych HowLongToBeat</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatSearchHint" xml:space="preserve">Parametry
+    -percent		Procent przejścia (np:-time=5h / -time=&lt;50min / -time=&gt;50s / -time=10min&lt;&gt;5h)
+    -np		Nie grałeś w tę grę
+    -fav		Ta gra musi być twoją ulubioną
+    -stores={n}	Filtruj wg nazwy sklepu (np:-stores=steam / -stores=steam,epic)
+    -status={n}	Filttruj wg nazwy statusu (np:-status=played / -status=played,playing)</sys:String>
 
 </ResourceDictionary>
