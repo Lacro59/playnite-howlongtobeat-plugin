@@ -69,7 +69,7 @@ Si aucun n'a ce statut, il prend le plus récent.</sys:String>
     <sys:String x:Key="LOCHowLongToBeatCompleted">Terminé</sys:String>
 
     <sys:String x:Key="LOCHltbOnlyReplays">Seulement les rejoués</sys:String>
-    <sys:String x:Key="LOCHltbOnlyNotPlayed">Uniquement non joué</sys:String>
+    <sys:String x:Key="LOCHltbOnlyNotPlayed">Non joué uniquement</sys:String>
 
     <sys:String x:Key="LOCHltbRemainingTime">Temps restant</sys:String>
 
