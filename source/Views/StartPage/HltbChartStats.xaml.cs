@@ -62,6 +62,8 @@ namespace HowLongToBeat.Views.StartPage
 
         private void Update()
         {
+            System.Threading.SpinWait.SpinUntil(() => PluginDatabase.IsLoaded, -1);
+
             ControlDataContext.Margin = PluginDatabase.PluginSettings.Settings.hltbChartStatsOptions.Margin;
             ControlDataContext.chartTitle = PluginDatabase.PluginSettings.Settings.hltbChartStatsOptions.ChartTitle;
             ControlDataContext.chartLabels = PluginDatabase.PluginSettings.Settings.hltbChartStatsOptions.ChartLabels;
@@ -82,7 +84,7 @@ namespace HowLongToBeat.Views.StartPage
 
         private void SetChartDataMonth(int axis = 15)
         {
-            if (PluginDatabase.Database.UserHltbData?.TitlesList != null)
+            if (PluginDatabase.Database?.UserHltbData?.TitlesList != null)
             {
                 LocalDateYMConverter localDateYMConverter = new LocalDateYMConverter();
 

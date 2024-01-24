@@ -6,7 +6,7 @@
              xmlns:controls="clr-namespace:HowLongToBeat.Controls"
              xmlns:local="clr-namespace:HowLongToBeat.Views"
              xmlns:converters="clr-namespace:CommonPlayniteShared.Converters"
-             mc:Ignorable="d" Width="750" Height="350"
+             mc:Ignorable="d" Width="750" Height="400"
              d:DataContext="{d:DesignInstance local:HowLongToBeatViewData}">
 
     <UserControl.Resources>
@@ -15,9 +15,9 @@
     
     <Grid Margin="10">
         <Grid.RowDefinitions>
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="10" />
             <RowDefinition Height="*" />
+            <RowDefinition Height="10" />
+            <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
         
         <DockPanel Grid.Row="0">
@@ -124,7 +124,7 @@
                 <RowDefinition Height="10" />
                 <RowDefinition Height="auto" />
                 <RowDefinition Height="10" />
-                <RowDefinition Height="*" />
+                <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
 
             <TextBlock Grid.Row="0" FontSize="24" FontWeight="Bold" Text="{DynamicResource LOCHowLongToBeatProgression}" 

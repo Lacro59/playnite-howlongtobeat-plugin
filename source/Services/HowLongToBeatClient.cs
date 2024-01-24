@@ -242,6 +242,7 @@ namespace HowLongToBeat.Services
         {
             if (UserId == 0)
             {
+                System.Threading.SpinWait.SpinUntil(() => PluginDatabase.IsLoaded, -1);
                 UserId = HowLongToBeat.PluginDatabase.Database.UserHltbData.UserId;
             }
 
