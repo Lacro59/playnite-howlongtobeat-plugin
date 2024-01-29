@@ -219,7 +219,7 @@ namespace HowLongToBeat.Controls
                         }
                     }
 
-                    if ((HltbData?.GameHltbData?.MainStory != null && HltbData.GameHltbData.MainExtra > 0 || (titleList?.HltbUserData?.MainExtra != null && titleList?.HltbUserData?.MainExtra > 0 && ShowUserData))
+                    if ((HltbData?.GameHltbData?.MainStory != null && HltbData.GameHltbData.MainExtra > 0) || (titleList?.HltbUserData?.MainExtra != null && titleList?.HltbUserData?.MainExtra > 0 && ShowUserData))
                     {
                         ElIndicator += 1;
 
