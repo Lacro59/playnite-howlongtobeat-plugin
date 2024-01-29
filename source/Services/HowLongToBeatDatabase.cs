@@ -72,11 +72,11 @@ namespace HowLongToBeat.Services
 
         public override void GetSelectData()
         {
-            var View = new OptionsDownloadData(PlayniteApi);
+            OptionsDownloadData View = new OptionsDownloadData(PlayniteApi);
             Window windowExtension = PlayniteUiHelper.CreateExtensionWindow(PlayniteApi, PluginName + " - " + resources.GetString("LOCCommonSelectData"), View);
             windowExtension.ShowDialog();
 
-            var PlayniteDb = View.GetFilteredGames();
+            List<Game> PlayniteDb = View.GetFilteredGames();
             bool OnlyMissing = View.GetOnlyMissing();
 
             if (PlayniteDb == null)
@@ -268,10 +268,10 @@ namespace HowLongToBeat.Services
 
                 string CancelText = string.Empty;
 
-                var db = Database.Where(x => x.HasData);
+                IEnumerable<GameHowLongToBeat> db = Database.Where(x => x.HasData);
                 activateGlobalProgress.ProgressMaxValue = (double)db.Count();
 
-                foreach (var item in db)
+                foreach (GameHowLongToBeat item in db)
                 {
                     if (activateGlobalProgress.CancelToken.IsCancellationRequested)
                     {
@@ -295,7 +295,7 @@ namespace HowLongToBeat.Services
 
         private void RefreshElement(Guid Id)
         {
-            var loadedItem = Get(Id, true);
+            GameHowLongToBeat loadedItem = Get(Id, true);
             List<HltbDataUser> dataSearch = howLongToBeatClient.Search(loadedItem.GetData().Name);
 
             HltbDataUser webDataSearch = dataSearch.Find(x => x.Id == loadedItem.GetData().Id);
@@ -485,11 +485,9 @@ namespace HowLongToBeat.Services
         {
             try
             {
-                if (Database.UserHltbData.TitlesList == null || Database.UserHltbData.TitlesList.Count == 0)
-                {
-                    return null;
-                }
-                return Database.UserHltbData.TitlesList.Find(x => x.Id == HltbId);
+                return Database.UserHltbData.TitlesList == null || Database.UserHltbData.TitlesList.Count == 0
+                    ? null
+                    : Database.UserHltbData.TitlesList.Find(x => x.Id == HltbId);
             }
             catch (Exception ex)
             {
@@ -504,24 +502,18 @@ namespace HowLongToBeat.Services
             try
             {
                 List<TitleList> all = GetUserHltbDataAll(HltbId);
-                if (all?.Count == 0)
+                if (all == null || all.Count == 0)
                 {
                     return null;
                 }
 
-                if (UserGameId.IsNullOrEmpty())
-                {
-                    return all.OrderByDescending(x => x.GameStatuses.Where(y => y.Status == StatusType.Playing)?.Count() > 0).ThenByDescending(x => x.LastUpdate).First();
-                }
-                else
-                {
-                    return all.Where(x => x.UserGameId.IsEqual(UserGameId)).FirstOrDefault();
-                }
+                return UserGameId.IsNullOrEmpty()
+                    ? all.OrderByDescending(x => x.GameStatuses.Where(y => y.Status == StatusType.Playing)?.Count() > 0).ThenByDescending(x => x.LastUpdate).First()
+                    : all.Where(x => x.UserGameId.IsEqual(UserGameId)).FirstOrDefault();
             }
             catch (Exception ex)
             {
-                Common.LogError(ex, true);
-                logger.Warn($"No HltbData for {HltbId}");
+                Common.LogError(ex, false, $"No HltbData for {HltbId}");
                 return null;
             }
         }
@@ -530,16 +522,13 @@ namespace HowLongToBeat.Services
         {
             try
             {
-                if (Database.UserHltbData.TitlesList == null || Database.UserHltbData.TitlesList.Count == 0)
-                {
-                    return null;
-                }
-                return Database.UserHltbData.TitlesList.FindAll(x => x.Id == HltbId).ToList();
+                return Database.UserHltbData.TitlesList == null || Database.UserHltbData.TitlesList.Count == 0
+                    ? null
+                    : Database.UserHltbData.TitlesList.FindAll(x => x.Id == HltbId).ToList();
             }
             catch (Exception ex)
             {
-                Common.LogError(ex, true);
-                logger.Warn($"No HltbData for {HltbId}");
+                Common.LogError(ex, false, $"No HltbData for {HltbId}");
                 return null;
             }
         }
@@ -646,8 +635,8 @@ namespace HowLongToBeat.Services
                         if (match != null) 
                         {
                             platform = match.GetDescription();
-                        } 
-                        else 
+                        }
+                        else
                         {
                             platform = HltbPlatform.PC.GetDescription();
 

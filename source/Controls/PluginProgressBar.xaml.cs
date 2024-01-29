@@ -192,7 +192,7 @@ namespace HowLongToBeat.Controls
                 {
                     HltbDataUser HltbData = gameHowLongToBeat.GetData();
 
-                    if (HltbData.GameHltbData.MainStory > 0 || (titleList?.HltbUserData?.MainStory > 0 && ShowUserData))
+                    if ((HltbData?.GameHltbData?.MainStory != null && HltbData.GameHltbData.MainStory > 0) || (titleList?.HltbUserData?.MainStory != null && titleList?.HltbUserData?.MainStory > 0 && ShowUserData))
                     {
                         ElIndicator += 1;
 
@@ -219,7 +219,7 @@ namespace HowLongToBeat.Controls
                         }
                     }
 
-                    if (HltbData.GameHltbData.MainExtra > 0 || (titleList?.HltbUserData?.MainExtra > 0 && ShowUserData))
+                    if ((HltbData?.GameHltbData?.MainStory != null && HltbData.GameHltbData.MainExtra > 0 || (titleList?.HltbUserData?.MainExtra != null && titleList?.HltbUserData?.MainExtra > 0 && ShowUserData))
                     {
                         ElIndicator += 1;
 
@@ -246,7 +246,7 @@ namespace HowLongToBeat.Controls
                         }
                     }
 
-                    if (HltbData.GameHltbData.Completionist != 0 || (titleList?.HltbUserData?.Completionist > 0 && ShowUserData))
+                    if ((HltbData?.GameHltbData?.Completionist != null && HltbData.GameHltbData.Completionist != 0) || (titleList?.HltbUserData?.Completionist != null && titleList?.HltbUserData?.Completionist > 0 && ShowUserData))
                     {
                         ElIndicator += 1;
 
@@ -273,7 +273,7 @@ namespace HowLongToBeat.Controls
                         }
                     }
 
-                    if (HltbData.GameHltbData.Solo != 0 || (titleList?.HltbUserData?.Solo > 0 && ShowUserData))
+                    if ((HltbData?.GameHltbData?.Solo != null && HltbData.GameHltbData.Solo != 0) || (titleList?.HltbUserData?.Solo != null && titleList?.HltbUserData?.Solo > 0 && ShowUserData))
                     {
                         ElIndicator += 1;
 
@@ -300,7 +300,7 @@ namespace HowLongToBeat.Controls
                         }
                     }
 
-                    if (HltbData.GameHltbData.CoOp != 0 || (titleList?.HltbUserData?.CoOp > 0 && ShowUserData))
+                    if ((HltbData?.GameHltbData?.CoOp != null && HltbData.GameHltbData.CoOp != 0) || (titleList?.HltbUserData?.CoOp != null && titleList?.HltbUserData?.CoOp > 0 && ShowUserData))
                     {
                         ElIndicator += 1;
 
@@ -327,7 +327,7 @@ namespace HowLongToBeat.Controls
                         }
                     }
 
-                    if (HltbData.GameHltbData.Vs != 0 || (titleList?.HltbUserData?.Vs > 0 && ShowUserData))
+                    if ((HltbData?.GameHltbData?.Vs != null && HltbData.GameHltbData.Vs != 0) || (titleList?.HltbUserData?.Vs != null && titleList?.HltbUserData?.Vs > 0 && ShowUserData))
                     {
                         ElIndicator += 1;
 
