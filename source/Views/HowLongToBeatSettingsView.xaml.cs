@@ -62,14 +62,7 @@ namespace HowLongToBeat.Views
 
             ThumbSolidColorBrush = settings.ThumbSolidColorBrush;
             ThumbLinearGradient = settings.ThumbLinearGradient;
-            if (ThumbSolidColorBrush != null)
-            {
-                tbThumb.Background = ThumbSolidColorBrush;
-            }
-            else
-            {
-                tbThumb.Background = ThumbLinearGradient.ToLinearGradientBrush;
-            }
+            tbThumb.Background = ThumbSolidColorBrush != null ? ThumbSolidColorBrush : (Brush)ThumbLinearGradient.ToLinearGradientBrush;
 
 
             FirstColorBrush = settings.FirstColorBrush;

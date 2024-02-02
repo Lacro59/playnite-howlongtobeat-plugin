@@ -206,7 +206,7 @@ namespace HowLongToBeat.Controls
                             MaxValue = HltbData.GameHltbData.MainStory;
                         }
 
-                        color = PluginDatabase.PluginSettings.Settings.FirstColorBrush == null
+                        color = PluginDatabase.PluginSettings.Settings.FirstLinearGradient != null
                             ? (dynamic)PluginDatabase.PluginSettings.Settings.FirstLinearGradient.ToLinearGradientBrush
                             : (dynamic)PluginDatabase.PluginSettings.Settings.FirstColorBrush;
 
@@ -233,7 +233,7 @@ namespace HowLongToBeat.Controls
                             MaxValue = HltbData.GameHltbData.MainExtra;
                         }
 
-                        color = PluginDatabase.PluginSettings.Settings.SecondColorBrush == null
+                        color = PluginDatabase.PluginSettings.Settings.SecondLinearGradient != null
                             ? (dynamic)PluginDatabase.PluginSettings.Settings.SecondLinearGradient.ToLinearGradientBrush
                             : (dynamic)PluginDatabase.PluginSettings.Settings.SecondColorBrush;
 
@@ -260,7 +260,7 @@ namespace HowLongToBeat.Controls
                             MaxValue = HltbData.GameHltbData.Completionist;
                         }
 
-                        color = PluginDatabase.PluginSettings.Settings.ThirdColorBrush == null
+                        color = PluginDatabase.PluginSettings.Settings.ThirdLinearGradient != null
                             ? (dynamic)PluginDatabase.PluginSettings.Settings.ThirdLinearGradient.ToLinearGradientBrush
                             : (dynamic)PluginDatabase.PluginSettings.Settings.ThirdColorBrush;
 
@@ -287,7 +287,7 @@ namespace HowLongToBeat.Controls
                             MaxValue = HltbData.GameHltbData.Solo;
                         }
 
-                        color = PluginDatabase.PluginSettings.Settings.FirstMultiColorBrush == null
+                        color = PluginDatabase.PluginSettings.Settings.FirstMultiLinearGradient != null
                             ? (dynamic)PluginDatabase.PluginSettings.Settings.FirstMultiLinearGradient.ToLinearGradientBrush
                             : (dynamic)PluginDatabase.PluginSettings.Settings.FirstMultiColorBrush;
 
@@ -314,7 +314,7 @@ namespace HowLongToBeat.Controls
                             MaxValue = HltbData.GameHltbData.CoOp;
                         }
 
-                        color = PluginDatabase.PluginSettings.Settings.SecondMultiColorBrush == null
+                        color = PluginDatabase.PluginSettings.Settings.SecondMultiLinearGradient != null
                             ? (dynamic)PluginDatabase.PluginSettings.Settings.SecondMultiLinearGradient.ToLinearGradientBrush
                             : (dynamic)PluginDatabase.PluginSettings.Settings.SecondMultiColorBrush;
 
@@ -341,7 +341,7 @@ namespace HowLongToBeat.Controls
                             MaxValue = HltbData.GameHltbData.Vs;
                         }
 
-                        color = PluginDatabase.PluginSettings.Settings.ThirdMultiColorBrush == null
+                        color = PluginDatabase.PluginSettings.Settings.ThirdMultiLinearGradient != null
                             ? (dynamic)PluginDatabase.PluginSettings.Settings.ThirdMultiLinearGradient.ToLinearGradientBrush
                             : (dynamic)PluginDatabase.PluginSettings.Settings.ThirdMultiColorBrush;
 
