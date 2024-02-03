@@ -62,33 +62,33 @@ namespace HowLongToBeat.Views
 
             ThumbSolidColorBrush = settings.ThumbSolidColorBrush;
             ThumbLinearGradient = settings.ThumbLinearGradient;
-            tbThumb.Background = ThumbSolidColorBrush != null ? ThumbSolidColorBrush : (Brush)ThumbLinearGradient.ToLinearGradientBrush;
+            tbThumb.Background = ThumbLinearGradient?.ToLinearGradientBrush == null ? ThumbSolidColorBrush : (Brush)ThumbLinearGradient.ToLinearGradientBrush;
 
 
             FirstColorBrush = settings.FirstColorBrush;
             FirstLinearGradient = settings.FirstLinearGradient;
-            tbColorFirst.Background = FirstColorBrush != null ? FirstColorBrush : (Brush)FirstLinearGradient.ToLinearGradientBrush;
+            tbColorFirst.Background = FirstLinearGradient?.ToLinearGradientBrush == null ? FirstColorBrush : (Brush)FirstLinearGradient.ToLinearGradientBrush;
 
             SecondColorBrush = settings.SecondColorBrush;
             SecondLinearGradient = settings.SecondLinearGradient;
-            tbColorSecond.Background = SecondColorBrush != null ? SecondColorBrush : (Brush)SecondLinearGradient.ToLinearGradientBrush;
+            tbColorSecond.Background = SecondLinearGradient?.ToLinearGradientBrush == null ? SecondColorBrush : (Brush)SecondLinearGradient.ToLinearGradientBrush;
 
             ThirdColorBrush = settings.ThirdColorBrush;
             ThirdLinearGradient = settings.ThirdLinearGradient;
-            tbColorThird.Background = ThirdColorBrush != null ? ThirdColorBrush : (Brush)ThirdLinearGradient.ToLinearGradientBrush;
+            tbColorThird.Background = ThirdLinearGradient?.ToLinearGradientBrush == null ? ThirdColorBrush : (Brush)ThirdLinearGradient.ToLinearGradientBrush;
 
 
             FirstMultiColorBrush = settings.FirstMultiColorBrush;
             FirstMultiLinearGradient = settings.FirstMultiLinearGradient;
-            tbColorFirstMulti.Background = FirstMultiColorBrush != null ? FirstMultiColorBrush : (Brush)FirstMultiLinearGradient.ToLinearGradientBrush;
+            tbColorFirstMulti.Background = FirstMultiLinearGradient?.ToLinearGradientBrush == null ? FirstMultiColorBrush : (Brush)FirstMultiLinearGradient.ToLinearGradientBrush;
 
             SecondMultiColorBrush = settings.SecondMultiColorBrush;
             SecondMultiLinearGradient = settings.SecondMultiLinearGradient;
-            tbColorSecondMulti.Background = SecondMultiColorBrush != null ? SecondMultiColorBrush : (Brush)SecondMultiLinearGradient.ToLinearGradientBrush;
+            tbColorSecondMulti.Background = SecondMultiLinearGradient?.ToLinearGradientBrush == null ? SecondMultiColorBrush : (Brush)SecondMultiLinearGradient.ToLinearGradientBrush;
 
             ThirdMultiColorBrush = settings.ThirdMultiColorBrush;
             ThirdMultiLinearGradient = settings.ThirdMultiLinearGradient;
-            tbColorThirdMulti.Background = ThirdMultiColorBrush != null ? ThirdMultiColorBrush : (Brush)ThirdMultiLinearGradient.ToLinearGradientBrush;
+            tbColorThirdMulti.Background = ThirdMultiLinearGradient?.ToLinearGradientBrush == null ? ThirdMultiColorBrush : (Brush)ThirdMultiLinearGradient.ToLinearGradientBrush;
 
 
             spSettings.Visibility = Visibility.Visible;
