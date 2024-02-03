@@ -548,7 +548,7 @@ namespace HowLongToBeat.Views
 
             if ((bool)PART_OnlyNotPlayed.IsChecked)
             {
-                userViewDataContext.ItemsSource = userViewDataContext.ItemsSource.Where(x => x.Completion == null).ToObservable();
+                userViewDataContext.ItemsSource = userViewDataContext.ItemsSource.Where(x => x.CurrentTime == 0).ToObservable();
             }
 
             ListViewGames.Sorting();
