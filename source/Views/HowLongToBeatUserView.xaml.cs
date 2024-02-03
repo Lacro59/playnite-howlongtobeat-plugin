@@ -62,18 +62,6 @@ namespace HowLongToBeat.Views
                 lvView.Columns.RemoveAt(lvView.Columns.Count - 1);
             }
 
-
-            ListViewDataGames.ItemsSource = PluginDatabase.Database.Where(x => x.HasData && !x.HasDataEmpty && !x.Hidden)
-              .Select(x => new PlayniteData
-              {
-                  GameContext = PluginDatabase.PlayniteApi.Database.Games.Get(x.Id),
-                  ViewProgressBar = PluginDatabase.PluginSettings.Settings.EnableProgressBarInDataView
-              }).ToObservable();
-
-            CollectionView view = (CollectionView)CollectionViewSource.GetDefaultView(ListViewDataGames.ItemsSource);
-            view.Filter = PlayniteDataFilter;
-
-
             if (PluginDatabase.Database.UserHltbData?.TitlesList?.Count != 0)
             {
                 if (PluginDatabase.Database.UserHltbData?.TitlesList != null)
@@ -109,13 +97,24 @@ namespace HowLongToBeat.Views
                 }
 
 
-                SetChartDataStore();
-                SetChartDataYear();
-                SetChartData();
-                SetStats();
+                PART_UserDataLoad.Visibility = Visibility.Visible;
+                PART_Data.Visibility = Visibility.Hidden;
+                Task.Run(() =>
+                {
+                    SetChartDataStore();
+                    SetChartDataYear();
+                    SetChartData();
+                    SetStats();
+
+                    Application.Current.Dispatcher?.Invoke(() => 
+                    { 
+                        PART_UserDataLoad.Visibility = Visibility.Collapsed;
+                        PART_Data.Visibility = Visibility.Visible;
+                    });
+                });
 
 
-                PART_PlayniteData.IsVisibleChanged += PART_PlayniteData_IsVisibleChanged;
+                PART_LvDataContener.IsVisibleChanged += PART_PlayniteData_IsVisibleChanged;
             }
             else
             {
@@ -128,16 +127,8 @@ namespace HowLongToBeat.Views
 
         private void PART_BtRefreshUserData_Click(object sender, RoutedEventArgs e)
         {
-            PART_ChartUserDataYear.Series = null;
-            PART_ChartUserDataYearLabelsX.Labels = null;
-            PART_ChartUserData.Series = null;
-            PART_ChartUserDataLabelsX.Labels = null;
-
-            PART_CompletionsCount.Content = string.Empty;
-            PART_TimeSinglePlayer.Content = string.Empty;
-            PART_TimeCoOp.Content = string.Empty;
-            PART_TimeVs.Content = string.Empty;
-
+            //PART_UserDataLoad.Visibility = Visibility.Visible;
+            PART_Data.Visibility = Visibility.Hidden;
 
             PluginDatabase.RefreshUserData();
 
@@ -146,11 +137,19 @@ namespace HowLongToBeat.Views
             userViewDataContext.ItemsSource = PluginDatabase.Database.UserHltbData.TitlesList.ToObservable();
             ListViewGames.Sorting();
 
+            Task.Run(() =>
+            {
+                SetChartDataStore();
+                SetChartDataYear();
+                SetChartData();
+                SetStats();
 
-            SetChartDataStore();
-            SetChartDataYear();
-            SetChartData();
-            SetStats();
+                Application.Current.Dispatcher?.Invoke(() =>
+                {
+                    //PART_UserDataLoad.Visibility = Visibility.Collapsed;
+                    PART_Data.Visibility = Visibility.Visible;
+                });
+            });
             SetFilter();
         }
 
@@ -159,119 +158,28 @@ namespace HowLongToBeat.Views
         {
             if (PluginDatabase.Database.UserHltbData?.TitlesList != null)
             {
-                // Default data
-                string[] ChartDataLabels = new string[axis];
-                ChartValues<CustomerForSingle> ChartDataSeries = new ChartValues<CustomerForSingle>();
-
-                for (int i = (axis - 1); i >= 0; i--)
+                Task.Run(() =>
                 {
-                    ChartDataLabels[((axis - 1) - i)] = DateTime.Now.AddYears(-i).ToString("yyyy");
-                    ChartDataSeries.Add(new CustomerForSingle
-                    {
-                        Name = DateTime.Now.AddYears(-i).ToString("yyyy"),
-                        Values = 0
-                    });
-                }
+                    // Default data
+                    string[] ChartDataLabels = new string[axis];
+                    ChartValues<CustomerForSingle> ChartDataSeries = new ChartValues<CustomerForSingle>();
 
-
-                // Set data
-                foreach (TitleList titleList in PluginDatabase.Database.UserHltbData.TitlesList)
-                {
-                    if (titleList?.Completion != null)
+                    for (int i = (axis - 1); i >= 0; i--)
                     {
-                        string tempDateTime = ((DateTime)titleList.Completion).ToString("yyyy");
-                        int index = Array.IndexOf(ChartDataLabels, tempDateTime);
-                        if (index > 0)
+                        ChartDataLabels[((axis - 1) - i)] = DateTime.Now.AddYears(-i).ToString("yyyy");
+                        ChartDataSeries.Add(new CustomerForSingle
                         {
-                            ChartDataSeries[index].Values += 1;
-                        }
+                            Name = DateTime.Now.AddYears(-i).ToString("yyyy"),
+                            Values = 0
+                        });
                     }
-                }
 
-
-                // Create chart
-                SeriesCollection ChartSeriesCollection = new SeriesCollection();
-                ChartSeriesCollection.Add(new ColumnSeries
-                {
-                    Title = string.Empty,
-                    Values = ChartDataSeries
-                });
-
-
-                PART_ChartUserDataYear.Series = ChartSeriesCollection;
-                PART_ChartUserDataYearLabelsX.Labels = ChartDataLabels;
-            }
-        }
-
-        private void SetChartDataStore()
-        {
-            if (PluginDatabase.Database.UserHltbData?.TitlesList != null)
-            {
-                var dataLabel = PluginDatabase.Database.UserHltbData.TitlesList
-                    .Where(x => x.GameStatuses.Where(y => y.Status == StatusType.Completed).Count() > 0)
-                    .GroupBy(x => x.Storefront)
-                    .Select(x => new { Storefront = (x.Key.IsNullOrEmpty()) ? "Playnite" : x.Key, Count = x.Count() })
-                    .OrderBy(x => x.Storefront)
-                    .ToList();
-
-                string[] ChartDataLabels = new string[dataLabel.Count];
-                ChartValues<CustomerForSingle> ChartDataSeries = new ChartValues<CustomerForSingle>();
-
-                for (int i = 0; i < dataLabel.Count; i++)
-                {
-                    ChartDataLabels[i] = dataLabel[i].Storefront;
-                    ChartDataSeries.Add(new CustomerForSingle
-                    {
-                        Name = dataLabel[i].Storefront,
-                        Values = dataLabel[i].Count
-                    });
-                }
-
-                // Create chart
-                SeriesCollection ChartSeriesCollection = new SeriesCollection();
-                ChartSeriesCollection.Add(new ColumnSeries
-                {
-                    Title = string.Empty,
-                    Values = ChartDataSeries
-                });
-
-
-                PART_ChartUserDataStore.Series = ChartSeriesCollection;
-                PART_ChartUserDataStoreLabelsX.Labels = ChartDataLabels;
-            }
-        }
-
-        private void SetChartData()
-        {
-            if (PluginDatabase.Database.UserHltbData?.TitlesList != null)
-            {
-                LocalDateYMConverter localDateYMConverter = new LocalDateYMConverter();
-
-
-                // Default data
-                string[] ChartDataLabels = new string[16];
-                ChartValues<CustomerForSingle> ChartDataSeries = new ChartValues<CustomerForSingle>();
-
-
-                for (int i = 15; i >= 0; i--)
-                {
-                    ChartDataLabels[(15 - i)] = (string)localDateYMConverter.Convert(DateTime.Now.AddMonths(-i), null, null, null);
-                    ChartDataSeries.Add(new CustomerForSingle
-                    {
-                        Name = (string)localDateYMConverter.Convert(DateTime.Now.AddMonths(-i), null, null, null),
-                        Values = 0
-                    });
-                }
-
-
-                // Set data
-                if (PluginDatabase.Database.UserHltbData?.TitlesList != null)
-                {
+                    // Set data
                     foreach (TitleList titleList in PluginDatabase.Database.UserHltbData.TitlesList)
                     {
                         if (titleList?.Completion != null)
                         {
-                            string tempDateTime = (string)localDateYMConverter.Convert((DateTime)titleList.Completion, null, null, null);
+                            string tempDateTime = ((DateTime)titleList.Completion).ToString("yyyy");
                             int index = Array.IndexOf(ChartDataLabels, tempDateTime);
                             if (index > 0)
                             {
@@ -279,20 +187,120 @@ namespace HowLongToBeat.Views
                             }
                         }
                     }
-                }
 
+                    // Create chart
+                    SeriesCollection ChartSeriesCollection = new SeriesCollection();
+                    Application.Current.Dispatcher?.Invoke(() =>
+                    {
+                        ChartSeriesCollection.Add(new ColumnSeries
+                        {
+                            Title = string.Empty,
+                            Values = ChartDataSeries
+                        });
+                    });
 
-                // Create chart
-                SeriesCollection ChartSeriesCollection = new SeriesCollection();
-                ChartSeriesCollection.Add(new LineSeries
-                {
-                    Title = string.Empty,
-                    Values = ChartDataSeries
+                    userViewDataContext.ChartUserDataYear_Series = ChartSeriesCollection;
+                    userViewDataContext.ChartUserDataYearLabelsX_Labels = ChartDataLabels;
                 });
+            }
+        }
 
+        private void SetChartDataStore()
+        {
+            if (PluginDatabase.Database.UserHltbData?.TitlesList != null)
+            {
+                Task.Run(() => 
+                { 
+                    var dataLabel = PluginDatabase.Database.UserHltbData.TitlesList
+                        .Where(x => x.GameStatuses.Where(y => y.Status == StatusType.Completed).Count() > 0)
+                        .GroupBy(x => x.Storefront)
+                        .Select(x => new { Storefront = x.Key.IsNullOrEmpty() ? "Playnite" : x.Key, Count = x.Count() })
+                        .OrderBy(x => x.Storefront)
+                        .ToList();
 
-                PART_ChartUserData.Series = ChartSeriesCollection;
-                PART_ChartUserDataLabelsX.Labels = ChartDataLabels;
+                    string[] ChartDataLabels = new string[dataLabel.Count];
+                    ChartValues<CustomerForSingle> ChartDataSeries = new ChartValues<CustomerForSingle>();
+
+                    for (int i = 0; i < dataLabel.Count; i++)
+                    {
+                        ChartDataLabels[i] = dataLabel[i].Storefront;
+                        ChartDataSeries.Add(new CustomerForSingle
+                        {
+                            Name = dataLabel[i].Storefront,
+                            Values = dataLabel[i].Count
+                        });
+                    }
+
+                    // Create chart
+                    SeriesCollection ChartSeriesCollection = new SeriesCollection();
+                    Application.Current.Dispatcher?.Invoke(() => 
+                    {                        
+                        ChartSeriesCollection.Add(new ColumnSeries
+                        {
+                            Title = string.Empty,
+                            Values = ChartDataSeries
+                        });
+                    });
+
+                    userViewDataContext.ChartUserDataStore_Series = ChartSeriesCollection;
+                    userViewDataContext.ChartUserDataStoreLabelsX_Labels = ChartDataLabels;
+                });
+            }
+        }
+
+        private void SetChartData()
+        {
+            if (PluginDatabase.Database.UserHltbData?.TitlesList != null)
+            {
+                Task.Run(() =>
+                {
+                    LocalDateYMConverter localDateYMConverter = new LocalDateYMConverter();
+
+                    // Default data
+                    string[] ChartDataLabels = new string[16];
+                    ChartValues<CustomerForSingle> ChartDataSeries = new ChartValues<CustomerForSingle>();
+
+                    for (int i = 15; i >= 0; i--)
+                    {
+                        ChartDataLabels[(15 - i)] = (string)localDateYMConverter.Convert(DateTime.Now.AddMonths(-i), null, null, null);
+                        ChartDataSeries.Add(new CustomerForSingle
+                        {
+                            Name = (string)localDateYMConverter.Convert(DateTime.Now.AddMonths(-i), null, null, null),
+                            Values = 0
+                        });
+                    }
+
+                    // Set data
+                    if (PluginDatabase.Database.UserHltbData?.TitlesList != null)
+                    {
+                        foreach (TitleList titleList in PluginDatabase.Database.UserHltbData.TitlesList)
+                        {
+                            if (titleList?.Completion != null)
+                            {
+                                string tempDateTime = (string)localDateYMConverter.Convert((DateTime)titleList.Completion, null, null, null);
+                                int index = Array.IndexOf(ChartDataLabels, tempDateTime);
+                                if (index > 0)
+                                {
+                                    ChartDataSeries[index].Values += 1;
+                                }
+                            }
+                        }
+                    }
+
+                    // Create chart
+                    SeriesCollection ChartSeriesCollection = new SeriesCollection();
+                    Application.Current.Dispatcher?.Invoke(() =>
+                    {
+                        ChartSeriesCollection.Add(new ColumnSeries
+                        {
+                            Title = string.Empty,
+                            Values = ChartDataSeries
+                        });
+                    });
+
+                    userViewDataContext.ChartUserData_Series = ChartSeriesCollection;
+                    userViewDataContext.ChartUserDataLabelsX_Labels = ChartDataLabels;
+                });
             }
         }
 
@@ -300,66 +308,71 @@ namespace HowLongToBeat.Views
         {
             if (PluginDatabase.Database.UserHltbData?.TitlesList != null)
             {
-                List<TitleList> titleLists = PluginDatabase.Database.UserHltbData.TitlesList;
-
-                PART_CompletionsCount.Content = titleLists.Where(x => x.GameStatuses.Where(y => y.Status == StatusType.Completed).Count() > 0).Count();
-
-                long TimeSinglePlayer = 0;
-                long TimeCoOp = 0;
-                long TimeVs = 0;
-
-                foreach (TitleList titleList in titleLists)
+                Task.Run(() =>
                 {
-                    if (titleList.HltbUserData.Completionist != 0)
+                    List<TitleList> titleLists = PluginDatabase.Database.UserHltbData.TitlesList;
+
+                    userViewDataContext.CompletionsCount = titleLists.Where(x => x.GameStatuses.Where(y => y.Status == StatusType.Completed).Count() > 0).Count().ToString();
+
+                    long TimeSinglePlayer = 0;
+                    long TimeCoOp = 0;
+                    long TimeVs = 0;
+
+                    foreach (TitleList titleList in titleLists)
                     {
-                        TimeSinglePlayer += titleList.HltbUserData.Completionist;
+                        if (titleList.HltbUserData.Completionist != 0)
+                        {
+                            TimeSinglePlayer += titleList.HltbUserData.Completionist;
+                        }
+                        else if (titleList.HltbUserData.MainExtra != 0)
+                        {
+                            TimeSinglePlayer += titleList.HltbUserData.MainExtra;
+                        }
+                        else if (titleList.HltbUserData.MainStory != 0)
+                        {
+                            TimeSinglePlayer += titleList.HltbUserData.MainStory;
+                        }
+
+                        TimeCoOp += titleList.HltbUserData.CoOp;
+                        TimeCoOp += titleList.HltbUserData.Vs;
                     }
-                    else if (titleList.HltbUserData.MainExtra != 0)
-                    {
-                        TimeSinglePlayer += titleList.HltbUserData.MainExtra;
-                    }
-                    else if (titleList.HltbUserData.MainStory != 0)
-                    {
-                        TimeSinglePlayer += titleList.HltbUserData.MainStory;
-                    }
 
-                    TimeCoOp += titleList.HltbUserData.CoOp;
-                    TimeCoOp += titleList.HltbUserData.Vs;
-                }
+                    PlayTimeToStringConverterWithZero converter = new PlayTimeToStringConverterWithZero();
 
-                PlayTimeToStringConverterWithZero converter = new PlayTimeToStringConverterWithZero();
-
-                PART_TimeSinglePlayer.Content = (string)converter.Convert(TimeSinglePlayer, null, null, CultureInfo.CurrentCulture);
-                PART_TimeCoOp.Content = (string)converter.Convert(TimeCoOp, null, null, CultureInfo.CurrentCulture);
-                PART_TimeVs.Content = (string)converter.Convert(TimeVs, null, null, CultureInfo.CurrentCulture);
+                    userViewDataContext.TimeSinglePlayer = (string)converter.Convert(TimeSinglePlayer, null, null, CultureInfo.CurrentCulture);
+                    userViewDataContext.TimeCoOp = (string)converter.Convert(TimeCoOp, null, null, CultureInfo.CurrentCulture);
+                    userViewDataContext.TimeVs = (string)converter.Convert(TimeVs, null, null, CultureInfo.CurrentCulture);
 
 
-                PART_CountGameBeatenBeforeTime.Content = PluginDatabase.GetCountGameBeatenBeforeTime();
-                PART_CountGameBeatenAfterTime.Content = PluginDatabase.GetCountGameBeatenAfterTime();
-                PART_AvgGameByMonth.Content = string.Format("{0:0.0}", PluginDatabase.GetAvgGameByMonth());
-                PART_AvgTimeByGame.Content = (string)converter.Convert(PluginDatabase.GetAvgTimeByGame(), null, null, CultureInfo.CurrentCulture);
-                PART_CountGameBeatenReplays.Content = PluginDatabase.GetCountGameBeatenReplays();
-                PART_CountGameRetired.Content = PluginDatabase.GetCountGameRetired();
+                    userViewDataContext.CountGameBeatenBeforeTime = PluginDatabase.GetCountGameBeatenBeforeTime().ToString();
+                    userViewDataContext.CountGameBeatenAfterTime = PluginDatabase.GetCountGameBeatenAfterTime().ToString();
+                    userViewDataContext.AvgGameByMonth = string.Format("{0:0.0}", PluginDatabase.GetAvgGameByMonth()).ToString();
+                    userViewDataContext.AvgTimeByGame = (string)converter.Convert(PluginDatabase.GetAvgTimeByGame(), null, null, CultureInfo.CurrentCulture);
+                    userViewDataContext.CountGameBeatenReplays = PluginDatabase.GetCountGameBeatenReplays().ToString();
+                    userViewDataContext.CountGameRetired = PluginDatabase.GetCountGameRetired().ToString();
+                });
             }
         }
 
         private void SetPlayniteData()
         {
-            CollectionViewSource.GetDefaultView(ListViewDataGames.ItemsSource).Refresh();
+            //PART_DataLoad.Visibility = Visibility.Visible;
+            //PART_LvDataContener.Visibility = Visibility.Hidden;
 
-            //ListViewDataGames.ItemsSource = null;
-            //ObservableCollection<PlayniteData> PlayniteData = null;
-            //
-            //PlayniteData = PluginDatabase.Database.Where(x => x.HasData && !x.HasDataEmpty && !x.Hidden
-            //                            && ((bool)PART_FilteredGames.IsChecked ? API.Instance.MainView.FilteredGames.Find(y => y.Id == x.Id) != null : true)
-            //                            && ((bool)PART_HidePlayedGames.IsChecked ? x.Playtime == 0 : true))
-            //      .Select(x => new PlayniteData
-            //      {
-            //          GameContext = PluginDatabase.PlayniteApi.Database.Games.Get(x.Id),
-            //          ViewProgressBar = PluginDatabase.PluginSettings.Settings.EnableProgressBarInDataView
-            //      }).ToObservable();
-            //
-            //ListViewDataGames.ItemsSource = PlayniteData;
+            if (ListViewDataGames.ItemsSource == null)
+            {
+                ListViewDataGames.ItemsSource = PluginDatabase.Database.Where(x => x.HasData && !x.HasDataEmpty && !x.Hidden)
+                      .Select(x => new PlayniteData
+                      {
+                          GameContext = PluginDatabase.PlayniteApi.Database.Games.Get(x.Id),
+                          ViewProgressBar = PluginDatabase.PluginSettings.Settings.EnableProgressBarInDataView
+                      }).ToObservable();
+            }
+            
+            CollectionView view = (CollectionView)CollectionViewSource.GetDefaultView(ListViewDataGames.ItemsSource);
+            view.Filter = PlayniteDataFilter;
+            
+            CollectionViewSource.GetDefaultView(ListViewDataGames.ItemsSource).Refresh();
             ListViewDataGames.Sorting();
         }
 
@@ -651,5 +664,59 @@ namespace HowLongToBeat.Views
     {
         private ObservableCollection<TitleList> _ItemsSource = new ObservableCollection<TitleList>();
         public ObservableCollection<TitleList> ItemsSource { get => _ItemsSource; set => SetValue(ref _ItemsSource, value); }
+
+
+        private SeriesCollection _ChartUserDataStore_Series = new SeriesCollection();
+        public SeriesCollection ChartUserDataStore_Series { get => _ChartUserDataStore_Series; set => SetValue(ref _ChartUserDataStore_Series, value); }
+
+        private string[] _ChartUserDataStoreLabelsX_Labels = new string[0];
+        public string[] ChartUserDataStoreLabelsX_Labels { get => _ChartUserDataStoreLabelsX_Labels; set => SetValue(ref _ChartUserDataStoreLabelsX_Labels, value); }
+
+
+        private SeriesCollection _ChartUserDataYear_Series = new SeriesCollection();
+        public SeriesCollection ChartUserDataYear_Series { get => _ChartUserDataYear_Series; set => SetValue(ref _ChartUserDataYear_Series, value); }
+
+        private string[] _ChartUserDataYearLabelsX_Labels = new string[0];
+        public string[] ChartUserDataYearLabelsX_Labels { get => _ChartUserDataYearLabelsX_Labels; set => SetValue(ref _ChartUserDataYearLabelsX_Labels, value); }
+
+
+        private SeriesCollection _ChartUserData_Series = new SeriesCollection();
+        public SeriesCollection ChartUserData_Series { get => _ChartUserData_Series; set => SetValue(ref _ChartUserData_Series, value); }
+
+        private string[] _ChartUserDataLabelsX_Labels = new string[0];
+        public string[] ChartUserDataLabelsX_Labels { get => _ChartUserDataLabelsX_Labels; set => SetValue(ref _ChartUserDataLabelsX_Labels, value); }
+
+
+        private string _CompletionsCount = "--";
+        public string CompletionsCount { get => _CompletionsCount; set => SetValue(ref _CompletionsCount, value); }
+
+
+        private string _TimeSinglePlayer = "--";
+        public string TimeSinglePlayer { get => _TimeSinglePlayer; set => SetValue(ref _TimeSinglePlayer, value); }
+
+        private string _TimeCoOp = "--";
+        public string TimeCoOp { get => _TimeCoOp; set => SetValue(ref _TimeCoOp, value); }
+
+        private string _TimeVs = "--";
+        public string TimeVs { get => _TimeVs; set => SetValue(ref _TimeVs, value); }
+
+
+        private string _CountGameBeatenBeforeTime = "--";
+        public string CountGameBeatenBeforeTime { get => _CountGameBeatenBeforeTime; set => SetValue(ref _CountGameBeatenBeforeTime, value); }
+
+        private string _CountGameBeatenAfterTime = "--";
+        public string CountGameBeatenAfterTime { get => _CountGameBeatenAfterTime; set => SetValue(ref _CountGameBeatenAfterTime, value); }
+
+        private string _AvgGameByMonth = "--";
+        public string AvgGameByMonth { get => _AvgGameByMonth; set => SetValue(ref _AvgGameByMonth, value); }
+
+        private string _AvgTimeByGame = "--";
+        public string AvgTimeByGame { get => _AvgTimeByGame; set => SetValue(ref _AvgTimeByGame, value); }
+
+        private string _CountGameBeatenReplays = "--";
+        public string CountGameBeatenReplays { get => _CountGameBeatenReplays; set => SetValue(ref _CountGameBeatenReplays, value); }
+
+        private string _CountGameRetired = "--";
+        public string CountGameRetired { get => _CountGameRetired; set => SetValue(ref _CountGameRetired, value); }
     }
 }
