@@ -12,88 +12,28 @@ namespace HowLongToBeat.Models
 
         public long MainStory { get; set; } = 0;
         [DontSerialize]
-        public string MainStoryFormat
-        {
-            get
-            {
-                if (MainStory == 0)
-                {
-                    return "--";
-                }
-                return (string)converter.Convert((long)MainStory, null, null, CultureInfo.CurrentCulture);
-            }
-        }
+        public string MainStoryFormat => MainStory == 0 ? "--" : (string)converter.Convert((long)MainStory, null, null, CultureInfo.CurrentCulture);
 
         public long MainExtra { get; set; }
         [DontSerialize]
-        public string MainExtraFormat
-        {
-            get
-            {
-                if (MainExtra == 0)
-                {
-                    return "--";
-                }
-                return (string)converter.Convert((long)MainExtra, null, null, CultureInfo.CurrentCulture);
-            }
-        }
+        public string MainExtraFormat => MainExtra == 0 ? "--" : (string)converter.Convert((long)MainExtra, null, null, CultureInfo.CurrentCulture);
 
         public long Completionist { get; set; }
         [DontSerialize]
-        public string CompletionistFormat
-        {
-            get
-            {
-                if (Completionist == 0)
-                {
-                    return "--";
-                }
-                return (string)converter.Convert((long)Completionist, null, null, CultureInfo.CurrentCulture);
-            }
-        }
+        public string CompletionistFormat => Completionist == 0 ? "--" : (string)converter.Convert((long)Completionist, null, null, CultureInfo.CurrentCulture);
 
 
         public long Solo { get; set; } = 0;
         [DontSerialize]
-        public string SoloFormat
-        {
-            get
-            {
-                if (Solo == 0)
-                {
-                    return "--";
-                }
-                return (string)converter.Convert((long)Solo, null, null, CultureInfo.CurrentCulture);
-            }
-        }
+        public string SoloFormat => Solo == 0 ? "--" : (string)converter.Convert((long)Solo, null, null, CultureInfo.CurrentCulture);
 
         public long CoOp { get; set; } = 0;
         [DontSerialize]
-        public string CoOpFormat
-        {
-            get
-            {
-                if (CoOp == 0)
-                {
-                    return "--";
-                }
-                return (string)converter.Convert((long)CoOp, null, null, CultureInfo.CurrentCulture);
-            }
-        }
+        public string CoOpFormat => CoOp == 0 ? "--" : (string)converter.Convert((long)CoOp, null, null, CultureInfo.CurrentCulture);
 
         public long Vs { get; set; } = 0;
         [DontSerialize]
-        public string VsFormat
-        {
-            get
-            {
-                if (Vs == 0)
-                {
-                    return "--";
-                }
-                return (string)converter.Convert((long)Vs, null, null, CultureInfo.CurrentCulture);
-            }
-        }
+        public string VsFormat =>  Vs == 0 ? "--" : (string)converter.Convert((long)Vs, null, null, CultureInfo.CurrentCulture);
 
 
         [DontSerialize]

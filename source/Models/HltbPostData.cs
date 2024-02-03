@@ -33,7 +33,7 @@
         public string compyear { get; set; } = string.Empty;
 
         // First Playthrough?
-        public string playCount { get; set; } = "1";
+        public string playCount { get; set; } = "0";
 
         public string includesDLC { get; set; } = string.Empty;
 

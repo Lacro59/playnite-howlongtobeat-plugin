@@ -697,7 +697,7 @@ namespace HowLongToBeat.Services
                         hltbPostData.game_id = gameHowLongToBeat.GetData().Id;
                         hltbPostData.custom_title = gameHowLongToBeat.GetData().Name;
                         hltbPostData.platform = WebUtility.HtmlEncode(platform);
-                        hltbPostData.storefront = StorefrontName;
+                        hltbPostData.storefront = hltbPostData.storefront.IsNullOrEmpty() ? StorefrontName : hltbPostData.storefront;
 
                         if (!NoPlaying)
                         {

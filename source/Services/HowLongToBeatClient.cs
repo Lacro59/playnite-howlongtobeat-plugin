@@ -450,7 +450,8 @@ namespace HowLongToBeat.Services
                     hltbPostData.edit_id = data.props.pageProps.editData.submissionId;
                     hltbPostData.game_id = data.props.pageProps.gameData.game_id;
                     hltbPostData.custom_title = data.props.pageProps.gameData.game_name;
-                    hltbPostData.platform = data.props.pageProps.editData.platform;                    
+                    hltbPostData.platform = data.props.pageProps.editData.platform;
+                    hltbPostData.storefront = data.props.pageProps.editData.storefront;
                     hltbPostData.list_p = data.props.pageProps.editData.lists.playing ? "1" : "0";
                     hltbPostData.list_b = data.props.pageProps.editData.lists.backlog ? "1" : "0";
                     hltbPostData.list_r = data.props.pageProps.editData.lists.replay ? "1" : "0";
@@ -656,7 +657,7 @@ namespace HowLongToBeat.Services
                         + "\",\"month\":\"" + hltbPostData.compmonth + "\",\"day\":\"" + hltbPostData.compday
                         + "\"},"
                         + "\"progressBefore\":{\"hours\":0,\"minutes\":0,\"seconds\":0}"
-                        + "},\"singlePlayer\":{\"playCount\":" + (hltbPostData.playCount == "1" ? "false" : "true")
+                        + "},\"singlePlayer\":{\"playCount\":" + (hltbPostData.playCount == "0" ? "false" : "true")
                         + ",\"includesDLC\":" + (hltbPostData.includesDLC == "1" ? "true" : "false") + ",\"compMain\":{\"time\":{\"hours\":" + hltbPostData.c_main_h
                         + ",\"minutes\":" + hltbPostData.c_main_m + ",\"seconds\":" + hltbPostData.c_main_s + "},\"notes\":\"" + hltbPostData.c_main_notes
                         + "\"},\"compPlus\":{\"time\":{\"hours\":" + hltbPostData.c_plus_h + ",\"minutes\":" + hltbPostData.c_plus_m + ",\"seconds\":" + hltbPostData.c_plus_s
