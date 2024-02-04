@@ -241,3 +241,13 @@ Packages:
       - Optimized authentification
       - Added missing storefronts
       - Fixed minors bugs
+  - Version: 3.2.1
+    RequiredApiVersion: 6.11.0
+    ReleaseDate: 2024-02-04
+    PackageUrl: https://github.com/Lacro59/playnite-howlongtobeat-plugin/releases/download/v3.2.1/playnite-howlongtobeat-plugin_3_2_1.pext
+    Changelog:
+      - Updated localizations
+      - UI optimizations
+      - Fixed color issues
+      - Fixed crash
+      - Fixed minors bugs
