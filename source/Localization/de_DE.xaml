@@ -109,9 +109,9 @@ Wenn keiner diesen Status hat, wird der aktuellste genommen.</sys:String>
     <sys:String x:Key="LOCHowLongToBeatSetCurrentTime">Möchten Sie Ihre aktuelle Spielzeit senden?</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatErrorNoPlatform">Daten für ein Spiel ohne Plattform können nicht übermittelt werden ({0})</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatErrorNoPlatformDefaultUsed" xml:space="preserve">Spiel ({1}) ohne Plattform ({0}) in den Plugin-Einstellungen definiert.
+    <sys:String x:Key="LOCHowLongToBeatErrorNoPlatformDefaultUsed" xml:space="preserve">Spiel ({1}) ohne Plattform ({0}), die in den Plugin-Einstellungen definiert ist.
 Bitte konfigurieren Sie eine.
-Standard verwendet (PC)</sys:String>
+Standardmäßig verwendet (PC)</sys:String>
 
 
     <!-- QuickSearch -->
