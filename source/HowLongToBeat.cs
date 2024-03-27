@@ -713,7 +713,7 @@ namespace HowLongToBeat
         {
             try
             {
-                Task TaskGameStopped = Task.Run(() =>
+                _ = Task.Run(() =>
                 {
                     if (args.Game.Id == PluginDatabase.GameContext.Id)
                     {
@@ -739,7 +739,7 @@ namespace HowLongToBeat
                     
                     if (result == MessageBoxResult.Yes)
                     {
-                        Task.Run(() => 
+                        _ = Task.Run(() =>
                         {
                             Thread.Sleep(5000);
                             if (PluginDatabase.SetCurrentPlayTime(args.Game))
@@ -748,7 +748,7 @@ namespace HowLongToBeat
                                 {
                                     PlayniteApi.Notifications.Add(new NotificationMessage(
                                         $"{PluginDatabase.PluginName}-SetCurrentPlayTime",
-                                        PluginDatabase.PluginName + System.Environment.NewLine +
+                                        PluginDatabase.PluginName + Environment.NewLine +
                                         string.Format(resources.GetString("LOCHowLongToBeatCurrentPlayTimeSetted"), args.Game.Name),
                                         NotificationType.Info));
                                 }
@@ -770,9 +770,9 @@ namespace HowLongToBeat
         // Add code to be executed when Playnite is initialized.
         public override void OnApplicationStarted(OnApplicationStartedEventArgs args)
         {
-            Task.Run(() =>
+            _ = Task.Run(() =>
             {
-                Thread.Sleep(30000);
+                Thread.Sleep(10000);
                 preventLibraryUpdatedOnStart = false;
             });
 
@@ -785,12 +785,9 @@ namespace HowLongToBeat
                 CommandItem HltbCommand = new CommandItem(PluginDatabase.PluginName, new List<CommandAction>(), ResourceProvider.GetString("LOCHltbQuickSearchDescription"), icon);
                 HltbCommand.Keys.Add(new CommandItemKey() { Key = "hltb", Weight = 1 });
                 HltbCommand.Actions.Add(HltbSubItemsAction);
-                QuickSearch.QuickSearchSDK.AddCommand(HltbCommand);
+                _ = QuickSearch.QuickSearchSDK.AddCommand(HltbCommand);
             }
-            catch (Exception)
-            {
-
-            }
+            catch { }
 
             PluginDatabase.UpdatedCookies();
         }

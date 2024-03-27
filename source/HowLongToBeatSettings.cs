@@ -258,9 +258,9 @@ namespace HowLongToBeat
                 Settings.Storefronts = Settings.Storefronts.OrderBy(x => x.HltbStorefrontName).ToList();
             }
 
-            Task.Run(() =>
+            _ = Task.Run(() =>
             {
-                System.Threading.SpinWait.SpinUntil(() => API.Instance.Database.IsOpen, -1);
+                _ = System.Threading.SpinWait.SpinUntil(() => API.Instance.Database.IsOpen, -1);
                 if (Settings.StorefrontElements.Count == 0)
                 {
                     API.Instance.Database.Sources.ForEach(x =>
@@ -282,7 +282,11 @@ namespace HowLongToBeat
                             }
                         });
                         Settings.IsConverted = true;
-                        Application.Current.Dispatcher?.Invoke(() => { Plugin.SavePluginSettings(Settings); });
+                        try
+                        {
+                            Application.Current.Dispatcher?.Invoke(() => { Plugin.SavePluginSettings(Settings); });
+                        }
+                        catch { }
                     }
                 }
 
@@ -294,9 +298,9 @@ namespace HowLongToBeat
 
             if (Settings.Platforms.Count == 0)
             {
-                Task.Run(() => 
+                _ = Task.Run(() =>
                 {
-                    System.Threading.SpinWait.SpinUntil(() => API.Instance.Database.IsOpen, -1);
+                    _ = System.Threading.SpinWait.SpinUntil(() => API.Instance.Database.IsOpen, -1);
                     API.Instance.Database.Platforms.ForEach(x =>
                     {
                         foreach (HltbPlatform hltbPlatform in (HltbPlatform[])Enum.GetValues(typeof(HltbPlatform)))
@@ -321,25 +325,31 @@ namespace HowLongToBeat
 
                             if (Fuzz.Ratio(x.Name, hltbPlatform.GetDescription()) >= 99 || Fuzz.Ratio(tmpName, hltbPlatform.GetDescription()) >= 99)
                             {
-                                HltbPlatformMatch a = new HltbPlatformMatch();
-                                a.HltbPlatform = hltbPlatform;
-                                a.Platform = x;
+                                HltbPlatformMatch a = new HltbPlatformMatch
+                                {
+                                    HltbPlatform = hltbPlatform,
+                                    Platform = x
+                                };
                                 Settings.Platforms.Add(a);
                             }
 
                             if (x.Name == "PC (DOS)" && hltbPlatform == HltbPlatform.PC)
                             {
-                                HltbPlatformMatch a = new HltbPlatformMatch();
-                                a.HltbPlatform = hltbPlatform;
-                                a.Platform = x;
+                                HltbPlatformMatch a = new HltbPlatformMatch
+                                {
+                                    HltbPlatform = hltbPlatform,
+                                    Platform = x
+                                };
                                 Settings.Platforms.Add(a);
                             }
 
                             if (x.Name == "PC (Windows)" && hltbPlatform == HltbPlatform.PC)
                             {
-                                HltbPlatformMatch a = new HltbPlatformMatch();
-                                a.HltbPlatform = hltbPlatform;
-                                a.Platform = x;
+                                HltbPlatformMatch a = new HltbPlatformMatch
+                                {
+                                    HltbPlatform = hltbPlatform,
+                                    Platform = x
+                                };
                                 Settings.Platforms.Add(a);
                             }
                         }
@@ -431,9 +441,9 @@ namespace HowLongToBeat
 
 public class FilterSettings
 {
-    public string Year { get; set; } = "----";
-    public string Storefront { get; set; } = "----";
-    public string Platform { get; set; } = "----";
+    public string Year { get; set; } = "---";
+    public string Storefront { get; set; } = "---";
+    public string Platform { get; set; } = "---";
     public bool OnlyReplays { get; set; } = false;
     public bool OnlyNotPlayed { get; set; } = false;
 

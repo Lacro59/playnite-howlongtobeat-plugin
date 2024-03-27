@@ -626,11 +626,10 @@ namespace HowLongToBeat.Views
 
         private void PART_TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            try
+            if (Part_Found != null)
             {
                 Part_Found.Visibility = PART_TabControl.SelectedIndex == 0 ? Visibility.Visible : Visibility.Collapsed;
             }
-            catch { }
         }
     }
 

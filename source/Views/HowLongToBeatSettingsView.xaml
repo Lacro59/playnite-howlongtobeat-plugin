@@ -504,7 +504,7 @@
             </DockPanel>
         </TabItem>
 
-        <TabItem Header="{DynamicResource LOCHowLongToBeatStorefront}" IsEnabled="{Binding ElementName=PART_AutoSetCurrentPlayTime, Path=IsChecked}">
+        <TabItem Header="{DynamicResource LOCHowLongToBeatStorefront}">
             <DockPanel LastChildFill="True" Margin="0,10,0,0">
                 <ListBox ItemsSource="{Binding Settings.StorefrontElements}" MinHeight="100">
                     <ListBox.ItemContainerStyle>
