@@ -495,8 +495,8 @@
                                 <TextBlock Grid.Column="0" Text="{Binding Platform}" />
 
                                 <ComboBox Grid.Column="2"
-                                                  hltb:SelectorBehaviors.EnumSource="{x:Type hltm:HltbPlatform}"
-                                                  SelectedValue="{Binding HltbPlatform}" />
+                                          hltb:SelectorBehaviors.EnumSource="{x:Type hltm:HltbPlatform}"
+                                          SelectedValue="{Binding HltbPlatform}" />
                             </Grid>
                         </DataTemplate>
                     </ListBox.ItemTemplate>

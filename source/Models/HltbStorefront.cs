@@ -1,6 +1,5 @@
 ﻿using Playnite.SDK;
 using Playnite.SDK.Data;
-using Playnite.SDK.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -47,7 +46,7 @@ namespace HowLongToBeat.Models
     public class StoreFrontElement
     {
         public HltbStorefront HltbStorefrontId { get; set; } = HltbStorefront.None;
-        
+
         [DontSerialize]
         public string HltbStorefrontName
         {
@@ -119,7 +118,7 @@ namespace HowLongToBeat.Models
                         return "Robot Cache";
                     case HltbStorefront.None:
                     default:
-                        return "----";
+                        return "---";
                 }
             }
         }

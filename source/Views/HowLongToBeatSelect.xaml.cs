@@ -20,21 +20,18 @@ namespace HowLongToBeat.Views
     /// </summary>
     public partial class HowLongToBeatSelect : UserControl
     {
-        private static readonly ILogger logger = LogManager.GetLogger();
+        private HowLongToBeatDatabase PluginDatabase => HowLongToBeat.PluginDatabase;
 
-        private HowLongToBeatDatabase PluginDatabase = HowLongToBeat.PluginDatabase;
-
-        public GameHowLongToBeat gameHowLongToBeat;
-        private Game _game;
+        public GameHowLongToBeat GameHowLongToBeat { get; set; }
+        private Game GameContext { get; set; }
 
 
         public HowLongToBeatSelect(List<HltbData> data, Game game)
         {
-            _game = game;
-            
             InitializeComponent();
 
-            SearchElement.Text = _game.Name;
+            GameContext = game;
+            SearchElement.Text = GameContext.Name;
 
             if (data == null)
             {
@@ -66,8 +63,8 @@ namespace HowLongToBeat.Views
         {
             HltbDataUser Item = (HltbDataUser)lbSelectable.SelectedItem;
 
-            gameHowLongToBeat = HowLongToBeat.PluginDatabase.GetDefault(_game);
-            gameHowLongToBeat.Items = new List<HltbDataUser>() { Item };
+            GameHowLongToBeat = HowLongToBeat.PluginDatabase.GetDefault(GameContext);
+            GameHowLongToBeat.Items = new List<HltbDataUser>() { Item };
 
             ((Window)this.Parent).Close();
         }
@@ -98,12 +95,13 @@ namespace HowLongToBeat.Views
 
             PART_DataLoadWishlist.Visibility = Visibility.Visible;
             SelectableContent.IsEnabled = false;
-            
+
             string GameSearch = SearchElement.Text;
             string GamePlatform = (PART_SelectPlatform.SelectedValue == null)
-                  ? string.Empty : ((HltbPlatform) PART_SelectPlatform.SelectedValue).GetDescription();
+                  ? string.Empty 
+                  : ((HltbPlatform) PART_SelectPlatform.SelectedValue).GetDescription();
 
-            Task task = Task.Run(() =>
+            _ = Task.Run(() =>
             {
                 List<HltbDataUser> dataSearch = new List<HltbDataUser>();
                 try
@@ -113,7 +111,7 @@ namespace HowLongToBeat.Views
                     // Sort
                     this.Dispatcher.Invoke(new Action(() =>
                     {
-                        dataSearch = dataSearch.Select(x => new { MatchPercent = Fuzz.Ratio(_game.Name.ToLower(), x.Name.ToLower()), Data = x })
+                        dataSearch = dataSearch.Select(x => new { MatchPercent = Fuzz.Ratio(GameContext.Name.ToLower(), x.Name.ToLower()), Data = x })
                                         .OrderByDescending(x => x.MatchPercent)
                                         .Select(x => x.Data)
                                         .ToList();
@@ -144,7 +142,6 @@ namespace HowLongToBeat.Views
         /// <param name="e"></param>
         private void TextBlock_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
         {
-            string Text = ((TextBlock)sender).Text;
             TextBlock textBlock = (TextBlock)sender;
 
             Typeface typeface = new Typeface(
@@ -162,14 +159,9 @@ namespace HowLongToBeat.Views
                 textBlock.Foreground,
                 VisualTreeHelper.GetDpi(this).PixelsPerDip);
 
-            if (formattedText.Width > textBlock.DesiredSize.Width)
-            {
-                ((ToolTip)((TextBlock)sender).ToolTip).Visibility = Visibility.Visible;
-            }
-            else
-            {
-                ((ToolTip)((TextBlock)sender).ToolTip).Visibility = Visibility.Hidden;
-            }
+            ((ToolTip)((TextBlock)sender).ToolTip).Visibility = formattedText.Width > textBlock.DesiredSize.Width 
+                ? Visibility.Visible 
+                : Visibility.Hidden;
         }
 
         /// <summary>
@@ -185,5 +177,4 @@ namespace HowLongToBeat.Views
             }
         }
     }
-
 }

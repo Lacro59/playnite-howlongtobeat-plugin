@@ -3,7 +3,6 @@ using CommonPluginsShared.Converters;
 using HowLongToBeat.Models;
 using HowLongToBeat.Services;
 using LiveCharts;
-using LiveCharts.Configurations;
 using LiveCharts.Wpf;
 using Playnite.SDK;
 using System;
@@ -15,8 +14,6 @@ using System.Windows;
 using System.Windows.Controls;
 using Playnite.SDK.Models;
 using System.Threading.Tasks;
-using System.Threading;
-using System.Windows.Threading;
 using CommonPluginsShared.Extensions;
 using System.Collections.ObjectModel;
 using CommonPluginsShared;
@@ -30,20 +27,17 @@ namespace HowLongToBeat.Views
     // TODO Optimize loading
     public partial class HowLongToBeatUserView : UserControl
     {
-        private static readonly ILogger logger = LogManager.GetLogger();
-        private static IResourceProvider resources = new ResourceProvider();
-
         private readonly HowLongToBeat Plugin;
 
         private bool DisplayFirst = true;
 
-        private HowLongToBeatDatabase PluginDatabase = HowLongToBeat.PluginDatabase;
-        private UserViewDataContext userViewDataContext = new UserViewDataContext();
+        private HowLongToBeatDatabase PluginDatabase => HowLongToBeat.PluginDatabase;
+        private UserViewDataContext userViewDataContext => new UserViewDataContext();
 
         private bool PlayniteDataFilter(object item)
         {
-            return ((bool)PART_FilteredGames.IsChecked ? API.Instance.MainView.FilteredGames.Find(y => y.Id == (item as PlayniteData).GameContext.Id) != null : true)
-                && ((bool)PART_HidePlayedGames.IsChecked ? (item as PlayniteData).Playtime == 0 : true);
+            return (!(bool)PART_FilteredGames.IsChecked || API.Instance.MainView.FilteredGames.Find(y => y.Id == (item as PlayniteData).GameContext.Id) != null)
+                && (!(bool)PART_HidePlayedGames.IsChecked || (item as PlayniteData).Playtime == 0);
         }
 
 
@@ -99,7 +93,7 @@ namespace HowLongToBeat.Views
 
                 PART_UserDataLoad.Visibility = Visibility.Visible;
                 PART_Data.Visibility = Visibility.Hidden;
-                Task.Run(() =>
+                _ = Task.Run(() =>
                 {
                     SetChartDataStore();
                     SetChartDataYear();
@@ -107,7 +101,7 @@ namespace HowLongToBeat.Views
                     SetStats();
 
                     Application.Current.Dispatcher?.Invoke(() => 
-                    { 
+                    {
                         PART_UserDataLoad.Visibility = Visibility.Collapsed;
                         PART_Data.Visibility = Visibility.Visible;
                     });
@@ -137,7 +131,7 @@ namespace HowLongToBeat.Views
             userViewDataContext.ItemsSource = PluginDatabase.Database.UserHltbData.TitlesList.ToObservable();
             ListViewGames.Sorting();
 
-            Task.Run(() =>
+            _ = Task.Run(() =>
             {
                 SetChartDataStore();
                 SetChartDataYear();
@@ -158,7 +152,7 @@ namespace HowLongToBeat.Views
         {
             if (PluginDatabase.Database.UserHltbData?.TitlesList != null)
             {
-                Task.Run(() =>
+                _ = Task.Run(() =>
                 {
                     // Default data
                     string[] ChartDataLabels = new string[axis];
@@ -209,8 +203,8 @@ namespace HowLongToBeat.Views
         {
             if (PluginDatabase.Database.UserHltbData?.TitlesList != null)
             {
-                Task.Run(() => 
-                { 
+                _ = Task.Run(() =>
+                {
                     var dataLabel = PluginDatabase.Database.UserHltbData.TitlesList
                         .Where(x => x.GameStatuses.Where(y => y.Status == StatusType.Completed).Count() > 0)
                         .GroupBy(x => x.Storefront)
@@ -233,8 +227,8 @@ namespace HowLongToBeat.Views
 
                     // Create chart
                     SeriesCollection ChartSeriesCollection = new SeriesCollection();
-                    Application.Current.Dispatcher?.Invoke(() => 
-                    {                        
+                    Application.Current.Dispatcher?.Invoke(() =>
+                    {
                         ChartSeriesCollection.Add(new ColumnSeries
                         {
                             Title = string.Empty,
@@ -252,7 +246,7 @@ namespace HowLongToBeat.Views
         {
             if (PluginDatabase.Database.UserHltbData?.TitlesList != null)
             {
-                Task.Run(() =>
+                _ = Task.Run(() =>
                 {
                     LocalDateYMConverter localDateYMConverter = new LocalDateYMConverter();
 
@@ -308,7 +302,7 @@ namespace HowLongToBeat.Views
         {
             if (PluginDatabase.Database.UserHltbData?.TitlesList != null)
             {
-                Task.Run(() =>
+                _ = Task.Run(() =>
                 {
                     List<TitleList> titleLists = PluginDatabase.Database.UserHltbData.TitlesList;
 
@@ -368,10 +362,10 @@ namespace HowLongToBeat.Views
                           ViewProgressBar = PluginDatabase.PluginSettings.Settings.EnableProgressBarInDataView
                       }).ToObservable();
             }
-            
+
             CollectionView view = (CollectionView)CollectionViewSource.GetDefaultView(ListViewDataGames.ItemsSource);
             view.Filter = PlayniteDataFilter;
-            
+
             CollectionViewSource.GetDefaultView(ListViewDataGames.ItemsSource).Refresh();
             ListViewDataGames.Sorting();
         }
@@ -579,6 +573,9 @@ namespace HowLongToBeat.Views
                     bt.Content = "\ue9a8";
                     bt.Tag = "0";
                     break;
+
+                default:
+                    break;
             }
         }
 
@@ -611,7 +608,7 @@ namespace HowLongToBeat.Views
             PluginDatabase.PluginSettings.Settings.filterSettings.Platform = PART_CbPlatform.SelectedItem.ToString();
             PluginDatabase.PluginSettings.Settings.filterSettings.OnlyReplays = (bool)PART_Replays.IsChecked;
             PluginDatabase.PluginSettings.Settings.filterSettings.OnlyNotPlayed = (bool)PART_OnlyNotPlayed.IsChecked;
-            
+
             Plugin.SavePluginSettings(PluginDatabase.PluginSettings.Settings);
         }
 
@@ -619,7 +616,7 @@ namespace HowLongToBeat.Views
         {
             PluginDatabase.PluginSettings.Settings.filterSettings.UsedFilteredGames = (bool)PART_FilteredGames.IsChecked;
             PluginDatabase.PluginSettings.Settings.filterSettings.OnlyNotPlayedGames = (bool)PART_HidePlayedGames.IsChecked;
-            
+
             Plugin.SavePluginSettings(PluginDatabase.PluginSettings.Settings);
         }
 

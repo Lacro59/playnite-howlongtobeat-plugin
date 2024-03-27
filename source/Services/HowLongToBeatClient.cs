@@ -164,9 +164,9 @@ namespace HowLongToBeat.Services
                     windowExtension.ShowDialog();
                 }).Wait();
 
-                if (ViewExtension.gameHowLongToBeat?.Items.Count > 0)
+                if (ViewExtension.GameHowLongToBeat?.Items.Count > 0)
                 {
-                    return ViewExtension.gameHowLongToBeat;
+                    return ViewExtension.GameHowLongToBeat;
                 }
             }
             return null;
