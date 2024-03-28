@@ -28,6 +28,8 @@
     <sys:String x:Key="LOCHowLongToBeatAutoSetCurrentPlayTime">Oyun oturumundan sonra YenmekNeKadarSürdü üzerinde şimdiki oyun süresini otomatik güncelle</sys:String>
     <sys:String x:Key="LOCHowLongToBeatWithoutConfirmation">Onaylama iletisi olmaksızın</sys:String>
     <sys:String x:Key="LOCHowLongToBeatEnableSuccessNotification">Başarı iletisini etkinleştir</sys:String>
+
+    <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatus">Automatically update game status with HowLongToBeat game status when importing user data</sys:String>
     
     <sys:String x:Key="LOCHowLongToBeatAutoData">Oyun verisi indirme</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoAccept">Arama sırasında sadece tek oyun bulunduğunda otomatik olarak oyunu seç</sys:String>
@@ -54,6 +56,8 @@ Hiç biri bu durumda değilse, en son süre alınır.</sys:String>
     <sys:String x:Key="LOCHowLongToBeatSolo">Tekli</sys:String>
     <sys:String x:Key="LOCHowLongToBeatCoOp">Eşli</sys:String>
     <sys:String x:Key="LOCHowLongToBeatVs">Karşı</sys:String>
+
+    <sys:String x:Key="LOCHowLongToBeatPlaying">Playing</sys:String>
 
     <!-- HowLongToBeat -->
 
