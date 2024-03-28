@@ -28,6 +28,8 @@
     <sys:String x:Key="LOCHowLongToBeatAutoSetCurrentPlayTime">Автоматично оновлювати поточний час в HowLongToBeat після сеансу гри</sys:String>
     <sys:String x:Key="LOCHowLongToBeatWithoutConfirmation">Без підтвердження</sys:String>
     <sys:String x:Key="LOCHowLongToBeatEnableSuccessNotification">Увімкнути сповіщення про успіх</sys:String>
+
+    <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatus">Automatically update game status with HowLongToBeat game status when importing user data</sys:String>
     
     <sys:String x:Key="LOCHowLongToBeatAutoData">Завантаження даних гри</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoAccept">Автоматично вибирати гру, коли знайдено лише одну гру під час пошуку</sys:String>
@@ -54,6 +56,8 @@
     <sys:String x:Key="LOCHowLongToBeatSolo">Соло</sys:String>
     <sys:String x:Key="LOCHowLongToBeatCoOp">Кооператив</sys:String>
     <sys:String x:Key="LOCHowLongToBeatVs">Vs</sys:String>
+
+    <sys:String x:Key="LOCHowLongToBeatPlaying">Playing</sys:String>
 
     <!-- HowLongToBeat -->
 
