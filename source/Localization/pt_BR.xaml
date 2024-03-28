@@ -28,6 +28,8 @@
     <sys:String x:Key="LOCHowLongToBeatAutoSetCurrentPlayTime">Atualizar automaticamente o tempo de jogo atual no HowLongToBeat após a sessão de jogo</sys:String>
     <sys:String x:Key="LOCHowLongToBeatWithoutConfirmation">Sem mensagem de confirmação</sys:String>
     <sys:String x:Key="LOCHowLongToBeatEnableSuccessNotification">Ativar notificação de sucesso</sys:String>
+
+    <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatus">Automatically update game status with HowLongToBeat game status when importing user data</sys:String>
     
     <sys:String x:Key="LOCHowLongToBeatAutoData">Baixando os dados do jogo</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoAccept">Selecionar jogo automaticamente quando apenas um jogo for encontrado durante a busca</sys:String>
@@ -54,6 +56,8 @@ Se nenhum tiver este status, pegará o mais recente.</sys:String>
     <sys:String x:Key="LOCHowLongToBeatSolo">Solo</sys:String>
     <sys:String x:Key="LOCHowLongToBeatCoOp">Co-Op</sys:String>
     <sys:String x:Key="LOCHowLongToBeatVs">Vs</sys:String>
+
+    <sys:String x:Key="LOCHowLongToBeatPlaying">Playing</sys:String>
 
     <!-- HowLongToBeat -->
 
