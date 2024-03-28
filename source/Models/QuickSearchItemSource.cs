@@ -87,7 +87,7 @@ namespace HowLongToBeat.Models
             string dateSession = localDateTimeConverter.Convert(data.LastActivity, null, null, CultureInfo.CurrentCulture).ToString();
             string LastSession = data.LastActivity == null ? string.Empty : ResourceProvider.GetString("LOCLastPlayedLabel") + " " + dateSession;
 
-            CommandItem item = new CommandItem(title, () => PluginDatabase.PlayniteApi.MainView.SelectGame(data.Id), "", null, icon)
+            CommandItem item = new CommandItem(title, () => API.Instance.MainView.SelectGame(data.Id), "", null, icon)
             {
                 IconChar = null,
                 BottomLeft = PlayniteTools.GetSourceName(data.Id),
@@ -122,7 +122,7 @@ namespace HowLongToBeat.Models
 
         private List<KeyValuePair<Guid, GameHowLongToBeat>> GetDb(ConcurrentDictionary<Guid, GameHowLongToBeat> db)
         {
-            return db.Where(x => PluginDatabase.PlayniteApi.Database.Games.Get(x.Key) != null && x.Value.HasData).ToList();
+            return db.Where(x => API.Instance.Database.Games.Get(x.Key) != null && x.Value.HasData).ToList();
         }
 
 

@@ -77,11 +77,11 @@ namespace HowLongToBeat.Views
                 {
                     if (!gameHowLongToBeat.CoverImage.IsNullOrEmpty())
                     {
-                        ((HowLongToBeatViewData)DataContext).CoverImage = PluginDatabase.PlayniteApi.Database.GetFullFilePath(gameHowLongToBeat.CoverImage);
+                        ((HowLongToBeatViewData)DataContext).CoverImage = API.Instance.Database.GetFullFilePath(gameHowLongToBeat.CoverImage);
                     }
                 }
 
-                ((HowLongToBeatViewData)DataContext).GameContext = PluginDatabase.PlayniteApi.Database.Games.Get(gameHowLongToBeat.Id);
+                ((HowLongToBeatViewData)DataContext).GameContext = API.Instance.Database.Games.Get(gameHowLongToBeat.Id);
                 ((HowLongToBeatViewData)DataContext).SourceLink = gameHowLongToBeat.SourceLink;
             }
 

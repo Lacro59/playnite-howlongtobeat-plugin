@@ -4,6 +4,7 @@ using CommonPluginsShared.Converters;
 using CommonPluginsShared.Interfaces;
 using HowLongToBeat.Models;
 using HowLongToBeat.Services;
+using Playnite.SDK;
 using Playnite.SDK.Models;
 using System;
 using System.Collections.Generic;
@@ -47,7 +48,7 @@ namespace HowLongToBeat.Controls
                     PluginDatabase.PluginSettings.PropertyChanged += PluginSettings_PropertyChanged;
                     PluginDatabase.Database.ItemUpdated += Database_ItemUpdated;
                     PluginDatabase.Database.ItemCollectionChanged += Database_ItemCollectionChanged;
-                    PluginDatabase.PlayniteApi.Database.Games.ItemUpdated += Games_ItemUpdated;
+                    API.Instance.Database.Games.ItemUpdated += Games_ItemUpdated;
 
                     // Apply settings
                     PluginSettings_PropertyChanged(null, null);

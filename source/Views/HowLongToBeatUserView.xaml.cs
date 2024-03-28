@@ -356,7 +356,7 @@ namespace HowLongToBeat.Views
                 ListViewDataGames.ItemsSource = PluginDatabase.Database.Where(x => x.HasData && !x.HasDataEmpty && !x.Hidden)
                       .Select(x => new PlayniteData
                       {
-                          GameContext = PluginDatabase.PlayniteApi.Database.Games.Get(x.Id),
+                          GameContext = API.Instance.Database.Games.Get(x.Id),
                           ViewProgressBar = PluginDatabase.PluginSettings.Settings.EnableProgressBarInDataView
                       }).ToObservable();
             }
@@ -631,9 +631,9 @@ namespace HowLongToBeat.Views
 
     public class PlayniteData : ObservableObject
     {
-        private HowLongToBeatDatabase PluginDatabase = HowLongToBeat.PluginDatabase;
+        private HowLongToBeatDatabase PluginDatabase { get; set; } = HowLongToBeat.PluginDatabase;
 
-        private PlayTimeToStringConverterWithZero playTimeToStringConverterWithZero = new PlayTimeToStringConverterWithZero();
+        private PlayTimeToStringConverterWithZero PlayTimeToStringConverterWithZero { get; set; } = new PlayTimeToStringConverterWithZero();
 
         public Game GameContext { get; set; }
         public bool ViewProgressBar { get; set; }
@@ -646,11 +646,11 @@ namespace HowLongToBeat.Views
         public ulong Playtime => GameContext.Playtime;
         public long TimeToBeat => PluginDatabase.Get(GameId, true)?.GetData()?.GameHltbData?.TimeToBeat ?? 0;
         public long RemainingTime => (PluginDatabase.Get(GameId, true)?.GetData()?.GameHltbData?.TimeToBeat ?? 0) - (long)Playtime > 0 ? PluginDatabase.Get(GameId, true).GetData().GameHltbData.TimeToBeat - (long)Playtime : 0;
-        public string RemainingTimeFormat => RemainingTime > 0 ? (string)playTimeToStringConverterWithZero.Convert(RemainingTime, null, null, CultureInfo.CurrentCulture) : string.Empty;
+        public string RemainingTimeFormat => RemainingTime > 0 ? (string)PlayTimeToStringConverterWithZero.Convert(RemainingTime, null, null, CultureInfo.CurrentCulture) : string.Empty;
 
         public RelayCommand<Guid> GoToGame => PluginDatabase.GoToGame;
 
-        public bool GameExist => PluginDatabase.PlayniteApi.Database.Games.Get(GameId) != null;
+        public bool GameExist => API.Instance.Database.Games.Get(GameId) != null;
     }
 
 

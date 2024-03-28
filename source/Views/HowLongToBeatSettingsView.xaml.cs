@@ -385,7 +385,7 @@ namespace HowLongToBeat.Views
         // TODO: Probably better to react to library metadata edits
         // Although this method might not be invoked so many times as to make a difference in performance
         private void SetPlatforms(HowLongToBeatSettings settings) {
-            List<Platform> platforms = PluginDatabase.PlayniteApi.Database
+            List<Platform> platforms = API.Instance.Database
                     .Platforms.Distinct().OrderBy(x => x.Name).ToList();
 
             // Remove from settings game platforms that were deleted

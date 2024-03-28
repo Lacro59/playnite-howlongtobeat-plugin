@@ -5,6 +5,7 @@ using CommonPluginsShared.Interfaces;
 using HowLongToBeat.Models;
 using HowLongToBeat.Services;
 using HowLongToBeat.Views;
+using Playnite.SDK;
 using Playnite.SDK.Models;
 using System;
 using System.Collections.Generic;
@@ -49,7 +50,7 @@ namespace HowLongToBeat.Controls
                     PluginDatabase.PluginSettings.PropertyChanged += PluginSettings_PropertyChanged;
                     PluginDatabase.Database.ItemUpdated += Database_ItemUpdated;
                     PluginDatabase.Database.ItemCollectionChanged += Database_ItemCollectionChanged;
-                    PluginDatabase.PlayniteApi.Database.Games.ItemUpdated += Games_ItemUpdated;
+                    API.Instance.Database.Games.ItemUpdated += Games_ItemUpdated;
 
                     // Apply settings
                     PluginSettings_PropertyChanged(null, null);
@@ -79,7 +80,7 @@ namespace HowLongToBeat.Controls
             if (gameHowLongToBeat.HasData || gameHowLongToBeat.HasDataEmpty)
             {
                 var ViewExtension = new HowLongToBeatView(gameHowLongToBeat);
-                Window windowExtension = PlayniteUiHelper.CreateExtensionWindow(PluginDatabase.PlayniteApi, PluginDatabase.PluginName, ViewExtension);
+                Window windowExtension = PlayniteUiHelper.CreateExtensionWindow(PluginDatabase.PluginName, ViewExtension);
                 windowExtension.ShowDialog();
             }
         }

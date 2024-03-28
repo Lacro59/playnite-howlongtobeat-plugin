@@ -29,7 +29,7 @@ namespace HowLongToBeat.Services
         public HowLongToBeatClient howLongToBeatClient;
 
 
-        public HowLongToBeatDatabase(IPlayniteAPI PlayniteApi, HowLongToBeatSettingsViewModel PluginSettings, string PluginUserDataPath) : base(PlayniteApi, PluginSettings, "HowLongToBeat", PluginUserDataPath)
+        public HowLongToBeatDatabase(HowLongToBeatSettingsViewModel PluginSettings, string PluginUserDataPath) : base(PluginSettings, "HowLongToBeat", PluginUserDataPath)
         {
             TagBefore = "[HLTB]";
         }
@@ -50,7 +50,7 @@ namespace HowLongToBeat.Services
                 stopWatch.Start();
 
                 Database = new GameHowLongToBeatCollection(Paths.PluginDatabasePath);
-                Database.SetGameInfo<HltbDataUser>(PlayniteApi);
+                Database.SetGameInfo<HltbDataUser>();
 
                 Database.UserHltbData = howLongToBeatClient.LoadUserData();
 
@@ -58,7 +58,7 @@ namespace HowLongToBeat.Services
 
                 stopWatch.Stop();
                 TimeSpan ts = stopWatch.Elapsed;
-                logger.Info($"LoadDatabase with {Database.Count} items - {string.Format("{0:00}:{1:00}.{2:00}", ts.Minutes, ts.Seconds, ts.Milliseconds / 10)}");
+                Logger.Info($"LoadDatabase with {Database.Count} items - {string.Format("{0:00}:{1:00}.{2:00}", ts.Minutes, ts.Seconds, ts.Milliseconds / 10)}");
             }
             catch (Exception ex)
             {
@@ -72,8 +72,8 @@ namespace HowLongToBeat.Services
 
         public override void GetSelectData()
         {
-            OptionsDownloadData View = new OptionsDownloadData(PlayniteApi);
-            Window windowExtension = PlayniteUiHelper.CreateExtensionWindow(PlayniteApi, PluginName + " - " + resources.GetString("LOCCommonSelectData"), View);
+            OptionsDownloadData View = new OptionsDownloadData();
+            Window windowExtension = PlayniteUiHelper.CreateExtensionWindow(PluginName + " - " + ResourceProvider.GetString("LOCCommonSelectData"), View);
             _ = windowExtension.ShowDialog();
 
             List<Game> PlayniteDb = View.GetFilteredGames();
@@ -90,12 +90,12 @@ namespace HowLongToBeat.Services
             }
 
             GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions(
-                $"{PluginName} - {resources.GetString("LOCCommonGettingData")}",
+                $"{PluginName} - {ResourceProvider.GetString("LOCCommonGettingData")}",
                 true
             );
             globalProgressOptions.IsIndeterminate = false;
 
-            _ = PlayniteApi.Dialogs.ActivateGlobalProgress((activateGlobalProgress) =>
+            _ = API.Instance.Dialogs.ActivateGlobalProgress((activateGlobalProgress) =>
             {
                 try
                 {
@@ -122,7 +122,7 @@ namespace HowLongToBeat.Services
 
                     stopWatch.Stop();
                     TimeSpan ts = stopWatch.Elapsed;
-                    logger.Info($"Task GetSelectData(){CancelText} - {string.Format("{0:00}:{1:00}.{2:00}", ts.Minutes, ts.Seconds, ts.Milliseconds / 10)} for {activateGlobalProgress.CurrentProgressValue}/{(double)PlayniteDb.Count()} items");
+                    Logger.Info($"Task GetSelectData(){CancelText} - {string.Format("{0:00}:{1:00}.{2:00}", ts.Minutes, ts.Seconds, ts.Milliseconds / 10)} for {activateGlobalProgress.CurrentProgressValue}/{(double)PlayniteDb.Count()} items");
                 }
                 catch (Exception ex)
                 {
@@ -143,7 +143,7 @@ namespace HowLongToBeat.Services
 
             if ((gameHowLongToBeat == null && !OnlyCache) || Force)
             {
-                gameHowLongToBeat = howLongToBeatClient.SearchData(PlayniteApi.Database.Games.Get(Id));
+                gameHowLongToBeat = howLongToBeatClient.SearchData(API.Instance.Database.Games.Get(Id));
 
                 if (gameHowLongToBeat != null)
                 {
@@ -153,7 +153,7 @@ namespace HowLongToBeat.Services
 
             if (gameHowLongToBeat == null)
             {
-                Game game = PlayniteApi.Database.Games.Get(Id);
+                Game game = API.Instance.Database.Games.Get(Id);
                 if (game != null)
                 {
                     gameHowLongToBeat = GetDefault(game);
@@ -170,7 +170,7 @@ namespace HowLongToBeat.Services
 
             if (gameHowLongToBeat.Items.Count > 0)
             {
-                logger.Warn($"Data is already added for {game.Name}");
+                Logger.Warn($"Data is already added for {game.Name}");
                 return;
             }
 
@@ -207,12 +207,12 @@ namespace HowLongToBeat.Services
         public override void Refresh(Guid Id)
         {
             GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions(
-                $"{PluginName} - {resources.GetString("LOCCommonProcessing")}",
+                $"{PluginName} - {ResourceProvider.GetString("LOCCommonProcessing")}",
                 false
             );
             globalProgressOptions.IsIndeterminate = true;
 
-            _ = PlayniteApi.Dialogs.ActivateGlobalProgress((activateGlobalProgress) =>
+            _ = API.Instance.Dialogs.ActivateGlobalProgress((activateGlobalProgress) =>
             {
                 RefreshElement(Id);
             }, globalProgressOptions);
@@ -221,12 +221,12 @@ namespace HowLongToBeat.Services
         public override void Refresh(List<Guid> Ids)
         {
             GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions(
-                $"{PluginName} - {resources.GetString("LOCCommonProcessing")}",
+                $"{PluginName} - {ResourceProvider.GetString("LOCCommonProcessing")}",
                 true
             );
             globalProgressOptions.IsIndeterminate = false;
 
-            _ = PlayniteApi.Dialogs.ActivateGlobalProgress((activateGlobalProgress) =>
+            _ = API.Instance.Dialogs.ActivateGlobalProgress((activateGlobalProgress) =>
             {
                 Stopwatch stopWatch = new Stopwatch();
                 stopWatch.Start();
@@ -249,19 +249,19 @@ namespace HowLongToBeat.Services
 
                 stopWatch.Stop();
                 TimeSpan ts = stopWatch.Elapsed;
-                logger.Info($"Task Refresh(){CancelText} - {string.Format("{0:00}:{1:00}.{2:00}", ts.Minutes, ts.Seconds, ts.Milliseconds / 10)} for {activateGlobalProgress.CurrentProgressValue}/{Ids.Count} items");
+                Logger.Info($"Task Refresh(){CancelText} - {string.Format("{0:00}:{1:00}.{2:00}", ts.Minutes, ts.Seconds, ts.Milliseconds / 10)} for {activateGlobalProgress.CurrentProgressValue}/{Ids.Count} items");
             }, globalProgressOptions);
         }
 
         public void RefreshAll()
         {
             GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions(
-                $"{PluginName} - {resources.GetString("LOCCommonProcessing")}",
+                $"{PluginName} - {ResourceProvider.GetString("LOCCommonProcessing")}",
                 true
             );
             globalProgressOptions.IsIndeterminate = false;
 
-            _ = PlayniteApi.Dialogs.ActivateGlobalProgress((activateGlobalProgress) =>
+            _ = API.Instance.Dialogs.ActivateGlobalProgress((activateGlobalProgress) =>
             {
                 Stopwatch stopWatch = new Stopwatch();
                 stopWatch.Start();
@@ -289,7 +289,7 @@ namespace HowLongToBeat.Services
 
                 stopWatch.Stop();
                 TimeSpan ts = stopWatch.Elapsed;
-                logger.Info($"Task RefreshAll(){CancelText} - {string.Format("{0:00}:{1:00}.{2:00}", ts.Minutes, ts.Seconds, ts.Milliseconds / 10)} for {activateGlobalProgress.CurrentProgressValue}/{(double)db.Count()} items");
+                Logger.Info($"Task RefreshAll(){CancelText} - {string.Format("{0:00}:{1:00}.{2:00}", ts.Minutes, ts.Seconds, ts.Milliseconds / 10)} for {activateGlobalProgress.CurrentProgressValue}/{(double)db.Count()} items");
             }, globalProgressOptions);
         }
 
@@ -313,12 +313,12 @@ namespace HowLongToBeat.Services
         public override void RefreshWithNoData(List<Guid> Ids)
         {
             GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions(
-                $"{PluginName} - {resources.GetString("LOCCommonProcessing")}",
+                $"{PluginName} - {ResourceProvider.GetString("LOCCommonProcessing")}",
                 true
             );
             globalProgressOptions.IsIndeterminate = false;
 
-            _ = PlayniteApi.Dialogs.ActivateGlobalProgress((activateGlobalProgress) =>
+            _ = API.Instance.Dialogs.ActivateGlobalProgress((activateGlobalProgress) =>
             {
                 Stopwatch stopWatch = new Stopwatch();
                 stopWatch.Start();
@@ -335,7 +335,7 @@ namespace HowLongToBeat.Services
                         break;
                     }
 
-                    Game game = PlayniteApi.Database.Games.Get(Id);
+                    Game game = API.Instance.Database.Games.Get(Id);
                     if (game != null)
                     {
                         AddData(game);
@@ -346,7 +346,7 @@ namespace HowLongToBeat.Services
 
                 stopWatch.Stop();
                 TimeSpan ts = stopWatch.Elapsed;
-                logger.Info($"Task Refresh(){CancelText} - {string.Format("{0:00}:{1:00}.{2:00}", ts.Minutes, ts.Seconds, ts.Milliseconds / 10)} for {activateGlobalProgress.CurrentProgressValue}/{Ids.Count} items");
+                Logger.Info($"Task Refresh(){CancelText} - {string.Format("{0:00}:{1:00}.{2:00}", ts.Minutes, ts.Seconds, ts.Milliseconds / 10)} for {activateGlobalProgress.CurrentProgressValue}/{Ids.Count} items");
             }, globalProgressOptions);
         }
 
@@ -379,7 +379,7 @@ namespace HowLongToBeat.Services
                         {
                             Application.Current.Dispatcher?.Invoke(() =>
                             {
-                                PlayniteApi.Database.Games.Update(game);
+                                API.Instance.Database.Games.Update(game);
                                 game.OnPropertyChanged();
                             }, DispatcherPriority.Send);
                         }
@@ -387,7 +387,7 @@ namespace HowLongToBeat.Services
                 }
                 catch (Exception ex)
                 {
-                    Common.LogError(ex, false, $"Tag insert error with {game.Name}", true, PluginName, string.Format(resources.GetString("LOCCommonNotificationTagError"), game.Name));
+                    Common.LogError(ex, false, $"Tag insert error with {game.Name}", true, PluginName, string.Format(ResourceProvider.GetString("LOCCommonNotificationTagError"), game.Name));
                 }
             } 
             else if (TagMissing)
@@ -405,7 +405,7 @@ namespace HowLongToBeat.Services
                 {
                     Application.Current.Dispatcher?.Invoke(() =>
                     {
-                        PlayniteApi.Database.Games.Update(game);
+                        API.Instance.Database.Games.Update(game);
                         game.OnPropertyChanged();
                     }, DispatcherPriority.Send);
                 }
@@ -423,55 +423,55 @@ namespace HowLongToBeat.Services
             {
                 if (hltbTime < 3600)
                 {
-                    return CheckTagExist($"{resources.GetString("LOCCommon0to1")}");
+                    return CheckTagExist($"{ResourceProvider.GetString("LOCCommon0to1")}");
                 }
                 if (hltbTime < 18000)
                 {
-                    return CheckTagExist($"{resources.GetString("LOCCommon1to5")}");
+                    return CheckTagExist($"{ResourceProvider.GetString("LOCCommon1to5")}");
                 }
                 if (hltbTime < 36000)
                 {
-                    return CheckTagExist($"{resources.GetString("LOCCommon5to10")}");
+                    return CheckTagExist($"{ResourceProvider.GetString("LOCCommon5to10")}");
                 }
                 if (hltbTime < 72000)
                 {
-                    return CheckTagExist($"{resources.GetString("LOCCommon10to20")}");
+                    return CheckTagExist($"{ResourceProvider.GetString("LOCCommon10to20")}");
                 }
                 if (hltbTime < 108000)
                 {
-                    return CheckTagExist($"{resources.GetString("LOCCommon20to30")}");
+                    return CheckTagExist($"{ResourceProvider.GetString("LOCCommon20to30")}");
                 }
                 if (hltbTime < 144000)
                 {
-                    return CheckTagExist($"{resources.GetString("LOCCommon30to40")}");
+                    return CheckTagExist($"{ResourceProvider.GetString("LOCCommon30to40")}");
                 }
                 if (hltbTime < 180000)
                 {
-                    return CheckTagExist($"{resources.GetString("LOCCommon40to50")}");
+                    return CheckTagExist($"{ResourceProvider.GetString("LOCCommon40to50")}");
                 }
                 if (hltbTime < 216000)
                 {
-                    return CheckTagExist($"{resources.GetString("LOCCommon50to60")}");
+                    return CheckTagExist($"{ResourceProvider.GetString("LOCCommon50to60")}");
                 }
                 if (hltbTime < 252000)
                 {
-                    return CheckTagExist($"{resources.GetString("LOCCommon60to70")}");
+                    return CheckTagExist($"{ResourceProvider.GetString("LOCCommon60to70")}");
                 }
                 if (hltbTime < 288000)
                 {
-                    return CheckTagExist($"{resources.GetString("LOCCommon70to80")}");
+                    return CheckTagExist($"{ResourceProvider.GetString("LOCCommon70to80")}");
                 }
                 if (hltbTime < 324000)
                 {
-                    return CheckTagExist($"{resources.GetString("LOCCommon80to90")}");
+                    return CheckTagExist($"{ResourceProvider.GetString("LOCCommon80to90")}");
                 }
                 if (hltbTime < 360000)
                 {
-                    return CheckTagExist($"{resources.GetString("LOCCommon90to100")}");
+                    return CheckTagExist($"{ResourceProvider.GetString("LOCCommon90to100")}");
                 }
                 if (hltbTime >= 360000)
                 {
-                    return CheckTagExist($"{resources.GetString("LOCCommon100plus")}");
+                    return CheckTagExist($"{ResourceProvider.GetString("LOCCommon100plus")}");
                 }
             }
 
@@ -492,7 +492,7 @@ namespace HowLongToBeat.Services
             catch (Exception ex)
             {
                 Common.LogError(ex, true);
-                logger.Warn($"No HltbData for {HltbId}");
+                Logger.Warn($"No HltbData for {HltbId}");
                 return null;
             }
         }
@@ -576,15 +576,15 @@ namespace HowLongToBeat.Services
 
         public void RefreshUserData()
         {
-            logger.Info("RefreshUserData()");
+            Logger.Info("RefreshUserData()");
 
             GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions(
-                $"{PluginName} - {resources.GetString("LOCHowLongToBeatPluginGetUserView")}",
+                $"{PluginName} - {ResourceProvider.GetString("LOCHowLongToBeatPluginGetUserView")}",
                 false
             );
             globalProgressOptions.IsIndeterminate = true;
 
-            _ = PlayniteApi.Dialogs.ActivateGlobalProgress((activateGlobalProgress) =>
+            _ = API.Instance.Dialogs.ActivateGlobalProgress((activateGlobalProgress) =>
             {
                 try
                 {
@@ -592,7 +592,7 @@ namespace HowLongToBeat.Services
 
                     if (UserHltbData != null)
                     {
-                        logger.Info($"Find {UserHltbData.TitlesList?.Count ?? 0} games");
+                        Logger.Info($"Find {UserHltbData.TitlesList?.Count ?? 0} games");
                         FileSystem.WriteStringToFileSafe(Path.Combine(Paths.PluginUserDataPath, "HltbUserStats.json"), Serialization.ToJson(UserHltbData));
                         Database.UserHltbData = UserHltbData;
 
@@ -608,7 +608,7 @@ namespace HowLongToBeat.Services
                     }
                     else
                     {
-                        logger.Info($"Find no data");
+                        Logger.Info($"Find no data");
                     }
                 }
                 catch (Exception ex)
@@ -667,10 +667,10 @@ namespace HowLongToBeat.Services
                         string platform = string.Empty;
                         Platform gamePlatform = game.Platforms?.FirstOrDefault();
                         if (gamePlatform == default(Platform)) {
-                            logger.Warn($"Cannot submit data for a game without platform ({game.Name})");
-                            PlayniteApi.Notifications.Add(new NotificationMessage(
+                            Logger.Warn($"Cannot submit data for a game without platform ({game.Name})");
+                            API.Instance.Notifications.Add(new NotificationMessage(
                                $"{PluginName}-NoPlatform-Error-{new Guid()}",
-                               PluginName + Environment.NewLine + string.Format(resources.GetString("LOCHowLongToBeatErrorNoPlatform"), game.Name),
+                               PluginName + Environment.NewLine + string.Format(ResourceProvider.GetString("LOCHowLongToBeatErrorNoPlatform"), game.Name),
                                NotificationType.Error,
                                () => Plugin.OpenSettingsView()
                             ));
@@ -686,10 +686,10 @@ namespace HowLongToBeat.Services
                         {
                             platform = HltbPlatform.PC.GetDescription();
 
-                            logger.Warn($"No platform find for {game.Name} - Default \"PC\" used");
-                            PlayniteApi.Notifications.Add(new NotificationMessage(
+                            Logger.Warn($"No platform find for {game.Name} - Default \"PC\" used");
+                            API.Instance.Notifications.Add(new NotificationMessage(
                                $"{PluginName}-NoPlatformDefined-Error-{new Guid()}",
-                               PluginName + Environment.NewLine + string.Format(resources.GetString("LOCHowLongToBeatErrorNoPlatformDefaultUsed"), gamePlatform.Name, game.Name),
+                               PluginName + Environment.NewLine + string.Format(ResourceProvider.GetString("LOCHowLongToBeatErrorNoPlatformDefaultUsed"), gamePlatform.Name, game.Name),
                                NotificationType.Error,
                                () => Plugin.OpenSettingsView()
                             ));
@@ -727,14 +727,14 @@ namespace HowLongToBeat.Services
                                 }
                                 else
                                 {
-                                    logger.Info($"No existing data in website find for {game.Name}");
+                                    Logger.Info($"No existing data in website find for {game.Name}");
                                 }
                             }
                         }
 
                         if (hltbPostData == null)
                         {
-                            logger.Warn($"No hltbPostData for {game.Name}");
+                            Logger.Warn($"No hltbPostData for {game.Name}");
                             return false;
                         }
 
@@ -809,9 +809,9 @@ namespace HowLongToBeat.Services
                 }
                 else
                 {
-                    PlayniteApi.Notifications.Add(new NotificationMessage(
+                    API.Instance.Notifications.Add(new NotificationMessage(
                         $"{PluginName}-NotLoggedIn-Error",
-                        PluginName + System.Environment.NewLine + resources.GetString("LOCCommonNotLoggedIn"),
+                        PluginName + Environment.NewLine + ResourceProvider.GetString("LOCCommonNotLoggedIn"),
                         NotificationType.Error,
                         () => Plugin.OpenSettingsView()
                     ));

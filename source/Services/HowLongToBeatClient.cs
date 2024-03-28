@@ -43,10 +43,10 @@ namespace HowLongToBeat.Services
 
     public class HowLongToBeatClient : ObservableObject
     {
-        private static readonly ILogger logger = LogManager.GetLogger();
-        private static readonly IResourceProvider resources = new ResourceProvider();
+        private static ILogger Logger => LogManager.GetLogger();
+        private static IResourceProvider ResourceProvider => new ResourceProvider();
 
-        private static readonly HowLongToBeatDatabase PluginDatabase = HowLongToBeat.PluginDatabase;
+        private static HowLongToBeatDatabase PluginDatabase { get; set; } = HowLongToBeat.PluginDatabase;
 
 
         internal string FileCookies { get; }
@@ -125,7 +125,6 @@ namespace HowLongToBeat.Services
         {
             try
             {
-
                 HttpClient httpClient = new HttpClient();
 
                 httpClient.DefaultRequestHeaders.Add("User-Agent", Web.UserAgent);
@@ -154,13 +153,13 @@ namespace HowLongToBeat.Services
         {
             Common.LogDebug(true, $"Search data for {game.Name}");
 
-            if (PluginDatabase.PlayniteApi.ApplicationInfo.Mode == ApplicationMode.Desktop)
+            if (API.Instance.ApplicationInfo.Mode == ApplicationMode.Desktop)
             {
                 HowLongToBeatSelect ViewExtension = null;
                 Application.Current.Dispatcher.BeginInvoke((Action)delegate
                 {
                     ViewExtension = new HowLongToBeatSelect(null, game);
-                    Window windowExtension = PlayniteUiHelper.CreateExtensionWindow(PluginDatabase.PlayniteApi, resources.GetString("LOCSelection") + " - " + game.Name + " - " + (game.Source?.Name ?? "Playnite"), ViewExtension);
+                    Window windowExtension = PlayniteUiHelper.CreateExtensionWindow(ResourceProvider.GetString("LOCSelection") + " - " + game.Name + " - " + (game.Source?.Name ?? "Playnite"), ViewExtension);
                     windowExtension.ShowDialog();
                 }).Wait();
 
@@ -242,7 +241,7 @@ namespace HowLongToBeat.Services
         {
             if (UserId == 0)
             {
-                System.Threading.SpinWait.SpinUntil(() => PluginDatabase.IsLoaded, -1);
+                SpinWait.SpinUntil(() => PluginDatabase.IsLoaded, -1);
                 UserId = HowLongToBeat.PluginDatabase.Database.UserHltbData.UserId;
             }
 
@@ -265,8 +264,8 @@ namespace HowLongToBeat.Services
         {
             Application.Current.Dispatcher.BeginInvoke((Action)delegate
             {
-                logger.Info("Login()");
-                using (IWebView WebView = PluginDatabase.PlayniteApi.WebViews.CreateView(490, 670))
+                Logger.Info("Login()");
+                using (IWebView WebView = API.Instance.WebViews.CreateView(490, 670))
                 {
                     WebView.LoadingChanged += (s, e) =>
                     {
@@ -429,7 +428,7 @@ namespace HowLongToBeat.Services
 
         public HltbPostData GetSubmitData(string GameName, string UserGameId)
         {
-            logger.Info($"GetSubmitData({GameName}, {UserGameId})");
+            Logger.Info($"GetSubmitData({GameName}, {UserGameId})");
             try
             {
                 List<HttpCookie> Cookies = GetStoredCookies();
@@ -437,7 +436,7 @@ namespace HowLongToBeat.Services
                 string response = Web.DownloadStringData(string.Format(UrlPostDataEdit, UserGameId), Cookies).GetAwaiter().GetResult();
                 if (response.IsNullOrEmpty())
                 {
-                    logger.Warn($"No SubmitData for {GameName} - {UserGameId}");
+                    Logger.Warn($"No SubmitData for {GameName} - {UserGameId}");
                     return null;
                 }
 
@@ -579,9 +578,9 @@ namespace HowLongToBeat.Services
             }
             else
             {
-                PluginDatabase.PlayniteApi.Notifications.Add(new NotificationMessage(
+                API.Instance.Notifications.Add(new NotificationMessage(
                     $"{PluginDatabase.PluginName}-Import-Error",
-                    PluginDatabase.PluginName + System.Environment.NewLine + resources.GetString("LOCCommonNotLoggedIn"),
+                    PluginDatabase.PluginName + Environment.NewLine + ResourceProvider.GetString("LOCCommonNotLoggedIn"),
                     NotificationType.Error,
                     () => PluginDatabase.Plugin.OpenSettingsView()
                 ));
@@ -607,9 +606,9 @@ namespace HowLongToBeat.Services
             }
             else
             {
-                PluginDatabase.PlayniteApi.Notifications.Add(new NotificationMessage(
+                API.Instance.Notifications.Add(new NotificationMessage(
                     $"{PluginDatabase.PluginName}-Import-Error",
-                    PluginDatabase.PluginName + System.Environment.NewLine + resources.GetString("LOCCommonNotLoggedIn"),
+                    PluginDatabase.PluginName + Environment.NewLine + ResourceProvider.GetString("LOCCommonNotLoggedIn"),
                     NotificationType.Error,
                     () => PluginDatabase.Plugin.OpenSettingsView()
                 ));
@@ -680,17 +679,17 @@ namespace HowLongToBeat.Services
                     if (response.Contains("error"))
                     {
                         Serialization.TryFromJson(response, out dynamic error);
-                        PluginDatabase.PlayniteApi.Notifications.Add(new NotificationMessage(
+                        API.Instance.Notifications.Add(new NotificationMessage(
                             $"{PluginDatabase.PluginName}-{game.Id}-Error",
-                            PluginDatabase.PluginName + System.Environment.NewLine + game.Name + (error?["error"]?[0] != null ? System.Environment.NewLine + error["error"][0] : string.Empty),
+                            PluginDatabase.PluginName + Environment.NewLine + game.Name + (error?["error"]?[0] != null ? System.Environment.NewLine + error["error"][0] : string.Empty),
                             NotificationType.Error
                         ));
                     }
                     else if (response.IsNullOrEmpty())
                     {
-                        PluginDatabase.PlayniteApi.Notifications.Add(new NotificationMessage(
+                        API.Instance.Notifications.Add(new NotificationMessage(
                               $"{PluginDatabase.PluginName}-{game.Id}-Error",
-                              PluginDatabase.PluginName + System.Environment.NewLine + game.Name,
+                              PluginDatabase.PluginName + Environment.NewLine + game.Name,
                               NotificationType.Error
                           ));
                     }
@@ -707,9 +706,9 @@ namespace HowLongToBeat.Services
             }
             else
             {
-                PluginDatabase.PlayniteApi.Notifications.Add(new NotificationMessage(
+                API.Instance.Notifications.Add(new NotificationMessage(
                     $"{PluginDatabase.PluginName}-DataUpdate-Error",
-                    PluginDatabase.PluginName + System.Environment.NewLine + resources.GetString("LOCCommonNotLoggedIn"),
+                    PluginDatabase.PluginName + Environment.NewLine + ResourceProvider.GetString("LOCCommonNotLoggedIn"),
                     NotificationType.Error,
                     () => PluginDatabase.Plugin.OpenSettingsView()
                 ));
@@ -755,7 +754,7 @@ namespace HowLongToBeat.Services
                 }
             }
 
-            logger.Info(InfoMessage);
+            Logger.Info(InfoMessage);
             List<HttpCookie> httpCookies = GetWebCookies();
             if (httpCookies?.Count > 0)
             {

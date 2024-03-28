@@ -73,7 +73,7 @@ namespace HowLongToBeat.Models
         public RelayCommand<Guid> GoToGame => PluginDatabase.GoToGame;
 
         [DontSerialize]
-        public bool GameExist => PluginDatabase.PlayniteApi.Database.Games.Get(GameId) != null;
+        public bool GameExist => API.Instance.Database.Games.Get(GameId) != null;
     }
 
 
