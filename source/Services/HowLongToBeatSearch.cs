@@ -14,15 +14,14 @@ namespace HowLongToBeat.Services
 {
     public class HowLongToBeatSearch : SearchContext
     {
-        private static IResourceProvider resources => new ResourceProvider();
         private HowLongToBeatDatabase PluginDatabase { get; set; } = HowLongToBeat.PluginDatabase;
 
 
         public HowLongToBeatSearch()
         {
-            Description = resources.GetString("LOCHowLongToBeatSearchDescription");
+            Description = ResourceProvider.GetString("LOCHowLongToBeatSearchDescription");
             Label = PluginDatabase.PluginName;
-            Hint = resources.GetString("LOCHowLongToBeatSearchHint");
+            Hint = ResourceProvider.GetString("LOCHowLongToBeatSearchHint");
             Delay = 500;
         }
 
@@ -86,7 +85,7 @@ namespace HowLongToBeat.Services
 
                         if (isOK)
                         {
-                            searchItems.Add(new GameSearchItem(x.Game, resources.GetString("LOCGameSearchItemActionSwitchTo"), () => API.Instance.MainView.SelectGame(x.Game.Id)));
+                            searchItems.Add(new GameSearchItem(x.Game, ResourceProvider.GetString("LOCGameSearchItemActionSwitchTo"), () => API.Instance.MainView.SelectGame(x.Game.Id)));
                         }
                     });
 

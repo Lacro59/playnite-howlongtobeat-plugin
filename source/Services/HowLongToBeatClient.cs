@@ -44,7 +44,6 @@ namespace HowLongToBeat.Services
     public class HowLongToBeatClient : ObservableObject
     {
         private static ILogger Logger => LogManager.GetLogger();
-        private static IResourceProvider ResourceProvider => new ResourceProvider();
 
         private static HowLongToBeatDatabase PluginDatabase { get; set; } = HowLongToBeat.PluginDatabase;
 

@@ -24,8 +24,6 @@ namespace HowLongToBeat.Views.StartPage
     /// </summary>
     public partial class HltbChartStatsSettings : UserControl
     {
-        internal static IResourceProvider resources = new ResourceProvider();
-
         private HowLongToBeat plugin { get; }
         private HowLongToBeatDatabase PluginDatabase { get; set; } = HowLongToBeat.PluginDatabase;
 
@@ -39,8 +37,8 @@ namespace HowLongToBeat.Views.StartPage
 
             PART_CbType.ItemsSource = new List<CbType> 
             { 
-                new CbType { Id = ChartStatsType.month, Name= resources.GetString("LOCCommonMonth") },
-                new CbType { Id = ChartStatsType.year, Name= resources.GetString("LOCCommonYear") }
+                new CbType { Id = ChartStatsType.month, Name= ResourceProvider.GetString("LOCCommonMonth") },
+                new CbType { Id = ChartStatsType.year, Name= ResourceProvider.GetString("LOCCommonYear") }
             };
         }
 

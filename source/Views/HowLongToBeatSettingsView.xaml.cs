@@ -19,7 +19,6 @@ namespace HowLongToBeat.Views
     public partial class HowLongToBeatSettingsView : UserControl
     {
         private static ILogger Logger => LogManager.GetLogger();
-        private static IResourceProvider ResourceProvider => new ResourceProvider();
 
         private HowLongToBeatDatabase PluginDatabase => HowLongToBeat.PluginDatabase;
 

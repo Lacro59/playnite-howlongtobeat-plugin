@@ -24,8 +24,6 @@ namespace HowLongToBeat.Views
     /// </summary>
     public partial class HowLongToBeatView : UserControl
     {
-        private static IResourceProvider ResourceProvider => new ResourceProvider();
-
         private HowLongToBeatDatabase PluginDatabase => HowLongToBeat.PluginDatabase;
         private GameHowLongToBeat GameHowLongToBeat { get; set; }
 
