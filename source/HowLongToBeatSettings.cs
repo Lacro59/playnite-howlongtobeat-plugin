@@ -115,6 +115,12 @@ namespace HowLongToBeat
 
 
         public FilterSettings filterSettings { get; set; } = new FilterSettings();
+
+
+        public bool AutoSetGameStatus { get; set; } = false;
+        public Guid GameStatusPlaying { get; set; }
+        public Guid GameStatusCompleted { get; set; }
+        public Guid GameStatusCompletionist { get; set; }
         #endregion
 
 
@@ -441,9 +447,9 @@ namespace HowLongToBeat
 
 public class FilterSettings
 {
-    public string Year { get; set; } = "---";
-    public string Storefront { get; set; } = "---";
-    public string Platform { get; set; } = "---";
+    public string Year { get; set; } = "----";
+    public string Storefront { get; set; } = "----";
+    public string Platform { get; set; } = "----";
     public bool OnlyReplays { get; set; } = false;
     public bool OnlyNotPlayed { get; set; } = false;
 

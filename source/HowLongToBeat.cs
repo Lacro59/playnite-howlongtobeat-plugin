@@ -864,7 +864,7 @@ namespace HowLongToBeat
 
         public override UserControl GetSettingsView(bool firstRunSettings)
         {
-            return new HowLongToBeatSettingsView(PlayniteApi, this.GetPluginUserDataPath(), PluginSettings.Settings);
+            return new HowLongToBeatSettingsView(PluginSettings.Settings);
         }
         #endregion
     }

@@ -118,7 +118,7 @@ namespace HowLongToBeat.Models
                         return "Robot Cache";
                     case HltbStorefront.None:
                     default:
-                        return "---";
+                        return "----";
                 }
             }
         }

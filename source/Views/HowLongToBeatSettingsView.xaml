@@ -11,6 +11,10 @@
              mc:Ignorable="d" d:DesignWidth="650"
              d:DataContext="{d:DesignInstance HowLongToBeat:HowLongToBeatSettingsViewModel}">
 
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+    </UserControl.Resources>
+
     <TabControl Margin="20" Name="tcSettings">
         <TabItem Header="{DynamicResource LOCHowLongToBeat}">
             <ScrollViewer Margin="0,10,0,0">
@@ -30,6 +34,8 @@
                                 <RowDefinition Height="30" />
                                 <RowDefinition Height="30" />
                                 <RowDefinition Height="30" />
+                                <RowDefinition Height="30" />
+                                <RowDefinition Height="auto" />
                             </Grid.RowDefinitions>
 
                             <Grid Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="0">
@@ -80,6 +86,48 @@
                                       IsEnabled="{Binding ElementName=PART_AutoSetCurrentPlayTime, Path=IsChecked}">
                                 <Label Content="{DynamicResource LOCHowLongToBeatEnableSuccessNotification}" />
                             </CheckBox>
+
+
+                            <CheckBox Grid.Row="9" IsChecked="{Binding Settings.AutoSetGameStatus}" VerticalAlignment="Center"
+                                      Name="PART_AutoSetGameStatus">
+                                <Label Content="{DynamicResource LOCHowLongToBeatAutoSetGameStatus}" />
+                            </CheckBox>
+
+                            <Grid Grid.Row="10" Margin="50,5,0,0"
+                                  IsEnabled="{Binding ElementName=PART_AutoSetGameStatus, Path=IsChecked}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width=".5*" />
+                                    <ColumnDefinition Width="10" />
+                                    <ColumnDefinition Width="1.5*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="auto" />
+                                    <RowDefinition Height="10" />
+                                    <RowDefinition Height="auto" />
+                                    <RowDefinition Height="10" />
+                                    <RowDefinition Height="auto" />
+                                </Grid.RowDefinitions>
+
+                                <Label Grid.Column="0" Grid.Row="0" Content="{DynamicResource LOCHowLongToBeatPlaying}" />
+                                <ComboBox Grid.Column="2" Grid.Row="0" x:Name="PART_GameStatusPlaying"
+                                          SelectedValuePath="Id"
+                                          DisplayMemberPath="Name"
+                                          SelectedValue="{Binding Settings.GameStatusPlaying}" />
+
+                                <Label Grid.Column="0" Grid.Row="2" Content="{DynamicResource LOCHowLongToBeatCompleted}" />
+                                <ComboBox Grid.Column="2" Grid.Row="2" x:Name="PART_GameStatusCompleted"
+                                          SelectedValuePath="Id"
+                                          DisplayMemberPath="Name"
+                                          SelectedValue="{Binding Settings.GameStatusCompleted}" />
+
+                                <Label Grid.Column="0" Grid.Row="4" Content="{DynamicResource LOCHowLongToBeatCompletionist}" />
+                                <ComboBox Grid.Column="2" Grid.Row="4" x:Name="PART_GameStatusCompletionist"
+                                          SelectedValuePath="Id"
+                                          DisplayMemberPath="Name"
+                                          SelectedValue="{Binding Settings.GameStatusCompletionist}" />
+                            </Grid>
                         </Grid>
 
                         <StackPanel Margin="0,30,0,0">

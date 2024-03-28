@@ -74,7 +74,7 @@ namespace HowLongToBeat.Services
         {
             OptionsDownloadData View = new OptionsDownloadData(PlayniteApi);
             Window windowExtension = PlayniteUiHelper.CreateExtensionWindow(PlayniteApi, PluginName + " - " + resources.GetString("LOCCommonSelectData"), View);
-            windowExtension.ShowDialog();
+            _ = windowExtension.ShowDialog();
 
             List<Game> PlayniteDb = View.GetFilteredGames();
             bool OnlyMissing = View.GetOnlyMissing();
@@ -95,7 +95,7 @@ namespace HowLongToBeat.Services
             );
             globalProgressOptions.IsIndeterminate = false;
 
-            PlayniteApi.Dialogs.ActivateGlobalProgress((activateGlobalProgress) =>
+            _ = PlayniteApi.Dialogs.ActivateGlobalProgress((activateGlobalProgress) =>
             {
                 try
                 {
@@ -198,7 +198,7 @@ namespace HowLongToBeat.Services
 
                 if (data.Count > 0 && PluginSettings.Settings.ShowWhenMismatch)
                 {
-                    Get(game, false, true);
+                    _ = Get(game, false, true);
                 }
             }
         }
@@ -212,7 +212,7 @@ namespace HowLongToBeat.Services
             );
             globalProgressOptions.IsIndeterminate = true;
 
-            PlayniteApi.Dialogs.ActivateGlobalProgress((activateGlobalProgress) =>
+            _ = PlayniteApi.Dialogs.ActivateGlobalProgress((activateGlobalProgress) =>
             {
                 RefreshElement(Id);
             }, globalProgressOptions);
@@ -226,7 +226,7 @@ namespace HowLongToBeat.Services
             );
             globalProgressOptions.IsIndeterminate = false;
 
-            PlayniteApi.Dialogs.ActivateGlobalProgress((activateGlobalProgress) =>
+            _ = PlayniteApi.Dialogs.ActivateGlobalProgress((activateGlobalProgress) =>
             {
                 Stopwatch stopWatch = new Stopwatch();
                 stopWatch.Start();
@@ -261,7 +261,7 @@ namespace HowLongToBeat.Services
             );
             globalProgressOptions.IsIndeterminate = false;
 
-            PlayniteApi.Dialogs.ActivateGlobalProgress((activateGlobalProgress) =>
+            _ = PlayniteApi.Dialogs.ActivateGlobalProgress((activateGlobalProgress) =>
             {
                 Stopwatch stopWatch = new Stopwatch();
                 stopWatch.Start();
@@ -318,7 +318,7 @@ namespace HowLongToBeat.Services
             );
             globalProgressOptions.IsIndeterminate = false;
 
-            PlayniteApi.Dialogs.ActivateGlobalProgress((activateGlobalProgress) =>
+            _ = PlayniteApi.Dialogs.ActivateGlobalProgress((activateGlobalProgress) =>
             {
                 Stopwatch stopWatch = new Stopwatch();
                 stopWatch.Start();
@@ -496,20 +496,17 @@ namespace HowLongToBeat.Services
                 return null;
             }
         }
-        
+
         public TitleList GetUserHltbDataCurrent(int HltbId, string UserGameId = "")
         {
             try
             {
                 List<TitleList> all = GetUserHltbDataAll(HltbId);
-                if (all == null || all.Count == 0)
-                {
-                    return null;
-                }
-
-                return UserGameId.IsNullOrEmpty()
+                return all == null || all.Count == 0
+                    ? null
+                    : UserGameId.IsNullOrEmpty()
                     ? all.OrderByDescending(x => x.GameStatuses.Where(y => y.Status == StatusType.Playing)?.Count() > 0).ThenByDescending(x => x.LastUpdate).First()
-                    : all.Where(x => x.UserGameId.IsEqual(UserGameId)).FirstOrDefault();
+                    : all.FirstOrDefault(x => x.UserGameId.IsEqual(UserGameId));
             }
             catch (Exception ex)
             {
@@ -534,6 +531,49 @@ namespace HowLongToBeat.Services
         }
 
 
+        private void SetGameStatus()
+        {
+            try
+            {
+                API.Instance.Database.Games.BeginBufferUpdate();
+                Database.UserHltbData.TitlesList.ForEach(x =>
+                {
+                    if (x.GameExist)
+                    {
+                        bool isCompletionist = x.HltbUserData?.Completionist != 0;
+                        bool isCompleted = x.GameStatuses?.Where(y => y.Status == StatusType.Completed)?.Count() != 0;
+                        bool isPlaying = x.GameStatuses?.Where(y => y.Status == StatusType.Playing)?.Count() != 0;
+
+                        Game game = API.Instance.Database.Games.Get(x.GameId);
+
+                        if (isCompletionist && PluginSettings.Settings.GameStatusCompletionist != default && API.Instance.Database.CompletionStatuses.Get(PluginSettings.Settings.GameStatusCompletionist) != null)
+                        {
+                            game.CompletionStatusId = PluginSettings.Settings.GameStatusCompletionist;
+                        }
+                        else if (isCompleted && PluginSettings.Settings.GameStatusCompleted != default && API.Instance.Database.CompletionStatuses.Get(PluginSettings.Settings.GameStatusCompleted) != null)
+                        {
+                            game.CompletionStatusId = PluginSettings.Settings.GameStatusCompleted;
+                        }
+                        else if (isPlaying && PluginSettings.Settings.GameStatusPlaying != default && API.Instance.Database.CompletionStatuses.Get(PluginSettings.Settings.GameStatusPlaying) != null)
+                        {
+                            game.CompletionStatusId = PluginSettings.Settings.GameStatusPlaying;
+                        }
+
+                        API.Instance.Database.Games.Update(game);
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, false, true, PluginName);
+            }
+            finally
+            {
+                API.Instance.Database.Games.EndBufferUpdate();
+            }
+        }
+
+
         public void RefreshUserData()
         {
             logger.Info("RefreshUserData()");
@@ -544,7 +584,7 @@ namespace HowLongToBeat.Services
             );
             globalProgressOptions.IsIndeterminate = true;
 
-            PlayniteApi.Dialogs.ActivateGlobalProgress((activateGlobalProgress) =>
+            _ = PlayniteApi.Dialogs.ActivateGlobalProgress((activateGlobalProgress) =>
             {
                 try
                 {
@@ -555,6 +595,12 @@ namespace HowLongToBeat.Services
                         logger.Info($"Find {UserHltbData.TitlesList?.Count ?? 0} games");
                         FileSystem.WriteStringToFileSafe(Path.Combine(Paths.PluginUserDataPath, "HltbUserStats.json"), Serialization.ToJson(UserHltbData));
                         Database.UserHltbData = UserHltbData;
+
+                        if (PluginSettings.Settings.AutoSetGameStatus)
+                        {
+                            SetGameStatus();
+                        }
+
                         Application.Current.Dispatcher?.Invoke(() =>
                         {
                             Database.OnCollectionChanged(null, null);
@@ -574,7 +620,7 @@ namespace HowLongToBeat.Services
 
         public void RefreshUserData(int game_id)
         {
-            Task.Run(() => 
+            _ = Task.Run(() => 
             {
                 try
                 {
@@ -818,7 +864,7 @@ namespace HowLongToBeat.Services
         {
             long result = 0;
             double count = 0;
-            
+
             foreach (TitleList titleList in Database.UserHltbData.TitlesList)
             {
                 if (titleList.Completion != null && titleList.HltbUserData.TimeToBeat != 0)
@@ -909,7 +955,7 @@ namespace HowLongToBeat.Services
 
         public void UpdatedCookies()
         {
-            Task.Run(() =>
+            _ = Task.Run(() =>
             {
                 if (howLongToBeatClient.GetIsUserLoggedIn())
                 {
@@ -918,7 +964,7 @@ namespace HowLongToBeat.Services
                         WebViewOffscreen.NavigateAndWait("https://howlongtobeat.com");
                     }
                     List<HttpCookie> Cookies = howLongToBeatClient.GetWebCookies();
-                    howLongToBeatClient.SetStoredCookies(Cookies);
+                    _ = howLongToBeatClient.SetStoredCookies(Cookies);
                 }
             });
         }

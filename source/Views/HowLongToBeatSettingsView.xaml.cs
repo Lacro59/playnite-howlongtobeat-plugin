@@ -18,13 +18,10 @@ namespace HowLongToBeat.Views
 {
     public partial class HowLongToBeatSettingsView : UserControl
     {
-        private static readonly ILogger logger = LogManager.GetLogger();
-        private static IResourceProvider resources = new ResourceProvider();
+        private static ILogger Logger => LogManager.GetLogger();
+        private static IResourceProvider ResourceProvider => new ResourceProvider();
 
-        private IPlayniteAPI _PlayniteApi;
-        private string _PluginUserDataPath;
-
-        private HowLongToBeatDatabase PluginDatabase = HowLongToBeat.PluginDatabase;
+        private HowLongToBeatDatabase PluginDatabase => HowLongToBeat.PluginDatabase;
 
         private TextBlock tbControl;
 
@@ -45,11 +42,8 @@ namespace HowLongToBeat.Views
         public static SolidColorBrush ThirdMultiColorBrush;
         public static ThemeLinearGradient ThirdMultiLinearGradient;
 
-        public HowLongToBeatSettingsView(IPlayniteAPI PlayniteApi, string PluginUserDataPath, HowLongToBeatSettings settings)
+        public HowLongToBeatSettingsView(HowLongToBeatSettings settings)
         {
-            _PlayniteApi = PlayniteApi;
-            _PluginUserDataPath = PluginUserDataPath;
-
             PluginDatabase.howLongToBeatClient.PropertyChanged += OnPropertyChanged;
 
             InitializeComponent();
@@ -92,8 +86,14 @@ namespace HowLongToBeat.Views
 
 
             spSettings.Visibility = Visibility.Visible;
-           
+
             PART_TTB.Source = BitmapExtensions.BitmapFromFile(Path.Combine(PluginDatabase.Paths.PluginPath, "Resources", "ttb.png"));
+
+
+            IItemCollection<CompletionStatus> gameStatus = API.Instance.Database.CompletionStatuses;
+            PART_GameStatusPlaying.ItemsSource = gameStatus;
+            PART_GameStatusCompleted.ItemsSource = gameStatus;
+            PART_GameStatusCompletionist.ItemsSource = gameStatus;
         }
 
 
@@ -163,16 +163,16 @@ namespace HowLongToBeat.Views
                 switch ((string)((Button)sender).Tag)
                 {
                     case "0":
-                        if (ResourceProvider.GetResource("NormalBrush") is LinearGradientBrush)
+                        if (Playnite.SDK.ResourceProvider.GetResource("NormalBrush") is LinearGradientBrush)
                         {
-                            tbThumb.Background = (LinearGradientBrush)ResourceProvider.GetResource("NormalBrush");
+                            tbThumb.Background = (LinearGradientBrush)Playnite.SDK.ResourceProvider.GetResource("NormalBrush");
                             ThumbSolidColorBrush = null;
-                            ThumbLinearGradient = ThemeLinearGradient.ToThemeLinearGradient((LinearGradientBrush)ResourceProvider.GetResource("NormalBrush"));
+                            ThumbLinearGradient = ThemeLinearGradient.ToThemeLinearGradient((LinearGradientBrush)Playnite.SDK.ResourceProvider.GetResource("NormalBrush"));
                         }
                         else
                         {
-                            tbThumb.Background = (SolidColorBrush)ResourceProvider.GetResource("NormalBrush");
-                            ThumbSolidColorBrush = (SolidColorBrush)ResourceProvider.GetResource("NormalBrush");
+                            tbThumb.Background = (SolidColorBrush)Playnite.SDK.ResourceProvider.GetResource("NormalBrush");
+                            ThumbSolidColorBrush = (SolidColorBrush)Playnite.SDK.ResourceProvider.GetResource("NormalBrush");
                             ThumbLinearGradient = null;
                         }
 
@@ -324,7 +324,7 @@ namespace HowLongToBeat.Views
             }
             else
             {
-                logger.Warn("One control is undefined");
+                Logger.Warn("One control is undefined");
             }
 
             PART_SelectorColor.Visibility = Visibility.Collapsed;
@@ -343,7 +343,7 @@ namespace HowLongToBeat.Views
         private void CheckAuthenticate()
         {
             PART_LbUserLogin.Visibility = Visibility.Collapsed;
-            PART_LbAuthenticate.Content = resources.GetString("LOCCommonLoginChecking");
+            PART_LbAuthenticate.Content = ResourceProvider.GetString("LOCCommonLoginChecking");
 
             var task = Task.Run(() => PluginDatabase.howLongToBeatClient.GetIsUserLoggedIn());
         }
@@ -363,7 +363,7 @@ namespace HowLongToBeat.Views
             {
                 if ((bool)PluginDatabase.howLongToBeatClient.IsConnected)
                 {
-                    PART_LbAuthenticate.Content = resources.GetString("LOCCommonLoggedIn");
+                    PART_LbAuthenticate.Content = ResourceProvider.GetString("LOCCommonLoggedIn");
                     PART_LbUserLogin.Visibility = Visibility.Visible;
 
                     string UserLogin = PluginDatabase.howLongToBeatClient.UserLogin;
@@ -372,11 +372,11 @@ namespace HowLongToBeat.Views
                         UserLogin = PluginDatabase.Database.UserHltbData.Login;
                     }
 
-                    PART_LbUserLogin.Content = resources.GetString("LOCCommonAccountName") + " " + UserLogin;
+                    PART_LbUserLogin.Content = ResourceProvider.GetString("LOCCommonAccountName") + " " + UserLogin;
                 }
                 else
                 {
-                    PART_LbAuthenticate.Content = resources.GetString("LOCCommonNotLoggedIn");
+                    PART_LbAuthenticate.Content = ResourceProvider.GetString("LOCCommonNotLoggedIn");
                 }
             }));
         }

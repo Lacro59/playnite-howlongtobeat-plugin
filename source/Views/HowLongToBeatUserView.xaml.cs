@@ -32,7 +32,7 @@ namespace HowLongToBeat.Views
         private bool DisplayFirst = true;
 
         private HowLongToBeatDatabase PluginDatabase => HowLongToBeat.PluginDatabase;
-        private UserViewDataContext userViewDataContext => new UserViewDataContext();
+        private UserViewDataContext userViewDataContext { get; set; } = new UserViewDataContext();
 
         private bool PlayniteDataFilter(object item)
         {
@@ -84,7 +84,7 @@ namespace HowLongToBeat.Views
                             break;
                     };
                     ListViewGames.SortingDefaultDataName = SortingDefaultDataName;
-                    ListViewGames.SortingSortDirection = (PluginDatabase.PluginSettings.Settings.IsAsc) ? ListSortDirection.Ascending : ListSortDirection.Descending;
+                    ListViewGames.SortingSortDirection = PluginDatabase.PluginSettings.Settings.IsAsc ? ListSortDirection.Ascending : ListSortDirection.Descending;
                     ListViewGames.Sorting();
 
                     SetFilter();
@@ -100,7 +100,7 @@ namespace HowLongToBeat.Views
                     SetChartData();
                     SetStats();
 
-                    Application.Current.Dispatcher?.Invoke(() => 
+                    Application.Current.Dispatcher?.Invoke(() =>
                     {
                         PART_UserDataLoad.Visibility = Visibility.Collapsed;
                         PART_Data.Visibility = Visibility.Visible;
@@ -121,7 +121,6 @@ namespace HowLongToBeat.Views
 
         private void PART_BtRefreshUserData_Click(object sender, RoutedEventArgs e)
         {
-            //PART_UserDataLoad.Visibility = Visibility.Visible;
             PART_Data.Visibility = Visibility.Hidden;
 
             PluginDatabase.RefreshUserData();
@@ -140,7 +139,6 @@ namespace HowLongToBeat.Views
 
                 Application.Current.Dispatcher?.Invoke(() =>
                 {
-                    //PART_UserDataLoad.Visibility = Visibility.Collapsed;
                     PART_Data.Visibility = Visibility.Visible;
                 });
             });
@@ -394,14 +392,14 @@ namespace HowLongToBeat.Views
             PART_CbYear.SelectedIndex = 0;
 
             List<string> listStoreFront = PluginDatabase.Database.UserHltbData.TitlesList.Where(x => !x.Storefront.IsNullOrEmpty()).Select(y => y.Storefront).Distinct().ToList();
-            listStoreFront.Add("----");
+            listStoreFront.AddMissing("----");
             listStoreFront = listStoreFront.OrderBy(x => x).ToList();
             PART_CbStorefront.ItemsSource = null;
             PART_CbStorefront.ItemsSource = listStoreFront;
             PART_CbStorefront.SelectedIndex = 0;
 
             List<string> listPlatform = PluginDatabase.Database.UserHltbData.TitlesList.Where(x => !x.Platform.IsNullOrEmpty()).Select(y => y.Platform).Distinct().ToList();
-            listPlatform.Add("----");
+            listPlatform.AddMissing("----");
             listPlatform = listPlatform.OrderBy(x => x).ToList();
             PART_CbPlatform.ItemsSource = null;
             PART_CbPlatform.ItemsSource = listPlatform;

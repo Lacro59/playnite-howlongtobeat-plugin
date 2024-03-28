@@ -60,11 +60,12 @@ namespace HowLongToBeat.Models
         {
             get
             {
-                Guid? result = PluginDatabase.Database.Items.Where(x => x.Value.GetData()?.Id == Id
-                                    && (x.Value.UserGameId.IsNullOrEmpty() ? true : x.Value.UserGameId.IsEqual(UserGameId)))?            
-                    .FirstOrDefault().Key;
+                Guid? result = PluginDatabase.Database.Items.Where(x => x.Value.GetData()?.Id == Id && (x.Value.UserGameId.IsNullOrEmpty() || x.Value.UserGameId.IsEqual(UserGameId)))
+                    ?.FirstOrDefault().Key;
 
-                return result == null || (Guid)result == default(Guid) ? new Guid() : (Guid)result;
+                return result == null || (Guid)result == default
+                    ? new Guid()
+                    : (Guid)result;
             }
         }
 
