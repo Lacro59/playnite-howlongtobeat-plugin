@@ -162,16 +162,16 @@ namespace HowLongToBeat.Views
                 switch ((string)((Button)sender).Tag)
                 {
                     case "0":
-                        if (Playnite.SDK.ResourceProvider.GetResource("NormalBrush") is LinearGradientBrush)
+                        if (ResourceProvider.GetResource("NormalBrush") is LinearGradientBrush)
                         {
-                            tbThumb.Background = (LinearGradientBrush)Playnite.SDK.ResourceProvider.GetResource("NormalBrush");
+                            tbThumb.Background = (LinearGradientBrush)ResourceProvider.GetResource("NormalBrush");
                             ThumbSolidColorBrush = null;
-                            ThumbLinearGradient = ThemeLinearGradient.ToThemeLinearGradient((LinearGradientBrush)Playnite.SDK.ResourceProvider.GetResource("NormalBrush"));
+                            ThumbLinearGradient = ThemeLinearGradient.ToThemeLinearGradient((LinearGradientBrush)ResourceProvider.GetResource("NormalBrush"));
                         }
                         else
                         {
-                            tbThumb.Background = (SolidColorBrush)Playnite.SDK.ResourceProvider.GetResource("NormalBrush");
-                            ThumbSolidColorBrush = (SolidColorBrush)Playnite.SDK.ResourceProvider.GetResource("NormalBrush");
+                            tbThumb.Background = (SolidColorBrush)ResourceProvider.GetResource("NormalBrush");
+                            ThumbSolidColorBrush = (SolidColorBrush)ResourceProvider.GetResource("NormalBrush");
                             ThumbLinearGradient = null;
                         }
 
