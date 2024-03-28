@@ -32,12 +32,11 @@ namespace HowLongToBeat
     {
         public override Guid Id { get; } = Guid.Parse("e08cd51f-9c9a-4ee3-a094-fde03b55492f");
 
-        internal TopPanelItem topPanelItem;
-        internal HowLongToBeatViewSidebar howLongToBeatViewSidebar;
+        internal TopPanelItem TopPanelItem { get; set; }
+        internal HowLongToBeatViewSidebar HowLongToBeatViewSidebar { get; set; }
+        internal SidebarItemControl SidebarItemControl { get; set; }
 
-        private bool preventLibraryUpdatedOnStart { get; set; } = true;
-
-        private SidebarItemControl sidebarItemControl { get; set; }
+        private bool PreventLibraryUpdatedOnStart { get; set; } = true;
 
 
         public HowLongToBeat(IPlayniteAPI playniteAPI) : base(playniteAPI)
@@ -64,35 +63,8 @@ namespace HowLongToBeat
             // Initialize top & side bar
             if (API.Instance.ApplicationInfo.Mode == ApplicationMode.Desktop)
             {
-                topPanelItem = new TopPanelItem()
-                {
-                    Icon = new TextBlock
-                    {
-                        Text = "\ue90d",
-                        FontSize = 20,
-                        FontFamily = ResourceProvider.GetResource("CommonFont") as FontFamily
-                    },
-                    Title = ResourceProvider.GetString("LOCHowLongToBeat"),
-                    Activated = () =>
-                    {
-                        WindowOptions windowOptions = new WindowOptions
-                        {
-                            ShowMinimizeButton = false,
-                            ShowMaximizeButton = true,
-                            ShowCloseButton = true,
-                            Width = 1280,
-                            Height = 740
-                        };
-
-                        HowLongToBeatUserView ViewExtension = new HowLongToBeatUserView(this);
-                        Window windowExtension = PlayniteUiHelper.CreateExtensionWindow(PluginDatabase.PluginName, ViewExtension, windowOptions);
-                        windowExtension.ResizeMode = ResizeMode.CanResize;
-                        windowExtension.ShowDialog();
-                    },
-                    Visible = PluginSettings.Settings.EnableIntegrationButtonHeader
-                };
-
-                howLongToBeatViewSidebar = new HowLongToBeatViewSidebar(this);
+                TopPanelItem = new HowLongToBeatTopPanelItem(this);
+                HowLongToBeatViewSidebar = new HowLongToBeatViewSidebar(this);
             }
 
             //Playnite search integration
@@ -115,10 +87,9 @@ namespace HowLongToBeat
         #region Custom event
         public void OnCustomThemeButtonClick(object sender, RoutedEventArgs e)
         {
-            string ButtonName = string.Empty;
             try
             {
-                ButtonName = ((Button)sender).Name;
+                string ButtonName = ((Button)sender).Name;
                 if (ButtonName == "PART_CustomHowLongToBeatButton")
                 {
                     Common.LogDebug(true, $"OnCustomThemeButtonClick()");
@@ -135,7 +106,7 @@ namespace HowLongToBeat
                     HowLongToBeatUserView ViewExtension = new HowLongToBeatUserView(this);
                     Window windowExtension = PlayniteUiHelper.CreateExtensionWindow(PluginDatabase.PluginName, ViewExtension, windowOptions);
                     windowExtension.ResizeMode = ResizeMode.CanResize;
-                    windowExtension.ShowDialog();
+                    _ = windowExtension.ShowDialog();
                 }
             }
             catch (Exception ex)
@@ -150,7 +121,7 @@ namespace HowLongToBeat
         // Button on top panel
         public override IEnumerable<TopPanelItem> GetTopPanelItems()
         {
-            yield return topPanelItem;
+            yield return TopPanelItem;
         }
 
         // List custom controls
@@ -174,38 +145,11 @@ namespace HowLongToBeat
             return null;
         }
 
-        // SidebarItem
-        public class HowLongToBeatViewSidebar : SidebarItem
-        {
-            public HowLongToBeatViewSidebar(HowLongToBeat plugin)
-            {
-                Type = SiderbarItemType.View;
-                Title = ResourceProvider.GetString("LOCHowLongToBeat");
-                Icon = new TextBlock
-                {
-                    Text = "\ue90d",
-                    FontFamily = ResourceProvider.GetResource("CommonFont") as FontFamily
-                };
-                Opened = () =>
-                {
-                    if (plugin.sidebarItemControl == null)
-                    {
-                        plugin.sidebarItemControl = new SidebarItemControl();
-                        plugin.sidebarItemControl.SetTitle(ResourceProvider.GetString("LOCHowLongToBeat"));
-                        plugin.sidebarItemControl.AddContent(new HowLongToBeatUserView(plugin));
-                    }
-
-                    return plugin.sidebarItemControl;
-                };
-                Visible = plugin.PluginSettings.Settings.EnableIntegrationButtonSide;
-            }
-        }
-
         public override IEnumerable<SidebarItem> GetSidebarItems()
         {
             return new List<SidebarItem>
             {
-                howLongToBeatViewSidebar
+                HowLongToBeatViewSidebar
             };
         }
         #endregion
@@ -773,7 +717,7 @@ namespace HowLongToBeat
             _ = Task.Run(() =>
             {
                 Thread.Sleep(10000);
-                preventLibraryUpdatedOnStart = false;
+                PreventLibraryUpdatedOnStart = false;
             });
 
             // QuickSearch support
@@ -803,7 +747,7 @@ namespace HowLongToBeat
         // Add code to be executed when library is updated.
         public override void OnLibraryUpdated(OnLibraryUpdatedEventArgs args)
         {
-            if (PluginSettings.Settings.AutoImport && !preventLibraryUpdatedOnStart)
+            if (PluginSettings.Settings.AutoImport && !PreventLibraryUpdatedOnStart)
             {
                 List<Game> PlayniteDb = PlayniteApi.Database.Games
                         .Where(x => x.Added != null && x.Added > PluginSettings.Settings.LastAutoLibUpdateAssetsDownload)

@@ -178,6 +178,8 @@
     <Compile Include="Services\HowLongToBeatDatabase.cs" />
     <Compile Include="Models\HltbSearchRoot.cs" />
     <Compile Include="Services\HowLongToBeatSearch.cs" />
+    <Compile Include="Services\HowLongToBeatTopPanelItem.cs" />
+    <Compile Include="Services\HowLongToBeatViewSidebar.cs" />
     <Compile Include="Views\HowLongToBeatSelect.xaml.cs">
       <DependentUpon>HowLongToBeatSelect.xaml</DependentUpon>
     </Compile>

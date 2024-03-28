@@ -14,8 +14,8 @@ namespace HowLongToBeat.Services
 {
     public class HowLongToBeatSearch : SearchContext
     {
-        private static IResourceProvider resources = new ResourceProvider();
-        private readonly HowLongToBeatDatabase PluginDatabase = HowLongToBeat.PluginDatabase;
+        private static IResourceProvider resources => new ResourceProvider();
+        private HowLongToBeatDatabase PluginDatabase { get; set; } = HowLongToBeat.PluginDatabase;
 
 
         public HowLongToBeatSearch()
