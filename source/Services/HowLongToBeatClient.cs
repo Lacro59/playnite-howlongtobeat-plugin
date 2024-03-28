@@ -45,7 +45,7 @@ namespace HowLongToBeat.Services
     {
         private static ILogger Logger => LogManager.GetLogger();
 
-        private static HowLongToBeatDatabase PluginDatabase { get; set; } = HowLongToBeat.PluginDatabase;
+        private static HowLongToBeatDatabase PluginDatabase => HowLongToBeat.PluginDatabase;
 
 
         internal string FileCookies { get; }

@@ -20,7 +20,7 @@ namespace HowLongToBeat.Views
     /// </summary>
     public partial class HowLongToBeatSelect : UserControl
     {
-        private HowLongToBeatDatabase PluginDatabase => HowLongToBeat.PluginDatabase;
+        private static HowLongToBeatDatabase PluginDatabase => HowLongToBeat.PluginDatabase;
 
         public GameHowLongToBeat GameHowLongToBeat { get; set; }
         private Game GameContext { get; set; }

@@ -16,7 +16,7 @@ namespace HowLongToBeat.Models
 {
     public class QuickSearchItemSource : ISearchSubItemSource<string>
     {
-        private readonly HowLongToBeatDatabase PluginDatabase = HowLongToBeat.PluginDatabase;
+        private static HowLongToBeatDatabase PluginDatabase => HowLongToBeat.PluginDatabase;
 
 
         public string Prefix => PluginDatabase.PluginName;

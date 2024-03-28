@@ -27,11 +27,11 @@ namespace HowLongToBeat.Views
     // TODO Optimize loading
     public partial class HowLongToBeatUserView : UserControl
     {
-        private readonly HowLongToBeat Plugin;
+        private HowLongToBeat Plugin { get; set; }
 
-        private bool DisplayFirst = true;
+        private bool DisplayFirst { get; set; } = true;
 
-        private HowLongToBeatDatabase PluginDatabase => HowLongToBeat.PluginDatabase;
+        private static HowLongToBeatDatabase PluginDatabase => HowLongToBeat.PluginDatabase;
         private UserViewDataContext userViewDataContext { get; set; } = new UserViewDataContext();
 
         private bool PlayniteDataFilter(object item)

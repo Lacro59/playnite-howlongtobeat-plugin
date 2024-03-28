@@ -27,10 +27,10 @@ namespace HowLongToBeat.Models
 
     public class TitleList
     {
-        private HowLongToBeatDatabase PluginDatabase = HowLongToBeat.PluginDatabase;
+        private static HowLongToBeatDatabase PluginDatabase => HowLongToBeat.PluginDatabase;
 
-        private LocalDateConverter converter = new LocalDateConverter();
-        private PlayTimeToStringConverterWithZero playTimeToStringConverterWithZero = new PlayTimeToStringConverterWithZero();
+        private LocalDateConverter Converter => new LocalDateConverter();
+        private PlayTimeToStringConverterWithZero PlayTimeToStringConverterWithZero => new PlayTimeToStringConverterWithZero();
 
         public int Id { get; set; }
         public string UserGameId { get; set; }
@@ -40,7 +40,7 @@ namespace HowLongToBeat.Models
         public long CurrentTime { get; set; }
         public long TimeToBeat => PluginDatabase.Get(GameId, true)?.GetData()?.GameHltbData?.TimeToBeat ?? 0;
         public long RemainingTime => TimeToBeat - CurrentTime > 0 ? TimeToBeat - CurrentTime : 0;
-        public string RemainingTimeFormat => RemainingTime > 0 ? (string)playTimeToStringConverterWithZero.Convert(RemainingTime, null, null, CultureInfo.CurrentCulture) : string.Empty;
+        public string RemainingTimeFormat => RemainingTime > 0 ? (string)PlayTimeToStringConverterWithZero.Convert(RemainingTime, null, null, CultureInfo.CurrentCulture) : string.Empty;
 
         public bool IsReplay { get; set; }
         public bool IsRetired { get; set; }
@@ -49,7 +49,7 @@ namespace HowLongToBeat.Models
 
         public DateTime? Completion { get; set; }
         [DontSerialize]
-        public string CompletionFormat => Completion == null ? string.Empty : (string)converter.Convert((DateTime)Completion, null, null, CultureInfo.CurrentCulture);
+        public string CompletionFormat => Completion == null ? string.Empty : (string)Converter.Convert((DateTime)Completion, null, null, CultureInfo.CurrentCulture);
 
         public List<GameStatus> GameStatuses { get; set; } = new List<GameStatus>();
 

@@ -18,12 +18,8 @@ namespace HowLongToBeat.Controls
     /// </summary>
     public partial class PluginViewItem : PluginUserControlExtend
     {
-        private HowLongToBeatDatabase PluginDatabase = HowLongToBeat.PluginDatabase;
-        internal override IPluginDatabase _PluginDatabase
-        {
-            get => PluginDatabase;
-            set => PluginDatabase = (HowLongToBeatDatabase)_PluginDatabase;
-        }
+        private static HowLongToBeatDatabase PluginDatabase => HowLongToBeat.PluginDatabase;
+        internal override IPluginDatabase _PluginDatabase => PluginDatabase;
 
         private PluginViewItemDataContext ControlDataContext = new PluginViewItemDataContext();
         internal override IDataContext _ControlDataContext

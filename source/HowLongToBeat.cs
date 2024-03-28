@@ -11,7 +11,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;
 using HowLongToBeat.Models;
 using CommonPluginsShared;
 using CommonPluginsShared.PlayniteExtended;
@@ -75,7 +74,7 @@ namespace HowLongToBeat
 
 
             //let create a mapper so LiveCharts know how to plot our CustomerViewModel class
-            var customerVmMapper = Mappers.Xy<CustomerForSingle>()
+            CartesianMapper<CustomerForSingle> customerVmMapper = Mappers.Xy<CustomerForSingle>()
                 .X((value, index) => index)
                 .Y(value => value.Values);
 
@@ -216,7 +215,7 @@ namespace HowLongToBeat
 
                             if (gameHowLongToBeat.HasData || gameHowLongToBeat.HasDataEmpty)
                             {
-                                var ViewExtension = new HowLongToBeatView(gameHowLongToBeat);
+                                HowLongToBeatView ViewExtension = new HowLongToBeatView(gameHowLongToBeat);
                                 Window windowExtension = PlayniteUiHelper.CreateExtensionWindow(PluginDatabase.PluginName, ViewExtension);
                                 windowExtension.ShowDialog();
                             }
@@ -576,14 +575,14 @@ namespace HowLongToBeat
                 Description = ResourceProvider.GetString("LOCCommonViewNoData"),
                 Action = (mainMenuItem) =>
                 {
-                    var windowOptions = new WindowOptions
+                    WindowOptions windowOptions = new WindowOptions
                     {
                         ShowMinimizeButton = false,
                         ShowMaximizeButton = false,
                         ShowCloseButton = true
                     };
 
-                    var ViewExtension = new ListWithNoData(PluginDatabase);
+                    ListWithNoData ViewExtension = new ListWithNoData(PluginDatabase);
                     Window windowExtension = PlayniteUiHelper.CreateExtensionWindow(PluginDatabase.PluginName, ViewExtension, windowOptions);
                     windowExtension.ShowDialog();
                 }
@@ -599,7 +598,7 @@ namespace HowLongToBeat
             {
                 MenuSection = MenuInExtensions + ResourceProvider.GetString("LOCHowLongToBeat"),
                 Description = "Test",
-                Action = (mainMenuItem) => 
+                Action = (mainMenuItem) =>
                 {
 
                 }
@@ -759,7 +758,7 @@ namespace HowLongToBeat
                 );
                 globalProgressOptions.IsIndeterminate = false;
 
-                PlayniteApi.Dialogs.ActivateGlobalProgress((activateGlobalProgress) =>
+                _ = PlayniteApi.Dialogs.ActivateGlobalProgress((activateGlobalProgress) =>
                 {
                     try
                     {

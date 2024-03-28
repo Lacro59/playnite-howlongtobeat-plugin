@@ -20,7 +20,7 @@ namespace HowLongToBeat.Views
     {
         private static ILogger Logger => LogManager.GetLogger();
 
-        private HowLongToBeatDatabase PluginDatabase => HowLongToBeat.PluginDatabase;
+        private static HowLongToBeatDatabase PluginDatabase => HowLongToBeat.PluginDatabase;
 
         private TextBlock tbControl;
 
