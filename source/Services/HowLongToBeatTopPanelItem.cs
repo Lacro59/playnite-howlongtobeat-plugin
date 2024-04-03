@@ -38,7 +38,7 @@ namespace HowLongToBeat.Services
                 HowLongToBeatUserView ViewExtension = new HowLongToBeatUserView(plugin);
                 Window windowExtension = PlayniteUiHelper.CreateExtensionWindow(HowLongToBeat.PluginDatabase.PluginName, ViewExtension, windowOptions);
                 windowExtension.ResizeMode = ResizeMode.CanResize;
-                windowExtension.ShowDialog();
+                _ = windowExtension.ShowDialog();
             };
             Visible = plugin.PluginSettings.Settings.EnableIntegrationButtonHeader;
         }

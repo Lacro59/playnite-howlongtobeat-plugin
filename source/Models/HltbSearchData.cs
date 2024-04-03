@@ -44,6 +44,5 @@ namespace HowLongToBeat.Models
         public int profile_steam { get; set; }
         public string profile_platform { get; set; }
         public int release_world { get; set; }
-        
     }
 }

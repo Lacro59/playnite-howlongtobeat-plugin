@@ -47,8 +47,15 @@ namespace HowLongToBeat.Services
                         paramsTime = x.Replace("-time=", string.Empty);
                     }
 
-                    if (!hasNp) hasNp = x.IsEqual("-np");
-                    if (!hasFav) hasFav = x.IsEqual("-fav");
+                    if (!hasNp)
+                    {
+                        hasNp = x.IsEqual("-np");
+                    }
+
+                    if (!hasFav)
+                    {
+                        hasFav = x.IsEqual("-fav");
+                    }
 
                     if (x.Contains("-stores=", StringComparison.InvariantCultureIgnoreCase))
                     {
@@ -116,7 +123,7 @@ namespace HowLongToBeat.Services
 
                     if (timeMin > -1 && timeMax > -1)
                     {
-                        return x.Items[0]?.GameHltbData?.TimeToBeat == 0 ? false : x.Items[0]?.GameHltbData?.TimeToBeat >= timeMin && x.Items[0]?.GameHltbData?.TimeToBeat <= timeMax;
+                        return (x.Items[0]?.GameHltbData?.TimeToBeat) != 0 && x.Items[0]?.GameHltbData?.TimeToBeat >= timeMin && x.Items[0]?.GameHltbData?.TimeToBeat <= timeMax;
                     }
                 }
             }
@@ -126,7 +133,7 @@ namespace HowLongToBeat.Services
 
                 if (time > -1)
                 {
-                    return x.Items[0]?.GameHltbData?.TimeToBeat == 0 ? false : x.Items[0]?.GameHltbData?.TimeToBeat <= time;
+                    return (x.Items[0]?.GameHltbData?.TimeToBeat) != 0 && x.Items[0]?.GameHltbData?.TimeToBeat <= time;
                 }
             }
             else if (query.Contains(">"))
@@ -135,7 +142,7 @@ namespace HowLongToBeat.Services
 
                 if (time > -1)
                 {
-                    return x.Items[0]?.GameHltbData?.TimeToBeat == 0 ? false : x.Items[0]?.GameHltbData?.TimeToBeat >= time;
+                    return (x.Items[0]?.GameHltbData?.TimeToBeat) != 0 && x.Items[0]?.GameHltbData?.TimeToBeat >= time;
                 }
             }
             else
@@ -144,7 +151,7 @@ namespace HowLongToBeat.Services
 
                 if (time > -1)
                 {
-                    return x.Items[0]?.GameHltbData?.TimeToBeat == 0 ? false : x.Items[0]?.GameHltbData?.TimeToBeat == time;
+                    return (x.Items[0]?.GameHltbData?.TimeToBeat) != 0 && x.Items[0]?.GameHltbData?.TimeToBeat == time;
                 }
             }
 

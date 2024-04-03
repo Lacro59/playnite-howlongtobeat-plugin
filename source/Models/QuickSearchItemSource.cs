@@ -60,6 +60,9 @@ namespace HowLongToBeat.Models
                 {
                     case "ttb":
                         return SearchByTtb(query);
+
+                    default:
+                        break;
                 }
             }
             return null;
@@ -115,9 +118,10 @@ namespace HowLongToBeat.Models
 
                 case "s":
                     return double.Parse(value);
-            }
 
-            return 0;
+                default:
+                    return 0;
+            }
         }
 
         private List<KeyValuePair<Guid, GameHowLongToBeat>> GetDb(ConcurrentDictionary<Guid, GameHowLongToBeat> db)
@@ -175,6 +179,9 @@ namespace HowLongToBeat.Models
                             }
                             catch { }
                             break;
+
+                        default:
+                            break;
                     }
 
                     return search.AsEnumerable();
@@ -202,6 +209,9 @@ namespace HowLongToBeat.Models
                                 }
                             }
                             catch { }
+                            break;
+
+                        default:
                             break;
                     }
 

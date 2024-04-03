@@ -13,46 +13,18 @@ namespace HowLongToBeat.Models
 
 
         [DontSerialize]
-        public override bool HasData
-        {
-            get
-            {
-                if (Items?.Count > 0 && Items?.First() != null)
-                {
-                    return !Items.First().IsEmpty;
-                }
-
-                return false;
-            }
-        }
+        public override bool HasData => Items?.Count > 0 && Items?.First() != null && !Items.First().IsEmpty;
 
         [DontSerialize]
-        public bool HasDataEmpty
-        {
-            get
-            {
-                if (Items?.Count > 0 && Items?.First() != null)
-                {
-                    return Items.First().IsEmpty;
-                }
-
-                return false;
-            }
-        }
+        public bool HasDataEmpty => Items?.Count > 0 && Items?.First() != null && Items.First().IsEmpty;
 
         [DontSerialize]
-        public SourceLink SourceLink
+        public SourceLink SourceLink => new SourceLink
         {
-            get
-            {
-                return new SourceLink
-                {
-                    GameName = GetData()?.Name,
-                    Name = "HowLongToBeat",
-                    Url = GetData()?.Url
-                };
-            }
-        }
+            GameName = GetData()?.Name,
+            Name = "HowLongToBeat",
+            Url = GetData()?.Url
+        };
 
 
         public string UserGameId { get; set; }

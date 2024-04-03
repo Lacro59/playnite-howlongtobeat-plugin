@@ -14,7 +14,6 @@ namespace HowLongToBeat.Models
         public HltbData GameHltbData { get; set; }
 
         [DontSerialize]
-        public bool IsEmpty => GameHltbData == null
-            || (GameHltbData.MainStory == 0 && GameHltbData.MainExtra == 0 && GameHltbData.Completionist == 0 && GameHltbData.Solo == 0 && GameHltbData.CoOp == 0 && GameHltbData.Vs == 0);
+        public bool IsEmpty => GameHltbData == null || (GameHltbData.MainStory == 0 && GameHltbData.MainExtra == 0 && GameHltbData.Completionist == 0 && GameHltbData.Solo == 0 && GameHltbData.CoOp == 0 && GameHltbData.Vs == 0);
     }
 }

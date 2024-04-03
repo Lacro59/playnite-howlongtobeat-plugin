@@ -89,7 +89,7 @@ namespace HowLongToBeat.Services
         public HowLongToBeatClient()
         {
             UserLogin = PluginDatabase.PluginSettings.Settings.UserLogin;
-            
+
             string PathData = PluginDatabase.Paths.PluginUserDataPath;
             FileCookies = Path.Combine(PathData, CommonPlayniteShared.Common.Paths.GetSafePathName($"HowLongToBeat.json"));
         }
@@ -106,7 +106,7 @@ namespace HowLongToBeat.Services
         public List<HltbDataUser> SearchTwoMethod(string Name, string Platform = "")
         {
             List<HltbDataUser> dataSearchNormalized = Search(PlayniteTools.NormalizeGameName(Name), Platform);
-            List<HltbDataUser> dataSearch = HowLongToBeat.PluginDatabase.howLongToBeatClient.Search(Name, Platform);
+            List<HltbDataUser> dataSearch = HowLongToBeat.PluginDatabase.HowLongToBeatClient.Search(Name, Platform);
 
             List<HltbDataUser> dataSearchFinal = new List<HltbDataUser>();
             dataSearchFinal.AddRange(dataSearchNormalized);
@@ -155,11 +155,11 @@ namespace HowLongToBeat.Services
             if (API.Instance.ApplicationInfo.Mode == ApplicationMode.Desktop)
             {
                 HowLongToBeatSelect ViewExtension = null;
-                Application.Current.Dispatcher.BeginInvoke((Action)delegate
+                _ = Application.Current.Dispatcher.BeginInvoke((Action)delegate
                 {
                     ViewExtension = new HowLongToBeatSelect(null, game);
                     Window windowExtension = PlayniteUiHelper.CreateExtensionWindow(ResourceProvider.GetString("LOCSelection") + " - " + game.Name + " - " + (game.Source?.Name ?? "Playnite"), ViewExtension);
-                    windowExtension.ShowDialog();
+                    _ = windowExtension.ShowDialog();
                 }).Wait();
 
                 if (ViewExtension.GameHowLongToBeat?.Items.Count > 0)
@@ -182,7 +182,8 @@ namespace HowLongToBeat.Services
 
             if (data != null)
             {
-                try {
+                try
+                {
                     string Name = string.Empty;
                     int Id = 0;
                     string UrlImg = string.Empty;
@@ -204,7 +205,7 @@ namespace HowLongToBeat.Services
                         long Solo = (entry.comp_lvl_combine == 1 && entry.comp_lvl_sp == 1) ? entry.comp_all : 0;
                         long CoOp = (entry.comp_lvl_combine == 1 && entry.comp_lvl_co == 1) ? entry.invested_co : 0;
                         long Vs = (entry.comp_lvl_combine == 1 && entry.comp_lvl_mp == 1) ? entry.invested_mp : 0;
-                        
+
                         ReturnData.Add(new HltbDataUser
                         {
                             Name = Name,
@@ -240,7 +241,7 @@ namespace HowLongToBeat.Services
         {
             if (UserId == 0)
             {
-                SpinWait.SpinUntil(() => PluginDatabase.IsLoaded, -1);
+                _ = SpinWait.SpinUntil(() => PluginDatabase.IsLoaded, -1);
                 UserId = HowLongToBeat.PluginDatabase.Database.UserHltbData.UserId;
             }
 
@@ -284,22 +285,23 @@ namespace HowLongToBeat.Services
 
                     IsConnected = false;
                     WebView.Navigate(UrlLogOut);
-                    WebView.OpenDialog();
+                    _ = WebView.OpenDialog();
                 }
             }).Completed += (s, e) =>
             {
                 if ((bool)IsConnected)
                 {
-                    Application.Current.Dispatcher?.BeginInvoke((Action)delegate
+                    _ = Application.Current.Dispatcher?.BeginInvoke((Action)delegate
                     {
                         try
                         {
                             List<HttpCookie> Cookies = GetWebCookies();
-                            SetStoredCookies(Cookies);
+                            _ = SetStoredCookies(Cookies);
 
                             PluginDatabase.Plugin.SavePluginSettings(PluginDatabase.PluginSettings.Settings);
 
-                            Task.Run(() => {
+                            _ = Task.Run(() =>
+                            {
                                 UserId = GetUserId();
                                 HowLongToBeat.PluginDatabase.RefreshUserData();
                             });
@@ -338,7 +340,7 @@ namespace HowLongToBeat.Services
                 List<HttpCookie> Cookies = GetStoredCookies();
                 string payload = "{\"user_id\":" + UserId + ",\"lists\":[\"playing\",\"completed\",\"retired\"],\"set_playstyle\":\"comp_all\",\"name\":\"\",\"platform\":\"\",\"storefront\":\"\",\"sortBy\":\"\",\"sortFlip\":0,\"view\":\"\",\"limit\":10000,\"currentUserHome\":true}";
                 string json = Web.PostStringDataPayload(string.Format(UrlUserGamesList, UserId), payload, Cookies).GetAwaiter().GetResult();
-                Serialization.TryFromJson(json, out HltbUserGamesList hltbUserGameList);
+                _ = Serialization.TryFromJson(json, out HltbUserGamesList hltbUserGameList);
                 return hltbUserGameList;
             }
             catch (Exception ex)
@@ -353,8 +355,8 @@ namespace HowLongToBeat.Services
         {
             try
             {
-                DateTime.TryParse(x.date_updated, out DateTime LastUpdate);
-                DateTime.TryParse(x.date_complete, out DateTime Completion);
+                _ = DateTime.TryParse(x.date_updated, out DateTime LastUpdate);
+                _ = DateTime.TryParse(x.date_complete, out DateTime Completion);
                 DateTime? CompletionFinal = null;
                 if (Completion != default)
                 {
@@ -757,7 +759,7 @@ namespace HowLongToBeat.Services
             List<HttpCookie> httpCookies = GetWebCookies();
             if (httpCookies?.Count > 0)
             {
-                SetStoredCookies(httpCookies);
+                _ = SetStoredCookies(httpCookies);
                 return httpCookies;
             }
 

@@ -106,7 +106,7 @@ namespace HowLongToBeat.Views
                 List<HltbDataUser> dataSearch = new List<HltbDataUser>();
                 try
                 {
-                    dataSearch = HowLongToBeat.PluginDatabase.howLongToBeatClient.SearchTwoMethod(GameSearch, GamePlatform);
+                    dataSearch = HowLongToBeat.PluginDatabase.HowLongToBeatClient.SearchTwoMethod(GameSearch, GamePlatform);
 
                     // Sort
                     this.Dispatcher.Invoke(new Action(() =>
