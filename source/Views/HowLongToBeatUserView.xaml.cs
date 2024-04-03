@@ -32,7 +32,7 @@ namespace HowLongToBeat.Views
         private bool DisplayFirst { get; set; } = true;
 
         private static HowLongToBeatDatabase PluginDatabase => HowLongToBeat.PluginDatabase;
-        private UserViewDataContext userViewDataContext { get; set; } = new UserViewDataContext();
+        private UserViewDataContext UserViewDataContext { get; set; } = new UserViewDataContext();
 
         private bool PlayniteDataFilter(object item)
         {
@@ -46,7 +46,7 @@ namespace HowLongToBeat.Views
             Plugin = plugin;
 
             InitializeComponent();
-            this.DataContext = userViewDataContext;
+            this.DataContext = UserViewDataContext;
 
 
             if (!PluginDatabase.PluginSettings.Settings.EnableProgressBarInDataView)
@@ -60,7 +60,7 @@ namespace HowLongToBeat.Views
             {
                 if (PluginDatabase.Database.UserHltbData?.TitlesList != null)
                 {
-                    userViewDataContext.ItemsSource = PluginDatabase.Database.UserHltbData.TitlesList.ToObservable();
+                    UserViewDataContext.ItemsSource = PluginDatabase.Database.UserHltbData.TitlesList.ToObservable();
 
                     string SortingDefaultDataName = string.Empty;
                     switch (PluginDatabase.PluginSettings.Settings.TitleListSort)
@@ -127,7 +127,7 @@ namespace HowLongToBeat.Views
 
             PART_CbYear.SelectedIndex = 0;
 
-            userViewDataContext.ItemsSource = PluginDatabase.Database.UserHltbData.TitlesList.ToObservable();
+            UserViewDataContext.ItemsSource = PluginDatabase.Database.UserHltbData.TitlesList.ToObservable();
             ListViewGames.Sorting();
 
             _ = Task.Run(() =>
@@ -191,8 +191,8 @@ namespace HowLongToBeat.Views
                         });
                     });
 
-                    userViewDataContext.ChartUserDataYear_Series = ChartSeriesCollection;
-                    userViewDataContext.ChartUserDataYearLabelsX_Labels = ChartDataLabels;
+                    UserViewDataContext.ChartUserDataYear_Series = ChartSeriesCollection;
+                    UserViewDataContext.ChartUserDataYearLabelsX_Labels = ChartDataLabels;
                 });
             }
         }
@@ -234,8 +234,8 @@ namespace HowLongToBeat.Views
                         });
                     });
 
-                    userViewDataContext.ChartUserDataStore_Series = ChartSeriesCollection;
-                    userViewDataContext.ChartUserDataStoreLabelsX_Labels = ChartDataLabels;
+                    UserViewDataContext.ChartUserDataStore_Series = ChartSeriesCollection;
+                    UserViewDataContext.ChartUserDataStoreLabelsX_Labels = ChartDataLabels;
                 });
             }
         }
@@ -290,8 +290,8 @@ namespace HowLongToBeat.Views
                         });
                     });
 
-                    userViewDataContext.ChartUserData_Series = ChartSeriesCollection;
-                    userViewDataContext.ChartUserDataLabelsX_Labels = ChartDataLabels;
+                    UserViewDataContext.ChartUserData_Series = ChartSeriesCollection;
+                    UserViewDataContext.ChartUserDataLabelsX_Labels = ChartDataLabels;
                 });
             }
         }
@@ -304,7 +304,7 @@ namespace HowLongToBeat.Views
                 {
                     List<TitleList> titleLists = PluginDatabase.Database.UserHltbData.TitlesList;
 
-                    userViewDataContext.CompletionsCount = titleLists.Where(x => x.GameStatuses.Where(y => y.Status == StatusType.Completed).Count() > 0).Count().ToString();
+                    UserViewDataContext.CompletionsCount = titleLists.Where(x => x.GameStatuses.Where(y => y.Status == StatusType.Completed).Count() > 0).Count().ToString();
 
                     long TimeSinglePlayer = 0;
                     long TimeCoOp = 0;
@@ -331,17 +331,17 @@ namespace HowLongToBeat.Views
 
                     PlayTimeToStringConverterWithZero converter = new PlayTimeToStringConverterWithZero();
 
-                    userViewDataContext.TimeSinglePlayer = (string)converter.Convert(TimeSinglePlayer, null, null, CultureInfo.CurrentCulture);
-                    userViewDataContext.TimeCoOp = (string)converter.Convert(TimeCoOp, null, null, CultureInfo.CurrentCulture);
-                    userViewDataContext.TimeVs = (string)converter.Convert(TimeVs, null, null, CultureInfo.CurrentCulture);
+                    UserViewDataContext.TimeSinglePlayer = (string)converter.Convert(TimeSinglePlayer, null, null, CultureInfo.CurrentCulture);
+                    UserViewDataContext.TimeCoOp = (string)converter.Convert(TimeCoOp, null, null, CultureInfo.CurrentCulture);
+                    UserViewDataContext.TimeVs = (string)converter.Convert(TimeVs, null, null, CultureInfo.CurrentCulture);
 
 
-                    userViewDataContext.CountGameBeatenBeforeTime = PluginDatabase.GetCountGameBeatenBeforeTime().ToString();
-                    userViewDataContext.CountGameBeatenAfterTime = PluginDatabase.GetCountGameBeatenAfterTime().ToString();
-                    userViewDataContext.AvgGameByMonth = string.Format("{0:0.0}", PluginDatabase.GetAvgGameByMonth()).ToString();
-                    userViewDataContext.AvgTimeByGame = (string)converter.Convert(PluginDatabase.GetAvgTimeByGame(), null, null, CultureInfo.CurrentCulture);
-                    userViewDataContext.CountGameBeatenReplays = PluginDatabase.GetCountGameBeatenReplays().ToString();
-                    userViewDataContext.CountGameRetired = PluginDatabase.GetCountGameRetired().ToString();
+                    UserViewDataContext.CountGameBeatenBeforeTime = PluginDatabase.GetCountGameBeatenBeforeTime().ToString();
+                    UserViewDataContext.CountGameBeatenAfterTime = PluginDatabase.GetCountGameBeatenAfterTime().ToString();
+                    UserViewDataContext.AvgGameByMonth = string.Format("{0:0.0}", PluginDatabase.GetAvgGameByMonth()).ToString();
+                    UserViewDataContext.AvgTimeByGame = (string)converter.Convert(PluginDatabase.GetAvgTimeByGame(), null, null, CultureInfo.CurrentCulture);
+                    UserViewDataContext.CountGameBeatenReplays = PluginDatabase.GetCountGameBeatenReplays().ToString();
+                    UserViewDataContext.CountGameRetired = PluginDatabase.GetCountGameRetired().ToString();
                 });
             }
         }
@@ -483,64 +483,64 @@ namespace HowLongToBeat.Views
             // nothing
             if ((Year.IsNullOrEmpty() || Year.IsEqual("----")) && (StoreFront.IsNullOrEmpty() || StoreFront.IsEqual("----")) && (Platform.IsNullOrEmpty() || Platform.IsEqual("----")))
             {
-                userViewDataContext.ItemsSource = PluginDatabase.Database.UserHltbData.TitlesList.ToObservable();
+                UserViewDataContext.ItemsSource = PluginDatabase.Database.UserHltbData.TitlesList.ToObservable();
             }
             // StoreFront only
             else if ((Year.IsNullOrEmpty() || Year.IsEqual("----")) && (Platform.IsNullOrEmpty() || Platform.IsEqual("----")))
             {
-                userViewDataContext.ItemsSource = PluginDatabase.Database.UserHltbData.TitlesList
+                UserViewDataContext.ItemsSource = PluginDatabase.Database.UserHltbData.TitlesList
                     .Where(x => x.Storefront != null && x.Storefront.IsEqual(StoreFront)).ToObservable();
             }
             // Year only
             else if ((StoreFront.IsNullOrEmpty() || StoreFront.IsEqual("----")) && (Platform.IsNullOrEmpty() || Platform.IsEqual("----")))
             {
-                userViewDataContext.ItemsSource = PluginDatabase.Database.UserHltbData.TitlesList
+                UserViewDataContext.ItemsSource = PluginDatabase.Database.UserHltbData.TitlesList
                     .Where(x => x.Completion != null && ((DateTime)x.Completion).ToString("yyyy").IsEqual(Year)).ToObservable();
             }
             // Platform only
             else if ((Year.IsNullOrEmpty() || Year.IsEqual("----")) && (StoreFront.IsNullOrEmpty() || StoreFront.IsEqual("----")))
             {
-                userViewDataContext.ItemsSource = PluginDatabase.Database.UserHltbData.TitlesList
+                UserViewDataContext.ItemsSource = PluginDatabase.Database.UserHltbData.TitlesList
                     .Where(x => x.Platform != null && x.Platform.IsEqual(Platform)).ToObservable();
             }
             // StoreFront missing
             else if (StoreFront.IsNullOrEmpty() || StoreFront.IsEqual("----"))
             {
-                userViewDataContext.ItemsSource = PluginDatabase.Database.UserHltbData.TitlesList
+                UserViewDataContext.ItemsSource = PluginDatabase.Database.UserHltbData.TitlesList
                     .Where(x => x.Completion != null && ((DateTime)x.Completion).ToString("yyyy").IsEqual(Year) && x.Platform != null && x.Platform.IsEqual(Platform)).ToObservable();
             }
             // Year missing
             else if (Year.IsNullOrEmpty() || Year.IsEqual("----"))
             {
-                userViewDataContext.ItemsSource = PluginDatabase.Database.UserHltbData.TitlesList
+                UserViewDataContext.ItemsSource = PluginDatabase.Database.UserHltbData.TitlesList
                     .Where(x => x.Storefront != null && x.Storefront.IsEqual(StoreFront) && x.Platform != null && x.Platform.IsEqual(Platform)).ToObservable();
             }
             // Platform missing
             else if (Platform.IsNullOrEmpty() || Platform.IsEqual("----"))
             {
-                userViewDataContext.ItemsSource = PluginDatabase.Database.UserHltbData.TitlesList
+                UserViewDataContext.ItemsSource = PluginDatabase.Database.UserHltbData.TitlesList
                     .Where(x => x.Completion != null && ((DateTime)x.Completion).ToString("yyyy").IsEqual(Year) && x.Storefront != null && x.Storefront.IsEqual(StoreFront)).ToObservable();
             }
             else
             {
-                userViewDataContext.ItemsSource = PluginDatabase.Database.UserHltbData.TitlesList
+                UserViewDataContext.ItemsSource = PluginDatabase.Database.UserHltbData.TitlesList
                     .Where(x => x.Completion != null && ((DateTime)x.Completion).ToString("yyyy").IsEqual(Year) && x.Storefront != null && x.Storefront.IsEqual(StoreFront) && x.Platform != null && x.Platform.IsEqual(Platform))
                     .ToObservable();
             }
 
             if (!Name.IsNullOrEmpty())
             {
-                userViewDataContext.ItemsSource = userViewDataContext.ItemsSource.Where(x => x.GameName.Contains(Name, StringComparison.InvariantCultureIgnoreCase))                    .ToObservable();
+                UserViewDataContext.ItemsSource = UserViewDataContext.ItemsSource.Where(x => x.GameName.Contains(Name, StringComparison.InvariantCultureIgnoreCase))                    .ToObservable();
             }
 
             if ((bool)PART_Replays.IsChecked)
             {
-                userViewDataContext.ItemsSource = userViewDataContext.ItemsSource.Where(x => x.IsReplay).ToObservable();
+                UserViewDataContext.ItemsSource = UserViewDataContext.ItemsSource.Where(x => x.IsReplay).ToObservable();
             }
 
             if ((bool)PART_OnlyNotPlayed.IsChecked)
             {
-                userViewDataContext.ItemsSource = userViewDataContext.ItemsSource.Where(x => x.CurrentTime == 0).ToObservable();
+                UserViewDataContext.ItemsSource = UserViewDataContext.ItemsSource.Where(x => x.CurrentTime == 0).ToObservable();
             }
 
             ListViewGames.Sorting();

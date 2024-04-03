@@ -9,9 +9,7 @@
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance local:PluginViewItemDataContext, IsDesignTimeCreatable=True}">
 
-    <Grid>
-        <TextBlock Text="{Binding Text}" VerticalAlignment="Center" 
-                   Foreground="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=Foreground}"
-                   FontSize="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=FontSize}" />
-    </Grid>
+    <TextBlock Text="{Binding Text}" VerticalAlignment="Center" 
+               Foreground="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=Foreground}"
+               FontSize="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=FontSize}" />
 </controls:PluginUserControlExtend>
