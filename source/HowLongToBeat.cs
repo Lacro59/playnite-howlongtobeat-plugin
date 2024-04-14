@@ -725,7 +725,7 @@ namespace HowLongToBeat
                 string icon = Path.Combine(PluginDatabase.Paths.PluginPath, "Resources", "hltb.png");
 
                 SubItemsAction HltbSubItemsAction = new SubItemsAction() { Action = () => { }, Name = "", CloseAfterExecute = false, SubItemSource = new QuickSearchItemSource() };
-                CommandItem HltbCommand = new CommandItem(PluginDatabase.PluginName, new List<CommandAction>(), Playnite.SDK.ResourceProvider.GetString("LOCHltbQuickSearchDescription"), icon);
+                CommandItem HltbCommand = new CommandItem(PluginDatabase.PluginName, new List<CommandAction>(), ResourceProvider.GetString("LOCHltbQuickSearchDescription"), icon);
                 HltbCommand.Keys.Add(new CommandItemKey() { Key = "hltb", Weight = 1 });
                 HltbCommand.Actions.Add(HltbSubItemsAction);
                 _ = QuickSearch.QuickSearchSDK.AddCommand(HltbCommand);

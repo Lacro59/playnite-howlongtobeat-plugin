@@ -794,13 +794,33 @@ namespace HowLongToBeat.Services
         /// Get cookies in WebView or another method.
         /// </summary>
         /// <returns></returns>
-        internal virtual List<HttpCookie> GetWebCookies()
+        internal virtual List<HttpCookie> GetWebCookies(IWebView WebViewOffscreen = null)
         {
-            List<HttpCookie> httpCookies = null;
-            using (IWebView WebViewOffscreen = API.Instance.WebViews.CreateOffscreenView())
+            List<HttpCookie> httpCookies = new List<HttpCookie>();
+
+            try
             {
-                httpCookies = WebViewOffscreen.GetCookies()?.Where(x => (x?.Domain?.Contains("howlongtobeat") ?? false) || (x?.Domain?.Contains("hltb") ?? false))?.ToList() ?? new List<HttpCookie>();
+                if (WebViewOffscreen == null)
+                {
+                    using (WebViewOffscreen = API.Instance.WebViews.CreateOffscreenView())
+                    {
+                        httpCookies = WebViewOffscreen?.GetCookies()?
+                            .Where(x => (x?.Domain?.Contains("howlongtobeat") ?? false) || (x?.Domain?.Contains("hltb") ?? false))?
+                            .ToList() ?? new List<HttpCookie>();
+                    }
+                }
+                else
+                {
+                    httpCookies = WebViewOffscreen.GetCookies()?
+                        .Where(x => (x?.Domain?.Contains("howlongtobeat") ?? false) || (x?.Domain?.Contains("hltb") ?? false))?
+                        .ToList() ?? new List<HttpCookie>();
+                }
             }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, false, true, "HowLongToBeat");
+            }
+
             return httpCookies;
         }
         #endregion

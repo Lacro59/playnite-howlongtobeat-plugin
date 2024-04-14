@@ -957,14 +957,23 @@ namespace HowLongToBeat.Services
         {
             _ = Task.Run(() =>
             {
-                if (HowLongToBeatClient.GetIsUserLoggedIn())
+                try
                 {
-                    using (IWebView WebViewOffscreen = API.Instance.WebViews.CreateOffscreenView())
+                    _ = SpinWait.SpinUntil(() => API.Instance.Database.IsOpen, -1);
+                    _ = SpinWait.SpinUntil(() => IsLoaded, -1);
+                    if (HowLongToBeatClient.GetIsUserLoggedIn())
                     {
-                        WebViewOffscreen.NavigateAndWait("https://howlongtobeat.com");
+                        using (IWebView WebViewOffscreen = API.Instance.WebViews.CreateOffscreenView())
+                        {
+                            WebViewOffscreen.NavigateAndWait("https://howlongtobeat.com");
+                            List<HttpCookie> Cookies = HowLongToBeatClient.GetWebCookies(WebViewOffscreen);
+                            _ = HowLongToBeatClient.SetStoredCookies(Cookies);
+                        }
                     }
-                    List<HttpCookie> Cookies = HowLongToBeatClient.GetWebCookies();
-                    _ = HowLongToBeatClient.SetStoredCookies(Cookies);
+                }
+                catch (Exception ex)
+                {
+                    Common.LogError(ex, false, true, PluginName);
                 }
             });
         }
