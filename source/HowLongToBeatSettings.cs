@@ -428,7 +428,7 @@ namespace HowLongToBeat
             if (API.Instance.ApplicationInfo.Mode == ApplicationMode.Desktop)
             {
                 Plugin.TopPanelItem.Visible = Settings.EnableIntegrationButtonHeader;
-                Plugin.HowLongToBeatViewSidebar.Visible = Settings.EnableIntegrationButtonSide;
+                Plugin.SidebarItem.Visible = Settings.EnableIntegrationButtonSide;
             }
 
             this.OnPropertyChanged();

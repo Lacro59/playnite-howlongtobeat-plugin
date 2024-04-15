@@ -29,10 +29,10 @@ namespace HowLongToBeat
 {
     public class HowLongToBeat : PluginExtended<HowLongToBeatSettingsViewModel, HowLongToBeatDatabase>, IStartPageExtension
     {
-        public override Guid Id { get; } = Guid.Parse("e08cd51f-9c9a-4ee3-a094-fde03b55492f");
+        public override Guid Id => Guid.Parse("e08cd51f-9c9a-4ee3-a094-fde03b55492f");
 
         internal TopPanelItem TopPanelItem { get; set; }
-        internal HowLongToBeatViewSidebar HowLongToBeatViewSidebar { get; set; }
+        internal SidebarItem SidebarItem { get; set; }
         internal SidebarItemControl SidebarItemControl { get; set; }
 
         private bool PreventLibraryUpdatedOnStart { get; set; } = true;
@@ -63,7 +63,7 @@ namespace HowLongToBeat
             if (API.Instance.ApplicationInfo.Mode == ApplicationMode.Desktop)
             {
                 TopPanelItem = new HowLongToBeatTopPanelItem(this);
-                HowLongToBeatViewSidebar = new HowLongToBeatViewSidebar(this);
+                SidebarItem = new HowLongToBeatViewSidebar(this);
             }
 
             //Playnite search integration
@@ -148,7 +148,7 @@ namespace HowLongToBeat
         {
             return new List<SidebarItem>
             {
-                HowLongToBeatViewSidebar
+                SidebarItem
             };
         }
         #endregion
