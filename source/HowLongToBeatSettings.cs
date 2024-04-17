@@ -242,7 +242,7 @@ namespace HowLongToBeat
                     new Storefront { HltbStorefrontId = HltbStorefront.Steam },
                     new Storefront { HltbStorefrontId = HltbStorefront.UbisoftConnect },
                     new Storefront { HltbStorefrontId = HltbStorefront.XboxStore },
-                    new Storefront { HltbStorefrontId = HltbStorefront.AmazonLuma },
+                    new Storefront { HltbStorefrontId = HltbStorefront.AmazonLuna },
                     new Storefront { HltbStorefrontId = HltbStorefront.GameJolt },
                     new Storefront { HltbStorefrontId = HltbStorefront.JastUsa },
                     new Storefront { HltbStorefrontId = HltbStorefront.LegacyGames },
@@ -253,9 +253,9 @@ namespace HowLongToBeat
             }
 
             // TODO TMP
-            if (Settings.Storefronts.Find(x => x.HltbStorefrontId == HltbStorefront.AmazonLuma) == null)
+            if (Settings.Storefronts.Find(x => x.HltbStorefrontId == HltbStorefront.AmazonLuna) == null)
             {
-                Settings.Storefronts.Add(new Storefront { HltbStorefrontId = HltbStorefront.AmazonLuma });
+                Settings.Storefronts.Add(new Storefront { HltbStorefrontId = HltbStorefront.AmazonLuna });
                 Settings.Storefronts.Add(new Storefront { HltbStorefrontId = HltbStorefront.GameJolt });
                 Settings.Storefronts.Add(new Storefront { HltbStorefrontId = HltbStorefront.JastUsa });
                 Settings.Storefronts.Add(new Storefront { HltbStorefrontId = HltbStorefront.LegacyGames });

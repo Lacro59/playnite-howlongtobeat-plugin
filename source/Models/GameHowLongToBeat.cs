@@ -34,11 +34,8 @@ namespace HowLongToBeat.Models
         {
             if (Items != null && Items?.Count == 0)
             {
-                HltbDataUser hltbDataUser = new HltbDataUser();
-                hltbDataUser.GameHltbData = new HltbData();
-                return hltbDataUser;
+                return new HltbDataUser { GameHltbData = new HltbData() };
             }
-
             return Items.First();
         }
     }

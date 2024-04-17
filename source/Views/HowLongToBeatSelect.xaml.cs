@@ -26,7 +26,7 @@ namespace HowLongToBeat.Views
         private Game GameContext { get; set; }
 
 
-        public HowLongToBeatSelect(List<HltbData> data, Game game)
+        public HowLongToBeatSelect(Game game, List<HltbData> data)
         {
             InitializeComponent();
 
@@ -106,10 +106,10 @@ namespace HowLongToBeat.Views
                 List<HltbDataUser> dataSearch = new List<HltbDataUser>();
                 try
                 {
-                    dataSearch = HowLongToBeat.PluginDatabase.HowLongToBeatClient.SearchTwoMethod(GameSearch, GamePlatform);
+                    dataSearch = PluginDatabase.HowLongToBeatClient.SearchTwoMethod(GameSearch, GamePlatform).GetAwaiter().GetResult();
 
                     // Sort
-                    this.Dispatcher.Invoke(new Action(() =>
+                    Application.Current.Dispatcher?.Invoke(new Action(() =>
                     {
                         dataSearch = dataSearch.Select(x => new { MatchPercent = Fuzz.Ratio(GameContext.Name.ToLower(), x.Name.ToLower()), Data = x })
                                         .OrderByDescending(x => x.MatchPercent)

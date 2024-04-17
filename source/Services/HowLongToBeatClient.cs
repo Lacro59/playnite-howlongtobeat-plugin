@@ -17,6 +17,7 @@ using CommonPluginsShared.Extensions;
 using System.Text;
 using CommonPlayniteShared.Common;
 using System.Security.Principal;
+using HowLongToBeat.Models.Api;
 
 namespace HowLongToBeat.Services
 {
@@ -52,26 +53,27 @@ namespace HowLongToBeat.Services
 
 
         #region Urls
-        private const string UrlBase = "https://howlongtobeat.com/";
+        private static string UrlBase => "https://howlongtobeat.com";
 
-        private string UrlLogin { get; set; } = UrlBase + "login";
-        private string UrlLogOut { get; set; } = UrlBase + "login?t=out";
+        private static string UrlLogin => UrlBase + "/login";
+        private static string UrlLogOut => UrlBase + "/login?t=out";
 
-        private string UrlUserStats { get; set; } = UrlBase + "user?n={0}&s=stats";
-        private string UrlUserStatsMore { get; set; } = UrlBase + "user_stats_more";
-        private string UrlUserStatsGamesList { get; set; } = UrlBase + "api/user/{0}/stats";
-        private string UrlUserGamesList { get; set; } = UrlBase + "api/user/{0}/games/list";
-        private string UrlUserStatsGameDetails { get; set; } = UrlBase + "user_games_detail";
+        private static string UrlUser => UrlBase + "/api/user";
+        private static string UrlUserStats => UrlUser + "?n={0}&s=stats";
+        private static string UrlUserStatsMore => UrlBase + "/user_stats_more";
+        private static string UrlUserStatsGamesList => UrlUser + "/{0}/stats";
+        private static string UrlUserGamesList => UrlUser + "/{0}/games/list";
+        private static string UrlUserStatsGameDetails => UrlBase + "/user_games_detail";
 
-        private string UrlPostData { get; set; } = UrlBase + "api/submit";
-        private string UrlPostDataEdit { get; set; } = UrlBase + "submit/edit/{0}";
-        private string UrlSearch { get; set; } = UrlBase + "api/search";
+        private static string UrlPostData => UrlBase + "/api/submit";
+        private static string UrlPostDataEdit => UrlBase + "/submit/edit/{0}";
+        private static string UrlSearch => UrlBase + "/api/search";
 
-        private string UrlGameImg { get; set; } = UrlBase + "games/{0}";
+        private static string UrlGameImg => UrlBase + "/games/{0}";
 
-        private string UrlGame { get; set; } = UrlBase + "game/{0}";
+        private static string UrlGame => UrlBase + "/game/{0}";
 
-        private string UrlExportAll { get; set; } = UrlBase + "user_export?all=1";
+        private static string UrlExportAll => UrlBase + "/user_export?all=1";
         #endregion
 
 
@@ -96,68 +98,108 @@ namespace HowLongToBeat.Services
 
 
         #region Search
-        public List<HltbDataUser> Search(string Name, string Platform = "")
-        {
-            HltbSearchRoot data = GameSearch(Name, Platform).Result;
-            List<HltbDataUser> dataParsed = SearchParser(data);
-            return dataParsed;
-        }
-
-        public List<HltbDataUser> SearchTwoMethod(string Name, string Platform = "")
-        {
-            List<HltbDataUser> dataSearchNormalized = Search(PlayniteTools.NormalizeGameName(Name), Platform);
-            List<HltbDataUser> dataSearch = HowLongToBeat.PluginDatabase.HowLongToBeatClient.Search(Name, Platform);
-
-            List<HltbDataUser> dataSearchFinal = new List<HltbDataUser>();
-            dataSearchFinal.AddRange(dataSearchNormalized);
-            dataSearchFinal.AddRange(dataSearch);
-            return dataSearchFinal.GroupBy(x => x.Id).Select(x => x.First()).ToList();
-        }
-
-
-        /// <summary>
-        /// Download search data.
-        /// </summary>
-        /// <param name="Name"></param>
-        /// <returns></returns>
-        private async Task<HltbSearchRoot> GameSearch(string Name, string Platform = "")
+        private async Task<List<HltbDataUser>> Search(string Name, string Platform = "")
         {
             try
             {
-                HttpClient httpClient = new HttpClient();
+                SearchResult searchResult = await ApiSearch(Name, Platform);
 
-                httpClient.DefaultRequestHeaders.Add("User-Agent", Web.UserAgent);
-                httpClient.DefaultRequestHeaders.Add("origin", "https://howlongtobeat.com");
-                httpClient.DefaultRequestHeaders.Add("referer", "https://howlongtobeat.com");
+                List<HltbDataUser> search = searchResult?.Data?.Select(x =>
+                    new HltbDataUser
+                    {
+                        Name = x.GameName,
+                        Id = x.GameId,
+                        UrlImg = string.Format(UrlGameImg, x.GameImage),
+                        Url = string.Format(UrlGame, x.GameId),
+                        Platform = x.ProfilePlatform,
+                        GameHltbData = new HltbData
+                        {
+                            MainStory = x.CompMain,
+                            MainExtra = x.CompPlus,
+                            Completionist = x.Comp100,
+                            Solo = x.CompAll,
+                            CoOp = x.InvestedCo,
+                            Vs = x.InvestedMp
+                        }
+                    }
+                )?.ToList() ?? null;
 
-                HttpRequestMessage requestMessage = new HttpRequestMessage();
-
-                string[] searchTerms = Name.Split(' ');
-                requestMessage.Content = new StringContent("{\"searchType\":\"games\",\"searchTerms\":[" + String.Join(",", searchTerms.Select(x => "\"" + x + "\"")) + "],\"searchPage\":1,\"size\":20,\"searchOptions\":{\"games\":{\"userId\":0,\"platform\":\"" + Platform + "\",\"sortCategory\":\"popular\",\"rangeCategory\":\"main\",\"rangeTime\":{\"min\":0,\"max\":0},\"gameplay\":{\"perspective\":\"\",\"flow\":\"\",\"genre\":\"\"},\"modifier\":\"\"},\"users\":{\"sortCategory\":\"postcount\"},\"filter\":\"\",\"sort\":0,\"randomizer\":0}}", Encoding.UTF8, "application/json");
-
-                HttpResponseMessage response = await httpClient.PostAsync(UrlSearch, requestMessage.Content);
-                string json = await response.Content.ReadAsStringAsync();
-                Serialization.TryFromJson(json, out HltbSearchRoot hltbSearchObj);
-
-                return hltbSearchObj;
+                return search;
             }
             catch (Exception ex)
             {
                 Common.LogError(ex, false, true, PluginDatabase.PluginName);
-                return new HltbSearchRoot();
+                return null;
             }
         }
+
+        public async Task<List<HltbDataUser>> SearchTwoMethod(string Name, string Platform = "")
+        {
+            List<HltbDataUser> dataSearchNormalized = await Search(PlayniteTools.NormalizeGameName(Name), Platform);
+            List<HltbDataUser> dataSearch = await Search(Name, Platform);
+
+            List<HltbDataUser> dataSearchFinal = new List<HltbDataUser>();
+            dataSearchFinal.AddRange(dataSearchNormalized);
+            dataSearchFinal.AddRange(dataSearch);
+
+            return dataSearchFinal.GroupBy(x => x.Id).Select(x => x.First()).ToList();
+        }
+
+        private async Task<SearchResult> ApiSearch(string Name, string Platform = "")
+        {
+            try
+            {
+                List<HttpHeader> httpHeaders = new List<HttpHeader>
+                {
+                    new HttpHeader { Key = "User-Agent", Value = Web.UserAgent },
+                    new HttpHeader { Key = "Origin", Value = UrlBase },
+                    new HttpHeader { Key = "Referer", Value = UrlBase }
+                };
+
+                SearchParam searchParam = new SearchParam
+                {
+                    SearchTerms = Name.Split(' ').ToList(),
+                    SearchOptions = new SearchOptions { Games = new Games { Platform = Platform } }
+                };
+
+                SearchResult searchResult;
+                using (HttpClient httpClient = new HttpClient())
+                {
+                    httpHeaders.ForEach(x =>
+                    {
+                        httpClient.DefaultRequestHeaders.Add(x.Key, x.Value);
+                    });
+
+                    HttpRequestMessage requestMessage = new HttpRequestMessage
+                    {
+                        Content = new StringContent(Serialization.ToJson(searchParam), Encoding.UTF8, "application/json")
+                    };
+
+                    HttpResponseMessage response = await httpClient.PostAsync(UrlSearch, requestMessage.Content);
+                    string json = await response.Content.ReadAsStringAsync();
+
+                    _ = Serialization.TryFromJson(json, out searchResult);
+                }
+
+                return searchResult;
+            }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, false, true, PluginDatabase.PluginName);
+                return null;
+            }
+        }
+
 
         public GameHowLongToBeat SearchData(Game game)
         {
             Common.LogDebug(true, $"Search data for {game.Name}");
-
             if (API.Instance.ApplicationInfo.Mode == ApplicationMode.Desktop)
             {
                 HowLongToBeatSelect ViewExtension = null;
                 _ = Application.Current.Dispatcher.BeginInvoke((Action)delegate
                 {
-                    ViewExtension = new HowLongToBeatSelect(null, game);
+                    ViewExtension = new HowLongToBeatSelect(game, null);
                     Window windowExtension = PlayniteUiHelper.CreateExtensionWindow(ResourceProvider.GetString("LOCSelection") + " - " + game.Name + " - " + (game.Source?.Name ?? "Playnite"), ViewExtension);
                     _ = windowExtension.ShowDialog();
                 }).Wait();
@@ -169,70 +211,6 @@ namespace HowLongToBeat.Services
             }
             return null;
         }
-        
-
-        /// <summary>
-        /// Parse html search result.
-        /// </summary>
-        /// <param name="data"></param>
-        /// <returns></returns>
-        private List<HltbDataUser> SearchParser(HltbSearchRoot data)
-        {
-            List<HltbDataUser> ReturnData = new List<HltbDataUser>();
-
-            if (data != null)
-            {
-                try
-                {
-                    string Name = string.Empty;
-                    int Id = 0;
-                    string UrlImg = string.Empty;
-                    string Url = string.Empty;
-                    string Platform = string.Empty;
-
-                    foreach (HltbSearchData entry in data.data)
-                    {
-                        Name = entry.game_name;
-                        Id = entry.game_id;
-                        UrlImg = string.Format(UrlGameImg, entry.game_image);
-                        Url = string.Format(UrlGame, Id);
-                        Url = string.Format(UrlGame, Id);
-                        Platform = entry.profile_platform;
-
-                        long MainStory = entry.comp_lvl_combine == 0 ? entry.comp_main : 0;
-                        long MainExtra = entry.comp_lvl_combine == 0 ? entry.comp_plus : 0;
-                        long Completionist = entry.comp_lvl_combine == 0 ? entry.comp_100 : 0;
-                        long Solo = (entry.comp_lvl_combine == 1 && entry.comp_lvl_sp == 1) ? entry.comp_all : 0;
-                        long CoOp = (entry.comp_lvl_combine == 1 && entry.comp_lvl_co == 1) ? entry.invested_co : 0;
-                        long Vs = (entry.comp_lvl_combine == 1 && entry.comp_lvl_mp == 1) ? entry.invested_mp : 0;
-
-                        ReturnData.Add(new HltbDataUser
-                        {
-                            Name = Name,
-                            Id = Id,
-                            UrlImg = UrlImg,
-                            Url = Url,
-                            Platform = Platform,
-                            GameHltbData = new HltbData
-                            {
-                                MainStory = MainStory,
-                                MainExtra = MainExtra,
-                                Completionist = Completionist,
-                                Solo = Solo,
-                                CoOp = CoOp,
-                                Vs = Vs
-                            }
-                        });
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Common.LogError(ex, false, true, PluginDatabase.PluginName);
-                }
-            }
-
-            return ReturnData;
-        }
         #endregion
 
 
@@ -242,7 +220,7 @@ namespace HowLongToBeat.Services
             if (UserId == 0)
             {
                 _ = SpinWait.SpinUntil(() => PluginDatabase.IsLoaded, -1);
-                UserId = HowLongToBeat.PluginDatabase.Database.UserHltbData.UserId;
+                UserId = PluginDatabase.Database.UserHltbData.UserId;
             }
 
             if (UserId == 0)
@@ -253,7 +231,7 @@ namespace HowLongToBeat.Services
 
             if (IsConnected == null)
             {
-                IsConnected = GetUserId() != 0;
+                IsConnected = GetUserId().GetAwaiter().GetResult() != 0;
             }
 
             IsConnected = (bool)IsConnected;
@@ -271,9 +249,9 @@ namespace HowLongToBeat.Services
                     {
                         Common.LogDebug(true, $"NavigationChanged - {WebView.GetCurrentAddress()}");
 
-                        if (WebView.GetCurrentAddress().StartsWith("https://howlongtobeat.com/user/"))
+                        if (WebView.GetCurrentAddress().StartsWith(UrlBase + "/user/"))
                         {
-                            UserLogin = WebUtility.HtmlDecode(WebView.GetCurrentAddress().Replace("https://howlongtobeat.com/user/", string.Empty));
+                            UserLogin = WebUtility.HtmlDecode(WebView.GetCurrentAddress().Replace(UrlBase + "/user/", string.Empty));
                             IsConnected = true;
 
                             PluginDatabase.PluginSettings.Settings.UserLogin = UserLogin;
@@ -302,8 +280,8 @@ namespace HowLongToBeat.Services
 
                             _ = Task.Run(() =>
                             {
-                                UserId = GetUserId();
-                                HowLongToBeat.PluginDatabase.RefreshUserData();
+                                UserId = GetUserId().GetAwaiter().GetResult();
+                                PluginDatabase.RefreshUserData();
                             });
                         }
                         catch (Exception ex)
@@ -316,14 +294,14 @@ namespace HowLongToBeat.Services
         }
 
 
-        private int GetUserId()
+        private async Task<int> GetUserId()
         {
             try
             {
                 List<HttpCookie> Cookies = GetStoredCookies();
-                string response = Web.DownloadStringData("https://howlongtobeat.com/api/user", Cookies).GetAwaiter().GetResult();
+                string response = await Web.DownloadStringData(UrlUser, Cookies);
                 dynamic t = Serialization.FromJson<dynamic>(response);
-                return t.data[0].user_id;
+                return response == "{}" ? 0 : t?.data[0]?.user_id ?? 0;
             }
             catch (Exception ex)
             {
@@ -333,30 +311,34 @@ namespace HowLongToBeat.Services
         }
 
 
-        private HltbUserGamesList GetUserGamesList(bool WithDateUpdate = false)
+        private async Task<UserGamesList> GetUserGamesList()
         {
             try
             {
                 List<HttpCookie> Cookies = GetStoredCookies();
-                string payload = "{\"user_id\":" + UserId + ",\"lists\":[\"playing\",\"completed\",\"retired\"],\"set_playstyle\":\"comp_all\",\"name\":\"\",\"platform\":\"\",\"storefront\":\"\",\"sortBy\":\"\",\"sortFlip\":0,\"view\":\"\",\"limit\":10000,\"currentUserHome\":true}";
-                string json = Web.PostStringDataPayload(string.Format(UrlUserGamesList, UserId), payload, Cookies).GetAwaiter().GetResult();
-                _ = Serialization.TryFromJson(json, out HltbUserGamesList hltbUserGameList);
-                return hltbUserGameList;
+
+                UserGamesListParam userGamesListParam = new UserGamesListParam { UserId = UserId };
+                string payload = Serialization.ToJson(userGamesListParam);
+
+                string json = await Web.PostStringDataPayload(string.Format(UrlUserGamesList, UserId), payload, Cookies);
+                _ = Serialization.TryFromJson(json, out UserGamesList userGamesList);
+
+                return userGamesList;
             }
             catch (Exception ex)
             {
                 Common.LogError(ex, false, true, PluginDatabase.PluginName);
-                return new HltbUserGamesList();
+                return null;
             }
         }
 
 
-        private TitleList GetTitleList(GamesList x)
+        private TitleList GetTitleList(GamesList gamesList)
         {
             try
             {
-                _ = DateTime.TryParse(x.date_updated, out DateTime LastUpdate);
-                _ = DateTime.TryParse(x.date_complete, out DateTime Completion);
+                _ = DateTime.TryParse(gamesList.DateUpdated, out DateTime LastUpdate);
+                _ = DateTime.TryParse(gamesList.DateComplete, out DateTime Completion);
                 DateTime? CompletionFinal = null;
                 if (Completion != default)
                 {
@@ -365,59 +347,58 @@ namespace HowLongToBeat.Services
 
                 TitleList titleList = new TitleList
                 {
-                    UserGameId = x.id.ToString(),
-                    GameName = x.custom_title,
-                    Platform = x.platform,
-                    Id = x.game_id,
-                    CurrentTime = x.invested_pro,
-                    IsReplay = x.play_count == 2,
-                    IsRetired = x.list_retired == 1,
-                    Storefront = x.play_storefront,
+                    UserGameId = gamesList.Id.ToString(),
+                    GameName = gamesList.CustomTitle,
+                    Platform = gamesList.Platform,
+                    Id = gamesList.GameId,
+                    CurrentTime = gamesList.InvestedPro,
+                    IsReplay = gamesList.PlayCount == 2,
+                    IsRetired = gamesList.ListRetired == 1,
+                    Storefront = gamesList.PlayStorefront,
                     LastUpdate = LastUpdate,
                     Completion = CompletionFinal,
                     HltbUserData = new HltbData
                     {
-                        MainStory = x.comp_main,
-                        MainExtra = x.comp_plus,
-                        Completionist = x.comp_100,
+                        MainStory = gamesList.CompMain,
+                        MainExtra = gamesList.CompPlus,
+                        Completionist = gamesList.Comp100,
                         Solo = 0,
-                        CoOp = x.invested_co,
-                        Vs = x.invested_mp
+                        CoOp = gamesList.InvestedCo,
+                        Vs = gamesList.InvestedMp
                     },
                     GameStatuses = new List<GameStatus>()
                 };
 
-                if (x.list_backlog == 1)
+                if (gamesList.ListBacklog == 1)
                 {
                     titleList.GameStatuses.Add(new GameStatus { Status = StatusType.Backlog });
                 }
 
-                if (x.list_comp == 1)
+                if (gamesList.ListComp == 1)
                 {
                     titleList.GameStatuses.Add(new GameStatus { Status = StatusType.Completed });
                 }
 
-                if (x.list_custom == 1)
+                if (gamesList.ListCustom == 1)
                 {
                     titleList.GameStatuses.Add(new GameStatus { Status = StatusType.CustomTab });
                 }
 
-                if (x.list_playing == 1)
+                if (gamesList.ListPlaying == 1)
                 {
                     titleList.GameStatuses.Add(new GameStatus { Status = StatusType.Playing });
                 }
 
-                if (x.list_replay == 1)
+                if (gamesList.ListReplay == 1)
                 {
                     titleList.GameStatuses.Add(new GameStatus { Status = StatusType.Replays });
                 }
 
-                if (x.list_retired == 1)
+                if (gamesList.ListRetired == 1)
                 {
                     titleList.GameStatuses.Add(new GameStatus { Status = StatusType.Retired });
                 }
 
-                Common.LogDebug(true, $"titleList: {Serialization.ToJson(titleList)}");
                 return titleList;
             }
             catch (Exception ex)
@@ -427,90 +408,31 @@ namespace HowLongToBeat.Services
             }
         }
 
-        public HltbPostData GetSubmitData(string GameName, string UserGameId)
+        public async Task<EditData> GetEditData(string GameName, string UserGameId)
         {
-            Logger.Info($"GetSubmitData({GameName}, {UserGameId})");
+            Logger.Info($"GetEditData({GameName}, {UserGameId})");
             try
             {
                 List<HttpCookie> Cookies = GetStoredCookies();
 
-                string response = Web.DownloadStringData(string.Format(UrlPostDataEdit, UserGameId), Cookies).GetAwaiter().GetResult();
-                if (response.IsNullOrEmpty())
+                string response = await Web.DownloadStringData(string.Format(UrlPostDataEdit, UserGameId), Cookies);
+                if (response.IsNullOrEmpty() && !response.Contains("__NEXT_DATA__"))
                 {
-                    Logger.Warn($"No SubmitData for {GameName} - {UserGameId}");
+                    Logger.Warn($"No EditData for {GameName} - {UserGameId}");
                     return null;
                 }
 
                 string jsonData = Tools.GetJsonInString(response, "<script id=\"__NEXT_DATA__\" type=\"application/json\">", "</script></body>");
-                HltbPostData hltbPostData = new HltbPostData();
-
-                if (Serialization.TryFromJson(jsonData, out NEXT_DATA data) && data?.props?.pageProps?.editData?.userId != null)
-                {
-                    hltbPostData.user_id = data.props.pageProps.editData.userId;
-                    hltbPostData.edit_id = data.props.pageProps.editData.submissionId;
-                    hltbPostData.game_id = data.props.pageProps.gameData.game_id;
-                    hltbPostData.custom_title = data.props.pageProps.gameData.game_name;
-                    hltbPostData.platform = data.props.pageProps.editData.platform;
-                    hltbPostData.storefront = data.props.pageProps.editData.storefront;
-                    hltbPostData.list_p = data.props.pageProps.editData.lists.playing ? "1" : "0";
-                    hltbPostData.list_b = data.props.pageProps.editData.lists.backlog ? "1" : "0";
-                    hltbPostData.list_r = data.props.pageProps.editData.lists.replay ? "1" : "0";
-                    hltbPostData.list_c = data.props.pageProps.editData.lists.custom ? "1" : "0";
-                    hltbPostData.list_cp = data.props.pageProps.editData.lists.completed ? "1" : "0";
-                    hltbPostData.list_rt = data.props.pageProps.editData.lists.retired ? "1" : "0";                    
-                    hltbPostData.protime_h = data.props.pageProps.editData.general.progress.hours?.ToString() ?? "0";
-                    hltbPostData.protime_m = data.props.pageProps.editData.general.progress.minutes?.ToString() ?? "0";
-                    hltbPostData.protime_s = data.props.pageProps.editData.general.progress.seconds?.ToString() ?? "0";
-                    hltbPostData.rt_notes = data.props.pageProps.editData.general.retirementNotes;
-                    hltbPostData.compyear = data.props.pageProps.editData.general.completionDate.year;
-                    hltbPostData.compmonth = data.props.pageProps.editData.general.completionDate.month;
-                    hltbPostData.compday = data.props.pageProps.editData.general.completionDate.day;
-                    hltbPostData.playCount = data.props.pageProps.editData.singlePlayer.playCount ? "1" : "0";
-                    hltbPostData.includesDLC = data.props.pageProps.editData.singlePlayer.includesDLC ? "1" : "0";
-                    hltbPostData.c_main_h = data.props.pageProps.editData.singlePlayer.compMain.time.hours?.ToString() ?? "0";
-                    hltbPostData.c_main_m = data.props.pageProps.editData.singlePlayer.compMain.time.minutes?.ToString() ?? "0";
-                    hltbPostData.c_main_s = data.props.pageProps.editData.singlePlayer.compMain.time.seconds?.ToString() ?? "0";
-                    hltbPostData.c_main_notes = data.props.pageProps.editData.singlePlayer.compMain.notes;
-                    hltbPostData.c_plus_h = data.props.pageProps.editData.singlePlayer.compPlus.time.hours?.ToString() ?? "0";
-                    hltbPostData.c_plus_m = data.props.pageProps.editData.singlePlayer.compPlus.time.minutes?.ToString() ?? "0";
-                    hltbPostData.c_plus_s = data.props.pageProps.editData.singlePlayer.compPlus.time.seconds?.ToString() ?? "0";
-                    hltbPostData.c_plus_notes = data.props.pageProps.editData.singlePlayer.compPlus.notes;
-                    hltbPostData.c_100_h = data.props.pageProps.editData.singlePlayer.comp100.time.hours?.ToString() ?? "0";
-                    hltbPostData.c_100_m = data.props.pageProps.editData.singlePlayer.comp100.time.minutes?.ToString() ?? "0";
-                    hltbPostData.c_100_s = data.props.pageProps.editData.singlePlayer.comp100.time.seconds?.ToString() ?? "0";
-                    hltbPostData.c_100_notes = data.props.pageProps.editData.singlePlayer.comp100.notes;
-                    hltbPostData.c_speed_h = data.props.pageProps.editData.speedRuns.percAny.time.hours?.ToString() ?? "0";
-                    hltbPostData.c_speed_m = data.props.pageProps.editData.speedRuns.percAny.time.minutes?.ToString() ?? "0";
-                    hltbPostData.c_speed_s = data.props.pageProps.editData.speedRuns.percAny.time.seconds?.ToString() ?? "0";
-                    hltbPostData.c_speed_notes = data.props.pageProps.editData.speedRuns.percAny.notes;
-                    hltbPostData.c_speed100_h = data.props.pageProps.editData.speedRuns.perc100.time.hours?.ToString() ?? "0";
-                    hltbPostData.c_speed100_m = data.props.pageProps.editData.speedRuns.perc100.time.minutes?.ToString() ?? "0";
-                    hltbPostData.c_speed100_s = data.props.pageProps.editData.speedRuns.perc100.time.seconds?.ToString() ?? "0";
-                    hltbPostData.c_speed100_notes = data.props.pageProps.editData.speedRuns.perc100.notes;
-                    hltbPostData.cotime_h = data.props.pageProps.editData.multiPlayer.coOp.time.hours?.ToString() ?? "0";
-                    hltbPostData.cotime_m = data.props.pageProps.editData.multiPlayer.coOp.time.minutes?.ToString() ?? "0";
-                    hltbPostData.cotime_s = data.props.pageProps.editData.multiPlayer.coOp.time.seconds?.ToString() ?? "0";
-                    hltbPostData.mptime_h = data.props.pageProps.editData.multiPlayer.vs.time.hours?.ToString() ?? "0";
-                    hltbPostData.mptime_m = data.props.pageProps.editData.multiPlayer.vs.time.minutes?.ToString() ?? "0";
-                    hltbPostData.mptime_s = data.props.pageProps.editData.multiPlayer.vs.time.seconds?.ToString() ?? "0";
-                    hltbPostData.review_score = data.props.pageProps.editData.review.score;
-                    hltbPostData.review_notes = data.props.pageProps.editData.review.notes;
-                    hltbPostData.play_notes = data.props.pageProps.editData.additionals.notes;
-                    hltbPostData.play_video = data.props.pageProps.editData.additionals.video;
-                }
-                else
-                {
-                    throw new Exception($"No submit data find for {GameName} - {UserGameId}");
-                }
-
-                return hltbPostData;
+                return Serialization.TryFromJson(jsonData, out NEXT_DATA next_data) && next_data?.Props?.PageProps?.EditData?.UserId != null
+                    ? next_data.Props.PageProps.EditData
+                    : throw new Exception($"No EditData find for {GameName} - {UserGameId}");
             }
             catch (Exception ex)
             {
                 if (IsFirst)
                 {
                     IsFirst = false;
-                    return GetSubmitData(GameName, UserGameId);
+                    return await GetEditData(GameName, UserGameId);
                 }
                 else
                 {
@@ -523,14 +445,14 @@ namespace HowLongToBeat.Services
 
         public HltbUserStats LoadUserData()
         {
-            string PathHltbUserStats = Path.Combine(PluginDatabase.Plugin.GetPluginUserDataPath(), "HltbUserStats.json");
+            string pathHltbUserStats = Path.Combine(PluginDatabase.Plugin.GetPluginUserDataPath(), "HltbUserStats.json");
             HltbUserStats hltbDataUser = new HltbUserStats();
 
-            if (File.Exists(PathHltbUserStats))
+            if (File.Exists(pathHltbUserStats))
             {
                 try
                 {
-                    if (!Serialization.TryFromJsonFile(PathHltbUserStats, out hltbDataUser))
+                    if (!Serialization.TryFromJsonFile(pathHltbUserStats, out hltbDataUser))
                     {
                         return new HltbUserStats();
                     }
@@ -550,20 +472,22 @@ namespace HowLongToBeat.Services
         {
             if (GetIsUserLoggedIn())
             {
-                hltbUserStats = new HltbUserStats();
-                hltbUserStats.Login = UserLogin.IsNullOrEmpty() ? HowLongToBeat.PluginDatabase.Database.UserHltbData.Login : UserLogin;
-                hltbUserStats.UserId = (UserId == 0) ? HowLongToBeat.PluginDatabase.Database.UserHltbData.UserId : UserId;
-                hltbUserStats.TitlesList = new List<TitleList>();
+                hltbUserStats = new HltbUserStats
+                {
+                    Login = UserLogin.IsNullOrEmpty() ? PluginDatabase.Database.UserHltbData.Login : UserLogin,
+                    UserId = (UserId == 0) ? PluginDatabase.Database.UserHltbData.UserId : UserId,
+                    TitlesList = new List<TitleList>()
+                };
 
-                HltbUserGamesList response = GetUserGamesList();
-                if (response == null)
+                UserGamesList userGamesList = GetUserGamesList().GetAwaiter().GetResult();
+                if (userGamesList == null)
                 {
                     return null;
                 }
 
                 try
                 {
-                    response.data.gamesList.ForEach(x =>
+                    userGamesList.Data.GamesList.ForEach(x =>
                     {
                         TitleList titleList = GetTitleList(x);
                         hltbUserStats.TitlesList.Add(titleList);
@@ -620,12 +544,12 @@ namespace HowLongToBeat.Services
 
         public bool EditIdExist(string UserGameId)
         {
-            return GetUserGamesList()?.data?.gamesList?.Find(x => x.id.ToString().IsEqual(UserGameId))?.id != null;
+            return GetUserGamesList()?.GetAwaiter().GetResult()?.Data?.GamesList?.Find(x => x.Id.ToString().IsEqual(UserGameId))?.Id != null;
         }
 
         public string FindIdExisting(string GameId)
         {
-            return GetUserGamesList()?.data?.gamesList?.Find(x => x.game_id.ToString().IsEqual(GameId))?.id.ToString() ?? null;
+            return GetUserGamesList()?.GetAwaiter().GetResult().Data?.GamesList?.Find(x => x.GameId.ToString().IsEqual(GameId))?.Id.ToString() ?? null;
         }
         #endregion
 
@@ -633,56 +557,26 @@ namespace HowLongToBeat.Services
         /// <summary>
         /// Post current data in HowLongToBeat website.
         /// </summary>
-        /// <param name="hltbPostData"></param>
+        /// <param name="editData"></param>
         /// <returns></returns>
-        public async Task<bool> PostData(Game game, HltbPostData hltbPostData)
+        public async Task<bool> ApiSubmitData(Game game, EditData editData)
         {
-            if (GetIsUserLoggedIn() && hltbPostData.user_id != 0 && hltbPostData.game_id != 0)
+            if (GetIsUserLoggedIn() && editData.UserId != 0 && editData.GameId != 0)
             {
                 try
                 {
                     List<HttpCookie> Cookies = GetStoredCookies();
-
-                    string payload = "{\"submissionId\":" + hltbPostData.edit_id + ",\"userId\":" + hltbPostData.user_id + ",\"userName\":\"" + UserLogin
-                        + "\",\"gameId\":" + hltbPostData.game_id + ",\"title\":\"" + hltbPostData.custom_title + "\",\"platform\":\"" + hltbPostData.platform
-                        + "\",\"storefront\":\"" + hltbPostData.storefront + "\",\"lists\":{\"playing\":" + (hltbPostData.list_p == "1" ? "true" : "false")
-                        + ",\"backlog\":" + (hltbPostData.list_b == "1" ? "true" : "false")
-                        + ",\"replay\":" + (hltbPostData.list_r == "1" ? "true" : "false")
-                        + ",\"custom\":" + (hltbPostData.list_c == "1" ? "true" : "false")
-                        + ",\"custom2\":false,\"custom3\":false,\"completed\":" + (hltbPostData.list_cp == "1" ? "true" : "false")
-                        + ",\"retired\":" + (hltbPostData.list_rt == "1" ? "true" : "false")
-                        + "},\"general\":{\"progress\":{\"hours\":" + hltbPostData.protime_h + ",\"minutes\":" + hltbPostData.protime_m
-                        + ",\"seconds\":" + hltbPostData.protime_s + "},\"retirementNotes\":\"" + hltbPostData.rt_notes
-                        + "\",\"completionDate\":{\"year\":\"" + hltbPostData.compyear
-                        + "\",\"month\":\"" + hltbPostData.compmonth + "\",\"day\":\"" + hltbPostData.compday
-                        + "\"},"
-                        + "\"progressBefore\":{\"hours\":0,\"minutes\":0,\"seconds\":0}"
-                        + "},\"singlePlayer\":{\"playCount\":" + (hltbPostData.playCount == "0" ? "false" : "true")
-                        + ",\"includesDLC\":" + (hltbPostData.includesDLC == "1" ? "true" : "false") + ",\"compMain\":{\"time\":{\"hours\":" + hltbPostData.c_main_h
-                        + ",\"minutes\":" + hltbPostData.c_main_m + ",\"seconds\":" + hltbPostData.c_main_s + "},\"notes\":\"" + hltbPostData.c_main_notes
-                        + "\"},\"compPlus\":{\"time\":{\"hours\":" + hltbPostData.c_plus_h + ",\"minutes\":" + hltbPostData.c_plus_m + ",\"seconds\":" + hltbPostData.c_plus_s
-                        + "},\"notes\":\"" + hltbPostData.c_plus_notes + "\"},\"comp100\":{\"time\":{\"hours\":" + hltbPostData.c_100_h
-                        + ",\"minutes\":" + hltbPostData.c_100_m + ",\"seconds\":" + hltbPostData.c_100_s + "},\"notes\":\"" + hltbPostData.c_100_notes
-                        + "\"}},\"speedRuns\":{\"percAny\":{\"time\":{\"hours\":" + hltbPostData.c_speed_h + ",\"minutes\":" + hltbPostData.c_speed_m
-                        + ",\"seconds\":" + hltbPostData.c_speed_s + "},\"notes\":\"" + hltbPostData.c_speed_notes + "\"},\"perc100\":{\"time\":{\"hours\":" + hltbPostData.c_speed100_h
-                        + ",\"minutes\":" + hltbPostData.c_speed100_m + ",\"seconds\":" + hltbPostData.c_speed100_s + "},\"notes\":\"" + hltbPostData.c_speed100_notes
-                        + "\"}},\"multiPlayer\":{\"coOp\":{\"time\":{\"hours\":" + hltbPostData.cotime_h + ",\"minutes\":" + hltbPostData.cotime_m
-                        + ",\"seconds\":" + hltbPostData.cotime_s + "}},\"vs\":{\"time\":{\"hours\":" + hltbPostData.mptime_h + ",\"minutes\":" + hltbPostData.mptime_m
-                        + ",\"seconds\":" + hltbPostData.mptime_s + "}}},\"review\":{\"score\":" + hltbPostData.review_score + ",\"notes\":\"" + hltbPostData.review_notes
-                        + "\"},\"additionals\":{\"notes\":\"" + hltbPostData.play_notes + "\",\"video\":\"" + hltbPostData.play_video
-                        + "\"},\"manualTimer\":{\"time\":{\"hours\":null,\"minutes\":null,\"seconds\":null}},\"adminId\":null}";
-
+                    string payload = Serialization.ToJson(editData);
                     string response = await Web.PostStringDataPayload(UrlPostData, payload, Cookies);
-
 
                     // Check errors
                     // TODO Rewrite
                     if (response.Contains("error"))
                     {
-                        Serialization.TryFromJson(response, out dynamic error);
+                        _ = Serialization.TryFromJson(response, out dynamic error);
                         API.Instance.Notifications.Add(new NotificationMessage(
                             $"{PluginDatabase.PluginName}-{game.Id}-Error",
-                            PluginDatabase.PluginName + Environment.NewLine + game.Name + (error?["error"]?[0] != null ? System.Environment.NewLine + error["error"][0] : string.Empty),
+                            PluginDatabase.PluginName + Environment.NewLine + game.Name + (error?["error"]?[0] != null ? Environment.NewLine + error["error"][0] : string.Empty),
                             NotificationType.Error
                         ));
                     }
@@ -696,7 +590,7 @@ namespace HowLongToBeat.Services
                     }
                     else
                     {
-                        PluginDatabase.RefreshUserData(hltbPostData.game_id);
+                        PluginDatabase.RefreshUserData(editData.GameId);
                     }
                 }
                 catch (Exception ex)

@@ -34,7 +34,7 @@ namespace HowLongToBeat.Models
         Steam,
         UbisoftConnect,
         XboxStore,
-        AmazonLuma,
+        AmazonLuna,
         GameJolt,
         JastUsa,
         LegacyGames,
@@ -106,8 +106,8 @@ namespace HowLongToBeat.Models
                         return "Ubisoft Connect";
                     case HltbStorefront.XboxStore:
                         return "Xbox Store";
-                    case HltbStorefront.AmazonLuma:
-                        return "Amazon Luma";
+                    case HltbStorefront.AmazonLuna:
+                        return "Amazon Luna";
                     case HltbStorefront.GameJolt:
                         return "Game Jolt";
                     case HltbStorefront.JastUsa:

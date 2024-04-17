@@ -121,14 +121,16 @@
     </Compile>
     <Compile Include="HowLongToBeat.cs" />
     <Compile Include="HowLongToBeatSettings.cs" />
+    <Compile Include="Models\Api\SearchParam.cs" />
+    <Compile Include="Models\Api\SearchResult.cs" />
+    <Compile Include="Models\Api\EditData.cs" />
+    <Compile Include="Models\Api\UserGamesList.cs" />
+    <Compile Include="Models\Api\UserGamesListParam.cs" />
     <Compile Include="Models\HltbPlatform.cs" />
     <Compile Include="Models\GameHowLongToBeat.cs" />
     <Compile Include="Models\GameHowLongToBeatCollection.cs" />
     <Compile Include="Models\HltbDataUser.cs" />
-    <Compile Include="Models\HltbPostData.cs" />
     <Compile Include="Models\HltbStorefront.cs" />
-    <Compile Include="Models\HltbUserGamesList.cs" />
-    <Compile Include="Models\HltbUserStatsGamesList.cs" />
     <Compile Include="Models\HltbUserStats.cs" />
     <Compile Include="Models\NEXT_DATA.cs" />
     <Compile Include="Models\QuickSearchItemSource.cs" />
@@ -174,9 +176,7 @@
     <Compile Include="playnite-plugincommon\CommonPluginsControls\PlayniteControls\SearchBox.xaml.cs">
       <DependentUpon>SearchBox.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Models\HltbSearchData.cs" />
     <Compile Include="Services\HowLongToBeatDatabase.cs" />
-    <Compile Include="Models\HltbSearchRoot.cs" />
     <Compile Include="Services\HowLongToBeatSearch.cs" />
     <Compile Include="Services\HowLongToBeatTopPanelItem.cs" />
     <Compile Include="Services\HowLongToBeatViewSidebar.cs" />

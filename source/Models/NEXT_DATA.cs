@@ -1,4 +1,6 @@
-﻿using System;
+﻿using HowLongToBeat.Models.Api;
+using Playnite.SDK.Data;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,269 +8,348 @@ using System.Threading.Tasks;
 
 namespace HowLongToBeat.Models
 {
-    public class Additionals
-    {
-        public string notes { get; set; }
-        public string video { get; set; }
-    }
-
-    public class Comp100
-    {
-        public Time time { get; set; }
-        public string notes { get; set; }
-    }
-
-    public class CompletionDate
-    {
-        public string year { get; set; }
-        public string month { get; set; }
-        public string day { get; set; }
-    }
-
-    public class CompMain
-    {
-        public Time time { get; set; }
-        public string notes { get; set; }
-    }
-
-    public class CompPlus
-    {
-        public Time time { get; set; }
-        public string notes { get; set; }
-    }
-
-    public class CoOp
-    {
-        public Time time { get; set; }
-    }
-
-    public class EditData
-    {
-        public int submissionId { get; set; }
-        public string userIp { get; set; }
-        public int userId { get; set; }
-        public string userName { get; set; }
-        public int gameId { get; set; }
-        public string title { get; set; }
-        public string platform { get; set; }
-        public string storefront { get; set; }
-        public Lists lists { get; set; }
-        public General general { get; set; }
-        public SinglePlayer singlePlayer { get; set; }
-        public SpeedRuns speedRuns { get; set; }
-        public MultiPlayer multiPlayer { get; set; }
-        public Review review { get; set; }
-        public Additionals additionals { get; set; }
-    }
-
     public class GameData
     {
-        public int count_discussion { get; set; }
-        public int game_id { get; set; }
-        public string game_name { get; set; }
-        public int game_name_date { get; set; }
-        public int count_playing { get; set; }
-        public int count_backlog { get; set; }
-        public int count_replay { get; set; }
-        public int count_custom { get; set; }
-        public int count_comp { get; set; }
-        public int count_retired { get; set; }
-        public int count_review { get; set; }
-        public int review_score { get; set; }
-        public string game_alias { get; set; }
-        public string game_image { get; set; }
-        public string game_type { get; set; }
-        public int game_parent { get; set; }
-        public string profile_summary { get; set; }
-        public string profile_dev { get; set; }
-        public string profile_pub { get; set; }
-        public string profile_platform { get; set; }
-        public string profile_genre { get; set; }
-        public int profile_steam { get; set; }
-        public int profile_steam_alt { get; set; }
-        public int profile_itch { get; set; }
-        public object profile_ign { get; set; }
-        public string release_world { get; set; }
-        public string release_na { get; set; }
-        public string release_eu { get; set; }
-        public string release_jp { get; set; }
-        public string rating_esrb { get; set; }
-        public string rating_pegi { get; set; }
-        public string rating_cero { get; set; }
-        public int comp_lvl_sp { get; set; }
-        public int comp_lvl_spd { get; set; }
-        public int comp_lvl_co { get; set; }
-        public int comp_lvl_mp { get; set; }
-        public int comp_lvl_combine { get; set; }
-        public int comp_lvl_platform { get; set; }
-        public int comp_all_count { get; set; }
-        public int comp_all { get; set; }
-        public int comp_all_l { get; set; }
-        public int comp_all_h { get; set; }
-        public int comp_all_avg { get; set; }
-        public int comp_all_med { get; set; }
-        public int comp_main_count { get; set; }
-        public int comp_main { get; set; }
-        public int comp_main_l { get; set; }
-        public int comp_main_h { get; set; }
-        public int comp_main_avg { get; set; }
-        public int comp_main_med { get; set; }
-        public int comp_plus_count { get; set; }
-        public int comp_plus { get; set; }
-        public int comp_plus_l { get; set; }
-        public int comp_plus_h { get; set; }
-        public int comp_plus_avg { get; set; }
-        public int comp_plus_med { get; set; }
-        public int comp_100_count { get; set; }
-        public int comp_100 { get; set; }
-        public int comp_100_l { get; set; }
-        public int comp_100_h { get; set; }
-        public int comp_100_avg { get; set; }
-        public int comp_100_med { get; set; }
-        public int comp_speed_count { get; set; }
-        public int comp_speed { get; set; }
-        public int comp_speed_min { get; set; }
-        public int comp_speed_max { get; set; }
-        public int comp_speed_avg { get; set; }
-        public int comp_speed_med { get; set; }
-        public int comp_speed100_count { get; set; }
-        public int comp_speed100 { get; set; }
-        public int comp_speed100_min { get; set; }
-        public int comp_speed100_max { get; set; }
-        public int comp_speed100_avg { get; set; }
-        public int comp_speed100_med { get; set; }
-        public int count_total { get; set; }
-        public int invested_co_count { get; set; }
-        public int invested_co { get; set; }
-        public int invested_co_l { get; set; }
-        public int invested_co_h { get; set; }
-        public int invested_co_avg { get; set; }
-        public int invested_co_med { get; set; }
-        public int invested_mp_count { get; set; }
-        public int invested_mp { get; set; }
-        public int invested_mp_l { get; set; }
-        public int invested_mp_h { get; set; }
-        public int invested_mp_avg { get; set; }
-        public int invested_mp_med { get; set; }
-        public string added_stats { get; set; }
-    }
+        [SerializationPropertyName("count_discussion")]
+        public int CountDiscussion { get; set; }
 
-    public class General
-    {
-        public Progress progress { get; set; }
-        public string retirementNotes { get; set; }
-        public CompletionDate completionDate { get; set; }
-    }
+        [SerializationPropertyName("game_id")]
+        public int GameId { get; set; }
 
-    public class Lists
-    {
-        public bool playing { get; set; }
-        public bool backlog { get; set; }
-        public bool replay { get; set; }
-        public bool custom { get; set; }
-        public bool custom2 { get; set; }
-        public bool custom3 { get; set; }
-        public bool completed { get; set; }
-        public bool retired { get; set; }
-    }
+        [SerializationPropertyName("game_name")]
+        public string GameName { get; set; }
 
-    public class MultiPlayer
-    {
-        public CoOp coOp { get; set; }
-        public Vs vs { get; set; }
+        [SerializationPropertyName("game_name_date")]
+        public int GameNameDate { get; set; }
+
+        [SerializationPropertyName("count_playing")]
+        public int CountPlaying { get; set; }
+
+        [SerializationPropertyName("count_backlog")]
+        public int CountBacklog { get; set; }
+
+        [SerializationPropertyName("count_replay")]
+        public int CountReplay { get; set; }
+
+        [SerializationPropertyName("count_custom")]
+        public int CountCustom { get; set; }
+
+        [SerializationPropertyName("count_comp")]
+        public int CountComp { get; set; }
+
+        [SerializationPropertyName("count_retired")]
+        public int CountRetired { get; set; }
+
+        [SerializationPropertyName("count_review")]
+        public int CountReview { get; set; }
+
+        [SerializationPropertyName("review_score")]
+        public int ReviewScore { get; set; }
+
+        [SerializationPropertyName("game_alias")]
+        public string GameAlias { get; set; }
+
+        [SerializationPropertyName("game_image")]
+        public string GameImage { get; set; }
+
+        [SerializationPropertyName("game_type")]
+        public string GameType { get; set; }
+
+        [SerializationPropertyName("game_parent")]
+        public int GameParent { get; set; }
+
+        [SerializationPropertyName("profile_summary")]
+        public string ProfileSummary { get; set; }
+
+        [SerializationPropertyName("profile_dev")]
+        public string ProfileDev { get; set; }
+
+        [SerializationPropertyName("profile_pub")]
+        public string ProfilePub { get; set; }
+
+        [SerializationPropertyName("profile_platform")]
+        public string ProfilePlatform { get; set; }
+
+        [SerializationPropertyName("profile_genre")]
+        public string ProfileGenre { get; set; }
+
+        [SerializationPropertyName("profile_steam")]
+        public int ProfileSteam { get; set; }
+
+        [SerializationPropertyName("profile_steam_alt")]
+        public int ProfileSteamAlt { get; set; }
+
+        [SerializationPropertyName("profile_itch")]
+        public int ProfileItch { get; set; }
+
+        [SerializationPropertyName("profile_ign")]
+        public object ProfileIgn { get; set; }
+
+        [SerializationPropertyName("release_world")]
+        public string ReleaseWorld { get; set; }
+
+        [SerializationPropertyName("release_na")]
+        public string ReleaseNa { get; set; }
+
+        [SerializationPropertyName("release_eu")]
+        public string ReleaseEu { get; set; }
+
+        [SerializationPropertyName("release_jp")]
+        public string ReleaseJp { get; set; }
+
+        [SerializationPropertyName("rating_esrb")]
+        public string RatingEsrb { get; set; }
+
+        [SerializationPropertyName("rating_pegi")]
+        public string RatingPegi { get; set; }
+
+        [SerializationPropertyName("rating_cero")]
+        public string RatingCero { get; set; }
+
+        [SerializationPropertyName("comp_lvl_sp")]
+        public int CompLvlSp { get; set; }
+
+        [SerializationPropertyName("comp_lvl_spd")]
+        public int CompLvlSpd { get; set; }
+
+        [SerializationPropertyName("comp_lvl_co")]
+        public int CompLvlCo { get; set; }
+
+        [SerializationPropertyName("comp_lvl_mp")]
+        public int CompLvlMp { get; set; }
+
+        [SerializationPropertyName("comp_lvl_combine")]
+        public int CompLvlCombine { get; set; }
+
+        [SerializationPropertyName("comp_lvl_platform")]
+        public int CompLvlPlatform { get; set; }
+
+        [SerializationPropertyName("comp_all_count")]
+        public int CompAllCount { get; set; }
+
+        [SerializationPropertyName("comp_all")]
+        public int CompAll { get; set; }
+
+        [SerializationPropertyName("comp_all_l")]
+        public int CompAllL { get; set; }
+
+        [SerializationPropertyName("comp_all_h")]
+        public int CompAllH { get; set; }
+
+        [SerializationPropertyName("comp_all_avg")]
+        public int CompAllAvg { get; set; }
+
+        [SerializationPropertyName("comp_all_med")]
+        public int CompAllMed { get; set; }
+
+        [SerializationPropertyName("comp_main_count")]
+        public int CompMainCount { get; set; }
+
+        [SerializationPropertyName("comp_main")]
+        public int CompMain { get; set; }
+
+        [SerializationPropertyName("comp_main_l")]
+        public int CompMainL { get; set; }
+
+        [SerializationPropertyName("comp_main_h")]
+        public int CompMainH { get; set; }
+
+        [SerializationPropertyName("comp_main_avg")]
+        public int CompMainAvg { get; set; }
+
+        [SerializationPropertyName("comp_main_med")]
+        public int CompMainMed { get; set; }
+
+        [SerializationPropertyName("comp_plus_count")]
+        public int CompPlusCount { get; set; }
+
+        [SerializationPropertyName("comp_plus")]
+        public int CompPlus { get; set; }
+
+        [SerializationPropertyName("comp_plus_l")]
+        public int CompPlusL { get; set; }
+
+        [SerializationPropertyName("comp_plus_h")]
+        public int CompPlusH { get; set; }
+
+        [SerializationPropertyName("comp_plus_avg")]
+        public int CompPlusAvg { get; set; }
+
+        [SerializationPropertyName("comp_plus_med")]
+        public int CompPlusMed { get; set; }
+
+        [SerializationPropertyName("comp_100_count")]
+        public int Comp100Count { get; set; }
+
+        [SerializationPropertyName("comp_100")]
+        public int Comp100 { get; set; }
+
+        [SerializationPropertyName("comp_100_l")]
+        public int Comp100L { get; set; }
+
+        [SerializationPropertyName("comp_100_h")]
+        public int Comp100H { get; set; }
+
+        [SerializationPropertyName("comp_100_avg")]
+        public int Comp100Avg { get; set; }
+
+        [SerializationPropertyName("comp_100_med")]
+        public int Comp100Med { get; set; }
+
+        [SerializationPropertyName("comp_speed_count")]
+        public int CompSpeedCount { get; set; }
+
+        [SerializationPropertyName("comp_speed")]
+        public int CompSpeed { get; set; }
+
+        [SerializationPropertyName("comp_speed_min")]
+        public int CompSpeedMin { get; set; }
+
+        [SerializationPropertyName("comp_speed_max")]
+        public int CompSpeedMax { get; set; }
+
+        [SerializationPropertyName("comp_speed_avg")]
+        public int CompSpeedAvg { get; set; }
+
+        [SerializationPropertyName("comp_speed_med")]
+        public int CompSpeedMed { get; set; }
+
+        [SerializationPropertyName("comp_speed100_count")]
+        public int CompSpeed100Count { get; set; }
+
+        [SerializationPropertyName("comp_speed100")]
+        public int CompSpeed100 { get; set; }
+
+        [SerializationPropertyName("comp_speed100_min")]
+        public int CompSpeed100Min { get; set; }
+
+        [SerializationPropertyName("comp_speed100_max")]
+        public int CompSpeed100Max { get; set; }
+
+        [SerializationPropertyName("comp_speed100_avg")]
+        public int CompSpeed100Avg { get; set; }
+
+        [SerializationPropertyName("comp_speed100_med")]
+        public int CompSpeed100Med { get; set; }
+
+        [SerializationPropertyName("count_total")]
+        public int CountTotal { get; set; }
+
+        [SerializationPropertyName("invested_co_count")]
+        public int InvestedCoCount { get; set; }
+
+        [SerializationPropertyName("invested_co")]
+        public int InvestedCo { get; set; }
+
+        [SerializationPropertyName("invested_co_l")]
+        public int InvestedCoL { get; set; }
+
+        [SerializationPropertyName("invested_co_h")]
+        public int InvestedCoH { get; set; }
+
+        [SerializationPropertyName("invested_co_avg")]
+        public int InvestedCoAvg { get; set; }
+
+        [SerializationPropertyName("invested_co_med")]
+        public int InvestedCoMed { get; set; }
+
+        [SerializationPropertyName("invested_mp_count")]
+        public int InvestedMpCount { get; set; }
+
+        [SerializationPropertyName("invested_mp")]
+        public int InvestedMp { get; set; }
+
+        [SerializationPropertyName("invested_mp_l")]
+        public int InvestedMpL { get; set; }
+
+        [SerializationPropertyName("invested_mp_h")]
+        public int InvestedMpH { get; set; }
+
+        [SerializationPropertyName("invested_mp_avg")]
+        public int InvestedMpAvg { get; set; }
+
+        [SerializationPropertyName("invested_mp_med")]
+        public int InvestedMpMed { get; set; }
+
+        [SerializationPropertyName("added_stats")]
+        public string AddedStats { get; set; }
     }
 
     public class PageMetadata
     {
-        public bool noTopAd { get; set; }
-        public string title { get; set; }
-        public string image { get; set; }
-        public string description { get; set; }
-        public string canonical { get; set; }
-        public string template { get; set; }
+        [SerializationPropertyName("noTopAd")]
+        public bool NoTopAd { get; set; }
+
+        [SerializationPropertyName("title")]
+        public string Title { get; set; }
+
+        [SerializationPropertyName("image")]
+        public string Image { get; set; }
+
+        [SerializationPropertyName("description")]
+        public string Description { get; set; }
+
+        [SerializationPropertyName("canonical")]
+        public string Canonical { get; set; }
+
+        [SerializationPropertyName("template")]
+        public string Template { get; set; }
     }
 
     public class PageProps
     {
-        public GameData gameData { get; set; }
-        public EditData editData { get; set; }
-        public PageMetadata pageMetadata { get; set; }
-        public string _sentryTraceData { get; set; }
-        public string _sentryBaggage { get; set; }
-    }
+        [SerializationPropertyName("gameData")]
+        public GameData GameData { get; set; }
 
-    public class Perc100
-    {
-        public Time time { get; set; }
-        public string notes { get; set; }
-    }
+        [SerializationPropertyName("editData")]
+        public EditData EditData { get; set; }
 
-    public class PercAny
-    {
-        public Time time { get; set; }
-        public string notes { get; set; }
-    }
-
-    public class Progress
-    {
-        public int? hours { get; set; }
-        public int? minutes { get; set; }
-        public int? seconds { get; set; }
+        [SerializationPropertyName("pageMetadata")]
+        public PageMetadata PageMetadata { get; set; }
     }
 
     public class Props
     {
-        public PageProps pageProps { get; set; }
-        public bool __N_SSP { get; set; }
+        [SerializationPropertyName("pageProps")]
+        public PageProps PageProps { get; set; }
+
+        [SerializationPropertyName("__N_SSP")]
+        public bool NSSP { get; set; }
     }
 
     public class Query
     {
-        public string subType { get; set; }
-        public string subId { get; set; }
-    }
+        [SerializationPropertyName("subType")]
+        public string SubType { get; set; }
 
-    public class Review
-    {
-        public int score { get; set; }
-        public string notes { get; set; }
+        [SerializationPropertyName("subId")]
+        public string SubId { get; set; }
     }
 
     public class NEXT_DATA
     {
-        public Props props { get; set; }
-        public string page { get; set; }
-        public Query query { get; set; }
-        public string buildId { get; set; }
-        public bool isFallback { get; set; }
-        public bool gssp { get; set; }
-        public List<object> scriptLoader { get; set; }
-    }
+        [SerializationPropertyName("props")]
+        public Props Props { get; set; }
 
-    public class SinglePlayer
-    {
-        public bool playCount { get; set; }
-        public bool includesDLC { get; set; }
-        public CompMain compMain { get; set; }
-        public CompPlus compPlus { get; set; }
-        public Comp100 comp100 { get; set; }
-    }
+        [SerializationPropertyName("page")]
+        public string Page { get; set; }
 
-    public class SpeedRuns
-    {
-        public PercAny percAny { get; set; }
-        public Perc100 perc100 { get; set; }
-    }
+        [SerializationPropertyName("query")]
+        public Query Query { get; set; }
 
-    public class Time
-    {
-        public int? hours { get; set; }
-        public int? minutes { get; set; }
-        public int? seconds { get; set; }
-    }
+        [SerializationPropertyName("buildId")]
+        public string BuildId { get; set; }
 
-    public class Vs
-    {
-        public Time time { get; set; }
+        [SerializationPropertyName("isFallback")]
+        public bool IsFallback { get; set; }
+
+        [SerializationPropertyName("isExperimentalCompile")]
+        public bool IsExperimentalCompile { get; set; }
+
+        [SerializationPropertyName("gssp")]
+        public bool Gssp { get; set; }
+
+        [SerializationPropertyName("scriptLoader")]
+        public List<object> ScriptLoader { get; set; }
     }
 }

@@ -5,8 +5,8 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 
-namespace HowLongToBeat.Models {
-
+namespace HowLongToBeat.Models 
+{
     public enum HltbPlatform {
 
         [Description("3DO")]
@@ -185,7 +185,6 @@ namespace HowLongToBeat.Models {
         XBOS_SERIES_XS,
         [Description("ZX Spectrum")]
         ZX_SPECTRUM
-
     }
 
     public class HltbPlatformMatch : IComparable<HltbPlatformMatch> {
