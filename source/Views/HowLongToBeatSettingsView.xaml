@@ -7,12 +7,14 @@
              xmlns:controls="clr-namespace:CommonPluginsControls.Controls"
              xmlns:HowLongToBeat="clr-namespace:HowLongToBeat"
              xmlns:hltm="clr-namespace:HowLongToBeat.Models"
-             xmlns:hltb="clr-namespace:HowLongToBeat.Behaviors"
+             xmlns:hltb="clr-namespace:HowLongToBeat.Behaviors" 
+             xmlns:converters="clr-namespace:CommonPluginsShared.Converters"
              mc:Ignorable="d" d:DesignWidth="650"
              d:DataContext="{d:DesignInstance HowLongToBeat:HowLongToBeatSettingsViewModel}">
 
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+        <converters:ValueOperationConverter x:Key="ValueOperationConverter" />
     </UserControl.Resources>
 
     <TabControl Margin="20" Name="tcSettings">
@@ -34,7 +36,7 @@
                                 <RowDefinition Height="30" />
                                 <RowDefinition Height="30" />
                                 <RowDefinition Height="30" />
-                                <RowDefinition Height="30" />
+                                <RowDefinition Height="auto" />
                                 <RowDefinition Height="auto" />
                             </Grid.RowDefinitions>
 
@@ -53,17 +55,14 @@
                                 <Label Name="PART_LbUserLogin" Content="{Binding Settings.UserLogin}" VerticalAlignment="Center" Grid.Column="3" />
                             </Grid>
 
-                            <CheckBox Grid.Row="2" IsChecked="{Binding Settings.MenuInExtensions}" VerticalAlignment="Center">
-                                <Label Content="{DynamicResource LOCCommonMenuInExtensions}" />
-                            </CheckBox>
+                            <CheckBox Grid.Row="2" IsChecked="{Binding Settings.MenuInExtensions}" VerticalAlignment="Center"
+                                      Content="{DynamicResource LOCCommonMenuInExtensions}" />
 
-                            <CheckBox Grid.Row="3" IsChecked="{Binding Settings.ShowHltbImg}" Grid.Column="0" VerticalAlignment="Center">
-                                <Label Content="{DynamicResource LOCHowLongToBeatShowHltbImage}" />
-                            </CheckBox>
+                            <CheckBox Grid.Row="3" IsChecked="{Binding Settings.ShowHltbImg}" Grid.Column="0" VerticalAlignment="Center"
+                                      Content="{DynamicResource LOCHowLongToBeatShowHltbImage}" />
 
-                            <CheckBox Name="cbEnableTag" Grid.Row="4" IsChecked="{Binding Settings.EnableTag}" Grid.Column="0" VerticalAlignment="Center">
-                                <Label Content="{DynamicResource LOCHowLongToBeatAddTagDescription}" />
-                            </CheckBox>
+                            <CheckBox Name="cbEnableTag" Grid.Row="4" IsChecked="{Binding Settings.EnableTag}" Grid.Column="0" VerticalAlignment="Center"
+                                      Content="{DynamicResource LOCHowLongToBeatAddTagDescription}" />
 
                             <StackPanel Grid.Row="5" Orientation="Horizontal" HorizontalAlignment="Right">
                                 <Button Content="{DynamicResource LOCAddTitle}" Margin="0,0,10,0" IsEnabled="{Binding Settings.EnableTag}" VerticalAlignment="Center" Click="ButtonAddTag_Click" />
@@ -71,27 +70,22 @@
                             </StackPanel>
 
                             <CheckBox Grid.Row="6" IsChecked="{Binding Settings.AutoSetCurrentPlayTime}" Grid.Column="0" VerticalAlignment="Center" 
-                                      Name="PART_AutoSetCurrentPlayTime">
-                                <Label Content="{DynamicResource LOCHowLongToBeatAutoSetCurrentPlayTime}" />
-                            </CheckBox>
+                                      Name="PART_AutoSetCurrentPlayTime"
+                                      Content="{DynamicResource LOCHowLongToBeatAutoSetCurrentPlayTime}" />
                             <Label FontFamily="{DynamicResource FontIcoFont}" Content="&#xef19;" Grid.Row="6" HorizontalAlignment="Right"
                                    ToolTip="{DynamicResource LOCHowLongToBeatInfoSetPlaytime}" />
 
                             <CheckBox Grid.Row="7" Margin="50,0,0,0" IsChecked="{Binding Settings.AutoSetCurrentPlayTimeWithoutConfirmation}" Grid.Column="0" VerticalAlignment="Center"
-                                      IsEnabled="{Binding ElementName=PART_AutoSetCurrentPlayTime, Path=IsChecked}">
-                                <Label Content="{DynamicResource LOCHowLongToBeatWithoutConfirmation}" />
-                            </CheckBox>
+                                      IsEnabled="{Binding ElementName=PART_AutoSetCurrentPlayTime, Path=IsChecked}"
+                                      Content="{DynamicResource LOCHowLongToBeatWithoutConfirmation}" />
 
                             <CheckBox Grid.Row="8" Margin="50,0,0,0" IsChecked="{Binding Settings.EnableSucessNotification}" Grid.Column="0" VerticalAlignment="Center"
-                                      IsEnabled="{Binding ElementName=PART_AutoSetCurrentPlayTime, Path=IsChecked}">
-                                <Label Content="{DynamicResource LOCHowLongToBeatEnableSuccessNotification}" />
-                            </CheckBox>
-
+                                      IsEnabled="{Binding ElementName=PART_AutoSetCurrentPlayTime, Path=IsChecked}"
+                                      Content="{DynamicResource LOCHowLongToBeatEnableSuccessNotification}" />
 
                             <CheckBox Grid.Row="9" IsChecked="{Binding Settings.AutoSetGameStatus}" VerticalAlignment="Center"
-                                      Name="PART_AutoSetGameStatus">
-                                <Label Content="{DynamicResource LOCHowLongToBeatAutoSetGameStatus}" />
-                            </CheckBox>
+                                      Name="PART_AutoSetGameStatus" 
+                                      Content="{DynamicResource LOCHowLongToBeatAutoSetGameStatus}" />
 
                             <Grid Grid.Row="10" Margin="50,5,0,0"
                                   IsEnabled="{Binding ElementName=PART_AutoSetGameStatus, Path=IsChecked}">
@@ -229,21 +223,17 @@
                                 <Separator Margin="0,0,0,10" />
                             </StackPanel>
 
-                            <CheckBox Name="cbAutoImport" Grid.Row="1" IsChecked="{Binding Settings.AutoImport}" Grid.Column="0" VerticalAlignment="Center" Grid.ColumnSpan="3" >
-                                <Label Content="{DynamicResource LOCCommonAutoImport}" />
-                            </CheckBox>
+                            <CheckBox Name="cbAutoImport" Grid.Row="1" IsChecked="{Binding Settings.AutoImport}" Grid.Column="0" VerticalAlignment="Center" Grid.ColumnSpan="3"
+                                      Content="{DynamicResource LOCCommonAutoImport}" />
 
-                            <CheckBox Name="cbAutoAccept" Grid.Row="2" IsChecked="{Binding Settings.AutoAccept}" Grid.Column="0" VerticalAlignment="Center" Grid.ColumnSpan="3" >
-                                <Label Content="{DynamicResource LOCHowLongToBeatAutoAccept}" />
-                            </CheckBox>
+                            <CheckBox Name="cbAutoAccept" Grid.Row="2" IsChecked="{Binding Settings.AutoAccept}" Grid.Column="0" VerticalAlignment="Center" Grid.ColumnSpan="3"
+                                      Content="{DynamicResource LOCHowLongToBeatAutoAccept}" />
 
-                            <CheckBox Name="cbShowWhenMismatch" Grid.Row="3" IsChecked="{Binding Settings.ShowWhenMismatch}" Grid.Column="0" Grid.ColumnSpan="3" VerticalAlignment="Center">
-                                <Label Content="{DynamicResource LOCHowLongToBeatShowWhenMismatch}" />
-                            </CheckBox>
+                            <CheckBox Name="cbShowWhenMismatch" Grid.Row="3" IsChecked="{Binding Settings.ShowWhenMismatch}" Grid.Column="0" Grid.ColumnSpan="3" VerticalAlignment="Center"
+                                      Content="{DynamicResource LOCHowLongToBeatShowWhenMismatch}" />
 
-                            <CheckBox Grid.Row="4" IsChecked="{Binding Settings.UseMatchValue}" Grid.Column="0" VerticalAlignment="Center">
-                                <Label Content="{DynamicResource LOCHowLongToBeatUseMatchValue}" />
-                            </CheckBox>
+                            <CheckBox Grid.Row="4" IsChecked="{Binding Settings.UseMatchValue}" Grid.Column="0" VerticalAlignment="Center"
+                                      Content="{DynamicResource LOCHowLongToBeatUseMatchValue}" />
 
                             <StackPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="2" >
                                 <Slider Width="200" VerticalAlignment="Center" Name="PART_SliderMAtchValue"
@@ -318,9 +308,8 @@
                                 </Expander.Style>
 
                                 <Expander.Header>
-                                    <CheckBox IsChecked="{Binding Settings.EnableIntegrationButtonHeader}">
-                                        <Label Content="{DynamicResource LOCCommonIntegrationButtonHeader}" />
-                                    </CheckBox>
+                                    <CheckBox IsChecked="{Binding Settings.EnableIntegrationButtonHeader}"
+                                              Content="{DynamicResource LOCCommonIntegrationButtonHeader}" />
                                 </Expander.Header>
                             </Expander>
 
@@ -332,9 +321,8 @@
                                 </Expander.Style>
 
                                 <Expander.Header>
-                                    <CheckBox IsChecked="{Binding Settings.EnableIntegrationButtonSide}">
-                                        <Label Content="{DynamicResource LOCCommonIntegrationButtonSide}" />
-                                    </CheckBox>
+                                    <CheckBox IsChecked="{Binding Settings.EnableIntegrationButtonSide}"
+                                              Content="{DynamicResource LOCCommonIntegrationButtonSide}" />
                                 </Expander.Header>
                             </Expander>
                         </Grid>
@@ -361,9 +349,8 @@
                                     </Expander.Style>
 
                                     <Expander.Header>
-                                        <CheckBox IsChecked="{Binding Settings.EnableIntegrationButton}" Name="PART_IntegrationButton">
-                                            <Label Content="{DynamicResource LOCCommonControlsPluginButtonShow}" />
-                                        </CheckBox>
+                                        <CheckBox IsChecked="{Binding Settings.EnableIntegrationButton}" Name="PART_IntegrationButton"
+                                                  Content="{DynamicResource LOCCommonControlsPluginButtonShow}" />
                                     </Expander.Header>
                                 </Expander>
 
@@ -375,22 +362,19 @@
                                     </Expander.Style>
 
                                     <Expander.Header>
-                                        <CheckBox IsChecked="{Binding Settings.EnableIntegrationViewItem}" Name="PART_IntegrationViewItem">
-                                            <Label Content="{DynamicResource LOCCommonControlsPluginViewItemShow}" />
-                                        </CheckBox>
+                                        <CheckBox IsChecked="{Binding Settings.EnableIntegrationViewItem}" Name="PART_IntegrationViewItem"
+                                                  Content="{DynamicResource LOCCommonControlsPluginViewItemShow}" />
                                     </Expander.Header>
 
-
                                     <Expander.Content>
-                                        <Border IsEnabled="{Binding ElementName=PART_IntegrationProgressBar, Path=IsChecked}"
+                                        <Border IsEnabled="{Binding ElementName=PART_IntegrationViewItem, Path=IsChecked}"
 				                                Margin="5" Padding="10"
 				                                BorderBrush="{DynamicResource PopupBorderBrush}"
 				                                BorderThickness="{DynamicResource PopupBorderThickness}">
-                                            <Grid>
-                                                <CheckBox IsChecked="{Binding Settings.IntegrationViewItemOnlyHour}" Grid.Row="0">
-                                                    <Label Content="{DynamicResource LOCHowLongToBeatTimeOnlyHour}" />
-                                                </CheckBox>
-                                            </Grid>
+                                            <StackPanel>
+                                                <CheckBox IsChecked="{Binding Settings.IntegrationViewItemOnlyHour}"
+                                                          Content="{DynamicResource LOCHowLongToBeatTimeOnlyHour}" />
+                                            </StackPanel>
                                         </Border>
                                     </Expander.Content>
                                 </Expander>
@@ -403,9 +387,8 @@
                                     </Expander.Style>
 
                                     <Expander.Header>
-                                        <CheckBox  IsChecked="{Binding Settings.EnableIntegrationProgressBar}" Name="PART_IntegrationProgressBar">
-                                            <Label Content="{DynamicResource LOCHowLongToBeatIntegrationProgressBar}" />
-                                        </CheckBox>
+                                        <CheckBox IsChecked="{Binding Settings.EnableIntegrationProgressBar}" Name="PART_IntegrationProgressBar"
+                                                  Content="{DynamicResource LOCHowLongToBeatIntegrationProgressBar}" />
                                     </Expander.Header>
 
                                     <Expander.Content>
@@ -426,13 +409,11 @@
                                                     <RowDefinition Height="auto" />
                                                 </Grid.RowDefinitions>
 
-                                                <CheckBox IsChecked="{Binding Settings.ProgressBarShowToolTip}" Grid.Row="0" Name="HltB_IntegrationProgressBarShowToolTip">
-                                                    <Label Content="{DynamicResource LOCHowLongToBeatIntegrationProgressBarShowToolTip}" />
-                                                </CheckBox>
+                                                <CheckBox IsChecked="{Binding Settings.ProgressBarShowToolTip}" Grid.Row="0" Name="HltB_IntegrationProgressBarShowToolTip"
+                                                          Content="{DynamicResource LOCHowLongToBeatIntegrationProgressBarShowToolTip}" />
 
-                                                <CheckBox IsChecked="{Binding Settings.ProgressBarShowTime}" Grid.Row="2" Name="HltB_IntegrationProgressBarShowTime">
-                                                    <Label Content="{DynamicResource LOCHowLongToBeatIntegrationProgressBarShowTime}" />
-                                                </CheckBox>
+                                                <CheckBox IsChecked="{Binding Settings.ProgressBarShowTime}" Grid.Row="2" Name="HltB_IntegrationProgressBarShowTime"
+                                                          Content="{DynamicResource LOCHowLongToBeatIntegrationProgressBarShowTime}" />
 
                                                 <Grid Grid.Row="4" IsEnabled="{Binding ElementName=HltB_IntegrationProgressBarShowTime, Path=IsChecked}" Margin="30,0,0,0">
                                                     <Grid.ColumnDefinitions>
@@ -446,9 +427,8 @@
                                                     <RadioButton Grid.Column="2" GroupName="A" Content="{DynamicResource LOCHowLongToBeatIntegrationProgressBarShowTimeBelow}" IsChecked="{Binding Settings.ProgressBarShowTimeBelow}" />
                                                 </Grid>
 
-                                                <CheckBox IsChecked="{Binding Settings.ProgressBarShowTimeUser}" Grid.Row="6">
-                                                    <Label Content="{DynamicResource LOCHowLongToBeatIntegrationProgressBarShowTimeUser}" />
-                                                </CheckBox>
+                                                <CheckBox IsChecked="{Binding Settings.ProgressBarShowTimeUser}" Grid.Row="6"
+                                                          Content="{DynamicResource LOCHowLongToBeatIntegrationProgressBarShowTimeUser}" />
 
                                                 <Grid Grid.Row="8">
                                                     <Grid.ColumnDefinitions>
