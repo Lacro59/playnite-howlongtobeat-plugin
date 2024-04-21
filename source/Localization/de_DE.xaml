@@ -57,7 +57,7 @@ Wenn keiner diesen Status hat, wird der aktuellste genommen.</sys:String>
     <sys:String x:Key="LOCHowLongToBeatCoOp">Co-Op</sys:String>
     <sys:String x:Key="LOCHowLongToBeatVs">VS</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatPlaying">Spielend</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatPlaying">Spielt</sys:String>
 
     <!-- HowLongToBeat -->
 
