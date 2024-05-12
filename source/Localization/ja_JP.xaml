@@ -3,7 +3,7 @@
 
     <sys:String x:Key="LOCHowLongToBeatTimeToBeat">Time to beat</sys:String>
 
-    <sys:String x:Key="LOCPlayedHoursOnly">{0}h</sys:String>
+    <sys:String x:Key="LOCPlayedHoursOnly">{0}時間</sys:String>
 
     <!-- HowLongToBeatSettingsView -->
 
