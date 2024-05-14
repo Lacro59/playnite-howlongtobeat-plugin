@@ -11,7 +11,7 @@
 
     <sys:String x:Key="LOCHowLongToBeatAddTagDescription">Ana hikaye tamamlanma bilgisi sunan oyunlara bir etiket ekle</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoTag">Otomatik etiketler işleniyor</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatShowHltbImage">Pencerede YenmekNeKadarSürdü özgün kapak görselini kullan</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatShowHltbImage">Pencerede HowLongToBeat özgün kapak görselini kullan</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatColorSelection">Renk seçimi:</sys:String>
 
@@ -23,9 +23,9 @@
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeAbove">İlerleme çubuğu üzerinde</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeInterior">İlerleme çubuğu içinde</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeBelow">İlerleme çubukları altında</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeUser">Kullanıcının YenmekNeKadarSürdü süresini göster</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeUser">Kullanıcının HowLongToBeat süresini göster</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatAutoSetCurrentPlayTime">Oyun oturumundan sonra YenmekNeKadarSürdü üzerinde şimdiki oyun süresini otomatik güncelle</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoSetCurrentPlayTime">Oyun oturumundan sonra HowLongToBeat üzerinde şimdiki oyun süresini otomatik güncelle</sys:String>
     <sys:String x:Key="LOCHowLongToBeatWithoutConfirmation">Onaylama iletisi olmaksızın</sys:String>
     <sys:String x:Key="LOCHowLongToBeatEnableSuccessNotification">Başarı iletisini etkinleştir</sys:String>
 
@@ -42,12 +42,12 @@
     
     <sys:String x:Key="LOCHowLongToBeatCurrentPlayTimeSetted">{0} için şimdiki oyun süresi ayarlandı.</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatInfoSetPlaytime" xml:space="preserve">YenmekNeKadarSürer üzerinde birden fazla süre tanımlanmışsa; eklenti, &quot;Oynanıyor&quot; durumundaki en son süreyi alacaktır.
+    <sys:String x:Key="LOCHowLongToBeatInfoSetPlaytime" xml:space="preserve">HowLongToBeat üzerinde birden fazla süre tanımlanmışsa; eklenti, &quot;Oynanıyor&quot; durumundaki en son süreyi alacaktır.
 Hiç biri bu durumda değilse, en son süre alınır.</sys:String>
 
     <!-- HowLongToBeatSelect -->
 
-    <sys:String x:Key="LOCSelection">YenmekNeKadarSürer seçimi</sys:String>
+    <sys:String x:Key="LOCSelection">HowLongToBeat seçimi</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatMainStory">Ana hikaye</sys:String>
     <sys:String x:Key="LOCHowLongToBeatMainExtra">Ana + fazlası</sys:String>
@@ -70,7 +70,7 @@ Hiç biri bu durumda değilse, en son süre alınır.</sys:String>
     
     <sys:String x:Key="LOCHowLongToBeatUserData">Kullanıcı verisi</sys:String>
     <sys:String x:Key="LocHowLongToBeatPlayniteData">Playnite verisi</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatCompleted">Tamamlanmış</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatCompleted">Tamamlana</sys:String>
 
     <sys:String x:Key="LOCHltbOnlyReplays">Sadece yeniden oynamalar</sys:String>
     <sys:String x:Key="LOCHltbOnlyNotPlayed">Sadece oynanmayan</sys:String>
@@ -98,12 +98,12 @@ Hiç biri bu durumda değilse, en son süre alınır.</sys:String>
 
     <!-- MainView -->
 
-    <sys:String x:Key="LOCHowLongToBeat">YenmekNeKadarSürdü</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatTitle">YenmekNeKadarSürdü</sys:String>
+    <sys:String x:Key="LOCHowLongToBeat">HowLongToBeat</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatTitle">HowLongToBeat</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatPluginView">YenmekNeKadarSürdü verilerini görüntüle</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatPluginUserView">YenmekNeKadarSürdü kullanıcı verilerini görüntüle</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatActualiseUserData">YenmekNeKadarSürdü kullanıcı verilerini yenile</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatPluginView">HowLongToBeat verilerini görüntüle</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatPluginUserView">HowLongToBeat kullanıcı verilerini görüntüle</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatActualiseUserData">HowLongToBeat kullanıcı verilerini yenile</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatSetCurrentTimeManual">Şu anki oyun süresini ayarla</sys:String>
     <sys:String x:Key="LOCHowLongToBeatSetCurrentTimeManualAll">Tüm oyunlar için şu anki oyun süresini ayarla</sys:String>
@@ -120,7 +120,7 @@ Lütfen bir tane platform ayarlayın.
 
     <!-- QuickSearch -->
 
-    <sys:String x:Key="LOCHltbQuickSearchDescription">YenmekNeKadarSürdü verisinde oyun ara</sys:String>
+    <sys:String x:Key="LOCHltbQuickSearchDescription">HowLongToBeat verisinde oyun ara</sys:String>
     <sys:String x:Key="LOCHltbQuickSearchByTTB">Yenme Süresine göre bul</sys:String>
 
     <sys:String x:Key="LOCHltbQuickSearchInfo" xml:space="preserve">Eklenti HızlıArama(QuickSearch) eklentisi işlevi kullanmaktadır.
@@ -143,8 +143,8 @@ Komutlar şunlardır:</sys:String>
 
     <!-- HowLongToBeatSearch -->
 
-    <sys:String x:Key="LOCHowLongToBeatSearchDescription">YenmekNeKadarSürdü verisinde ara</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatSearchHint" xml:space="preserve">Parameters:
+    <sys:String x:Key="LOCHowLongToBeatSearchDescription">HowLongToBeat verisinde ara</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatSearchHint" xml:space="preserve">Parametreler:
     -time		Yenme süresi (örn:-time=5h / -time=&lt;50min / -time=&gt;50s / -time=10min&lt;&gt;5h)
     -np		Oyunu oynamadınız
     -fav		Oyun favori bir oyun olmalıdır
