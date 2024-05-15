@@ -251,3 +251,12 @@ Packages:
       - Fixed color issues
       - Fixed crash
       - Fixed minors bugs
+  - Version: 3.3
+    RequiredApiVersion: 6.11.0
+    ReleaseDate: 2024-05-15
+    PackageUrl: https://github.com/Lacro59/playnite-howlongtobeat-plugin/releases/download/v3.3/playnite-howlongtobeat-plugin_3_3.pext
+    Changelog:
+      - Updated localizations
+      - Added VNDB data
+      - UI optimizations
+      - Added an option to completion status in Playnite from HLTB
