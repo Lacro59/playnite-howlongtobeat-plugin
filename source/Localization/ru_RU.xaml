@@ -48,6 +48,7 @@
     <!-- HowLongToBeatSelect -->
 
     <sys:String x:Key="LOCSelection">Выбор HowLongToBeat</sys:String>
+    <sys:String x:Key="LOCHltbUsedVndb">Used Vndb</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatMainStory">Основной сюжет</sys:String>
     <sys:String x:Key="LOCHowLongToBeatMainExtra">Сюжет и дополнительные задания</sys:String>
