@@ -28,6 +28,8 @@
     <sys:String x:Key="LOCHowLongToBeatAutoSetCurrentPlayTime">结束游戏会话后，自动将当前游玩时间更新到攻关历时</sys:String>
     <sys:String x:Key="LOCHowLongToBeatWithoutConfirmation">无需确认</sys:String>
     <sys:String x:Key="LOCHowLongToBeatEnableSuccessNotification">启用成功通知</sys:String>
+
+    <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatus">Automatically update game status with HowLongToBeat game status when importing user data</sys:String>
     
     <sys:String x:Key="LOCHowLongToBeatAutoData">下载数据</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoAccept">当只搜索到一个游戏时自</sys:String>
@@ -46,6 +48,7 @@
     <!-- HowLongToBeatSelect -->
 
     <sys:String x:Key="LOCSelection">攻关历时</sys:String>
+    <sys:String x:Key="LOCHltbUsedVndb">Used Vndb</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatMainStory">主线</sys:String>
     <sys:String x:Key="LOCHowLongToBeatMainExtra">主线+支线</sys:String>
@@ -54,6 +57,8 @@
     <sys:String x:Key="LOCHowLongToBeatSolo">单人</sys:String>
     <sys:String x:Key="LOCHowLongToBeatCoOp">合作</sys:String>
     <sys:String x:Key="LOCHowLongToBeatVs">竞</sys:String>
+
+    <sys:String x:Key="LOCHowLongToBeatPlaying">Playing</sys:String>
 
     <!-- HowLongToBeat -->
 

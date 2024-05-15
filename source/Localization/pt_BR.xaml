@@ -28,6 +28,8 @@
     <sys:String x:Key="LOCHowLongToBeatAutoSetCurrentPlayTime">Atualizar automaticamente o tempo de jogo atual no HowLongToBeat após a sessão de jogo</sys:String>
     <sys:String x:Key="LOCHowLongToBeatWithoutConfirmation">Sem mensagem de confirmação</sys:String>
     <sys:String x:Key="LOCHowLongToBeatEnableSuccessNotification">Ativar notificação de sucesso</sys:String>
+
+    <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatus">Atualizar automaticamente o status do jogo com o HowLongToBeat ao importar os dados do usuário</sys:String>
     
     <sys:String x:Key="LOCHowLongToBeatAutoData">Baixando os dados do jogo</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoAccept">Selecionar jogo automaticamente quando apenas um jogo for encontrado durante a busca</sys:String>
@@ -46,6 +48,7 @@ Se nenhum tiver este status, pegará o mais recente.</sys:String>
     <!-- HowLongToBeatSelect -->
 
     <sys:String x:Key="LOCSelection">Seleção do HowLongToBeat</sys:String>
+    <sys:String x:Key="LOCHltbUsedVndb">Used Vndb</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatMainStory">História principal</sys:String>
     <sys:String x:Key="LOCHowLongToBeatMainExtra">Principal + extra</sys:String>
@@ -54,6 +57,8 @@ Se nenhum tiver este status, pegará o mais recente.</sys:String>
     <sys:String x:Key="LOCHowLongToBeatSolo">Solo</sys:String>
     <sys:String x:Key="LOCHowLongToBeatCoOp">Co-Op</sys:String>
     <sys:String x:Key="LOCHowLongToBeatVs">Vs</sys:String>
+
+    <sys:String x:Key="LOCHowLongToBeatPlaying">Jogando</sys:String>
 
     <!-- HowLongToBeat -->
 

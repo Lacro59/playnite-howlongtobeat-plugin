@@ -28,6 +28,8 @@
     <sys:String x:Key="LOCHowLongToBeatAutoSetCurrentPlayTime">Aktuelle Spielzeit bei HowLongToBeat nach Spielsitzung automatisch aktualisieren</sys:String>
     <sys:String x:Key="LOCHowLongToBeatWithoutConfirmation">Ohne Bestätigungsmeldung</sys:String>
     <sys:String x:Key="LOCHowLongToBeatEnableSuccessNotification">Erfolgreiche Benachrichtigung aktivieren</sys:String>
+
+    <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatus">Beim Importieren von Benutzerdaten automatisch den Spielstatus mit HowLongToBeat Spielstatus aktualisieren</sys:String>
     
     <sys:String x:Key="LOCHowLongToBeatAutoData">Spieldaten herunterladen</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoAccept">Spiel automatisch auswählen, wenn nur ein Spiel während der Suche gefunden wird</sys:String>
@@ -46,6 +48,7 @@ Wenn keiner diesen Status hat, wird der aktuellste genommen.</sys:String>
     <!-- HowLongToBeatSelect -->
 
     <sys:String x:Key="LOCSelection">HowLongToBeat Auswahl</sys:String>
+    <sys:String x:Key="LOCHltbUsedVndb">Used Vndb</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatMainStory">Hauptgeschichte</sys:String>
     <sys:String x:Key="LOCHowLongToBeatMainExtra">Hauptgeschichte + Extra</sys:String>
@@ -54,6 +57,8 @@ Wenn keiner diesen Status hat, wird der aktuellste genommen.</sys:String>
     <sys:String x:Key="LOCHowLongToBeatSolo">Einzelspieler</sys:String>
     <sys:String x:Key="LOCHowLongToBeatCoOp">Co-Op</sys:String>
     <sys:String x:Key="LOCHowLongToBeatVs">VS</sys:String>
+
+    <sys:String x:Key="LOCHowLongToBeatPlaying">Spielt</sys:String>
 
     <!-- HowLongToBeat -->
 
@@ -69,9 +74,9 @@ Wenn keiner diesen Status hat, wird der aktuellste genommen.</sys:String>
     <sys:String x:Key="LOCHowLongToBeatCompleted">Abgeschlossen</sys:String>
 
     <sys:String x:Key="LOCHltbOnlyReplays">Nur Wiederholungen</sys:String>
-    <sys:String x:Key="LOCHltbOnlyNotPlayed">Only not played</sys:String>
+    <sys:String x:Key="LOCHltbOnlyNotPlayed">Nur nicht gespielt</sys:String>
 
-    <sys:String x:Key="LOCHltbRemainingTime">Remaining time</sys:String>
+    <sys:String x:Key="LOCHltbRemainingTime">Verbleibende Zeit</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatPluginGetUserView">Benutzerdaten werden abgerufen</sys:String>
 
@@ -109,9 +114,9 @@ Wenn keiner diesen Status hat, wird der aktuellste genommen.</sys:String>
     <sys:String x:Key="LOCHowLongToBeatSetCurrentTime">Möchten Sie Ihre aktuelle Spielzeit senden?</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatErrorNoPlatform">Daten für ein Spiel ohne Plattform können nicht übermittelt werden ({0})</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatErrorNoPlatformDefaultUsed" xml:space="preserve">Spiel ({1}) ohne Plattform ({0}) in den Plugin-Einstellungen definiert.
+    <sys:String x:Key="LOCHowLongToBeatErrorNoPlatformDefaultUsed" xml:space="preserve">Spiel ({1}) ohne Plattform ({0}), die in den Plugin-Einstellungen definiert ist.
 Bitte konfigurieren Sie eine.
-Standard verwendet (PC)</sys:String>
+Standardmäßig verwendet (PC)</sys:String>
 
 
     <!-- QuickSearch -->
