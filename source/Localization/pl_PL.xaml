@@ -48,6 +48,7 @@ Jeżeli żaden z nich nie ma takiego statusu, to pobierze najnowszy.</sys:String
     <!-- HowLongToBeatSelect -->
 
     <sys:String x:Key="LOCSelection">Wybór HowLongToBeat</sys:String>
+    <sys:String x:Key="LOCHltbUsedVndb">Used Vndb</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatMainStory">Główny wątek</sys:String>
     <sys:String x:Key="LOCHowLongToBeatMainExtra">Główny + dodatki</sys:String>
