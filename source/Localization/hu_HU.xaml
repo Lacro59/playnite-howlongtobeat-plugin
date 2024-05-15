@@ -48,6 +48,7 @@ If none has this status, it takes the most recent.</sys:String>
     <!-- HowLongToBeatSelect -->
 
     <sys:String x:Key="LOCSelection">HowLongToBeat selection</sys:String>
+    <sys:String x:Key="LOCHltbUsedVndb">Used Vndb</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatMainStory">Fő történet</sys:String>
     <sys:String x:Key="LOCHowLongToBeatMainExtra">Fő történet + Mellékküldetés</sys:String>
