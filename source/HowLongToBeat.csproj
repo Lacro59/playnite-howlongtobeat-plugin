@@ -80,8 +80,7 @@
       <HintPath>Resources\QuickSearchSDK.Attributes.dll</HintPath>
     </Reference>
     <Reference Include="StartPage.SDK, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>Resources\StartPage.SDK.dll</HintPath>
+      <HintPath>packages\StartPage.SDK.1.0.0\lib\net462\StartPage.SDK.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
@@ -525,11 +524,6 @@
     <None Include="Resources\ttb.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\StartPage.SDK.dll" />
-    <None Include="Resources\StartPage.SDK.pdb" />
-    <None Include="Resources\StartPage.SDK.xml" />
   </ItemGroup>
   <Import Project="playnite-plugincommon\CommonPlayniteShared\CommonPlayniteShared.projitems" Label="Shared" />
   <Import Project="playnite-plugincommon\CommonPluginsShared\CommonPluginsShared.projitems" Label="Shared" />
