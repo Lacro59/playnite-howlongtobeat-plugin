@@ -101,12 +101,15 @@ namespace HowLongToBeat.Views
                   ? string.Empty 
                   : ((HltbPlatform) PART_SelectPlatform.SelectedValue).GetDescription();
 
+            bool isVndb = (bool)PART_Vndb.IsChecked;
             _ = Task.Run(() =>
             {
                 List<HltbDataUser> dataSearch = new List<HltbDataUser>();
                 try
                 {
-                    dataSearch = PluginDatabase.HowLongToBeatClient.SearchTwoMethod(GameSearch, GamePlatform).GetAwaiter().GetResult();
+                    dataSearch = isVndb
+                        ? VndbApi.SearchByName(GameSearch)
+                        : PluginDatabase.HowLongToBeatClient.SearchTwoMethod(GameSearch, GamePlatform).GetAwaiter().GetResult();
 
                     // Sort
                     Application.Current.Dispatcher?.Invoke(new Action(() =>

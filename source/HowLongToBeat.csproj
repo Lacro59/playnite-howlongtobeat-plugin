@@ -135,6 +135,7 @@
     <Compile Include="Models\NEXT_DATA.cs" />
     <Compile Include="Models\QuickSearchItemSource.cs" />
     <Compile Include="Models\StartPage\HltbChartStatsOptions.cs" />
+    <Compile Include="Models\Vndb\VndbSearch.cs" />
     <Compile Include="playnite-plugincommon\CommonPluginsControls\Controls\ComboBoxRemovable.xaml.cs">
       <DependentUpon>ComboBoxRemovable.xaml</DependentUpon>
     </Compile>
@@ -180,6 +181,7 @@
     <Compile Include="Services\HowLongToBeatSearch.cs" />
     <Compile Include="Services\HowLongToBeatTopPanelItem.cs" />
     <Compile Include="Services\HowLongToBeatViewSidebar.cs" />
+    <Compile Include="Services\VndbApi.cs" />
     <Compile Include="Views\HowLongToBeatSelect.xaml.cs">
       <DependentUpon>HowLongToBeatSelect.xaml</DependentUpon>
     </Compile>

@@ -297,7 +297,10 @@ namespace HowLongToBeat.Services
         private void RefreshElement(Guid Id)
         {
             GameHowLongToBeat loadedItem = Get(Id, true);
-            List<HltbDataUser> dataSearch = HowLongToBeatClient.SearchTwoMethod(loadedItem.GetData().Name).GetAwaiter().GetResult();
+
+            List<HltbDataUser> dataSearch = loadedItem.GetData().IsVndb
+                ? VndbApi.SearchById(loadedItem.GetData().Id)
+                : HowLongToBeatClient.SearchTwoMethod(loadedItem.GetData().Name).GetAwaiter().GetResult();
 
             HltbDataUser webDataSearch = dataSearch.Find(x => x.Id == loadedItem.GetData().Id);
             if (webDataSearch != null)
@@ -482,7 +485,7 @@ namespace HowLongToBeat.Services
 
 
         #region User data
-        public TitleList GetUserHltbData(int HltbId)
+        public TitleList GetUserHltbData(string HltbId)
         {
             try
             {
@@ -498,7 +501,7 @@ namespace HowLongToBeat.Services
             }
         }
 
-        public TitleList GetUserHltbDataCurrent(int HltbId, string UserGameId = "")
+        public TitleList GetUserHltbDataCurrent(string HltbId, string UserGameId = "")
         {
             try
             {
@@ -516,7 +519,7 @@ namespace HowLongToBeat.Services
             }
         }
 
-        public List<TitleList> GetUserHltbDataAll(int HltbId)
+        public List<TitleList> GetUserHltbDataAll(string HltbId)
         {
             try
             {
@@ -619,7 +622,7 @@ namespace HowLongToBeat.Services
             }, globalProgressOptions);
         }
 
-        public void RefreshUserData(int game_id)
+        public void RefreshUserData(string game_id)
         {
             _ = Task.Run(() => 
             {
@@ -659,7 +662,7 @@ namespace HowLongToBeat.Services
                 if (HowLongToBeatClient.GetIsUserLoggedIn())
                 {
                     GameHowLongToBeat gameHowLongToBeat = Database.Get(game.Id);
-                    if (gameHowLongToBeat != null)
+                    if (gameHowLongToBeat != null && (!gameHowLongToBeat.GetData()?.IsVndb ?? false))
                     {
                         TimeSpan time = TimeSpan.FromSeconds(game.Playtime + ElapsedSeconds);
                         string platformName = HltbPlatform.PC.GetDescription();
@@ -747,7 +750,7 @@ namespace HowLongToBeat.Services
                         #region Data
                         editData.UserId = Database.UserHltbData.UserId;
                         editData.SubmissionId = int.Parse(submissionId);
-                        editData.GameId = hltbDataUser.Id;
+                        editData.GameId = int.Parse(hltbDataUser.Id);
                         editData.Title = hltbDataUser.Name;
                         editData.Platform = platformName;
                         editData.Storefront = editData.Storefront.IsNullOrEmpty() ? storefrontName : editData.Storefront;

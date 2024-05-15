@@ -32,7 +32,7 @@ namespace HowLongToBeat.Models
         private LocalDateConverter Converter => new LocalDateConverter();
         private PlayTimeToStringConverterWithZero PlayTimeToStringConverterWithZero => new PlayTimeToStringConverterWithZero();
 
-        public int Id { get; set; }
+        public string Id { get; set; }
         public string UserGameId { get; set; }
         public string GameName { get; set; }
         public string Platform { get; set; }

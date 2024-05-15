@@ -228,8 +228,8 @@ namespace HowLongToBeat
                     }
                 }
             };
-            
-            if (gameHowLongToBeat.HasData || gameHowLongToBeat.HasDataEmpty)
+
+            if (gameHowLongToBeat.HasData || !gameHowLongToBeat.HasDataEmpty)
             {
                 gameMenuItems.Add(new GameMenuItem
                 {
@@ -238,112 +238,115 @@ namespace HowLongToBeat
                 });
 
                 // Set current time manually
-                gameMenuItems.Add(new GameMenuItem
+                if (!gameHowLongToBeat?.GetData()?.IsVndb ?? false)
                 {
-                    MenuSection = ResourceProvider.GetString("LOCHowLongToBeat"),
-                    Description = ResourceProvider.GetString("LOCHowLongToBeatSetCurrentTimeManual"),
-                    Action = (mainMenuItem) =>
+                    gameMenuItems.Add(new GameMenuItem
                     {
-                        GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions(
-                            $"{PluginDatabase.PluginName} - {ResourceProvider.GetString("LOCCommonProcessing")}",
-                            false
-                        );
-
-                        globalProgressOptions.IsIndeterminate = args.Games.Count == 1;
-
-                        PlayniteApi.Dialogs.ActivateGlobalProgress((activateGlobalProgress) =>
+                        MenuSection = ResourceProvider.GetString("LOCHowLongToBeat"),
+                        Description = ResourceProvider.GetString("LOCHowLongToBeatSetCurrentTimeManual"),
+                        Action = (mainMenuItem) =>
                         {
-                            activateGlobalProgress.ProgressMaxValue = args.Games.Count;
-                            activateGlobalProgress.CurrentProgressValue = -1;
-                            foreach (Game game in args.Games)
+                            GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions(
+                                $"{PluginDatabase.PluginName} - {ResourceProvider.GetString("LOCCommonProcessing")}",
+                                false
+                            );
+
+                            globalProgressOptions.IsIndeterminate = args.Games.Count == 1;
+
+                            PlayniteApi.Dialogs.ActivateGlobalProgress((activateGlobalProgress) =>
                             {
-                                activateGlobalProgress.CurrentProgressValue += 1;
-                                PluginDatabase.SetCurrentPlayTime(game, 0, true);
+                                activateGlobalProgress.ProgressMaxValue = args.Games.Count;
+                                activateGlobalProgress.CurrentProgressValue = -1;
+                                foreach (Game game in args.Games)
+                                {
+                                    activateGlobalProgress.CurrentProgressValue += 1;
+                                    PluginDatabase.SetCurrentPlayTime(game, 0, true);
+                                }
+                            }, globalProgressOptions);
+                        }
+                    });
+
+                    // Set current time manually in Complet
+                    if (GameMenu.Playtime > 0 && GameMenu.LastActivity != null)
+                    {
+                        gameMenuItems.Add(new GameMenuItem
+                        {
+                            MenuSection = ResourceProvider.GetString("LOCHowLongToBeat") + "|" + ResourceProvider.GetString("LOCHowLongToBeatSetCurrentCompletedTimeManualOn"),
+                            Description = ResourceProvider.GetString("LOCHowLongToBeatMainStory"),
+                            Action = (mainMenuItem) =>
+                            {
+                                GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions(
+                                    $"{PluginDatabase.PluginName} - {ResourceProvider.GetString("LOCCommonProcessing")}",
+                                    false
+                                );
+
+                                globalProgressOptions.IsIndeterminate = args.Games.Count == 1;
+
+                                PlayniteApi.Dialogs.ActivateGlobalProgress((activateGlobalProgress) =>
+                                {
+                                    activateGlobalProgress.ProgressMaxValue = args.Games.Count;
+                                    activateGlobalProgress.CurrentProgressValue = -1;
+                                    foreach (Game game in args.Games)
+                                    {
+                                        activateGlobalProgress.CurrentProgressValue += 1;
+                                        PluginDatabase.SetCurrentPlayTime(game, 0, true, true, true);
+                                    }
+                                }, globalProgressOptions);
                             }
-                        }, globalProgressOptions);
+                        });
+
+                        gameMenuItems.Add(new GameMenuItem
+                        {
+                            MenuSection = ResourceProvider.GetString("LOCHowLongToBeat") + "|" + ResourceProvider.GetString("LOCHowLongToBeatSetCurrentCompletedTimeManualOn"),
+                            Description = ResourceProvider.GetString("LOCHowLongToBeatMainExtra"),
+                            Action = (mainMenuItem) =>
+                            {
+                                GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions(
+                                    $"{PluginDatabase.PluginName} - {ResourceProvider.GetString("LOCCommonProcessing")}",
+                                    false
+                                );
+
+                                globalProgressOptions.IsIndeterminate = args.Games.Count == 1;
+
+                                PlayniteApi.Dialogs.ActivateGlobalProgress((activateGlobalProgress) =>
+                                {
+                                    activateGlobalProgress.ProgressMaxValue = args.Games.Count;
+                                    activateGlobalProgress.CurrentProgressValue = -1;
+                                    foreach (Game game in args.Games)
+                                    {
+                                        activateGlobalProgress.CurrentProgressValue += 1;
+                                        PluginDatabase.SetCurrentPlayTime(game, 0, true, true, false, true);
+                                    }
+                                }, globalProgressOptions);
+                            }
+                        });
+
+                        gameMenuItems.Add(new GameMenuItem
+                        {
+                            MenuSection = ResourceProvider.GetString("LOCHowLongToBeat") + "|" + ResourceProvider.GetString("LOCHowLongToBeatSetCurrentCompletedTimeManualOn"),
+                            Description = ResourceProvider.GetString("LOCHowLongToBeatCompletionist"),
+                            Action = (mainMenuItem) =>
+                            {
+                                GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions(
+                                    $"{PluginDatabase.PluginName} - {ResourceProvider.GetString("LOCCommonProcessing")}",
+                                    false
+                                );
+
+                                globalProgressOptions.IsIndeterminate = args.Games.Count == 1;
+
+                                PlayniteApi.Dialogs.ActivateGlobalProgress((activateGlobalProgress) =>
+                                {
+                                    activateGlobalProgress.ProgressMaxValue = args.Games.Count;
+                                    activateGlobalProgress.CurrentProgressValue = -1;
+                                    foreach (Game game in args.Games)
+                                    {
+                                        activateGlobalProgress.CurrentProgressValue += 1;
+                                        PluginDatabase.SetCurrentPlayTime(game, 0, true, true, false, false, true);
+                                    }
+                                }, globalProgressOptions);
+                            }
+                        });
                     }
-                });
-
-                // Set current time manually in Complet
-                if (GameMenu.Playtime > 0 && GameMenu.LastActivity != null)
-                {
-                    gameMenuItems.Add(new GameMenuItem
-                    {
-                        MenuSection = ResourceProvider.GetString("LOCHowLongToBeat") + "|" + ResourceProvider.GetString("LOCHowLongToBeatSetCurrentCompletedTimeManualOn"),
-                        Description = ResourceProvider.GetString("LOCHowLongToBeatMainStory"),
-                        Action = (mainMenuItem) =>
-                        {
-                            GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions(
-                                $"{PluginDatabase.PluginName} - {ResourceProvider.GetString("LOCCommonProcessing")}",
-                                false
-                            );
-
-                            globalProgressOptions.IsIndeterminate = args.Games.Count == 1;
-
-                            PlayniteApi.Dialogs.ActivateGlobalProgress((activateGlobalProgress) =>
-                            {
-                                activateGlobalProgress.ProgressMaxValue = args.Games.Count;
-                                activateGlobalProgress.CurrentProgressValue = -1;
-                                foreach (Game game in args.Games)
-                                {
-                                    activateGlobalProgress.CurrentProgressValue += 1;
-                                    PluginDatabase.SetCurrentPlayTime(game, 0, true, true, true);
-                                }
-                            }, globalProgressOptions);
-                        }
-                    });
-
-                    gameMenuItems.Add(new GameMenuItem
-                    {
-                        MenuSection = ResourceProvider.GetString("LOCHowLongToBeat") + "|" + ResourceProvider.GetString("LOCHowLongToBeatSetCurrentCompletedTimeManualOn"),
-                        Description = ResourceProvider.GetString("LOCHowLongToBeatMainExtra"),
-                        Action = (mainMenuItem) =>
-                        {
-                            GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions(
-                                $"{PluginDatabase.PluginName} - {ResourceProvider.GetString("LOCCommonProcessing")}",
-                                false
-                            );
-
-                            globalProgressOptions.IsIndeterminate = args.Games.Count == 1;
-
-                            PlayniteApi.Dialogs.ActivateGlobalProgress((activateGlobalProgress) =>
-                            {
-                                activateGlobalProgress.ProgressMaxValue = args.Games.Count;
-                                activateGlobalProgress.CurrentProgressValue = -1;
-                                foreach (Game game in args.Games)
-                                {
-                                    activateGlobalProgress.CurrentProgressValue += 1;
-                                    PluginDatabase.SetCurrentPlayTime(game, 0, true, true, false, true);
-                                }
-                            }, globalProgressOptions);
-                        }
-                    });
-
-                    gameMenuItems.Add(new GameMenuItem
-                    {
-                        MenuSection = ResourceProvider.GetString("LOCHowLongToBeat") + "|" + ResourceProvider.GetString("LOCHowLongToBeatSetCurrentCompletedTimeManualOn"),
-                        Description = ResourceProvider.GetString("LOCHowLongToBeatCompletionist"),
-                        Action = (mainMenuItem) =>
-                        {
-                            GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions(
-                                $"{PluginDatabase.PluginName} - {ResourceProvider.GetString("LOCCommonProcessing")}",
-                                false
-                            );
-
-                            globalProgressOptions.IsIndeterminate = args.Games.Count == 1;
-
-                            PlayniteApi.Dialogs.ActivateGlobalProgress((activateGlobalProgress) =>
-                            {
-                                activateGlobalProgress.ProgressMaxValue = args.Games.Count;
-                                activateGlobalProgress.CurrentProgressValue = -1;
-                                foreach (Game game in args.Games)
-                                {
-                                    activateGlobalProgress.CurrentProgressValue += 1;
-                                    PluginDatabase.SetCurrentPlayTime(game, 0, true, true, false, false, true);
-                                }
-                            }, globalProgressOptions);
-                        }
-                    });
                 }
 
                 // Refresh plugin data for the selected game
@@ -398,7 +401,10 @@ namespace HowLongToBeat
             {
                 MenuSection = ResourceProvider.GetString("LOCHowLongToBeat"),
                 Description = "Test",
-                Action = (mainMenuItem) => { }
+                Action = (gameMenuItem) =>
+                {
+
+                }
             });
 #endif
 
@@ -474,7 +480,7 @@ namespace HowLongToBeat
                     Description = ResourceProvider.GetString("LOCHowLongToBeatSetCurrentTimeManualAll"),
                     Action = (mainMenuItem) =>
                     {
-                        var db = PlayniteApi.Database.Games.Where(x => !x.Hidden && x.Playtime > 0);
+                        IEnumerable<Game> db = PlayniteApi.Database.Games.Where(x => !x.Hidden && x.Playtime > 0);
 
                         GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions(
                             $"{PluginDatabase.PluginName} - {ResourceProvider.GetString("LOCCommonProcessing")}",

@@ -14,6 +14,7 @@
 
     <UserControl.Resources>
         <convertersshared:VisibilityZeroConverter x:Key="VisibilityZeroConverter" />
+        <converters:InvertedBoolenConverter x:Key="InvertedBoolenConverter" />
         <converters:StringNullOrEmptyToBoolConverter x:Key="StringNullOrEmptyToBoolConverter" />
     </UserControl.Resources>
 
@@ -66,9 +67,10 @@
                            VerticalAlignment="Center" />
                 <controls:ComboBoxRemovable x:Name="PART_SelectPlatform" Grid.Column="2" VerticalAlignment="Center"
                                             IsEditable="True" TextSearch.TextPath="DisplayText"
+                                            IsEnabled="{Binding ElementName=PART_Vndb, Path=IsChecked, Converter={StaticResource InvertedBoolenConverter}}"
                                             IsTextSearchCaseSensitive="False" StaysOpenOnEdit="True"
-                                            hltb:SelectorBehaviors.EnumSource="{x:Type hltm:HltbPlatform}">
-                </controls:ComboBoxRemovable>
+                                            hltb:SelectorBehaviors.EnumSource="{x:Type hltm:HltbPlatform}" />
+                <CheckBox Grid.Column="4" Content="{DynamicResource LOCHltbUsedVndb}" Name="PART_Vndb" />
             </Grid>
 
             <ListBox x:Name="lbSelectable" Height="465" SelectionChanged="LbSelectable_SelectionChanged"

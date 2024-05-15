@@ -108,7 +108,7 @@ namespace HowLongToBeat.Services
                     new HltbDataUser
                     {
                         Name = x.GameName,
-                        Id = x.GameId,
+                        Id = x.GameId.ToString(),
                         UrlImg = string.Format(UrlGameImg, x.GameImage),
                         Url = string.Format(UrlGame, x.GameId),
                         Platform = x.ProfilePlatform,
@@ -350,7 +350,7 @@ namespace HowLongToBeat.Services
                     UserGameId = gamesList.Id.ToString(),
                     GameName = gamesList.CustomTitle,
                     Platform = gamesList.Platform,
-                    Id = gamesList.GameId,
+                    Id = gamesList.GameId.ToString(),
                     CurrentTime = gamesList.InvestedPro,
                     IsReplay = gamesList.PlayCount == 2,
                     IsRetired = gamesList.ListRetired == 1,
@@ -513,7 +513,7 @@ namespace HowLongToBeat.Services
             }
         }
 
-        public TitleList GetUserData(int game_id)
+        public TitleList GetUserData(string game_id)
         {
             if (GetIsUserLoggedIn())
             {
@@ -590,7 +590,7 @@ namespace HowLongToBeat.Services
                     }
                     else
                     {
-                        PluginDatabase.RefreshUserData(editData.GameId);
+                        PluginDatabase.RefreshUserData(editData.GameId.ToString());
                     }
                 }
                 catch (Exception ex)

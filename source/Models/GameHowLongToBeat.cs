@@ -8,8 +8,8 @@ namespace HowLongToBeat.Models
 {
     public class GameHowLongToBeat : PluginDataBaseGame<HltbDataUser>
     {
-        private List<HltbDataUser> _Items = new List<HltbDataUser>();
-        public override List<HltbDataUser> Items { get => _Items; set => SetValue(ref _Items, value); }
+        private List<HltbDataUser> items = new List<HltbDataUser>();
+        public override List<HltbDataUser> Items { get => items; set => SetValue(ref items, value); }
 
 
         [DontSerialize]
@@ -32,11 +32,7 @@ namespace HowLongToBeat.Models
 
         public HltbDataUser GetData()
         {
-            if (Items != null && Items?.Count == 0)
-            {
-                return new HltbDataUser { GameHltbData = new HltbData() };
-            }
-            return Items.First();
+            return Items != null && Items?.Count == 0 ? new HltbDataUser { GameHltbData = new HltbData() } : Items.First();
         }
     }
 }
