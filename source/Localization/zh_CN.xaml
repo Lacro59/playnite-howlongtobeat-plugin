@@ -48,6 +48,7 @@
     <!-- HowLongToBeatSelect -->
 
     <sys:String x:Key="LOCSelection">攻关历时</sys:String>
+    <sys:String x:Key="LOCHltbUsedVndb">Used Vndb</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatMainStory">主线</sys:String>
     <sys:String x:Key="LOCHowLongToBeatMainExtra">主线+支线</sys:String>
