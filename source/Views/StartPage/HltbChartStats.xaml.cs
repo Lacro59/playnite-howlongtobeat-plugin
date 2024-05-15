@@ -22,6 +22,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace HowLongToBeat.Views.StartPage
 {
@@ -30,9 +31,9 @@ namespace HowLongToBeat.Views.StartPage
     /// </summary>
     public partial class HltbChartStats : UserControl
     {
-        private HowLongToBeatDatabase PluginDatabase { get; set; } = HowLongToBeat.PluginDatabase;
+        private HowLongToBeatDatabase PluginDatabase => HowLongToBeat.PluginDatabase;
 
-        private HltbChartStatsDataContext ControlDataContext = new HltbChartStatsDataContext();
+        private HltbChartStatsDataContext ControlDataContext { get; set; } = new HltbChartStatsDataContext();
 
 
         public HltbChartStats()
@@ -40,10 +41,8 @@ namespace HowLongToBeat.Views.StartPage
             PluginDatabase.PluginSettings.Settings.PropertyChanged += Settings_PropertyChanged;
             PluginDatabase.PluginSettings.PropertyChanged += SettingsViewModel_PropertyChanged;
 
-
             InitializeComponent();
             this.DataContext = ControlDataContext;
-
 
             Update();
         }
@@ -62,23 +61,29 @@ namespace HowLongToBeat.Views.StartPage
 
         private void Update()
         {
-            System.Threading.SpinWait.SpinUntil(() => PluginDatabase.IsLoaded, -1);
+            SpinWait.SpinUntil(() => PluginDatabase.IsLoaded, -1);
 
             ControlDataContext.Margin = PluginDatabase.PluginSettings.Settings.hltbChartStatsOptions.Margin;
-            ControlDataContext.chartTitle = PluginDatabase.PluginSettings.Settings.hltbChartStatsOptions.ChartTitle;
-            ControlDataContext.chartLabels = PluginDatabase.PluginSettings.Settings.hltbChartStatsOptions.ChartLabels;
-            ControlDataContext.chartLabelsOrdinates = PluginDatabase.PluginSettings.Settings.hltbChartStatsOptions.ChartLabelsOrdinates;            
+            ControlDataContext.ChartTitle = PluginDatabase.PluginSettings.Settings.hltbChartStatsOptions.ChartTitle;
+            ControlDataContext.ChartLabels = PluginDatabase.PluginSettings.Settings.hltbChartStatsOptions.ChartLabels;
+            ControlDataContext.ChartLabelsOrdinates = PluginDatabase.PluginSettings.Settings.hltbChartStatsOptions.ChartLabelsOrdinates;
 
-            switch (PluginDatabase.PluginSettings.Settings.hltbChartStatsOptions.StatsType)
+            _ = Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Render, (Action)delegate
             {
-                case ChartStatsType.year:
-                    SetChartDataYear(Convert.ToInt32(PluginDatabase.PluginSettings.Settings.hltbChartStatsOptions.DataNumber));
-                    break;
+                switch (PluginDatabase.PluginSettings.Settings.hltbChartStatsOptions.StatsType)
+                {
+                    case ChartStatsType.year:
+                        SetChartDataYear(Convert.ToInt32(PluginDatabase.PluginSettings.Settings.hltbChartStatsOptions.DataNumber));
+                        break;
 
-                case ChartStatsType.month:
-                    SetChartDataMonth(Convert.ToInt32(PluginDatabase.PluginSettings.Settings.hltbChartStatsOptions.DataNumber));
-                    break;
-            }
+                    case ChartStatsType.month:
+                        SetChartDataMonth(Convert.ToInt32(PluginDatabase.PluginSettings.Settings.hltbChartStatsOptions.DataNumber));
+                        break;
+
+                    default:
+                        break;
+                }
+            });
         }
 
 
@@ -132,8 +137,8 @@ namespace HowLongToBeat.Views.StartPage
                 });
 
 
-                ControlDataContext.seriesViews = ChartSeriesCollection;
-                ControlDataContext.labels = ChartDataLabels;
+                ControlDataContext.SeriesViews = ChartSeriesCollection;
+                ControlDataContext.Labels = ChartDataLabels;
             }
         }
 
@@ -180,8 +185,8 @@ namespace HowLongToBeat.Views.StartPage
                 });
 
 
-                ControlDataContext.seriesViews = ChartSeriesCollection;
-                ControlDataContext.labels = ChartDataLabels;
+                ControlDataContext.SeriesViews = ChartSeriesCollection;
+                ControlDataContext.Labels = ChartDataLabels;
             }
         }
     }
@@ -189,24 +194,24 @@ namespace HowLongToBeat.Views.StartPage
 
     public class HltbChartStatsDataContext : ObservableObject
     {
-        private double _Margin = 10;
-        public double Margin { get => _Margin; set => SetValue(ref _Margin, value); }
+        private double margin = 10;
+        public double Margin { get => margin; set => SetValue(ref margin, value); }
 
 
-        private SeriesCollection _seriesViews = null;
-        public SeriesCollection seriesViews { get => _seriesViews; set => SetValue(ref _seriesViews, value); }
-    
-        private IList<string> _labels = null;
-        public IList<string> labels { get => _labels; set => SetValue(ref _labels, value); }
+        private SeriesCollection seriesViews = null;
+        public SeriesCollection SeriesViews { get => seriesViews; set => SetValue(ref seriesViews, value); }
+
+        private IList<string> labels = null;
+        public IList<string> Labels { get => labels; set => SetValue(ref labels, value); }
 
 
-        private bool _chartTitle = false;
-        public bool chartTitle { get => _chartTitle; set => SetValue(ref _chartTitle, value); }
+        private bool chartTitle = false;
+        public bool ChartTitle { get => chartTitle; set => SetValue(ref chartTitle, value); }
 
-        private bool _chartLabels = false;
-        public bool chartLabels { get => _chartLabels; set => SetValue(ref _chartLabels, value); }
-    
-        private bool _chartLabelsOrdinates = false;
-        public bool chartLabelsOrdinates { get => _chartLabelsOrdinates; set => SetValue(ref _chartLabelsOrdinates, value); }
+        private bool chartLabels = false;
+        public bool ChartLabels { get => chartLabels; set => SetValue(ref chartLabels, value); }
+
+        private bool chartLabelsOrdinates = false;
+        public bool ChartLabelsOrdinates { get => chartLabelsOrdinates; set => SetValue(ref chartLabelsOrdinates, value); }
     }
 }

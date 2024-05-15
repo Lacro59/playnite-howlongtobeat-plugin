@@ -5,7 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:HowLongToBeat.Views.StartPage" 
              xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf" 
-             xmlns:livechartscommon="clr-namespace:CommonPluginsControls.LiveChartsCommon"
+             xmlns:livechartscommon="clr-namespace:CommonPluginsControls.LiveChartsCommon" 
+             d:DataContext="{d:DesignInstance Type=local:HltbChartStatsDataContext}"
              mc:Ignorable="d" d:DesignHeight="450" d:DesignWidth="800">
 
     <UserControl.Resources>
@@ -19,19 +20,19 @@
         </Grid.RowDefinitions>
 
         <Label Grid.Row="0" Margin="0,0,0,10" Content="{DynamicResource LOCHowLongToBeatCompletationProgress}" HorizontalAlignment="Center"
-               Visibility="{Binding chartTitle, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+               Visibility="{Binding ChartTitle, Converter={StaticResource BooleanToVisibilityConverter}}"/>
 
-        <lvc:CartesianChart LegendLocation="none" Series="{Binding seriesViews}" Grid.Row="1">
+        <lvc:CartesianChart LegendLocation="none" Series="{Binding SeriesViews}" Grid.Row="1">
             <lvc:CartesianChart.DataTooltip>
                 <livechartscommon:CustomerToolTipForSingle />
             </lvc:CartesianChart.DataTooltip>
 
             <lvc:CartesianChart.AxisX>
-                <lvc:Axis LabelsRotation="160" ShowLabels="{Binding chartLabels, FallbackValue=True}" FontSize="{DynamicResource FontSize}" MinValue="0" />
+                <lvc:Axis LabelsRotation="160" ShowLabels="{Binding ChartLabels, FallbackValue=True}" FontSize="{DynamicResource FontSize}" MinValue="0" />
             </lvc:CartesianChart.AxisX>
 
             <lvc:CartesianChart.AxisY>
-                <lvc:Axis MinValue="0" ShowLabels="{Binding chartLabelsOrdinates, FallbackValue=True}" Labels="{Binding labels}" FontSize="{DynamicResource FontSize}" />
+                <lvc:Axis MinValue="0" ShowLabels="{Binding ChartLabelsOrdinates, FallbackValue=True}" Labels="{Binding Labels}" FontSize="{DynamicResource FontSize}" />
             </lvc:CartesianChart.AxisY>
         </lvc:CartesianChart>
     </Grid>
