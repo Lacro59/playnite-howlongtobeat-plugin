@@ -48,7 +48,7 @@ Hiç biri bu durumda değilse, en son süre alınır.</sys:String>
     <!-- HowLongToBeatSelect -->
 
     <sys:String x:Key="LOCSelection">HowLongToBeat seçimi</sys:String>
-    <sys:String x:Key="LOCHltbUsedVndb">Used Vndb</sys:String>
+    <sys:String x:Key="LOCHltbUsedVndb">Vndb Kullanılmış</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatMainStory">Ana hikaye</sys:String>
     <sys:String x:Key="LOCHowLongToBeatMainExtra">Ana + fazlası</sys:String>
