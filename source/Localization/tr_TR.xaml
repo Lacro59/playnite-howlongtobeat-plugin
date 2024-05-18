@@ -71,7 +71,7 @@ Hiç biri bu durumda değilse, en son süre alınır.</sys:String>
     
     <sys:String x:Key="LOCHowLongToBeatUserData">Kullanıcı verisi</sys:String>
     <sys:String x:Key="LocHowLongToBeatPlayniteData">Playnite verisi</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatCompleted">Tamamlana</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatCompleted">Tamamlanma</sys:String>
 
     <sys:String x:Key="LOCHltbOnlyReplays">Sadece yeniden oynamalar</sys:String>
     <sys:String x:Key="LOCHltbOnlyNotPlayed">Sadece oynanmayan</sys:String>
