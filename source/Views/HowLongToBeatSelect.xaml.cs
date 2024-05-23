@@ -126,15 +126,14 @@ namespace HowLongToBeat.Views
                 }
 
                 Common.LogDebug(true, $"dataSearch: {Serialization.ToJson(dataSearch)}");
-
-                this.Dispatcher.BeginInvoke((Action)delegate
+                Application.Current.Dispatcher?.Invoke(new Action(() =>
                 {
                     lbSelectable.ItemsSource = dataSearch;
                     lbSelectable.UpdateLayout();
 
                     PART_DataLoadWishlist.Visibility = Visibility.Collapsed;
                     SelectableContent.IsEnabled = true;
-                });
+                }));
             });
         }
 

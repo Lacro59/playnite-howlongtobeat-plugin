@@ -1,6 +1,7 @@
 ﻿using CommonPluginsShared;
 using HowLongToBeat.Models;
 using HowLongToBeat.Models.Vndb;
+using Playnite.SDK;
 using Playnite.SDK.Data;
 using System;
 using System.Collections.Generic;
@@ -12,6 +13,7 @@ namespace HowLongToBeat.Services
 {
     public class VndbApi
     {
+        private static ILogger Logger => LogManager.GetLogger();
         private static HowLongToBeatDatabase PluginDatabase => HowLongToBeat.PluginDatabase;
 
         private static string Url => "https://vndb.org";
@@ -54,12 +56,14 @@ namespace HowLongToBeat.Services
 
         public static List<HltbDataUser> SearchByName(string name)
         {
+            Logger.Info($"VndbApi.Search({name})");
             string payload = "{\"filters\":[\"search\", \"=\", \"" + PlayniteTools.NormalizeGameName(name) + "\"], \"fields\":\"id, title, alttitle, image.url, length, length_minutes\"}";
             return Search(payload);
         }
 
         public static List<HltbDataUser> SearchById(string id)
         {
+            Logger.Info($"VndbApi.Search({id})");
             string payload = "{\"filters\":[\"id\", \"=\", \"" + id + "\"], \"fields\":\"id, title, alttitle, image.url, length, length_minutes\"}";
             return Search(payload);
         }

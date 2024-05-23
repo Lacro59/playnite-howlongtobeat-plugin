@@ -95,10 +95,14 @@ namespace HowLongToBeat.Views
                 PART_Data.Visibility = Visibility.Hidden;
                 _ = Task.Run(() =>
                 {
-                    SetChartDataStore();
-                    SetChartDataYear();
-                    SetChartData();
-                    SetStats();
+                    List<Task> TaskList = new List<Task>
+                    {
+                        SetChartDataStore(),
+                        SetChartDataYear(),
+                        SetChartData(),
+                        SetStats()
+                    };
+                    Task.WaitAll(TaskList.ToArray());
 
                     Application.Current.Dispatcher?.Invoke(() =>
                     {
@@ -130,27 +134,38 @@ namespace HowLongToBeat.Views
             UserViewDataContext.ItemsSource = PluginDatabase.Database.UserHltbData.TitlesList.ToObservable();
             ListViewGames.Sorting();
 
+            SetFilter();
+
             _ = Task.Run(() =>
             {
-                SetChartDataStore();
-                SetChartDataYear();
-                SetChartData();
-                SetStats();
+                List<Task> TaskList = new List<Task>
+                {
+                    SetChartDataStore(),
+                    SetChartDataYear(),
+                    SetChartData(),
+                    SetStats()
+                };
+                Task.WaitAll(TaskList.ToArray());
 
                 Application.Current.Dispatcher?.Invoke(() =>
                 {
+                    PART_UserDataLoad.Visibility = Visibility.Collapsed;
                     PART_Data.Visibility = Visibility.Visible;
                 });
             });
-            SetFilter();
         }
 
 
-        private void SetChartDataYear(int axis = 4)
+        private Task SetChartDataYear(int axis = 4)
         {
-            if (PluginDatabase.Database.UserHltbData?.TitlesList != null)
+            return Task.Run(() =>
             {
-                _ = Task.Run(() =>
+                if (PluginDatabase.Database.UserHltbData?.TitlesList == null)
+                {
+                    return;
+                }
+
+                try
                 {
                     // Default data
                     string[] ChartDataLabels = new string[axis];
@@ -193,15 +208,24 @@ namespace HowLongToBeat.Views
 
                     UserViewDataContext.ChartUserDataYear_Series = ChartSeriesCollection;
                     UserViewDataContext.ChartUserDataYearLabelsX_Labels = ChartDataLabels;
-                });
-            }
+                }
+                catch (Exception ex)
+                {
+                    Common.LogError(ex, false, false, PluginDatabase.PluginName);
+                }
+            });
         }
 
-        private void SetChartDataStore()
+        private Task SetChartDataStore()
         {
-            if (PluginDatabase.Database.UserHltbData?.TitlesList != null)
+            return Task.Run(() =>
             {
-                _ = Task.Run(() =>
+                if (PluginDatabase.Database.UserHltbData?.TitlesList == null)
+                {
+                    return;
+                }
+
+                try
                 {
                     var dataLabel = PluginDatabase.Database.UserHltbData.TitlesList
                         .Where(x => x.GameStatuses.Where(y => y.Status == StatusType.Completed).Count() > 0)
@@ -236,15 +260,24 @@ namespace HowLongToBeat.Views
 
                     UserViewDataContext.ChartUserDataStore_Series = ChartSeriesCollection;
                     UserViewDataContext.ChartUserDataStoreLabelsX_Labels = ChartDataLabels;
-                });
-            }
+                }
+                catch (Exception ex)
+                {
+                    Common.LogError(ex, false, false, PluginDatabase.PluginName);
+                }
+            });
         }
 
-        private void SetChartData()
+        private Task SetChartData()
         {
-            if (PluginDatabase.Database.UserHltbData?.TitlesList != null)
+            return Task.Run(() =>
             {
-                _ = Task.Run(() =>
+                if (PluginDatabase.Database.UserHltbData?.TitlesList == null)
+                {
+                    return;
+                }
+
+                try
                 {
                     LocalDateYMConverter localDateYMConverter = new LocalDateYMConverter();
 
@@ -254,7 +287,7 @@ namespace HowLongToBeat.Views
 
                     for (int i = 15; i >= 0; i--)
                     {
-                        ChartDataLabels[(15 - i)] = (string)localDateYMConverter.Convert(DateTime.Now.AddMonths(-i), null, null, null);
+                        ChartDataLabels[15 - i] = (string)localDateYMConverter.Convert(DateTime.Now.AddMonths(-i), null, null, null);
                         ChartDataSeries.Add(new CustomerForSingle
                         {
                             Name = (string)localDateYMConverter.Convert(DateTime.Now.AddMonths(-i), null, null, null),
@@ -292,15 +325,24 @@ namespace HowLongToBeat.Views
 
                     UserViewDataContext.ChartUserData_Series = ChartSeriesCollection;
                     UserViewDataContext.ChartUserDataLabelsX_Labels = ChartDataLabels;
-                });
-            }
+                }
+                catch (Exception ex)
+                {
+                    Common.LogError(ex, false, false, PluginDatabase.PluginName);
+                }
+            });
         }
 
-        private void SetStats()
+        private Task SetStats()
         {
-            if (PluginDatabase.Database.UserHltbData?.TitlesList != null)
+            return Task.Run(() =>
             {
-                _ = Task.Run(() =>
+                if (PluginDatabase.Database.UserHltbData?.TitlesList == null)
+                {
+                    return;
+                }
+
+                try
                 {
                     List<TitleList> titleLists = PluginDatabase.Database.UserHltbData.TitlesList;
 
@@ -342,30 +384,41 @@ namespace HowLongToBeat.Views
                     UserViewDataContext.AvgTimeByGame = (string)converter.Convert(PluginDatabase.GetAvgTimeByGame(), null, null, CultureInfo.CurrentCulture);
                     UserViewDataContext.CountGameBeatenReplays = PluginDatabase.GetCountGameBeatenReplays().ToString();
                     UserViewDataContext.CountGameRetired = PluginDatabase.GetCountGameRetired().ToString();
-                });
-            }
+                }
+                catch (Exception ex)
+                {
+                    Common.LogError(ex, false, false, PluginDatabase.PluginName);
+                }
+            });
         }
 
         private void SetPlayniteData()
         {
-            //PART_DataLoad.Visibility = Visibility.Visible;
-            //PART_LvDataContener.Visibility = Visibility.Hidden;
-
-            if (ListViewDataGames.ItemsSource == null)
+            try
             {
-                ListViewDataGames.ItemsSource = PluginDatabase.Database.Where(x => x.HasData && !x.HasDataEmpty && !x.Hidden)
-                      .Select(x => new PlayniteData
-                      {
-                          GameContext = API.Instance.Database.Games.Get(x.Id),
-                          ViewProgressBar = PluginDatabase.PluginSettings.Settings.EnableProgressBarInDataView
-                      }).ToObservable();
+                //PART_DataLoad.Visibility = Visibility.Visible;
+                //PART_LvDataContener.Visibility = Visibility.Hidden;
+
+                if (ListViewDataGames.ItemsSource == null)
+                {
+                    ListViewDataGames.ItemsSource = PluginDatabase.Database.Where(x => x.HasData && !x.HasDataEmpty && !x.Hidden)
+                          .Select(x => new PlayniteData
+                          {
+                              GameContext = API.Instance.Database.Games.Get(x.Id),
+                              ViewProgressBar = PluginDatabase.PluginSettings.Settings.EnableProgressBarInDataView
+                          }).ToObservable();
+                }
+
+                CollectionView view = (CollectionView)CollectionViewSource.GetDefaultView(ListViewDataGames.ItemsSource);
+                view.Filter = PlayniteDataFilter;
+
+                CollectionViewSource.GetDefaultView(ListViewDataGames.ItemsSource).Refresh();
+                ListViewDataGames.Sorting();
             }
-
-            CollectionView view = (CollectionView)CollectionViewSource.GetDefaultView(ListViewDataGames.ItemsSource);
-            view.Filter = PlayniteDataFilter;
-
-            CollectionViewSource.GetDefaultView(ListViewDataGames.ItemsSource).Refresh();
-            ListViewDataGames.Sorting();
+            catch (Exception ex)
+            {
+                Common.LogError(ex, false, false, PluginDatabase.PluginName);
+            }
         }
 
 
@@ -555,7 +608,7 @@ namespace HowLongToBeat.Views
             switch (bt.Tag.ToString())
             {
                 case "0":
-                    SetChartDataYear(12);
+                    _ = SetChartDataYear(12);
                     PART_ChartUserData.Visibility = Visibility.Collapsed;
                     Grid.SetColumnSpan(PART_ChartUserDataYear, 3);
                     Grid.SetColumnSpan(PART_ExpandChartYear, 3);
@@ -564,7 +617,7 @@ namespace HowLongToBeat.Views
                     break;
 
                 case "1":
-                    SetChartDataYear(4);
+                    _ = SetChartDataYear(4);
                     PART_ChartUserData.Visibility = Visibility.Visible;
                     Grid.SetColumnSpan(PART_ChartUserDataYear, 1);
                     Grid.SetColumnSpan(PART_ExpandChartYear, 1);
@@ -656,61 +709,61 @@ namespace HowLongToBeat.Views
 
     public class UserViewDataContext : ObservableObject
     {
-        private ObservableCollection<TitleList> _ItemsSource = new ObservableCollection<TitleList>();
-        public ObservableCollection<TitleList> ItemsSource { get => _ItemsSource; set => SetValue(ref _ItemsSource, value); }
+        private ObservableCollection<TitleList> itemsSource = new ObservableCollection<TitleList>();
+        public ObservableCollection<TitleList> ItemsSource { get => itemsSource; set => SetValue(ref itemsSource, value); }
 
 
-        private SeriesCollection _ChartUserDataStore_Series = new SeriesCollection();
-        public SeriesCollection ChartUserDataStore_Series { get => _ChartUserDataStore_Series; set => SetValue(ref _ChartUserDataStore_Series, value); }
+        private SeriesCollection chartUserDataStore_Series = new SeriesCollection();
+        public SeriesCollection ChartUserDataStore_Series { get => chartUserDataStore_Series; set => SetValue(ref chartUserDataStore_Series, value); }
 
-        private string[] _ChartUserDataStoreLabelsX_Labels = new string[0];
-        public string[] ChartUserDataStoreLabelsX_Labels { get => _ChartUserDataStoreLabelsX_Labels; set => SetValue(ref _ChartUserDataStoreLabelsX_Labels, value); }
-
-
-        private SeriesCollection _ChartUserDataYear_Series = new SeriesCollection();
-        public SeriesCollection ChartUserDataYear_Series { get => _ChartUserDataYear_Series; set => SetValue(ref _ChartUserDataYear_Series, value); }
-
-        private string[] _ChartUserDataYearLabelsX_Labels = new string[0];
-        public string[] ChartUserDataYearLabelsX_Labels { get => _ChartUserDataYearLabelsX_Labels; set => SetValue(ref _ChartUserDataYearLabelsX_Labels, value); }
+        private string[] chartUserDataStoreLabelsX_Labels = new string[0];
+        public string[] ChartUserDataStoreLabelsX_Labels { get => chartUserDataStoreLabelsX_Labels; set => SetValue(ref chartUserDataStoreLabelsX_Labels, value); }
 
 
-        private SeriesCollection _ChartUserData_Series = new SeriesCollection();
-        public SeriesCollection ChartUserData_Series { get => _ChartUserData_Series; set => SetValue(ref _ChartUserData_Series, value); }
+        private SeriesCollection chartUserDataYear_Series = new SeriesCollection();
+        public SeriesCollection ChartUserDataYear_Series { get => chartUserDataYear_Series; set => SetValue(ref chartUserDataYear_Series, value); }
 
-        private string[] _ChartUserDataLabelsX_Labels = new string[0];
-        public string[] ChartUserDataLabelsX_Labels { get => _ChartUserDataLabelsX_Labels; set => SetValue(ref _ChartUserDataLabelsX_Labels, value); }
-
-
-        private string _CompletionsCount = "--";
-        public string CompletionsCount { get => _CompletionsCount; set => SetValue(ref _CompletionsCount, value); }
+        private string[] chartUserDataYearLabelsX_Labels = new string[0];
+        public string[] ChartUserDataYearLabelsX_Labels { get => chartUserDataYearLabelsX_Labels; set => SetValue(ref chartUserDataYearLabelsX_Labels, value); }
 
 
-        private string _TimeSinglePlayer = "--";
-        public string TimeSinglePlayer { get => _TimeSinglePlayer; set => SetValue(ref _TimeSinglePlayer, value); }
+        private SeriesCollection chartUserData_Series = new SeriesCollection();
+        public SeriesCollection ChartUserData_Series { get => chartUserData_Series; set => SetValue(ref chartUserData_Series, value); }
 
-        private string _TimeCoOp = "--";
-        public string TimeCoOp { get => _TimeCoOp; set => SetValue(ref _TimeCoOp, value); }
-
-        private string _TimeVs = "--";
-        public string TimeVs { get => _TimeVs; set => SetValue(ref _TimeVs, value); }
+        private string[] chartUserDataLabelsX_Labels = new string[0];
+        public string[] ChartUserDataLabelsX_Labels { get => chartUserDataLabelsX_Labels; set => SetValue(ref chartUserDataLabelsX_Labels, value); }
 
 
-        private string _CountGameBeatenBeforeTime = "--";
-        public string CountGameBeatenBeforeTime { get => _CountGameBeatenBeforeTime; set => SetValue(ref _CountGameBeatenBeforeTime, value); }
+        private string completionsCount = "--";
+        public string CompletionsCount { get => completionsCount; set => SetValue(ref completionsCount, value); }
 
-        private string _CountGameBeatenAfterTime = "--";
-        public string CountGameBeatenAfterTime { get => _CountGameBeatenAfterTime; set => SetValue(ref _CountGameBeatenAfterTime, value); }
 
-        private string _AvgGameByMonth = "--";
-        public string AvgGameByMonth { get => _AvgGameByMonth; set => SetValue(ref _AvgGameByMonth, value); }
+        private string timeSinglePlayer = "--";
+        public string TimeSinglePlayer { get => timeSinglePlayer; set => SetValue(ref timeSinglePlayer, value); }
 
-        private string _AvgTimeByGame = "--";
-        public string AvgTimeByGame { get => _AvgTimeByGame; set => SetValue(ref _AvgTimeByGame, value); }
+        private string timeCoOp = "--";
+        public string TimeCoOp { get => timeCoOp; set => SetValue(ref timeCoOp, value); }
 
-        private string _CountGameBeatenReplays = "--";
-        public string CountGameBeatenReplays { get => _CountGameBeatenReplays; set => SetValue(ref _CountGameBeatenReplays, value); }
+        private string timeVs = "--";
+        public string TimeVs { get => timeVs; set => SetValue(ref timeVs, value); }
 
-        private string _CountGameRetired = "--";
-        public string CountGameRetired { get => _CountGameRetired; set => SetValue(ref _CountGameRetired, value); }
+
+        private string countGameBeatenBeforeTime = "--";
+        public string CountGameBeatenBeforeTime { get => countGameBeatenBeforeTime; set => SetValue(ref countGameBeatenBeforeTime, value); }
+
+        private string countGameBeatenAfterTime = "--";
+        public string CountGameBeatenAfterTime { get => countGameBeatenAfterTime; set => SetValue(ref countGameBeatenAfterTime, value); }
+
+        private string avgGameByMonth = "--";
+        public string AvgGameByMonth { get => avgGameByMonth; set => SetValue(ref avgGameByMonth, value); }
+
+        private string avgTimeByGame = "--";
+        public string AvgTimeByGame { get => avgTimeByGame; set => SetValue(ref avgTimeByGame, value); }
+
+        private string countGameBeatenReplays = "--";
+        public string CountGameBeatenReplays { get => countGameBeatenReplays; set => SetValue(ref countGameBeatenReplays, value); }
+
+        private string countGameRetired = "--";
+        public string CountGameRetired { get => countGameRetired; set => SetValue(ref countGameRetired, value); }
     }
 }

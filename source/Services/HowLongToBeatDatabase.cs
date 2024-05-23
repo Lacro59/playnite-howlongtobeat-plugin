@@ -305,12 +305,9 @@ namespace HowLongToBeat.Services
             HltbDataUser webDataSearch = dataSearch.Find(x => x.Id == loadedItem.GetData().Id);
             if (webDataSearch != null)
             {
-                if (!ReferenceEquals(loadedItem.GetData(), webDataSearch))
-                {
-                    loadedItem.Items = new List<HltbDataUser> { webDataSearch };
-                    loadedItem.DateLastRefresh = DateTime.Now;
-                    Update(loadedItem);
-                }
+                loadedItem.Items = new List<HltbDataUser> { webDataSearch };
+                loadedItem.DateLastRefresh = DateTime.Now;
+                Update(loadedItem);
             }
         }
 
@@ -624,7 +621,7 @@ namespace HowLongToBeat.Services
 
         public void RefreshUserData(string game_id)
         {
-            _ = Task.Run(() => 
+            _ = Task.Run(() =>
             {
                 try
                 {
@@ -640,6 +637,7 @@ namespace HowLongToBeat.Services
                         {
                             Database.UserHltbData.TitlesList.Add(titleList);
                         }
+
                         Application.Current.Dispatcher?.Invoke(() =>
                         {
                             Database.OnCollectionChanged(null, null);
