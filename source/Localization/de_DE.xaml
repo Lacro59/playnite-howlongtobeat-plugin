@@ -48,7 +48,7 @@ Wenn keiner diesen Status hat, wird der aktuellste genommen.</sys:String>
     <!-- HowLongToBeatSelect -->
 
     <sys:String x:Key="LOCSelection">HowLongToBeat Auswahl</sys:String>
-    <sys:String x:Key="LOCHltbUsedVndb">Used Vndb</sys:String>
+    <sys:String x:Key="LOCHltbUsedVndb">Vndb verwendet</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatMainStory">Hauptgeschichte</sys:String>
     <sys:String x:Key="LOCHowLongToBeatMainExtra">Hauptgeschichte + Extra</sys:String>
