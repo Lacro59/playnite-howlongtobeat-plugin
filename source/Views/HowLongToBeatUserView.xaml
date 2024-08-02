@@ -121,8 +121,8 @@
                                 </StackPanel>
 
                                 <StackPanel Orientation="Horizontal" Grid.Column="20">
-                                    <Button Content="&#xEEBB;" FontFamily="{DynamicResource FontIcoFont}" Click="ClearFilter1_Click" />
-                                    <Button Content="&#xEF05;" FontFamily="{DynamicResource FontIcoFont}" Click="SavedFilter1_Click" Margin="10,0,0,0" />
+                                    <Button Content="&#xEEBB;" FontFamily="{DynamicResource FontIcoFont}" ToolTip="{DynamicResource LOCCommonDefaultFilters}" Click="ClearFilter1_Click" />
+                                    <Button Content="&#xEF05;" FontFamily="{DynamicResource FontIcoFont}" ToolTip="{DynamicResource LOCCommonSaveFilters}" Click="SavedFilter1_Click" Margin="10,0,0,0" />
                                 </StackPanel>
                             </Grid>
 
@@ -593,7 +593,7 @@
                                 <Label Content="{DynamicResource LOCHltbOnlyNotPlayedGames}" />
                             </CheckBox>
 
-                            <Button Grid.Column="4" Content="&#xEF05;" FontFamily="{DynamicResource FontIcoFont}" Click="SavedFilter2_Click" />
+                            <Button Grid.Column="4" Content="&#xEF05;" FontFamily="{DynamicResource FontIcoFont}" Click="SavedFilter2_Click" ToolTip="{DynamicResource LOCCommonSaveFilters}" />
 
                             <StackPanel Grid.Column="50" Orientation="Horizontal">
                                 <Label Content="{DynamicResource LOCCommonTotalFound}" />

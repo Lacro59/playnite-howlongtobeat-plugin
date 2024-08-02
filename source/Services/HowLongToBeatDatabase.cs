@@ -653,7 +653,7 @@ namespace HowLongToBeat.Services
             });
         }
 
-        public bool SetCurrentPlayTime(Game game, ulong ElapsedSeconds = 0, bool NoPlaying = false, bool IsCompleted = false, bool IsMain = false, bool IsMainSide = false, bool Is100 = false)
+        public bool SetCurrentPlayTime(Game game, ulong ElapsedSeconds = 0, bool NoPlaying = false, bool IsCompleted = false, bool IsMain = false, bool IsMainSide = false, bool Is100 = false, bool IsSolo = false, bool IsCoOp = false, bool IsVs = false)
         {
             try
             {
@@ -804,6 +804,20 @@ namespace HowLongToBeat.Services
                                     editData.General.CompletionDate.Year = ((DateTime)game.LastActivity).Year.ToString();
                                 }
                             }
+                        }
+
+                        if (IsCoOp)
+                        {
+                            editData.MultiPlayer.CoOp.Time.Hours = time.Hours + (24 * time.Days);
+                            editData.MultiPlayer.CoOp.Time.Minutes = time.Minutes;
+                            editData.MultiPlayer.CoOp.Time.Seconds = time.Seconds;
+                        }
+
+                        if (IsVs)
+                        {
+                            editData.MultiPlayer.Vs.Time.Hours = time.Hours + (24 * time.Days);
+                            editData.MultiPlayer.Vs.Time.Minutes = time.Minutes;
+                            editData.MultiPlayer.Vs.Time.Seconds = time.Seconds;
                         }
 
                         editData.General.Progress.Hours = time.Hours + (24 * time.Days);

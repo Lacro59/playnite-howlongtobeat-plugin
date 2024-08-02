@@ -9,6 +9,7 @@ namespace HowLongToBeat.Models
     {
         private PlayTimeToStringConverterWithZero Converter => new PlayTimeToStringConverterWithZero();
 
+        public GameType GameType { get; set; } = GameType.Game;
 
         public long MainStory { get; set; } = 0;
         [DontSerialize]
@@ -41,29 +42,35 @@ namespace HowLongToBeat.Models
         {
             get
             {
-                if (MainStory != 0)
+                if (GameType != GameType.Multi)
                 {
-                    return MainStory;
+                    if (MainStory != 0)
+                    {
+                        return MainStory;
+                    }
+                    else if (MainExtra != 0)
+                    {
+                        return MainExtra;
+                    }
+                    else if (Completionist != 0)
+                    {
+                        return Completionist;
+                    }
                 }
-                else if (MainExtra != 0)
+                else
                 {
-                    return MainExtra;
-                }
-                else if (Completionist != 0)
-                {
-                    return Completionist;
-                }
-                else if (Solo != 0)
-                {
-                    return Solo;
-                }
-                else if (CoOp != 0)
-                {
-                    return CoOp;
-                }
-                else if (Vs != 0)
-                {
-                    return Vs;
+                    if (Solo != 0)
+                    {
+                        return Solo;
+                    }
+                    else if (CoOp != 0)
+                    {
+                        return CoOp;
+                    }
+                    else if (Vs != 0)
+                    {
+                        return Vs;
+                    }
                 }
 
                 return 0;
@@ -74,29 +81,35 @@ namespace HowLongToBeat.Models
         {
             get
             {
-                if (MainStory != 0)
+                if (GameType != GameType.Multi)
                 {
-                    return MainStoryFormat;
+                    if (MainStory != 0)
+                    {
+                        return MainStoryFormat;
+                    }
+                    else if (MainExtra != 0)
+                    {
+                        return MainExtraFormat;
+                    }
+                    else if (Completionist != 0)
+                    {
+                        return CompletionistFormat;
+                    }
                 }
-                else if (MainExtra != 0)
+                else
                 {
-                    return MainExtraFormat;
-                }
-                else if (Completionist != 0)
-                {
-                    return CompletionistFormat;
-                }
-                else if (Solo != 0)
-                {
-                    return SoloFormat;
-                }
-                else if (CoOp != 0)
-                {
-                    return CoOpFormat;
-                }
-                else if (Vs != 0)
-                {
-                    return VsFormat;
+                    if (Solo != 0)
+                    {
+                        return SoloFormat;
+                    }
+                    else if (CoOp != 0)
+                    {
+                        return CoOpFormat;
+                    }
+                    else if (Vs != 0)
+                    {
+                        return VsFormat;
+                    }
                 }
 
                 return "--";

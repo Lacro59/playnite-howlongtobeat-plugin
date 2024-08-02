@@ -116,8 +116,10 @@ namespace HowLongToBeat.Services
                         UrlImg = string.Format(UrlGameImg, x.GameImage),
                         Url = string.Format(UrlGame, x.GameId),
                         Platform = x.ProfilePlatform,
+                        GameType = x.GameType.IsEqual("game") ? GameType.Game : x.GameType.IsEqual("multi") ? GameType.Multi : GameType.Compil,
                         GameHltbData = new HltbData
                         {
+                            GameType = x.GameType.IsEqual("game") ? GameType.Game : x.GameType.IsEqual("multi") ? GameType.Multi : GameType.Compil,
                             MainStory = x.CompMain,
                             MainExtra = x.CompPlus,
                             Completionist = x.Comp100,
@@ -392,6 +394,7 @@ namespace HowLongToBeat.Services
                     Completion = CompletionFinal,
                     HltbUserData = new HltbData
                     {
+                        GameType = gamesList.GameType.IsEqual("game") ? GameType.Game : gamesList.GameType.IsEqual("multi") ? GameType.Multi : GameType.Compil,
                         MainStory = gamesList.CompMain,
                         MainExtra = gamesList.CompPlus,
                         Completionist = gamesList.Comp100,
