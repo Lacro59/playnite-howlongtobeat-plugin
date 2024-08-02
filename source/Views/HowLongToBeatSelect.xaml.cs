@@ -8,6 +8,7 @@ using Playnite.SDK.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -35,14 +36,19 @@ namespace HowLongToBeat.Views
 
             if (data == null)
             {
-                SearchData();
+                _ = Task.Run(() =>
+                {
+                    Thread.Sleep(300);
+                    Application.Current?.Dispatcher?.Invoke(new Action(() =>
+                    {
+                        SearchData();
+                    }));
+                });
             }
             else
             {
                 lbSelectable.ItemsSource = data;
                 lbSelectable.UpdateLayout();
-                PART_DataLoadWishlist.Visibility = Visibility.Collapsed;
-                SelectableContent.IsEnabled = true;
             }
 
             // Set Binding data
@@ -93,16 +99,20 @@ namespace HowLongToBeat.Views
         {
             lbSelectable.ItemsSource = null;
 
-            PART_DataLoadWishlist.Visibility = Visibility.Visible;
-            SelectableContent.IsEnabled = false;
-
             string GameSearch = SearchElement.Text;
             string GamePlatform = (PART_SelectPlatform.SelectedValue == null)
                   ? string.Empty 
                   : ((HltbPlatform) PART_SelectPlatform.SelectedValue).GetDescription();
 
             bool isVndb = (bool)PART_Vndb.IsChecked;
-            _ = Task.Run(() =>
+
+            GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions(
+                $"{ResourceProvider.GetString("LOCDownloadingLabel")}",
+                false
+            );
+            globalProgressOptions.IsIndeterminate = true;
+
+            _ = API.Instance.Dialogs.ActivateGlobalProgress((activateGlobalProgress) =>
             {
                 List<HltbDataUser> dataSearch = new List<HltbDataUser>();
                 try
@@ -130,11 +140,8 @@ namespace HowLongToBeat.Views
                 {
                     lbSelectable.ItemsSource = dataSearch;
                     lbSelectable.UpdateLayout();
-
-                    PART_DataLoadWishlist.Visibility = Visibility.Collapsed;
-                    SelectableContent.IsEnabled = true;
                 }));
-            });
+            }, globalProgressOptions);
         }
 
         /// <summary>

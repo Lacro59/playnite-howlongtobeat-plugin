@@ -1,16 +1,17 @@
 ﻿<UserControl x:Class="HowLongToBeat.Views.HowLongToBeatSelect"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:commonpluginsshared="clr-namespace:CommonPluginsShared"
-             xmlns:playnitecontrols="clr-namespace:CommonPluginsControls.PlayniteControls"
-             xmlns:converters="clr-namespace:CommonPlayniteShared.Converters"
-             xmlns:controls="clr-namespace:CommonPluginsControls.Controls"
-             xmlns:convertersshared="clr-namespace:CommonPluginsShared.Converters"
-             xmlns:hltm="clr-namespace:HowLongToBeat.Models"
-             xmlns:hltb="clr-namespace:HowLongToBeat.Behaviors" xmlns:controls1="clr-namespace:CommonPluginsShared.Controls"
-             mc:Ignorable="d" Width="600" Height="600">
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:commonpluginsshared="clr-namespace:CommonPluginsShared"
+    xmlns:playnitecontrols="clr-namespace:CommonPluginsControls.PlayniteControls"
+    xmlns:converters="clr-namespace:CommonPlayniteShared.Converters"
+    xmlns:controls="clr-namespace:CommonPluginsControls.Controls"
+    xmlns:convertersshared="clr-namespace:CommonPluginsShared.Converters"
+    xmlns:hltm="clr-namespace:HowLongToBeat.Models"
+    xmlns:hltb="clr-namespace:HowLongToBeat.Behaviors" 
+    xmlns:controls1="clr-namespace:CommonPluginsShared.Controls"
+    mc:Ignorable="d" Width="600" Height="600">
 
     <UserControl.Resources>
         <convertersshared:VisibilityZeroConverter x:Key="VisibilityZeroConverter" />
@@ -18,141 +19,132 @@
         <converters:StringNullOrEmptyToBoolConverter x:Key="StringNullOrEmptyToBoolConverter" />
     </UserControl.Resources>
 
-    <Grid>
-        <Grid Name="PART_DataLoadWishlist">
-            <ProgressBar IsIndeterminate="True" Width="350" Height="40" />
-            <TextBlock Text="{DynamicResource LOCDownloadingLabel}"
-                       Style="{DynamicResource BaseTextBlockStyle}"
-                       HorizontalAlignment="Center" VerticalAlignment="Center" />
+    <DockPanel LastChildFill="True" Margin="10" Name="SelectableContent">
+        <!-- Actions -->
+        <Grid Margin="0,10,0,0" DockPanel.Dock="Bottom">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="100" />
+                <ColumnDefinition Width="6" />
+                <ColumnDefinition Width="100" />
+            </Grid.ColumnDefinitions>
+
+            <Button Name="ButtonSelect" IsEnabled="False" Grid.Column="1" Content="{DynamicResource LOCSelect}" VerticalAlignment="Center" Click="ButtonSelect_Click"></Button>
+            <Button Grid.Column="3" Content="{DynamicResource LOCCancelLabel}" VerticalAlignment="Center" Click="ButtonCancel_Click"></Button>
         </Grid>
 
-        <DockPanel LastChildFill="True" Margin="10" Name="SelectableContent">
-            <!-- Actions -->
-            <Grid Margin="0,10,0,0" DockPanel.Dock="Bottom">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="100" />
-                    <ColumnDefinition Width="6" />
-                    <ColumnDefinition Width="100" />
-                </Grid.ColumnDefinitions>
+        <!-- Name -->
+        <Grid Margin="0,10,0,0" DockPanel.Dock="Bottom">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="6" />
+                <ColumnDefinition Width="150" />
+            </Grid.ColumnDefinitions>
 
-                <Button Name="ButtonSelect" IsEnabled="False" Grid.Column="1" Content="{DynamicResource LOCSelect}" VerticalAlignment="Center" Click="ButtonSelect_Click"></Button>
-                <Button Grid.Column="3" Content="{DynamicResource LOCCancelLabel}" VerticalAlignment="Center" Click="ButtonCancel_Click"></Button>
-            </Grid>
-
-            <!-- Name -->
-            <Grid Margin="0,10,0,0" DockPanel.Dock="Bottom">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="6" />
-                    <ColumnDefinition Width="150" />
-                </Grid.ColumnDefinitions>
-
-                <playnitecontrols:SearchBox Grid.Column="0" x:Name="SearchElement" KeyUp="SearchElement_KeyUp" />
-                <Button Name="PART_BtSearch" Grid.Column="3" Content="{DynamicResource LOCSearchLabel}" Click="ButtonSearch_Click"
+            <playnitecontrols:SearchBox Grid.Column="0" x:Name="SearchElement" KeyUp="SearchElement_KeyUp" />
+            <Button Name="PART_BtSearch" Grid.Column="3" Content="{DynamicResource LOCSearchLabel}" Click="ButtonSearch_Click"
                         IsEnabled="{Binding ElementName=SearchElement, Path=Text, Converter={StaticResource StringNullOrEmptyToBoolConverter}}"/>
-            </Grid>
+        </Grid>
 
-            <!-- Platforms -->
-            <Grid Margin="0,10,0,0" DockPanel.Dock="Bottom">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="auto" />
-                    <ColumnDefinition Width="6" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="6" />
-                    <ColumnDefinition Width="150" />
-                </Grid.ColumnDefinitions>
+        <!-- Platforms -->
+        <Grid Margin="0,10,0,0" DockPanel.Dock="Bottom">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto" />
+                <ColumnDefinition Width="6" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="6" />
+                <ColumnDefinition Width="150" />
+            </Grid.ColumnDefinitions>
 
-                <TextBlock Grid.Column="0" Text="{DynamicResource LOCPlatformsTitle}" Style="{StaticResource BaseTextBlockStyle}" 
+            <TextBlock Grid.Column="0" Text="{DynamicResource LOCPlatformsTitle}" Style="{StaticResource BaseTextBlockStyle}" 
                            VerticalAlignment="Center" />
-                <controls:ComboBoxRemovable x:Name="PART_SelectPlatform" Grid.Column="2" VerticalAlignment="Center"
+            <controls:ComboBoxRemovable x:Name="PART_SelectPlatform" Grid.Column="2" VerticalAlignment="Center"
                                             IsEditable="True" TextSearch.TextPath="DisplayText"
                                             IsEnabled="{Binding ElementName=PART_Vndb, Path=IsChecked, Converter={StaticResource InvertedBoolenConverter}}"
                                             IsTextSearchCaseSensitive="False" StaysOpenOnEdit="True"
                                             hltb:SelectorBehaviors.EnumSource="{x:Type hltm:HltbPlatform}" />
-                <CheckBox Grid.Column="4" Content="{DynamicResource LOCHltbUsedVndb}" Name="PART_Vndb" />
-            </Grid>
+            <CheckBox Grid.Column="4" Content="{DynamicResource LOCHltbUsedVndb}" Name="PART_Vndb" />
+        </Grid>
 
-            <ListBox x:Name="lbSelectable" Height="465" SelectionChanged="LbSelectable_SelectionChanged"
+        <ListBox x:Name="lbSelectable" Height="465" SelectionChanged="LbSelectable_SelectionChanged"
                      ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto">
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <Grid x:Name="HltbId" Tag="{Binding Id}">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Grid x:Name="HltbId" Tag="{Binding Id}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="120" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <controls1:ImageAsync x:Name="HltbImage" Grid.Column="0" Height="150" Width="100" HorizontalAlignment="Left" 
+                                                  Source="{Binding UrlImg}" Stretch="Uniform" />
+
+                        <Grid Grid.Column="1" VerticalAlignment="Top">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="120" />
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
 
-                            <controls1:ImageAsync x:Name="HltbImage" Grid.Column="0" Height="150" Width="100" HorizontalAlignment="Left" 
-                                                  Source="{Binding UrlImg}" Stretch="Uniform" />
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
 
-                            <Grid Grid.Column="1" VerticalAlignment="Top">
+                            <Grid Grid.Row="0">
+                                <TextBlock x:Name="HltbName" Text="{Binding Name, FallbackValue=GameName}" FontWeight="Bold" FontSize="18" 
+                                               TextTrimming="CharacterEllipsis" MouseEnter="TextBlock_MouseEnter">
+                                    <TextBlock.ToolTip>
+                                        <ToolTip Content="{Binding Name}"></ToolTip>
+                                    </TextBlock.ToolTip>
+                                </TextBlock>
+                            </Grid>
+
+                            <Grid Grid.Row="1" Margin="0,10,0,0">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="2*" />
                                 </Grid.ColumnDefinitions>
 
                                 <Grid.RowDefinitions>
-                                    <RowDefinition Height="*" />
-                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="auto" />
+                                    <RowDefinition Height="auto" />
+                                    <RowDefinition Height="auto" />
+                                    <RowDefinition Height="auto" />
+                                    <RowDefinition Height="auto" />
+                                    <RowDefinition Height="auto" />
+                                    <RowDefinition Height="auto" />
+                                    <RowDefinition Height="auto" />
                                 </Grid.RowDefinitions>
 
-                                <Grid Grid.Row="0">
-                                    <TextBlock x:Name="HltbName" Text="{Binding Name, FallbackValue=GameName}" FontWeight="Bold" FontSize="18" 
+                                <TextBlock MinHeight="25" Grid.Column="0" Grid.Row="0" Text="{DynamicResource LOCHowLongToBeatMainStory}" Visibility="{Binding GameHltbData.MainStory, Converter={StaticResource VisibilityZeroConverter}, ConverterParameter=1}" />
+                                <TextBlock MinHeight="25" Grid.Column="1" Grid.Row="0" Text="{Binding GameHltbData.MainStoryFormat}" HorizontalAlignment="Center" Visibility="{Binding GameHltbData.MainStory, Converter={StaticResource VisibilityZeroConverter}, ConverterParameter=1}" />
+
+                                <TextBlock MinHeight="25" Grid.Column="0" Grid.Row="1" Text="{DynamicResource LOCHowLongToBeatMainExtra}" Visibility="{Binding GameHltbData.MainExtra, Converter={StaticResource VisibilityZeroConverter}, ConverterParameter=1}" />
+                                <TextBlock MinHeight="25" Grid.Column="1" Grid.Row="1" Text="{Binding GameHltbData.MainExtraFormat}" HorizontalAlignment="Center" Visibility="{Binding GameHltbData.MainExtra, Converter={StaticResource VisibilityZeroConverter}, ConverterParameter=1}" />
+
+                                <TextBlock MinHeight="25" Grid.Column="0" Grid.Row="2" Text="{DynamicResource LOCHowLongToBeatCompletionist}" Visibility="{Binding GameHltbData.Completionist, Converter={StaticResource VisibilityZeroConverter}, ConverterParameter=1}" />
+                                <TextBlock MinHeight="25" Grid.Column="1" Grid.Row="2" Text="{Binding GameHltbData.CompletionistFormat}" HorizontalAlignment="Center" Visibility="{Binding GameHltbData.Completionist, Converter={StaticResource VisibilityZeroConverter}, ConverterParameter=1}" />
+
+                                <TextBlock MinHeight="25" Grid.Column="0" Grid.Row="3" Text="{DynamicResource LOCHowLongToBeatSolo}" Visibility="{Binding GameHltbData.Solo, Converter={StaticResource VisibilityZeroConverter}, ConverterParameter=1}" />
+                                <TextBlock MinHeight="25" Grid.Column="1" Grid.Row="3" Text="{Binding GameHltbData.SoloFormat}" HorizontalAlignment="Center" Visibility="{Binding GameHltbData.Solo, Converter={StaticResource VisibilityZeroConverter}, ConverterParameter=1}" />
+
+                                <TextBlock MinHeight="25" Grid.Column="0" Grid.Row="4" Text="{DynamicResource LOCHowLongToBeatCoOp}" Visibility="{Binding GameHltbData.CoOp, Converter={StaticResource VisibilityZeroConverter}, ConverterParameter=1}" />
+                                <TextBlock MinHeight="25" Grid.Column="1" Grid.Row="4" Text="{Binding GameHltbData.CoOpFormat}" HorizontalAlignment="Center" Visibility="{Binding GameHltbData.CoOp, Converter={StaticResource VisibilityZeroConverter}, ConverterParameter=1}" />
+
+                                <TextBlock MinHeight="25" Grid.Column="0" Grid.Row="5" Text="{DynamicResource LOCHowLongToBeatVs}" Visibility="{Binding GameHltbData.Vs, Converter={StaticResource VisibilityZeroConverter}, ConverterParameter=1}" />
+                                <TextBlock MinHeight="25" Grid.Column="1" Grid.Row="5" Text="{Binding GameHltbData.VsFormat}" HorizontalAlignment="Center" Visibility="{Binding GameHltbData.Vs, Converter={StaticResource VisibilityZeroConverter}, ConverterParameter=1}" />
+
+                                <TextBlock MinHeight="25" Grid.Column="0" Grid.Row="6" Text="{DynamicResource LOCPlatformsTitle}" />
+                                <TextBlock MinHeight="25" Grid.Column="1" Grid.Row="6" Text="{Binding Platform}" HorizontalAlignment="Center" 
                                                TextTrimming="CharacterEllipsis" MouseEnter="TextBlock_MouseEnter">
-                                        <TextBlock.ToolTip>
-                                            <ToolTip Content="{Binding Name}"></ToolTip>
-                                        </TextBlock.ToolTip>
-                                    </TextBlock>
-                                </Grid>
-
-                                <Grid Grid.Row="1" Margin="0,10,0,0">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*" />
-                                        <ColumnDefinition Width="2*" />
-                                    </Grid.ColumnDefinitions>
-
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="auto" />
-                                        <RowDefinition Height="auto" />
-                                        <RowDefinition Height="auto" />
-                                        <RowDefinition Height="auto" />
-                                        <RowDefinition Height="auto" />
-                                        <RowDefinition Height="auto" />
-                                        <RowDefinition Height="auto" />
-                                        <RowDefinition Height="auto" />
-                                    </Grid.RowDefinitions>
-
-                                    <TextBlock MinHeight="25" Grid.Column="0" Grid.Row="0" Text="{DynamicResource LOCHowLongToBeatMainStory}" Visibility="{Binding GameHltbData.MainStory, Converter={StaticResource VisibilityZeroConverter}, ConverterParameter=1}" />
-                                    <TextBlock MinHeight="25" Grid.Column="1" Grid.Row="0" Text="{Binding GameHltbData.MainStoryFormat}" HorizontalAlignment="Center" Visibility="{Binding GameHltbData.MainStory, Converter={StaticResource VisibilityZeroConverter}, ConverterParameter=1}" />
-
-                                    <TextBlock MinHeight="25" Grid.Column="0" Grid.Row="1" Text="{DynamicResource LOCHowLongToBeatMainExtra}" Visibility="{Binding GameHltbData.MainExtra, Converter={StaticResource VisibilityZeroConverter}, ConverterParameter=1}" />
-                                    <TextBlock MinHeight="25" Grid.Column="1" Grid.Row="1" Text="{Binding GameHltbData.MainExtraFormat}" HorizontalAlignment="Center" Visibility="{Binding GameHltbData.MainExtra, Converter={StaticResource VisibilityZeroConverter}, ConverterParameter=1}" />
-
-                                    <TextBlock MinHeight="25" Grid.Column="0" Grid.Row="2" Text="{DynamicResource LOCHowLongToBeatCompletionist}" Visibility="{Binding GameHltbData.Completionist, Converter={StaticResource VisibilityZeroConverter}, ConverterParameter=1}" />
-                                    <TextBlock MinHeight="25" Grid.Column="1" Grid.Row="2" Text="{Binding GameHltbData.CompletionistFormat}" HorizontalAlignment="Center" Visibility="{Binding GameHltbData.Completionist, Converter={StaticResource VisibilityZeroConverter}, ConverterParameter=1}" />
-
-                                    <TextBlock MinHeight="25" Grid.Column="0" Grid.Row="3" Text="{DynamicResource LOCHowLongToBeatSolo}" Visibility="{Binding GameHltbData.Solo, Converter={StaticResource VisibilityZeroConverter}, ConverterParameter=1}" />
-                                    <TextBlock MinHeight="25" Grid.Column="1" Grid.Row="3" Text="{Binding GameHltbData.SoloFormat}" HorizontalAlignment="Center" Visibility="{Binding GameHltbData.Solo, Converter={StaticResource VisibilityZeroConverter}, ConverterParameter=1}" />
-
-                                    <TextBlock MinHeight="25" Grid.Column="0" Grid.Row="4" Text="{DynamicResource LOCHowLongToBeatCoOp}" Visibility="{Binding GameHltbData.CoOp, Converter={StaticResource VisibilityZeroConverter}, ConverterParameter=1}" />
-                                    <TextBlock MinHeight="25" Grid.Column="1" Grid.Row="4" Text="{Binding GameHltbData.CoOpFormat}" HorizontalAlignment="Center" Visibility="{Binding GameHltbData.CoOp, Converter={StaticResource VisibilityZeroConverter}, ConverterParameter=1}" />
-
-                                    <TextBlock MinHeight="25" Grid.Column="0" Grid.Row="5" Text="{DynamicResource LOCHowLongToBeatVs}" Visibility="{Binding GameHltbData.Vs, Converter={StaticResource VisibilityZeroConverter}, ConverterParameter=1}" />
-                                    <TextBlock MinHeight="25" Grid.Column="1" Grid.Row="5" Text="{Binding GameHltbData.VsFormat}" HorizontalAlignment="Center" Visibility="{Binding GameHltbData.Vs, Converter={StaticResource VisibilityZeroConverter}, ConverterParameter=1}" />
-
-                                    <TextBlock MinHeight="25" Grid.Column="0" Grid.Row="6" Text="{DynamicResource LOCPlatformsTitle}" />
-                                    <TextBlock MinHeight="25" Grid.Column="1" Grid.Row="6" Text="{Binding Platform}" HorizontalAlignment="Center" 
-                                               TextTrimming="CharacterEllipsis" MouseEnter="TextBlock_MouseEnter">
-                                        <TextBlock.ToolTip>
-                                            <ToolTip Content="{Binding Platform}"></ToolTip>
-                                        </TextBlock.ToolTip>
-                                    </TextBlock>
-                                </Grid>
+                                    <TextBlock.ToolTip>
+                                        <ToolTip Content="{Binding Platform}"></ToolTip>
+                                    </TextBlock.ToolTip>
+                                </TextBlock>
                             </Grid>
                         </Grid>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
-        </DockPanel>
-    </Grid>
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+    </DockPanel>
 </UserControl >
