@@ -18,6 +18,7 @@ using System.Text;
 using CommonPlayniteShared.Common;
 using System.Security.Principal;
 using HowLongToBeat.Models.Api;
+using System.Text.RegularExpressions;
 
 namespace HowLongToBeat.Services
 {
@@ -51,12 +52,15 @@ namespace HowLongToBeat.Services
 
         internal string FileCookies { get; }
 
+        private static string SearchId {get;set;} = null;
+
 
         #region Urls
         private static string UrlBase => "https://howlongtobeat.com";
 
         private static string UrlLogin => UrlBase + "/login";
         private static string UrlLogOut => UrlBase + "/login?t=out";
+        private static string UrlSearchWeb => UrlBase + "/?q={0}";
 
         private static string UrlUser => UrlBase + "/api/user";
         private static string UrlUserStats => UrlUser + "?n={0}&s=stats";
@@ -77,8 +81,8 @@ namespace HowLongToBeat.Services
         #endregion
 
 
-        private bool? _IsConnected = null;
-        public bool? IsConnected { get => _IsConnected; set => SetValue(ref _IsConnected, value); }
+        private bool? isConnected = null;
+        public bool? IsConnected { get => isConnected; set => SetValue(ref isConnected, value); }
 
 
         public string UserLogin = string.Empty;
@@ -98,11 +102,11 @@ namespace HowLongToBeat.Services
 
 
         #region Search
-        private async Task<List<HltbDataUser>> Search(string Name, string Platform = "")
+        private async Task<List<HltbDataUser>> Search(string name, string platform = "")
         {
             try
             {
-                SearchResult searchResult = await ApiSearch(Name, Platform);
+                SearchResult searchResult = await ApiSearch(name, platform);
 
                 List<HltbDataUser> search = searchResult?.Data?.Select(x =>
                     new HltbDataUser
@@ -122,15 +126,43 @@ namespace HowLongToBeat.Services
                             Vs = x.InvestedMp
                         }
                     }
-                )?.ToList() ?? null;
+                )?.ToList() ?? new List<HltbDataUser>();
 
                 return search;
             }
             catch (Exception ex)
             {
                 Common.LogError(ex, false, true, PluginDatabase.PluginName);
-                return null;
+                return new List<HltbDataUser>();
             }
+        }
+
+        private async Task<string> GetSearchId()
+        {
+            if (!SearchId.IsNullOrEmpty())
+            {
+                return SearchId;
+            }
+
+            try
+            {
+                string url = string.Format(UrlSearchWeb, "toto");
+                string response = await Web.DownloadStringData(url);
+
+                string js = Regex.Match(response, @"_app-\w*.js").Value;
+                if (!js.IsNullOrEmpty())
+                {
+                    url = $"https://howlongtobeat.com/_next/static/chunks/pages/{js}";
+                    response = await Web.DownloadStringData(url);
+                    SearchId = Regex.Match(response, "\"/api/search/\".concat[(]\"(\\w*)\"[)]").Groups[1].Value;
+                }
+            }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, false, true, PluginDatabase.PluginName);
+            }
+
+            return SearchId;
         }
 
         public async Task<List<HltbDataUser>> SearchTwoMethod(string Name, string Platform = "")
@@ -175,7 +207,8 @@ namespace HowLongToBeat.Services
                         Content = new StringContent(Serialization.ToJson(searchParam), Encoding.UTF8, "application/json")
                     };
 
-                    HttpResponseMessage response = await httpClient.PostAsync(UrlSearch, requestMessage.Content);
+                    string searchId = await GetSearchId();
+                    HttpResponseMessage response = await httpClient.PostAsync(UrlSearch + "/" + searchId,  requestMessage.Content);
                     string json = await response.Content.ReadAsStringAsync();
 
                     _ = Serialization.TryFromJson(json, out searchResult);
