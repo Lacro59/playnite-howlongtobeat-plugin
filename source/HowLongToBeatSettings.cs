@@ -42,16 +42,16 @@ namespace HowLongToBeat
 
         public bool EnableProgressBarInDataView { get; set; } = true;
 
-        private bool _EnableIntegrationViewItem = true;
-        public bool EnableIntegrationViewItem { get => _EnableIntegrationViewItem; set => SetValue(ref _EnableIntegrationViewItem, value); }
+        private bool enableIntegrationViewItem = true;
+        public bool EnableIntegrationViewItem { get => enableIntegrationViewItem; set => SetValue(ref enableIntegrationViewItem, value); }
 
         public bool IntegrationViewItemOnlyHour { get; set; } = false;
 
-        private bool _EnableIntegrationButton = true;
-        public bool EnableIntegrationButton { get => _EnableIntegrationButton; set => SetValue(ref _EnableIntegrationButton, value); }
+        private bool enableIntegrationButton = true;
+        public bool EnableIntegrationButton { get => enableIntegrationButton; set => SetValue(ref enableIntegrationButton, value); }
 
-        private bool _EnableIntegrationProgressBar = true;
-        public bool EnableIntegrationProgressBar { get => _EnableIntegrationProgressBar; set => SetValue(ref _EnableIntegrationProgressBar, value); }
+        private bool enableIntegrationProgressBar = true;
+        public bool EnableIntegrationProgressBar { get => enableIntegrationProgressBar; set => SetValue(ref enableIntegrationProgressBar, value); }
 
         public bool ProgressBarShowToolTip { get; set; } = true;
         public bool ProgressBarShowTimeAbove { get; set; } = false;
@@ -84,23 +84,23 @@ namespace HowLongToBeat
         public ThemeLinearGradient ThirdMultiLinearGradient { get; set; } = null;
 
 
-        private SolidColorBrush _ColorFirst = new SolidColorBrush(Brushes.DarkCyan.Color);
-        public SolidColorBrush ColorFirst { get => _ColorFirst; set => SetValue(ref _ColorFirst, value); }
+        private SolidColorBrush colorFirst = new SolidColorBrush(Brushes.DarkCyan.Color);
+        public SolidColorBrush ColorFirst { get => colorFirst; set => SetValue(ref colorFirst, value); }
 
-        private SolidColorBrush _ColorSecond = new SolidColorBrush(Brushes.RoyalBlue.Color);
-        public SolidColorBrush ColorSecond { get => _ColorSecond; set => SetValue(ref _ColorSecond, value); }
+        private SolidColorBrush colorSecond = new SolidColorBrush(Brushes.RoyalBlue.Color);
+        public SolidColorBrush ColorSecond { get => colorSecond; set => SetValue(ref colorSecond, value); }
 
-        private SolidColorBrush _ColorThird = new SolidColorBrush(Brushes.ForestGreen.Color);
-        public SolidColorBrush ColorThird { get => _ColorThird; set => SetValue(ref _ColorThird, value); }
+        private SolidColorBrush colorThird = new SolidColorBrush(Brushes.ForestGreen.Color);
+        public SolidColorBrush ColorThird { get => colorThird; set => SetValue(ref colorThird, value); }
 
-        private SolidColorBrush _ColorFirstMulti = new SolidColorBrush(Brushes.DarkCyan.Color);
-        public SolidColorBrush ColorFirstMulti { get => _ColorFirstMulti; set => SetValue(ref _ColorFirstMulti, value); }
+        private SolidColorBrush colorFirstMulti = new SolidColorBrush(Brushes.DarkCyan.Color);
+        public SolidColorBrush ColorFirstMulti { get => colorFirstMulti; set => SetValue(ref colorFirstMulti, value); }
 
-        private SolidColorBrush _ColorSecondMulti = new SolidColorBrush(Brushes.RoyalBlue.Color);
-        public SolidColorBrush ColorSecondMulti { get => _ColorSecondMulti; set => SetValue(ref _ColorSecondMulti, value); }
+        private SolidColorBrush colorSecondMulti = new SolidColorBrush(Brushes.RoyalBlue.Color);
+        public SolidColorBrush ColorSecondMulti { get => colorSecondMulti; set => SetValue(ref colorSecondMulti, value); }
 
-        private SolidColorBrush _ColorThirdMulti = new SolidColorBrush(Brushes.ForestGreen.Color);
-        public SolidColorBrush ColorThirdMulti { get => _ColorThirdMulti; set => SetValue(ref _ColorThirdMulti, value); }
+        private SolidColorBrush colorThirdMulti = new SolidColorBrush(Brushes.ForestGreen.Color);
+        public SolidColorBrush ColorThirdMulti { get => colorThirdMulti; set => SetValue(ref colorThirdMulti, value); }
 
 
         public TitleListSort TitleListSort { get; set; } = TitleListSort.Completion;
@@ -196,8 +196,8 @@ namespace HowLongToBeat
         private readonly HowLongToBeat Plugin;
         private HowLongToBeatSettings EditingClone { get; set; }
 
-        private HowLongToBeatSettings _Settings;
-        public HowLongToBeatSettings Settings { get => _Settings; set => SetValue(ref _Settings, value); }
+        private HowLongToBeatSettings settings;
+        public HowLongToBeatSettings Settings { get => settings; set => SetValue(ref settings, value); }
 
 
         public HowLongToBeatSettingsViewModel(HowLongToBeat plugin)
@@ -443,16 +443,4 @@ namespace HowLongToBeat
             return true;
         }
     }
-}
-
-public class FilterSettings
-{
-    public string Year { get; set; } = "----";
-    public string Storefront { get; set; } = "----";
-    public string Platform { get; set; } = "----";
-    public bool OnlyReplays { get; set; } = false;
-    public bool OnlyNotPlayed { get; set; } = false;
-
-    public bool UsedFilteredGames { get; set; } = true;
-    public bool OnlyNotPlayedGames { get; set; } = false;
 }
