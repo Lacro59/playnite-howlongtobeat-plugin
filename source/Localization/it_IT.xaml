@@ -110,6 +110,7 @@ Se nessuno ha questo stato, richiede il più recente.</sys:String>
     <sys:String x:Key="LOCHowLongToBeatSetCurrentTimeManualAll">Imposta il tuo tempo di gioco attuale per tutte le partite</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatSetCurrentCompletedTimeManualOn">Imposta il tuo tempo di riproduzione attuale completato su</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatSetCurrentMultiTimeManualOn">Imposta il tuo attuale tempo di riproduzione del muli su</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatSetCurrentTime">Vuoi inviare il tuo tempo di riproduzione corrente?</sys:String>
 
