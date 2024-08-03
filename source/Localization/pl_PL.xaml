@@ -110,6 +110,7 @@ Jeżeli żaden z nich nie ma takiego statusu, to pobierze najnowszy.</sys:String
     <sys:String x:Key="LOCHowLongToBeatSetCurrentTimeManualAll">Ustaw swój aktualny czas grania dla wszystkich gier</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatSetCurrentCompletedTimeManualOn">Ustaw swój aktualny czas ukończenia rozgrywki</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatSetCurrentMultiTimeManualOn">Ustaw swój aktualny całkowity czas grania</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatSetCurrentTime">Chcesz wysłać swój aktualny czas grania?</sys:String>
 
