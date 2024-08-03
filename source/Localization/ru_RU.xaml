@@ -110,6 +110,7 @@
     <sys:String x:Key="LOCHowLongToBeatSetCurrentTimeManualAll">Установить текущее время для всех иг</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatSetCurrentCompletedTimeManualOn">Установить текущее время воспроизведения на</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatSetCurrentMultiTimeManualOn">Set your current muli playtime on</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatSetCurrentTime">Хотите отправить свое текущее игровое время?</sys:String>
 
