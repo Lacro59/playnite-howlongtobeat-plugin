@@ -48,7 +48,7 @@ Si ninguno tiene este estado, tomara el más reciente.</sys:String>
     <!-- HowLongToBeatSelect -->
 
     <sys:String x:Key="LOCSelection">Selección de howLongToBeat</sys:String>
-    <sys:String x:Key="LOCHltbUsedVndb">Used Vndb</sys:String>
+    <sys:String x:Key="LOCHltbUsedVndb">Usar VNDB</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatMainStory">Historia principal</sys:String>
     <sys:String x:Key="LOCHowLongToBeatMainExtra">Principal + extra</sys:String>
@@ -110,6 +110,7 @@ Si ninguno tiene este estado, tomara el más reciente.</sys:String>
     <sys:String x:Key="LOCHowLongToBeatSetCurrentTimeManualAll">Establecer tu tiempo de juego actual para todos los juegos</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatSetCurrentCompletedTimeManualOn">Establece tu tiempo de juego actual completado</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatSetCurrentMultiTimeManualOn">Set your current muli playtime on</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatSetCurrentTime">¿Quieres enviar tu tiempo de juego actual?</sys:String>
 

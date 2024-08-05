@@ -110,6 +110,7 @@
     <sys:String x:Key="LOCHowLongToBeatSetCurrentTimeManualAll">为所有游戏设置您当前的游玩时间</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatSetCurrentCompletedTimeManualOn">将您当前完成的游玩时间设置于</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatSetCurrentMultiTimeManualOn">Set your current muli playtime on</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatSetCurrentTime">您想要发送当前游玩时间吗</sys:String>
 

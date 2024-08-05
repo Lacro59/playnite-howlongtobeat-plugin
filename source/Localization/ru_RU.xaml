@@ -29,7 +29,7 @@
     <sys:String x:Key="LOCHowLongToBeatWithoutConfirmation">Без сообщения подтверждения</sys:String>
     <sys:String x:Key="LOCHowLongToBeatEnableSuccessNotification">Включить уведомление об успешном завершении</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatus">Automatically update game status with HowLongToBeat game status when importing user data</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatus">Автоматически обновлять игровой статус при импорте пользовательских данных</sys:String>
     
     <sys:String x:Key="LOCHowLongToBeatAutoData">Загрузка информации об игра</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoAccept">Автоматически выбирать, если найдено только одно совпадение</sys:String>
@@ -48,7 +48,7 @@
     <!-- HowLongToBeatSelect -->
 
     <sys:String x:Key="LOCSelection">Выбор HowLongToBeat</sys:String>
-    <sys:String x:Key="LOCHltbUsedVndb">Used Vndb</sys:String>
+    <sys:String x:Key="LOCHltbUsedVndb">Использовано Vndb</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatMainStory">Основной сюжет</sys:String>
     <sys:String x:Key="LOCHowLongToBeatMainExtra">Сюжет и дополнительные задания</sys:String>
@@ -58,7 +58,7 @@
     <sys:String x:Key="LOCHowLongToBeatCoOp">Кооператив</sys:String>
     <sys:String x:Key="LOCHowLongToBeatVs">ПвП</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatPlaying">Playing</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatPlaying">Играете</sys:String>
 
     <!-- HowLongToBeat -->
 
@@ -74,9 +74,9 @@
     <sys:String x:Key="LOCHowLongToBeatCompleted">Пройдено</sys:String>
 
     <sys:String x:Key="LOCHltbOnlyReplays">Только повторяющиеся</sys:String>
-    <sys:String x:Key="LOCHltbOnlyNotPlayed">Only not played</sys:String>
+    <sys:String x:Key="LOCHltbOnlyNotPlayed">Не запускалось</sys:String>
 
-    <sys:String x:Key="LOCHltbRemainingTime">Remaining time</sys:String>
+    <sys:String x:Key="LOCHltbRemainingTime">Оставшееся время</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatPluginGetUserView">Получение данных пользователя</sys:String>
 
@@ -110,6 +110,7 @@
     <sys:String x:Key="LOCHowLongToBeatSetCurrentTimeManualAll">Установить текущее время для всех иг</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatSetCurrentCompletedTimeManualOn">Установить текущее время воспроизведения на</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatSetCurrentMultiTimeManualOn">Set your current muli playtime on</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatSetCurrentTime">Хотите отправить свое текущее игровое время?</sys:String>
 

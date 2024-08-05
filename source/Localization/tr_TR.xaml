@@ -48,7 +48,7 @@ Hiç biri bu durumda değilse, en son süre alınır.</sys:String>
     <!-- HowLongToBeatSelect -->
 
     <sys:String x:Key="LOCSelection">HowLongToBeat seçimi</sys:String>
-    <sys:String x:Key="LOCHltbUsedVndb">Used Vndb</sys:String>
+    <sys:String x:Key="LOCHltbUsedVndb">Vndb Kullanılmış</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatMainStory">Ana hikaye</sys:String>
     <sys:String x:Key="LOCHowLongToBeatMainExtra">Ana + fazlası</sys:String>
@@ -71,7 +71,7 @@ Hiç biri bu durumda değilse, en son süre alınır.</sys:String>
     
     <sys:String x:Key="LOCHowLongToBeatUserData">Kullanıcı verisi</sys:String>
     <sys:String x:Key="LocHowLongToBeatPlayniteData">Playnite verisi</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatCompleted">Tamamlana</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatCompleted">Tamamlanma</sys:String>
 
     <sys:String x:Key="LOCHltbOnlyReplays">Sadece yeniden oynamalar</sys:String>
     <sys:String x:Key="LOCHltbOnlyNotPlayed">Sadece oynanmayan</sys:String>
@@ -110,6 +110,7 @@ Hiç biri bu durumda değilse, en son süre alınır.</sys:String>
     <sys:String x:Key="LOCHowLongToBeatSetCurrentTimeManualAll">Tüm oyunlar için şu anki oyun süresini ayarla</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatSetCurrentCompletedTimeManualOn">Mevcut tamamlanmış oyun süresini şu ayarla:</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatSetCurrentMultiTimeManualOn">Mevcut çoklu oynatma süresini açık olarak ayarla</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatSetCurrentTime">Şu anki oyun süresini göndermek ister misiniz?</sys:String>
 
