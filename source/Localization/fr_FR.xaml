@@ -110,7 +110,7 @@ Si aucun n'a ce statut, il prend le plus récent.</sys:String>
     <sys:String x:Key="LOCHowLongToBeatSetCurrentTimeManualAll">Définissez votre temps de jeu actuel pour tous les jeux</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatSetCurrentCompletedTimeManualOn">Définir votre temps de jeu actuel terminé sur</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatSetCurrentMultiTimeManualOn">Set your current muli playtime on</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatSetCurrentMultiTimeManualOn">Définir votre temps de jeu muli actuel sur</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatSetCurrentTime">Voulez-vous envoyer votre temps de jeu actuel ?</sys:String>
 
