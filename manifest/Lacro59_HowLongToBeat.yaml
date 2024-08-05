@@ -260,3 +260,12 @@ Packages:
       - Added VNDB data
       - UI optimizations
       - Added an option to completion status in Playnite from HLTB
+  - Version: 3.4
+    RequiredApiVersion: 6.11.0
+    ReleaseDate: 2024-08-05
+    PackageUrl: https://github.com/Lacro59/playnite-howlongtobeat-plugin/releases/download/v3.4/playnite-howlongtobeat-plugin_3_4.pext
+    Changelog:
+      - 'Updated: Localizations'
+      - 'Fixed: Issue on search'
+      - 'Fixed: UI size'
+      - 'Added: Data and menu according to game type from HTLB (data must be updated)'
