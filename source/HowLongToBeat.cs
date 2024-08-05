@@ -231,6 +231,8 @@ namespace HowLongToBeat
 
             if (gameHowLongToBeat.HasData || !gameHowLongToBeat.HasDataEmpty)
             {
+                HltbDataUser gameData = gameHowLongToBeat?.Items?.FirstOrDefault();
+
                 gameMenuItems.Add(new GameMenuItem
                 {
                     MenuSection = ResourceProvider.GetString("LOCHowLongToBeat"),
@@ -267,9 +269,8 @@ namespace HowLongToBeat
                     });
 
                     // Set current time manually in Complet
-                    if (GameMenu.Playtime > 0)
+                    if (gameData != null && GameMenu.Playtime > 0)
                     {
-                        HltbDataUser gameData = gameHowLongToBeat?.Items?.FirstOrDefault();
                         if (gameData.GameType != GameType.Multi && GameMenu.LastActivity != null)
                         {
                             gameMenuItems.Add(new GameMenuItem
