@@ -13,7 +13,7 @@ namespace HowLongToBeat.Models
 
 
         [DontSerialize]
-        public override bool HasData => Items?.Count > 0 && Items?.First() != null && !Items.First().IsEmpty;
+        public override bool HasData => Items?.Count > 0 && Items?.First() != null;
 
         [DontSerialize]
         public bool HasDataEmpty => Items?.Count > 0 && Items?.First() != null && Items.First().IsEmpty;

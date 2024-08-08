@@ -212,7 +212,6 @@ namespace HowLongToBeat
                         try
                         {
                             gameHowLongToBeat = PluginDatabase.Get(GameMenu);
-
                             if (gameHowLongToBeat.HasData || gameHowLongToBeat.HasDataEmpty)
                             {
                                 HowLongToBeatView ViewExtension = new HowLongToBeatView(gameHowLongToBeat);
@@ -229,7 +228,7 @@ namespace HowLongToBeat
                 }
             };
 
-            if (gameHowLongToBeat.HasData || !gameHowLongToBeat.HasDataEmpty)
+            if (gameHowLongToBeat.HasData || gameHowLongToBeat.HasDataEmpty)
             {
                 HltbDataUser gameData = gameHowLongToBeat?.Items?.FirstOrDefault();
 

@@ -83,6 +83,12 @@ namespace HowLongToBeat.Views
                 ((HowLongToBeatViewData)DataContext).SourceLink = gameHowLongToBeat.SourceLink;
             }
 
+            var Items = gameHowLongToBeat.Items;
+            var a = Items?.Count > 0 && Items?.First() != null && !Items.First().IsEmpty;
+            var aa = Items?.Count > 0;
+            var aaa = Items?.First() != null;
+            var aaaa = !Items.First().IsEmpty;
+
             if (!gameHowLongToBeat.HasData)
             {
                 PART_GridProgressBar.Visibility = Visibility.Hidden;
