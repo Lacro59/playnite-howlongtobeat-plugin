@@ -269,3 +269,10 @@ Packages:
       - 'Fixed: Issue on search'
       - 'Fixed: UI size'
       - 'Added: Data and menu according to game type from HTLB (data must be updated)'
+  - Version: 3.4.1
+    RequiredApiVersion: 6.11.0
+    ReleaseDate: 2024-08-09
+    PackageUrl: https://github.com/Lacro59/playnite-howlongtobeat-plugin/releases/download/v3.4.1/playnite-howlongtobeat-plugin_3_4_1.pext
+    Changelog:
+      - 'Updated: Localizations'
+      - 'Fixed: Issue with game without HLTB data'
