@@ -29,7 +29,7 @@
     <sys:String x:Key="LOCHowLongToBeatWithoutConfirmation">无需确认</sys:String>
     <sys:String x:Key="LOCHowLongToBeatEnableSuccessNotification">启用成功通知</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatus">Automatically update game status with HowLongToBeat game status when importing user data</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatus">导入用户数据时自动更新HowLongToBeat游戏状态</sys:String>
     
     <sys:String x:Key="LOCHowLongToBeatAutoData">下载数据</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoAccept">当只搜索到一个游戏时自</sys:String>
@@ -48,7 +48,7 @@
     <!-- HowLongToBeatSelect -->
 
     <sys:String x:Key="LOCSelection">攻关历时</sys:String>
-    <sys:String x:Key="LOCHltbUsedVndb">Used Vndb</sys:String>
+    <sys:String x:Key="LOCHltbUsedVndb">已使用 Vndb</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatMainStory">主线</sys:String>
     <sys:String x:Key="LOCHowLongToBeatMainExtra">主线+支线</sys:String>
@@ -58,7 +58,7 @@
     <sys:String x:Key="LOCHowLongToBeatCoOp">合作</sys:String>
     <sys:String x:Key="LOCHowLongToBeatVs">竞</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatPlaying">Playing</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatPlaying">正在游玩</sys:String>
 
     <!-- HowLongToBeat -->
 
@@ -74,9 +74,9 @@
     <sys:String x:Key="LOCHowLongToBeatCompleted">已完成</sys:String>
 
     <sys:String x:Key="LOCHltbOnlyReplays">仅回放</sys:String>
-    <sys:String x:Key="LOCHltbOnlyNotPlayed">Only not played</sys:String>
+    <sys:String x:Key="LOCHltbOnlyNotPlayed">仅未游玩游戏</sys:String>
 
-    <sys:String x:Key="LOCHltbRemainingTime">Remaining time</sys:String>
+    <sys:String x:Key="LOCHltbRemainingTime">剩余时间</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatPluginGetUserView">获取用户数据</sys:String>
 
@@ -91,7 +91,7 @@
     <sys:String x:Key="LOCHltbAvgGameByMonth">每月平均游戏</sys:String>
     <sys:String x:Key="LOCHltbCountGameBeatenBeforeTime">时间前通过的游戏数量</sys:String>
     <sys:String x:Key="LOCHltbCountGameBeatenAfterTime">时间后通过的游戏数量</sys:String>
-    <sys:String x:Key="LOCHltbCountGameBeatenReplays">Number of games beaten (replayed)</sys:String>
+    <sys:String x:Key="LOCHltbCountGameBeatenReplays">被打过的游戏数量 (重放)</sys:String>
     <sys:String x:Key="LOCHltbCountGameRetired">已退役游戏数量</sys:String>
 
     <sys:String x:Key="LOCHltbUsedFilteredGames">当前已使用的筛选游戏</sys:String>
@@ -110,11 +110,11 @@
     <sys:String x:Key="LOCHowLongToBeatSetCurrentTimeManualAll">为所有游戏设置您当前的游玩时间</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatSetCurrentCompletedTimeManualOn">将您当前完成的游玩时间设置于</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatSetCurrentMultiTimeManualOn">Set your current muli playtime on</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatSetCurrentMultiTimeManualOn">将您当前完成的游玩时间设置于</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatSetCurrentTime">您想要发送当前游玩时间吗</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatErrorNoPlatform">Cannot submit data for a game without platform ({0})</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatErrorNoPlatform">无法提交没有平台的游戏数据({0})</sys:String>
     <sys:String x:Key="LOCHowLongToBeatErrorNoPlatformDefaultUsed" xml:space="preserve">Game ({1}) without platform ({0}) defined in plugin settings.
 Please configure one.
 Default used (PC)</sys:String>
@@ -135,22 +135,21 @@ Default used (PC)</sys:String>
 
     <!-- StartPage -->
 
-    <sys:String x:Key="LOCHtlbChartStats">Chart stats</sys:String>
-    <sys:String x:Key="LOCHtlbChartStatsChartTitle">Show title</sys:String>
-    <sys:String x:Key="LOCHtlbChartStatsChartLabels">Show labels on horizontal axis</sys:String>
-    <sys:String x:Key="LOCHtlbChartStatsChartLabelsOrdinates">Show labels on vertical axis</sys:String>
-    <sys:String x:Key="LOCHtlbChartStatsChartType">Chart type</sys:String>
-    <sys:String x:Key="LOCHtlbChartStatsChartDataNumber">Data number</sys:String>
+    <sys:String x:Key="LOCHtlbChartStats">图表统计</sys:String>
+    <sys:String x:Key="LOCHtlbChartStatsChartTitle">显示标题</sys:String>
+    <sys:String x:Key="LOCHtlbChartStatsChartLabels">在横坐标轴上显示标签</sys:String>
+    <sys:String x:Key="LOCHtlbChartStatsChartLabelsOrdinates">在竖直坐标轴上显示标签</sys:String>
+    <sys:String x:Key="LOCHtlbChartStatsChartType">图形类型</sys:String>
+    <sys:String x:Key="LOCHtlbChartStatsChartDataNumber">数据编号</sys:String>
 
 
     <!-- HowLongToBeatSearch -->
 
-    <sys:String x:Key="LOCHowLongToBeatSearchDescription">Search on HowLongToBeat data</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatSearchHint" xml:space="preserve">Parameters:
-    -time		Time to beat (ex:-time=5h / -time=&lt;50min / -time=&gt;50s / -time=10min&lt;&gt;5h)
-    -np		You didn't play the game
-    -fav		The game must be a favorite
-    -stores={n}	Filter by store name (ex:-stores=steam / -stores=steam,epic)
-    -status={n}	Filter by status name (ex:-status=played / -status=played,playing)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatSearchDescription">用攻关历时数据搜索游戏</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatSearchHint" xml:space="preserve">Parameters:    -min                Your Pc has minimum requirements    -rec                Your Pc has recommended requirements
+    -any                Your Pc has minimum or recommended requirements
+    -np                 You didn't play the game
+    -fav                The game must be a favorite
+    -stores={n}     Filter by store name (ex:-stores=steam / -stores=steam,epic)</sys:String>
 
 </ResourceDictionary>
