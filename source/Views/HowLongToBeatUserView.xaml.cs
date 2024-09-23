@@ -46,7 +46,7 @@ namespace HowLongToBeat.Views
             Plugin = plugin;
 
             InitializeComponent();
-            this.DataContext = UserViewDataContext;
+            DataContext = UserViewDataContext;
 
 
             if (!PluginDatabase.PluginSettings.Settings.EnableProgressBarInDataView)
@@ -701,7 +701,7 @@ namespace HowLongToBeat.Views
         public long RemainingTime => (PluginDatabase.Get(GameId, true)?.GetData()?.GameHltbData?.TimeToBeat ?? 0) - (long)Playtime > 0 ? PluginDatabase.Get(GameId, true).GetData().GameHltbData.TimeToBeat - (long)Playtime : 0;
         public string RemainingTimeFormat => RemainingTime > 0 ? (string)PlayTimeToStringConverterWithZero.Convert(RemainingTime, null, null, CultureInfo.CurrentCulture) : string.Empty;
 
-        public RelayCommand<Guid> GoToGame => PluginDatabase.GoToGame;
+        public RelayCommand<Guid> GoToGame => Commands.GoToGame;
 
         public bool GameExist => API.Instance.Database.Games.Get(GameId) != null;
     }

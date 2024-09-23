@@ -7,6 +7,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Globalization;
 using CommonPluginsShared.Extensions;
+using CommonPluginsShared;
 
 namespace HowLongToBeat.Models
 {
@@ -70,7 +71,7 @@ namespace HowLongToBeat.Models
         }
 
         [DontSerialize]
-        public RelayCommand<Guid> GoToGame => PluginDatabase.GoToGame;
+        public RelayCommand<Guid> GoToGame => Commands.GoToGame;
 
         [DontSerialize]
         public bool GameExist => API.Instance.Database.Games.Get(GameId) != null;
