@@ -92,27 +92,34 @@ namespace HowLongToBeat.Views
 
 
                 PART_UserDataLoad.Visibility = Visibility.Visible;
-                PART_Data.Visibility = Visibility.Hidden;
+                PART_Data.Visibility = Visibility.Collapsed;
                 _ = Task.Run(() =>
                 {
-                    List<Task> TaskList = new List<Task>
+                    try
                     {
-                        SetChartDataStore(),
-                        SetChartDataYear(),
-                        SetChartData(),
-                        SetStats()
-                    };
-                    Task.WaitAll(TaskList.ToArray());
-
+                        List<Task> TaskList = new List<Task>
+                        {
+                            SetChartDataStore(),
+                            SetChartDataYear(),
+                            SetChartData(),
+                            SetStats()
+                        };
+                        Task.WaitAll(TaskList.ToArray());
+                    }
+                    catch (Exception ex)
+                    {
+                        Common.LogError(ex, false, false, PluginDatabase.PluginName);
+                    }
+                })
+                .ContinueWith((antecedent) =>
+                {
                     Application.Current.Dispatcher?.Invoke(() =>
                     {
                         PART_UserDataLoad.Visibility = Visibility.Collapsed;
                         PART_Data.Visibility = Visibility.Visible;
+                        PART_LvDataContener.IsVisibleChanged += PART_PlayniteData_IsVisibleChanged;
                     });
                 });
-
-
-                PART_LvDataContener.IsVisibleChanged += PART_PlayniteData_IsVisibleChanged;
             }
             else
             {
@@ -397,7 +404,7 @@ namespace HowLongToBeat.Views
             try
             {
                 //PART_DataLoad.Visibility = Visibility.Visible;
-                //PART_LvDataContener.Visibility = Visibility.Hidden;
+                //PART_LvDataContener.Visibility = Visibility.Collapsed;
 
                 if (ListViewDataGames.ItemsSource == null)
                 {
@@ -419,6 +426,9 @@ namespace HowLongToBeat.Views
             {
                 Common.LogError(ex, false, false, PluginDatabase.PluginName);
             }
+
+            PART_DataLoad.Visibility = Visibility.Collapsed;
+            PART_LvDataContener.Visibility = Visibility.Visible;
         }
 
 
