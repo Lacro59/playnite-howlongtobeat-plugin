@@ -75,9 +75,9 @@ namespace HowLongToBeat.Controls
 
             if (gameHowLongToBeat.HasData || gameHowLongToBeat.HasDataEmpty)
             {
-                var ViewExtension = new HowLongToBeatView(gameHowLongToBeat);
+                HowLongToBeatView ViewExtension = new HowLongToBeatView(gameHowLongToBeat);
                 Window windowExtension = PlayniteUiHelper.CreateExtensionWindow(PluginDatabase.PluginName, ViewExtension);
-                windowExtension.ShowDialog();
+                _ = windowExtension.ShowDialog();
             }
         }
         #endregion
