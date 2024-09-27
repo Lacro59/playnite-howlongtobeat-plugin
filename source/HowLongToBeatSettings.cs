@@ -11,28 +11,23 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using System.Windows;
+using CommonPluginsShared.Plugins;
 
 namespace HowLongToBeat
 {
-    public class HowLongToBeatSettings : ObservableObject
+    public class HowLongToBeatSettings : PluginSettings
     {
         #region Settings variables
-        public bool MenuInExtensions { get; set; } = true;
-        public DateTime LastAutoLibUpdateAssetsDownload { get; set; } = DateTime.Now;
-
         public bool EnableIntegrationButtonHeader { get; set; } = false;
         public bool EnableIntegrationButtonSide { get; set; } = true;
 
         public string UserLogin { get; set; } = string.Empty;
-
-        public bool EnableTag { get; set; } = false;
 
         public bool ShowHltbImg { get; set; } = true;
 
         public bool AutoSetCurrentPlayTime { get; set; } = false;
         public bool AutoSetCurrentPlayTimeWithoutConfirmation { get; set; } = true;
 
-        public bool AutoImport { get; set; } = true;
         public bool AutoAccept { get; set; } = true;
         public bool ShowWhenMismatch { get; set; } = false;
         public bool UseMatchValue { get; set; } = false;
@@ -142,60 +137,55 @@ namespace HowLongToBeat
         // Playnite serializes settings object to a JSON object and saves it as text file.
         // If you want to exclude some property from being saved then use `JsonDontSerialize` ignore attribute.
         #region Variables exposed
-        private bool _HasData = false;
+        private long mainStory = 0;
         [DontSerialize]
-        public bool HasData { get => _HasData; set => SetValue(ref _HasData, value); }
+        public long MainStory { get => mainStory; set => SetValue(ref mainStory, value); }
+        private string mainStoryFormat = string.Empty;
+        [DontSerialize]
+        public string MainStoryFormat { get => mainStoryFormat; set => SetValue(ref mainStoryFormat, value); }
 
+        private long mainExtra = 0;
+        [DontSerialize]
+        public long MainExtra { get => mainExtra; set => SetValue(ref mainExtra, value); }
+        private string mainExtraFormat = string.Empty;
+        [DontSerialize]
+        public string MainExtraFormat { get => mainExtraFormat; set => SetValue(ref mainExtraFormat, value); }
 
-        private long _MainStory = 0;
+        private long completionist = 0;
         [DontSerialize]
-        public long MainStory { get => _MainStory; set => SetValue(ref _MainStory, value); }
-        private string _MainStoryFormat = string.Empty;
-        [DontSerialize]
-        public string MainStoryFormat { get => _MainStoryFormat; set => SetValue(ref _MainStoryFormat, value); }
-
-        private long _MainExtra = 0;
-        [DontSerialize]
-        public long MainExtra { get => _MainExtra; set => SetValue(ref _MainExtra, value); }
-        private string _MainExtraFormat = string.Empty;
-        [DontSerialize]
-        public string MainExtraFormat { get => _MainExtraFormat; set => SetValue(ref _MainExtraFormat, value); }
-
-        private long _Completionist = 0;
-        [DontSerialize]
-        public long Completionist { get => _Completionist; set => SetValue(ref _Completionist, value); }
+        public long Completionist { get => completionist; set => SetValue(ref completionist, value); }
         private string _CompletionistFormat = string.Empty;
         [DontSerialize]
         public string CompletionistFormat { get => _CompletionistFormat; set => SetValue(ref _CompletionistFormat, value); }
 
-        private long _Solo = 0;
+        private long solo = 0;
         [DontSerialize]
-        public long Solo { get => _Solo; set => SetValue(ref _Solo, value); }
-        private string _SoloFormat = string.Empty;
+        public long Solo { get => solo; set => SetValue(ref solo, value); }
+        private string soloFormat = string.Empty;
         [DontSerialize]
-        public string SoloFormat { get => _SoloFormat; set => SetValue(ref _SoloFormat, value); }
+        public string SoloFormat { get => soloFormat; set => SetValue(ref soloFormat, value); }
 
-        private long _CoOp = 0;
+        private long coOp = 0;
         [DontSerialize]
-        public long CoOp { get => _CoOp; set => SetValue(ref _CoOp, value); }
+        public long CoOp { get => coOp; set => SetValue(ref coOp, value); }
         private string _CoOpFormat = string.Empty;
         [DontSerialize]
         public string CoOpFormat { get => _CoOpFormat; set => SetValue(ref _CoOpFormat, value); }
 
-        private long _Vs = 0;
+        private long vs = 0;
         [DontSerialize]
-        public long Vs { get => _Vs; set => SetValue(ref _Vs, value); }
-        private string _VsFormat = string.Empty;
+        public long Vs { get => vs; set => SetValue(ref vs, value); }
+        private string vsFormat = string.Empty;
         [DontSerialize]
-        public string VsFormat { get => _VsFormat; set => SetValue(ref _VsFormat, value); }
+        public string VsFormat { get => vsFormat; set => SetValue(ref vsFormat, value); }
 
 
-        private long _TimeToBeat = 0;
+        private long timeToBeat = 0;
         [DontSerialize]
-        public long TimeToBeat { get => _TimeToBeat; set => SetValue(ref _TimeToBeat, value); }
-        private string _TimeToBeatFormat = string.Empty;
+        public long TimeToBeat { get => timeToBeat; set => SetValue(ref timeToBeat, value); }
+        private string timeToBeatFormat = string.Empty;
         [DontSerialize]
-        public string TimeToBeatFormat { get => _TimeToBeatFormat; set => SetValue(ref _TimeToBeatFormat, value); }
+        public string TimeToBeatFormat { get => timeToBeatFormat; set => SetValue(ref timeToBeatFormat, value); }
         #endregion  
     }
 
