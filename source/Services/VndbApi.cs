@@ -41,7 +41,7 @@ namespace HowLongToBeat.Services
                         UrlImg = x.Image?.Url,
                         GameHltbData = new HltbData
                         {
-                            MainStory = x.LengthMinutes * 60 ?? (x.Length == null ? 0 : GetTime((int)x.Length))
+                            MainStoryClassic = x.LengthMinutes * 60 ?? (x.Length == null ? 0 : GetTime((int)x.Length))
                         }
                     });
                 });

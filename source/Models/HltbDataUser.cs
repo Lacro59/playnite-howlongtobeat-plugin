@@ -1,4 +1,5 @@
-﻿using Playnite.SDK.Data;
+﻿using Playnite.SDK;
+using Playnite.SDK.Data;
 using System.Collections.Generic;
 
 namespace HowLongToBeat.Models
@@ -17,15 +18,15 @@ namespace HowLongToBeat.Models
         public HltbData GameHltbDataByType => GameType == GameType.Multi
                     ? new HltbData
                     {
-                        Solo = GameHltbData.Solo,
-                        CoOp = GameHltbData.CoOp,
-                        Vs = GameHltbData.Vs
+                        SoloClassic = GameHltbData.Solo,
+                        CoOpClassic = GameHltbData.CoOp,
+                        VsClassic = GameHltbData.Vs
                     }
                     : new HltbData
                     {
-                        MainStory = GameHltbData.MainStory,
-                        MainExtra = GameHltbData.MainExtra,
-                        Completionist = GameHltbData.Completionist
+                        MainStoryClassic = GameHltbData.MainStory,
+                        MainExtraClassic = GameHltbData.MainExtra,
+                        CompletionistClassic = GameHltbData.Completionist
                     };
 
         [DontSerialize]
@@ -38,5 +39,10 @@ namespace HowLongToBeat.Models
     public enum GameType
     {
         Game, Multi, Compil
+    }
+
+    public enum DataType
+    {
+        Classic, Average, Median, Rushed, Leisure
     }
 }

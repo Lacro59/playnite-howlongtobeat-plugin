@@ -75,7 +75,7 @@ namespace HowLongToBeat.Services
 
         private static string UrlGameImg => UrlBase + "/games/{0}";
 
-        private static string UrlGame => UrlBase + "/game/{0}";
+        private static string UrlGame => UrlBase + "/game?id={0}";
 
         private static string UrlExportAll => UrlBase + "/user_export?all=1";
         #endregion
@@ -101,6 +101,25 @@ namespace HowLongToBeat.Services
         }
 
 
+        private async Task<GameData> GetGameData(string id)
+        {
+            try
+            {
+                string response = await Web.DownloadStringData(string.Format(UrlGame, id));
+                string jsonData = Tools.GetJsonInString(response, "<script id=\"__NEXT_DATA__\" type=\"application/json\">", "</script></body>");
+                return Serialization.TryFromJson(jsonData, out NEXT_DATA next_data) && next_data?.Props?.PageProps?.Game?.Data?.Game != null
+                    ? next_data.Props.PageProps.Game.Data.Game.FirstOrDefault()
+                    : null;
+            }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, false, true, PluginDatabase.PluginName);
+            }
+
+            return null;
+        }
+
+
         #region Search
         private async Task<List<HltbDataUser>> Search(string name, string platform = "")
         {
@@ -120,15 +139,54 @@ namespace HowLongToBeat.Services
                         GameHltbData = new HltbData
                         {
                             GameType = x.GameType.IsEqual("game") ? GameType.Game : x.GameType.IsEqual("multi") ? GameType.Multi : GameType.Compil,
-                            MainStory = x.CompMain,
-                            MainExtra = x.CompPlus,
-                            Completionist = x.Comp100,
-                            Solo = x.CompAll,
-                            CoOp = x.InvestedCo,
-                            Vs = x.InvestedMp
+                            MainStoryClassic = x.CompMain,
+                            MainExtraClassic = x.CompPlus,
+                            CompletionistClassic = x.Comp100,
+                            SoloClassic = x.CompAll,
+                            CoOpClassic = x.InvestedCo,
+                            VsClassic = x.InvestedMp
                         }
                     }
                 )?.ToList() ?? new List<HltbDataUser>();
+
+                search.ForEach(x =>
+                {
+                    GameData gameData = GetGameData(x.Id).GetAwaiter().GetResult();
+                    if (gameData != null)
+                    {
+                        x.GameHltbData.MainStoryMedian = gameData.CompMainMed;
+                        x.GameHltbData.MainExtraMedian = gameData.CompPlusMed;
+                        x.GameHltbData.CompletionistMedian = gameData.Comp100Med;
+                        x.GameHltbData.SoloMedian = gameData.CompAllMed;
+                        x.GameHltbData.CoOpMedian = gameData.InvestedCoMed;
+                        x.GameHltbData.VsMedian = gameData.InvestedMpMed;
+
+                        x.GameHltbData.MainStoryAverage = gameData.CompMainAvg;
+                        x.GameHltbData.MainExtraAverage = gameData.CompPlusAvg;
+                        x.GameHltbData.CompletionistAverage = gameData.Comp100Avg;
+                        x.GameHltbData.SoloAverage = gameData.CompAllAvg;
+                        x.GameHltbData.CoOpAverage = gameData.InvestedCoAvg;
+                        x.GameHltbData.VsAverage = gameData.InvestedMpAvg;
+
+                        x.GameHltbData.MainStoryRushed = gameData.CompMainL;
+                        x.GameHltbData.MainExtraRushed = gameData.CompPlusL;
+                        x.GameHltbData.CompletionistRushed = gameData.Comp100L;
+                        x.GameHltbData.SoloRushed = gameData.CompAllL;
+                        x.GameHltbData.CoOpRushed = gameData.InvestedCoL;
+                        x.GameHltbData.VsRushed = gameData.InvestedMpL;
+
+                        x.GameHltbData.MainStoryLeisure = gameData.CompMainH;
+                        x.GameHltbData.MainExtraLeisure = gameData.CompPlusH;
+                        x.GameHltbData.CompletionistLeisure = gameData.Comp100H;
+                        x.GameHltbData.SoloLeisure = gameData.CompAllH;
+                        x.GameHltbData.CoOpLeisure = gameData.InvestedCoH;
+                        x.GameHltbData.VsLeisure = gameData.InvestedMpH;
+                    }
+                    else
+                    {
+                        Logger.Warn($"No GameData find for {x.Name} with {x.Id}");
+                    }
+                });
 
                 return search;
             }
@@ -395,12 +453,12 @@ namespace HowLongToBeat.Services
                     HltbUserData = new HltbData
                     {
                         GameType = gamesList.GameType.IsEqual("game") ? GameType.Game : gamesList.GameType.IsEqual("multi") ? GameType.Multi : GameType.Compil,
-                        MainStory = gamesList.CompMain,
-                        MainExtra = gamesList.CompPlus,
-                        Completionist = gamesList.Comp100,
-                        Solo = 0,
-                        CoOp = gamesList.InvestedCo,
-                        Vs = gamesList.InvestedMp
+                        MainStoryClassic = gamesList.CompMain,
+                        MainExtraClassic = gamesList.CompPlus,
+                        CompletionistClassic = gamesList.Comp100,
+                        SoloClassic = 0,
+                        CoOpClassic = gamesList.InvestedCo,
+                        VsClassic = gamesList.InvestedMp
                     },
                     GameStatuses = new List<GameStatus>()
                 };

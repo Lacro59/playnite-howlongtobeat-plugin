@@ -38,6 +38,14 @@ namespace HowLongToBeat
         public bool UseMatchValue { get; set; } = false;
         public double MatchValue { get; set; } = 95;
 
+
+        public bool UseHtltbClassic { get; set; } = true;
+        public bool UseHtltbAverage { get; set; } = false;
+        public bool UseHtltbMedian { get; set; } = false;
+        public bool UseHtltbRushed { get; set; } = false;
+        public bool UseHtltbLeisure { get; set; } = false;
+
+
         public bool EnableSucessNotification { get; set; } = true;
 
         public bool EnableProgressBarInDataView { get; set; } = true;
@@ -107,6 +115,7 @@ namespace HowLongToBeat
         public bool IsAsc { get; set; } = false;
 
         // TODO TMP
+        public bool IsConvertedDb { get; set; } = false;
         public bool IsConverted { get; set; } = false;
         public List<Storefront> StorefrontElements { get; set; } = new List<Storefront>();
         // TODO TMP

@@ -65,6 +65,8 @@
                             <RowDefinition Height="*" />
                         </Grid.RowDefinitions>
 
+                        <TextBlock Name="Hltb_DataType" Grid.Column="2" Grid.Row="0" FontSize="16" Style="{DynamicResource BaseTextBlockStyle}" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                        
                         <TextBlock Name="Hltb_El0_tb" Grid.Column="3" Grid.Row="0" FontSize="16" Style="{DynamicResource BaseTextBlockStyle}" VerticalAlignment="Center" HorizontalAlignment="Center" />
                         <RadioButton GroupName="DataUser" Checked="Hltb_El0_Checked" Name="Hltb_El0" Grid.Column="3" Grid.Row="0" FontSize="16"  VerticalAlignment="Center" HorizontalAlignment="Center" />
                         <RadioButton GroupName="DataUser" Checked="Hltb_El0_Checked" Name="Hltb_El0_1" Margin="10,0,0,0" Visibility="Collapsed" Grid.Column="4" Grid.Row="0" FontSize="16"  VerticalAlignment="Center" HorizontalAlignment="Center" />
