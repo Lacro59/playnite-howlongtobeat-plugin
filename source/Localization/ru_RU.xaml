@@ -17,6 +17,13 @@
 
     <sys:String x:Key="LOCHltbEnableProgressBarInDataView">Просмотр индикатора прогресса при просмотре данных Playnite</sys:String>
 
+    <sys:String x:Key="LOCHltbSelectDataType">Select the data type:</sys:String>
+    <sys:String x:Key="LOCHltbSelectDataTypeClassic">Classic</sys:String>
+    <sys:String x:Key="LOCHltbSelectDataTypeAverage">Average</sys:String>
+    <sys:String x:Key="LOCHltbSelectDataTypeMedian">Median</sys:String>
+    <sys:String x:Key="LOCHltbSelectDataTypeRushed">Rushed</sys:String>
+    <sys:String x:Key="LOCHltbSelectDataTypeLeisure">Leisure</sys:String>
+
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarOptions">Настройки шкалы прогресса</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">Показывать время на шкале прогресса</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTime">Показывать метки времени в строке прогресса</sys:String>
