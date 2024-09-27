@@ -65,7 +65,7 @@ namespace HowLongToBeat.Controls
             GameHowLongToBeat gameHowLongToBeat = (GameHowLongToBeat)PluginGameData;
 
             PlayTimeToStringConverterWithZero converter = new PlayTimeToStringConverterWithZero();
-            PlayTimeFormat playTimeFormat = PluginDatabase.PluginSettings.Settings.IntegrationViewItemOnlyHour ? PlayTimeFormat.OnlyHour : PlayTimeFormat.DefaultFormat;
+            PlayTimeFormat playTimeFormat = PluginDatabase.PluginSettings.Settings.IntegrationViewItemOnlyHour ? PlayTimeFormat.RoundHour : PlayTimeFormat.DefaultFormat;
             ControlDataContext.Text = (string)converter.Convert(gameHowLongToBeat.GetData().GameHltbData.TimeToBeat, null, playTimeFormat, CultureInfo.CurrentCulture);
         }
     }

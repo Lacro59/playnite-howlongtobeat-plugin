@@ -73,17 +73,17 @@ namespace HowLongToBeat.Models
         public long MainStoryLeisure { get; set; } = 0;
 
         [DontSerialize]
-        public string MainStoryFormat => MainStory == 0 ? "--" : (string)Converter.Convert(MainStory, null, null, CultureInfo.CurrentCulture);
+        public string MainStoryFormat => MainStory == 0 ? "--" : (string)Converter.Convert(MainStory, null, PluginDatabase.PluginSettings.Settings.IntegrationViewItemOnlyHour ? PlayTimeFormat.RoundHour : PlayTimeFormat.DefaultFormat, CultureInfo.CurrentCulture);
         [DontSerialize]
-        public string MainStoryClassicFormat => MainStoryClassic == 0 ? "--" : (string)Converter.Convert(MainStoryClassic, null, null, CultureInfo.CurrentCulture);
+        public string MainStoryClassicFormat => MainStoryClassic == 0 ? "--" : (string)Converter.Convert(MainStoryClassic, null, PluginDatabase.PluginSettings.Settings.IntegrationViewItemOnlyHour ? PlayTimeFormat.RoundHour : PlayTimeFormat.DefaultFormat, CultureInfo.CurrentCulture);
         [DontSerialize]
-        public string MainStoryMedianFormat => MainStoryMedian == 0 ? "--" : (string)Converter.Convert(MainStoryMedian, null, null, CultureInfo.CurrentCulture);     
+        public string MainStoryMedianFormat => MainStoryMedian == 0 ? "--" : (string)Converter.Convert(MainStoryMedian, null, PluginDatabase.PluginSettings.Settings.IntegrationViewItemOnlyHour ? PlayTimeFormat.RoundHour : PlayTimeFormat.DefaultFormat, CultureInfo.CurrentCulture);
         [DontSerialize]
-        public string MainStoryAverageFormat => MainStoryAverage == 0 ? "--" : (string)Converter.Convert(MainStoryAverage, null, null, CultureInfo.CurrentCulture);
+        public string MainStoryAverageFormat => MainStoryAverage == 0 ? "--" : (string)Converter.Convert(MainStoryAverage, null, PluginDatabase.PluginSettings.Settings.IntegrationViewItemOnlyHour ? PlayTimeFormat.RoundHour : PlayTimeFormat.DefaultFormat, CultureInfo.CurrentCulture);
         [DontSerialize]
-        public string MainStoryRushedFormat => MainStoryRushed == 0 ? "--" : (string)Converter.Convert(MainStoryRushed, null, null, CultureInfo.CurrentCulture);
+        public string MainStoryRushedFormat => MainStoryRushed == 0 ? "--" : (string)Converter.Convert(MainStoryRushed, null, PluginDatabase.PluginSettings.Settings.IntegrationViewItemOnlyHour ? PlayTimeFormat.RoundHour : PlayTimeFormat.DefaultFormat, CultureInfo.CurrentCulture);
         [DontSerialize]
-        public string MainStoryLeisureFormat => MainStoryLeisure == 0 ? "--" : (string)Converter.Convert(MainStoryLeisure, null, null, CultureInfo.CurrentCulture);
+        public string MainStoryLeisureFormat => MainStoryLeisure == 0 ? "--" : (string)Converter.Convert(MainStoryLeisure, null, PluginDatabase.PluginSettings.Settings.IntegrationViewItemOnlyHour ? PlayTimeFormat.RoundHour : PlayTimeFormat.DefaultFormat, CultureInfo.CurrentCulture);
 
 
         [DontSerialize]
@@ -117,17 +117,17 @@ namespace HowLongToBeat.Models
         public long MainExtraRushed { get; set; } = 0;
         public long MainExtraLeisure { get; set; } = 0;
         [DontSerialize]
-        public string MainExtraFormat => MainExtra == 0 ? "--" : (string)Converter.Convert(MainExtra, null, null, CultureInfo.CurrentCulture);
+        public string MainExtraFormat => MainExtra == 0 ? "--" : (string)Converter.Convert(MainExtra, null, PluginDatabase.PluginSettings.Settings.IntegrationViewItemOnlyHour ? PlayTimeFormat.RoundHour : PlayTimeFormat.DefaultFormat, CultureInfo.CurrentCulture);
         [DontSerialize]
-        public string MainExtraClassicFormat => MainExtraClassic == 0 ? "--" : (string)Converter.Convert(MainExtraClassic, null, null, CultureInfo.CurrentCulture);
+        public string MainExtraClassicFormat => MainExtraClassic == 0 ? "--" : (string)Converter.Convert(MainExtraClassic, null, PluginDatabase.PluginSettings.Settings.IntegrationViewItemOnlyHour ? PlayTimeFormat.RoundHour : PlayTimeFormat.DefaultFormat, CultureInfo.CurrentCulture);
         [DontSerialize]
-        public string MainExtraMedianFormat => MainExtraMedian == 0 ? "--" : (string)Converter.Convert(MainExtraMedian, null, null, CultureInfo.CurrentCulture);
+        public string MainExtraMedianFormat => MainExtraMedian == 0 ? "--" : (string)Converter.Convert(MainExtraMedian, null, PluginDatabase.PluginSettings.Settings.IntegrationViewItemOnlyHour ? PlayTimeFormat.RoundHour : PlayTimeFormat.DefaultFormat, CultureInfo.CurrentCulture);
         [DontSerialize]
-        public string MainExtraAverageFormat => MainExtraAverage == 0 ? "--" : (string)Converter.Convert(MainExtraAverage, null, null, CultureInfo.CurrentCulture);
+        public string MainExtraAverageFormat => MainExtraAverage == 0 ? "--" : (string)Converter.Convert(MainExtraAverage, null, PluginDatabase.PluginSettings.Settings.IntegrationViewItemOnlyHour ? PlayTimeFormat.RoundHour : PlayTimeFormat.DefaultFormat, CultureInfo.CurrentCulture);
         [DontSerialize]
-        public string MainExtraRushedFormat => MainExtraRushed == 0 ? "--" : (string)Converter.Convert(MainExtraRushed, null, null, CultureInfo.CurrentCulture);
+        public string MainExtraRushedFormat => MainExtraRushed == 0 ? "--" : (string)Converter.Convert(MainExtraRushed, null, PluginDatabase.PluginSettings.Settings.IntegrationViewItemOnlyHour ? PlayTimeFormat.RoundHour : PlayTimeFormat.DefaultFormat, CultureInfo.CurrentCulture);
         [DontSerialize]
-        public string MainExtraLeisureFormat => MainExtraLeisure == 0 ? "--" : (string)Converter.Convert(MainExtraLeisure, null, null, CultureInfo.CurrentCulture);
+        public string MainExtraLeisureFormat => MainExtraLeisure == 0 ? "--" : (string)Converter.Convert(MainExtraLeisure, null, PluginDatabase.PluginSettings.Settings.IntegrationViewItemOnlyHour ? PlayTimeFormat.RoundHour : PlayTimeFormat.DefaultFormat, CultureInfo.CurrentCulture);
 
 
         [DontSerialize]
@@ -161,17 +161,17 @@ namespace HowLongToBeat.Models
         public long CompletionistRushed { get; set; } = 0;
         public long CompletionistLeisure { get; set; } = 0;
         [DontSerialize]
-        public string CompletionistFormat => Completionist == 0 ? "--" : (string)Converter.Convert(Completionist, null, null, CultureInfo.CurrentCulture);
+        public string CompletionistFormat => Completionist == 0 ? "--" : (string)Converter.Convert(Completionist, null, PluginDatabase.PluginSettings.Settings.IntegrationViewItemOnlyHour ? PlayTimeFormat.RoundHour : PlayTimeFormat.DefaultFormat, CultureInfo.CurrentCulture);
         [DontSerialize]
-        public string CompletionistClassicFormat => CompletionistClassic == 0 ? "--" : (string)Converter.Convert(CompletionistClassic, null, null, CultureInfo.CurrentCulture);
+        public string CompletionistClassicFormat => CompletionistClassic == 0 ? "--" : (string)Converter.Convert(CompletionistClassic, null, PluginDatabase.PluginSettings.Settings.IntegrationViewItemOnlyHour ? PlayTimeFormat.RoundHour : PlayTimeFormat.DefaultFormat, CultureInfo.CurrentCulture);
         [DontSerialize]
-        public string CompletionistMedianFormat => CompletionistMedian == 0 ? "--" : (string)Converter.Convert(CompletionistMedian, null, null, CultureInfo.CurrentCulture);
+        public string CompletionistMedianFormat => CompletionistMedian == 0 ? "--" : (string)Converter.Convert(CompletionistMedian, null, PluginDatabase.PluginSettings.Settings.IntegrationViewItemOnlyHour ? PlayTimeFormat.RoundHour : PlayTimeFormat.DefaultFormat, CultureInfo.CurrentCulture);
         [DontSerialize]
-        public string CompletionistAverageFormat => CompletionistAverage == 0 ? "--" : (string)Converter.Convert(CompletionistAverage, null, null, CultureInfo.CurrentCulture);
+        public string CompletionistAverageFormat => CompletionistAverage == 0 ? "--" : (string)Converter.Convert(CompletionistAverage, null, PluginDatabase.PluginSettings.Settings.IntegrationViewItemOnlyHour ? PlayTimeFormat.RoundHour : PlayTimeFormat.DefaultFormat, CultureInfo.CurrentCulture);
         [DontSerialize]
-        public string CompletionistRushedFormat => CompletionistRushed == 0 ? "--" : (string)Converter.Convert(CompletionistRushed, null, null, CultureInfo.CurrentCulture);
+        public string CompletionistRushedFormat => CompletionistRushed == 0 ? "--" : (string)Converter.Convert(CompletionistRushed, null, PluginDatabase.PluginSettings.Settings.IntegrationViewItemOnlyHour ? PlayTimeFormat.RoundHour : PlayTimeFormat.DefaultFormat, CultureInfo.CurrentCulture);
         [DontSerialize]
-        public string CompletionistLeisureFormat => CompletionistLeisure == 0 ? "--" : (string)Converter.Convert(CompletionistLeisure, null, null, CultureInfo.CurrentCulture);
+        public string CompletionistLeisureFormat => CompletionistLeisure == 0 ? "--" : (string)Converter.Convert(CompletionistLeisure, null, PluginDatabase.PluginSettings.Settings.IntegrationViewItemOnlyHour ? PlayTimeFormat.RoundHour : PlayTimeFormat.DefaultFormat, CultureInfo.CurrentCulture);
 
 
         [DontSerialize]
@@ -205,17 +205,17 @@ namespace HowLongToBeat.Models
         public long SoloRushed { get; set; } = 0;
         public long SoloLeisure { get; set; } = 0;
         [DontSerialize]
-        public string SoloFormat => Solo == 0 ? "--" : (string)Converter.Convert(Solo, null, null, CultureInfo.CurrentCulture);
+        public string SoloFormat => Solo == 0 ? "--" : (string)Converter.Convert(Solo, null, PluginDatabase.PluginSettings.Settings.IntegrationViewItemOnlyHour ? PlayTimeFormat.RoundHour : PlayTimeFormat.DefaultFormat, CultureInfo.CurrentCulture);
         [DontSerialize]
-        public string SoloClassicFormat => SoloClassic == 0 ? "--" : (string)Converter.Convert(SoloClassic, null, null, CultureInfo.CurrentCulture);
+        public string SoloClassicFormat => SoloClassic == 0 ? "--" : (string)Converter.Convert(SoloClassic, null, PluginDatabase.PluginSettings.Settings.IntegrationViewItemOnlyHour ? PlayTimeFormat.RoundHour : PlayTimeFormat.DefaultFormat, CultureInfo.CurrentCulture);
         [DontSerialize]
-        public string SoloMedianFormat => SoloMedian == 0 ? "--" : (string)Converter.Convert(SoloMedian, null, null, CultureInfo.CurrentCulture);
+        public string SoloMedianFormat => SoloMedian == 0 ? "--" : (string)Converter.Convert(SoloMedian, null, PluginDatabase.PluginSettings.Settings.IntegrationViewItemOnlyHour ? PlayTimeFormat.RoundHour : PlayTimeFormat.DefaultFormat, CultureInfo.CurrentCulture);
         [DontSerialize]
-        public string SoloAverageFormat => SoloAverage == 0 ? "--" : (string)Converter.Convert(SoloAverage, null, null, CultureInfo.CurrentCulture);
+        public string SoloAverageFormat => SoloAverage == 0 ? "--" : (string)Converter.Convert(SoloAverage, null, PluginDatabase.PluginSettings.Settings.IntegrationViewItemOnlyHour ? PlayTimeFormat.RoundHour : PlayTimeFormat.DefaultFormat, CultureInfo.CurrentCulture);
         [DontSerialize]
-        public string SoloRushedFormat => SoloRushed == 0 ? "--" : (string)Converter.Convert(SoloRushed, null, null, CultureInfo.CurrentCulture);
+        public string SoloRushedFormat => SoloRushed == 0 ? "--" : (string)Converter.Convert(SoloRushed, null, PluginDatabase.PluginSettings.Settings.IntegrationViewItemOnlyHour ? PlayTimeFormat.RoundHour : PlayTimeFormat.DefaultFormat, CultureInfo.CurrentCulture);
         [DontSerialize]
-        public string SoloLeisureFormat => SoloLeisure == 0 ? "--" : (string)Converter.Convert(SoloLeisure, null, null, CultureInfo.CurrentCulture);
+        public string SoloLeisureFormat => SoloLeisure == 0 ? "--" : (string)Converter.Convert(SoloLeisure, null, PluginDatabase.PluginSettings.Settings.IntegrationViewItemOnlyHour ? PlayTimeFormat.RoundHour : PlayTimeFormat.DefaultFormat, CultureInfo.CurrentCulture);
 
 
         [DontSerialize]
@@ -249,17 +249,17 @@ namespace HowLongToBeat.Models
         public long CoOpRushed { get; set; } = 0;
         public long CoOpLeisure { get; set; } = 0;
         [DontSerialize]
-        public string CoOpFormat => CoOp == 0 ? "--" : (string)Converter.Convert(CoOp, null, null, CultureInfo.CurrentCulture);
+        public string CoOpFormat => CoOp == 0 ? "--" : (string)Converter.Convert(CoOp, null, PluginDatabase.PluginSettings.Settings.IntegrationViewItemOnlyHour ? PlayTimeFormat.RoundHour : PlayTimeFormat.DefaultFormat, CultureInfo.CurrentCulture);
         [DontSerialize]
-        public string CoOpClassicFormat => CoOpClassic == 0 ? "--" : (string)Converter.Convert(CoOpClassic, null, null, CultureInfo.CurrentCulture);
+        public string CoOpClassicFormat => CoOpClassic == 0 ? "--" : (string)Converter.Convert(CoOpClassic, null, PluginDatabase.PluginSettings.Settings.IntegrationViewItemOnlyHour ? PlayTimeFormat.RoundHour : PlayTimeFormat.DefaultFormat, CultureInfo.CurrentCulture);
         [DontSerialize]
-        public string CoOpMedianFormat => CoOpMedian == 0 ? "--" : (string)Converter.Convert(CoOpMedian, null, null, CultureInfo.CurrentCulture);
+        public string CoOpMedianFormat => CoOpMedian == 0 ? "--" : (string)Converter.Convert(CoOpMedian, null, PluginDatabase.PluginSettings.Settings.IntegrationViewItemOnlyHour ? PlayTimeFormat.RoundHour : PlayTimeFormat.DefaultFormat, CultureInfo.CurrentCulture);
         [DontSerialize]
-        public string CoOpAverageFormat => CoOpAverage == 0 ? "--" : (string)Converter.Convert(CoOpAverage, null, null, CultureInfo.CurrentCulture);
+        public string CoOpAverageFormat => CoOpAverage == 0 ? "--" : (string)Converter.Convert(CoOpAverage, null, PluginDatabase.PluginSettings.Settings.IntegrationViewItemOnlyHour ? PlayTimeFormat.RoundHour : PlayTimeFormat.DefaultFormat, CultureInfo.CurrentCulture);
         [DontSerialize]
-        public string CoOpRushedFormat => CoOpRushed == 0 ? "--" : (string)Converter.Convert(CoOpRushed, null, null, CultureInfo.CurrentCulture);
+        public string CoOpRushedFormat => CoOpRushed == 0 ? "--" : (string)Converter.Convert(CoOpRushed, null, PluginDatabase.PluginSettings.Settings.IntegrationViewItemOnlyHour ? PlayTimeFormat.RoundHour : PlayTimeFormat.DefaultFormat, CultureInfo.CurrentCulture);
         [DontSerialize]
-        public string CoOpLeisureFormat => CoOpLeisure == 0 ? "--" : (string)Converter.Convert(CoOpLeisure, null, null, CultureInfo.CurrentCulture);
+        public string CoOpLeisureFormat => CoOpLeisure == 0 ? "--" : (string)Converter.Convert(CoOpLeisure, null, PluginDatabase.PluginSettings.Settings.IntegrationViewItemOnlyHour ? PlayTimeFormat.RoundHour : PlayTimeFormat.DefaultFormat, CultureInfo.CurrentCulture);
 
 
         [DontSerialize]
@@ -293,17 +293,17 @@ namespace HowLongToBeat.Models
         public long VsRushed { get; set; } = 0;
         public long VsLeisure { get; set; } = 0;
         [DontSerialize]
-        public string VsFormat => Vs == 0 ? "--" : (string)Converter.Convert(Vs, null, null, CultureInfo.CurrentCulture);
+        public string VsFormat => Vs == 0 ? "--" : (string)Converter.Convert(Vs, null, PluginDatabase.PluginSettings.Settings.IntegrationViewItemOnlyHour ? PlayTimeFormat.RoundHour : PlayTimeFormat.DefaultFormat, CultureInfo.CurrentCulture);
         [DontSerialize]
-        public string VsClassicFormat => VsClassic == 0 ? "--" : (string)Converter.Convert(VsClassic, null, null, CultureInfo.CurrentCulture);
+        public string VsClassicFormat => VsClassic == 0 ? "--" : (string)Converter.Convert(VsClassic, null, PluginDatabase.PluginSettings.Settings.IntegrationViewItemOnlyHour ? PlayTimeFormat.RoundHour : PlayTimeFormat.DefaultFormat, CultureInfo.CurrentCulture);
         [DontSerialize]
-        public string VsMedianFormat => VsMedian == 0 ? "--" : (string)Converter.Convert(VsMedian, null, null, CultureInfo.CurrentCulture);
+        public string VsMedianFormat => VsMedian == 0 ? "--" : (string)Converter.Convert(VsMedian, null, PluginDatabase.PluginSettings.Settings.IntegrationViewItemOnlyHour ? PlayTimeFormat.RoundHour : PlayTimeFormat.DefaultFormat, CultureInfo.CurrentCulture);
         [DontSerialize]
-        public string VsAverageFormat => VsAverage == 0 ? "--" : (string)Converter.Convert(VsAverage, null, null, CultureInfo.CurrentCulture);
+        public string VsAverageFormat => VsAverage == 0 ? "--" : (string)Converter.Convert(VsAverage, null, PluginDatabase.PluginSettings.Settings.IntegrationViewItemOnlyHour ? PlayTimeFormat.RoundHour : PlayTimeFormat.DefaultFormat, CultureInfo.CurrentCulture);
         [DontSerialize]
-        public string VsRushedFormat => VsRushed == 0 ? "--" : (string)Converter.Convert(VsRushed, null, null, CultureInfo.CurrentCulture);
+        public string VsRushedFormat => VsRushed == 0 ? "--" : (string)Converter.Convert(VsRushed, null, PluginDatabase.PluginSettings.Settings.IntegrationViewItemOnlyHour ? PlayTimeFormat.RoundHour : PlayTimeFormat.DefaultFormat, CultureInfo.CurrentCulture);
         [DontSerialize]
-        public string VsLeisureFormat => VsLeisure == 0 ? "--" : (string)Converter.Convert(VsLeisure, null, null, CultureInfo.CurrentCulture);
+        public string VsLeisureFormat => VsLeisure == 0 ? "--" : (string)Converter.Convert(VsLeisure, null, PluginDatabase.PluginSettings.Settings.IntegrationViewItemOnlyHour ? PlayTimeFormat.RoundHour : PlayTimeFormat.DefaultFormat, CultureInfo.CurrentCulture);
 
 
         [DontSerialize]
