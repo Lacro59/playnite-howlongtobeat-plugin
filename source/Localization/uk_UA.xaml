@@ -17,6 +17,13 @@
 
     <sys:String x:Key="LOCHltbEnableProgressBarInDataView">Показувати шкалу прогресу в режимі перегляду даних Playnite</sys:String>
 
+    <sys:String x:Key="LOCHltbSelectDataType">Select the data type:</sys:String>
+    <sys:String x:Key="LOCHltbSelectDataTypeClassic">Classic</sys:String>
+    <sys:String x:Key="LOCHltbSelectDataTypeAverage">Average</sys:String>
+    <sys:String x:Key="LOCHltbSelectDataTypeMedian">Median</sys:String>
+    <sys:String x:Key="LOCHltbSelectDataTypeRushed">Rushed</sys:String>
+    <sys:String x:Key="LOCHltbSelectDataTypeLeisure">Leisure</sys:String>
+
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarOptions">Параметри смуги прогресу</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">Показувати спливаючі підказки з часом на смузі прогресу</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTime">Показувати час на смузі прогресу</sys:String>
@@ -110,7 +117,7 @@
     <sys:String x:Key="LOCHowLongToBeatSetCurrentTimeManualAll">Встановити поточний час у грі для всіх ігор</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatSetCurrentCompletedTimeManualOn">Встановіть поточний завершений час гри на</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatSetCurrentMultiTimeManualOn">Set your current muli playtime on</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatSetCurrentMultiTimeManualOn">Встановіть свій поточний загальний час гри</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatSetCurrentTime">Хочете відправити свій поточний час у грі?</sys:String>
 
