@@ -276,3 +276,12 @@ Packages:
     Changelog:
       - 'Updated: Localizations'
       - 'Fixed: Issue with game without HLTB data'
+  - Version: 3.5
+    RequiredApiVersion: 6.11.0
+    ReleaseDate: 2024-10-03
+    PackageUrl: https://github.com/Lacro59/playnite-howlongtobeat-plugin/releases/download/v3.5/playnite-howlongtobeat-plugin_3_5.pext
+    Changelog:
+      - 'Updated: Localizations'
+      - 'Fixed: The "Loading..." progress bar does not disappear'
+      - 'Added: Option to select different play speeds (Average, Rushed, Leisure)'
+      - 'Added: Option to show time to beat game instead of progress bar'
