@@ -17,12 +17,12 @@
 
     <sys:String x:Key="LOCHltbEnableProgressBarInDataView">Afficher la barre de progression dans la vue avec les données Playnite</sys:String>
 
-    <sys:String x:Key="LOCHltbSelectDataType">Select the data type:</sys:String>
-    <sys:String x:Key="LOCHltbSelectDataTypeClassic">Classic</sys:String>
-    <sys:String x:Key="LOCHltbSelectDataTypeAverage">Average</sys:String>
-    <sys:String x:Key="LOCHltbSelectDataTypeMedian">Median</sys:String>
-    <sys:String x:Key="LOCHltbSelectDataTypeRushed">Rushed</sys:String>
-    <sys:String x:Key="LOCHltbSelectDataTypeLeisure">Leisure</sys:String>
+    <sys:String x:Key="LOCHltbSelectDataType">Sélectionnez le type de données :</sys:String>
+    <sys:String x:Key="LOCHltbSelectDataTypeClassic">Classique</sys:String>
+    <sys:String x:Key="LOCHltbSelectDataTypeAverage">Moyenne</sys:String>
+    <sys:String x:Key="LOCHltbSelectDataTypeMedian">Médiane</sys:String>
+    <sys:String x:Key="LOCHltbSelectDataTypeRushed">Précipité</sys:String>
+    <sys:String x:Key="LOCHltbSelectDataTypeLeisure">Loisirs</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarOptions">Options de la barre de progression</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">Afficher une info-bulle de temps dans la barre de progression</sys:String>
