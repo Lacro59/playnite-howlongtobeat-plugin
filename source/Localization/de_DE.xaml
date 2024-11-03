@@ -11,7 +11,7 @@
 
     <sys:String x:Key="LOCHowLongToBeatAddTagDescription">Füge ein Schlagwort zu Spielen mit Vervollständigung der Hauptgeschichte hinzu</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoTag">Automatische Tag-Verarbeitung</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatShowHltbImage">Benutze HowLongToBeat Original Spielcover Bild im Fenster</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatShowHltbImage">HowLongToBeat Original Spiel Cover Bild im Fenster verwenden</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatColorSelection">Farbauswahl:</sys:String>
 
@@ -25,7 +25,7 @@
     <sys:String x:Key="LOCHltbSelectDataTypeLeisure">Freizeit</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarOptions">Optionen der Fortschrittsanzeige</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">Zeit-Tooltip in der Fortschrittsleiste anzeigen</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">Zeit Tooltip in der Fortschrittsleiste anzeigen</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTime">Zeitangaben in der Fortschrittsleiste anzeigen</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeAbove">Oberhalb der Fortschrittsleiste</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeInterior">Innerhalb der Fortschrittsleiste</sys:String>
@@ -36,7 +36,7 @@
     <sys:String x:Key="LOCHowLongToBeatWithoutConfirmation">Ohne Bestätigungsmeldung</sys:String>
     <sys:String x:Key="LOCHowLongToBeatEnableSuccessNotification">Erfolgreiche Benachrichtigung aktivieren</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatus">Beim Importieren von Benutzerdaten automatisch den Spielstatus mit HowLongToBeat Spielstatus aktualisieren</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatus">Spielstatus automatisch mit HowLongToBeat Spielstatus aktualisieren, wenn Benutzerdaten importiert werden</sys:String>
     
     <sys:String x:Key="LOCHowLongToBeatAutoData">Spieldaten herunterladen</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoAccept">Spiel automatisch auswählen, wenn nur ein Spiel während der Suche gefunden wird</sys:String>
@@ -117,7 +117,7 @@ Wenn keiner diesen Status hat, wird der aktuellste genommen.</sys:String>
     <sys:String x:Key="LOCHowLongToBeatSetCurrentTimeManualAll">Lege deine aktuelle Spielzeit für alle Spiele fest</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatSetCurrentCompletedTimeManualOn">Setze deine aktuelle abgeschlossene Spielzeit ein</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatSetCurrentMultiTimeManualOn">Set your current muli playtime on</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatSetCurrentMultiTimeManualOn">Stelle deine aktuelle Muli Spielzeit ein</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatSetCurrentTime">Möchten Sie Ihre aktuelle Spielzeit senden?</sys:String>
 
