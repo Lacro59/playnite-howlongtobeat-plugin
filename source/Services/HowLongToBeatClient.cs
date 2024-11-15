@@ -206,7 +206,7 @@ namespace HowLongToBeat.Services
 
             try
             {
-                string url = string.Format(UrlSearchWeb, "toto");
+                string url = UrlBase;
                 string response = await Web.DownloadStringData(url);
 
                 string js = Regex.Match(response, @"_app-\w*.js").Value;
@@ -214,7 +214,8 @@ namespace HowLongToBeat.Services
                 {
                     url = $"https://howlongtobeat.com/_next/static/chunks/pages/{js}";
                     response = await Web.DownloadStringData(url);
-                    SearchId = Regex.Match(response, "\"/api/search/\".concat[(]\"(\\w*)\"[)]").Groups[1].Value;
+                    Match matches= Regex.Match(response, "\"/api/search/\".concat[(]\"(\\w*)\"[)].concat[(]\"(\\w*)\"[)]");
+                    SearchId = matches.Groups[1].Value + matches.Groups[2].Value;
                 }
             }
             catch (Exception ex)
