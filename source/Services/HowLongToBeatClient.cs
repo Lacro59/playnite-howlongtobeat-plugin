@@ -431,12 +431,13 @@ namespace HowLongToBeat.Services
         {
             try
             {
-                _ = DateTime.TryParse(gamesList.DateUpdated, out DateTime LastUpdate);
-                _ = DateTime.TryParse(gamesList.DateComplete, out DateTime Completion);
-                DateTime? CompletionFinal = null;
-                if (Completion != default)
+                _ = DateTime.TryParse(gamesList.DateUpdated, out DateTime lastUpdate);
+                _ = DateTime.TryParse(gamesList.DateComplete, out DateTime completion);
+                _ = DateTime.TryParse(gamesList.DateStart, out DateTime dateStart);
+                DateTime? completionFinal = null;
+                if (completion != default)
                 {
-                    CompletionFinal = Completion;
+                    completionFinal = completion;
                 }
 
                 TitleList titleList = new TitleList
@@ -449,8 +450,9 @@ namespace HowLongToBeat.Services
                     IsReplay = gamesList.PlayCount == 2,
                     IsRetired = gamesList.ListRetired == 1,
                     Storefront = gamesList.PlayStorefront,
-                    LastUpdate = LastUpdate,
-                    Completion = CompletionFinal,
+                    StartDate = dateStart,
+                    LastUpdate = lastUpdate,
+                    Completion = completionFinal,
                     HltbUserData = new HltbData
                     {
                         GameType = gamesList.GameType.IsEqual("game") ? GameType.Game : gamesList.GameType.IsEqual("multi") ? GameType.Multi : GameType.Compil,

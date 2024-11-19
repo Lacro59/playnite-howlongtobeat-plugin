@@ -107,12 +107,6 @@ namespace HowLongToBeat.Views
                 ((HowLongToBeatViewData)DataContext).SourceLink = gameHowLongToBeat.SourceLink;
             }
 
-            var Items = gameHowLongToBeat.Items;
-            var a = Items?.Count > 0 && Items?.First() != null && !Items.First().IsEmpty;
-            var aa = Items?.Count > 0;
-            var aaa = Items?.First() != null;
-            var aaaa = !Items.First().IsEmpty;
-
             if (!gameHowLongToBeat.HasData)
             {
                 PART_GridProgressBar.Visibility = Visibility.Hidden;
@@ -165,13 +159,28 @@ namespace HowLongToBeat.Views
 
 
                         LocalDateConverter localDateConverter = new LocalDateConverter();
-                        Hltb_0.Content = localDateConverter.Convert(titleList.LastUpdate, null, null, CultureInfo.CurrentCulture).ToString();
+                        string dateStart = localDateConverter.Convert(titleList.StartDate, null, null, CultureInfo.CurrentCulture).ToString();
+                        string lastUpdate = localDateConverter.Convert(titleList.LastUpdate, null, null, CultureInfo.CurrentCulture).ToString();
+                        string content = string.Empty;
+                        if (!dateStart.IsNullOrEmpty())
+                        {
+                            content += ResourceProvider.GetString("LOCCommonStartDate") + ": " + dateStart;
+                        }
+                        if (!lastUpdate.IsNullOrEmpty())
+                        {
+                            if (!content.IsNullOrEmpty())
+                            {
+                                content += Environment.NewLine;
+                            }
+                            content += ResourceProvider.GetString("LOCCommonLastUpdate") + ": " + lastUpdate;
+                        }
+                        Hltb_0.Content = content;
                         Hltb_0.Tag = titleList.UserGameId;
                         Hltb_0.Visibility = Visibility.Visible;
 
                         if (idx == 0)
                         {
-                            Hltb_El0_tb.Text = localDateConverter.Convert(titleList.LastUpdate, null, null, CultureInfo.CurrentCulture).ToString();
+                            Hltb_El0_tb.Text = content;
                             Hltb_El0_tb.Tag = titleList.UserGameId;
                             Hltb_El0_tb.Visibility = Visibility.Visible;
                             Hltb_0.Visibility = Visibility.Collapsed;

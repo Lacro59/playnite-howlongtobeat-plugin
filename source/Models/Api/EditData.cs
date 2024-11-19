@@ -25,7 +25,7 @@ namespace HowLongToBeat.Models.Api
         public string Notes { get; set; } = string.Empty;
     }
 
-    public class CompletionDate
+    public class Date
     {
         [SerializationPropertyName("year")]
         public string Year { get; set; } = "0000";
@@ -76,16 +76,19 @@ namespace HowLongToBeat.Models.Api
     public class General
     {
         [SerializationPropertyName("progress")]
-        public Progress Progress { get; set; } = new Progress();
+        public Time Progress { get; set; } = new Time();
 
         [SerializationPropertyName("retirementNotes")]
         public string RetirementNotes { get; set; } = string.Empty;
 
         [SerializationPropertyName("completionDate")]
-        public CompletionDate CompletionDate { get; set; } = new CompletionDate();
+        public Date CompletionDate { get; set; } = new Date();
+
+        [SerializationPropertyName("startDate")]
+        public Date StartDate { get; set; } = new Date();
 
         [SerializationPropertyName("progressBefore")]
-        public Progress ProgressBefore { get; set; } = new Progress();
+        public Time ProgressBefore { get; set; } = new Time();
     }
 
     public class Lists
@@ -146,18 +149,6 @@ namespace HowLongToBeat.Models.Api
 
         [SerializationPropertyName("notes")]
         public string Notes { get; set; } = string.Empty;
-    }
-
-    public class Progress
-    {
-        [SerializationPropertyName("hours")]
-        public int Hours { get; set; }
-
-        [SerializationPropertyName("minutes")]
-        public int Minutes { get; set; }
-
-        [SerializationPropertyName("seconds")]
-        public int Seconds { get; set; }
     }
 
     public class Review

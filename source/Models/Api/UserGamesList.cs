@@ -123,6 +123,9 @@ namespace HowLongToBeat.Models.Api
         [SerializationPropertyName("retired_notes")]
         public string RetiredNotes { get; set; }
 
+        [SerializationPropertyName("date_start")]
+        public string DateStart { get; set; }
+
         [SerializationPropertyName("date_complete")]
         public string DateComplete { get; set; }
 

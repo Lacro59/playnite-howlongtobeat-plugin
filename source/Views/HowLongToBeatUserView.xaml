@@ -221,6 +221,10 @@
                                                 </GridViewColumn.CellTemplate>
                                             </GridViewColumn>
 
+                                            <GridViewColumn Width="120" DisplayMemberBinding="{Binding StartDate, Converter={StaticResource LocalDateConverter}}" x:Name="lvGameStartDate">
+                                                <GridViewColumnHeader Content="{DynamicResource LOCCommonStartDate}" />
+                                            </GridViewColumn>
+
                                             <GridViewColumn Width="120" DisplayMemberBinding="{Binding LastUpdate, Converter={StaticResource LocalDateConverter}}" x:Name="lvGameCompletion">
                                                 <GridViewColumnHeader Content="{DynamicResource LOCCommonLastUpdate}" />
                                             </GridViewColumn>

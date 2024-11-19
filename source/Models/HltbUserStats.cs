@@ -46,6 +46,7 @@ namespace HowLongToBeat.Models
         public bool IsReplay { get; set; }
         public bool IsRetired { get; set; }
 
+        public DateTime StartDate { get; set; } = default;
         public DateTime LastUpdate { get; set; } = default;
 
         public DateTime? Completion { get; set; }
