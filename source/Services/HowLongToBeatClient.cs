@@ -106,7 +106,7 @@ namespace HowLongToBeat.Services
             try
             {
                 string response = await Web.DownloadStringData(string.Format(UrlGame, id));
-                string jsonData = Tools.GetJsonInString(response, "<script id=\"__NEXT_DATA__\" type=\"application/json\">", "</script></body>");
+                string jsonData = Tools.GetJsonInString(response, @"<script[ ]?id=""__NEXT_DATA__""[ ]?type=""application/json"">");
                 return Serialization.TryFromJson(jsonData, out NEXT_DATA next_data) && next_data?.Props?.PageProps?.Game?.Data?.Game != null
                     ? next_data.Props.PageProps.Game.Data.Game.FirstOrDefault()
                     : null;
@@ -517,7 +517,7 @@ namespace HowLongToBeat.Services
                     return null;
                 }
 
-                string jsonData = Tools.GetJsonInString(response, "<script id=\"__NEXT_DATA__\" type=\"application/json\">", "</script></body>");
+                string jsonData = Tools.GetJsonInString(response, @"<script[ ]?id=""__NEXT_DATA__""[ ]?type=""application/json"">");
                 return Serialization.TryFromJson(jsonData, out NEXT_DATA next_data) && next_data?.Props?.PageProps?.EditData?.UserId != null
                     ? next_data.Props.PageProps.EditData
                     : throw new Exception($"No EditData find for {GameName} - {UserGameId}");

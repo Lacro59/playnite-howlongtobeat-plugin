@@ -73,7 +73,7 @@ namespace HowLongToBeat.Services
 
         public override void GetSelectData()
         {
-            OptionsDownloadData View = new OptionsDownloadData();
+            OptionsDownloadData View = new OptionsDownloadData(this);
             Window windowExtension = PlayniteUiHelper.CreateExtensionWindow(PluginName + " - " + ResourceProvider.GetString("LOCCommonSelectData"), View);
             _ = windowExtension.ShowDialog();
 
@@ -219,7 +219,7 @@ namespace HowLongToBeat.Services
             }, globalProgressOptions);
         }
 
-        public override void Refresh(List<Guid> Ids)
+        public override void Refresh(IEnumerable<Guid> Ids)
         {
             GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions(
                 $"{PluginName} - {ResourceProvider.GetString("LOCCommonProcessing")}",
@@ -232,7 +232,7 @@ namespace HowLongToBeat.Services
                 Stopwatch stopWatch = new Stopwatch();
                 stopWatch.Start();
 
-                activateGlobalProgress.ProgressMaxValue = Ids.Count;
+                activateGlobalProgress.ProgressMaxValue = Ids.Count();
 
                 string CancelText = string.Empty;
 
@@ -250,7 +250,7 @@ namespace HowLongToBeat.Services
 
                 stopWatch.Stop();
                 TimeSpan ts = stopWatch.Elapsed;
-                Logger.Info($"Task Refresh(){CancelText} - {string.Format("{0:00}:{1:00}.{2:00}", ts.Minutes, ts.Seconds, ts.Milliseconds / 10)} for {activateGlobalProgress.CurrentProgressValue}/{Ids.Count} items");
+                Logger.Info($"Task Refresh(){CancelText} - {string.Format("{0:00}:{1:00}.{2:00}", ts.Minutes, ts.Seconds, ts.Milliseconds / 10)} for {activateGlobalProgress.CurrentProgressValue}/{Ids.Count()} items");
             }, globalProgressOptions);
         }
 
@@ -311,7 +311,7 @@ namespace HowLongToBeat.Services
             }
         }
 
-        public override void RefreshWithNoData(List<Guid> Ids)
+        public override void RefreshWithNoData(IEnumerable<Guid> Ids)
         {
             GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions(
                 $"{PluginName} - {ResourceProvider.GetString("LOCCommonProcessing")}",
@@ -324,7 +324,7 @@ namespace HowLongToBeat.Services
                 Stopwatch stopWatch = new Stopwatch();
                 stopWatch.Start();
 
-                activateGlobalProgress.ProgressMaxValue = Ids.Count;
+                activateGlobalProgress.ProgressMaxValue = Ids.Count();
 
                 string CancelText = string.Empty;
 
@@ -347,50 +347,39 @@ namespace HowLongToBeat.Services
 
                 stopWatch.Stop();
                 TimeSpan ts = stopWatch.Elapsed;
-                Logger.Info($"Task Refresh(){CancelText} - {string.Format("{0:00}:{1:00}.{2:00}", ts.Minutes, ts.Seconds, ts.Milliseconds / 10)} for {activateGlobalProgress.CurrentProgressValue}/{Ids.Count} items");
+                Logger.Info($"Task Refresh(){CancelText} - {string.Format("{0:00}:{1:00}.{2:00}", ts.Minutes, ts.Seconds, ts.Milliseconds / 10)} for {activateGlobalProgress.CurrentProgressValue}/{Ids.Count()} items");
             }, globalProgressOptions);
         }
 
 
         #region Tag
-        public override void AddTag(Game game, bool noUpdate = false)
+        public override void AddTag(Game game)
         {
-            GetPluginTags();
-            GameHowLongToBeat gameHowLongToBeat = Get(game, true);
-
-            if (gameHowLongToBeat.HasData)
+            GameHowLongToBeat item = Get(game, true);
+            if (item.HasData)
             {
                 try
                 {
-                    HltbDataUser hltbDataUser = gameHowLongToBeat.GetData();
-                    Guid? TagId = FindGoodPluginTags(hltbDataUser);
-
-                    if (TagId != null)
+                    HltbDataUser hltbDataUser = item.GetData();
+                    Guid? tagId = FindGoodPluginTags(hltbDataUser);
+                    if (tagId != null)
                     {
                         if (game.TagIds != null)
                         {
-                            game.TagIds.Add((Guid)TagId);
+                            game.TagIds.Add((Guid)tagId);
                         }
                         else
                         {
-                            game.TagIds = new List<Guid> { (Guid)TagId };
-                        }
-
-                        if (!noUpdate)
-                        {
-                            Application.Current.Dispatcher?.Invoke(() =>
-                            {
-                                API.Instance.Database.Games.Update(game);
-                                game.OnPropertyChanged();
-                            }, DispatcherPriority.Send);
+                            game.TagIds = new List<Guid> { (Guid)tagId };
                         }
                     }
                 }
                 catch (Exception ex)
                 {
                     Common.LogError(ex, false, $"Tag insert error with {game.Name}", true, PluginName, string.Format(ResourceProvider.GetString("LOCCommonNotificationTagError"), game.Name));
+                    return;
                 }
-            } 
+            }
             else if (TagMissing)
             {
                 if (game.TagIds != null)
@@ -401,17 +390,13 @@ namespace HowLongToBeat.Services
                 {
                     game.TagIds = new List<Guid> { (Guid)AddNoDataTag() };
                 }
-
-                if (!noUpdate)
-                {
-                    Application.Current.Dispatcher?.Invoke(() =>
-                    {
-                        API.Instance.Database.Games.Update(game);
-                        game.OnPropertyChanged();
-                    }, DispatcherPriority.Send);
-                }
-
             }
+
+            API.Instance.MainView.UIDispatcher?.Invoke(() =>
+            {
+                API.Instance.Database.Games.Update(game);
+                game.OnPropertyChanged();
+            });
         }
 
 
