@@ -285,3 +285,12 @@ Packages:
       - 'Fixed: The "Loading..." progress bar does not disappear'
       - 'Added: Option to select different play speeds (Average, Rushed, Leisure)'
       - 'Added: Option to show time to beat game instead of progress bar'
+  - Version: 3.6
+    RequiredApiVersion: 6.11.0
+    ReleaseDate: 2024-11-19
+    PackageUrl: https://github.com/Lacro59/playnite-howlongtobeat-plugin/releases/download/v3.6/playnite-howlongtobeat-plugin_3_6.pext
+    Changelog:
+      - 'Updated: Localizations'
+      - 'Fixed: Search functionality to work again after website changes (thanks to johnnywnb)'
+      - 'Optimized: UI (thanks to johnnywnb)'
+      - 'Added: The new HLTB data (Start date)'
