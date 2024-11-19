@@ -17,19 +17,19 @@
 
     <sys:String x:Key="LOCHltbEnableProgressBarInDataView">Pokaż pasek postępu w widoku danych Playnite</sys:String>
 
-    <sys:String x:Key="LOCHltbSelectDataType">Select the data type:</sys:String>
-    <sys:String x:Key="LOCHltbSelectDataTypeClassic">Classic</sys:String>
-    <sys:String x:Key="LOCHltbSelectDataTypeAverage">Average</sys:String>
-    <sys:String x:Key="LOCHltbSelectDataTypeMedian">Median</sys:String>
-    <sys:String x:Key="LOCHltbSelectDataTypeRushed">Rushed</sys:String>
-    <sys:String x:Key="LOCHltbSelectDataTypeLeisure">Leisure</sys:String>
+    <sys:String x:Key="LOCHltbSelectDataType">Wybierz typ danych:</sys:String>
+    <sys:String x:Key="LOCHltbSelectDataTypeClassic">Klasyczne</sys:String>
+    <sys:String x:Key="LOCHltbSelectDataTypeAverage">Przeciętne</sys:String>
+    <sys:String x:Key="LOCHltbSelectDataTypeMedian">Średnie</sys:String>
+    <sys:String x:Key="LOCHltbSelectDataTypeRushed">Szybkie</sys:String>
+    <sys:String x:Key="LOCHltbSelectDataTypeLeisure">Powolne</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarOptions">Opcje paska postępu</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">Wyświetlaj dymek z czasem na pasku postępu</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTime">Wyświetlaj etykiety z czasem na pasku postępu</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeAbove">Above</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeInterior">Interior</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeBelow">Below</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeAbove">Ponad</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeInterior">Wewnątrz</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeBelow">Pod</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeUser">Pokaż czas HowLongToBeat użytkownika</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatAutoSetCurrentPlayTime">Automatycznie aktualizuj bieżący czas grania w HowLongToBeat po każdej sesji</sys:String>
@@ -39,8 +39,8 @@
     <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatus">Automatycznie aktualizuj status gry z HowLongToBeat podczas importowania danych użytkownika</sys:String>
     
     <sys:String x:Key="LOCHowLongToBeatAutoData">Download datas</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAutoAccept">Automatic accept when only a game is find</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatShowWhenMismatch">Show the selection view when there is more a game found</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoAccept">Automatycznie wybierz grę, gdy tylko jedna gra zostanie znaleziona podczas wyszukiwania</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatShowWhenMismatch">Pokaż listę wyboru gry, gdy więcej niż jedna gra zostanie znaleziona podczas wyszukiwania</sys:String>
     <sys:String x:Key="LOCHowLongToBeatUseMatchValue">Użyj procentowego dopasowania</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatTimeOnlyHour">Format czasu tylko z godziną</sys:String>

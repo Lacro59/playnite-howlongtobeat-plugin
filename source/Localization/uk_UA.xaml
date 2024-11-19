@@ -17,12 +17,12 @@
 
     <sys:String x:Key="LOCHltbEnableProgressBarInDataView">Показувати шкалу прогресу в режимі перегляду даних Playnite</sys:String>
 
-    <sys:String x:Key="LOCHltbSelectDataType">Select the data type:</sys:String>
-    <sys:String x:Key="LOCHltbSelectDataTypeClassic">Classic</sys:String>
-    <sys:String x:Key="LOCHltbSelectDataTypeAverage">Average</sys:String>
-    <sys:String x:Key="LOCHltbSelectDataTypeMedian">Median</sys:String>
-    <sys:String x:Key="LOCHltbSelectDataTypeRushed">Rushed</sys:String>
-    <sys:String x:Key="LOCHltbSelectDataTypeLeisure">Leisure</sys:String>
+    <sys:String x:Key="LOCHltbSelectDataType">Виберіть тип даних:</sys:String>
+    <sys:String x:Key="LOCHltbSelectDataTypeClassic">Класика</sys:String>
+    <sys:String x:Key="LOCHltbSelectDataTypeAverage">В середньому</sys:String>
+    <sys:String x:Key="LOCHltbSelectDataTypeMedian">Медіана</sys:String>
+    <sys:String x:Key="LOCHltbSelectDataTypeRushed">Квапливо</sys:String>
+    <sys:String x:Key="LOCHltbSelectDataTypeLeisure">Неквапливо</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarOptions">Параметри смуги прогресу</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">Показувати спливаючі підказки з часом на смузі прогресу</sys:String>
