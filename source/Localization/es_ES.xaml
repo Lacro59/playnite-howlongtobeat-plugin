@@ -17,12 +17,12 @@
 
     <sys:String x:Key="LOCHltbEnableProgressBarInDataView">Ver barra de progreso en la vista de datos de Playnite</sys:String>
 
-    <sys:String x:Key="LOCHltbSelectDataType">Select the data type:</sys:String>
-    <sys:String x:Key="LOCHltbSelectDataTypeClassic">Classic</sys:String>
-    <sys:String x:Key="LOCHltbSelectDataTypeAverage">Average</sys:String>
-    <sys:String x:Key="LOCHltbSelectDataTypeMedian">Median</sys:String>
-    <sys:String x:Key="LOCHltbSelectDataTypeRushed">Rushed</sys:String>
-    <sys:String x:Key="LOCHltbSelectDataTypeLeisure">Leisure</sys:String>
+    <sys:String x:Key="LOCHltbSelectDataType">Selecciona el tipo de datos:</sys:String>
+    <sys:String x:Key="LOCHltbSelectDataTypeClassic">Clásico</sys:String>
+    <sys:String x:Key="LOCHltbSelectDataTypeAverage">Promedio</sys:String>
+    <sys:String x:Key="LOCHltbSelectDataTypeMedian">Media</sys:String>
+    <sys:String x:Key="LOCHltbSelectDataTypeRushed">Acelerado</sys:String>
+    <sys:String x:Key="LOCHltbSelectDataTypeLeisure">Ocio</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarOptions">Opciones de la barra de progreso</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">Mostrar descripción de tiempo en la barra de progreso</sys:String>
@@ -80,8 +80,8 @@ Si ninguno tiene este estado, tomara el más reciente.</sys:String>
     <sys:String x:Key="LocHowLongToBeatPlayniteData">Datos de Playnite</sys:String>
     <sys:String x:Key="LOCHowLongToBeatCompleted">Completado</sys:String>
 
-    <sys:String x:Key="LOCHltbOnlyReplays">Sólo re-jugados</sys:String>
-    <sys:String x:Key="LOCHltbOnlyNotPlayed">Sólo juegos no jugados</sys:String>
+    <sys:String x:Key="LOCHltbOnlyReplays">Solo rejugados</sys:String>
+    <sys:String x:Key="LOCHltbOnlyNotPlayed">Solo juegos no jugados</sys:String>
 
     <sys:String x:Key="LOCHltbRemainingTime">Tiempo restante</sys:String>
 
