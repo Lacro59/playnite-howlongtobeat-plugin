@@ -17,6 +17,9 @@ namespace HowLongToBeat.Models.Api
 
         [SerializationPropertyName("genre")]
         public string Genre { get; set; } = string.Empty;
+
+        [SerializationPropertyName("subGenre")]
+        public string SubGenre { get; set; } = " ";
     }
 
     public class Games
