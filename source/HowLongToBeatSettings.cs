@@ -421,6 +421,15 @@ namespace HowLongToBeat
                 }
             }
 
+            if (!Settings.UseHtltbClassic && !Settings.UseHtltbAverage && !Settings.UseHtltbMedian && !Settings.UseHtltbRushed && !Settings.UseHtltbLeisure)
+            {
+                Settings.UseHtltbClassic = EditingClone.UseHtltbClassic;
+                Settings.UseHtltbAverage = EditingClone.UseHtltbAverage;
+                Settings.UseHtltbMedian = EditingClone.UseHtltbMedian;
+                Settings.UseHtltbRushed = EditingClone.UseHtltbRushed;
+                Settings.UseHtltbLeisure = EditingClone.UseHtltbLeisure;
+            }
+
             Plugin.SavePluginSettings(Settings);
             HowLongToBeat.PluginDatabase.PluginSettings = this;
 
