@@ -71,68 +71,6 @@ namespace HowLongToBeat.Services
         }
 
 
-        public override void GetSelectData()
-        {
-            OptionsDownloadData View = new OptionsDownloadData(this);
-            Window windowExtension = PlayniteUiHelper.CreateExtensionWindow(PluginName + " - " + ResourceProvider.GetString("LOCCommonSelectData"), View);
-            _ = windowExtension.ShowDialog();
-
-            List<Game> PlayniteDb = View.GetFilteredGames();
-            bool OnlyMissing = View.GetOnlyMissing();
-
-            if (PlayniteDb == null)
-            {
-                return;
-            }
-
-            if (OnlyMissing)
-            {
-                PlayniteDb = PlayniteDb.FindAll(x => !Get(x.Id, true).HasData);
-            }
-
-            GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions(
-                $"{PluginName} - {ResourceProvider.GetString("LOCCommonGettingData")}",
-                true
-            );
-            globalProgressOptions.IsIndeterminate = false;
-
-            _ = API.Instance.Dialogs.ActivateGlobalProgress((activateGlobalProgress) =>
-            {
-                try
-                {
-                    Stopwatch stopWatch = new Stopwatch();
-                    stopWatch.Start();
-
-                    activateGlobalProgress.ProgressMaxValue = (double)PlayniteDb.Count();
-
-                    string CancelText = string.Empty;
-
-                    foreach (Game game in PlayniteDb)
-                    {
-                        if (activateGlobalProgress.CancelToken.IsCancellationRequested)
-                        {
-                            CancelText = " canceled";
-                            break;
-                        }
-
-                        Thread.Sleep(10);
-                        AddData(game);
-
-                        activateGlobalProgress.CurrentProgressValue++;
-                    }
-
-                    stopWatch.Stop();
-                    TimeSpan ts = stopWatch.Elapsed;
-                    Logger.Info($"Task GetSelectData(){CancelText} - {string.Format("{0:00}:{1:00}.{2:00}", ts.Minutes, ts.Seconds, ts.Milliseconds / 10)} for {activateGlobalProgress.CurrentProgressValue}/{(double)PlayniteDb.Count()} items");
-                }
-                catch (Exception ex)
-                {
-                    Common.LogError(ex, false, true, PluginName);
-                }
-            }, globalProgressOptions);
-        }
-
-
         public override GameHowLongToBeat Get(Guid Id, bool OnlyCache = false, bool Force = false)
         {
             GameHowLongToBeat gameHowLongToBeat = GetOnlyCache(Id);
@@ -204,65 +142,15 @@ namespace HowLongToBeat.Services
             }
         }
 
-
-        public override void Refresh(Guid Id)
-        {
-            GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions(
-                $"{PluginName} - {ResourceProvider.GetString("LOCCommonProcessing")}",
-                false
-            );
-            globalProgressOptions.IsIndeterminate = true;
-
-            _ = API.Instance.Dialogs.ActivateGlobalProgress((activateGlobalProgress) =>
-            {
-                RefreshElement(Id);
-            }, globalProgressOptions);
-        }
-
-        public override void Refresh(IEnumerable<Guid> Ids)
-        {
-            GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions(
-                $"{PluginName} - {ResourceProvider.GetString("LOCCommonProcessing")}",
-                true
-            );
-            globalProgressOptions.IsIndeterminate = false;
-
-            _ = API.Instance.Dialogs.ActivateGlobalProgress((activateGlobalProgress) =>
-            {
-                Stopwatch stopWatch = new Stopwatch();
-                stopWatch.Start();
-
-                activateGlobalProgress.ProgressMaxValue = Ids.Count();
-
-                string CancelText = string.Empty;
-
-                foreach (Guid Id in Ids)
-                {
-                    if (activateGlobalProgress.CancelToken.IsCancellationRequested)
-                    {
-                        CancelText = " canceled";
-                        break;
-                    }
-
-                    RefreshElement(Id);
-                    activateGlobalProgress.CurrentProgressValue++;
-                }
-
-                stopWatch.Stop();
-                TimeSpan ts = stopWatch.Elapsed;
-                Logger.Info($"Task Refresh(){CancelText} - {string.Format("{0:00}:{1:00}.{2:00}", ts.Minutes, ts.Seconds, ts.Milliseconds / 10)} for {activateGlobalProgress.CurrentProgressValue}/{Ids.Count()} items");
-            }, globalProgressOptions);
-        }
-
         public void RefreshAll()
         {
-            GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions(
-                $"{PluginName} - {ResourceProvider.GetString("LOCCommonProcessing")}",
-                true
-            );
-            globalProgressOptions.IsIndeterminate = false;
+            GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions($"{PluginName} - {ResourceProvider.GetString("LOCCommonProcessing")}")
+            {
+                Cancelable = true,
+                IsIndeterminate = false
+            };
 
-            _ = API.Instance.Dialogs.ActivateGlobalProgress((activateGlobalProgress) =>
+            _ = API.Instance.Dialogs.ActivateGlobalProgress((a) =>
             {
                 Stopwatch stopWatch = new Stopwatch();
                 stopWatch.Start();
@@ -270,34 +158,40 @@ namespace HowLongToBeat.Services
                 string CancelText = string.Empty;
 
                 IEnumerable<GameHowLongToBeat> db = Database.Where(x => x.HasData);
-                activateGlobalProgress.ProgressMaxValue = (double)db.Count();
+                a.ProgressMaxValue = (double)db.Count();
 
                 foreach (GameHowLongToBeat item in db)
                 {
-                    if (activateGlobalProgress.CancelToken.IsCancellationRequested)
+                    Game game = item.Game;
+                    a.Text = $"{PluginName} - {ResourceProvider.GetString("LOCCommonProcessing")}"
+                        + "\n\n" + $"{a.CurrentProgressValue}/{a.ProgressMaxValue}"
+                        + "\n" + game?.Name + (game?.Source == null ? string.Empty : $" ({game?.Source.Name})");
+
+                    if (a.CancelToken.IsCancellationRequested)
                     {
-                        CancelText = " canceled";
                         break;
                     }
 
                     if (item.DateLastRefresh.AddMonths(1) < DateTime.Now)
                     {
-                        RefreshElement(item.Id);
+                        RefreshNoLoader(item.Id);
                     }
 
-                    activateGlobalProgress.CurrentProgressValue++;
+                    a.CurrentProgressValue++;
                 }
 
                 stopWatch.Stop();
                 TimeSpan ts = stopWatch.Elapsed;
-                Logger.Info($"Task RefreshAll(){CancelText} - {string.Format("{0:00}:{1:00}.{2:00}", ts.Minutes, ts.Seconds, ts.Milliseconds / 10)} for {activateGlobalProgress.CurrentProgressValue}/{(double)db.Count()} items");
+                Logger.Info($"Task RefreshAll(){CancelText} - {string.Format("{0:00}:{1:00}.{2:00}", ts.Minutes, ts.Seconds, ts.Milliseconds / 10)} for {a.CurrentProgressValue}/{(double)db.Count()} items");
             }, globalProgressOptions);
         }
 
-        private void RefreshElement(Guid Id)
+        public override void RefreshNoLoader(Guid id)
         {
-            GameHowLongToBeat loadedItem = Get(Id, true);
+            Game game = API.Instance.Database.Games.Get(id);
+            Logger.Info($"RefreshNoLoader({game?.Name} - {game?.Id})");
 
+            GameHowLongToBeat loadedItem = Get(id, true);
             List<HltbDataUser> dataSearch = loadedItem.GetData().IsVndb
                 ? VndbApi.SearchById(loadedItem.GetData().Id)
                 : HowLongToBeatClient.SearchTwoMethod(loadedItem.GetData().Name).GetAwaiter().GetResult();
@@ -309,46 +203,8 @@ namespace HowLongToBeat.Services
                 loadedItem.DateLastRefresh = DateTime.Now;
                 Update(loadedItem);
             }
-        }
 
-        public override void RefreshWithNoData(IEnumerable<Guid> Ids)
-        {
-            GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions(
-                $"{PluginName} - {ResourceProvider.GetString("LOCCommonProcessing")}",
-                true
-            );
-            globalProgressOptions.IsIndeterminate = false;
-
-            _ = API.Instance.Dialogs.ActivateGlobalProgress((activateGlobalProgress) =>
-            {
-                Stopwatch stopWatch = new Stopwatch();
-                stopWatch.Start();
-
-                activateGlobalProgress.ProgressMaxValue = Ids.Count();
-
-                string CancelText = string.Empty;
-
-                foreach (Guid Id in Ids)
-                {
-                    if (activateGlobalProgress.CancelToken.IsCancellationRequested)
-                    {
-                        CancelText = " canceled";
-                        break;
-                    }
-
-                    Game game = API.Instance.Database.Games.Get(Id);
-                    if (game != null)
-                    {
-                        AddData(game);
-                    }
-
-                    activateGlobalProgress.CurrentProgressValue++;
-                }
-
-                stopWatch.Stop();
-                TimeSpan ts = stopWatch.Elapsed;
-                Logger.Info($"Task Refresh(){CancelText} - {string.Format("{0:00}:{1:00}.{2:00}", ts.Minutes, ts.Seconds, ts.Milliseconds / 10)} for {activateGlobalProgress.CurrentProgressValue}/{Ids.Count()} items");
-            }, globalProgressOptions);
+            ActionAfterRefresh(loadedItem);
         }
 
 

@@ -488,10 +488,14 @@ namespace HowLongToBeat
                     Description = ResourceProvider.GetString("LOCHowLongToBeatPluginUserView"),
                     Action = (mainMenuItem) =>
                     {
+                        WindowOptions windowOptions = new WindowOptions
+                        {
+                            Height = 660,
+                            Width = 1200,
+                            CanBeResizable = true
+                        };
                         HowLongToBeatUserView ViewExtension = new HowLongToBeatUserView(this);
-                        ViewExtension.Height = 660;
-                        ViewExtension.Width = 1290;
-                        Window windowExtension = PlayniteUiHelper.CreateExtensionWindow(PluginDatabase.PluginName, ViewExtension);
+                        Window windowExtension = PlayniteUiHelper.CreateExtensionWindow(PluginDatabase.PluginName, ViewExtension, windowOptions);
                         windowExtension.ShowDialog();
                     }
                 },
@@ -542,25 +546,24 @@ namespace HowLongToBeat
                     {
                         IEnumerable<Game> db = PlayniteApi.Database.Games.Where(x => !x.Hidden && x.Playtime > 0);
 
-                        GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions(
-                            $"{PluginDatabase.PluginName} - {ResourceProvider.GetString("LOCCommonProcessing")}",
-                            true
-                        );
-
-                        globalProgressOptions.IsIndeterminate = db.Count() == 1;
-
-                        PlayniteApi.Dialogs.ActivateGlobalProgress((activateGlobalProgress) =>
+                        GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions($"{PluginDatabase.PluginName} - {ResourceProvider.GetString("LOCCommonProcessing")}")
                         {
-                            activateGlobalProgress.ProgressMaxValue = db.Count();
-                            activateGlobalProgress.CurrentProgressValue = -1;
+                            Cancelable = true,
+                            IsIndeterminate = db.Count() == 1
+                        };
+
+                        PlayniteApi.Dialogs.ActivateGlobalProgress((a) =>
+                        {
+                            a.ProgressMaxValue = db.Count();
+                            a.CurrentProgressValue = -1;
                             foreach (Game game in db)
                             {
-                                if (activateGlobalProgress.CancelToken.IsCancellationRequested)
+                                if (a.CancelToken.IsCancellationRequested)
                                 {
                                     break;
                                 }
 
-                                activateGlobalProgress.CurrentProgressValue += 1;
+                                a.CurrentProgressValue += 1;
                                 PluginDatabase.SetCurrentPlayTime(game, 0, true);
                             }
                         }, globalProgressOptions);
