@@ -868,8 +868,7 @@ namespace HowLongToBeat
         {
             if (PluginSettings.Settings.AutoImport && !PreventLibraryUpdatedOnStart)
             {
-                IEnumerable<Game> playniteDb = PlayniteApi.Database.Games.Where(x => x.Added != null && x.Added > PluginSettings.Settings.LastAutoLibUpdateAssetsDownload);
-                PluginDatabase.Refresh(playniteDb.Select(x => x.Id), ResourceProvider.GetString("LOCCommonGettingData"));
+                PluginDatabase.RefreshRecent();
                 PluginSettings.Settings.LastAutoLibUpdateAssetsDownload = DateTime.Now;
                 SavePluginSettings(PluginSettings.Settings);
             }
