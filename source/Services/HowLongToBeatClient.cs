@@ -52,7 +52,7 @@ namespace HowLongToBeat.Services
 
         internal string FileCookies { get; }
 
-        private static string SearchId {get;set;} = null;
+        private static string SearchId { get; set; } = null;
 
 
         #region Urls
@@ -107,7 +107,13 @@ namespace HowLongToBeat.Services
             {
                 string response = await Web.DownloadStringData(string.Format(UrlGame, id));
                 string jsonData = Tools.GetJsonInString(response, @"<script[ ]?id=""__NEXT_DATA__""[ ]?type=""application/json"">");
-                return Serialization.TryFromJson(jsonData, out NEXT_DATA next_data) && next_data?.Props?.PageProps?.Game?.Data?.Game != null
+                Serialization.TryFromJson(jsonData, out NEXT_DATA next_data, out Exception ex);
+                if (ex != null)
+                {
+                    Common.LogError(ex, false, false, PluginDatabase.PluginName);
+                }
+
+                return next_data?.Props?.PageProps?.Game?.Data?.Game != null
                     ? next_data.Props.PageProps.Game.Data.Game.FirstOrDefault()
                     : null;
             }
@@ -212,7 +218,7 @@ namespace HowLongToBeat.Services
                 string js = Regex.Match(response, @"_app-\w*.js").Value;
                 if (!js.IsNullOrEmpty())
                 {
-                    url = $"https://howlongtobeat.com/_next/static/chunks/pages/{js}";
+                    url += $"/_next/static/chunks/pages/{js}";
                     response = await Web.DownloadStringData(url);
                     Match matches = Regex.Match(response, "\"/api/find/\".concat[(]\"(\\w*)\"[)].concat[(]\"(\\w*)\"[)]");
                     SearchId = matches.Groups[1].Value + matches.Groups[2].Value;
@@ -520,7 +526,13 @@ namespace HowLongToBeat.Services
                 }
 
                 string jsonData = Tools.GetJsonInString(response, @"<script[ ]?id=""__NEXT_DATA__""[ ]?type=""application/json"">");
-                return Serialization.TryFromJson(jsonData, out NEXT_DATA next_data) && next_data?.Props?.PageProps?.EditData?.UserId != null
+                Serialization.TryFromJson(jsonData, out NEXT_DATA next_data, out Exception ex);
+                if (ex != null)
+                {
+                    Common.LogError(ex, false, false, PluginDatabase.PluginName);
+                }
+
+                return next_data?.Props?.PageProps?.EditData?.UserId != null
                     ? next_data.Props.PageProps.EditData
                     : throw new Exception($"No EditData find for {GameName} - {UserGameId}");
             }

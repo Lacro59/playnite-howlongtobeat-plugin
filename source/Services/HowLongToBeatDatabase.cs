@@ -192,16 +192,29 @@ namespace HowLongToBeat.Services
             Logger.Info($"RefreshNoLoader({game?.Name} - {game?.Id})");
 
             GameHowLongToBeat loadedItem = Get(id, true);
-            List<HltbDataUser> dataSearch = loadedItem.GetData().IsVndb
-                ? VndbApi.SearchById(loadedItem.GetData().Id)
-                : HowLongToBeatClient.SearchTwoMethod(loadedItem.GetData().Name).GetAwaiter().GetResult();
-
-            HltbDataUser webDataSearch = dataSearch.Find(x => x.Id == loadedItem.GetData().Id);
-            if (webDataSearch != null)
+            if (loadedItem.GetData().Id.IsNullOrEmpty())
             {
-                loadedItem.Items = new List<HltbDataUser> { webDataSearch };
-                loadedItem.DateLastRefresh = DateTime.Now;
-                Update(loadedItem);
+                Logger.Info($"No data, try to add");
+                AddData(game);
+                loadedItem = Get(id, true);
+                if (loadedItem.GetData().Id.IsNullOrEmpty())
+                {
+                    Logger.Info($"No find");
+                }
+            }
+            else
+            {
+                List<HltbDataUser> dataSearch = loadedItem.GetData().IsVndb
+                    ? VndbApi.SearchById(loadedItem.GetData().Id)
+                    : HowLongToBeatClient.SearchTwoMethod(loadedItem.GetData().Name).GetAwaiter().GetResult();
+
+                HltbDataUser webDataSearch = dataSearch.Find(x => x.Id == loadedItem.GetData().Id);
+                if (webDataSearch != null)
+                {
+                    loadedItem.Items = new List<HltbDataUser> { webDataSearch };
+                    loadedItem.DateLastRefresh = DateTime.Now;
+                    Update(loadedItem);
+                }
             }
 
             ActionAfterRefresh(loadedItem);

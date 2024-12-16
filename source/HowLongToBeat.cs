@@ -868,51 +868,8 @@ namespace HowLongToBeat
         {
             if (PluginSettings.Settings.AutoImport && !PreventLibraryUpdatedOnStart)
             {
-                List<Game> PlayniteDb = PlayniteApi.Database.Games
-                        .Where(x => x.Added != null && x.Added > PluginSettings.Settings.LastAutoLibUpdateAssetsDownload)
-                        .ToList();
-
-                GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions(
-                    $"{PluginDatabase.PluginName} - {ResourceProvider.GetString("LOCCommonGettingData")}",
-                    true
-                );
-                globalProgressOptions.IsIndeterminate = false;
-
-                _ = PlayniteApi.Dialogs.ActivateGlobalProgress((activateGlobalProgress) =>
-                {
-                    try
-                    {
-                        Stopwatch stopWatch = new Stopwatch();
-                        stopWatch.Start();
-
-                        activateGlobalProgress.ProgressMaxValue = (double)PlayniteDb.Count();
-
-                        string CancelText = string.Empty;
-
-                        foreach (Game game in PlayniteDb)
-                        {
-                            if (activateGlobalProgress.CancelToken.IsCancellationRequested)
-                            {
-                                CancelText = " canceled";
-                                break;
-                            }
-
-                            Thread.Sleep(10);
-                            PluginDatabase.AddData(game);
-
-                            activateGlobalProgress.CurrentProgressValue++;
-                        }
-
-                        stopWatch.Stop();
-                        TimeSpan ts = stopWatch.Elapsed;
-                        Logger.Info($"Task OnLibraryUpdated(){CancelText} - {string.Format("{0:00}:{1:00}.{2:00}", ts.Minutes, ts.Seconds, ts.Milliseconds / 10)} for {activateGlobalProgress.CurrentProgressValue}/{(double)PlayniteDb.Count()} items");
-                    }
-                    catch (Exception ex)
-                    {
-                        Common.LogError(ex, false, true, PluginDatabase.PluginName);
-                    }
-                }, globalProgressOptions);
-
+                IEnumerable<Game> playniteDb = PlayniteApi.Database.Games.Where(x => x.Added != null && x.Added > PluginSettings.Settings.LastAutoLibUpdateAssetsDownload);
+                PluginDatabase.Refresh(playniteDb.Select(x => x.Id), ResourceProvider.GetString("LOCCommonGettingData"));
                 PluginSettings.Settings.LastAutoLibUpdateAssetsDownload = DateTime.Now;
                 SavePluginSettings(PluginSettings.Settings);
             }
