@@ -21,6 +21,7 @@ using CommonPlayniteShared.Common;
 using CommonPluginsShared.Extensions;
 using System.Net;
 using HowLongToBeat.Models.Api;
+using HowLongToBeat.Models.GameActivity;
 
 namespace HowLongToBeat.Services
 {
@@ -606,6 +607,30 @@ namespace HowLongToBeat.Services
                         editData.Title = hltbDataUser.Name;
                         editData.Platform = platformName;
                         editData.Storefront = editData.Storefront.IsNullOrEmpty() ? storefrontName : editData.Storefront;
+
+                        if (PluginSettings.Settings.UsedStartDateFromGameActivity)
+                        {
+                            string pathGameActivityData = Path.Combine(Paths.PluginUserDataPath, "..", PlayniteTools.GetPluginId(PlayniteTools.ExternalPlugin.GameActivity).ToString(), "GameActivity", game.Id.ToString() + ".json");
+                            if (File.Exists(pathGameActivityData))
+                            {
+                                if (Serialization.TryFromJsonFile(pathGameActivityData, out dynamic gameActivity, out Exception ex))
+                                {
+                                    if (Serialization.TryFromJson(Serialization.ToJson(gameActivity["Items"]), out List<Activity> activities, out ex))
+                                    {
+                                        DateTime dt = (DateTime)(activities?.Where(x => x.DateSession != null).OrderBy(x => (DateTime)x.DateSession)?.FirstOrDefault().DateSession);
+                                        editData.General.StartDate = new Date { Year = dt.ToString("yyyy"), Month = dt.ToString("MM"), Day = dt.ToString("dd") };
+                                    }
+                                }
+                                if (ex != null)
+                                {
+                                    Common.LogError(ex, false, false, PluginName);
+                                }
+                            }
+                            else
+                            {
+                                Logger.Warn($"No GameActivity for {game.Name} in {pathGameActivityData}");
+                            }
+                        }
 
                         if (!NoPlaying)
                         {

@@ -107,7 +107,7 @@ namespace HowLongToBeat.Services
             {
                 string response = await Web.DownloadStringData(string.Format(UrlGame, id));
                 string jsonData = Tools.GetJsonInString(response, @"<script[ ]?id=""__NEXT_DATA__""[ ]?type=""application/json"">");
-                Serialization.TryFromJson(jsonData, out NEXT_DATA next_data, out Exception ex);
+                _ = Serialization.TryFromJson(jsonData, out NEXT_DATA next_data, out Exception ex);
                 if (ex != null)
                 {
                     Common.LogError(ex, false, false, PluginDatabase.PluginName);
@@ -214,7 +214,6 @@ namespace HowLongToBeat.Services
             {
                 string url = UrlBase;
                 string response = await Web.DownloadStringData(url);
-
                 string js = Regex.Match(response, @"_app-\w*.js").Value;
                 if (!js.IsNullOrEmpty())
                 {
@@ -526,7 +525,7 @@ namespace HowLongToBeat.Services
                 }
 
                 string jsonData = Tools.GetJsonInString(response, @"<script[ ]?id=""__NEXT_DATA__""[ ]?type=""application/json"">");
-                Serialization.TryFromJson(jsonData, out NEXT_DATA next_data, out Exception ex);
+                _ = Serialization.TryFromJson(jsonData, out NEXT_DATA next_data, out Exception ex);
                 if (ex != null)
                 {
                     Common.LogError(ex, false, false, PluginDatabase.PluginName);
