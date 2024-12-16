@@ -32,6 +32,8 @@
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeBelow">İlerleme çubukları altında</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeUser">Kullanıcının HowLongToBeat süresini göster</sys:String>
 
+    <sys:String x:Key="LOCHltbUsedStartDateFromGameActivity">Used first game session from GameActivity plugin for start date</sys:String>
+    
     <sys:String x:Key="LOCHowLongToBeatAutoSetCurrentPlayTime">Oyun oturumundan sonra HowLongToBeat üzerinde son süreyi otomatik güncelle</sys:String>
     <sys:String x:Key="LOCHowLongToBeatWithoutConfirmation">Onaylama iletisi olmaksızın</sys:String>
     <sys:String x:Key="LOCHowLongToBeatEnableSuccessNotification">Başarı iletisini etkinleştir</sys:String>
