@@ -32,7 +32,7 @@
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeBelow">En dessous</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeUser">Afficher le temps HowLongToBeat de l'utilisateur</sys:String>
 
-    <sys:String x:Key="LOCHltbUsedStartDateFromGameActivity">Used first game session from GameActivity plugin for start date</sys:String>
+    <sys:String x:Key="LOCHltbUsedStartDateFromGameActivity">Utiliser la première session d'activité du plugin GameActivity pour la date de début</sys:String>
     
     <sys:String x:Key="LOCHowLongToBeatAutoSetCurrentPlayTime">Mise à jour auto du temps de jeu sur HowLongToBeat après une session de jeu</sys:String>
     <sys:String x:Key="LOCHowLongToBeatWithoutConfirmation">Sans message de confirmation</sys:String>
