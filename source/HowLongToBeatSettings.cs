@@ -27,6 +27,7 @@ namespace HowLongToBeat
 
         public bool AutoSetCurrentPlayTime { get; set; } = false;
         public bool AutoSetCurrentPlayTimeWithoutConfirmation { get; set; } = true;
+        public bool UsedStartDateFromGameActivity { get; set; } = false;
 
         public bool AutoAccept { get; set; } = true;
         public bool ShowWhenMismatch { get; set; } = false;
@@ -45,16 +46,16 @@ namespace HowLongToBeat
 
         public bool EnableProgressBarInDataView { get; set; } = true;
 
-        private bool enableIntegrationViewItem = true;
-        public bool EnableIntegrationViewItem { get => enableIntegrationViewItem; set => SetValue(ref enableIntegrationViewItem, value); }
+        private bool _enableIntegrationViewItem = true;
+        public bool EnableIntegrationViewItem { get => _enableIntegrationViewItem; set => SetValue(ref _enableIntegrationViewItem, value); }
 
         public bool IntegrationViewItemOnlyHour { get; set; } = false;
 
-        private bool enableIntegrationButton = true;
-        public bool EnableIntegrationButton { get => enableIntegrationButton; set => SetValue(ref enableIntegrationButton, value); }
+        private bool _enableIntegrationButton = true;
+        public bool EnableIntegrationButton { get => _enableIntegrationButton; set => SetValue(ref _enableIntegrationButton, value); }
 
-        private bool enableIntegrationProgressBar = true;
-        public bool EnableIntegrationProgressBar { get => enableIntegrationProgressBar; set => SetValue(ref enableIntegrationProgressBar, value); }
+        private bool _enableIntegrationProgressBar = true;
+        public bool EnableIntegrationProgressBar { get => _enableIntegrationProgressBar; set => SetValue(ref _enableIntegrationProgressBar, value); }
 
         public bool ProgressBarShowToolTip { get; set; } = true;
         public bool ProgressBarShowTimeAbove { get; set; } = false;
@@ -87,23 +88,23 @@ namespace HowLongToBeat
         public ThemeLinearGradient ThirdMultiLinearGradient { get; set; } = null;
 
 
-        private SolidColorBrush colorFirst = new SolidColorBrush(Brushes.DarkCyan.Color);
-        public SolidColorBrush ColorFirst { get => colorFirst; set => SetValue(ref colorFirst, value); }
+        private SolidColorBrush _colorFirst = new SolidColorBrush(Brushes.DarkCyan.Color);
+        public SolidColorBrush ColorFirst { get => _colorFirst; set => SetValue(ref _colorFirst, value); }
 
-        private SolidColorBrush colorSecond = new SolidColorBrush(Brushes.RoyalBlue.Color);
-        public SolidColorBrush ColorSecond { get => colorSecond; set => SetValue(ref colorSecond, value); }
+        private SolidColorBrush _colorSecond = new SolidColorBrush(Brushes.RoyalBlue.Color);
+        public SolidColorBrush ColorSecond { get => _colorSecond; set => SetValue(ref _colorSecond, value); }
 
-        private SolidColorBrush colorThird = new SolidColorBrush(Brushes.ForestGreen.Color);
-        public SolidColorBrush ColorThird { get => colorThird; set => SetValue(ref colorThird, value); }
+        private SolidColorBrush _colorThird = new SolidColorBrush(Brushes.ForestGreen.Color);
+        public SolidColorBrush ColorThird { get => _colorThird; set => SetValue(ref _colorThird, value); }
 
-        private SolidColorBrush colorFirstMulti = new SolidColorBrush(Brushes.DarkCyan.Color);
-        public SolidColorBrush ColorFirstMulti { get => colorFirstMulti; set => SetValue(ref colorFirstMulti, value); }
+        private SolidColorBrush _colorFirstMulti = new SolidColorBrush(Brushes.DarkCyan.Color);
+        public SolidColorBrush ColorFirstMulti { get => _colorFirstMulti; set => SetValue(ref _colorFirstMulti, value); }
 
-        private SolidColorBrush colorSecondMulti = new SolidColorBrush(Brushes.RoyalBlue.Color);
-        public SolidColorBrush ColorSecondMulti { get => colorSecondMulti; set => SetValue(ref colorSecondMulti, value); }
+        private SolidColorBrush _colorSecondMulti = new SolidColorBrush(Brushes.RoyalBlue.Color);
+        public SolidColorBrush ColorSecondMulti { get => _colorSecondMulti; set => SetValue(ref _colorSecondMulti, value); }
 
-        private SolidColorBrush colorThirdMulti = new SolidColorBrush(Brushes.ForestGreen.Color);
-        public SolidColorBrush ColorThirdMulti { get => colorThirdMulti; set => SetValue(ref colorThirdMulti, value); }
+        private SolidColorBrush _colorThirdMulti = new SolidColorBrush(Brushes.ForestGreen.Color);
+        public SolidColorBrush ColorThirdMulti { get => _colorThirdMulti; set => SetValue(ref _colorThirdMulti, value); }
 
 
         public TitleListSort TitleListSort { get; set; } = TitleListSort.Completion;
@@ -137,55 +138,55 @@ namespace HowLongToBeat
         // Playnite serializes settings object to a JSON object and saves it as text file.
         // If you want to exclude some property from being saved then use `JsonDontSerialize` ignore attribute.
         #region Variables exposed
-        private long mainStory = 0;
+        private long _mainStory = 0;
         [DontSerialize]
-        public long MainStory { get => mainStory; set => SetValue(ref mainStory, value); }
-        private string mainStoryFormat = string.Empty;
+        public long MainStory { get => _mainStory; set => SetValue(ref _mainStory, value); }
+        private string _mainStoryFormat = string.Empty;
         [DontSerialize]
-        public string MainStoryFormat { get => mainStoryFormat; set => SetValue(ref mainStoryFormat, value); }
+        public string MainStoryFormat { get => _mainStoryFormat; set => SetValue(ref _mainStoryFormat, value); }
 
-        private long mainExtra = 0;
+        private long _mainExtra = 0;
         [DontSerialize]
-        public long MainExtra { get => mainExtra; set => SetValue(ref mainExtra, value); }
-        private string mainExtraFormat = string.Empty;
+        public long MainExtra { get => _mainExtra; set => SetValue(ref _mainExtra, value); }
+        private string _mainExtraFormat = string.Empty;
         [DontSerialize]
-        public string MainExtraFormat { get => mainExtraFormat; set => SetValue(ref mainExtraFormat, value); }
+        public string MainExtraFormat { get => _mainExtraFormat; set => SetValue(ref _mainExtraFormat, value); }
 
-        private long completionist = 0;
+        private long _completionist = 0;
         [DontSerialize]
-        public long Completionist { get => completionist; set => SetValue(ref completionist, value); }
-        private string _CompletionistFormat = string.Empty;
+        public long Completionist { get => _completionist; set => SetValue(ref _completionist, value); }
+        private string _completionistFormat = string.Empty;
         [DontSerialize]
-        public string CompletionistFormat { get => _CompletionistFormat; set => SetValue(ref _CompletionistFormat, value); }
+        public string CompletionistFormat { get => _completionistFormat; set => SetValue(ref _completionistFormat, value); }
 
-        private long solo = 0;
+        private long _solo = 0;
         [DontSerialize]
-        public long Solo { get => solo; set => SetValue(ref solo, value); }
-        private string soloFormat = string.Empty;
+        public long Solo { get => _solo; set => SetValue(ref _solo, value); }
+        private string _soloFormat = string.Empty;
         [DontSerialize]
-        public string SoloFormat { get => soloFormat; set => SetValue(ref soloFormat, value); }
+        public string SoloFormat { get => _soloFormat; set => SetValue(ref _soloFormat, value); }
 
-        private long coOp = 0;
+        private long _coOp = 0;
         [DontSerialize]
-        public long CoOp { get => coOp; set => SetValue(ref coOp, value); }
-        private string _CoOpFormat = string.Empty;
+        public long CoOp { get => _coOp; set => SetValue(ref _coOp, value); }
+        private string _coOpFormat = string.Empty;
         [DontSerialize]
-        public string CoOpFormat { get => _CoOpFormat; set => SetValue(ref _CoOpFormat, value); }
+        public string CoOpFormat { get => _coOpFormat; set => SetValue(ref _coOpFormat, value); }
 
-        private long vs = 0;
+        private long _vs = 0;
         [DontSerialize]
-        public long Vs { get => vs; set => SetValue(ref vs, value); }
-        private string vsFormat = string.Empty;
+        public long Vs { get => _vs; set => SetValue(ref _vs, value); }
+        private string _vsFormat = string.Empty;
         [DontSerialize]
-        public string VsFormat { get => vsFormat; set => SetValue(ref vsFormat, value); }
+        public string VsFormat { get => _vsFormat; set => SetValue(ref _vsFormat, value); }
 
 
-        private long timeToBeat = 0;
+        private long _timeToBeat = 0;
         [DontSerialize]
-        public long TimeToBeat { get => timeToBeat; set => SetValue(ref timeToBeat, value); }
-        private string timeToBeatFormat = string.Empty;
+        public long TimeToBeat { get => _timeToBeat; set => SetValue(ref _timeToBeat, value); }
+        private string _timeToBeatFormat = string.Empty;
         [DontSerialize]
-        public string TimeToBeatFormat { get => timeToBeatFormat; set => SetValue(ref timeToBeatFormat, value); }
+        public string TimeToBeatFormat { get => _timeToBeatFormat; set => SetValue(ref _timeToBeatFormat, value); }
         #endregion  
     }
 

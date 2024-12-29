@@ -21,6 +21,7 @@ using CommonPlayniteShared.Common;
 using CommonPluginsShared.Extensions;
 using System.Net;
 using HowLongToBeat.Models.Api;
+using HowLongToBeat.Models.GameActivity;
 
 namespace HowLongToBeat.Services
 {
@@ -192,16 +193,29 @@ namespace HowLongToBeat.Services
             Logger.Info($"RefreshNoLoader({game?.Name} - {game?.Id})");
 
             GameHowLongToBeat loadedItem = Get(id, true);
-            List<HltbDataUser> dataSearch = loadedItem.GetData().IsVndb
-                ? VndbApi.SearchById(loadedItem.GetData().Id)
-                : HowLongToBeatClient.SearchTwoMethod(loadedItem.GetData().Name).GetAwaiter().GetResult();
-
-            HltbDataUser webDataSearch = dataSearch.Find(x => x.Id == loadedItem.GetData().Id);
-            if (webDataSearch != null)
+            if (loadedItem.GetData().Id.IsNullOrEmpty())
             {
-                loadedItem.Items = new List<HltbDataUser> { webDataSearch };
-                loadedItem.DateLastRefresh = DateTime.Now;
-                Update(loadedItem);
+                Logger.Info($"No data, try to add");
+                AddData(game);
+                loadedItem = Get(id, true);
+                if (loadedItem.GetData().Id.IsNullOrEmpty())
+                {
+                    Logger.Info($"No find");
+                }
+            }
+            else
+            {
+                List<HltbDataUser> dataSearch = loadedItem.GetData().IsVndb
+                    ? VndbApi.SearchById(loadedItem.GetData().Id)
+                    : HowLongToBeatClient.SearchTwoMethod(loadedItem.GetData().Name).GetAwaiter().GetResult();
+
+                HltbDataUser webDataSearch = dataSearch.Find(x => x.Id == loadedItem.GetData().Id);
+                if (webDataSearch != null)
+                {
+                    loadedItem.Items = new List<HltbDataUser> { webDataSearch };
+                    loadedItem.DateLastRefresh = DateTime.Now;
+                    Update(loadedItem);
+                }
             }
 
             ActionAfterRefresh(loadedItem);
@@ -494,7 +508,59 @@ namespace HowLongToBeat.Services
             });
         }
 
-        public bool SetCurrentPlayTime(Game game, ulong ElapsedSeconds = 0, bool NoPlaying = false, bool IsCompleted = false, bool IsMain = false, bool IsMainSide = false, bool Is100 = false, bool IsSolo = false, bool IsCoOp = false, bool IsVs = false)
+        public void SetCurrentPlaytime(IEnumerable<Guid> ids, ulong elapsedSeconds = 0, bool noPlaying = false, bool isCompleted = false, bool isMain = false, bool isMainSide = false, bool is100 = false, bool isSolo = false, bool isCoOp = false, bool isVs = false)
+        {
+            GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions($"{PluginName} - {ResourceProvider.GetString("LOCCommonProcessing")}")
+            {
+                Cancelable = true,
+                IsIndeterminate = false
+            };
+
+            _ = API.Instance.Dialogs.ActivateGlobalProgress((a) =>
+            {
+                API.Instance.Database.BeginBufferUpdate();
+                //Database.BeginBufferUpdate();
+
+                Stopwatch stopWatch = new Stopwatch();
+                stopWatch.Start();
+
+                a.ProgressMaxValue = ids.Count();
+
+                foreach (Guid id in ids)
+                {
+                    Game game = API.Instance.Database.Games.Get(id);
+                    a.Text = $"{PluginName} - {ResourceProvider.GetString("LOCCommonProcessing")}"
+                        + "\n\n" + $"{a.CurrentProgressValue}/{a.ProgressMaxValue}"
+                        + "\n" + game?.Name + (game?.Source == null ? string.Empty : $" ({game?.Source.Name})");
+
+                    if (a.CancelToken.IsCancellationRequested)
+                    {
+                        break;
+                    }
+
+                    try
+                    {
+                        Thread.Sleep(100);
+                        _ = SetCurrentPlayTime(game, elapsedSeconds, noPlaying, isCompleted, isMain, isMainSide, is100, isSolo, isCoOp, isVs);
+                    }
+                    catch (Exception ex)
+                    {
+                        Common.LogError(ex, false, true, PluginName);
+                    }
+
+                    a.CurrentProgressValue++;
+                }
+
+                stopWatch.Stop();
+                TimeSpan ts = stopWatch.Elapsed;
+                Logger.Info($"Task SetCurrentPlaytime(){(a.CancelToken.IsCancellationRequested ? " canceled" : string.Empty)} - {string.Format("{0:00}:{1:00}.{2:00}", ts.Minutes, ts.Seconds, ts.Milliseconds / 10)} for {a.CurrentProgressValue}/{ids.Count()} items");
+
+                //Database.EndBufferUpdate();
+                API.Instance.Database.EndBufferUpdate();
+            }, globalProgressOptions);
+        }
+
+        public bool SetCurrentPlayTime(Game game, ulong elapsedSeconds = 0, bool noPlaying = false, bool isCompleted = false, bool isMain = false, bool isMainSide = false, bool is100 = false, bool isSolo = false, bool isCoOp = false, bool isVs = false)
         {
             try
             {
@@ -503,7 +569,7 @@ namespace HowLongToBeat.Services
                     GameHowLongToBeat gameHowLongToBeat = Database.Get(game.Id);
                     if (gameHowLongToBeat != null && (!gameHowLongToBeat.GetData()?.IsVndb ?? false))
                     {
-                        TimeSpan time = TimeSpan.FromSeconds(game.Playtime + ElapsedSeconds);
+                        TimeSpan time = TimeSpan.FromSeconds(game.Playtime + elapsedSeconds);
                         string platformName = HltbPlatform.PC.GetDescription();
                         string storefrontName = string.Empty;
 
@@ -594,7 +660,34 @@ namespace HowLongToBeat.Services
                         editData.Platform = platformName;
                         editData.Storefront = editData.Storefront.IsNullOrEmpty() ? storefrontName : editData.Storefront;
 
-                        if (!NoPlaying)
+                        if (PluginSettings.Settings.UsedStartDateFromGameActivity)
+                        {
+                            string pathGameActivityData = Path.Combine(Paths.PluginUserDataPath, "..", PlayniteTools.GetPluginId(PlayniteTools.ExternalPlugin.GameActivity).ToString(), "GameActivity", game.Id.ToString() + ".json");
+                            if (File.Exists(pathGameActivityData))
+                            {
+                                if (Serialization.TryFromJsonFile(pathGameActivityData, out dynamic gameActivity, out Exception ex))
+                                {
+                                    if (Serialization.TryFromJson(Serialization.ToJson(gameActivity["Items"]), out List<Activity> activities, out ex))
+                                    {
+                                        if (activities?.Count > 0)
+                                        {
+                                            DateTime dt = (DateTime)(activities?.Where(x => x.DateSession != null).OrderBy(x => (DateTime)x.DateSession)?.FirstOrDefault().DateSession);
+                                            editData.General.StartDate = new Date { Year = dt.ToString("yyyy"), Month = dt.ToString("MM"), Day = dt.ToString("dd") };
+                                        }
+                                    }
+                                }
+                                if (ex != null)
+                                {
+                                    Common.LogError(ex, false, false, PluginName);
+                                }
+                            }
+                            else
+                            {
+                                Logger.Warn($"No GameActivity for {game.Name} in {pathGameActivityData}");
+                            }
+                        }
+
+                        if (!noPlaying)
                         {
                             editData.Lists.Playing = true;
                         }
@@ -603,11 +696,11 @@ namespace HowLongToBeat.Services
                             editData.Lists.Playing = true;
                         }
 
-                        if (IsCompleted)
+                        if (isCompleted)
                         {
                             editData.Lists.Completed = true;
 
-                            if (IsMain)
+                            if (isMain)
                             {
                                 editData.SinglePlayer.CompMain.Time.Hours = time.Hours + (24 * time.Days);
                                 editData.SinglePlayer.CompMain.Time.Minutes = time.Minutes;
@@ -618,7 +711,7 @@ namespace HowLongToBeat.Services
                                 editData.General.CompletionDate.Year = ((DateTime)game.LastActivity).Year.ToString();
                             }
 
-                            if (IsMainSide)
+                            if (isMainSide)
                             {
                                 editData.SinglePlayer.CompPlus.Time.Hours = time.Hours + (24 * time.Days);
                                 editData.SinglePlayer.CompPlus.Time.Minutes = time.Minutes;
@@ -632,7 +725,7 @@ namespace HowLongToBeat.Services
                                 }
                             }
 
-                            if (Is100)
+                            if (is100)
                             {
                                 editData.SinglePlayer.Comp100.Time.Hours = time.Hours + (24 * time.Days);
                                 editData.SinglePlayer.Comp100.Time.Minutes = time.Minutes;
@@ -647,14 +740,14 @@ namespace HowLongToBeat.Services
                             }
                         }
 
-                        if (IsCoOp)
+                        if (isCoOp)
                         {
                             editData.MultiPlayer.CoOp.Time.Hours = time.Hours + (24 * time.Days);
                             editData.MultiPlayer.CoOp.Time.Minutes = time.Minutes;
                             editData.MultiPlayer.CoOp.Time.Seconds = time.Seconds;
                         }
 
-                        if (IsVs)
+                        if (isVs)
                         {
                             editData.MultiPlayer.Vs.Time.Hours = time.Hours + (24 * time.Days);
                             editData.MultiPlayer.Vs.Time.Minutes = time.Minutes;

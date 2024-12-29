@@ -126,6 +126,7 @@
     <Compile Include="Models\Api\UserGamesList.cs" />
     <Compile Include="Models\Api\UserGamesListParam.cs" />
     <Compile Include="Models\FilterSettings.cs" />
+    <Compile Include="Models\GameActivity\Activity.cs" />
     <Compile Include="Models\HltbData_old.cs" />
     <Compile Include="Models\HltbPlatform.cs" />
     <Compile Include="Models\GameHowLongToBeat.cs" />

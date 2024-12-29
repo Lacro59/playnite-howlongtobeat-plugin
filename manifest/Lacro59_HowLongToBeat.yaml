@@ -303,3 +303,13 @@ Packages:
       - 'Fixed: Search functionality (thanks to johnnywnb)'
       - 'Fixed: Bad data display'
       - 'Fixed: Issue with settings'
+  - Version: 3.7
+    RequiredApiVersion: 6.11.0
+    ReleaseDate: 2024-12-17
+    PackageUrl: https://github.com/Lacro59/playnite-howlongtobeat-plugin/releases/download/v3.7/playnite-howlongtobeat-plugin_3_7.pext
+    Changelog:
+      - 'Updated: Localizations'
+      - 'Fixed: Truncated display by removing height constraint on UserControl (thanks to johnywnb)'
+      - 'Fixed: Bulk data update doesn''t work'
+      - 'Added: Option to define start date from GameActivity'
+      - 'Optimized: UI'

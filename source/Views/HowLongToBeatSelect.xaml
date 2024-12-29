@@ -11,7 +11,7 @@
     xmlns:hltm="clr-namespace:HowLongToBeat.Models"
     xmlns:hltb="clr-namespace:HowLongToBeat.Behaviors" 
     xmlns:controls1="clr-namespace:CommonPluginsShared.Controls"
-    mc:Ignorable="d" Width="700" Height="600">
+    mc:Ignorable="d" Width="700">
 
     <UserControl.Resources>
         <convertersshared:VisibilityZeroConverter x:Key="VisibilityZeroConverter" />

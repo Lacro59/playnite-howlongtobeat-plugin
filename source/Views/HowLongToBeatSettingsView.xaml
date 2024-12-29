@@ -20,244 +20,244 @@
     <TabControl Margin="20" Name="tcSettings">
         <TabItem Header="{DynamicResource LOCHowLongToBeat}">
             <ScrollViewer Margin="0,10,0,0">
-                <Grid>
-                    <StackPanel>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="auto" />
-                                <ColumnDefinition Width="10" />
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="auto" />
-                            </Grid.ColumnDefinitions>
+                <StackPanel>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto" />
+                            <ColumnDefinition Width="10" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="auto" />
+                        </Grid.ColumnDefinitions>
 
-                            <Button Name="PART_BtAuthenticate" Content="{DynamicResource LOCCommonAuthenticateLabel}" 
+                        <Button Name="PART_BtAuthenticate" Content="{DynamicResource LOCCommonAuthenticateLabel}" 
                                             Grid.Column="0"
                                             VerticalAlignment="Top" MinWidth="110" Click="PART_BtAuthenticate_Click" Margin="0,1,0,0" />
-                            <Label Name="PART_LbAuthenticate" VerticalAlignment="Center" Grid.Column="2" />
-                            <Label Name="PART_LbUserLogin" Content="{Binding Settings.UserLogin}" VerticalAlignment="Center" Grid.Column="3" />
-                        </Grid>
+                        <Label Name="PART_LbAuthenticate" VerticalAlignment="Center" Grid.Column="2" />
+                        <Label Name="PART_LbUserLogin" Content="{Binding Settings.UserLogin}" VerticalAlignment="Center" Grid.Column="3" />
+                    </Grid>
 
-                        <CheckBox Margin="0,10,0,0" IsChecked="{Binding Settings.MenuInExtensions}" Content="{DynamicResource LOCCommonMenuInExtensions}" />
+                    <CheckBox Margin="0,10,0,0" IsChecked="{Binding Settings.MenuInExtensions}" Content="{DynamicResource LOCCommonMenuInExtensions}" />
 
-                        <CheckBox Margin="0,10,0,0" IsChecked="{Binding Settings.ShowHltbImg}" Content="{DynamicResource LOCHowLongToBeatShowHltbImage}" />
+                    <CheckBox Margin="0,10,0,0" IsChecked="{Binding Settings.ShowHltbImg}" Content="{DynamicResource LOCHowLongToBeatShowHltbImage}" />
 
-                        <Grid Margin="0,10,0,0">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="10" />
-                                <ColumnDefinition Width="auto" />
-                            </Grid.ColumnDefinitions>
-                            
-                            <CheckBox Name="cbEnableTag" VerticalAlignment="Center"  IsChecked="{Binding Settings.EnableTag}" Content="{DynamicResource LOCHowLongToBeatAddTagDescription}" />
+                    <Grid Margin="0,10,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="10" />
+                            <ColumnDefinition Width="auto" />
+                        </Grid.ColumnDefinitions>
 
-                            <StackPanel Grid.Column="2" Orientation="Horizontal">
-                                <Button Content="{DynamicResource LOCAddTitle}" Margin="0,0,10,0" IsEnabled="{Binding Settings.EnableTag}" VerticalAlignment="Center" Click="ButtonAddTag_Click" />
-                                <Button Content="{DynamicResource LOCRemoveTitle}" IsEnabled="{Binding Settings.EnableTag}" VerticalAlignment="Bottom" Click="ButtonRemoveTag_Click" Margin="0,0,0,1" />
-                            </StackPanel>
-                        </Grid>
+                        <CheckBox Name="cbEnableTag" VerticalAlignment="Center"  IsChecked="{Binding Settings.EnableTag}" Content="{DynamicResource LOCHowLongToBeatAddTagDescription}" />
 
-                        <StackPanel Margin="0,10,0,0">
-                            <Label Content="{DynamicResource LOCHltbSelectDataType}" />
-
-                            <StackPanel Orientation="Horizontal" Margin="50,5,0,0">
-                                <RadioButton GroupName="DataType" Content="{DynamicResource LOCHltbSelectDataTypeClassic}" IsChecked="{Binding Settings.UseHtltbClassic}" />
-                                <RadioButton GroupName="DataType" Content="{DynamicResource LOCHltbSelectDataTypeAverage}" IsChecked="{Binding Settings.UseHtltbAverage}" Margin="20,0,0,0" />
-                                <RadioButton GroupName="DataType" Content="{DynamicResource LOCHltbSelectDataTypeMedian}" IsChecked="{Binding Settings.UseHtltbMedian}" Margin="20,0,0,0" />
-                                <RadioButton GroupName="DataType" Content="{DynamicResource LOCHltbSelectDataTypeRushed}" IsChecked="{Binding Settings.UseHtltbRushed}" Margin="20,0,0,0" />
-                                <RadioButton GroupName="DataType" Content="{DynamicResource LOCHltbSelectDataTypeLeisure}" IsChecked="{Binding Settings.UseHtltbLeisure}" Margin="20,0,0,0" />
-                            </StackPanel>
+                        <StackPanel Grid.Column="2" Orientation="Horizontal">
+                            <Button Content="{DynamicResource LOCAddTitle}" Margin="0,0,10,0" IsEnabled="{Binding Settings.EnableTag}" VerticalAlignment="Center" Click="ButtonAddTag_Click" />
+                            <Button Content="{DynamicResource LOCRemoveTitle}" IsEnabled="{Binding Settings.EnableTag}" VerticalAlignment="Bottom" Click="ButtonRemoveTag_Click" Margin="0,0,0,1" />
                         </StackPanel>
+                    </Grid>
 
-                        <Grid Margin="0,10,0,0">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="10" />
-                                <ColumnDefinition Width="auto" />
-                            </Grid.ColumnDefinitions>
+                    <StackPanel Margin="0,10,0,0">
+                        <Label Content="{DynamicResource LOCHltbSelectDataType}" />
 
-                            <CheckBox IsChecked="{Binding Settings.AutoSetCurrentPlayTime}" Name="PART_AutoSetCurrentPlayTime" Content="{DynamicResource LOCHowLongToBeatAutoSetCurrentPlayTime}" />
-                            <Label Grid.Column="2" FontFamily="{DynamicResource FontIcoFont}" Content="&#xef19;" ToolTip="{DynamicResource LOCHowLongToBeatInfoSetPlaytime}" />
-                        </Grid>
-                        
-                        <CheckBox Margin="50,5,0,0" IsChecked="{Binding Settings.AutoSetCurrentPlayTimeWithoutConfirmation}" IsEnabled="{Binding ElementName=PART_AutoSetCurrentPlayTime, Path=IsChecked}" Content="{DynamicResource LOCHowLongToBeatWithoutConfirmation}" />
+                        <StackPanel Orientation="Horizontal" Margin="50,5,0,0">
+                            <RadioButton GroupName="DataType" Content="{DynamicResource LOCHltbSelectDataTypeClassic}" IsChecked="{Binding Settings.UseHtltbClassic}" />
+                            <RadioButton GroupName="DataType" Content="{DynamicResource LOCHltbSelectDataTypeAverage}" IsChecked="{Binding Settings.UseHtltbAverage}" Margin="20,0,0,0" />
+                            <RadioButton GroupName="DataType" Content="{DynamicResource LOCHltbSelectDataTypeMedian}" IsChecked="{Binding Settings.UseHtltbMedian}" Margin="20,0,0,0" />
+                            <RadioButton GroupName="DataType" Content="{DynamicResource LOCHltbSelectDataTypeRushed}" IsChecked="{Binding Settings.UseHtltbRushed}" Margin="20,0,0,0" />
+                            <RadioButton GroupName="DataType" Content="{DynamicResource LOCHltbSelectDataTypeLeisure}" IsChecked="{Binding Settings.UseHtltbLeisure}" Margin="20,0,0,0" />
+                        </StackPanel>
+                    </StackPanel>
 
-                        <CheckBox Margin="50,5,0,0" IsChecked="{Binding Settings.EnableSucessNotification}" IsEnabled="{Binding ElementName=PART_AutoSetCurrentPlayTime, Path=IsChecked}" Content="{DynamicResource LOCHowLongToBeatEnableSuccessNotification}" />
+                    <CheckBox Margin="0,10,0,0" IsChecked="{Binding Settings.UsedStartDateFromGameActivity}" Content="{DynamicResource LOCHltbUsedStartDateFromGameActivity}"/>
 
-                        <CheckBox Margin="0,10,0,0" IsChecked="{Binding Settings.AutoSetGameStatus}" Name="PART_AutoSetGameStatus" Content="{DynamicResource LOCHowLongToBeatAutoSetGameStatus}" />
+                    <Grid Margin="0,10,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="10" />
+                            <ColumnDefinition Width="auto" />
+                        </Grid.ColumnDefinitions>
 
-                        <Grid Margin="50,5,0,0" IsEnabled="{Binding ElementName=PART_AutoSetGameStatus, Path=IsChecked}">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width=".5*" />
-                                <ColumnDefinition Width="10" />
-                                <ColumnDefinition Width="1.5*" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
+                        <CheckBox IsChecked="{Binding Settings.AutoSetCurrentPlayTime}" Name="PART_AutoSetCurrentPlayTime" Content="{DynamicResource LOCHowLongToBeatAutoSetCurrentPlayTime}" />
+                        <Label Grid.Column="2" FontFamily="{DynamicResource FontIcoFont}" Content="&#xef19;" ToolTip="{DynamicResource LOCHowLongToBeatInfoSetPlaytime}" />
+                    </Grid>
 
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="auto" />
-                                <RowDefinition Height="10" />
-                                <RowDefinition Height="auto" />
-                                <RowDefinition Height="10" />
-                                <RowDefinition Height="auto" />
-                            </Grid.RowDefinitions>
+                    <CheckBox Margin="50,5,0,0" IsChecked="{Binding Settings.AutoSetCurrentPlayTimeWithoutConfirmation}" IsEnabled="{Binding ElementName=PART_AutoSetCurrentPlayTime, Path=IsChecked}" Content="{DynamicResource LOCHowLongToBeatWithoutConfirmation}" />
 
-                            <Label Grid.Column="0" Grid.Row="0" Content="{DynamicResource LOCHowLongToBeatPlaying}" />
-                            <ComboBox Grid.Column="2" Grid.Row="0" x:Name="PART_GameStatusPlaying"
+                    <CheckBox Margin="50,5,0,0" IsChecked="{Binding Settings.EnableSucessNotification}" IsEnabled="{Binding ElementName=PART_AutoSetCurrentPlayTime, Path=IsChecked}" Content="{DynamicResource LOCHowLongToBeatEnableSuccessNotification}" />
+
+                    <CheckBox Margin="0,10,0,0" IsChecked="{Binding Settings.AutoSetGameStatus}" Name="PART_AutoSetGameStatus" Content="{DynamicResource LOCHowLongToBeatAutoSetGameStatus}" />
+
+                    <Grid Margin="50,5,0,0" IsEnabled="{Binding ElementName=PART_AutoSetGameStatus, Path=IsChecked}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width=".5*" />
+                            <ColumnDefinition Width="10" />
+                            <ColumnDefinition Width="1.5*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="10" />
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="10" />
+                            <RowDefinition Height="auto" />
+                        </Grid.RowDefinitions>
+
+                        <Label Grid.Column="0" Grid.Row="0" Content="{DynamicResource LOCHowLongToBeatPlaying}" />
+                        <ComboBox Grid.Column="2" Grid.Row="0" x:Name="PART_GameStatusPlaying"
                                           SelectedValuePath="Id"
                                           DisplayMemberPath="Name"
                                           SelectedValue="{Binding Settings.GameStatusPlaying}" />
 
-                            <Label Grid.Column="0" Grid.Row="2" Content="{DynamicResource LOCHowLongToBeatCompleted}" />
-                            <ComboBox Grid.Column="2" Grid.Row="2" x:Name="PART_GameStatusCompleted"
+                        <Label Grid.Column="0" Grid.Row="2" Content="{DynamicResource LOCHowLongToBeatCompleted}" />
+                        <ComboBox Grid.Column="2" Grid.Row="2" x:Name="PART_GameStatusCompleted"
                                           SelectedValuePath="Id"
                                           DisplayMemberPath="Name"
                                           SelectedValue="{Binding Settings.GameStatusCompleted}" />
 
-                            <Label Grid.Column="0" Grid.Row="4" Content="{DynamicResource LOCHowLongToBeatCompletionist}" />
-                            <ComboBox Grid.Column="2" Grid.Row="4" x:Name="PART_GameStatusCompletionist"
+                        <Label Grid.Column="0" Grid.Row="4" Content="{DynamicResource LOCHowLongToBeatCompletionist}" />
+                        <ComboBox Grid.Column="2" Grid.Row="4" x:Name="PART_GameStatusCompletionist"
                                           SelectedValuePath="Id"
                                           DisplayMemberPath="Name"
                                           SelectedValue="{Binding Settings.GameStatusCompletionist}" />
-                        </Grid>
+                    </Grid>
 
-                        <StackPanel Margin="0,30,0,0">
-                            <Label Content="{DynamicResource LOCHowLongToBeatUserData}" FontSize="18" />
-                            <Separator Margin="0,0,0,10" />
+                    <StackPanel Margin="0,30,0,0">
+                        <Label Content="{DynamicResource LOCHowLongToBeatUserData}" FontSize="18" />
+                        <Separator Margin="0,0,0,10" />
 
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="8" />
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="8" />
-                                    <ColumnDefinition Width="100" />
-                                </Grid.ColumnDefinitions>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="8" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="8" />
+                                <ColumnDefinition Width="100" />
+                            </Grid.ColumnDefinitions>
 
-                                <Label Grid.Column="0" Grid.Row="0" Content="{DynamicResource LOCCommonDefaultSorting}" />
-                                <ComboBox Name="cbDefaultSorting" Grid.Column="2" Grid.Row="0" Height="30" IsEditable="True" IsReadOnly="True" 
+                            <Label Grid.Column="0" Grid.Row="0" Content="{DynamicResource LOCCommonDefaultSorting}" />
+                            <ComboBox Name="cbDefaultSorting" Grid.Column="2" Grid.Row="0" Height="30" IsEditable="True" IsReadOnly="True" 
                                           SelectionChanged="CbDefaultSorting_SelectionChanged">
-                                    <ComboBoxItem Content="{DynamicResource LOCGameNameTitle}" Tag="0">
-                                        <ComboBoxItem.Style>
-                                            <Style TargetType="{x:Type ComboBoxItem}" BasedOn="{StaticResource {x:Type ComboBoxItem}}">
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding Settings.TitleListSort}" Value="0">
-                                                        <Setter Property="IsSelected" Value="True" />
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </ComboBoxItem.Style>
-                                    </ComboBoxItem>
-                                    <ComboBoxItem Content="{DynamicResource LOCPlatformTitle}" Tag="1">
-                                        <ComboBoxItem.Style>
-                                            <Style TargetType="{x:Type ComboBoxItem}" BasedOn="{StaticResource {x:Type ComboBoxItem}}">
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding Settings.TitleListSort}" Value="1">
-                                                        <Setter Property="IsSelected" Value="True" />
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </ComboBoxItem.Style>
-                                    </ComboBoxItem>
-                                    <ComboBoxItem Content="{DynamicResource LOCHowLongToBeatCompleted}" Tag="2">
-                                        <ComboBoxItem.Style>
-                                            <Style TargetType="{x:Type ComboBoxItem}" BasedOn="{StaticResource {x:Type ComboBoxItem}}">
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding Settings.TitleListSort}" Value="2">
-                                                        <Setter Property="IsSelected" Value="True" />
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </ComboBoxItem.Style>
-                                    </ComboBoxItem>
-                                    <ComboBoxItem Content="{DynamicResource LOCTimePlayed}" Tag="3">
-                                        <ComboBoxItem.Style>
-                                            <Style TargetType="{x:Type ComboBoxItem}" BasedOn="{StaticResource {x:Type ComboBoxItem}}">
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding Settings.TitleListSort}" Value="3">
-                                                        <Setter Property="IsSelected" Value="True" />
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </ComboBoxItem.Style>
-                                    </ComboBoxItem>
-                                    <ComboBoxItem Content="{DynamicResource LOCCommonLastUpdate}" Tag="4">
-                                        <ComboBoxItem.Style>
-                                            <Style TargetType="{x:Type ComboBoxItem}" BasedOn="{StaticResource {x:Type ComboBoxItem}}">
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding Settings.TitleListSort}" Value="4">
-                                                        <Setter Property="IsSelected" Value="True" />
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </ComboBoxItem.Style>
-                                    </ComboBoxItem>
-                                </ComboBox>
-                                <ToggleButton Content="{DynamicResource LOCMenuSortAscending}" IsChecked="{Binding Settings.IsAsc}" Grid.Column="4" Grid.Row="0" Height="30" />
-                            </Grid>
+                                <ComboBoxItem Content="{DynamicResource LOCGameNameTitle}" Tag="0">
+                                    <ComboBoxItem.Style>
+                                        <Style TargetType="{x:Type ComboBoxItem}" BasedOn="{StaticResource {x:Type ComboBoxItem}}">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Settings.TitleListSort}" Value="0">
+                                                    <Setter Property="IsSelected" Value="True" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </ComboBoxItem.Style>
+                                </ComboBoxItem>
+                                <ComboBoxItem Content="{DynamicResource LOCPlatformTitle}" Tag="1">
+                                    <ComboBoxItem.Style>
+                                        <Style TargetType="{x:Type ComboBoxItem}" BasedOn="{StaticResource {x:Type ComboBoxItem}}">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Settings.TitleListSort}" Value="1">
+                                                    <Setter Property="IsSelected" Value="True" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </ComboBoxItem.Style>
+                                </ComboBoxItem>
+                                <ComboBoxItem Content="{DynamicResource LOCHowLongToBeatCompleted}" Tag="2">
+                                    <ComboBoxItem.Style>
+                                        <Style TargetType="{x:Type ComboBoxItem}" BasedOn="{StaticResource {x:Type ComboBoxItem}}">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Settings.TitleListSort}" Value="2">
+                                                    <Setter Property="IsSelected" Value="True" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </ComboBoxItem.Style>
+                                </ComboBoxItem>
+                                <ComboBoxItem Content="{DynamicResource LOCTimePlayed}" Tag="3">
+                                    <ComboBoxItem.Style>
+                                        <Style TargetType="{x:Type ComboBoxItem}" BasedOn="{StaticResource {x:Type ComboBoxItem}}">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Settings.TitleListSort}" Value="3">
+                                                    <Setter Property="IsSelected" Value="True" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </ComboBoxItem.Style>
+                                </ComboBoxItem>
+                                <ComboBoxItem Content="{DynamicResource LOCCommonLastUpdate}" Tag="4">
+                                    <ComboBoxItem.Style>
+                                        <Style TargetType="{x:Type ComboBoxItem}" BasedOn="{StaticResource {x:Type ComboBoxItem}}">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Settings.TitleListSort}" Value="4">
+                                                    <Setter Property="IsSelected" Value="True" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </ComboBoxItem.Style>
+                                </ComboBoxItem>
+                            </ComboBox>
+                            <ToggleButton Content="{DynamicResource LOCMenuSortAscending}" IsChecked="{Binding Settings.IsAsc}" Grid.Column="4" Grid.Row="0" Height="30" />
+                        </Grid>
+                    </StackPanel>
+
+                    <CheckBox Margin="0,10,0,0" IsChecked="{Binding Settings.EnableProgressBarInDataView}" Content="{DynamicResource LOCHltbEnableProgressBarInDataView}" />
+
+                    <Grid Margin="0,30,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="10" />
+                            <ColumnDefinition Width="auto" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="30" />
+                            <RowDefinition Height="30" />
+                            <RowDefinition Height="30" />
+                            <RowDefinition Height="30" />
+                            <RowDefinition Height="10" />
+                            <RowDefinition Height="35" />
+                        </Grid.RowDefinitions>
+
+                        <StackPanel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" >
+                            <Label Content="{DynamicResource LOCHowLongToBeatAutoData}" FontSize="18" />
+                            <Separator Margin="0,0,0,10" />
                         </StackPanel>
 
-                        <CheckBox Margin="0,10,0,0" IsChecked="{Binding Settings.EnableProgressBarInDataView}" Content="{DynamicResource LOCHltbEnableProgressBarInDataView}" />
+                        <CheckBox Name="cbAutoImport" Grid.Row="1" IsChecked="{Binding Settings.AutoImport}" Grid.Column="0" VerticalAlignment="Center" Grid.ColumnSpan="3"
+                                      Content="{DynamicResource LOCCommonAutoImport}" />
 
-                        <Grid Margin="0,30,0,0">
+                        <CheckBox Name="cbAutoAccept" Grid.Row="2" IsChecked="{Binding Settings.AutoAccept}" Grid.Column="0" VerticalAlignment="Center" Grid.ColumnSpan="3"
+                                      Content="{DynamicResource LOCHowLongToBeatAutoAccept}" />
+
+                        <CheckBox Name="cbShowWhenMismatch" Grid.Row="3" IsChecked="{Binding Settings.ShowWhenMismatch}" Grid.Column="0" Grid.ColumnSpan="3" VerticalAlignment="Center"
+                                      Content="{DynamicResource LOCHowLongToBeatShowWhenMismatch}" />
+
+                        <CheckBox Grid.Row="4" IsChecked="{Binding Settings.UseMatchValue}" Grid.Column="0" VerticalAlignment="Center"
+                                      Content="{DynamicResource LOCHowLongToBeatUseMatchValue}" />
+
+                        <StackPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="2" >
+                            <Slider Width="200" VerticalAlignment="Center" Name="PART_SliderMAtchValue"
+                                        Value="{Binding Settings.MatchValue, FallbackValue=95}" Minimum="75" Maximum="100"
+                                        IsSnapToTickEnabled="True" TickFrequency="1" />
+                            <Label Content="{Binding ElementName=PART_SliderMAtchValue, Path=Value}" 
+                                       ContentStringFormat=" {0}%" Width="50" VerticalAlignment="Center"
+                                       Margin="10,0,0,0" HorizontalAlignment="Center" />
+                        </StackPanel>
+
+                        <Grid Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="6">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="10" />
                                 <ColumnDefinition Width="auto" />
+                                <ColumnDefinition Width="10" />
+                                <ColumnDefinition Width="auto" />
                             </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="auto" />
-                                <RowDefinition Height="30" />
-                                <RowDefinition Height="30" />
-                                <RowDefinition Height="30" />
-                                <RowDefinition Height="30" />
-                                <RowDefinition Height="10" />
-                                <RowDefinition Height="35" />
-                            </Grid.RowDefinitions>
 
-                            <StackPanel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" >
-                                <Label Content="{DynamicResource LOCHowLongToBeatAutoData}" FontSize="18" />
-                                <Separator Margin="0,0,0,10" />
-                            </StackPanel>
-
-                            <CheckBox Name="cbAutoImport" Grid.Row="1" IsChecked="{Binding Settings.AutoImport}" Grid.Column="0" VerticalAlignment="Center" Grid.ColumnSpan="3"
-                                      Content="{DynamicResource LOCCommonAutoImport}" />
-
-                            <CheckBox Name="cbAutoAccept" Grid.Row="2" IsChecked="{Binding Settings.AutoAccept}" Grid.Column="0" VerticalAlignment="Center" Grid.ColumnSpan="3"
-                                      Content="{DynamicResource LOCHowLongToBeatAutoAccept}" />
-
-                            <CheckBox Name="cbShowWhenMismatch" Grid.Row="3" IsChecked="{Binding Settings.ShowWhenMismatch}" Grid.Column="0" Grid.ColumnSpan="3" VerticalAlignment="Center"
-                                      Content="{DynamicResource LOCHowLongToBeatShowWhenMismatch}" />
-
-                            <CheckBox Grid.Row="4" IsChecked="{Binding Settings.UseMatchValue}" Grid.Column="0" VerticalAlignment="Center"
-                                      Content="{DynamicResource LOCHowLongToBeatUseMatchValue}" />
-
-                            <StackPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="2" >
-                                <Slider Width="200" VerticalAlignment="Center" Name="PART_SliderMAtchValue"
-                                        Value="{Binding Settings.MatchValue, FallbackValue=95}" Minimum="75" Maximum="100"
-                                        IsSnapToTickEnabled="True" TickFrequency="1" />
-                                <Label Content="{Binding ElementName=PART_SliderMAtchValue, Path=Value}" 
-                                       ContentStringFormat=" {0}%" Width="50" VerticalAlignment="Center"
-                                       Margin="10,0,0,0" HorizontalAlignment="Center" />
-                            </StackPanel>
-
-                            <Grid Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="6">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="10" />
-                                    <ColumnDefinition Width="auto" />
-                                    <ColumnDefinition Width="10" />
-                                    <ColumnDefinition Width="auto" />
-                                </Grid.ColumnDefinitions>
-
-                                <TextBlock Grid.Column="0" Text="{DynamicResource LOCCommonDatabase}" VerticalAlignment="Center" />
-                                <Button Grid.Column="2" Name="btAddData" Content="{DynamicResource LOCUpdateAll}" 
+                            <TextBlock Grid.Column="0" Text="{DynamicResource LOCCommonDatabase}" VerticalAlignment="Center" />
+                            <Button Grid.Column="2" Name="btAddData" Content="{DynamicResource LOCUpdateAll}" 
                                         Click="BtAddData_Click" VerticalAlignment="Center" />
-                                <Button Grid.Column="4" Name="btRemoveData" Content="{DynamicResource LOCClearAll}" 
+                            <Button Grid.Column="4" Name="btRemoveData" Content="{DynamicResource LOCClearAll}" 
                                         Click="BtRemoveData_Click" VerticalAlignment="Center " />
-                            </Grid>
                         </Grid>
-                    </StackPanel>
-                </Grid>
+                    </Grid>
+                </StackPanel>
             </ScrollViewer>
         </TabItem>
 

@@ -8,8 +8,10 @@
              xmlns:converters="clr-namespace:CommonPlayniteShared.Converters"
              xmlns:controlsShared="clr-namespace:CommonPluginsShared.Controls"
              xmlns:convertersshared="clr-namespace:CommonPluginsShared.Converters"
-             xmlns:controls="clr-namespace:HowLongToBeat.Controls" xmlns:views="clr-namespace:HowLongToBeat.Views"
-             mc:Ignorable="d" d:DesignHeight="740" d:DesignWidth="1280" d:DataContext="{d:DesignInstance Type=views:UserViewDataContext, IsDesignTimeCreatable=True}">
+             xmlns:controls="clr-namespace:HowLongToBeat.Controls" 
+             xmlns:views="clr-namespace:HowLongToBeat.Views"
+             mc:Ignorable="d" d:DesignHeight="740" d:DesignWidth="1280" 
+             d:DataContext="{d:DesignInstance Type=views:UserViewDataContext, IsDesignTimeCreatable=True}">
 
     <UserControl.Resources>
         <convertersshared:LocalDateConverter x:Key="LocalDateConverter" />

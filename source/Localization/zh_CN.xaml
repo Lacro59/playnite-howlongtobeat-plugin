@@ -32,6 +32,8 @@
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeBelow">进度条下方</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeUser">显示用户的攻关历时（HowLongToBeat）时间</sys:String>
 
+    <sys:String x:Key="LOCHltbUsedStartDateFromGameActivity">Used first game session from GameActivity plugin for start date</sys:String>
+    
     <sys:String x:Key="LOCHowLongToBeatAutoSetCurrentPlayTime">结束游戏后，将游玩时间自动更新至攻关历时</sys:String>
     <sys:String x:Key="LOCHowLongToBeatWithoutConfirmation">无需确认</sys:String>
     <sys:String x:Key="LOCHowLongToBeatEnableSuccessNotification">启用成功通知</sys:String>
