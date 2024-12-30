@@ -513,7 +513,7 @@ namespace HowLongToBeat.Services
             GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions($"{PluginName} - {ResourceProvider.GetString("LOCCommonProcessing")}")
             {
                 Cancelable = true,
-                IsIndeterminate = false
+                IsIndeterminate = ids.Count() == 1
             };
 
             _ = API.Instance.Dialogs.ActivateGlobalProgress((a) =>
@@ -530,7 +530,7 @@ namespace HowLongToBeat.Services
                 {
                     Game game = API.Instance.Database.Games.Get(id);
                     a.Text = $"{PluginName} - {ResourceProvider.GetString("LOCCommonProcessing")}"
-                        + "\n\n" + $"{a.CurrentProgressValue}/{a.ProgressMaxValue}"
+                        + (ids.Count() == 1 ? string.Empty : "\n\n" + $"{a.CurrentProgressValue}/{a.ProgressMaxValue}")
                         + "\n" + game?.Name + (game?.Source == null ? string.Empty : $" ({game?.Source.Name})");
 
                     if (a.CancelToken.IsCancellationRequested)
