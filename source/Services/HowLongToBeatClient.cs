@@ -274,6 +274,7 @@ namespace HowLongToBeat.Services
                     };
 
                     string searchId = await GetSearchId();
+                    Thread.Sleep(1500);
                     HttpResponseMessage response = await httpClient.PostAsync(UrlSearch + "/" + searchId,  requestMessage.Content);
                     string json = await response.Content.ReadAsStringAsync();
 
