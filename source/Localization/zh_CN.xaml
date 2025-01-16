@@ -17,8 +17,8 @@
 
     <sys:String x:Key="LOCHltbEnableProgressBarInDataView">在 Playnite 数据视图中查看进度</sys:String>
 
-    <sys:String x:Key="LOCHltbSelectDataType">Select the data type:</sys:String>
-    <sys:String x:Key="LOCHltbSelectDataTypeClassic">Classic</sys:String>
+    <sys:String x:Key="LOCHltbSelectDataType"></sys:String>
+    <sys:String x:Key="LOCHltbSelectDataTypeClassic">经典</sys:String>
     <sys:String x:Key="LOCHltbSelectDataTypeAverage">Average</sys:String>
     <sys:String x:Key="LOCHltbSelectDataTypeMedian">Median</sys:String>
     <sys:String x:Key="LOCHltbSelectDataTypeRushed">Rushed</sys:String>
