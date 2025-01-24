@@ -327,3 +327,10 @@ Packages:
     PackageUrl: https://github.com/Lacro59/playnite-howlongtobeat-plugin/releases/download/v3.7.2/playnite-howlongtobeat-plugin_3_7_2.pext
     Changelog:
       - 'Optimized: Temporisation search functionality'
+  - Version: 3.7.3
+    RequiredApiVersion: 6.11.0
+    ReleaseDate: 2025-01-24
+    PackageUrl: https://github.com/Lacro59/playnite-howlongtobeat-plugin/releases/download/v3.7.3/playnite-howlongtobeat-plugin_3_7_3.pext
+    Changelog:
+      - 'Updated: Localizations'
+      - 'Fixed: Search issue (thanks to Jhanlon95)'
