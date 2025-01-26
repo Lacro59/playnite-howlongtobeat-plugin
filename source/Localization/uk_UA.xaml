@@ -32,7 +32,7 @@
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeBelow">Під смугою прогресу</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeUser">Показувати користувацький час HowLongToBeat</sys:String>
 
-    <sys:String x:Key="LOCHltbUsedStartDateFromGameActivity">Used first game session from GameActivity plugin for start date</sys:String>
+    <sys:String x:Key="LOCHltbUsedStartDateFromGameActivity">Використовується перший сеанс гри з плагіну GameActivity для початкової дати</sys:String>
     
     <sys:String x:Key="LOCHowLongToBeatAutoSetCurrentPlayTime">Автоматично оновлювати поточний час в HowLongToBeat після сеансу гри</sys:String>
     <sys:String x:Key="LOCHowLongToBeatWithoutConfirmation">Без підтвердження</sys:String>
