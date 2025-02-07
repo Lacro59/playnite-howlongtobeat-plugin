@@ -71,7 +71,7 @@ namespace HowLongToBeat.Services
 
         private static string UrlPostData => UrlBase + "/api/submit";
         private static string UrlPostDataEdit => UrlBase + "/submit/edit/{0}";
-        private static string UrlSearch => UrlBase + "/api/s";
+        private static string UrlSearch => UrlBase + "/api/ouch";
 
         private static string UrlGameImg => UrlBase + "/games/{0}";
 
@@ -219,7 +219,7 @@ namespace HowLongToBeat.Services
                 {
                     url += $"/_next/static/chunks/pages/{js}";
                     response = await Web.DownloadStringData(url);
-                    Match matches = Regex.Match(response, "\"/api/s/\".concat[(]\"(\\w*)\"[)].concat[(]\"(\\w*)\"[)]");
+                    Match matches = Regex.Match(response, "\"/api/ouch/\".concat[(]\"(\\w*)\"[)].concat[(]\"(\\w*)\"[)]");
                     SearchId = matches.Groups[1].Value + matches.Groups[2].Value;
                 }
             }
