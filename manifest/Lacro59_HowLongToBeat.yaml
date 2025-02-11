@@ -334,3 +334,10 @@ Packages:
     Changelog:
       - 'Updated: Localizations'
       - 'Fixed: Search issue (thanks to Jhanlon95)'
+  - Version: 3.7.4
+    RequiredApiVersion: 6.11.0
+    ReleaseDate: 2025-02-11
+    PackageUrl: https://github.com/Lacro59/playnite-howlongtobeat-plugin/releases/download/v3.7.4/playnite-howlongtobeat-plugin_3_7_4.pext
+    Changelog:
+      - 'Updated: Localizations'
+      - 'Fixed: Search issue (thanks to Jhanlon95)'
