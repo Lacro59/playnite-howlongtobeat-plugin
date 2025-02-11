@@ -234,7 +234,7 @@ namespace HowLongToBeat.Services
         public async Task<List<HltbDataUser>> SearchTwoMethod(string Name, string Platform = "")
         {
             List<HltbDataUser> dataSearchNormalized = await Search(PlayniteTools.NormalizeGameName(Name), Platform);
-            List<HltbDataUser> dataSearch = await Search(Name, Platform);
+            List<HltbDataUser> dataSearch = new List<HltbDataUser>();// await Search(Name, Platform);
 
             List<HltbDataUser> dataSearchFinal = new List<HltbDataUser>();
             dataSearchFinal.AddRange(dataSearchNormalized);
