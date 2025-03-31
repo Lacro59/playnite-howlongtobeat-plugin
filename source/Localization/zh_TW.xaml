@@ -3,7 +3,7 @@
 
     <sys:String x:Key="LOCHowLongToBeatTimeToBeat">Time to beat</sys:String>
 
-    <sys:String x:Key="LOCPlayedHoursOnly">{0}h</sys:String>
+    <sys:String x:Key="LOCPlayedHoursOnly">{0} 小時</sys:String>
 
     <!-- HowLongToBeatSettingsView -->
 
@@ -18,7 +18,7 @@
     <sys:String x:Key="LOCHltbEnableProgressBarInDataView">View progress bar in Playnite data view</sys:String>
 
     <sys:String x:Key="LOCHltbSelectDataType">Select the data type:</sys:String>
-    <sys:String x:Key="LOCHltbSelectDataTypeClassic">Classic</sys:String>
+    <sys:String x:Key="LOCHltbSelectDataTypeClassic">經典</sys:String>
     <sys:String x:Key="LOCHltbSelectDataTypeAverage">Average</sys:String>
     <sys:String x:Key="LOCHltbSelectDataTypeMedian">Median</sys:String>
     <sys:String x:Key="LOCHltbSelectDataTypeRushed">Rushed</sys:String>
@@ -59,13 +59,13 @@ If none has this status, it takes the most recent.</sys:String>
     <sys:String x:Key="LOCSelection">HowLongToBeat selection</sys:String>
     <sys:String x:Key="LOCHltbUsedVndb">Used Vndb</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatMainStory">Main story</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatMainStory">主線故事</sys:String>
     <sys:String x:Key="LOCHowLongToBeatMainExtra">Main + extra</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatCompletionist">Completionist</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatCompletionist">完美主義者</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatSolo">Solo</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatCoOp">Co-Op</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatVs">Vs</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatSolo">單人</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatCoOp">合作</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatVs">對抗</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatPlaying">Playing</sys:String>
 
@@ -145,7 +145,7 @@ Here is the list of commands:</sys:String>
     <!-- StartPage -->
 
     <sys:String x:Key="LOCHtlbChartStats">Chart stats</sys:String>
-    <sys:String x:Key="LOCHtlbChartStatsChartTitle">Show title</sys:String>
+    <sys:String x:Key="LOCHtlbChartStatsChartTitle">顯示標題</sys:String>
     <sys:String x:Key="LOCHtlbChartStatsChartLabels">Show labels on horizontal axis</sys:String>
     <sys:String x:Key="LOCHtlbChartStatsChartLabelsOrdinates">Show labels on vertical axis</sys:String>
     <sys:String x:Key="LOCHtlbChartStatsChartType">Chart type</sys:String>
