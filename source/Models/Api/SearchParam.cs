@@ -1,9 +1,5 @@
 ﻿using Playnite.SDK.Data;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace HowLongToBeat.Models.Api
 {
@@ -42,6 +38,9 @@ namespace HowLongToBeat.Models.Api
         [SerializationPropertyName("gameplay")]
         public Gameplay Gameplay { get; set; } = new Gameplay();
 
+        [SerializationPropertyName("rangeYear")]
+        public RangeYear RangeYear { get; set; } = new RangeYear();
+
         [SerializationPropertyName("modifier")]
         public string Modifier { get; set; } = string.Empty;
     }
@@ -53,6 +52,15 @@ namespace HowLongToBeat.Models.Api
 
         [SerializationPropertyName("max")]
         public int Max { get; set; }
+    }
+
+    public class RangeYear
+    {
+        [SerializationPropertyName("min")]
+        public string Min { get; set; } = string.Empty;
+
+        [SerializationPropertyName("max")]
+        public string Max { get; set; } = string.Empty;
     }
 
     public class SearchParam
@@ -71,6 +79,9 @@ namespace HowLongToBeat.Models.Api
 
         [SerializationPropertyName("searchOptions")]
         public SearchOptions SearchOptions { get; set; } = new SearchOptions();
+
+        [SerializationPropertyName("useCache")]
+        public bool UseCache { get; set; } = true;
     }
 
     public class SearchOptions
@@ -79,7 +90,10 @@ namespace HowLongToBeat.Models.Api
         public Games Games { get; set; } = new Games();
 
         [SerializationPropertyName("users")]
-        public Users Users { get; set; } = new Users();
+        public SortCategoryContainer Users { get; set; } = new SortCategoryContainer { SortCategory = "postcount" };
+
+        [SerializationPropertyName("lists")]
+        public SortCategoryContainer Lists { get; set; } = new SortCategoryContainer { SortCategory = "follows" };
 
         [SerializationPropertyName("filter")]
         public string Filter { get; set; } = string.Empty;
@@ -91,9 +105,9 @@ namespace HowLongToBeat.Models.Api
         public int Randomizer { get; set; } = 0;
     }
 
-    public class Users
+    public class SortCategoryContainer
     {
         [SerializationPropertyName("sortCategory")]
-        public string SortCategory { get; set; } = "postcount";
+        public string SortCategory { get; set; }
     }
 }
