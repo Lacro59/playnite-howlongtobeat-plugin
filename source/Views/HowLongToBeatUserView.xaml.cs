@@ -385,12 +385,12 @@ namespace HowLongToBeat.Views
                     UserViewDataContext.TimeVs = (string)converter.Convert(TimeVs, null, null, CultureInfo.CurrentCulture);
 
 
-                    UserViewDataContext.CountGameBeatenBeforeTime = PluginDatabase.GetCountGameBeatenBeforeTime().ToString();
-                    UserViewDataContext.CountGameBeatenAfterTime = PluginDatabase.GetCountGameBeatenAfterTime().ToString();
-                    UserViewDataContext.AvgGameByMonth = string.Format("{0:0.0}", PluginDatabase.GetAvgGameByMonth()).ToString();
-                    UserViewDataContext.AvgTimeByGame = (string)converter.Convert(PluginDatabase.GetAvgTimeByGame(), null, null, CultureInfo.CurrentCulture);
-                    UserViewDataContext.CountGameBeatenReplays = PluginDatabase.GetCountGameBeatenReplays().ToString();
-                    UserViewDataContext.CountGameRetired = PluginDatabase.GetCountGameRetired().ToString();
+                    UserViewDataContext.CountGameBeatenBeforeTime = HowLongToBeatStats.GetCountGameBeatenBeforeTime().ToString();
+                    UserViewDataContext.CountGameBeatenAfterTime = HowLongToBeatStats.GetCountGameBeatenAfterTime().ToString();
+                    UserViewDataContext.AvgGameByMonth = string.Format("{0:0.0}", HowLongToBeatStats.GetAvgGameByMonth()).ToString();
+                    UserViewDataContext.AvgTimeByGame = (string)converter.Convert(HowLongToBeatStats.GetAvgTimeByGame(), null, null, CultureInfo.CurrentCulture);
+                    UserViewDataContext.CountGameBeatenReplays = HowLongToBeatStats.GetCountGameBeatenReplays().ToString();
+                    UserViewDataContext.CountGameRetired = HowLongToBeatStats.GetCountGameRetired().ToString();
                 }
                 catch (Exception ex)
                 {

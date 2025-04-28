@@ -49,63 +49,6 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="akr.WPF.Controls.ColorPicker">
-      <HintPath>playnite-plugincommon\CommonPluginsResources\Resources\akr.WPF.Controls.ColorPicker.dll</HintPath>
-    </Reference>
-    <Reference Include="AngleSharp, Version=0.9.9.0, Culture=neutral, PublicKeyToken=e83494dcdc6d31ea, processorArchitecture=MSIL">
-      <HintPath>packages\AngleSharp.0.9.9\lib\net45\AngleSharp.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="FuzzySharp, Version=1.0.4.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\FuzzySharp.2.0.2\lib\net461\FuzzySharp.dll</HintPath>
-    </Reference>
-    <Reference Include="LiveCharts, Version=0.9.7.0, Culture=neutral, PublicKeyToken=0bc1f845d1ebb8df, processorArchitecture=MSIL">
-      <HintPath>packages\LiveCharts.0.9.7\lib\net45\LiveCharts.dll</HintPath>
-    </Reference>
-    <Reference Include="LiveCharts.Wpf, Version=0.9.7.0, Culture=neutral, PublicKeyToken=0bc1f845d1ebb8df, processorArchitecture=MSIL">
-      <HintPath>packages\LiveCharts.Wpf.0.9.7\lib\net45\LiveCharts.Wpf.dll</HintPath>
-    </Reference>
-    <Reference Include="Playnite.SDK, Version=6.11.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\PlayniteSDK.6.11.0\lib\net462\Playnite.SDK.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
-    <Reference Include="QuickSearchSDK, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>Resources\QuickSearchSDK.dll</HintPath>
-    </Reference>
-    <Reference Include="QuickSearchSDK.Attributes, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>Resources\QuickSearchSDK.Attributes.dll</HintPath>
-    </Reference>
-    <Reference Include="StartPage.SDK, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\StartPage.SDK.1.0.0\lib\net462\StartPage.SDK.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Configuration" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.IO.Abstractions, Version=2.1.0.227, Culture=neutral, PublicKeyToken=96bf224d23c43e59, processorArchitecture=MSIL">
-      <HintPath>packages\System.IO.Abstractions.2.1.0.227\lib\net40\System.IO.Abstractions.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="System.IO.Compression" />
-    <Reference Include="System.IO.Compression.FileSystem" />
-    <Reference Include="System.Management" />
-    <Reference Include="System.Web" />
-    <Reference Include="System.Xaml" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
-    <Reference Include="WindowsBase" />
-    <Reference Include="YamlDotNet, Version=5.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\YamlDotNet.5.4.0\lib\net45\YamlDotNet.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Behaviors\SelectorBehaviors.cs" />
@@ -217,10 +160,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="App.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <None Include="Localization\fr_FR.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -311,18 +250,6 @@
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <Page Include="Controls\PluginButton.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\PluginProgressBar.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\PluginViewItem.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <None Include="Localization\ar_SA.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -418,91 +345,11 @@
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <Page Include="playnite-plugincommon\CommonPluginsControls\Controls\ComboBoxRemovable.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="playnite-plugincommon\CommonPluginsControls\Controls\ControlPickerGradient.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="playnite-plugincommon\CommonPluginsControls\Controls\ProgressBarExtend.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="playnite-plugincommon\CommonPluginsControls\Controls\SliderWithPointer.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="playnite-plugincommon\CommonPluginsControls\Controls\TextBlockWithIcon.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="playnite-plugincommon\CommonPluginsControls\PlayniteControls\NumericBox.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="playnite-plugincommon\CommonPluginsControls\Views\ListWithNoData.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="playnite-plugincommon\CommonPluginsControls\Views\OptionsDownloadData.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="playnite-plugincommon\CommonPluginsControls\Controls\TextBlockTrimmed.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="playnite-plugincommon\CommonPluginsControls\LiveChartsCommon\CustomerToolTipForMultipleSingle.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="playnite-plugincommon\CommonPluginsControls\LiveChartsCommon\CustomerTooltipForMultipleTime.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="playnite-plugincommon\CommonPluginsControls\LiveChartsCommon\CustomerTooltipForSingle.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="playnite-plugincommon\CommonPluginsControls\LiveChartsCommon\CustomerToolTipForTime.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="playnite-plugincommon\CommonPluginsControls\PlayniteControls\SearchBox.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Views\HowLongToBeatSelect.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\HowLongToBeatSettingsView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <None Include="Localization\en_US.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <Page Include="Views\HowLongToBeatUserView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\HowLongToBeatView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\StartPage\HltbChartStats.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\StartPage\HltbChartStatsSettings.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
   </ItemGroup>
   <ItemGroup>
     <None Include="icon.png">
@@ -542,4 +389,63 @@
   <PropertyGroup>
     <PostBuildEvent>powershell -ExecutionPolicy Unrestricted $(SolutionDir)..\build\build.ps1 -ConfigurationName $(ConfigurationName) -OutDir $(SolutionDir)$(OutDir) -SolutionDir $(SolutionDir)</PostBuildEvent>
   </PropertyGroup>
+  <ItemGroup>
+    <ReferencePath Include="C:\Projects\C#\Lacro59\playnite-howlongtobeat-plugin\source\playnite-plugincommon\CommonPluginsResources\Resources\akr.WPF.Controls.ColorPicker.dll" />
+    <ReferencePath Include="C:\Projects\C#\Lacro59\playnite-howlongtobeat-plugin\source\packages\AngleSharp.0.9.9\lib\net45\AngleSharp.dll" />
+    <ReferencePath Include="C:\Projects\C#\Lacro59\playnite-howlongtobeat-plugin\source\playnite-plugincommon\CommonPluginsResources\bin\Debug\CommonPluginsResources.dll" />
+    <ReferencePath Include="C:\Projects\C#\Lacro59\playnite-howlongtobeat-plugin\source\packages\FuzzySharp.2.0.2\lib\net461\FuzzySharp.dll" />
+    <ReferencePath Include="C:\Projects\C#\Lacro59\playnite-howlongtobeat-plugin\source\packages\LiveCharts.0.9.7\lib\net45\LiveCharts.dll" />
+    <ReferencePath Include="C:\Projects\C#\Lacro59\playnite-howlongtobeat-plugin\source\packages\LiveCharts.Wpf.0.9.7\lib\net45\LiveCharts.Wpf.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6.2\Microsoft.CSharp.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6.2\mscorlib.dll" />
+    <ReferencePath Include="C:\Projects\C#\Lacro59\playnite-howlongtobeat-plugin\source\packages\PlayniteSDK.6.11.0\lib\net462\Playnite.SDK.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6.2\PresentationCore.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6.2\PresentationFramework.dll" />
+    <ReferencePath Include="C:\Projects\C#\Lacro59\playnite-howlongtobeat-plugin\source\Resources\QuickSearchSDK.Attributes.dll" />
+    <ReferencePath Include="C:\Projects\C#\Lacro59\playnite-howlongtobeat-plugin\source\Resources\QuickSearchSDK.dll" />
+    <ReferencePath Include="C:\Projects\C#\Lacro59\playnite-howlongtobeat-plugin\source\packages\StartPage.SDK.1.0.0\lib\net462\StartPage.SDK.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6.2\System.Configuration.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6.2\System.Core.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6.2\System.Data.DataSetExtensions.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6.2\System.Data.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6.2\System.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6.2\System.Drawing.dll" />
+    <ReferencePath Include="C:\Projects\C#\Lacro59\playnite-howlongtobeat-plugin\source\packages\System.IO.Abstractions.2.1.0.227\lib\net40\System.IO.Abstractions.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6.2\System.IO.Compression.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6.2\System.IO.Compression.FileSystem.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6.2\System.Management.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6.2\System.Net.Http.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6.2\System.Web.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6.2\System.Xaml.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6.2\System.Xml.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6.2\System.Xml.Linq.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6.2\WindowsBase.dll" />
+    <ReferencePath Include="C:\Projects\C#\Lacro59\playnite-howlongtobeat-plugin\source\packages\YamlDotNet.5.4.0\lib\net45\YamlDotNet.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="C:\Projects\C#\Lacro59\playnite-howlongtobeat-plugin\source\obj\Debug\Controls\PluginButton.g.cs" />
+    <Compile Include="C:\Projects\C#\Lacro59\playnite-howlongtobeat-plugin\source\obj\Debug\Controls\PluginProgressBar.g.cs" />
+    <Compile Include="C:\Projects\C#\Lacro59\playnite-howlongtobeat-plugin\source\obj\Debug\Controls\PluginViewItem.g.cs" />
+    <Compile Include="C:\Projects\C#\Lacro59\playnite-howlongtobeat-plugin\source\obj\Debug\playnite-plugincommon\CommonPluginsControls\Controls\ComboBoxRemovable.g.cs" />
+    <Compile Include="C:\Projects\C#\Lacro59\playnite-howlongtobeat-plugin\source\obj\Debug\playnite-plugincommon\CommonPluginsControls\Controls\ControlPickerGradient.g.cs" />
+    <Compile Include="C:\Projects\C#\Lacro59\playnite-howlongtobeat-plugin\source\obj\Debug\playnite-plugincommon\CommonPluginsControls\Controls\ProgressBarExtend.g.cs" />
+    <Compile Include="C:\Projects\C#\Lacro59\playnite-howlongtobeat-plugin\source\obj\Debug\playnite-plugincommon\CommonPluginsControls\Controls\SliderWithPointer.g.cs" />
+    <Compile Include="C:\Projects\C#\Lacro59\playnite-howlongtobeat-plugin\source\obj\Debug\playnite-plugincommon\CommonPluginsControls\Controls\TextBlockWithIcon.g.cs" />
+    <Compile Include="C:\Projects\C#\Lacro59\playnite-howlongtobeat-plugin\source\obj\Debug\playnite-plugincommon\CommonPluginsControls\PlayniteControls\NumericBox.g.cs" />
+    <Compile Include="C:\Projects\C#\Lacro59\playnite-howlongtobeat-plugin\source\obj\Debug\playnite-plugincommon\CommonPluginsControls\Views\ListWithNoData.g.cs" />
+    <Compile Include="C:\Projects\C#\Lacro59\playnite-howlongtobeat-plugin\source\obj\Debug\playnite-plugincommon\CommonPluginsControls\Views\OptionsDownloadData.g.cs" />
+    <Compile Include="C:\Projects\C#\Lacro59\playnite-howlongtobeat-plugin\source\obj\Debug\playnite-plugincommon\CommonPluginsControls\Controls\TextBlockTrimmed.g.cs" />
+    <Compile Include="C:\Projects\C#\Lacro59\playnite-howlongtobeat-plugin\source\obj\Debug\playnite-plugincommon\CommonPluginsControls\LiveChartsCommon\CustomerToolTipForMultipleSingle.g.cs" />
+    <Compile Include="C:\Projects\C#\Lacro59\playnite-howlongtobeat-plugin\source\obj\Debug\playnite-plugincommon\CommonPluginsControls\LiveChartsCommon\CustomerTooltipForMultipleTime.g.cs" />
+    <Compile Include="C:\Projects\C#\Lacro59\playnite-howlongtobeat-plugin\source\obj\Debug\playnite-plugincommon\CommonPluginsControls\LiveChartsCommon\CustomerTooltipForSingle.g.cs" />
+    <Compile Include="C:\Projects\C#\Lacro59\playnite-howlongtobeat-plugin\source\obj\Debug\playnite-plugincommon\CommonPluginsControls\LiveChartsCommon\CustomerToolTipForTime.g.cs" />
+    <Compile Include="C:\Projects\C#\Lacro59\playnite-howlongtobeat-plugin\source\obj\Debug\playnite-plugincommon\CommonPluginsControls\PlayniteControls\SearchBox.g.cs" />
+    <Compile Include="C:\Projects\C#\Lacro59\playnite-howlongtobeat-plugin\source\obj\Debug\Views\HowLongToBeatSelect.g.cs" />
+    <Compile Include="C:\Projects\C#\Lacro59\playnite-howlongtobeat-plugin\source\obj\Debug\Views\HowLongToBeatSettingsView.g.cs" />
+    <Compile Include="C:\Projects\C#\Lacro59\playnite-howlongtobeat-plugin\source\obj\Debug\Views\HowLongToBeatUserView.g.cs" />
+    <Compile Include="C:\Projects\C#\Lacro59\playnite-howlongtobeat-plugin\source\obj\Debug\Views\HowLongToBeatView.g.cs" />
+    <Compile Include="C:\Projects\C#\Lacro59\playnite-howlongtobeat-plugin\source\obj\Debug\Views\StartPage\HltbChartStats.g.cs" />
+    <Compile Include="C:\Projects\C#\Lacro59\playnite-howlongtobeat-plugin\source\obj\Debug\Views\StartPage\HltbChartStatsSettings.g.cs" />
+    <Compile Include="C:\Projects\C#\Lacro59\playnite-howlongtobeat-plugin\source\obj\Debug\GeneratedInternalTypeHelper.g.cs" />
+  </ItemGroup>
 </Project>

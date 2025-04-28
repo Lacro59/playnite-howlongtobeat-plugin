@@ -1,12 +1,10 @@
 ﻿using HowLongToBeat.Models;
-using HowLongToBeat.Views;
 using Playnite.SDK;
 using Playnite.SDK.Data;
 using Playnite.SDK.Models;
 using CommonPluginsShared.Collections;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -14,12 +12,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using CommonPluginsShared;
-using CommonPluginsControls.Controls;
-using System.Windows.Threading;
 using FuzzySharp;
 using CommonPlayniteShared.Common;
 using CommonPluginsShared.Extensions;
-using System.Net;
 using HowLongToBeat.Models.Api;
 using HowLongToBeat.Models.GameActivity;
 
@@ -72,18 +67,18 @@ namespace HowLongToBeat.Services
         }
 
 
-        public override GameHowLongToBeat Get(Guid Id, bool OnlyCache = false, bool Force = false)
+        public override GameHowLongToBeat Get(Guid id, bool onlyCache = false, bool force = false)
         {
-            GameHowLongToBeat gameHowLongToBeat = GetOnlyCache(Id);
+            GameHowLongToBeat gameHowLongToBeat = GetOnlyCache(id);
 
-            if (!OnlyCache && gameHowLongToBeat != null && !gameHowLongToBeat.HasData && !gameHowLongToBeat.HasDataEmpty)
+            if (!onlyCache && gameHowLongToBeat != null && !gameHowLongToBeat.HasData && !gameHowLongToBeat.HasDataEmpty)
             {
                 gameHowLongToBeat = null;
             }
 
-            if ((gameHowLongToBeat == null && !OnlyCache) || Force)
+            if ((gameHowLongToBeat == null && !onlyCache) || force)
             {
-                gameHowLongToBeat = HowLongToBeatClient.SearchData(API.Instance.Database.Games.Get(Id));
+                gameHowLongToBeat = HowLongToBeatClient.SearchData(API.Instance.Database.Games.Get(id));
 
                 if (gameHowLongToBeat != null)
                 {
@@ -93,7 +88,7 @@ namespace HowLongToBeat.Services
 
             if (gameHowLongToBeat == null)
             {
-                Game game = API.Instance.Database.Games.Get(Id);
+                Game game = API.Instance.Database.Games.Get(id);
                 if (game != null)
                 {
                     gameHowLongToBeat = GetDefault(game);
@@ -337,51 +332,51 @@ namespace HowLongToBeat.Services
 
 
         #region User data
-        public TitleList GetUserHltbData(string HltbId)
+        public TitleList GetUserHltbData(string hltbId)
         {
             try
             {
                 return Database.UserHltbData.TitlesList == null || Database.UserHltbData.TitlesList.Count == 0
                     ? null
-                    : Database.UserHltbData.TitlesList.Find(x => x.Id == HltbId);
+                    : Database.UserHltbData.TitlesList.Find(x => x.Id == hltbId);
             }
             catch (Exception ex)
             {
                 Common.LogError(ex, true);
-                Logger.Warn($"No HltbData for {HltbId}");
+                Logger.Warn($"No HltbData for {hltbId}");
                 return null;
             }
         }
 
-        public TitleList GetUserHltbDataCurrent(string HltbId, string UserGameId = "")
+        public TitleList GetUserHltbDataCurrent(string hltbId, string userGameId = "")
         {
             try
             {
-                List<TitleList> all = GetUserHltbDataAll(HltbId);
+                List<TitleList> all = GetUserHltbDataAll(hltbId);
                 return all == null || all.Count == 0
                     ? null
-                    : UserGameId.IsNullOrEmpty()
+                    : userGameId.IsNullOrEmpty()
                     ? all.OrderByDescending(x => x.GameStatuses.Where(y => y.Status == StatusType.Playing)?.Count() > 0).ThenByDescending(x => x.LastUpdate).First()
-                    : all.FirstOrDefault(x => x.UserGameId.IsEqual(UserGameId));
+                    : all.FirstOrDefault(x => x.UserGameId.IsEqual(userGameId));
             }
             catch (Exception ex)
             {
-                Common.LogError(ex, false, $"No HltbData for {HltbId}");
+                Common.LogError(ex, false, $"No HltbData for {hltbId}");
                 return null;
             }
         }
 
-        public List<TitleList> GetUserHltbDataAll(string HltbId)
+        public List<TitleList> GetUserHltbDataAll(string hltbId)
         {
             try
             {
                 return Database.UserHltbData.TitlesList == null || Database.UserHltbData.TitlesList.Count == 0
                     ? null
-                    : Database.UserHltbData.TitlesList.FindAll(x => x.Id == HltbId).ToList();
+                    : Database.UserHltbData.TitlesList.FindAll(x => x.Id == hltbId).ToList();
             }
             catch (Exception ex)
             {
-                Common.LogError(ex, false, $"No HltbData for {HltbId}");
+                Common.LogError(ex, false, $"No HltbData for {hltbId}");
                 return null;
             }
         }
@@ -434,11 +429,11 @@ namespace HowLongToBeat.Services
         {
             Logger.Info("RefreshUserData()");
 
-            GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions(
-                $"{PluginName} - {ResourceProvider.GetString("LOCHowLongToBeatPluginGetUserView")}",
-                false
-            );
-            globalProgressOptions.IsIndeterminate = true;
+            GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions($"{PluginName} - {ResourceProvider.GetString("LOCHowLongToBeatPluginGetUserView")}")
+            {
+                Cancelable = false,
+                IsIndeterminate = true
+            };
 
             _ = API.Instance.Dialogs.ActivateGlobalProgress((activateGlobalProgress) =>
             {
@@ -474,16 +469,16 @@ namespace HowLongToBeat.Services
             }, globalProgressOptions);
         }
 
-        public void RefreshUserData(string game_id)
+        public void RefreshUserData(string gameId)
         {
             _ = Task.Run(() =>
             {
                 try
                 {
-                    TitleList titleList = HowLongToBeatClient.GetUserData(game_id);
+                    TitleList titleList = HowLongToBeatClient.GetUserData(gameId);
                     if (titleList != null)
                     {
-                        int index = Database.UserHltbData.TitlesList.FindIndex(x => x.Id == game_id);
+                        int index = Database.UserHltbData.TitlesList.FindIndex(x => x.Id == gameId);
                         if (index > -1)
                         {
                             Database.UserHltbData.TitlesList[index] = titleList;
@@ -779,86 +774,6 @@ namespace HowLongToBeat.Services
             }
 
             return false;
-        }
-
-
-        public double GetAvgGameByMonth()
-        {
-            double result = 0;
-
-            Dictionary<string, int> DataByMonth = new Dictionary<string, int>();
-            foreach (TitleList titleList in Database.UserHltbData.TitlesList)
-            {
-                string Month = titleList.Completion?.ToString("yyyy-MM");
-                if (!Month.IsNullOrEmpty())
-                {
-                    if (DataByMonth.ContainsKey(Month))
-                    {
-                        DataByMonth[Month]++;
-                    }
-                    else
-                    {
-                        DataByMonth.Add(Month, 1);
-                    }
-                }
-            }
-
-            if (DataByMonth.Count > 0)
-            {
-                foreach (KeyValuePair<string, int> data in DataByMonth)
-                {
-                    result += data.Value;
-                }
-                result /= DataByMonth.Count;
-            }
-
-            return result;
-        }
-
-        public long GetAvgTimeByGame()
-        {
-            long result = 0;
-            double count = 0;
-
-            foreach (TitleList titleList in Database.UserHltbData.TitlesList)
-            {
-                if (titleList.Completion != null && titleList.HltbUserData.TimeToBeat != 0)
-                {
-                    count++;
-                    result += titleList.HltbUserData.TimeToBeat;
-                }
-            }
-
-            if (count > 0)
-            {
-                result = (long)(result / count);
-            }
-
-            return result;
-        }
-
-        public int GetCountGameBeatenBeforeTime()
-        {
-            return Database.UserHltbData.TitlesList
-                .Where(x => x.HltbUserData.TimeToBeat != 0 && x.Completion != null 
-                            && Get(x.GameId, true)?.GetData()?.GameHltbData?.TimeToBeat > x.HltbUserData?.TimeToBeat).Count();
-        }
-
-        public int GetCountGameBeatenAfterTime()
-        {
-            return Database.UserHltbData.TitlesList
-                .Where(x => x.HltbUserData.TimeToBeat != 0 && x.Completion != null
-                        && Get(x.GameId, true)?.GetData()?.GameHltbData?.TimeToBeat <= x.HltbUserData?.TimeToBeat).Count();
-        }
-
-        public int GetCountGameBeatenReplays()
-        {
-            return Database.UserHltbData.TitlesList.Where(x => x.IsReplay).Count();
-        }
-
-        public int GetCountGameRetired()
-        {
-            return Database.UserHltbData.TitlesList.Where(x => x.IsRetired).Count();
         }
         #endregion
 
