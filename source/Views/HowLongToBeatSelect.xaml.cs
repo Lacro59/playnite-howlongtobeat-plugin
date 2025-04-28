@@ -120,18 +120,18 @@ namespace HowLongToBeat.Views
         {
             lbSelectable.ItemsSource = null;
 
-            string GameSearch = SearchElement.Text;
-            string GamePlatform = (PART_SelectPlatform.SelectedValue == null)
-                  ? string.Empty 
+            string gameSearch = SearchElement.Text;
+            string gamePlatform = (PART_SelectPlatform.SelectedValue == null)
+                  ? string.Empty
                   : ((HltbPlatform) PART_SelectPlatform.SelectedValue).GetDescription();
 
             bool isVndb = (bool)PART_Vndb.IsChecked;
 
-            GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions(
-                $"{ResourceProvider.GetString("LOCDownloadingLabel")}",
-                false
-            );
-            globalProgressOptions.IsIndeterminate = true;
+            GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions($"{ResourceProvider.GetString("LOCDownloadingLabel")}")
+            {
+                Cancelable = false,
+                IsIndeterminate = true
+            };
 
             _ = API.Instance.Dialogs.ActivateGlobalProgress((activateGlobalProgress) =>
             {
@@ -139,17 +139,8 @@ namespace HowLongToBeat.Views
                 try
                 {
                     dataSearch = isVndb
-                        ? VndbApi.SearchByName(GameSearch)
-                        : PluginDatabase.HowLongToBeatClient.SearchTwoMethod(GameSearch, GamePlatform).GetAwaiter().GetResult();
-
-                    // Sort
-                    Application.Current.Dispatcher?.Invoke(new Action(() =>
-                    {
-                        dataSearch = dataSearch.Select(x => new { MatchPercent = Fuzz.Ratio(GameContext.Name.ToLower(), x.Name.ToLower()), Data = x })
-                                        .OrderByDescending(x => x.MatchPercent)
-                                        .Select(x => x.Data)
-                                        .ToList();
-                    }));
+                        ? VndbApi.SearchByName(gameSearch)?.Select(x => x.Data).ToList()
+                        : PluginDatabase.HowLongToBeatClient.SearchTwoMethod(gameSearch, gamePlatform).GetAwaiter().GetResult()?.Select(x => x.Data).ToList();
                 }
                 catch (Exception ex)
                 {

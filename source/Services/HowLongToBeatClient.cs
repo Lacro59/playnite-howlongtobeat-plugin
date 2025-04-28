@@ -19,6 +19,7 @@ using CommonPlayniteShared.Common;
 using System.Security.Principal;
 using HowLongToBeat.Models.Api;
 using System.Text.RegularExpressions;
+using FuzzySharp;
 
 namespace HowLongToBeat.Services
 {
@@ -230,7 +231,7 @@ namespace HowLongToBeat.Services
             return SearchId;
         }
 
-        public async Task<List<HltbDataUser>> SearchTwoMethod(string name, string platform = "")
+        public async Task<List<HltbSearch>> SearchTwoMethod(string name, string platform = "")
         {
             List<HltbDataUser> dataSearchNormalized = await Search(PlayniteTools.NormalizeGameName(name), platform);
             List<HltbDataUser> dataSearch = await Search(name, platform);
@@ -239,7 +240,11 @@ namespace HowLongToBeat.Services
             dataSearchFinal.AddRange(dataSearchNormalized);
             dataSearchFinal.AddRange(dataSearch);
 
-            return dataSearchFinal.GroupBy(x => x.Id).Select(x => x.First()).ToList();
+            dataSearchFinal = dataSearchFinal.GroupBy(x => x.Id).Select(x => x.First()).ToList();
+
+            return dataSearchFinal.Select(x => new HltbSearch { MatchPercent = Fuzz.Ratio(name.ToLower(), x.Name.ToLower()), Data = x })
+                .OrderByDescending(x => x.MatchPercent)
+                .ToList();
         }
 
         private async Task<SearchResult> ApiSearch(string name, string platform = "")
@@ -275,8 +280,8 @@ namespace HowLongToBeat.Services
                     };
 
                     string searchId = await GetSearchId();
-                    Thread.Sleep(1500);
-                    HttpResponseMessage response = await httpClient.PostAsync(UrlSearch + "/" + searchId,  requestMessage.Content);
+                    Thread.Sleep(2000);
+                    HttpResponseMessage response = await httpClient.PostAsync(UrlSearch + "/" + searchId, requestMessage.Content);
                     string json = await response.Content.ReadAsStringAsync();
 
                     _ = Serialization.TryFromJson(json, out searchResult);

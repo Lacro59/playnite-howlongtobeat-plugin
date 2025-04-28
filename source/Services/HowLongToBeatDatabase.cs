@@ -109,23 +109,19 @@ namespace HowLongToBeat.Services
                 return;
             }
 
-            List<HltbDataUser> data = HowLongToBeatClient.SearchTwoMethod(game.Name).GetAwaiter().GetResult();
+            List<HltbSearch> data = HowLongToBeatClient.SearchTwoMethod(game.Name).GetAwaiter().GetResult();
             if (data.Count == 1 && PluginSettings.Settings.AutoAccept)
             {
-                gameHowLongToBeat.Items = new List<HltbDataUser>() { data.First() };
+                gameHowLongToBeat.Items = new List<HltbDataUser>() { data.First().Data };
                 AddOrUpdate(gameHowLongToBeat);
             }
             else
             {
                 if (data.Count > 0 && PluginSettings.Settings.UseMatchValue)
                 {
-                    var FuzzList = data.Select(x => new { MatchPercent = Fuzz.Ratio(game.Name.ToLower(), x.Name.ToLower()), Data = x })
-                        .OrderByDescending(x => x.MatchPercent)
-                        .ToList();
-
-                    if (FuzzList.First().MatchPercent >= PluginSettings.Settings.MatchValue)
+                    if (data.First().MatchPercent >= PluginSettings.Settings.MatchValue)
                     {
-                        gameHowLongToBeat.Items = new List<HltbDataUser>() { FuzzList.First().Data };
+                        gameHowLongToBeat.Items = new List<HltbDataUser>() { data.First().Data };
                         AddOrUpdate(gameHowLongToBeat);
                         return;
                     }
@@ -202,7 +198,7 @@ namespace HowLongToBeat.Services
             {
                 List<HltbDataUser> dataSearch = loadedItem.GetData().IsVndb
                     ? VndbApi.SearchById(loadedItem.GetData().Id)
-                    : HowLongToBeatClient.SearchTwoMethod(loadedItem.GetData().Name).GetAwaiter().GetResult();
+                    : HowLongToBeatClient.SearchTwoMethod(loadedItem.GetData().Name).GetAwaiter().GetResult()?.Select(x => x.Data).ToList();
 
                 HltbDataUser webDataSearch = dataSearch.Find(x => x.Id == loadedItem.GetData().Id);
                 if (webDataSearch != null)

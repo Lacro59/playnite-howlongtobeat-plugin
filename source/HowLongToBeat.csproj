@@ -132,6 +132,7 @@
     <Compile Include="Models\GameHowLongToBeat.cs" />
     <Compile Include="Models\GameHowLongToBeatCollection.cs" />
     <Compile Include="Models\HltbDataUser.cs" />
+    <Compile Include="Models\HltbSearch.cs" />
     <Compile Include="Models\HltbStorefront.cs" />
     <Compile Include="Models\HltbUserStats.cs" />
     <Compile Include="Models\NEXT_DATA.cs" />

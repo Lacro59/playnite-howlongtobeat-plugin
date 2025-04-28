@@ -1,4 +1,5 @@
 ﻿using CommonPluginsShared;
+using FuzzySharp;
 using HowLongToBeat.Models;
 using HowLongToBeat.Models.Vndb;
 using Playnite.SDK;
@@ -54,11 +55,14 @@ namespace HowLongToBeat.Services
             return hltbDataUsers;
         }
 
-        public static List<HltbDataUser> SearchByName(string name)
+        public static List<HltbSearch> SearchByName(string name)
         {
             Logger.Info($"VndbApi.Search({name})");
             string payload = "{\"filters\":[\"search\", \"=\", \"" + PlayniteTools.NormalizeGameName(name) + "\"], \"fields\":\"id, title, alttitle, image.url, length, length_minutes\"}";
-            return Search(payload);
+            List<HltbDataUser> search = Search(payload);
+            return search.Select(x => new HltbSearch { MatchPercent = Fuzz.Ratio(name.ToLower(), x.Name.ToLower()), Data = x })
+                .OrderByDescending(x => x.MatchPercent)
+                .ToList();
         }
 
         public static List<HltbDataUser> SearchById(string id)
