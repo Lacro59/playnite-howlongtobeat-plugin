@@ -231,10 +231,10 @@ namespace HowLongToBeat.Services
             return SearchId;
         }
 
-        public async Task<List<HltbDataUser>> SearchTwoMethod(string Name, string Platform = "")
+        public async Task<List<HltbDataUser>> SearchTwoMethod(string name, string platform = "")
         {
-            List<HltbDataUser> dataSearchNormalized = await Search(PlayniteTools.NormalizeGameName(Name), Platform);
-            List<HltbDataUser> dataSearch = new List<HltbDataUser>();// await Search(Name, Platform);
+            List<HltbDataUser> dataSearchNormalized = await Search(PlayniteTools.NormalizeGameName(name), platform);
+            List<HltbDataUser> dataSearch = await Search(name, platform);
 
             List<HltbDataUser> dataSearchFinal = new List<HltbDataUser>();
             dataSearchFinal.AddRange(dataSearchNormalized);
@@ -243,7 +243,7 @@ namespace HowLongToBeat.Services
             return dataSearchFinal.GroupBy(x => x.Id).Select(x => x.First()).ToList();
         }
 
-        private async Task<SearchResult> ApiSearch(string Name, string Platform = "")
+        private async Task<SearchResult> ApiSearch(string name, string platform = "")
         {
             try
             {
@@ -256,8 +256,8 @@ namespace HowLongToBeat.Services
 
                 SearchParam searchParam = new SearchParam
                 {
-                    SearchTerms = Name.Split(' ').ToList(),
-                    SearchOptions = new SearchOptions { Games = new Games { Platform = Platform } }
+                    SearchTerms = name.Split(' ').ToList(),
+                    SearchOptions = new SearchOptions { Games = new Games { Platform = platform } }
                 };
 
                 SearchResult searchResult;
@@ -268,7 +268,7 @@ namespace HowLongToBeat.Services
                         httpClient.DefaultRequestHeaders.Add(x.Key, x.Value);
                     });
 
-                    var serializedBody = Serialization.ToJson(searchParam);
+                    string serializedBody = Serialization.ToJson(searchParam);
 
                     HttpRequestMessage requestMessage = new HttpRequestMessage
                     {
@@ -732,26 +732,26 @@ namespace HowLongToBeat.Services
         /// <returns></returns>
         internal List<HttpCookie> GetStoredCookies()
         {
-            string InfoMessage = "No stored cookies";
+            string infoMessage = "No stored cookies";
 
             if (File.Exists(FileCookies))
             {
                 try
                 {
-                    List<HttpCookie> StoredCookies = Serialization.FromJson<List<HttpCookie>>(
+                    List<HttpCookie> storedCookies = Serialization.FromJson<List<HttpCookie>>(
                         Encryption.DecryptFromFile(
                             FileCookies,
                             Encoding.UTF8,
                             WindowsIdentity.GetCurrent().User.Value));
 
-                    bool isExpired = StoredCookies.Find(x => x.Name == "hltb_alive")?.Expires < DateTime.Now;
+                    bool isExpired = storedCookies.Find(x => x.Name == "hltb_alive")?.Expires < DateTime.Now;
                     if (isExpired)
                     {
-                        InfoMessage = "Expired cookies";
+                        infoMessage = "Expired cookies";
                     }
                     else
                     {
-                        return StoredCookies;
+                        return storedCookies;
                     }
                 }
                 catch (Exception ex)
@@ -760,7 +760,7 @@ namespace HowLongToBeat.Services
                 }
             }
 
-            Logger.Info(InfoMessage);
+            Logger.Info(infoMessage);
             List<HttpCookie> httpCookies = GetWebCookies();
             if (httpCookies?.Count > 0)
             {
