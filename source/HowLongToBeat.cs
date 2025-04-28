@@ -684,7 +684,8 @@ namespace HowLongToBeat
             }
             catch { }
 
-            PluginDatabase.UpdatedCookies();
+            HowLongToBeatClient howLongToBeatClient = new HowLongToBeatClient();
+            howLongToBeatClient.UpdatedCookies();
 
             // TEMP Database convert
             if (!PluginDatabase.PluginSettings.Settings.IsConvertedDb)

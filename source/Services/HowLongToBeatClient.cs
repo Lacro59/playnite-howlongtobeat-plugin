@@ -85,9 +85,8 @@ namespace HowLongToBeat.Services
         public bool? IsConnected { get => isConnected; set => SetValue(ref isConnected, value); }
 
 
-        public string UserLogin = string.Empty;
-        public int UserId = 0;
-        public HltbUserStats hltbUserStats = new HltbUserStats();
+        public string UserLogin { get; set; } = string.Empty;
+        public int UserId { get; set; } = 0;
 
         private bool IsFirst = true;
 
@@ -96,8 +95,8 @@ namespace HowLongToBeat.Services
         {
             UserLogin = PluginDatabase.PluginSettings.Settings.UserLogin;
 
-            string PathData = PluginDatabase.Paths.PluginUserDataPath;
-            FileCookies = Path.Combine(PathData, CommonPlayniteShared.Common.Paths.GetSafePathName($"HowLongToBeat.json"));
+            string pathData = PluginDatabase.Paths.PluginUserDataPath;
+            FileCookies = Path.Combine(pathData, CommonPlayniteShared.Common.Paths.GetSafePathName($"HowLongToBeat.dat"));
         }
 
 
@@ -345,27 +344,27 @@ namespace HowLongToBeat.Services
             Application.Current.Dispatcher.BeginInvoke((Action)delegate
             {
                 Logger.Info("Login()");
-                using (IWebView WebView = API.Instance.WebViews.CreateView(490, 670))
+                using (IWebView webView = API.Instance.WebViews.CreateView(490, 670))
                 {
-                    WebView.LoadingChanged += (s, e) =>
+                    webView.LoadingChanged += (s, e) =>
                     {
-                        Common.LogDebug(true, $"NavigationChanged - {WebView.GetCurrentAddress()}");
+                        Common.LogDebug(true, $"NavigationChanged - {webView.GetCurrentAddress()}");
 
-                        if (WebView.GetCurrentAddress().StartsWith(UrlBase + "/user/"))
+                        if (webView.GetCurrentAddress().StartsWith(UrlBase + "/user/"))
                         {
-                            UserLogin = WebUtility.HtmlDecode(WebView.GetCurrentAddress().Replace(UrlBase + "/user/", string.Empty));
+                            UserLogin = WebUtility.HtmlDecode(webView.GetCurrentAddress().Replace(UrlBase + "/user/", string.Empty));
                             IsConnected = true;
 
                             PluginDatabase.PluginSettings.Settings.UserLogin = UserLogin;
 
                             Thread.Sleep(1500);
-                            WebView.Close();
+                            webView.Close();
                         }
                     };
 
                     IsConnected = false;
-                    WebView.Navigate(UrlLogOut);
-                    _ = WebView.OpenDialog();
+                    webView.Navigate(UrlLogOut);
+                    _ = webView.OpenDialog();
                 }
             }).Completed += (s, e) =>
             {
@@ -375,8 +374,8 @@ namespace HowLongToBeat.Services
                     {
                         try
                         {
-                            List<HttpCookie> Cookies = GetWebCookies();
-                            _ = SetStoredCookies(Cookies);
+                            List<HttpCookie> cookies = GetWebCookies();
+                            _ = SetStoredCookies(cookies);
 
                             PluginDatabase.Plugin.SavePluginSettings(PluginDatabase.PluginSettings.Settings);
 
@@ -400,8 +399,8 @@ namespace HowLongToBeat.Services
         {
             try
             {
-                List<HttpCookie> Cookies = GetStoredCookies();
-                string response = await Web.DownloadStringData(UrlUser, Cookies);
+                List<HttpCookie> cookies = GetStoredCookies();
+                string response = await Web.DownloadStringData(UrlUser, cookies);
                 dynamic t = Serialization.FromJson<dynamic>(response);
                 return response == "{}" ? 0 : t?.data[0]?.user_id ?? 0;
             }
@@ -417,12 +416,12 @@ namespace HowLongToBeat.Services
         {
             try
             {
-                List<HttpCookie> Cookies = GetStoredCookies();
+                List<HttpCookie> cookies = GetStoredCookies();
 
                 UserGamesListParam userGamesListParam = new UserGamesListParam { UserId = UserId };
                 string payload = Serialization.ToJson(userGamesListParam);
 
-                string json = await Web.PostStringDataPayload(string.Format(UrlUserGamesList, UserId), payload, Cookies);
+                string json = await Web.PostStringDataPayload(string.Format(UrlUserGamesList, UserId), payload, cookies);
                 _ = Serialization.TryFromJson(json, out UserGamesList userGamesList);
 
                 return userGamesList;
@@ -513,17 +512,17 @@ namespace HowLongToBeat.Services
             }
         }
 
-        public async Task<EditData> GetEditData(string GameName, string UserGameId)
+        public async Task<EditData> GetEditData(string gameName, string userGameId)
         {
-            Logger.Info($"GetEditData({GameName}, {UserGameId})");
+            Logger.Info($"GetEditData({gameName}, {userGameId})");
             try
             {
-                List<HttpCookie> Cookies = GetStoredCookies();
+                List<HttpCookie> cookies = GetStoredCookies();
 
-                string response = await Web.DownloadStringData(string.Format(UrlPostDataEdit, UserGameId), Cookies);
+                string response = await Web.DownloadStringData(string.Format(UrlPostDataEdit, userGameId), cookies);
                 if (response.IsNullOrEmpty() && !response.Contains("__NEXT_DATA__"))
                 {
-                    Logger.Warn($"No EditData for {GameName} - {UserGameId}");
+                    Logger.Warn($"No EditData for {gameName} - {userGameId}");
                     return null;
                 }
 
@@ -536,14 +535,14 @@ namespace HowLongToBeat.Services
 
                 return next_data?.Props?.PageProps?.EditData?.UserId != null
                     ? next_data.Props.PageProps.EditData
-                    : throw new Exception($"No EditData find for {GameName} - {UserGameId}");
+                    : throw new Exception($"No EditData find for {gameName} - {userGameId}");
             }
             catch (Exception ex)
             {
                 if (IsFirst)
                 {
                     IsFirst = false;
-                    return await GetEditData(GameName, UserGameId);
+                    return await GetEditData(gameName, userGameId);
                 }
                 else
                 {
@@ -583,7 +582,7 @@ namespace HowLongToBeat.Services
         {
             if (GetIsUserLoggedIn())
             {
-                hltbUserStats = new HltbUserStats
+                HltbUserStats hltbUserStats = new HltbUserStats
                 {
                     Login = UserLogin.IsNullOrEmpty() ? PluginDatabase.Database.UserHltbData.Login : UserLogin,
                     UserId = (UserId == 0) ? PluginDatabase.Database.UserHltbData.UserId : UserId,
@@ -624,14 +623,14 @@ namespace HowLongToBeat.Services
             }
         }
 
-        public TitleList GetUserData(string game_id)
+        public TitleList GetUserData(string gameId)
         {
             if (GetIsUserLoggedIn())
             {
                 try
                 {
                     HltbUserStats data = GetUserData();
-                    return data?.TitlesList?.Find(x => x.Id == game_id);
+                    return data?.TitlesList?.Find(x => x.Id == gameId);
                 }
                 catch (Exception ex)
                 {
@@ -653,14 +652,14 @@ namespace HowLongToBeat.Services
         }
 
 
-        public bool EditIdExist(string UserGameId)
+        public bool EditIdExist(string userGameId)
         {
-            return GetUserGamesList()?.GetAwaiter().GetResult()?.Data?.GamesList?.Find(x => x.Id.ToString().IsEqual(UserGameId))?.Id != null;
+            return GetUserGamesList()?.GetAwaiter().GetResult()?.Data?.GamesList?.Find(x => x.Id.ToString().IsEqual(userGameId))?.Id != null;
         }
 
-        public string FindIdExisting(string GameId)
+        public string FindIdExisting(string gameId)
         {
-            return GetUserGamesList()?.GetAwaiter().GetResult().Data?.GamesList?.Find(x => x.GameId.ToString().IsEqual(GameId))?.Id.ToString() ?? null;
+            return GetUserGamesList()?.GetAwaiter().GetResult().Data?.GamesList?.Find(x => x.GameId.ToString().IsEqual(gameId))?.Id.ToString() ?? null;
         }
         #endregion
 
@@ -748,11 +747,9 @@ namespace HowLongToBeat.Services
                     if (isExpired)
                     {
                         infoMessage = "Expired cookies";
+                        Logger.Info(infoMessage);
                     }
-                    else
-                    {
-                        return storedCookies;
-                    }
+                    return storedCookies;
                 }
                 catch (Exception ex)
                 {
@@ -761,13 +758,6 @@ namespace HowLongToBeat.Services
             }
 
             Logger.Info(infoMessage);
-            List<HttpCookie> httpCookies = GetWebCookies();
-            if (httpCookies?.Count > 0)
-            {
-                _ = SetStoredCookies(httpCookies);
-                return httpCookies;
-            }
-
             return null;
         }
 
@@ -799,26 +789,32 @@ namespace HowLongToBeat.Services
         /// Get cookies in WebView or another method.
         /// </summary>
         /// <returns></returns>
-        internal virtual List<HttpCookie> GetWebCookies(IWebView WebViewOffscreen = null)
+        internal virtual List<HttpCookie> GetWebCookies(IWebView webView = null, bool deleteCookies = true)
         {
             List<HttpCookie> httpCookies = new List<HttpCookie>();
 
             try
             {
-                if (WebViewOffscreen == null)
+                if (webView == null)
                 {
-                    using (WebViewOffscreen = API.Instance.WebViews.CreateOffscreenView())
+                    using (webView = API.Instance.WebViews.CreateOffscreenView())
                     {
-                        httpCookies = WebViewOffscreen?.GetCookies()?
-                            .Where(x => (x?.Domain?.Contains("howlongtobeat") ?? false) || (x?.Domain?.Contains("hltb") ?? false))?
+                        httpCookies = webView?.GetCookies()?
+                            .Where(x => x?.Domain?.Contains("howlongtobeat") ?? false)?
                             .ToList() ?? new List<HttpCookie>();
                     }
                 }
                 else
                 {
-                    httpCookies = WebViewOffscreen.GetCookies()?
-                        .Where(x => (x?.Domain?.Contains("howlongtobeat") ?? false) || (x?.Domain?.Contains("hltb") ?? false))?
+                    httpCookies = webView.GetCookies()?
+                        .Where(x => x?.Domain?.Contains("howlongtobeat") ?? false)?
                         .ToList() ?? new List<HttpCookie>();
+                }
+
+                if (deleteCookies)
+                {
+                    webView.DeleteDomainCookies("howlongtobeat.com");
+                    webView.DeleteDomainCookies(".howlongtobeat.com");
                 }
             }
             catch (Exception ex)
@@ -827,6 +823,37 @@ namespace HowLongToBeat.Services
             }
 
             return httpCookies;
+        }
+
+        public void UpdatedCookies()
+        {
+            _ = Task.Run(() =>
+            {
+                try
+                {
+                    if (GetIsUserLoggedIn())
+                    {
+                        using (IWebView webView = API.Instance.WebViews.CreateOffscreenView())
+                        {
+                            List<HttpCookie> oldCookies = GetStoredCookies();
+                            oldCookies?.ForEach(x =>
+                            {
+                                string domain = x.Domain.StartsWith(".") ? x.Domain.Substring(1) : x.Domain;
+                                webView.SetCookies("https://" + domain, x);
+                            });
+
+                            webView.NavigateAndWait(UrlBase);
+
+                            List<HttpCookie> cookies = GetWebCookies(webView);
+                            _ = SetStoredCookies(cookies);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Common.LogError(ex, false, true, PluginDatabase.PluginName);
+                }
+            });
         }
         #endregion
     }

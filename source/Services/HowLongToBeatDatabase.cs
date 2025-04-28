@@ -906,31 +906,5 @@ namespace HowLongToBeat.Services
             PluginSettings.Settings.TimeToBeat = gameHowLongToBeat.GetData().GameHltbData.TimeToBeat;
             PluginSettings.Settings.TimeToBeatFormat = gameHowLongToBeat.GetData().GameHltbData.TimeToBeatFormat;
         }
-
-
-        public void UpdatedCookies()
-        {
-            _ = Task.Run(() =>
-            {
-                try
-                {
-                    _ = SpinWait.SpinUntil(() => API.Instance.Database.IsOpen, -1);
-                    _ = SpinWait.SpinUntil(() => IsLoaded, -1);
-                    if (HowLongToBeatClient.GetIsUserLoggedIn())
-                    {
-                        using (IWebView WebViewOffscreen = API.Instance.WebViews.CreateOffscreenView())
-                        {
-                            WebViewOffscreen.NavigateAndWait("https://howlongtobeat.com");
-                            List<HttpCookie> Cookies = HowLongToBeatClient.GetWebCookies(WebViewOffscreen);
-                            _ = HowLongToBeatClient.SetStoredCookies(Cookies);
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Common.LogError(ex, false, true, PluginName);
-                }
-            });
-        }
     }
 }
