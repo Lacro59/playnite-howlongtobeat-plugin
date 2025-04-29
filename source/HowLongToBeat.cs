@@ -249,7 +249,7 @@ namespace HowLongToBeat
                         Description = ResourceProvider.GetString("LOCHowLongToBeatSetCurrentTimeManual"),
                         Action = (mainMenuItem) =>
                         {
-                            PluginDatabase.SetCurrentPlaytime(ids, 0, true);
+                            PluginDatabase.SetCurrentPlaytime(ids, true);
                         }
                     });
 
@@ -264,7 +264,7 @@ namespace HowLongToBeat
                                 Description = ResourceProvider.GetString("LOCHowLongToBeatMainStory"),
                                 Action = (mainMenuItem) =>
                                 {
-                                    PluginDatabase.SetCurrentPlaytime(ids, 0, true, true, true);
+                                    PluginDatabase.SetCurrentPlaytime(ids, true, true, true);
                                 }
                             });
 
@@ -274,7 +274,7 @@ namespace HowLongToBeat
                                 Description = ResourceProvider.GetString("LOCHowLongToBeatMainExtra"),
                                 Action = (mainMenuItem) =>
                                 {
-                                    PluginDatabase.SetCurrentPlaytime(ids, 0, true, true, false, true);
+                                    PluginDatabase.SetCurrentPlaytime(ids, true, true, false, true);
                                 }
                             });
 
@@ -284,7 +284,7 @@ namespace HowLongToBeat
                                 Description = ResourceProvider.GetString("LOCHowLongToBeatCompletionist"),
                                 Action = (mainMenuItem) =>
                                 {
-                                    PluginDatabase.SetCurrentPlaytime(ids, 0, true, true, false, false, true);
+                                    PluginDatabase.SetCurrentPlaytime(ids, true, true, false, false, true);
                                 }
                             });
                         }
@@ -296,7 +296,7 @@ namespace HowLongToBeat
                                 Description = ResourceProvider.GetString("LOCHowLongToBeatCoOp"),
                                 Action = (mainMenuItem) =>
                                 {
-                                    PluginDatabase.SetCurrentPlaytime(ids, 0, true, false, false, false, false, false, true);
+                                    PluginDatabase.SetCurrentPlaytime(ids, true, false, false, false, false, false, true);
                                 }
                             });
 
@@ -306,7 +306,7 @@ namespace HowLongToBeat
                                 Description = ResourceProvider.GetString("LOCHowLongToBeatVs"),
                                 Action = (mainMenuItem) =>
                                 {
-                                    PluginDatabase.SetCurrentPlaytime(ids, 0, true, false, false, false, false, false, false, true);
+                                    PluginDatabase.SetCurrentPlaytime(ids, true, false, false, false, false, false, false, true);
                                 }
                             });
                         }
@@ -449,7 +449,7 @@ namespace HowLongToBeat
                     Action = (mainMenuItem) =>
                     {
                         IEnumerable<Game> db = PlayniteApi.Database.Games.Where(x => !x.Hidden && x.Playtime > 0);
-                        PluginDatabase.SetCurrentPlaytime(db.Select(x => x.Id), 0, true);
+                        PluginDatabase.SetCurrentPlaytime(db.Select(x => x.Id), true);
                     }
                 },
 
@@ -631,12 +631,12 @@ namespace HowLongToBeat
                     {
                         result = PlayniteApi.Dialogs.ShowMessage(ResourceProvider.GetString("LOCHowLongToBeatSetCurrentTime"), PluginDatabase.PluginName, MessageBoxButton.YesNo);
                     }
-                    
+
                     if (result == MessageBoxResult.Yes)
                     {
                         _ = Task.Run(() =>
                         {
-                            Thread.Sleep(5000);
+                            Thread.Sleep(2000);
                             if (PluginDatabase.SetCurrentPlayTime(args.Game))
                             {
                                 if (PluginDatabase.PluginSettings.Settings.EnableSucessNotification)
@@ -684,7 +684,7 @@ namespace HowLongToBeat
             }
             catch { }
 
-            HowLongToBeatClient howLongToBeatClient = new HowLongToBeatClient();
+            HowLongToBeatApi howLongToBeatClient = new HowLongToBeatApi();
             howLongToBeatClient.UpdatedCookies();
 
             // TEMP Database convert

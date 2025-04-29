@@ -711,6 +711,7 @@ namespace HowLongToBeat.Services
                     else
                     {
                         PluginDatabase.RefreshUserData(editData.GameId.ToString());
+                        return true;
                     }
                 }
                 catch (Exception ex)

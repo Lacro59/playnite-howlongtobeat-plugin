@@ -197,7 +197,7 @@
     </Compile>
     <Compile Include="Models\HltbData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Services\HowLongToBeatClient.cs" />
+    <Compile Include="Services\HowLongToBeatApi.cs" />
     <Compile Include="Views\HowLongToBeatUserView.xaml.cs">
       <DependentUpon>HowLongToBeatUserView.xaml</DependentUpon>
     </Compile>

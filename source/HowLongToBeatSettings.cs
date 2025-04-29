@@ -123,6 +123,7 @@ namespace HowLongToBeat
 
 
         public bool AutoSetGameStatus { get; set; } = false;
+        public bool AutoSetGameStatusToHltb { get; set; } = false;
         public Guid GameStatusPlaying { get; set; }
         public Guid GameStatusCompleted { get; set; }
         public Guid GameStatusCompletionist { get; set; }

@@ -9,7 +9,7 @@
              xmlns:hltm="clr-namespace:HowLongToBeat.Models"
              xmlns:hltb="clr-namespace:HowLongToBeat.Behaviors" 
              xmlns:converters="clr-namespace:CommonPluginsShared.Converters"
-             mc:Ignorable="d" d:DesignWidth="650"
+             mc:Ignorable="d"
              d:DataContext="{d:DesignInstance HowLongToBeat:HowLongToBeatSettingsViewModel}">
 
     <UserControl.Resources>
@@ -84,9 +84,26 @@
 
                     <CheckBox Margin="50,5,0,0" IsChecked="{Binding Settings.EnableSucessNotification}" IsEnabled="{Binding ElementName=PART_AutoSetCurrentPlayTime, Path=IsChecked}" Content="{DynamicResource LOCHowLongToBeatEnableSuccessNotification}" />
 
-                    <CheckBox Margin="0,10,0,0" IsChecked="{Binding Settings.AutoSetGameStatus}" Name="PART_AutoSetGameStatus" Content="{DynamicResource LOCHowLongToBeatAutoSetGameStatus}" />
 
-                    <Grid Margin="50,5,0,0" IsEnabled="{Binding ElementName=PART_AutoSetGameStatus, Path=IsChecked}">
+                    <CheckBox Margin="0,10,0,0" IsChecked="{Binding Settings.AutoSetGameStatus}" Name="PART_AutoSetGameStatusFromHltb" Content="{DynamicResource LOCHowLongToBeatAutoSetGameStatus}" />
+
+                    <CheckBox Margin="0,10,0,0" IsChecked="{Binding Settings.AutoSetGameStatusToHltb}" Name="PART_AutoSetGameStatusToHltb" Content="{DynamicResource LOCHowLongToBeatAutoSetGameStatusToHltb}" />
+
+                    <Grid Margin="50,5,0,0">
+                        <Grid.Style>
+                            <Style TargetType="Grid">
+                                <Setter Property="IsEnabled" Value="False"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding ElementName=PART_AutoSetGameStatusFromHltb, Path=IsChecked}" Value="True">
+                                        <Setter Property="IsEnabled" Value="True" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding ElementName=PART_AutoSetGameStatusToHltb, Path=IsChecked}" Value="True">
+                                        <Setter Property="IsEnabled" Value="True" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Grid.Style>
+                        
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width=".5*" />
                             <ColumnDefinition Width="10" />
@@ -120,6 +137,7 @@
                                           DisplayMemberPath="Name"
                                           SelectedValue="{Binding Settings.GameStatusCompletionist}" />
                     </Grid>
+
 
                     <StackPanel Margin="0,30,0,0">
                         <Label Content="{DynamicResource LOCHowLongToBeatUserData}" FontSize="18" />

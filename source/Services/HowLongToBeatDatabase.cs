@@ -23,7 +23,7 @@ namespace HowLongToBeat.Services
     public class HowLongToBeatDatabase : PluginDatabaseObject<HowLongToBeatSettingsViewModel, GameHowLongToBeatCollection, GameHowLongToBeat, HltbDataUser>
     {
         public HowLongToBeat Plugin { get; set; }
-        public HowLongToBeatClient HowLongToBeatClient { get; set; }
+        public HowLongToBeatApi HowLongToBeatClient { get; set; }
 
 
         public HowLongToBeatDatabase(HowLongToBeatSettingsViewModel PluginSettings, string PluginUserDataPath) : base(PluginSettings, "HowLongToBeat", PluginUserDataPath)
@@ -35,7 +35,7 @@ namespace HowLongToBeat.Services
         public void InitializeClient(HowLongToBeat plugin)
         {
             Plugin = plugin;
-            HowLongToBeatClient = new HowLongToBeatClient();
+            HowLongToBeatClient = new HowLongToBeatApi();
         }
 
 
@@ -378,7 +378,7 @@ namespace HowLongToBeat.Services
         }
 
 
-        private void SetGameStatus()
+        private void SetGameStatusFromHltb()
         {
             try
             {
@@ -420,6 +420,33 @@ namespace HowLongToBeat.Services
             }
         }
 
+        private void SetGameStatusToHltb(Game game)
+        {
+            try
+            {
+                bool isCompletionist = game.CompletionStatusId == PluginSettings.Settings.GameStatusCompletionist;
+                bool isCompleted = game.CompletionStatusId == PluginSettings.Settings.GameStatusCompleted;
+                bool isPlaying = game.CompletionStatusId == PluginSettings.Settings.GameStatusPlaying;
+
+                if (isCompletionist && PluginSettings.Settings.GameStatusCompletionist != default && API.Instance.Database.CompletionStatuses.Get(PluginSettings.Settings.GameStatusCompletionist) != null)
+                {
+                    _ = SetCurrentPlayTime(game, true, false, false, false, true);
+                }
+                else if (isCompleted && PluginSettings.Settings.GameStatusCompleted != default && API.Instance.Database.CompletionStatuses.Get(PluginSettings.Settings.GameStatusCompleted) != null)
+                {
+                    _ = SetCurrentPlayTime(game, true, true);
+                }
+                else if (isPlaying && PluginSettings.Settings.GameStatusPlaying != default && API.Instance.Database.CompletionStatuses.Get(PluginSettings.Settings.GameStatusPlaying) != null)
+                {
+                    _ = SetCurrentPlayTime(game, false);
+                }
+            }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, false, true, PluginName);
+            }
+        }
+
 
         public void RefreshUserData()
         {
@@ -445,7 +472,7 @@ namespace HowLongToBeat.Services
 
                         if (PluginSettings.Settings.AutoSetGameStatus)
                         {
-                            SetGameStatus();
+                            SetGameStatusFromHltb();
                         }
 
                         Application.Current.Dispatcher?.Invoke(() =>
@@ -499,7 +526,7 @@ namespace HowLongToBeat.Services
             });
         }
 
-        public void SetCurrentPlaytime(IEnumerable<Guid> ids, ulong elapsedSeconds = 0, bool noPlaying = false, bool isCompleted = false, bool isMain = false, bool isMainSide = false, bool is100 = false, bool isSolo = false, bool isCoOp = false, bool isVs = false)
+        public void SetCurrentPlaytime(IEnumerable<Guid> ids, bool noPlaying = false, bool isCompleted = false, bool isMain = false, bool isMainSide = false, bool is100 = false, bool isSolo = false, bool isCoOp = false, bool isVs = false)
         {
             GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions($"{PluginName} - {ResourceProvider.GetString("LOCCommonProcessing")}")
             {
@@ -532,7 +559,7 @@ namespace HowLongToBeat.Services
                     try
                     {
                         Thread.Sleep(100);
-                        _ = SetCurrentPlayTime(game, elapsedSeconds, noPlaying, isCompleted, isMain, isMainSide, is100, isSolo, isCoOp, isVs);
+                        _ = SetCurrentPlayTime(game, noPlaying, isCompleted, isMain, isMainSide, is100, isSolo, isCoOp, isVs);
                     }
                     catch (Exception ex)
                     {
@@ -551,7 +578,7 @@ namespace HowLongToBeat.Services
             }, globalProgressOptions);
         }
 
-        public bool SetCurrentPlayTime(Game game, ulong elapsedSeconds = 0, bool noPlaying = false, bool isCompleted = false, bool isMain = false, bool isMainSide = false, bool is100 = false, bool isSolo = false, bool isCoOp = false, bool isVs = false)
+        public bool SetCurrentPlayTime(Game game, bool noPlaying = false, bool isCompleted = false, bool isMain = false, bool isMainSide = false, bool is100 = false, bool isSolo = false, bool isCoOp = false, bool isVs = false)
         {
             try
             {
@@ -560,7 +587,7 @@ namespace HowLongToBeat.Services
                     GameHowLongToBeat gameHowLongToBeat = Database.Get(game.Id);
                     if (gameHowLongToBeat != null && (!gameHowLongToBeat.GetData()?.IsVndb ?? false))
                     {
-                        TimeSpan time = TimeSpan.FromSeconds(game.Playtime + elapsedSeconds);
+                        TimeSpan time = TimeSpan.FromSeconds(game.Playtime);
                         string platformName = HltbPlatform.PC.GetDescription();
                         string storefrontName = string.Empty;
 
@@ -678,6 +705,7 @@ namespace HowLongToBeat.Services
                             }
                         }
 
+                        editData.Lists.Playing = false;
                         if (!noPlaying)
                         {
                             editData.Lists.Playing = true;
@@ -750,7 +778,7 @@ namespace HowLongToBeat.Services
                         editData.General.Progress.Seconds = time.Seconds;
                         #endregion
 
-                        return HowLongToBeatClient.ApiSubmitData(game, editData).GetAwaiter().GetResult(); 
+                        return HowLongToBeatClient.ApiSubmitData(game, editData).GetAwaiter().GetResult();
                     }
                 }
                 else
@@ -816,6 +844,18 @@ namespace HowLongToBeat.Services
 
             PluginSettings.Settings.TimeToBeat = gameHowLongToBeat.GetData().GameHltbData.TimeToBeat;
             PluginSettings.Settings.TimeToBeatFormat = gameHowLongToBeat.GetData().GameHltbData.TimeToBeatFormat;
+        }
+
+
+        public override void ActionAfterGames_ItemUpdated(Game gameOld, Game gameNew)
+        {
+            _ = Task.Run(() =>
+            {
+                if (PluginSettings.Settings.AutoSetGameStatusToHltb && gameOld.CompletionStatusId != gameNew.CompletionStatusId)
+                {
+                    SetGameStatusToHltb(gameNew);
+                }
+            });
         }
     }
 }

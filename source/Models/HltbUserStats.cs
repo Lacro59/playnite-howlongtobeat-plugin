@@ -62,12 +62,30 @@ namespace HowLongToBeat.Models
         {
             get
             {
-                Guid? result = PluginDatabase.Database.Items.Where(x => x.Value.GetData()?.Id == Id && (x.Value.UserGameId.IsNullOrEmpty() || x.Value.UserGameId.IsEqual(UserGameId)))
+                Guid? result = PluginDatabase.Database.Items
+                    .Where(x => !x.Value.Game.Hidden && x.Value.GetData()?.Id == Id && (x.Value.UserGameId.IsNullOrEmpty() || x.Value.UserGameId.IsEqual(UserGameId)))
                     ?.FirstOrDefault().Key;
 
-                return result == null || (Guid)result == default
-                    ? new Guid()
-                    : (Guid)result;
+                return result == null ? default : (Guid)result;
+            }
+        }
+
+        // TODO
+        [DontSerialize]
+        public List<Guid> GameIds
+        {
+            get
+            {
+                Guid? result = PluginDatabase.Database.Items
+                    .Where(x => x.Value.GetData()?.Id == Id && (x.Value.UserGameId.IsNullOrEmpty() || x.Value.UserGameId.IsEqual(UserGameId)))
+                    ?.FirstOrDefault().Key;
+
+                List<Guid> results = PluginDatabase.Database.Items
+                    .Where(x => x.Value.GetData()?.Id == Id && (x.Value.UserGameId.IsNullOrEmpty() || x.Value.UserGameId.IsEqual(UserGameId)))
+                    ?.Select(x => x.Key)
+                    ?.ToList() ?? new List<Guid>();
+
+                return results;
             }
         }
 
