@@ -39,6 +39,7 @@
     <sys:String x:Key="LOCHowLongToBeatEnableSuccessNotification">启用成功通知</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatus">导入用户数据时自动更新HowLongToBeat游戏状态</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltb">Automatically update game status on HowLongToBeat game status when changing on Playnite</sys:String>
     
     <sys:String x:Key="LOCHowLongToBeatAutoData">下载数据</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoAccept">只搜索到一个游戏时自动选择</sys:String>
