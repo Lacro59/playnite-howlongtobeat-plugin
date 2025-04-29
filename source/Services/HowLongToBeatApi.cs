@@ -44,7 +44,7 @@ namespace HowLongToBeat.Services
     }
 
 
-    public class HowLongToBeatClient : ObservableObject
+    public class HowLongToBeatApi : ObservableObject
     {
         private static ILogger Logger => LogManager.GetLogger();
 
@@ -92,11 +92,16 @@ namespace HowLongToBeat.Services
         private bool IsFirst = true;
 
 
-        public HowLongToBeatClient()
+        public HowLongToBeatApi()
         {
             UserLogin = PluginDatabase.PluginSettings.Settings.UserLogin;
 
             string pathData = PluginDatabase.Paths.PluginUserDataPath;
+
+            // TEMP
+            FileCookies = Path.Combine(pathData, CommonPlayniteShared.Common.Paths.GetSafePathName($"HowLongToBeat.json"));
+            FileSystem.DeleteFileSafe(FileCookies);
+
             FileCookies = Path.Combine(pathData, CommonPlayniteShared.Common.Paths.GetSafePathName($"HowLongToBeat.dat"));
         }
 
