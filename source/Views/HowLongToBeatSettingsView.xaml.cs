@@ -388,7 +388,7 @@ namespace HowLongToBeat.Views
                     .Platforms.Distinct().OrderBy(x => x.Name).ToList();
 
             // Remove from settings game platforms that were deleted
-            settings.Platforms.RemoveAll(m => !platforms.Contains(m.Platform));
+            _ = settings.Platforms.RemoveAll(m => !platforms.Contains(m.Platform));
             // Add an empty match for game platforms not in the settings
             platforms.Where(p => !settings.Platforms.Exists(m => p.Equals(m.Platform)))
                     .ForEach(p => settings.Platforms.Add(new HltbPlatformMatch { Platform = p }));

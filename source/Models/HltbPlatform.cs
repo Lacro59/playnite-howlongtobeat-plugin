@@ -1,11 +1,8 @@
-﻿using Playnite.SDK.Data;
-using Playnite.SDK.Models;
+﻿using Playnite.SDK.Models;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 
-namespace HowLongToBeat.Models 
+namespace HowLongToBeat.Models
 {
     public enum HltbPlatform {
 
@@ -184,8 +181,46 @@ namespace HowLongToBeat.Models
         [Description("Xbox Series X/S")]
         XBOS_SERIES_XS,
         [Description("ZX Spectrum")]
-        ZX_SPECTRUM
+        ZX_SPECTRUM,
+
+        [Description("Acorn Archimedes")]
+        ACORN_ARCHIMEDES,
+        [Description("Amazon Luna")]
+        AMAZON_LUNA,
+        [Description("Amiga CD32")]
+        AMIGA_CD32,
+        [Description("Commodore PET")]
+        COMMODORE_PET,
+        [Description("Commodore VIC-20")]
+        COMMODORE_VIC20,
+        [Description("Evercade")]
+        EVERCADE,
+        [Description("FM-7")]
+        FM_7,
+        [Description("Gizmondo")]
+        GIZMONDO,
+        [Description("Meta Quest")]
+        META_QUEST,
+        [Description("NEC PC-88")]
+        NEC_PC_88,
+        [Description("Nintendo Switch 2")]
+        NINTENDO_SWITCH_2,
+        [Description("Playdate")]
+        PLAYDATE,
+        [Description("PlayStation VR2")]
+        PLAYSTATION_VR2,
+        [Description("Sega Pico")]
+        SEGA_PICO,
+        [Description("Sharp X1")]
+        SHARP_X1,
+        [Description("Vectrex")]
+        VECTREX,
+        [Description("Zeebo")]
+        ZEEBO,
+        [Description("ZX81")]
+        ZX81
     }
+
 
     public class HltbPlatformMatch : IComparable<HltbPlatformMatch> {
 
