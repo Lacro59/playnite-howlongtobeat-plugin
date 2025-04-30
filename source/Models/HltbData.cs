@@ -352,6 +352,31 @@ namespace HowLongToBeat.Models
             {
                 if (GameType != GameType.Multi)
                 {
+                    switch (PluginDatabase.PluginSettings.Settings.PreferredForTimeToBeat)
+                    {
+                        case HltbDataType.MainStory:
+                            if (MainStory != 0)
+                            {
+                                return MainStoryFormat;
+                            }
+                            break;
+                        case HltbDataType.MainExtra:
+                            if (MainExtra != 0)
+                            {
+                                return MainExtraFormat;
+                            }
+                            break;
+                        case HltbDataType.Completionist:
+                            if (Completionist != 0)
+                            {
+                                return CompletionistFormat;
+                            }
+                            break;
+
+                        default:
+                            break;
+                    }
+
                     if (MainStory != 0)
                     {
                         return MainStoryFormat;

@@ -66,6 +66,9 @@ namespace HowLongToBeat
         public bool ProgressBarShowTime { get; set; } = false;
 
 
+        public HltbDataType PreferredForTimeToBeat { get; set; } = HltbDataType.MainStory;
+
+
         public SolidColorBrush ThumbSolidColorBrush { get; set; } = null;
         public ThemeLinearGradient ThumbLinearGradient { get; set; } = null;
 

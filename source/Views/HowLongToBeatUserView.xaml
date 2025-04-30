@@ -73,7 +73,7 @@
                                 </StackPanel>
 
                                 <StackPanel Grid.Column="2" Orientation="Horizontal">
-                                    <Label Content="{DynamicResource LOCCommonYear}" FontSize="16" Margin="0,0,10,0" VerticalAlignment="Center"  />
+                                    <Label Content="{DynamicResource LOCCommonYearLabel}" FontSize="16" Margin="0,0,10,0" VerticalAlignment="Center"  />
 
                                     <ComboBox Width="70" Name="PART_CbYear" SelectionChanged="PART_CbYear_SelectionChanged">
                                         <ComboBox.ItemTemplate>

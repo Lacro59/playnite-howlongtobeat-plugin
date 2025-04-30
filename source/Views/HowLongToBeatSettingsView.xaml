@@ -4,17 +4,19 @@
              xmlns:AttachedProperties="clr-namespace:CommonPluginsShared.Controls"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
              xmlns:controls="clr-namespace:CommonPluginsControls.Controls"
              xmlns:HowLongToBeat="clr-namespace:HowLongToBeat"
              xmlns:hltm="clr-namespace:HowLongToBeat.Models"
              xmlns:hltb="clr-namespace:HowLongToBeat.Behaviors" 
-             xmlns:converters="clr-namespace:CommonPluginsShared.Converters"
+             xmlns:converters="clr-namespace:CommonPluginsShared.Converters" xmlns:converters1="clr-namespace:CommonPlayniteShared.Converters"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance HowLongToBeat:HowLongToBeatSettingsViewModel}">
 
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
         <converters:ValueOperationConverter x:Key="ValueOperationConverter" />
+        <converters1:ObjectToStringConverter x:Key="ObjectToStringConverter" />
     </UserControl.Resources>
 
     <TabControl Margin="20" Name="tcSettings">
@@ -66,6 +68,29 @@
                             <RadioButton GroupName="DataType" Content="{DynamicResource LOCHltbSelectDataTypeLeisure}" IsChecked="{Binding Settings.UseHtltbLeisure}" Margin="20,0,0,0" />
                         </StackPanel>
                     </StackPanel>
+
+
+                    <StackPanel Margin="0,10,0,0" Orientation="Horizontal">
+                        <Label Content="Preferred for time to beat" Margin="0,0,10,0" />
+
+                        <ComboBox SelectedValue="{Binding Settings.PreferredForTimeToBeat}"
+                          VerticalAlignment="Center"
+                          Grid.Column="1" Grid.Row="2">
+                            <ComboBox.ItemsSource>
+                                <x:Array Type="{x:Type sys:Enum}">
+                                    <hltm:HltbDataType>MainStory</hltm:HltbDataType>
+                                    <hltm:HltbDataType>MainExtra</hltm:HltbDataType>
+                                    <hltm:HltbDataType>Completionist</hltm:HltbDataType>
+                                </x:Array>
+                            </ComboBox.ItemsSource>
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Converter={converters1:ObjectToStringConverter}}"/>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                    </StackPanel>
+                    
 
                     <CheckBox Margin="0,10,0,0" IsChecked="{Binding Settings.UsedStartDateFromGameActivity}" Content="{DynamicResource LOCHltbUsedStartDateFromGameActivity}"/>
 

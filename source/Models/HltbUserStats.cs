@@ -39,8 +39,11 @@ namespace HowLongToBeat.Models
         public string Platform { get; set; }
         public string Storefront { get; set; } = string.Empty;
         public long CurrentTime { get; set; }
+        [DontSerialize]
         public long TimeToBeat => PluginDatabase.Get(GameId, true)?.GetData()?.GameHltbData?.TimeToBeat ?? 0;
+        [DontSerialize]
         public long RemainingTime => TimeToBeat - CurrentTime > 0 ? TimeToBeat - CurrentTime : 0;
+        [DontSerialize]
         public string RemainingTimeFormat => RemainingTime > 0 ? (string)PlayTimeToStringConverterWithZero.Convert(RemainingTime, null, null, CultureInfo.CurrentCulture) : string.Empty;
 
         public bool IsReplay { get; set; }
