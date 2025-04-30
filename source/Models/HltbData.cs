@@ -354,19 +354,19 @@ namespace HowLongToBeat.Models
                 {
                     switch (PluginDatabase.PluginSettings.Settings.PreferredForTimeToBeat)
                     {
-                        case HltbDataType.MainStory:
+                        case TimeType.MainStory:
                             if (MainStory != 0)
                             {
                                 return MainStoryFormat;
                             }
                             break;
-                        case HltbDataType.MainExtra:
+                        case TimeType.MainStoryExtra:
                             if (MainExtra != 0)
                             {
                                 return MainExtraFormat;
                             }
                             break;
-                        case HltbDataType.Completionist:
+                        case TimeType.Completionist:
                             if (Completionist != 0)
                             {
                                 return CompletionistFormat;

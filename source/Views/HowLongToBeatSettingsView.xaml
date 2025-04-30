@@ -8,6 +8,7 @@
              xmlns:controls="clr-namespace:CommonPluginsControls.Controls"
              xmlns:HowLongToBeat="clr-namespace:HowLongToBeat"
              xmlns:hltm="clr-namespace:HowLongToBeat.Models"
+             xmlns:hlts="clr-namespace:HowLongToBeat.Services"
              xmlns:hltb="clr-namespace:HowLongToBeat.Behaviors" 
              xmlns:converters="clr-namespace:CommonPluginsShared.Converters" xmlns:converters1="clr-namespace:CommonPlayniteShared.Converters"
              mc:Ignorable="d"
@@ -78,9 +79,9 @@
                           Grid.Column="1" Grid.Row="2">
                             <ComboBox.ItemsSource>
                                 <x:Array Type="{x:Type sys:Enum}">
-                                    <hltm:HltbDataType>MainStory</hltm:HltbDataType>
-                                    <hltm:HltbDataType>MainExtra</hltm:HltbDataType>
-                                    <hltm:HltbDataType>Completionist</hltm:HltbDataType>
+                                    <hlts:TimeType>MainStory</hlts:TimeType>
+                                    <hlts:TimeType>MainStoryExtra</hlts:TimeType>
+                                    <hlts:TimeType>Completionist</hlts:TimeType>
                                 </x:Array>
                             </ComboBox.ItemsSource>
                             <ComboBox.ItemTemplate>

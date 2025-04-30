@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using System.Windows.Media;
 using System.Windows;
 using CommonPluginsShared.Plugins;
+using HowLongToBeat.Services;
 
 namespace HowLongToBeat
 {
@@ -66,7 +67,7 @@ namespace HowLongToBeat
         public bool ProgressBarShowTime { get; set; } = false;
 
 
-        public HltbDataType PreferredForTimeToBeat { get; set; } = HltbDataType.MainStory;
+        public TimeType PreferredForTimeToBeat { get; set; } = TimeType.MainStory;
 
 
         public SolidColorBrush ThumbSolidColorBrush { get; set; } = null;

@@ -25,6 +25,8 @@ namespace HowLongToBeat.Services
         public HowLongToBeat Plugin { get; set; }
         public HowLongToBeatApi HowLongToBeatClient { get; set; }
 
+        private static bool DontSetToHtlb { get; set; } = false;
+
 
         public HowLongToBeatDatabase(HowLongToBeatSettingsViewModel PluginSettings, string PluginUserDataPath) : base(PluginSettings, "HowLongToBeat", PluginUserDataPath)
         {
@@ -382,7 +384,8 @@ namespace HowLongToBeat.Services
         {
             try
             {
-                API.Instance.Database.Games.BeginBufferUpdate();
+                DontSetToHtlb = true;
+                //API.Instance.Database.Games.BeginBufferUpdate();
                 Database.UserHltbData.TitlesList.ForEach(x =>
                 {
                     if (x.GameExist)
@@ -416,12 +419,18 @@ namespace HowLongToBeat.Services
             }
             finally
             {
-                API.Instance.Database.Games.EndBufferUpdate();
+                //API.Instance.Database.Games.EndBufferUpdate();
+                DontSetToHtlb = false;
             }
         }
 
         private void SetGameStatusToHltb(Game game)
         {
+            if (DontSetToHtlb)
+            {
+                return;
+            }
+
             try
             {
                 bool isCompletionist = game.CompletionStatusId == PluginSettings.Settings.GameStatusCompletionist;

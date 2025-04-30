@@ -55,6 +55,9 @@ namespace HowLongToBeat.Services
 
         private static string SearchId { get; set; } = null;
 
+        private static DateTime CookiesLastAccess { get; set; } = default;
+        private static List<HttpCookie> CookiesStored { get; set; } = null;
+
 
         #region Urls
         private static string UrlBase => "https://howlongtobeat.com";
@@ -744,6 +747,11 @@ namespace HowLongToBeat.Services
         {
             string infoMessage = "No stored cookies";
 
+            if (CookiesLastAccess > DateTime.Now.AddMinutes(-2))
+            {
+                return CookiesStored;
+            }
+
             if (File.Exists(FileCookies))
             {
                 try
@@ -760,11 +768,15 @@ namespace HowLongToBeat.Services
                         infoMessage = "Expired cookies";
                         Logger.Info(infoMessage);
                     }
-                    return storedCookies;
+
+                    CookiesStored = storedCookies;
+                    CookiesLastAccess = DateTime.Now;
+                    return CookiesStored;
                 }
                 catch (Exception ex)
                 {
                     Common.LogError(ex, false, "Failed to load saved cookies");
+                    return null;
                 }
             }
 
@@ -842,7 +854,7 @@ namespace HowLongToBeat.Services
             {
                 try
                 {
-                    if (GetIsUserLoggedIn())
+                    if (PluginDatabase.Database.UserHltbData.UserId != 0)
                     {
                         using (IWebView webView = API.Instance.WebViews.CreateOffscreenView())
                         {

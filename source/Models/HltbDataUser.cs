@@ -45,9 +45,4 @@ namespace HowLongToBeat.Models
     {
         Classic, Average, Median, Rushed, Leisure
     }
-
-    public enum HltbDataType
-    {
-        MainStory, MainExtra, Completionist, Solo, CoOp, Vs
-    }
 }
