@@ -39,7 +39,7 @@
     <sys:String x:Key="LOCHowLongToBeatEnableSuccessNotification">Włącz powiadomienia o powodzeniu</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatus">Automatycznie aktualizuj status gry z HowLongToBeat podczas importowania danych użytkownika</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltb">Automatically update game status on HowLongToBeat game status when changing on Playnite</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltb">Automatycznie aktualizuj status gry w HowLongToBeat podczas zmiany statusu w Playnite</sys:String>
     
     <sys:String x:Key="LOCHowLongToBeatAutoData">Download datas</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoAccept">Automatycznie wybierz grę, gdy tylko jedna gra zostanie znaleziona podczas wyszukiwania</sys:String>
