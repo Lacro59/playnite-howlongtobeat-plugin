@@ -24,6 +24,9 @@
     <sys:String x:Key="LOCHltbSelectDataTypeRushed">Rushed</sys:String>
     <sys:String x:Key="LOCHltbSelectDataTypeLeisure">Leisure</sys:String>
 
+    <sys:String x:Key="LOCHltbPreferredTimeToBeat">Preferred for time to beat</sys:String>
+    <sys:String x:Key="LOCHltbVisibleData">Select the time data visible</sys:String>
+
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarOptions">Progress bar options</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">Show time tooltip in progress bar</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTime">Show time labels in progress bar</sys:String>
