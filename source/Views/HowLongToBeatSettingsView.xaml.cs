@@ -13,6 +13,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Collections.Generic;
 using Playnite.SDK.Models;
+using HowLongToBeat.Models.Enumerables;
 
 namespace HowLongToBeat.Views
 {

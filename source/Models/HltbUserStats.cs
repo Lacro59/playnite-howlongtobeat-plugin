@@ -20,12 +20,6 @@ namespace HowLongToBeat.Models
     }
 
 
-    public enum TitleListSort
-    {
-        GameName, Platform, Completion, CurrentTime, LastUpdate
-    }
-
-
     public class TitleList
     {
         private static HowLongToBeatDatabase PluginDatabase => HowLongToBeat.PluginDatabase;

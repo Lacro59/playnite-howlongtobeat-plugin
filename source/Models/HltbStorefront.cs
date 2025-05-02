@@ -1,126 +1,32 @@
-﻿using Playnite.SDK;
+﻿using HowLongToBeat.Models.Enumerables;
+using Playnite.SDK;
 using Playnite.SDK.Data;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 
 namespace HowLongToBeat.Models
 {
-    public enum HltbStorefront
-    {
-        AmazonGameApp,
-        AppleAppStore,
-        Arc,
-        Battlenet,
-        Bethesda,
-        DirectDownload,
-        Discord,
-        EpicGames,
-        GameCenter,
-        GOG,
-        GooglePlay,
-        GoogleStadia,
-        HumbleBundle,
-        IndieGala,
-        itchio,
-        Kartridge,
-        MicrosoftStore,
-        NintendoeShop,
-        Oculus,
-        Origin,
-        ParadoxGames,
-        PlayStationStore,
-        RockstarGames,
-        Steam,
-        UbisoftConnect,
-        XboxStore,
-        AmazonLuna,
-        GameJolt,
-        JastUsa,
-        LegacyGames,
-        RobotCache,
-        None
-    }
-
-
     public class StoreFrontElement
     {
         public HltbStorefront HltbStorefrontId { get; set; } = HltbStorefront.None;
 
         [DontSerialize]
-        public string HltbStorefrontName
+        public string HltbStorefrontName => GetEnumDescription(HltbStorefrontId);
+
+        private static string GetEnumDescription(Enum value)
         {
-            get
+            System.Reflection.FieldInfo field = value.GetType().GetField(value.ToString());
+            if (field != null)
             {
-                switch (HltbStorefrontId)
+                DescriptionAttribute[] attributes = (DescriptionAttribute[])field.GetCustomAttributes(typeof(DescriptionAttribute), false);
+                if (attributes != null && attributes.Length > 0)
                 {
-                    case HltbStorefront.AmazonGameApp:
-                        return "Amazon Game App";
-                    case HltbStorefront.AppleAppStore:
-                        return "Apple App Store";
-                    case HltbStorefront.Arc:
-                        return "Arc";
-                    case HltbStorefront.Battlenet:
-                        return "Battle.net";
-                    case HltbStorefront.Bethesda:
-                        return "Bethesda";
-                    case HltbStorefront.DirectDownload:
-                        return "Direct Download";
-                    case HltbStorefront.Discord:
-                        return "Discord";
-                    case HltbStorefront.EpicGames:
-                        return "Epic Games";
-                    case HltbStorefront.GameCenter:
-                        return "GameCenter";
-                    case HltbStorefront.GOG:
-                        return "GOG";
-                    case HltbStorefront.GooglePlay:
-                        return "Google Play";
-                    case HltbStorefront.GoogleStadia:
-                        return "Google Stadia";
-                    case HltbStorefront.HumbleBundle:
-                        return "Humble Bundle";
-                    case HltbStorefront.IndieGala:
-                        return "IndieGala";
-                    case HltbStorefront.itchio:
-                        return "itch.io";
-                    case HltbStorefront.Kartridge:
-                        return "Kartridge";
-                    case HltbStorefront.MicrosoftStore:
-                        return "Microsoft Store";
-                    case HltbStorefront.NintendoeShop:
-                        return "Nintendo eShop";
-                    case HltbStorefront.Oculus:
-                        return "Oculus";
-                    case HltbStorefront.Origin:
-                        return "Origin";
-                    case HltbStorefront.ParadoxGames:
-                        return "Paradox Games";
-                    case HltbStorefront.PlayStationStore:
-                        return "PlayStation Store";
-                    case HltbStorefront.RockstarGames:
-                        return "Rockstar Games";
-                    case HltbStorefront.Steam:
-                        return "Steam";
-                    case HltbStorefront.UbisoftConnect:
-                        return "Ubisoft Connect";
-                    case HltbStorefront.XboxStore:
-                        return "Xbox Store";
-                    case HltbStorefront.AmazonLuna:
-                        return "Amazon Luna";
-                    case HltbStorefront.GameJolt:
-                        return "Game Jolt";
-                    case HltbStorefront.JastUsa:
-                        return "JAST USA";
-                    case HltbStorefront.LegacyGames:
-                        return "Legacy Games";
-                    case HltbStorefront.RobotCache:
-                        return "Robot Cache";
-                    case HltbStorefront.None:
-                    default:
-                        return "----";
+                    return attributes[0].Description;
                 }
             }
+            return value.ToString();
         }
     }
 

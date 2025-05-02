@@ -13,6 +13,7 @@ using System.Windows.Media;
 using System.Windows;
 using CommonPluginsShared.Plugins;
 using HowLongToBeat.Services;
+using HowLongToBeat.Models.Enumerables;
 
 namespace HowLongToBeat
 {
@@ -68,6 +69,10 @@ namespace HowLongToBeat
 
 
         public TimeType PreferredForTimeToBeat { get; set; } = TimeType.MainStory;
+
+        public bool ShowMainTime { get; set; } = true;
+        public bool ShowExtraTime { get; set; } = true;
+        public bool ShowMainExtra { get; set; } = true;
 
 
         public SolidColorBrush ThumbSolidColorBrush { get; set; } = null;

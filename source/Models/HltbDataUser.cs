@@ -1,4 +1,5 @@
-﻿using Playnite.SDK;
+﻿using HowLongToBeat.Models.Enumerables;
+using Playnite.SDK;
 using Playnite.SDK.Data;
 using System.Collections.Generic;
 
@@ -34,15 +35,5 @@ namespace HowLongToBeat.Models
 
 
         public bool IsVndb { get; set; }
-    }
-
-    public enum GameType
-    {
-        Game, Multi, Compil
-    }
-
-    public enum DataType
-    {
-        Classic, Average, Median, Rushed, Leisure
     }
 }

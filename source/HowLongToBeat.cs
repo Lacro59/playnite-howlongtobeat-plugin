@@ -26,6 +26,7 @@ using CommonPluginsControls.LiveChartsCommon;
 using LiveCharts;
 using CommonPlayniteShared.Common;
 using Playnite.SDK.Data;
+using HowLongToBeat.Models.Enumerables;
 
 namespace HowLongToBeat
 {

@@ -9,6 +9,7 @@
     xmlns:controls="clr-namespace:CommonPluginsControls.Controls"
     xmlns:convertersshared="clr-namespace:CommonPluginsShared.Converters"
     xmlns:hltm="clr-namespace:HowLongToBeat.Models"
+    xmlns:hlte="clr-namespace:HowLongToBeat.Models.Enumerables"
     xmlns:hltb="clr-namespace:HowLongToBeat.Behaviors" 
     xmlns:controls1="clr-namespace:CommonPluginsShared.Controls"
     mc:Ignorable="d" Width="700">
@@ -63,7 +64,7 @@
                                             IsEditable="True" TextSearch.TextPath="DisplayText"
                                             IsEnabled="{Binding ElementName=PART_Vndb, Path=IsChecked, Converter={StaticResource InvertedBoolenConverter}}"
                                             IsTextSearchCaseSensitive="False" StaysOpenOnEdit="True"
-                                            hltb:SelectorBehaviors.EnumSource="{x:Type hltm:HltbPlatform}" />
+                                            hltb:SelectorBehaviors.EnumSource="{x:Type hlte:HltbPlatform}" />
             <CheckBox Grid.Column="4" Content="{DynamicResource LOCHltbUsedVndb}" Name="PART_Vndb" />
         </Grid>
 
@@ -131,7 +132,7 @@
                                     <Rectangle.Style>
                                         <Style TargetType="Rectangle">
                                             <Style.Triggers>
-                                                <Trigger Property="Tag" Value="{x:Static hltm:DataType.Classic}">
+                                                <Trigger Property="Tag" Value="{x:Static hlte:DataType.Classic}">
                                                     <Setter Property="Fill" Value="{DynamicResource HoverBrush}" />
                                                 </Trigger>
                                             </Style.Triggers>
@@ -142,7 +143,7 @@
                                     <Rectangle.Style>
                                         <Style TargetType="Rectangle">
                                             <Style.Triggers>
-                                                <Trigger Property="Tag" Value="{x:Static hltm:DataType.Average}">
+                                                <Trigger Property="Tag" Value="{x:Static hlte:DataType.Average}">
                                                     <Setter Property="Fill" Value="{DynamicResource HoverBrush}" />
                                                 </Trigger>
                                             </Style.Triggers>
@@ -153,7 +154,7 @@
                                     <Rectangle.Style>
                                         <Style TargetType="Rectangle">
                                             <Style.Triggers>
-                                                <Trigger Property="Tag" Value="{x:Static hltm:DataType.Median}">
+                                                <Trigger Property="Tag" Value="{x:Static hlte:DataType.Median}">
                                                     <Setter Property="Fill" Value="{DynamicResource HoverBrush}" />
                                                 </Trigger>
                                             </Style.Triggers>
@@ -164,7 +165,7 @@
                                     <Rectangle.Style>
                                         <Style TargetType="Rectangle">
                                             <Style.Triggers>
-                                                <Trigger Property="Tag" Value="{x:Static hltm:DataType.Rushed}">
+                                                <Trigger Property="Tag" Value="{x:Static hlte:DataType.Rushed}">
                                                     <Setter Property="Fill" Value="{DynamicResource HoverBrush}" />
                                                 </Trigger>
                                             </Style.Triggers>
@@ -175,7 +176,7 @@
                                     <Rectangle.Style>
                                         <Style TargetType="Rectangle">
                                             <Style.Triggers>
-                                                <Trigger Property="Tag" Value="{x:Static hltm:DataType.Leisure}">
+                                                <Trigger Property="Tag" Value="{x:Static hlte:DataType.Leisure}">
                                                     <Setter Property="Fill" Value="{DynamicResource HoverBrush}" />
                                                 </Trigger>
                                             </Style.Triggers>

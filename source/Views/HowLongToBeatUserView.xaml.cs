@@ -18,6 +18,7 @@ using CommonPluginsShared.Extensions;
 using System.Collections.ObjectModel;
 using CommonPluginsShared;
 using System.Windows.Data;
+using HowLongToBeat.Models.Enumerables;
 
 namespace HowLongToBeat.Views
 {

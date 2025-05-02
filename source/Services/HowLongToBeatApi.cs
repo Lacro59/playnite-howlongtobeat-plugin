@@ -20,6 +20,7 @@ using System.Security.Principal;
 using HowLongToBeat.Models.Api;
 using System.Text.RegularExpressions;
 using FuzzySharp;
+using HowLongToBeat.Models.Enumerables;
 
 namespace HowLongToBeat.Services
 {

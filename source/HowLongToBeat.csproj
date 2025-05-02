@@ -125,6 +125,11 @@
     <Compile Include="Models\Api\EditData.cs" />
     <Compile Include="Models\Api\UserGamesList.cs" />
     <Compile Include="Models\Api\UserGamesListParam.cs" />
+    <Compile Include="Models\Enumerables\DataType.cs" />
+    <Compile Include="Models\Enumerables\GameType.cs" />
+    <Compile Include="Models\Enumerables\HltbPlatform.cs" />
+    <Compile Include="Models\Enumerables\HltbStorefront.cs" />
+    <Compile Include="Models\Enumerables\TitleListSort.cs" />
     <Compile Include="Models\FilterSettings.cs" />
     <Compile Include="Models\GameActivity\Activity.cs" />
     <Compile Include="Models\HltbData_old.cs" />

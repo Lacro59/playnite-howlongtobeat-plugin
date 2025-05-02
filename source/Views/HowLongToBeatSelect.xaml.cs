@@ -1,6 +1,7 @@
 ﻿using CommonPluginsShared;
 using FuzzySharp;
 using HowLongToBeat.Models;
+using HowLongToBeat.Models.Enumerables;
 using HowLongToBeat.Services;
 using Playnite.SDK;
 using Playnite.SDK.Data;

@@ -1,4 +1,5 @@
 ﻿using CommonPluginsShared.Converters;
+using HowLongToBeat.Models.Enumerables;
 using Playnite.SDK.Data;
 using System.Collections.Generic;
 using System.Globalization;
