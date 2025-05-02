@@ -12,7 +12,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using CommonPluginsShared;
-using FuzzySharp;
 using CommonPlayniteShared.Common;
 using CommonPluginsShared.Extensions;
 using HowLongToBeat.Models.Api;
@@ -29,7 +28,7 @@ namespace HowLongToBeat.Services
         private static bool DontSetToHtlb { get; set; } = false;
 
 
-        public HowLongToBeatDatabase(HowLongToBeatSettingsViewModel PluginSettings, string PluginUserDataPath) : base(PluginSettings, "HowLongToBeat", PluginUserDataPath)
+        public HowLongToBeatDatabase(HowLongToBeatSettingsViewModel pluginSettings, string pluginUserDataPath) : base(pluginSettings, "HowLongToBeat", pluginUserDataPath)
         {
             TagBefore = "[HLTB]";
         }
