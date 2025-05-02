@@ -221,7 +221,6 @@ namespace HowLongToBeat
             // LoadPluginSettings returns null if not saved data is available.
             Settings = savedSettings ?? new HowLongToBeatSettings();
 
-            // TODO TMP
             if (Settings.Storefronts.Count == 0)
             {
                 Settings.Storefronts = new List<Storefront>
@@ -244,19 +243,37 @@ namespace HowLongToBeat
                     new Storefront { HltbStorefrontId = HltbStorefront.Kartridge },
                     new Storefront { HltbStorefrontId = HltbStorefront.MicrosoftStore },
                     new Storefront { HltbStorefrontId = HltbStorefront.NintendoeShop },
-                    new Storefront { HltbStorefrontId = HltbStorefront.Oculus },
                     new Storefront { HltbStorefrontId = HltbStorefront.Origin },
                     new Storefront { HltbStorefrontId = HltbStorefront.ParadoxGames },
                     new Storefront { HltbStorefrontId = HltbStorefront.PlayStationStore },
                     new Storefront { HltbStorefrontId = HltbStorefront.RockstarGames },
                     new Storefront { HltbStorefrontId = HltbStorefront.Steam },
                     new Storefront { HltbStorefrontId = HltbStorefront.UbisoftConnect },
-                    new Storefront { HltbStorefrontId = HltbStorefront.XboxStore },
                     new Storefront { HltbStorefrontId = HltbStorefront.AmazonLuna },
                     new Storefront { HltbStorefrontId = HltbStorefront.GameJolt },
                     new Storefront { HltbStorefrontId = HltbStorefront.JastUsa },
                     new Storefront { HltbStorefrontId = HltbStorefront.LegacyGames },
-                    new Storefront { HltbStorefrontId = HltbStorefront.RobotCache }
+                    new Storefront { HltbStorefrontId = HltbStorefront.RobotCache },
+                    new Storefront { HltbStorefrontId = HltbStorefront.EAApp },
+                    new Storefront { HltbStorefrontId = HltbStorefront.MetaStore },
+                    new Storefront { HltbStorefrontId = HltbStorefront.Physical },
+                    new Storefront { HltbStorefrontId = HltbStorefront.PlaydateCatalog },
+                    new Storefront { HltbStorefrontId = HltbStorefront.UbisoftPlus },
+                    new Storefront { HltbStorefrontId = HltbStorefront.Borrowed },
+                    new Storefront { HltbStorefrontId = HltbStorefront.Rented },
+                    new Storefront { HltbStorefrontId = HltbStorefront.AntstreamArcade },
+                    new Storefront { HltbStorefrontId = HltbStorefront.AppleArcade },
+                    new Storefront { HltbStorefrontId = HltbStorefront.EAPlay },
+                    new Storefront { HltbStorefrontId = HltbStorefront.GooglePlayPass },
+                    new Storefront { HltbStorefrontId = HltbStorefront.GoogleStadiaPro },
+                    new Storefront { HltbStorefrontId = HltbStorefront.MetaQuestPlus },
+                    new Storefront { HltbStorefrontId = HltbStorefront.Netflix },
+                    new Storefront { HltbStorefrontId = HltbStorefront.NintendoOnline },
+                    new Storefront { HltbStorefrontId = HltbStorefront.PlayStationNow },
+                    new Storefront { HltbStorefrontId = HltbStorefront.PlayStationPlus },
+                    new Storefront { HltbStorefrontId = HltbStorefront.Viveport },
+                    new Storefront { HltbStorefrontId = HltbStorefront.XboxGamePass },
+                    new Storefront { HltbStorefrontId = HltbStorefront.XboxGamesWithGold }
                 };
 
                 Settings.Storefronts = Settings.Storefronts.OrderBy(x => x.HltbStorefrontName).ToList();
@@ -273,6 +290,32 @@ namespace HowLongToBeat
 
                 Settings.Storefronts = Settings.Storefronts.OrderBy(x => x.HltbStorefrontName).ToList();
             }
+            if (Settings.Storefronts.Find(x => x.HltbStorefrontId == HltbStorefront.EAApp) == null)
+            {
+                Settings.Storefronts.Add(new Storefront { HltbStorefrontId = HltbStorefront.EAApp });
+                Settings.Storefronts.Add(new Storefront { HltbStorefrontId = HltbStorefront.MetaStore });
+                Settings.Storefronts.Add(new Storefront { HltbStorefrontId = HltbStorefront.Physical });
+                Settings.Storefronts.Add(new Storefront { HltbStorefrontId = HltbStorefront.PlaydateCatalog });
+                Settings.Storefronts.Add(new Storefront { HltbStorefrontId = HltbStorefront.UbisoftPlus });
+                Settings.Storefronts.Add(new Storefront { HltbStorefrontId = HltbStorefront.Borrowed });
+                Settings.Storefronts.Add(new Storefront { HltbStorefrontId = HltbStorefront.Rented });
+                Settings.Storefronts.Add(new Storefront { HltbStorefrontId = HltbStorefront.AntstreamArcade });
+                Settings.Storefronts.Add(new Storefront { HltbStorefrontId = HltbStorefront.AppleArcade });
+                Settings.Storefronts.Add(new Storefront { HltbStorefrontId = HltbStorefront.EAPlay });
+                Settings.Storefronts.Add(new Storefront { HltbStorefrontId = HltbStorefront.GooglePlayPass });
+                Settings.Storefronts.Add(new Storefront { HltbStorefrontId = HltbStorefront.GoogleStadiaPro });
+                Settings.Storefronts.Add(new Storefront { HltbStorefrontId = HltbStorefront.MetaQuestPlus });
+                Settings.Storefronts.Add(new Storefront { HltbStorefrontId = HltbStorefront.Netflix });
+                Settings.Storefronts.Add(new Storefront { HltbStorefrontId = HltbStorefront.NintendoOnline });
+                Settings.Storefronts.Add(new Storefront { HltbStorefrontId = HltbStorefront.PlayStationNow });
+                Settings.Storefronts.Add(new Storefront { HltbStorefrontId = HltbStorefront.PlayStationPlus });
+                Settings.Storefronts.Add(new Storefront { HltbStorefrontId = HltbStorefront.Viveport });
+                Settings.Storefronts.Add(new Storefront { HltbStorefrontId = HltbStorefront.XboxGamePass });
+                Settings.Storefronts.Add(new Storefront { HltbStorefrontId = HltbStorefront.XboxGamesWithGold });
+
+                Settings.Storefronts = Settings.Storefronts.OrderBy(x => x.HltbStorefrontName).ToList();
+            }
+
 
             _ = Task.Run(() =>
             {
