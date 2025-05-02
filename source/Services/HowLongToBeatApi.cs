@@ -393,7 +393,7 @@ namespace HowLongToBeat.Services
             try
             {
                 List<HttpCookie> cookies = GetStoredCookies();
-                string response = await Web.DownloadStringData(UrlUser, cookies);
+                string response = await Web.DownloadPageText(UrlUser, cookies);
                 dynamic t = Serialization.FromJson<dynamic>(response);
                 return response == "{}" ? 0 : t?.data[0]?.user_id ?? 0;
             }
@@ -668,9 +668,9 @@ namespace HowLongToBeat.Services
             {
                 try
                 {
-                    List<HttpCookie> Cookies = GetStoredCookies();
+                    List<HttpCookie> cookies = GetStoredCookies();
                     string payload = Serialization.ToJson(editData);
-                    string response = await Web.PostStringDataPayload(UrlPostData, payload, Cookies);
+                    string response = await Web.PostStringDataPayload(UrlPostData, payload, cookies);
 
                     // Check errors
                     // TODO Rewrite
@@ -778,6 +778,7 @@ namespace HowLongToBeat.Services
                     Serialization.ToJson(httpCookies),
                     Encoding.UTF8,
                     WindowsIdentity.GetCurrent().User.Value);
+                CookiesLastAccess = default;
                 return true;
             }
             catch (Exception ex)
@@ -836,7 +837,13 @@ namespace HowLongToBeat.Services
                 {
                     if (PluginDatabase.Database.UserHltbData.UserId != 0)
                     {
-                        using (IWebView webView = API.Instance.WebViews.CreateOffscreenView())
+                        WebViewSettings webViewSettings = new WebViewSettings
+                        {
+                            JavaScriptEnabled = true,
+                            UserAgent = Web.UserAgent
+                        };
+
+                        using (IWebView webView = API.Instance.WebViews.CreateOffscreenView(webViewSettings))
                         {
                             List<HttpCookie> oldCookies = GetStoredCookies();
                             oldCookies?.ForEach(x =>
@@ -846,6 +853,7 @@ namespace HowLongToBeat.Services
                             });
 
                             webView.NavigateAndWait(UrlBase);
+                            webView.NavigateAndWait(UrlUser);
 
                             List<HttpCookie> cookies = GetWebCookies(webView);
                             _ = SetStoredCookies(cookies);
