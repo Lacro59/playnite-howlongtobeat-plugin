@@ -129,6 +129,8 @@
     <Compile Include="Models\Enumerables\GameType.cs" />
     <Compile Include="Models\Enumerables\HltbPlatform.cs" />
     <Compile Include="Models\Enumerables\HltbStorefront.cs" />
+    <Compile Include="Models\Enumerables\StatusType.cs" />
+    <Compile Include="Models\Enumerables\TimeType.cs" />
     <Compile Include="Models\Enumerables\TitleListSort.cs" />
     <Compile Include="Models\FilterSettings.cs" />
     <Compile Include="Models\GameActivity\Activity.cs" />

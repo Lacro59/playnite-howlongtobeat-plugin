@@ -24,27 +24,6 @@ using HowLongToBeat.Models.Enumerables;
 
 namespace HowLongToBeat.Services
 {
-    public enum StatusType
-    {
-        Playing,
-        Backlog,
-        Replays,
-        CustomTab,
-        Completed,
-        Retired
-    }
-
-    public enum TimeType
-    {
-        MainStory,
-        MainStoryExtra,
-        Completionist,
-        solo,
-        CoOp,
-        Versus
-    }
-
-
     public class HowLongToBeatApi : ObservableObject
     {
         private static ILogger Logger => LogManager.GetLogger();

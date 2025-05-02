@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using CommonPluginsShared.Extensions;
 using CommonPluginsShared;
+using HowLongToBeat.Models.Enumerables;
 
 namespace HowLongToBeat.Models
 {

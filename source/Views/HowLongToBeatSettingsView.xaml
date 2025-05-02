@@ -81,9 +81,9 @@
                           Grid.Column="1" Grid.Row="2">
                             <ComboBox.ItemsSource>
                                 <x:Array Type="{x:Type sys:Enum}">
-                                    <hlts:TimeType>MainStory</hlts:TimeType>
-                                    <hlts:TimeType>MainStoryExtra</hlts:TimeType>
-                                    <hlts:TimeType>Completionist</hlts:TimeType>
+                                    <hlte:TimeType>MainStory</hlte:TimeType>
+                                    <hlte:TimeType>MainStoryExtra</hlte:TimeType>
+                                    <hlte:TimeType>Completionist</hlte:TimeType>
                                 </x:Array>
                             </ComboBox.ItemsSource>
                             <ComboBox.ItemTemplate>
