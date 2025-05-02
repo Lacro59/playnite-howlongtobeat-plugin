@@ -24,6 +24,9 @@
     <sys:String x:Key="LOCHltbSelectDataTypeRushed">急ぎ</sys:String>
     <sys:String x:Key="LOCHltbSelectDataTypeLeisure">まったり</sys:String>
 
+    <sys:String x:Key="LOCHltbPreferredTimeToBeat">Preferred for time to beat</sys:String>
+    <sys:String x:Key="LOCHltbVisibleData">Select the time data visible</sys:String>
+
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarOptions">プログレスバーのオプション</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">プログレスバーでツールチップを表示</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTime">プログレスバーに時間ラベルを表示</sys:String>
