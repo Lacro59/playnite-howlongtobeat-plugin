@@ -264,9 +264,9 @@ namespace HowLongToBeat.Views
         }
 
 
-        private void SetColor(int ElIndicator, Color color)
+        private void SetColor(int elIndicator, Color color)
         {
-            switch (ElIndicator)
+            switch (elIndicator)
             {
                 case 1:
                     Hltb_El1_Color.Background = new SolidColorBrush(color);
@@ -285,36 +285,36 @@ namespace HowLongToBeat.Views
             }
         }
 
-        private void SetDataInView(int ElIndicator, string ElText, string ElData, string ElDataUser, int idx)
+        private void SetDataInView(int elIndicator, string elText, string elData, string elDataUser, int idx)
         {
-            TextBlock Hltb_1 = new TextBlock();
-            TextBlock Hltb_2 = new TextBlock();
-            TextBlock Hltb_3 = new TextBlock();
+            TextBlock hltb_1 = new TextBlock();
+            TextBlock hltb_2 = new TextBlock();
+            TextBlock hltb_3 = new TextBlock();
 
             switch (idx)
             {
                 case 0:
-                    Hltb_1 = Hltb_El1_DataUser;
-                    Hltb_2 = Hltb_El2_DataUser;
-                    Hltb_3 = Hltb_El3_DataUser;
+                    hltb_1 = Hltb_El1_DataUser;
+                    hltb_2 = Hltb_El2_DataUser;
+                    hltb_3 = Hltb_El3_DataUser;
                     break;
 
                 case 1:
-                    Hltb_1 = Hltb_El1_DataUser_1;
-                    Hltb_2 = Hltb_El2_DataUser_1;
-                    Hltb_3 = Hltb_El3_DataUser_1;
+                    hltb_1 = Hltb_El1_DataUser_1;
+                    hltb_2 = Hltb_El2_DataUser_1;
+                    hltb_3 = Hltb_El3_DataUser_1;
                     break;
 
                 case 2:
-                    Hltb_1 = Hltb_El1_DataUser_2;
-                    Hltb_2 = Hltb_El2_DataUser_2;
-                    Hltb_3 = Hltb_El3_DataUser_2;
+                    hltb_1 = Hltb_El1_DataUser_2;
+                    hltb_2 = Hltb_El2_DataUser_2;
+                    hltb_3 = Hltb_El3_DataUser_2;
                     break;
 
                 case 3:
-                    Hltb_1 = Hltb_El1_DataUser_3;
-                    Hltb_2 = Hltb_El2_DataUser_3;
-                    Hltb_3 = Hltb_El3_DataUser_3;
+                    hltb_1 = Hltb_El1_DataUser_3;
+                    hltb_2 = Hltb_El2_DataUser_3;
+                    hltb_3 = Hltb_El3_DataUser_3;
                     break;
 
                 default:
@@ -322,34 +322,34 @@ namespace HowLongToBeat.Views
             }
 
 
-            switch (ElIndicator)
+            switch (elIndicator)
             {
                 case 1:
-                    Hltb_El1.Text = ElText;
-                    Hltb_El1_Data.Text = ElData;
-                    Hltb_1.Text = ElDataUser;
+                    Hltb_El1.Text = elText;
+                    Hltb_El1_Data.Text = elData;
+                    hltb_1.Text = elDataUser;
 
-                    Hltb_1.Visibility = Visibility.Visible;
+                    hltb_1.Visibility = Visibility.Visible;
                     Hltb_El1.Visibility = Visibility.Visible;
                     Hltb_El1_Color.Visibility = Visibility.Visible;
                     break;
 
                 case 2:
-                    Hltb_El2.Text = ElText;
-                    Hltb_El2_Data.Text = ElData;
-                    Hltb_2.Text = ElDataUser;
+                    Hltb_El2.Text = elText;
+                    Hltb_El2_Data.Text = elData;
+                    hltb_2.Text = elDataUser;
 
-                    Hltb_2.Visibility = Visibility.Visible;
+                    hltb_2.Visibility = Visibility.Visible;
                     Hltb_El2.Visibility = Visibility.Visible;
                     Hltb_El2_Color.Visibility = Visibility.Visible;
                     break;
 
                 case 3:
-                    Hltb_El3.Text = ElText;
-                    Hltb_El3_Data.Text = ElData;
-                    Hltb_3.Text = ElDataUser;
+                    Hltb_El3.Text = elText;
+                    Hltb_El3_Data.Text = elData;
+                    hltb_3.Text = elDataUser;
 
-                    Hltb_3.Visibility = Visibility.Visible;
+                    hltb_3.Visibility = Visibility.Visible;
                     Hltb_El3.Visibility = Visibility.Visible;
                     Hltb_El3_Color.Visibility = Visibility.Visible;
                     break;
@@ -360,12 +360,12 @@ namespace HowLongToBeat.Views
         }
 
 
-        private void PART_SourceLink_Click(object sender, System.Windows.RoutedEventArgs e)
+        private void PART_SourceLink_Click(object sender, RoutedEventArgs e)
         {
-            string Url = (string)((Hyperlink)sender).Tag;
-            if (!Url.IsNullOrEmpty())
+            string url = (string)((Hyperlink)sender).Tag;
+            if (!url.IsNullOrEmpty())
             {
-                Process.Start(((string)((Hyperlink)sender).Tag));
+                _ = Process.Start((string)((Hyperlink)sender).Tag);
             }
         }
 
@@ -374,11 +374,11 @@ namespace HowLongToBeat.Views
         {
             try
             {
-                Guid Id = (Guid)((FrameworkElement)sender).Tag;
-                if (Id != default)
+                Guid id = (Guid)((FrameworkElement)sender).Tag;
+                if (id != default)
                 {
-                    _ = HowLongToBeat.PluginDatabase.Remove(Id);
-                    ((Window)this.Parent).Close();
+                    _ = HowLongToBeat.PluginDatabase.Remove(id);
+                    ((Window)Parent).Close();
                 }
             }
             catch (Exception ex)
@@ -391,11 +391,11 @@ namespace HowLongToBeat.Views
         {
             try
             {
-                Guid Id = (Guid)((FrameworkElement)sender).Tag;
-                if (Id != default)
+                Guid id = (Guid)((FrameworkElement)sender).Tag;
+                if (id != default)
                 {
-                    HowLongToBeat.PluginDatabase.Refresh(Id);
-                    GameHowLongToBeat gameHowLongToBeat = PluginDatabase.Get(Id, true);
+                    HowLongToBeat.PluginDatabase.Refresh(id);
+                    GameHowLongToBeat gameHowLongToBeat = PluginDatabase.Get(id, true);
                     Init(gameHowLongToBeat);
                 }
             }
@@ -450,13 +450,13 @@ namespace HowLongToBeat.Views
 
     public class HowLongToBeatViewData : ObservableObject
     {
-        private Game _GameContext;
-        public Game GameContext { get => _GameContext; set => SetValue(ref _GameContext, value); }
+        private Game _gameContext;
+        public Game GameContext { get => _gameContext; set => SetValue(ref _gameContext, value); }
 
-        private SourceLink _SourceLink;
-        public SourceLink SourceLink { get => _SourceLink; set => SetValue(ref _SourceLink, value); }
+        private SourceLink _sourceLink;
+        public SourceLink SourceLink { get => _sourceLink; set => SetValue(ref _sourceLink, value); }
 
-        private string _CoverImage = string.Empty;
-        public string CoverImage { get => _CoverImage; set => SetValue(ref _CoverImage, value); }
+        private string _coverImage = string.Empty;
+        public string CoverImage { get => _coverImage; set => SetValue(ref _coverImage, value); }
     }
 }

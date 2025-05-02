@@ -72,7 +72,11 @@ namespace HowLongToBeat
 
         public bool ShowMainTime { get; set; } = true;
         public bool ShowExtraTime { get; set; } = true;
-        public bool ShowMainExtra { get; set; } = true;
+        public bool ShowCompletionistTime { get; set; } = true;
+
+        public bool ShowSoloTime { get; set; } = true;
+        public bool ShowCoOpTime { get; set; } = true;
+        public bool ShowVsTime { get; set; } = true;
 
 
         public SolidColorBrush ThumbSolidColorBrush { get; set; } = null;
