@@ -24,6 +24,9 @@
     <sys:String x:Key="LOCHltbSelectDataTypeRushed">Hızlı</sys:String>
     <sys:String x:Key="LOCHltbSelectDataTypeLeisure">Rahat</sys:String>
 
+    <sys:String x:Key="LOCHltbPreferredTimeToBeat">Zamanın geçmesi tercih edilir</sys:String>
+    <sys:String x:Key="LOCHltbVisibleData">Görünen zaman verilerini seç</sys:String>
+
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarOptions">İlerleme çubuğu seçenekleri</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">İlerleme çubuğunda süre ipucunu göster</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTime">İlerleme çubuğunda süre etiketlerini göster</sys:String>
@@ -39,6 +42,7 @@
     <sys:String x:Key="LOCHowLongToBeatEnableSuccessNotification">Başarı iletisini etkinleştir</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatus">Kullanıcı verilerini içe aktarırken oyun durumunu HowLongToBeat oyun durumuyla otomatik olarak güncelleyin</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltb">Playnite oyun durumu değiştiğinde HowLongToBeat oyun durumunu otomatik olarak güncelle</sys:String>
     
     <sys:String x:Key="LOCHowLongToBeatAutoData">Oyun verisi indirme</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoAccept">Arama sırasında sadece tek oyun bulunduğunda otomatik olarak oyunu seç</sys:String>

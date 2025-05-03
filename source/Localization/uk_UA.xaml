@@ -24,6 +24,9 @@
     <sys:String x:Key="LOCHltbSelectDataTypeRushed">Квапливо</sys:String>
     <sys:String x:Key="LOCHltbSelectDataTypeLeisure">Неквапливо</sys:String>
 
+    <sys:String x:Key="LOCHltbPreferredTimeToBeat">Preferred for time to beat</sys:String>
+    <sys:String x:Key="LOCHltbVisibleData">Select the time data visible</sys:String>
+
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarOptions">Параметри смуги прогресу</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">Показувати спливаючі підказки з часом на смузі прогресу</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTime">Показувати час на смузі прогресу</sys:String>
@@ -39,6 +42,7 @@
     <sys:String x:Key="LOCHowLongToBeatEnableSuccessNotification">Увімкнути сповіщення про успіх</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatus">Автоматично оновлювати статус гри статусом HowLongToBeat під час імпорту даних користувача</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltb">Автоматично оновлювати статус гри на HowLongToBeat коли він змінюється у Playnite</sys:String>
     
     <sys:String x:Key="LOCHowLongToBeatAutoData">Завантаження даних гри</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoAccept">Автоматично вибирати гру, коли знайдено лише одну гру під час пошуку</sys:String>

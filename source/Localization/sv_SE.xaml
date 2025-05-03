@@ -24,6 +24,9 @@
     <sys:String x:Key="LOCHltbSelectDataTypeRushed">Rushed</sys:String>
     <sys:String x:Key="LOCHltbSelectDataTypeLeisure">Leisure</sys:String>
 
+    <sys:String x:Key="LOCHltbPreferredTimeToBeat">Preferred for time to beat</sys:String>
+    <sys:String x:Key="LOCHltbVisibleData">Select the time data visible</sys:String>
+
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarOptions">Progress bar options</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">Show time tooltip in progress bar</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTime">Show time labels in progress bar</sys:String>
@@ -39,6 +42,7 @@
     <sys:String x:Key="LOCHowLongToBeatEnableSuccessNotification">Enable success notification</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatus">Automatically update game status with HowLongToBeat game status when importing user data</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltb">Automatically update game status on HowLongToBeat game status when changing on Playnite</sys:String>
     
     <sys:String x:Key="LOCHowLongToBeatAutoData">Game data download</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoAccept">Automatically select game when only one game is found during search</sys:String>

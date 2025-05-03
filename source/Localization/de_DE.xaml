@@ -24,6 +24,9 @@
     <sys:String x:Key="LOCHltbSelectDataTypeRushed">Eilig</sys:String>
     <sys:String x:Key="LOCHltbSelectDataTypeLeisure">Freizeit</sys:String>
 
+    <sys:String x:Key="LOCHltbPreferredTimeToBeat">Bevorzugt für die Zeit zum Schlagen</sys:String>
+    <sys:String x:Key="LOCHltbVisibleData">Wählen Sie die anzuzeigende Uhrzeit</sys:String>
+
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarOptions">Optionen der Fortschrittsanzeige</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">Zeit Tooltip in der Fortschrittsleiste anzeigen</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTime">Zeitangaben in der Fortschrittsleiste anzeigen</sys:String>
@@ -39,6 +42,7 @@
     <sys:String x:Key="LOCHowLongToBeatEnableSuccessNotification">Erfolgreiche Benachrichtigung aktivieren</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatus">Spielstatus automatisch mit HowLongToBeat Spielstatus aktualisieren, wenn Benutzerdaten importiert werden</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltb">Automatisch den Status bei HowLongToBeat aktualisieren wenn der Spielstatus aktualisiert wird</sys:String>
     
     <sys:String x:Key="LOCHowLongToBeatAutoData">Spieldaten herunterladen</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoAccept">Spiel automatisch auswählen, wenn nur ein Spiel während der Suche gefunden wird</sys:String>
