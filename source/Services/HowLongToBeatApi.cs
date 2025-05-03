@@ -89,7 +89,7 @@ namespace HowLongToBeat.Services
         }
 
 
-        private async Task<GameData> GetGameData(string id)
+        private async Task<HltbData> GetGameData(string id)
         {
             try
             {
@@ -101,9 +101,49 @@ namespace HowLongToBeat.Services
                     Common.LogError(ex, false, false, PluginDatabase.PluginName);
                 }
 
-                return next_data?.Props?.PageProps?.Game?.Data?.Game != null
+                GameData gameData = next_data?.Props?.PageProps?.Game?.Data?.Game != null
                     ? next_data.Props.PageProps.Game.Data.Game.FirstOrDefault()
                     : null;
+
+                if (gameData != null)
+                {
+                    HltbData hltbData = new HltbData
+                    {
+                        MainStoryMedian = gameData.CompMainMed,
+                        MainExtraMedian = gameData.CompPlusMed,
+                        CompletionistMedian = gameData.Comp100Med,
+                        SoloMedian = gameData.CompAllMed,
+                        CoOpMedian = gameData.InvestedCoMed,
+                        VsMedian = gameData.InvestedMpMed,
+
+                        MainStoryAverage = gameData.CompMainAvg,
+                        MainExtraAverage = gameData.CompPlusAvg,
+                        CompletionistAverage = gameData.Comp100Avg,
+                        SoloAverage = gameData.CompAllAvg,
+                        CoOpAverage = gameData.InvestedCoAvg,
+                        VsAverage = gameData.InvestedMpAvg,
+
+                        MainStoryRushed = gameData.CompMainL,
+                        MainExtraRushed = gameData.CompPlusL,
+                        CompletionistRushed = gameData.Comp100L,
+                        SoloRushed = gameData.CompAllL,
+                        CoOpRushed = gameData.InvestedCoL,
+                        VsRushed = gameData.InvestedMpL,
+
+                        MainStoryLeisure = gameData.CompMainH,
+                        MainExtraLeisure = gameData.CompPlusH,
+                        CompletionistLeisure = gameData.Comp100H,
+                        SoloLeisure = gameData.CompAllH,
+                        CoOpLeisure = gameData.InvestedCoH,
+                        VsLeisure = gameData.InvestedMpH
+                    };
+                    return hltbData;
+                }
+                else
+                {
+                    Logger.Warn($"No GameData find with {id}");
+                    return null;
+                }
             }
             catch (Exception ex)
             {
@@ -113,8 +153,52 @@ namespace HowLongToBeat.Services
             return null;
         }
 
+        public async Task<HltbDataUser> UpdateGameData(HltbDataUser hltbDataUser)
+        {
+            try
+            {
+                HltbData hltbData = await GetGameData(hltbDataUser.Id);
+                hltbDataUser.GameHltbData = hltbData ?? hltbDataUser.GameHltbData;
+                return hltbDataUser;
+            }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, false, true, PluginDatabase.PluginName);
+                return null;
+            }
+        }
+
 
         #region Search
+        private async Task<string> GetSearchId()
+        {
+            if (!SearchId.IsNullOrEmpty())
+            {
+                return SearchId;
+            }
+
+            try
+            {
+                string url = UrlBase;
+                string response = await Web.DownloadStringData(url);
+                string js = Regex.Match(response, @"_app-\w*.js").Value;
+                if (!js.IsNullOrEmpty())
+                {
+                    url += $"/_next/static/chunks/pages/{js}";
+                    response = await Web.DownloadStringData(url);
+                    Match matches = Regex.Match(response, "\"/api/seek/\".concat[(]\"(\\w*)\"[)].concat[(]\"(\\w*)\"[)]");
+                    SearchId = matches.Groups[1].Value + matches.Groups[2].Value;
+                }
+            }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, false, true, PluginDatabase.PluginName);
+            }
+
+            return SearchId;
+        }
+
+
         private async Task<List<HltbDataUser>> Search(string name, string platform = "")
         {
             try
@@ -145,43 +229,8 @@ namespace HowLongToBeat.Services
 
                 search.ForEach(x =>
                 {
-                    GameData gameData = GetGameData(x.Id).GetAwaiter().GetResult();
-                    if (gameData != null)
-                    {
-                        x.GameHltbData.MainStoryMedian = gameData.CompMainMed;
-                        x.GameHltbData.MainExtraMedian = gameData.CompPlusMed;
-                        x.GameHltbData.CompletionistMedian = gameData.Comp100Med;
-                        x.GameHltbData.SoloMedian = gameData.CompAllMed;
-                        x.GameHltbData.CoOpMedian = gameData.InvestedCoMed;
-                        x.GameHltbData.VsMedian = gameData.InvestedMpMed;
-
-                        x.GameHltbData.MainStoryAverage = gameData.CompMainAvg;
-                        x.GameHltbData.MainExtraAverage = gameData.CompPlusAvg;
-                        x.GameHltbData.CompletionistAverage = gameData.Comp100Avg;
-                        x.GameHltbData.SoloAverage = gameData.CompAllAvg;
-                        x.GameHltbData.CoOpAverage = gameData.InvestedCoAvg;
-                        x.GameHltbData.VsAverage = gameData.InvestedMpAvg;
-
-                        x.GameHltbData.MainStoryRushed = gameData.CompMainL;
-                        x.GameHltbData.MainExtraRushed = gameData.CompPlusL;
-                        x.GameHltbData.CompletionistRushed = gameData.Comp100L;
-                        x.GameHltbData.SoloRushed = gameData.CompAllL;
-                        x.GameHltbData.CoOpRushed = gameData.InvestedCoL;
-                        x.GameHltbData.VsRushed = gameData.InvestedMpL;
-
-                        x.GameHltbData.MainStoryLeisure = gameData.CompMainH;
-                        x.GameHltbData.MainExtraLeisure = gameData.CompPlusH;
-                        x.GameHltbData.CompletionistLeisure = gameData.Comp100H;
-                        x.GameHltbData.SoloLeisure = gameData.CompAllH;
-                        x.GameHltbData.CoOpLeisure = gameData.InvestedCoH;
-                        x.GameHltbData.VsLeisure = gameData.InvestedMpH;
-                    }
-                    else
-                    {
-                        Logger.Warn($"No GameData find for {x.Name} with {x.Id}");
-                    }
+                    x.GameHltbData = GetGameData(x.Id).GetAwaiter().GetResult();
                 });
-
                 return search;
             }
             catch (Exception ex)
@@ -189,34 +238,6 @@ namespace HowLongToBeat.Services
                 Common.LogError(ex, false, true, PluginDatabase.PluginName);
                 return new List<HltbDataUser>();
             }
-        }
-
-        private async Task<string> GetSearchId()
-        {
-            if (!SearchId.IsNullOrEmpty())
-            {
-                return SearchId;
-            }
-
-            try
-            {
-                string url = UrlBase;
-                string response = await Web.DownloadStringData(url);
-                string js = Regex.Match(response, @"_app-\w*.js").Value;
-                if (!js.IsNullOrEmpty())
-                {
-                    url += $"/_next/static/chunks/pages/{js}";
-                    response = await Web.DownloadStringData(url);
-                    Match matches = Regex.Match(response, "\"/api/seek/\".concat[(]\"(\\w*)\"[)].concat[(]\"(\\w*)\"[)]");
-                    SearchId = matches.Groups[1].Value + matches.Groups[2].Value;
-                }
-            }
-            catch (Exception ex)
-            {
-                Common.LogError(ex, false, true, PluginDatabase.PluginName);
-            }
-
-            return SearchId;
         }
 
         public async Task<List<HltbSearch>> SearchTwoMethod(string name, string platform = "")

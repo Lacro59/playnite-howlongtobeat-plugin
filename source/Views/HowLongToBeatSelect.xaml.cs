@@ -141,7 +141,7 @@ namespace HowLongToBeat.Views
                 {
                     dataSearch = isVndb
                         ? VndbApi.SearchByName(gameSearch)?.Select(x => x.Data).ToList()
-                        : PluginDatabase.HowLongToBeatClient.SearchTwoMethod(gameSearch, gamePlatform).GetAwaiter().GetResult()?.Select(x => x.Data).ToList();
+                        : PluginDatabase.HowLongToBeatApi.SearchTwoMethod(gameSearch, gamePlatform).GetAwaiter().GetResult()?.Select(x => x.Data).ToList();
                 }
                 catch (Exception ex)
                 {

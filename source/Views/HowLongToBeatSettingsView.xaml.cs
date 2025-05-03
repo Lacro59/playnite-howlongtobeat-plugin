@@ -44,7 +44,7 @@ namespace HowLongToBeat.Views
 
         public HowLongToBeatSettingsView(HowLongToBeatSettings settings)
         {
-            PluginDatabase.HowLongToBeatClient.PropertyChanged += OnPropertyChanged;
+            PluginDatabase.HowLongToBeatApi.PropertyChanged += OnPropertyChanged;
 
             InitializeComponent();
 
@@ -345,14 +345,14 @@ namespace HowLongToBeat.Views
             PART_LbUserLogin.Visibility = Visibility.Collapsed;
             PART_LbAuthenticate.Content = ResourceProvider.GetString("LOCCommonLoginChecking");
 
-            var task = Task.Run(() => PluginDatabase.HowLongToBeatClient.GetIsUserLoggedIn());
+            var task = Task.Run(() => PluginDatabase.HowLongToBeatApi.GetIsUserLoggedIn());
         }
 
         private void PART_BtAuthenticate_Click(object sender, RoutedEventArgs e)
         {
             PART_LbUserLogin.Visibility = Visibility.Collapsed;
             var task = Task.Run(() => {
-                PluginDatabase.HowLongToBeatClient.Login();
+                PluginDatabase.HowLongToBeatApi.Login();
             });
         }
 
@@ -361,12 +361,12 @@ namespace HowLongToBeat.Views
         {
             this.Dispatcher.Invoke(new Action(() => 
             {
-                if ((bool)PluginDatabase.HowLongToBeatClient.IsConnected)
+                if ((bool)PluginDatabase.HowLongToBeatApi.IsConnected)
                 {
                     PART_LbAuthenticate.Content = ResourceProvider.GetString("LOCCommonLoggedIn");
                     PART_LbUserLogin.Visibility = Visibility.Visible;
 
-                    string UserLogin = PluginDatabase.HowLongToBeatClient.UserLogin;
+                    string UserLogin = PluginDatabase.HowLongToBeatApi.UserLogin;
                     if (UserLogin.IsNullOrEmpty())
                     {
                         UserLogin = PluginDatabase.Database.UserHltbData.Login;

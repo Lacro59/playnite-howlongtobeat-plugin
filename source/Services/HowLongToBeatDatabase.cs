@@ -23,7 +23,7 @@ namespace HowLongToBeat.Services
     public class HowLongToBeatDatabase : PluginDatabaseObject<HowLongToBeatSettingsViewModel, GameHowLongToBeatCollection, GameHowLongToBeat, HltbDataUser>
     {
         public HowLongToBeat Plugin { get; set; }
-        public HowLongToBeatApi HowLongToBeatClient { get; set; }
+        public HowLongToBeatApi HowLongToBeatApi { get; set; }
 
         private static bool DontSetToHtlb { get; set; } = false;
 
@@ -37,7 +37,7 @@ namespace HowLongToBeat.Services
         public void InitializeClient(HowLongToBeat plugin)
         {
             Plugin = plugin;
-            HowLongToBeatClient = new HowLongToBeatApi();
+            HowLongToBeatApi = new HowLongToBeatApi();
         }
 
 
@@ -51,7 +51,7 @@ namespace HowLongToBeat.Services
                 Database = new GameHowLongToBeatCollection(Paths.PluginDatabasePath);
                 Database.SetGameInfo<HltbDataUser>();
 
-                Database.UserHltbData = HowLongToBeatClient.LoadUserData();
+                Database.UserHltbData = HowLongToBeatApi.LoadUserData();
 
                 DeleteDataWithDeletedGame();
 
@@ -80,7 +80,7 @@ namespace HowLongToBeat.Services
 
             if ((gameHowLongToBeat == null && !onlyCache) || force)
             {
-                gameHowLongToBeat = HowLongToBeatClient.SearchData(API.Instance.Database.Games.Get(id));
+                gameHowLongToBeat = HowLongToBeatApi.SearchData(API.Instance.Database.Games.Get(id));
 
                 if (gameHowLongToBeat != null)
                 {
@@ -111,7 +111,7 @@ namespace HowLongToBeat.Services
                 return;
             }
 
-            List<HltbSearch> data = HowLongToBeatClient.SearchTwoMethod(game.Name).GetAwaiter().GetResult();
+            List<HltbSearch> data = HowLongToBeatApi.SearchTwoMethod(game.Name).GetAwaiter().GetResult();
             if (data.Count == 1 && PluginSettings.Settings.AutoAccept)
             {
                 gameHowLongToBeat.Items = new List<HltbDataUser>() { data.First().Data };
@@ -198,16 +198,29 @@ namespace HowLongToBeat.Services
             }
             else
             {
-                List<HltbDataUser> dataSearch = loadedItem.GetData().IsVndb
-                    ? VndbApi.SearchById(loadedItem.GetData().Id)
-                    : HowLongToBeatClient.SearchTwoMethod(loadedItem.GetData().Name).GetAwaiter().GetResult()?.Select(x => x.Data).ToList();
-
-                HltbDataUser webDataSearch = dataSearch.Find(x => x.Id == loadedItem.GetData().Id);
-                if (webDataSearch != null)
+                if (loadedItem.GetData().IsVndb)
                 {
-                    loadedItem.Items = new List<HltbDataUser> { webDataSearch };
+                    List<HltbDataUser> dataSearch = VndbApi.SearchById(loadedItem.GetData().Id);
+                    HltbDataUser webDataSearch = dataSearch.Find(x => x.Id == loadedItem.GetData().Id);
+                    if (webDataSearch != null)
+                    {
+                        loadedItem.Items = new List<HltbDataUser> { webDataSearch };
+                        loadedItem.DateLastRefresh = DateTime.Now;
+                        Update(loadedItem);
+                    }
+                }
+                else
+                {
+                    loadedItem.Items = new List<HltbDataUser> { HowLongToBeatApi.UpdateGameData(loadedItem.Items.First()).GetAwaiter().GetResult() };
                     loadedItem.DateLastRefresh = DateTime.Now;
                     Update(loadedItem);
+
+                    // Refresh User data
+                    List<TitleList> titleLists = GetUserHltbDataAll(loadedItem.GetData().Id);
+                    if (titleLists != null && titleLists.Count > 0)
+                    {
+                        RefreshUserData(loadedItem.GetData().Id);
+                    }
                 }
             }
 
@@ -471,7 +484,7 @@ namespace HowLongToBeat.Services
             {
                 try
                 {
-                    HltbUserStats UserHltbData = HowLongToBeatClient.GetUserData();
+                    HltbUserStats UserHltbData = HowLongToBeatApi.GetUserData();
 
                     if (UserHltbData != null)
                     {
@@ -507,7 +520,7 @@ namespace HowLongToBeat.Services
             {
                 try
                 {
-                    TitleList titleList = HowLongToBeatClient.GetUserData(gameId);
+                    TitleList titleList = HowLongToBeatApi.GetUserData(gameId);
                     if (titleList != null)
                     {
                         int index = Database.UserHltbData.TitlesList.FindIndex(x => x.Id == gameId);
@@ -591,7 +604,7 @@ namespace HowLongToBeat.Services
         {
             try
             {
-                if (HowLongToBeatClient.GetIsUserLoggedIn())
+                if (HowLongToBeatApi.GetIsUserLoggedIn())
                 {
                     GameHowLongToBeat gameHowLongToBeat = Database.Get(game.Id);
                     if (gameHowLongToBeat != null && (!gameHowLongToBeat.GetData()?.IsVndb ?? false))
@@ -649,21 +662,21 @@ namespace HowLongToBeat.Services
                         EditData editData = new EditData();
                         string submissionId = "0";
 
-                        if (HltbData != null && HowLongToBeatClient.EditIdExist(HltbData.UserGameId))
+                        if (HltbData != null && HowLongToBeatApi.EditIdExist(HltbData.UserGameId))
                         {
                             submissionId = HltbData.UserGameId;
-                            editData = HowLongToBeatClient.GetEditData(gameHowLongToBeat.Name, submissionId).GetAwaiter().GetResult();
+                            editData = HowLongToBeatApi.GetEditData(gameHowLongToBeat.Name, submissionId).GetAwaiter().GetResult();
                         }
                         else
                         {
                             // Find existing in website
                             if (hltbDataUser != null)
                             {
-                                string tmpEditId = HowLongToBeatClient.FindIdExisting(hltbDataUser.Id.ToString());
+                                string tmpEditId = HowLongToBeatApi.FindIdExisting(hltbDataUser.Id.ToString());
                                 if (!tmpEditId.IsNullOrEmpty())
                                 {
                                     submissionId = tmpEditId;
-                                    editData = HowLongToBeatClient.GetEditData(gameHowLongToBeat.Name, submissionId).GetAwaiter().GetResult();
+                                    editData = HowLongToBeatApi.GetEditData(gameHowLongToBeat.Name, submissionId).GetAwaiter().GetResult();
                                 }
                                 else
                                 {
@@ -787,7 +800,7 @@ namespace HowLongToBeat.Services
                         editData.General.Progress.Seconds = time.Seconds;
                         #endregion
 
-                        return HowLongToBeatClient.ApiSubmitData(game, editData).GetAwaiter().GetResult();
+                        return HowLongToBeatApi.ApiSubmitData(game, editData).GetAwaiter().GetResult();
                     }
                 }
                 else
