@@ -344,7 +344,7 @@ Packages:
   - Version: 3.8
     RequiredApiVersion: 6.8.0
     ReleaseDate: 2025-05-03
-    PackageUrl: https://github.com/Lacro59/playnite-howlongtobeat-plugin/releases/download/v3.7.4/playnite-howlongtobeat-plugin_3_7_4.pext
+    PackageUrl: https://github.com/Lacro59/playnite-howlongtobeat-plugin/releases/download/v3.8/playnite-howlongtobeat-plugin_3_8.pext
     Changelog:
       - 'Updated: Localizations'
       - 'Fixed: Search issue (thanks to Jhanlon95)'
