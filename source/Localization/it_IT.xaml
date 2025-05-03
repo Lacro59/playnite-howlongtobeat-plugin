@@ -24,8 +24,8 @@
     <sys:String x:Key="LOCHltbSelectDataTypeRushed">In fretta</sys:String>
     <sys:String x:Key="LOCHltbSelectDataTypeLeisure">Tempo libero</sys:String>
 
-    <sys:String x:Key="LOCHltbPreferredTimeToBeat">Preferred for time to beat</sys:String>
-    <sys:String x:Key="LOCHltbVisibleData">Select the time data visible</sys:String>
+    <sys:String x:Key="LOCHltbPreferredTimeToBeat">Preferito per tempo per battere</sys:String>
+    <sys:String x:Key="LOCHltbVisibleData">Seleziona i dati del tempo visibili</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarOptions">Opzioni barra di avanzamento</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">Mostra il tempo dei suggerimenti nella barra di progresso</sys:String>
