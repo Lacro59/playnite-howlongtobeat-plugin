@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HowLongToBeat.Models.Enumerables
+namespace HowLongToBeat.Models.Enumerations
 {
-    public enum GameType
+    public enum DataType
     {
-        Game, Multi, Compil
+        Classic, Average, Median, Rushed, Leisure
     }
 }

@@ -16,7 +16,7 @@ using CommonPlayniteShared.Common;
 using CommonPluginsShared.Extensions;
 using HowLongToBeat.Models.Api;
 using HowLongToBeat.Models.GameActivity;
-using HowLongToBeat.Models.Enumerables;
+using HowLongToBeat.Models.Enumerations;
 
 namespace HowLongToBeat.Services
 {

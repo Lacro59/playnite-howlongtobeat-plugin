@@ -13,7 +13,7 @@ using System.Windows.Media;
 using System.Windows;
 using CommonPluginsShared.Plugins;
 using HowLongToBeat.Services;
-using HowLongToBeat.Models.Enumerables;
+using HowLongToBeat.Models.Enumerations;
 
 namespace HowLongToBeat
 {

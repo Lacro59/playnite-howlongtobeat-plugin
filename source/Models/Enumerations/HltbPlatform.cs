@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HowLongToBeat.Models.Enumerables
+namespace HowLongToBeat.Models.Enumerations
 {
     public enum HltbPlatform
     {

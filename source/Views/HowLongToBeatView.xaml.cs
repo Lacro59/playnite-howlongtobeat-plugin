@@ -17,7 +17,7 @@ using CommonPluginsShared.Converters;
 using System.Globalization;
 using CommonPluginsShared.Extensions;
 using Playnite.SDK.Data;
-using HowLongToBeat.Models.Enumerables;
+using HowLongToBeat.Models.Enumerations;
 
 namespace HowLongToBeat.Views
 {

@@ -8,7 +8,7 @@
              xmlns:controls="clr-namespace:CommonPluginsControls.Controls"
              xmlns:HowLongToBeat="clr-namespace:HowLongToBeat"
              xmlns:hltm="clr-namespace:HowLongToBeat.Models"
-             xmlns:hlte="clr-namespace:HowLongToBeat.Models.Enumerables"
+             xmlns:hlte="clr-namespace:HowLongToBeat.Models.Enumerations"
              xmlns:hlts="clr-namespace:HowLongToBeat.Services"
              xmlns:hltb="clr-namespace:HowLongToBeat.Behaviors" 
              xmlns:converters="clr-namespace:CommonPluginsShared.Converters"

@@ -1,5 +1,5 @@
 ﻿using CommonPluginsShared.Converters;
-using HowLongToBeat.Models.Enumerables;
+using HowLongToBeat.Models.Enumerations;
 using HowLongToBeat.Services;
 using Playnite.SDK;
 using Playnite.SDK.Data;

@@ -1,4 +1,4 @@
-﻿using HowLongToBeat.Models.Enumerables;
+﻿using HowLongToBeat.Models.Enumerations;
 using Playnite.SDK;
 using Playnite.SDK.Data;
 using System.Collections.Generic;

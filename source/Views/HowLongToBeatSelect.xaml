@@ -9,7 +9,7 @@
     xmlns:controls="clr-namespace:CommonPluginsControls.Controls"
     xmlns:convertersshared="clr-namespace:CommonPluginsShared.Converters"
     xmlns:hltm="clr-namespace:HowLongToBeat.Models"
-    xmlns:hlte="clr-namespace:HowLongToBeat.Models.Enumerables"
+    xmlns:hlte="clr-namespace:HowLongToBeat.Models.Enumerations"
     xmlns:hltb="clr-namespace:HowLongToBeat.Behaviors" 
     xmlns:controls1="clr-namespace:CommonPluginsShared.Controls"
     mc:Ignorable="d" Width="700">
