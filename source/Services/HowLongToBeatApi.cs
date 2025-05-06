@@ -109,6 +109,13 @@ namespace HowLongToBeat.Services
                 {
                     HltbData hltbData = new HltbData
                     {
+                        MainStoryClassic = gameData.CompMain,
+                        MainExtraClassic = gameData.CompPlus,
+                        CompletionistClassic = gameData.Comp100,
+                        SoloClassic = gameData.CompAll,
+                        CoOpClassic = gameData.InvestedCo,
+                        VsClassic = gameData.InvestedMp,
+
                         MainStoryMedian = gameData.CompMainMed,
                         MainExtraMedian = gameData.CompPlusMed,
                         CompletionistMedian = gameData.Comp100Med,

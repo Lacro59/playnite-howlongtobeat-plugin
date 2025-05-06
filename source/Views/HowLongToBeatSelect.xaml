@@ -128,7 +128,7 @@
                                     <RowDefinition Height="auto" />
                                 </Grid.RowDefinitions>
 
-                                <Rectangle Tag="{Binding ElementName=lbSelectable, Path=Tag}" Grid.Column="2" Grid.RowSpan="{Binding RelativeSource={RelativeSource AncestorType=Grid}, Path=RowDefinitions.Count }">
+                                <Rectangle Tag="{Binding ElementName=lbSelectable, Path=Tag}" Grid.Column="2" Grid.RowSpan="5">
                                     <Rectangle.Style>
                                         <Style TargetType="Rectangle">
                                             <Style.Triggers>
@@ -139,7 +139,7 @@
                                         </Style>
                                     </Rectangle.Style>
                                 </Rectangle>
-                                <Rectangle Tag="{Binding ElementName=lbSelectable, Path=Tag}" Grid.Column="3" Grid.RowSpan="{Binding RelativeSource={RelativeSource AncestorType=Grid}, Path=RowDefinitions.Count }">
+                                <Rectangle Tag="{Binding ElementName=lbSelectable, Path=Tag}" Grid.Column="3" Grid.RowSpan="5">
                                     <Rectangle.Style>
                                         <Style TargetType="Rectangle">
                                             <Style.Triggers>
@@ -150,7 +150,7 @@
                                         </Style>
                                     </Rectangle.Style>
                                 </Rectangle>
-                                <Rectangle Tag="{Binding ElementName=lbSelectable, Path=Tag}" Grid.Column="4" Grid.RowSpan="{Binding RelativeSource={RelativeSource AncestorType=Grid}, Path=RowDefinitions.Count }">
+                                <Rectangle Tag="{Binding ElementName=lbSelectable, Path=Tag}" Grid.Column="4" Grid.RowSpan="5">
                                     <Rectangle.Style>
                                         <Style TargetType="Rectangle">
                                             <Style.Triggers>
@@ -160,8 +160,8 @@
                                             </Style.Triggers>
                                         </Style>
                                     </Rectangle.Style>
-                                </Rectangle>                                
-                                <Rectangle Tag="{Binding ElementName=lbSelectable, Path=Tag}" Grid.Column="5" Grid.RowSpan="{Binding RelativeSource={RelativeSource AncestorType=Grid}, Path=RowDefinitions.Count }">
+                                </Rectangle>
+                                <Rectangle Tag="{Binding ElementName=lbSelectable, Path=Tag}" Grid.Column="5" Grid.RowSpan="5">
                                     <Rectangle.Style>
                                         <Style TargetType="Rectangle">
                                             <Style.Triggers>
@@ -172,7 +172,7 @@
                                         </Style>
                                     </Rectangle.Style>
                                 </Rectangle>
-                                <Rectangle Tag="{Binding ElementName=lbSelectable, Path=Tag}" Grid.Column="6" Grid.RowSpan="{Binding RelativeSource={RelativeSource AncestorType=Grid}, Path=RowDefinitions.Count }">
+                                <Rectangle Tag="{Binding ElementName=lbSelectable, Path=Tag}" Grid.Column="6" Grid.RowSpan="5">
                                     <Rectangle.Style>
                                         <Style TargetType="Rectangle">
                                             <Style.Triggers>
