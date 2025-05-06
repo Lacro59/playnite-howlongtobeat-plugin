@@ -341,14 +341,9 @@ Packages:
     Changelog:
       - 'Updated: Localizations'
       - 'Fixed: Search issue (thanks to Jhanlon95)'
-  - Version: 3.8
+  - Version: 3.8.1
     RequiredApiVersion: 6.8.0
-    ReleaseDate: 2025-05-03
-    PackageUrl: https://github.com/Lacro59/playnite-howlongtobeat-plugin/releases/download/v3.8/playnite-howlongtobeat-plugin_3_8.pext
+    ReleaseDate: 2025-05-06
+    PackageUrl: https://github.com/Lacro59/playnite-howlongtobeat-plugin/releases/download/v3.8.1/playnite-howlongtobeat-plugin_3_8_1.pext
     Changelog:
-      - 'Updated: Localizations'
-      - 'Fixed: Search issue (thanks to Jhanlon95)'
-      - 'Fixed: Searching unusual game names'
-      - 'Optimized: Account connexion'
-      - 'Fixed: Playing status from Hltb site'
-      - 'Added: Set game status to Hltb when switching to Playnite'
+      - 'Fixed: How Long to Beat Data is not Populating'
