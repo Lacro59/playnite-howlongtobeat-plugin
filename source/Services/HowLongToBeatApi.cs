@@ -863,8 +863,10 @@ namespace HowLongToBeat.Services
             {
                 try
                 {
+                    Thread.Sleep(10000);
                     if (PluginDatabase.Database.UserHltbData.UserId != 0)
                     {
+                        Logger.Info($"Refresh HowLongToBeat user cookies");
                         WebViewSettings webViewSettings = new WebViewSettings
                         {
                             JavaScriptEnabled = true,
