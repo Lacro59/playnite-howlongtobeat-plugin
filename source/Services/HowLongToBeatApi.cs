@@ -313,7 +313,7 @@ namespace HowLongToBeat.Services
         }
 
 
-        public GameHowLongToBeat SearchData(Game game)
+        public GameHowLongToBeat SearchData(Game game, List<HltbDataUser> data = null)
         {
             Common.LogDebug(true, $"Search data for {game.Name}");
             if (API.Instance.ApplicationInfo.Mode == ApplicationMode.Desktop)
@@ -321,7 +321,7 @@ namespace HowLongToBeat.Services
                 HowLongToBeatSelect ViewExtension = null;
                 _ = Application.Current.Dispatcher.BeginInvoke((Action)delegate
                 {
-                    ViewExtension = new HowLongToBeatSelect(game, null);
+                    ViewExtension = new HowLongToBeatSelect(game, data);
                     Window windowExtension = PlayniteUiHelper.CreateExtensionWindow(ResourceProvider.GetString("LOCSelection") + " - " + game.Name + " - " + (game.Source?.Name ?? "Playnite"), ViewExtension);
                     _ = windowExtension.ShowDialog();
                 }).Wait();

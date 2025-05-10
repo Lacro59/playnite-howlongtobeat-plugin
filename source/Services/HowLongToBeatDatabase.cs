@@ -131,7 +131,8 @@ namespace HowLongToBeat.Services
 
                 if (data.Count > 0 && PluginSettings.Settings.ShowWhenMismatch)
                 {
-                    _ = Get(game, false, true);
+                    gameHowLongToBeat = HowLongToBeatApi.SearchData(game, data?.Select(x => x.Data).ToList());
+                    AddOrUpdate(gameHowLongToBeat);
                 }
             }
         }

@@ -28,7 +28,7 @@ namespace HowLongToBeat.Views
         private Game GameContext { get; set; }
 
 
-        public HowLongToBeatSelect(Game game, List<HltbData> data)
+        public HowLongToBeatSelect(Game game, List<HltbDataUser> data)
         {
             InitializeComponent();
 
