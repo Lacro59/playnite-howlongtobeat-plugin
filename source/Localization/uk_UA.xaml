@@ -24,8 +24,8 @@
     <sys:String x:Key="LOCHltbSelectDataTypeRushed">Квапливо</sys:String>
     <sys:String x:Key="LOCHltbSelectDataTypeLeisure">Неквапливо</sys:String>
 
-    <sys:String x:Key="LOCHltbPreferredTimeToBeat">Preferred for time to beat</sys:String>
-    <sys:String x:Key="LOCHltbVisibleData">Select the time data visible</sys:String>
+    <sys:String x:Key="LOCHltbPreferredTimeToBeat">Перевагу часу на проходження</sys:String>
+    <sys:String x:Key="LOCHltbVisibleData">Виберіть видимі часові дані</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarOptions">Параметри смуги прогресу</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">Показувати спливаючі підказки з часом на смузі прогресу</sys:String>
@@ -79,7 +79,7 @@
 
     <!-- HowLongToBeatUserView -->
 
-    <sys:String x:Key="LOCHowLongToBeatCompletationStore">Завершені ігри по магазинам</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatCompletationStore">Завершені ігри за крамницями</sys:String>
     <sys:String x:Key="LOCHowLongToBeatCompletationProgress">Ігри завершено з часом</sys:String>
     
     <sys:String x:Key="LOCHowLongToBeatUserData">Дані користувача</sys:String>
@@ -98,7 +98,7 @@
     <sys:String x:Key="LOCHowLongToBeatTimeCoOp">Час кооперативної гри</sys:String>
     <sys:String x:Key="LOCHowLongToBeatTimeVs">Час в режимі гравець проти гравця</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatStorefront">Магазин</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatStorefront">Крамниці</sys:String>
     
     <sys:String x:Key="LOCHltbAvgTimeByGame">Середній час за грою</sys:String>
     <sys:String x:Key="LOCHltbAvgGameByMonth">Середня гра за місяць</sys:String>
@@ -163,7 +163,7 @@
     -time		Час до проходження (наприклад:-time=5h / -time=&lt;50min / -time=&gt;50s / -time=10min&lt;&gt;5h)
     -np                 Ви не грали в гру
     -fav                Гра повинна бути в обраному
-    -stores={n}        Фільтрувати за назвою магазину (наприклад:-stores=steam / -stores=steam,epic)
+    -stores={n}        Фільтрувати за назвою крамниці (наприклад:-stores=steam / -stores=steam,epic)
     -status={n}	Фільтрувати за статусом завершення (наприклад:-status=played / -status=played,playing)</sys:String>
 
 </ResourceDictionary>
