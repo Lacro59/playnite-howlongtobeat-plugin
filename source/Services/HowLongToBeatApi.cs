@@ -83,9 +83,9 @@ namespace HowLongToBeat.Services
 
             // TEMP
             FileCookies = Path.Combine(pathData, CommonPlayniteShared.Common.Paths.GetSafePathName($"HowLongToBeat.json"));
-            FileSystem.DeleteFileSafe(FileCookies);
+            //FileSystem.DeleteFileSafe(FileCookies);
 
-            FileCookies = Path.Combine(pathData, CommonPlayniteShared.Common.Paths.GetSafePathName($"HowLongToBeat.dat"));
+            //FileCookies = Path.Combine(pathData, CommonPlayniteShared.Common.Paths.GetSafePathName($"HowLongToBeat.dat"));
         }
 
 
