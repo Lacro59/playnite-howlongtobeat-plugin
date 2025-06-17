@@ -824,36 +824,36 @@ namespace HowLongToBeat.Services
         internal virtual List<HttpCookie> GetWebCookies(IWebView webView = null, bool deleteCookies = true)
         {
             List<HttpCookie> httpCookies = new List<HttpCookie>();
-			var createWebView = webView == null;
+            var createWebView = webView == null;
 
-			try
-			{
-				if (createWebView)
-				{
-					webView = API.Instance.WebViews.CreateOffscreenView();
-				}
+            try
+            {
+                if (createWebView)
+                {
+                    webView = API.Instance.WebViews.CreateOffscreenView();
+                }
 
-				httpCookies = webView.GetCookies()?
-					.Where(x => x?.Domain?.Contains("howlongtobeat") ?? false)?
-					.ToList() ?? new List<HttpCookie>();
+                httpCookies = webView.GetCookies()?
+                    .Where(x => x?.Domain?.Contains("howlongtobeat") ?? false)?
+                    .ToList() ?? new List<HttpCookie>();
 
-				if (deleteCookies)
-				{
-					webView.DeleteDomainCookies("howlongtobeat.com");
-					webView.DeleteDomainCookies(".howlongtobeat.com");
-				}
-			}
-			catch (Exception ex)
-			{
-				Common.LogError(ex, false, true, "HowLongToBeat");
-			}
-			finally
-			{
-				if (createWebView)
-				{
+                if (deleteCookies)
+                {
+                    webView.DeleteDomainCookies("howlongtobeat.com");
+                    webView.DeleteDomainCookies(".howlongtobeat.com");
+                }
+            }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, false, true, "HowLongToBeat");
+            }
+            finally
+            {
+                if (createWebView)
+                {
                     webView?.Dispose();
-				}
-			}
+                }
+            }
 
             return httpCookies;
         }
