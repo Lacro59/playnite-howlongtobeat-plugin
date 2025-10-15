@@ -22,10 +22,10 @@ namespace HowLongToBeat.Controls
     {
         // TODO Rewrite this control to resolve latency
         private static HowLongToBeatDatabase PluginDatabase => HowLongToBeat.PluginDatabase;
-        internal override IPluginDatabase pluginDatabase => PluginDatabase;
+        protected override IPluginDatabase pluginDatabase => PluginDatabase;
 
         private PluginProgressBarDataContext ControlDataContext = new PluginProgressBarDataContext();
-        internal override IDataContext controlDataContext
+        protected override IDataContext controlDataContext
         {
             get => ControlDataContext;
             set => ControlDataContext = (PluginProgressBarDataContext)controlDataContext;

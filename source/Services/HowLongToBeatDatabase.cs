@@ -40,35 +40,6 @@ namespace HowLongToBeat.Services
             HowLongToBeatApi = new HowLongToBeatApi();
         }
 
-
-        protected override bool LoadDatabase()
-        {
-            try
-            {
-                Stopwatch stopWatch = new Stopwatch();
-                stopWatch.Start();
-
-                Database = new GameHowLongToBeatCollection(Paths.PluginDatabasePath);
-                Database.SetGameInfo<HltbDataUser>();
-
-                Database.UserHltbData = HowLongToBeatApi.LoadUserData();
-
-                DeleteDataWithDeletedGame();
-
-                stopWatch.Stop();
-                TimeSpan ts = stopWatch.Elapsed;
-                Logger.Info($"LoadDatabase with {Database.Count} items - {string.Format("{0:00}:{1:00}.{2:00}", ts.Minutes, ts.Seconds, ts.Milliseconds / 10)}");
-            }
-            catch (Exception ex)
-            {
-                Common.LogError(ex, false, true, "SuccessStory");
-                return false;
-            }
-
-            return true;
-        }
-
-
         public override GameHowLongToBeat Get(Guid id, bool onlyCache = false, bool force = false)
         {
             GameHowLongToBeat gameHowLongToBeat = GetOnlyCache(id);
@@ -137,50 +108,6 @@ namespace HowLongToBeat.Services
             }
         }
 
-        public void RefreshAll()
-        {
-            GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions($"{PluginName} - {ResourceProvider.GetString("LOCCommonProcessing")}")
-            {
-                Cancelable = true,
-                IsIndeterminate = false
-            };
-
-            _ = API.Instance.Dialogs.ActivateGlobalProgress((a) =>
-            {
-                Stopwatch stopWatch = new Stopwatch();
-                stopWatch.Start();
-
-                string CancelText = string.Empty;
-
-                IEnumerable<GameHowLongToBeat> db = Database.Where(x => x.HasData);
-                a.ProgressMaxValue = (double)db.Count();
-
-                foreach (GameHowLongToBeat item in db)
-                {
-                    Game game = item.Game;
-                    a.Text = $"{PluginName} - {ResourceProvider.GetString("LOCCommonProcessing")}"
-                        + "\n\n" + $"{a.CurrentProgressValue}/{a.ProgressMaxValue}"
-                        + "\n" + game?.Name + (game?.Source == null ? string.Empty : $" ({game?.Source.Name})");
-
-                    if (a.CancelToken.IsCancellationRequested)
-                    {
-                        break;
-                    }
-
-                    if (item.DateLastRefresh.AddMonths(1) < DateTime.Now)
-                    {
-                        RefreshNoLoader(item.Id);
-                    }
-
-                    a.CurrentProgressValue++;
-                }
-
-                stopWatch.Stop();
-                TimeSpan ts = stopWatch.Elapsed;
-                Logger.Info($"Task RefreshAll(){CancelText} - {string.Format("{0:00}:{1:00}.{2:00}", ts.Minutes, ts.Seconds, ts.Milliseconds / 10)} for {a.CurrentProgressValue}/{(double)db.Count()} items");
-            }, globalProgressOptions);
-        }
-
         public override void RefreshNoLoader(Guid id)
         {
             Game game = API.Instance.Database.Games.Get(id);
@@ -230,6 +157,7 @@ namespace HowLongToBeat.Services
 
 
         #region Tag
+
         public override void AddTag(Game game)
         {
             GameHowLongToBeat item = Get(game, true);
@@ -340,10 +268,12 @@ namespace HowLongToBeat.Services
 
             return null;
         }
+
         #endregion
 
 
         #region User data
+
         public TitleList GetUserHltbData(string hltbId)
         {
             try
@@ -822,6 +752,7 @@ namespace HowLongToBeat.Services
 
             return false;
         }
+        
         #endregion
 
 
