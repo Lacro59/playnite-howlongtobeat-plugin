@@ -824,24 +824,18 @@ namespace HowLongToBeat.Services
         internal virtual List<HttpCookie> GetWebCookies(IWebView webView = null, bool deleteCookies = true)
         {
             List<HttpCookie> httpCookies = new List<HttpCookie>();
+            var createWebView = webView == null;
 
             try
             {
-                if (webView == null)
+                if (createWebView)
                 {
-                    using (webView = API.Instance.WebViews.CreateOffscreenView())
-                    {
-                        httpCookies = webView?.GetCookies()?
-                            .Where(x => x?.Domain?.Contains("howlongtobeat") ?? false)?
-                            .ToList() ?? new List<HttpCookie>();
-                    }
+                    webView = API.Instance.WebViews.CreateOffscreenView();
                 }
-                else
-                {
-                    httpCookies = webView.GetCookies()?
-                        .Where(x => x?.Domain?.Contains("howlongtobeat") ?? false)?
-                        .ToList() ?? new List<HttpCookie>();
-                }
+
+                httpCookies = webView.GetCookies()?
+                    .Where(x => x?.Domain?.Contains("howlongtobeat") ?? false)?
+                    .ToList() ?? new List<HttpCookie>();
 
                 if (deleteCookies)
                 {
@@ -852,6 +846,13 @@ namespace HowLongToBeat.Services
             catch (Exception ex)
             {
                 Common.LogError(ex, false, true, "HowLongToBeat");
+            }
+            finally
+            {
+                if (createWebView)
+                {
+                    webView?.Dispose();
+                }
             }
 
             return httpCookies;
