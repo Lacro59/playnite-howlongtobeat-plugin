@@ -216,7 +216,7 @@ namespace HowLongToBeat
                         try
                         {
                             gameHowLongToBeat = PluginDatabase.Get(gameMenu);
-                            if (gameHowLongToBeat.HasData || gameHowLongToBeat.HasDataEmpty)
+                            if (gameHowLongToBeat.HasData)
                             {
                                 HowLongToBeatView ViewExtension = new HowLongToBeatView(gameHowLongToBeat);
                                 Window windowExtension = PlayniteUiHelper.CreateExtensionWindow(PluginDatabase.PluginName, ViewExtension);
@@ -232,7 +232,7 @@ namespace HowLongToBeat
                 }
             };
 
-            if (gameHowLongToBeat.HasData || gameHowLongToBeat.HasDataEmpty)
+            if (gameHowLongToBeat.HasData)
             {
                 HltbDataUser gameData = gameHowLongToBeat?.Items?.FirstOrDefault();
 
@@ -538,7 +538,7 @@ namespace HowLongToBeat
 
                     ListWithNoData ViewExtension = new ListWithNoData(PluginDatabase);
                     Window windowExtension = PlayniteUiHelper.CreateExtensionWindow(PluginDatabase.PluginName, ViewExtension, windowOptions);
-                    windowExtension.ShowDialog();
+                    windowExtension.Show();
                 }
             });
 
