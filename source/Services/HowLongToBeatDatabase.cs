@@ -40,6 +40,11 @@ namespace HowLongToBeat.Services
             HowLongToBeatApi = new HowLongToBeatApi();
         }
 
+        internal override void LoadMoreData()
+        {
+            Database.UserHltbData = HowLongToBeatApi.LoadUserData();
+        }
+
         public override GameHowLongToBeat Get(Guid id, bool onlyCache = false, bool force = false)
         {
             GameHowLongToBeat gameHowLongToBeat = GetOnlyCache(id);
@@ -312,7 +317,7 @@ namespace HowLongToBeat.Services
         {
             try
             {
-                return Database.UserHltbData.TitlesList == null || Database.UserHltbData.TitlesList.Count == 0
+                return Database.UserHltbData?.TitlesList == null || Database.UserHltbData.TitlesList.Count == 0
                     ? null
                     : Database.UserHltbData.TitlesList.FindAll(x => x.Id == hltbId).ToList();
             }
