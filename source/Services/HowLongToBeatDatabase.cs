@@ -757,8 +757,21 @@ namespace HowLongToBeat.Services
 
             return false;
         }
-        
+
         #endregion
+
+
+        public override IEnumerable<Game> GetGamesWithNoData()
+        {
+            // Get games with no data in the database.
+            IEnumerable<Game> gamesWithNoData = Database.Items.Where(x => !x.Value.HasData && !x.Value.HasDataEmpty).Select(x => API.Instance.Database.Games.Get(x.Key)).Where(x => x != null);
+            // Get games that are not present in the database.
+            IEnumerable<Game> gamesNotInDb = API.Instance.Database.Games.Where(x => !Database.Items.Any(y => y.Key == x.Id));
+            // Merge and distinct the lists to avoid duplicates.
+            IEnumerable<Game> mergedList = gamesWithNoData.Union(gamesNotInDb).Distinct();
+            // Return games that are not hidden.
+            return mergedList.Where(x => !x.Hidden);
+        }
 
 
         public override void SetThemesResources(Game game)
