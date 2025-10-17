@@ -13,19 +13,19 @@
     <sys:String x:Key="LOCHowLongToBeatAutoTag">自动标签</sys:String>
     <sys:String x:Key="LOCHowLongToBeatShowHltbImage">在窗口中使用攻关历时原始游戏封面图像</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatColorSelection">色彩管理</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatColorSelection">色彩管理：</sys:String>
 
     <sys:String x:Key="LOCHltbEnableProgressBarInDataView">在 Playnite 数据视图中查看进度</sys:String>
 
     <sys:String x:Key="LOCHltbSelectDataType">选择数据类型：</sys:String>
     <sys:String x:Key="LOCHltbSelectDataTypeClassic">经典</sys:String>
-    <sys:String x:Key="LOCHltbSelectDataTypeAverage">平均的</sys:String>
-    <sys:String x:Key="LOCHltbSelectDataTypeMedian">中等的</sys:String>
-    <sys:String x:Key="LOCHltbSelectDataTypeRushed">疯狂的</sys:String>
+    <sys:String x:Key="LOCHltbSelectDataTypeAverage">平均</sys:String>
+    <sys:String x:Key="LOCHltbSelectDataTypeMedian">中等</sys:String>
+    <sys:String x:Key="LOCHltbSelectDataTypeRushed">狂热</sys:String>
     <sys:String x:Key="LOCHltbSelectDataTypeLeisure">休闲</sys:String>
 
-    <sys:String x:Key="LOCHltbPreferredTimeToBeat">Preferred for time to beat</sys:String>
-    <sys:String x:Key="LOCHltbVisibleData">Select the time data visible</sys:String>
+    <sys:String x:Key="LOCHltbPreferredTimeToBeat">推荐攻克时间</sys:String>
+    <sys:String x:Key="LOCHltbVisibleData">选择可见的时间数据</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarOptions">进度条选项</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">在进度条中显示时间提示框</sys:String>
@@ -95,7 +95,7 @@
     <sys:String x:Key="LOCHowLongToBeatCompletions">完成情况</sys:String>
     <sys:String x:Key="LOCHowLongToBeatTimeSinglePlayer">单人模式时间</sys:String>
     <sys:String x:Key="LOCHowLongToBeatTimeCoOp">合作模式时间</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatTimeVs">多人对抗时间</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatTimeVs">多人对抗模式时间</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatStorefront">前</sys:String>
     
@@ -124,7 +124,7 @@
     <sys:String x:Key="LOCHowLongToBeatSetCurrentCompletedTimeManualOn">将您当前完成的游玩时间设置于</sys:String>
     <sys:String x:Key="LOCHowLongToBeatSetCurrentMultiTimeManualOn">将您当前完成的游玩时间设置于</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatSetCurrentTime">您想要发送当前游玩时间吗</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatSetCurrentTime">您想要发送当前游玩时间吗？</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatErrorNoPlatform">无法提交没有平台的游戏数据({0})</sys:String>
     <sys:String x:Key="LOCHowLongToBeatErrorNoPlatformDefaultUsed" xml:space="preserve">游戏（{1}）在插件设置中未定义平台（{0}）。
@@ -140,9 +140,9 @@
     <sys:String x:Key="LOCHltbQuickSearchInfo" xml:space="preserve">该插件使用 QuickSearch 插件的功能。
 要使用它，您必须使“howlongtobeat”或“hltb”命令生效。
 
-这里是命令列</sys:String>
+这里是命令列：</sys:String>
 
-    <sys:String x:Key="LOCHltbQuickSearchCmd1" xml:space="preserve">此命令搜索具有所指定的通关所需时间的游戏列</sys:String>
+    <sys:String x:Key="LOCHltbQuickSearchCmd1" xml:space="preserve">此命令搜索具有所指定的通关所需时间的游戏列。</sys:String>
 
 
     <!-- StartPage -->
@@ -159,10 +159,10 @@
 
     <sys:String x:Key="LOCHowLongToBeatSearchDescription">用攻关历时数据搜索游戏</sys:String>
     <sys:String x:Key="LOCHowLongToBeatSearchHint" xml:space="preserve">Parameters:
-    -time		Time to beat (ex:-time=5h / -time=&lt;50min / -time=&gt;50s / -time=10min&lt;&gt;5h)
-    -np		You didn't play the game
-    -fav		The game must be a favorite
-    -stores={n}	Filter by store name (ex:-stores=steam / -stores=steam,epic)
-    -status={n}	Filter by status name (ex:-status=played / -status=played,playing)</sys:String>
+    -time		通关用时 (ex:-time=5h / -time=&lt;50min / -time=&gt;50s / -time=10min&lt;&gt;5h)
+    -np		你还未玩过该游戏
+    -fav		该游戏必须在 favourite 中
+    -stores={n}	按商店名称筛选 (ex:-stores=steam / -stores=steam,epic)
+    -status={n}	按状态名称筛选 (ex:-status=played / -status=played,playing)</sys:String>
 
 </ResourceDictionary>

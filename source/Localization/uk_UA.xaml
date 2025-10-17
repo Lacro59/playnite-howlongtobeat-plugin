@@ -24,8 +24,8 @@
     <sys:String x:Key="LOCHltbSelectDataTypeRushed">Квапливо</sys:String>
     <sys:String x:Key="LOCHltbSelectDataTypeLeisure">Неквапливо</sys:String>
 
-    <sys:String x:Key="LOCHltbPreferredTimeToBeat">Preferred for time to beat</sys:String>
-    <sys:String x:Key="LOCHltbVisibleData">Select the time data visible</sys:String>
+    <sys:String x:Key="LOCHltbPreferredTimeToBeat">Віддавати перевагу часу на проходження</sys:String>
+    <sys:String x:Key="LOCHltbVisibleData">Виберіть видимі часові дані</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarOptions">Параметри смуги прогресу</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">Показувати спливаючі підказки з часом на смузі прогресу</sys:String>

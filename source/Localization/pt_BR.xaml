@@ -24,8 +24,8 @@
     <sys:String x:Key="LOCHltbSelectDataTypeRushed">Acelerado</sys:String>
     <sys:String x:Key="LOCHltbSelectDataTypeLeisure">Tempo livre</sys:String>
 
-    <sys:String x:Key="LOCHltbPreferredTimeToBeat">Preferred for time to beat</sys:String>
-    <sys:String x:Key="LOCHltbVisibleData">Select the time data visible</sys:String>
+    <sys:String x:Key="LOCHltbPreferredTimeToBeat">Preferido para tempo a vencer</sys:String>
+    <sys:String x:Key="LOCHltbVisibleData">Selecione o tempo dos dados visíveis</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarOptions">Opções da barra de progresso</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">Mostrar dica de tempo na barra de progresso</sys:String>
@@ -35,7 +35,7 @@
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeBelow">Abaixo da barra de progresso</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeUser">Mostar o tempo do usuário do HowLongToBeat</sys:String>
 
-    <sys:String x:Key="LOCHltbUsedStartDateFromGameActivity"></sys:String>
+    <sys:String x:Key="LOCHltbUsedStartDateFromGameActivity">Usado a primeira sessão do jogo do plugin GameActivity para a data de início</sys:String>
     
     <sys:String x:Key="LOCHowLongToBeatAutoSetCurrentPlayTime">Atualizar automaticamente o tempo de jogo atual no HowLongToBeat após a sessão de jogo</sys:String>
     <sys:String x:Key="LOCHowLongToBeatWithoutConfirmation">Sem mensagem de confirmação</sys:String>
@@ -67,8 +67,8 @@ Se nenhum tiver este status, pegará o mais recente.</sys:String>
     <sys:String x:Key="LOCHowLongToBeatMainExtra">Principal + extra</sys:String>
     <sys:String x:Key="LOCHowLongToBeatCompletionist">Complecionista</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatSolo">Solo</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatCoOp">Co-Op</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatSolo">Só</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatCoOp">Cooperativo</sys:String>
     <sys:String x:Key="LOCHowLongToBeatVs">Vs</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatPlaying">Jogando</sys:String>

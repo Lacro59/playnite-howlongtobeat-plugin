@@ -1,169 +1,168 @@
 ﻿<?xml version="1.0"?>
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:sys="clr-namespace:System;assembly=mscorlib">
 
-    <sys:String x:Key="LOCHowLongToBeatTimeToBeat">Time to beat</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatTimeToBeat">Χρόνος ολοκλήρωσης</sys:String>
 
-    <sys:String x:Key="LOCPlayedHoursOnly">{0}h</sys:String>
+    <sys:String x:Key="LOCPlayedHoursOnly">{0}ω</sys:String>
 
     <!-- HowLongToBeatSettingsView -->
 
-    <sys:String x:Key="LOCHowLongToBeatProgressBar">Added {0} - Already added {1} - Not added {2}</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatProgressBar">Προστέθηκε {0} - Προστέθηκε ήδη {1} - Δεν προστέθηκε {2}</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatAddTagDescription">Add a tag to games with Main story completion time information</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAutoTag">Automatic tags processing</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatShowHltbImage">Use HowLongToBeat original game cover image in window</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAddTagDescription">Προσθήκη ετικέτας σε παιχνίδια με πληροφορίες χρόνου ολοκλήρωσης της Κύριας ιστορίας</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoTag">Αυτόματη επεξεργασία ετικετών</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatShowHltbImage">Χρήση της αρχικής εικόνας εξωφύλλου παιχνιδιού HowLongToBeat στο παράθυρο</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatColorSelection">Color selection:</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatColorSelection">Επιλογή χρώματος:</sys:String>
 
-    <sys:String x:Key="LOCHltbEnableProgressBarInDataView">View progress bar in Playnite data view</sys:String>
+    <sys:String x:Key="LOCHltbEnableProgressBarInDataView">Προβολή μπάρας προόδου στην προβολή δεδομένων Playnite</sys:String>
 
-    <sys:String x:Key="LOCHltbSelectDataType">Select the data type:</sys:String>
-    <sys:String x:Key="LOCHltbSelectDataTypeClassic">Classic</sys:String>
-    <sys:String x:Key="LOCHltbSelectDataTypeAverage">Average</sys:String>
-    <sys:String x:Key="LOCHltbSelectDataTypeMedian">Median</sys:String>
-    <sys:String x:Key="LOCHltbSelectDataTypeRushed">Rushed</sys:String>
-    <sys:String x:Key="LOCHltbSelectDataTypeLeisure">Leisure</sys:String>
+    <sys:String x:Key="LOCHltbSelectDataType">Επιλέξτε τον τύπο δεδομένων:</sys:String>
+    <sys:String x:Key="LOCHltbSelectDataTypeClassic">Κλασικό</sys:String>
+    <sys:String x:Key="LOCHltbSelectDataTypeAverage">Μέσος όρος</sys:String>
+    <sys:String x:Key="LOCHltbSelectDataTypeMedian">Ενδιάμεσος</sys:String>
+    <sys:String x:Key="LOCHltbSelectDataTypeRushed">Βιαστικός</sys:String>
+    <sys:String x:Key="LOCHltbSelectDataTypeLeisure">Χαλαρός</sys:String>
 
-    <sys:String x:Key="LOCHltbPreferredTimeToBeat">Preferred for time to beat</sys:String>
-    <sys:String x:Key="LOCHltbVisibleData">Select the time data visible</sys:String>
+    <sys:String x:Key="LOCHltbPreferredTimeToBeat">Προτιμώμενος χρόνος για ολοκλήρωση</sys:String>
+    <sys:String x:Key="LOCHltbVisibleData">Επιλέξτε τα ορατά δεδομένα χρόνου</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarOptions">Progress bar options</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">Show time tooltip in progress bar</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTime">Show time labels in progress bar</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeAbove">Above progress bar</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeInterior">Inside progress bar</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeBelow">Below progress bars</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeUser">Show user HowLongToBeat time</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarOptions">Ρυθμίσεις γραμμής προόδου</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">Εμφάνιση υποδείξεων χρόνου στη γραμμή προόδου</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTime">Εμφάνιση ετικετών χρόνου στη γραμμή προόδου</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeAbove">Πάνω από τη γραμμή προόδου</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeInterior">Μέσα στη μπάρα προόδου</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeBelow">Κάτω από τις γραμμές προόδου</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeUser">Εμφάνιση χρόνου χρήστη HowLongTobeat</sys:String>
 
-    <sys:String x:Key="LOCHltbUsedStartDateFromGameActivity">Used first game session from GameActivity plugin for start date</sys:String>
+    <sys:String x:Key="LOCHltbUsedStartDateFromGameActivity">Χρήση της πρώτης συνεδρίας από το πρόσθετο του Game Activity</sys:String>
     
-    <sys:String x:Key="LOCHowLongToBeatAutoSetCurrentPlayTime">Automatically update current playtime on HowLongToBeat after game session</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatWithoutConfirmation">Without confirmation message</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatEnableSuccessNotification">Enable success notification</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoSetCurrentPlayTime">Αυτόματη ενημέρωση του τρέχοντος χρόνου αναπαραγωγής στο HowLongToBeat μετά τη συνεδρία του παιχνιδιού</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatWithoutConfirmation">Χωρίς μήνυμα επιβεβαίωσης</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatEnableSuccessNotification">Ενεργοποίηση ειδοποίησης επιτυχίας</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatus">Automatically update game status with HowLongToBeat game status when importing user data</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltb">Automatically update game status on HowLongToBeat game status when changing on Playnite</sys:String>
     
-    <sys:String x:Key="LOCHowLongToBeatAutoData">Game data download</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAutoAccept">Automatically select game when only one game is found during search</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatShowWhenMismatch">Show game selection list when more than one game is found during search</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatUseMatchValue">Use a percent match</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoData">Λήψη δεδομένων παιχνιδιού</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoAccept">Αυτόματη επιλογή παιχνιδιού όταν βρίσκεται μόνο ένα παιχνίδι κατά την αναζήτηση</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatShowWhenMismatch">Εμφάνιση λίστας επιλογών παιχνιδιών, όταν περισσότερα από ένα παιχνίδια βρίσκονται κατά την αναζήτηση</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatUseMatchValue">Χρήση ενός ποσοστού αντιστοίχισης</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatTimeOnlyHour">Time format with only hour</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatTimeOnlyHour">Μορφή ώρας μόνο με ώρα</sys:String>
     
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBar">Display progress indicator</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBar">Εμφάνιση ένδειξης προόδου</sys:String>
     
-    <sys:String x:Key="LOCHowLongToBeatCurrentPlayTimeSetted">The current playtime for {0} is setted.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatCurrentPlayTimeSetted">Η τρέχουσα ώρα αναπαραγωγής για {0} έχει οριστεί.</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatInfoSetPlaytime" xml:space="preserve">If there are several times defined on HowLongToBeat, the plugin will take the most recent one with the status &quot;Playing&quot;.
-If none has this status, it takes the most recent.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatInfoSetPlaytime" xml:space="preserve">Αν υπάρχουν αρκετοί χρόνοι που ορίζονται στο HowLongToBeat, το πρόσθετο θα πάρει τον πιο πρόσφατο με την κατάσταση παιξίματος στο &quot;Παίζεται τώρα&quot;.
+Εάν κανένας δεν έχει αυτή την κατάσταση, χρειάζεται η πιο πρόσφατη.</sys:String>
 
     <!-- HowLongToBeatSelect -->
 
-    <sys:String x:Key="LOCSelection">HowLongToBeat selection</sys:String>
-    <sys:String x:Key="LOCHltbUsedVndb">Used Vndb</sys:String>
+    <sys:String x:Key="LOCSelection">Επιλογή HowLongToBeat</sys:String>
+    <sys:String x:Key="LOCHltbUsedVndb">Χρησιμοποιημένο Vndb</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatMainStory">Main story</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatMainExtra">Main + extra</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatMainStory">Κύρια ιστορία</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatMainExtra">Κύρια + έξτρα</sys:String>
     <sys:String x:Key="LOCHowLongToBeatCompletionist">Completionist</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatSolo">Solo</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatCoOp">Co-Op</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatVs">Vs</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatCoOp">Συνεργατικά</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatVs">Εναντίον</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatPlaying">Playing</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatPlaying">Παίζεται τώρα</sys:String>
 
     <!-- HowLongToBeat -->
 
-    <sys:String x:Key="LOCHowLongToBeatProgression">Progression</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatProgression">Πρόοδος</sys:String>
 
     <!-- HowLongToBeatUserView -->
 
-    <sys:String x:Key="LOCHowLongToBeatCompletationStore">Games completed by storefront</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatCompletationProgress">Games completed over time</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatCompletationStore">Παιχνίδια που ολοκληρώθηκαν με βάση το ηλεκτρ. κατάστημα</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatCompletationProgress">Παιχνίδια που ολοκληρώθηκαν με την πάροδο του χρόνου</sys:String>
     
-    <sys:String x:Key="LOCHowLongToBeatUserData">User data</sys:String>
-    <sys:String x:Key="LocHowLongToBeatPlayniteData">Playnite data</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatCompleted">Completed</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatUserData">Δεδομένα χρήστη</sys:String>
+    <sys:String x:Key="LocHowLongToBeatPlayniteData">Δεδομένα Playnite</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatCompleted">Ολοκληρώθηκε</sys:String>
 
-    <sys:String x:Key="LOCHltbOnlyReplays">Only replays</sys:String>
-    <sys:String x:Key="LOCHltbOnlyNotPlayed">Only not played</sys:String>
+    <sys:String x:Key="LOCHltbOnlyReplays">Μόνο επαναλήψεις</sys:String>
+    <sys:String x:Key="LOCHltbOnlyNotPlayed">Μόνο όσα δεν παίχτηκαν</sys:String>
 
-    <sys:String x:Key="LOCHltbRemainingTime">Remaining time</sys:String>
+    <sys:String x:Key="LOCHltbRemainingTime">Υπολειπόμενος χρόνος</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatPluginGetUserView">Getting user datas</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatPluginGetUserView">Λήψη δεδομένων χρήστη</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatCompletions">Completions</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatTimeSinglePlayer">Single-Player time</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatTimeCoOp">Co-Op time</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatTimeVs">Vs Multi-Player time</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatCompletions">Ολοκληρώσεις</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatTimeSinglePlayer">Χρόνος του Single-Player</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatTimeCoOp">Χρόνος Co-op</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatTimeVs">Χρόνος Multi-Player</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatStorefront">Storefront</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatStorefront">Ηλεκτρ. κατάστημα</sys:String>
     
-    <sys:String x:Key="LOCHltbAvgTimeByGame">Avg time by game</sys:String>
-    <sys:String x:Key="LOCHltbAvgGameByMonth">Avg game by month</sys:String>
-    <sys:String x:Key="LOCHltbCountGameBeatenBeforeTime">Number of games beaten before time</sys:String>
-    <sys:String x:Key="LOCHltbCountGameBeatenAfterTime">Number of games beaten after time</sys:String>
-    <sys:String x:Key="LOCHltbCountGameBeatenReplays">Number of games beaten (replayed)</sys:String>
-    <sys:String x:Key="LOCHltbCountGameRetired">Number of games retired</sys:String>
+    <sys:String x:Key="LOCHltbAvgTimeByGame">Μέσος χρόνος ανά παιχνίδι</sys:String>
+    <sys:String x:Key="LOCHltbAvgGameByMonth">Μέσος όρος παιχνιδιού ανά μήνα</sys:String>
+    <sys:String x:Key="LOCHltbCountGameBeatenBeforeTime">Αριθμός παιχνιδιών που τερματίστηκαν πριν από το χρόνο</sys:String>
+    <sys:String x:Key="LOCHltbCountGameBeatenAfterTime">Αριθμός παιχνιδιών που τερματίστηκαν μετά από το χρόνο</sys:String>
+    <sys:String x:Key="LOCHltbCountGameBeatenReplays">Αριθμός παιχνιδιών που τερματίστηκαν (σε επανάληψη)</sys:String>
+    <sys:String x:Key="LOCHltbCountGameRetired">Αριθμός παρατημένων παιχνιδιών</sys:String>
 
-    <sys:String x:Key="LOCHltbUsedFilteredGames">Currently filtered games used</sys:String>
-    <sys:String x:Key="LOCHltbOnlyNotPlayedGames">Only game not played</sys:String>
+    <sys:String x:Key="LOCHltbUsedFilteredGames">Τρέχοντα φιλτραρισμένα παιχνίδια που χρησιμοποιήθηκαν</sys:String>
+    <sys:String x:Key="LOCHltbOnlyNotPlayedGames">Μόνο παιχνίδια που δεν παίχτηκαν</sys:String>
 
     <!-- MainView -->
 
     <sys:String x:Key="LOCHowLongToBeat">HowLongToBeat</sys:String>
     <sys:String x:Key="LOCHowLongToBeatTitle">HowLongToBeat</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatPluginView">View HowLongToBeat datas</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatPluginUserView">View HowLongToBeat user datas</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatActualiseUserData">Refresh HowLongToBeat user datas</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatPluginView">Προβολή δεδομένων HowLongToBeat</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatPluginUserView">Προβολή δεδομένων χρήστη HowLongToBeat</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatActualiseUserData">Ανανέωση δεδομένων χρήστη HowLongToBeat</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatSetCurrentTimeManual">Set your current playtime</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatSetCurrentTimeManualAll">Set your current playtime for all games</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatSetCurrentTimeManual">Ορίστε τον τρέχοντα χρόνο παιχνιδιού σας</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatSetCurrentTimeManualAll">Ορίστε τον τρέχοντα χρόνο παιχνιδιού για όλα τα παιχνίδια</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatSetCurrentCompletedTimeManualOn">Set your current completed playtime on</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatSetCurrentMultiTimeManualOn">Set your current muli playtime on</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatSetCurrentCompletedTimeManualOn">Ορίστε τον τρέχοντα ολοκληρωμένο χρόνο παιχνιδιού ως ενεργό</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatSetCurrentMultiTimeManualOn">Ορίστε τον τρέχοντα εσφαλμένο χρόνο παιχνιδιού ως ενεργό</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatSetCurrentTime">Want you send your current playtime?</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatSetCurrentTime">Θέλετε να αποστείλετε τον τρέχοντα χρόνο παιχνιδιού;</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatErrorNoPlatform">Cannot submit data for a game without platform ({0})</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatErrorNoPlatformDefaultUsed" xml:space="preserve">Game ({1}) without platform ({0}) defined in plugin settings.
-Please configure one.
-Default used (PC)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatErrorNoPlatform">Αδυναμία υποβολής δεδομένων για παιχνίδι χωρίς πλατφόρμα ({0})</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatErrorNoPlatformDefaultUsed" xml:space="preserve">Παιχνίδι ({1}) χωρίς πλατφόρμα ({0}) που ορίζεται στις ρυθμίσεις του πρόσθετου.
+Παρακαλώ ρυθμίστε μία.
+Προεπιλεγμένη χρήση (PC)</sys:String>
 
 
     <!-- QuickSearch -->
 
-    <sys:String x:Key="LOCHltbQuickSearchDescription">Search games on HowLongToBeat data</sys:String>
-    <sys:String x:Key="LOCHltbQuickSearchByTTB">Find by Time To Beat</sys:String>
+    <sys:String x:Key="LOCHltbQuickSearchDescription">Αναζήτηση παιχνιδιών στα δεδομένα HowLongToBeat</sys:String>
+    <sys:String x:Key="LOCHltbQuickSearchByTTB">Εύρεση με βάση τον χρόνο ολοκλήρωσης</sys:String>
 
-    <sys:String x:Key="LOCHltbQuickSearchInfo" xml:space="preserve">The plugin uses the functionality of the QuickSearch plugin.
-To use it, you must validate the &quot;howlongtobeat&quot; or &quot;hltb&quot; command.    
-        
-Here is the list of commands:</sys:String>
+    <sys:String x:Key="LOCHltbQuickSearchInfo" xml:space="preserve">Το πρόσθετο χρησιμοποιεί τις λειτουργίες του πρόσθετου QuickSearch. Για να τις χρησιμοποιήσετε πρέπει να επικυρώσετε τις εντολές &quot;howlongtobeat&quot; ή &quot;hltb&quot;
 
-    <sys:String x:Key="LOCHltbQuickSearchCmd1" xml:space="preserve">This command searches for a list of games with a specific time to beat.</sys:String>
+Ορίστε η λίστα με τις εντολές:</sys:String>
+
+    <sys:String x:Key="LOCHltbQuickSearchCmd1" xml:space="preserve">Αυτή η εντολή ψάχνει για μια λίστα παιχνιδιών με συγκεκριμένο χρόνο ολοκλήρωσης.</sys:String>
 
 
     <!-- StartPage -->
 
-    <sys:String x:Key="LOCHtlbChartStats">Chart stats</sys:String>
-    <sys:String x:Key="LOCHtlbChartStatsChartTitle">Show title</sys:String>
-    <sys:String x:Key="LOCHtlbChartStatsChartLabels">Show labels on horizontal axis</sys:String>
-    <sys:String x:Key="LOCHtlbChartStatsChartLabelsOrdinates">Show labels on vertical axis</sys:String>
-    <sys:String x:Key="LOCHtlbChartStatsChartType">Chart type</sys:String>
-    <sys:String x:Key="LOCHtlbChartStatsChartDataNumber">Data number</sys:String>
+    <sys:String x:Key="LOCHtlbChartStats">Στατιστικά γραφήματος</sys:String>
+    <sys:String x:Key="LOCHtlbChartStatsChartTitle">Προβολή τίτλου</sys:String>
+    <sys:String x:Key="LOCHtlbChartStatsChartLabels">Εμφάνιση ετικετών στον οριζόντιο άξονα</sys:String>
+    <sys:String x:Key="LOCHtlbChartStatsChartLabelsOrdinates">Εμφάνιση ετικετών στον κατακόρυφο άξονα</sys:String>
+    <sys:String x:Key="LOCHtlbChartStatsChartType">Τύπος γραφήματος</sys:String>
+    <sys:String x:Key="LOCHtlbChartStatsChartDataNumber">Αριθμός δεδομένων</sys:String>
 
 
     <!-- HowLongToBeatSearch -->
 
-    <sys:String x:Key="LOCHowLongToBeatSearchDescription">Search on HowLongToBeat data</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatSearchHint" xml:space="preserve">Parameters:
-    -time		Time to beat (ex:-time=5h / -time=&lt;50min / -time=&gt;50s / -time=10min&lt;&gt;5h)
-    -np		You didn't play the game
-    -fav		The game must be a favorite
-    -stores={n}	Filter by store name (ex:-stores=steam / -stores=steam,epic)
-    -status={n}	Filter by status name (ex:-status=played / -status=played,playing)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatSearchDescription">Αναζήτηση στα δεδομένα HowLongToBeat</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatSearchHint" xml:space="preserve">Παράμετροι:
+    -time             Χρόνος Ολοκλήρωσης (πχ:-time=5h / -time=&lt;50min / -time=&gt;50s / -time=10min&lt;&gt;5h)
+    -np                Δεν παίξατε το παιχνίδι
+    -fav               Το παιχνίδι πρέπει να είναι στα αγαπημένα
+    -stores={n}	  Φίλτρο με όνομα καταστήματος (πχ:-stores=steam / -stores=steres=steam, pic)
+    -status={n}	  Φίλτρο με κατάστασης παιχνιδιού (πχ: -status=έπαιξε / -status=played,playing)</sys:String>
 
 </ResourceDictionary>
