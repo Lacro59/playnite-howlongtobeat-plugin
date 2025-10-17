@@ -40,7 +40,7 @@ namespace HowLongToBeat.Services
             HowLongToBeatApi = new HowLongToBeatApi();
         }
 
-        internal override void LoadMoreData()
+        protected override void LoadMoreData()
         {
             Database.UserHltbData = HowLongToBeatApi.LoadUserData();
         }
