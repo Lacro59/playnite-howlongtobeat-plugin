@@ -209,7 +209,6 @@ namespace HowLongToBeat.Services
             });
         }
 
-
         private Guid? FindGoodPluginTags(HltbDataUser hltbDataUser)
         {
             long hltbTime = hltbDataUser.GameHltbData.TimeToBeat;
@@ -275,7 +274,6 @@ namespace HowLongToBeat.Services
         }
 
         #endregion
-
 
         #region User data
 
@@ -806,7 +804,6 @@ namespace HowLongToBeat.Services
             PluginSettings.Settings.TimeToBeat = gameHowLongToBeat.GetData().GameHltbData.TimeToBeat;
             PluginSettings.Settings.TimeToBeatFormat = gameHowLongToBeat.GetData().GameHltbData.TimeToBeatFormat;
         }
-
 
         public override void ActionAfterGames_ItemUpdated(Game gameOld, Game gameNew)
         {
