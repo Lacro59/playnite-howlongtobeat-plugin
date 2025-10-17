@@ -29,14 +29,20 @@ namespace HowLongToBeat.Services
         private static HowLongToBeatDatabase PluginDatabase => HowLongToBeat.PluginDatabase;
 
 
+        /// <summary>
+        /// Tool for managing cookies for HowLongToBeat sessions.
+        /// </summary>
         protected CookiesTools CookiesTools { get; }
+        /// <summary>
+        /// List of domains for which cookies are managed.
+        /// </summary>
         protected List<string> CookiesDomains { get; }
+        /// <summary>
+        /// Path to the file where cookies are stored.
+        /// </summary>
         internal string FileCookies { get; }
 
         private static string SearchId { get; set; } = null;
-
-        private static DateTime CookiesLastAccess { get; set; } = default;
-        private static List<HttpCookie> CookiesStored { get; set; } = null;
 
 
         #region Urls
@@ -69,16 +75,27 @@ namespace HowLongToBeat.Services
         #endregion
 
 
-        private bool? isConnected = null;
-        public bool? IsConnected { get => isConnected; set => SetValue(ref isConnected, value); }
+        private bool? _isConnected = null;
+        /// <summary>
+        /// Indicates if the user is currently connected (logged in).
+        /// </summary>
+        public bool? IsConnected { get => _isConnected; set => SetValue(ref _isConnected, value); }
 
-
+        /// <summary>
+        /// The username of the currently logged-in user.
+        /// </summary>
         public string UserLogin { get; set; } = string.Empty;
+        /// <summary>
+        /// The user ID of the currently logged-in user.
+        /// </summary>
         public int UserId { get; set; } = 0;
 
         private bool IsFirst = true;
 
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HowLongToBeatApi"/> class.
+        /// </summary>
         public HowLongToBeatApi()
         {
             UserLogin = PluginDatabase.PluginSettings.Settings.UserLogin;
@@ -95,6 +112,11 @@ namespace HowLongToBeat.Services
         }
 
 
+        /// <summary>
+        /// Retrieves game data from HowLongToBeat by game ID.
+        /// </summary>
+        /// <param name="id">The game ID.</param>
+        /// <returns>Returns <see cref="HltbData"/> with game times, or null if not found.</returns>
         private async Task<HltbData> GetGameData(string id)
         {
             try
@@ -166,6 +188,11 @@ namespace HowLongToBeat.Services
             return null;
         }
 
+        /// <summary>
+        /// Updates the HLTB data for a user game entry.
+        /// </summary>
+        /// <param name="hltbDataUser">The user game data to update.</param>
+        /// <returns>Returns the updated <see cref="HltbDataUser"/>.</returns>
         public async Task<HltbDataUser> UpdateGameData(HltbDataUser hltbDataUser)
         {
             try
@@ -184,6 +211,10 @@ namespace HowLongToBeat.Services
 
         #region Search
 
+        /// <summary>
+        /// Retrieves the search ID required for API search requests.
+        /// </summary>
+        /// <returns>Returns the search ID as a string.</returns>
         private async Task<string> GetSearchId()
         {
             if (!SearchId.IsNullOrEmpty())
@@ -214,6 +245,12 @@ namespace HowLongToBeat.Services
         }
 
 
+        /// <summary>
+        /// Searches for games on HowLongToBeat by name and platform.
+        /// </summary>
+        /// <param name="name">Game name to search for.</param>
+        /// <param name="platform">Optional platform filter.</param>
+        /// <returns>Returns a list of <see cref="HltbDataUser"/> matching the search.</returns>
         private async Task<List<HltbDataUser>> Search(string name, string platform = "")
         {
             try
@@ -255,6 +292,12 @@ namespace HowLongToBeat.Services
             }
         }
 
+        /// <summary>
+        /// Performs two search methods (normalized and original name) and merges results.
+        /// </summary>
+        /// <param name="name">Game name to search for.</param>
+        /// <param name="platform">Optional platform filter.</param>
+        /// <returns>Returns a list of <see cref="HltbSearch"/> with match percentages.</returns>
         public async Task<List<HltbSearch>> SearchTwoMethod(string name, string platform = "")
         {
             List<HltbDataUser> dataSearchNormalized = await Search(PlayniteTools.NormalizeGameName(name), platform);
@@ -271,6 +314,12 @@ namespace HowLongToBeat.Services
                 .ToList();
         }
 
+        /// <summary>
+        /// Performs an API search for games.
+        /// </summary>
+        /// <param name="name">Game name to search for.</param>
+        /// <param name="platform">Optional platform filter.</param>
+        /// <returns>Returns a <see cref="SearchResult"/> object.</returns>
         private async Task<SearchResult> ApiSearch(string name, string platform = "")
         {
             try
@@ -321,6 +370,12 @@ namespace HowLongToBeat.Services
         }
 
 
+        /// <summary>
+        /// Opens a selection window for the user to choose the correct game data.
+        /// </summary>
+        /// <param name="game">The Playnite game object.</param>
+        /// <param name="data">Optional list of search results.</param>
+        /// <returns>Returns a <see cref="GameHowLongToBeat"/> object if a selection is made, otherwise null.</returns>
         public GameHowLongToBeat SearchData(Game game, List<HltbDataUser> data = null)
         {
             Common.LogDebug(true, $"Search data for {game.Name}");
@@ -346,6 +401,10 @@ namespace HowLongToBeat.Services
 
         #region user account
 
+        /// <summary>
+        /// Checks if the user is currently logged in to HowLongToBeat.
+        /// </summary>
+        /// <returns>True if logged in, otherwise false.</returns>
         public bool GetIsUserLoggedIn()
         {
             if (UserId == 0)
@@ -369,6 +428,9 @@ namespace HowLongToBeat.Services
             return (bool)IsConnected;
         }
 
+        /// <summary>
+        /// Initiates the login process for HowLongToBeat.
+        /// </summary>
         public void Login()
         {
             Application.Current.Dispatcher.BeginInvoke((Action)delegate
@@ -433,7 +495,10 @@ namespace HowLongToBeat.Services
             };
         }
 
-
+        /// <summary>
+        /// Retrieves the user ID of the currently logged-in user.
+        /// </summary>
+        /// <returns>User ID as integer, or 0 if not logged in.</returns>
         private async Task<int> GetUserId()
         {
             try
@@ -450,7 +515,10 @@ namespace HowLongToBeat.Services
             }
         }
 
-
+        /// <summary>
+        /// Retrieves the list of games for the current user.
+        /// </summary>
+        /// <returns>Returns a <see cref="UserGamesList"/> object.</returns>
         private async Task<UserGamesList> GetUserGamesList()
         {
             try
@@ -472,7 +540,11 @@ namespace HowLongToBeat.Services
             }
         }
 
-
+        /// <summary>
+        /// Converts a <see cref="GamesList"/> entry to a <see cref="TitleList"/>.
+        /// </summary>
+        /// <param name="gamesList">The games list entry.</param>
+        /// <returns>Returns a <see cref="TitleList"/> object.</returns>
         private TitleList GetTitleList(GamesList gamesList)
         {
             try
@@ -551,6 +623,12 @@ namespace HowLongToBeat.Services
             }
         }
 
+        /// <summary>
+        /// Retrieves the edit data for a specific user game entry.
+        /// </summary>
+        /// <param name="gameName">The name of the game.</param>
+        /// <param name="userGameId">The user game ID.</param>
+        /// <returns>Returns an <see cref="EditData"/> object.</returns>
         public async Task<EditData> GetEditData(string gameName, string userGameId)
         {
             Logger.Info($"GetEditData({gameName}, {userGameId})");
@@ -591,7 +669,10 @@ namespace HowLongToBeat.Services
             }
         }
 
-
+        /// <summary>
+        /// Loads user stats from the local file.
+        /// </summary>
+        /// <returns>Returns a <see cref="HltbUserStats"/> object.</returns>
         public HltbUserStats LoadUserData()
         {
             string pathHltbUserStats = Path.Combine(PluginDatabase.Plugin.GetPluginUserDataPath(), "HltbUserStats.json");
@@ -616,7 +697,10 @@ namespace HowLongToBeat.Services
             return hltbDataUser;
         }
 
-
+        /// <summary>
+        /// Retrieves the user data from HowLongToBeat.
+        /// </summary>
+        /// <returns>Returns a <see cref="HltbUserStats"/> object, or null if not logged in.</returns>
         public HltbUserStats GetUserData()
         {
             if (GetIsUserLoggedIn())
@@ -662,6 +746,11 @@ namespace HowLongToBeat.Services
             }
         }
 
+        /// <summary>
+        /// Retrieves user data for a specific game by game ID.
+        /// </summary>
+        /// <param name="gameId">The game ID.</param>
+        /// <returns>Returns a <see cref="TitleList"/> object, or null if not found.</returns>
         public TitleList GetUserData(string gameId)
         {
             if (GetIsUserLoggedIn())
@@ -690,12 +779,21 @@ namespace HowLongToBeat.Services
             }
         }
 
-
+        /// <summary>
+        /// Checks if a user game ID exists in the user's games list.
+        /// </summary>
+        /// <param name="userGameId">The user game ID.</param>
+        /// <returns>True if the ID exists, otherwise false.</returns>
         public bool EditIdExist(string userGameId)
         {
             return GetUserGamesList()?.GetAwaiter().GetResult()?.Data?.GamesList?.Find(x => x.Id.ToString().IsEqual(userGameId))?.Id != null;
         }
 
+        /// <summary>
+        /// Finds the existing user game ID for a given game ID.
+        /// </summary>
+        /// <param name="gameId">The game ID.</param>
+        /// <returns>Returns the user game ID as a string, or null if not found.</returns>
         public string FindIdExisting(string gameId)
         {
             return GetUserGamesList()?.GetAwaiter().GetResult().Data?.GamesList?.Find(x => x.GameId.ToString().IsEqual(gameId))?.Id.ToString() ?? null;
@@ -705,10 +803,11 @@ namespace HowLongToBeat.Services
 
 
         /// <summary>
-        /// Post current data in HowLongToBeat website.
+        /// Submits the current game data to the HowLongToBeat website.
         /// </summary>
-        /// <param name="editData"></param>
-        /// <returns></returns>
+        /// <param name="game">The Playnite game object.</param>
+        /// <param name="editData">The data to submit.</param>
+        /// <returns>True if submission is successful, otherwise false.</returns>
         public async Task<bool> ApiSubmitData(Game game, EditData editData)
         {
             if (GetIsUserLoggedIn() && editData.UserId != 0 && editData.GameId != 0)
@@ -764,7 +863,9 @@ namespace HowLongToBeat.Services
             return false;
         }
 
-
+        /// <summary>
+        /// Updates the stored cookies for the current user session.
+        /// </summary>
         public void UpdatedCookies()
         {
             _ = Task.Run(() =>
