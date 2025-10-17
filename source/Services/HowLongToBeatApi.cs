@@ -300,7 +300,7 @@ namespace HowLongToBeat.Services
         /// <returns>Returns a list of <see cref="HltbSearch"/> with match percentages.</returns>
         public async Task<List<HltbSearch>> SearchTwoMethod(string name, string platform = "")
         {
-            List<HltbDataUser> dataSearchNormalized = await Search(PlayniteTools.NormalizeGameName(name), platform);
+            List<HltbDataUser> dataSearchNormalized = await Search(PlayniteTools.NormalizeGameName(name, true, true), platform);
             List<HltbDataUser> dataSearch = await Search(name, platform);
 
             List<HltbDataUser> dataSearchFinal = new List<HltbDataUser>();
