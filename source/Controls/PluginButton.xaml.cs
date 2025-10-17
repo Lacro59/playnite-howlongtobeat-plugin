@@ -20,10 +20,10 @@ namespace HowLongToBeat.Controls
     public partial class PluginButton : PluginUserControlExtend
     {
         private static HowLongToBeatDatabase PluginDatabase => HowLongToBeat.PluginDatabase;
-        internal override IPluginDatabase pluginDatabase => PluginDatabase;
+        protected override IPluginDatabase pluginDatabase => PluginDatabase;
 
         private PluginButtonDataContext ControlDataContext =  new PluginButtonDataContext();
-        internal override IDataContext controlDataContext
+        protected override IDataContext controlDataContext
         {
             get => ControlDataContext;
             set => ControlDataContext = (PluginButtonDataContext)controlDataContext;
@@ -73,7 +73,7 @@ namespace HowLongToBeat.Controls
         {
             GameHowLongToBeat gameHowLongToBeat = PluginDatabase.Get(GameContext);
 
-            if (gameHowLongToBeat.HasData || gameHowLongToBeat.HasDataEmpty)
+            if (gameHowLongToBeat.HasData)
             {
                 HowLongToBeatView ViewExtension = new HowLongToBeatView(gameHowLongToBeat);
                 Window windowExtension = PlayniteUiHelper.CreateExtensionWindow(PluginDatabase.PluginName, ViewExtension);

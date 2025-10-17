@@ -24,8 +24,8 @@
     <sys:String x:Key="LOCHltbSelectDataTypeRushed">Acelerado</sys:String>
     <sys:String x:Key="LOCHltbSelectDataTypeLeisure">Ocio</sys:String>
 
-    <sys:String x:Key="LOCHltbPreferredTimeToBeat">Preferred for time to beat</sys:String>
-    <sys:String x:Key="LOCHltbVisibleData">Select the time data visible</sys:String>
+    <sys:String x:Key="LOCHltbPreferredTimeToBeat">Tiempo preferido para superar</sys:String>
+    <sys:String x:Key="LOCHltbVisibleData"></sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarOptions">Opciones de la barra de progreso</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">Mostrar descripción de tiempo en la barra de progreso</sys:String>
@@ -67,8 +67,8 @@ Si ninguno tiene este estado, tomara el más reciente.</sys:String>
     <sys:String x:Key="LOCHowLongToBeatMainExtra">Principal + extra</sys:String>
     <sys:String x:Key="LOCHowLongToBeatCompletionist">Completista</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatSolo">Solo</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatCoOp">Co-Op</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatSolo">Un jugador</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatCoOp">Cooperativo</sys:String>
     <sys:String x:Key="LOCHowLongToBeatVs">Vs</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatPlaying">Jugado</sys:String>
@@ -112,8 +112,8 @@ Si ninguno tiene este estado, tomara el más reciente.</sys:String>
 
     <!-- MainView -->
 
-    <sys:String x:Key="LOCHowLongToBeat">HowLongToBeat</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatTitle">HowLongToBeat</sys:String>
+    <sys:String x:Key="LOCHowLongToBeat">Cuanto tiempo para vencer</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatTitle">Cuanto tiempo para vencer</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatPluginView">Ver datos de HowLongToBeat</sys:String>
     <sys:String x:Key="LOCHowLongToBeatPluginUserView">Ver los datos de usuario de HowLongToBeat</sys:String>
@@ -123,7 +123,7 @@ Si ninguno tiene este estado, tomara el más reciente.</sys:String>
     <sys:String x:Key="LOCHowLongToBeatSetCurrentTimeManualAll">Establecer tu tiempo de juego actual para todos los juegos</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatSetCurrentCompletedTimeManualOn">Establece tu tiempo de juego actual completado</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatSetCurrentMultiTimeManualOn"></sys:String>
+    <sys:String x:Key="LOCHowLongToBeatSetCurrentMultiTimeManualOn">Set your current muli playtime on</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatSetCurrentTime">¿Quieres enviar tu tiempo de juego actual?</sys:String>
 

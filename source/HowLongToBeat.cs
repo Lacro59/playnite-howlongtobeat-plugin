@@ -17,14 +17,12 @@ using CommonPluginsShared.PlayniteExtended;
 using CommonPluginsShared.Controls;
 using HowLongToBeat.Controls;
 using CommonPluginsControls.Views;
-using System.Diagnostics;
 using System.IO;
 using QuickSearch.SearchItems;
 using StartPage.SDK;
 using LiveCharts.Configurations;
 using CommonPluginsControls.LiveChartsCommon;
 using LiveCharts;
-using CommonPlayniteShared.Common;
 using Playnite.SDK.Data;
 using HowLongToBeat.Models.Enumerations;
 
@@ -85,8 +83,8 @@ namespace HowLongToBeat
             Charting.For<CustomerForSingle>(customerVmMapper);
         }
 
-
         #region Custom event
+
         public void OnCustomThemeButtonClick(object sender, RoutedEventArgs e)
         {
             try
@@ -116,10 +114,11 @@ namespace HowLongToBeat
                 Common.LogError(ex, false, true, PluginDatabase.PluginName);
             }
         }
+
         #endregion
 
-
         #region Theme integration
+
         // Button on top panel
         public override IEnumerable<TopPanelItem> GetTopPanelItems()
         {
@@ -154,10 +153,11 @@ namespace HowLongToBeat
                 SidebarItem
             };
         }
+
         #endregion
 
-
         #region StartPageExtension
+
         public StartPageExtensionArgs GetAvailableStartPageViews()
         {
             List<StartPageViewArgsBase> views = new List<StartPageViewArgsBase> {
@@ -194,10 +194,11 @@ namespace HowLongToBeat
         {
 
         }
+
         #endregion
 
-
         #region Menus
+
         // To add new game menu items override GetGameMenuItems
         public override IEnumerable<GameMenuItem> GetGameMenuItems(GetGameMenuItemsArgs args)
         {
@@ -215,7 +216,7 @@ namespace HowLongToBeat
                         try
                         {
                             gameHowLongToBeat = PluginDatabase.Get(gameMenu);
-                            if (gameHowLongToBeat.HasData || gameHowLongToBeat.HasDataEmpty)
+                            if (gameHowLongToBeat.HasData)
                             {
                                 HowLongToBeatView ViewExtension = new HowLongToBeatView(gameHowLongToBeat);
                                 Window windowExtension = PlayniteUiHelper.CreateExtensionWindow(PluginDatabase.PluginName, ViewExtension);
@@ -231,7 +232,7 @@ namespace HowLongToBeat
                 }
             };
 
-            if (gameHowLongToBeat.HasData || gameHowLongToBeat.HasDataEmpty)
+            if (gameHowLongToBeat.HasData)
             {
                 HltbDataUser gameData = gameHowLongToBeat?.Items?.FirstOrDefault();
 
@@ -537,7 +538,7 @@ namespace HowLongToBeat
 
                     ListWithNoData ViewExtension = new ListWithNoData(PluginDatabase);
                     Window windowExtension = PlayniteUiHelper.CreateExtensionWindow(PluginDatabase.PluginName, ViewExtension, windowOptions);
-                    windowExtension.ShowDialog();
+                    windowExtension.Show();
                 }
             });
 
@@ -560,10 +561,11 @@ namespace HowLongToBeat
 
             return mainMenuItems;
         }
+        
         #endregion
 
-
         #region Game event
+
         public override void OnGameSelected(OnGameSelectedEventArgs args)
         {
             try
@@ -659,10 +661,12 @@ namespace HowLongToBeat
                 }
             }
         }
+
         #endregion
 
 
         #region Application event
+
         // Add code to be executed when Playnite is initialized.
         public override void OnApplicationStarted(OnApplicationStartedEventArgs args)
         {
@@ -745,8 +749,8 @@ namespace HowLongToBeat
         {
             
         }
-        #endregion
 
+        #endregion
 
         // Add code to be executed when library is updated.
         public override void OnLibraryUpdated(OnLibraryUpdatedEventArgs args)
@@ -759,8 +763,8 @@ namespace HowLongToBeat
             }
         }
 
-
         #region Settings
+
         public override ISettings GetSettings(bool firstRunSettings)
         {
             return PluginSettings;
@@ -770,6 +774,7 @@ namespace HowLongToBeat
         {
             return new HowLongToBeatSettingsView(PluginSettings.Settings);
         }
+
         #endregion
     }
 }

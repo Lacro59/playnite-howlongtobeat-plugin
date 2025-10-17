@@ -409,7 +409,7 @@ namespace HowLongToBeat.Views
 
                 if (ListViewDataGames.ItemsSource == null)
                 {
-                    ListViewDataGames.ItemsSource = PluginDatabase.Database.Where(x => x.HasData && !x.HasDataEmpty && !x.Hidden)
+                    ListViewDataGames.ItemsSource = PluginDatabase.Database.Where(x => !x.HasDataEmpty && !x.Hidden)
                           .Select(x => new PlayniteData
                           {
                               GameContext = API.Instance.Database.Games.Get(x.Id),

@@ -126,7 +126,7 @@ namespace HowLongToBeat.Models
 
         private List<KeyValuePair<Guid, GameHowLongToBeat>> GetDb(ConcurrentDictionary<Guid, GameHowLongToBeat> db)
         {
-            return db.Where(x => API.Instance.Database.Games.Get(x.Key) != null && x.Value.HasData).ToList();
+            return db.Where(x => API.Instance.Database.Games.Get(x.Key) != null && !x.Value.HasDataEmpty).ToList();
         }
 
 

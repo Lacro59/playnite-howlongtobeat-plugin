@@ -17,15 +17,15 @@
 
     <sys:String x:Key="LOCHltbEnableProgressBarInDataView">Просмотр индикатора прогресса при просмотре данных Playnite</sys:String>
 
-    <sys:String x:Key="LOCHltbSelectDataType">Select the data type:</sys:String>
-    <sys:String x:Key="LOCHltbSelectDataTypeClassic">Classic</sys:String>
-    <sys:String x:Key="LOCHltbSelectDataTypeAverage">Average</sys:String>
+    <sys:String x:Key="LOCHltbSelectDataType">Выберите тип данных:</sys:String>
+    <sys:String x:Key="LOCHltbSelectDataTypeClassic">Классический</sys:String>
+    <sys:String x:Key="LOCHltbSelectDataTypeAverage">Средний</sys:String>
     <sys:String x:Key="LOCHltbSelectDataTypeMedian">Median</sys:String>
     <sys:String x:Key="LOCHltbSelectDataTypeRushed">Rushed</sys:String>
-    <sys:String x:Key="LOCHltbSelectDataTypeLeisure">Leisure</sys:String>
+    <sys:String x:Key="LOCHltbSelectDataTypeLeisure">Неторопливый</sys:String>
 
-    <sys:String x:Key="LOCHltbPreferredTimeToBeat">Preferred for time to beat</sys:String>
-    <sys:String x:Key="LOCHltbVisibleData">Select the time data visible</sys:String>
+    <sys:String x:Key="LOCHltbPreferredTimeToBeat">Предпочтительное время для победы</sys:String>
+    <sys:String x:Key="LOCHltbVisibleData">Выберите отображаемое время</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarOptions">Настройки шкалы прогресса</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">Показывать время на шкале прогресса</sys:String>
@@ -35,7 +35,7 @@
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeBelow">Под шкалой</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeUser">Показывать HowLongToBeat время пользователя</sys:String>
 
-    <sys:String x:Key="LOCHltbUsedStartDateFromGameActivity">Used first game session from GameActivity plugin for start date</sys:String>
+    <sys:String x:Key="LOCHltbUsedStartDateFromGameActivity">Используется первая игровая сессия из плагина GameActivity для начальной даты</sys:String>
     
     <sys:String x:Key="LOCHowLongToBeatAutoSetCurrentPlayTime">Автоматически обновлять текущее время игры на HowLongToBeat после игрового сеанса</sys:String>
     <sys:String x:Key="LOCHowLongToBeatWithoutConfirmation">Без сообщения подтверждения</sys:String>

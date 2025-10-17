@@ -40,40 +40,16 @@ namespace HowLongToBeat.Services
             HowLongToBeatApi = new HowLongToBeatApi();
         }
 
-
-        protected override bool LoadDatabase()
+        internal override void LoadMoreData()
         {
-            try
-            {
-                Stopwatch stopWatch = new Stopwatch();
-                stopWatch.Start();
-
-                Database = new GameHowLongToBeatCollection(Paths.PluginDatabasePath);
-                Database.SetGameInfo<HltbDataUser>();
-
-                Database.UserHltbData = HowLongToBeatApi.LoadUserData();
-
-                DeleteDataWithDeletedGame();
-
-                stopWatch.Stop();
-                TimeSpan ts = stopWatch.Elapsed;
-                Logger.Info($"LoadDatabase with {Database.Count} items - {string.Format("{0:00}:{1:00}.{2:00}", ts.Minutes, ts.Seconds, ts.Milliseconds / 10)}");
-            }
-            catch (Exception ex)
-            {
-                Common.LogError(ex, false, true, "SuccessStory");
-                return false;
-            }
-
-            return true;
+            Database.UserHltbData = HowLongToBeatApi.LoadUserData();
         }
-
 
         public override GameHowLongToBeat Get(Guid id, bool onlyCache = false, bool force = false)
         {
             GameHowLongToBeat gameHowLongToBeat = GetOnlyCache(id);
 
-            if (!onlyCache && gameHowLongToBeat != null && !gameHowLongToBeat.HasData && !gameHowLongToBeat.HasDataEmpty)
+            if (!onlyCache && gameHowLongToBeat != null && !gameHowLongToBeat.HasData)
             {
                 gameHowLongToBeat = null;
             }
@@ -131,53 +107,10 @@ namespace HowLongToBeat.Services
 
                 if (data.Count > 0 && PluginSettings.Settings.ShowWhenMismatch)
                 {
-                    _ = Get(game, false, true);
+                    gameHowLongToBeat = HowLongToBeatApi.SearchData(game, data?.Select(x => x.Data).ToList());
+                    AddOrUpdate(gameHowLongToBeat);
                 }
             }
-        }
-
-        public void RefreshAll()
-        {
-            GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions($"{PluginName} - {ResourceProvider.GetString("LOCCommonProcessing")}")
-            {
-                Cancelable = true,
-                IsIndeterminate = false
-            };
-
-            _ = API.Instance.Dialogs.ActivateGlobalProgress((a) =>
-            {
-                Stopwatch stopWatch = new Stopwatch();
-                stopWatch.Start();
-
-                string CancelText = string.Empty;
-
-                IEnumerable<GameHowLongToBeat> db = Database.Where(x => x.HasData);
-                a.ProgressMaxValue = (double)db.Count();
-
-                foreach (GameHowLongToBeat item in db)
-                {
-                    Game game = item.Game;
-                    a.Text = $"{PluginName} - {ResourceProvider.GetString("LOCCommonProcessing")}"
-                        + "\n\n" + $"{a.CurrentProgressValue}/{a.ProgressMaxValue}"
-                        + "\n" + game?.Name + (game?.Source == null ? string.Empty : $" ({game?.Source.Name})");
-
-                    if (a.CancelToken.IsCancellationRequested)
-                    {
-                        break;
-                    }
-
-                    if (item.DateLastRefresh.AddMonths(1) < DateTime.Now)
-                    {
-                        RefreshNoLoader(item.Id);
-                    }
-
-                    a.CurrentProgressValue++;
-                }
-
-                stopWatch.Stop();
-                TimeSpan ts = stopWatch.Elapsed;
-                Logger.Info($"Task RefreshAll(){CancelText} - {string.Format("{0:00}:{1:00}.{2:00}", ts.Minutes, ts.Seconds, ts.Milliseconds / 10)} for {a.CurrentProgressValue}/{(double)db.Count()} items");
-            }, globalProgressOptions);
         }
 
         public override void RefreshNoLoader(Guid id)
@@ -229,6 +162,7 @@ namespace HowLongToBeat.Services
 
 
         #region Tag
+
         public override void AddTag(Game game)
         {
             GameHowLongToBeat item = Get(game, true);
@@ -274,7 +208,6 @@ namespace HowLongToBeat.Services
                 game.OnPropertyChanged();
             });
         }
-
 
         private Guid? FindGoodPluginTags(HltbDataUser hltbDataUser)
         {
@@ -339,10 +272,11 @@ namespace HowLongToBeat.Services
 
             return null;
         }
+
         #endregion
 
-
         #region User data
+
         public TitleList GetUserHltbData(string hltbId)
         {
             try
@@ -381,7 +315,7 @@ namespace HowLongToBeat.Services
         {
             try
             {
-                return Database.UserHltbData.TitlesList == null || Database.UserHltbData.TitlesList.Count == 0
+                return Database.UserHltbData?.TitlesList == null || Database.UserHltbData.TitlesList.Count == 0
                     ? null
                     : Database.UserHltbData.TitlesList.FindAll(x => x.Id == hltbId).ToList();
             }
@@ -614,6 +548,7 @@ namespace HowLongToBeat.Services
                         string storefrontName = string.Empty;
 
                         #region Search platform
+
                         Platform platform = game.Platforms?.FirstOrDefault();
                         if (platform == default)
                         {
@@ -642,9 +577,11 @@ namespace HowLongToBeat.Services
                                () => Plugin.OpenSettingsView()
                             ));
                         }
+
                         #endregion
 
                         #region Search storefront
+
                         Storefront storefront = PluginSettings.Settings.StorefrontElements.FirstOrDefault(x => x.SourceId != default && x.SourceId == game.SourceId);
                         if (storefront != null)
                         {
@@ -654,9 +591,11 @@ namespace HowLongToBeat.Services
                         {
                             Logger.Warn($"No storefront find for {game.Name}");
                         }
+
                         #endregion
 
                         #region Get current data from HowLongToBeat
+
                         HltbDataUser hltbDataUser = gameHowLongToBeat.GetData();
                         TitleList HltbData = GetUserHltbDataCurrent(hltbDataUser.Id, gameHowLongToBeat.UserGameId);
                         EditData editData = new EditData();
@@ -690,13 +629,15 @@ namespace HowLongToBeat.Services
                             Logger.Warn($"No editData for {game.Name}");
                             return false;
                         }
+
                         #endregion
 
                         #region Data
+
                         editData.UserId = Database.UserHltbData.UserId;
                         editData.SubmissionId = int.Parse(submissionId);
                         editData.GameId = int.Parse(hltbDataUser.Id);
-                        editData.Title = hltbDataUser.Name;
+                        editData.Title = editData.Title.IsNullOrEmpty() ? hltbDataUser.Name : editData.Title;
                         editData.Platform = platformName;
                         editData.Storefront = editData.Storefront.IsNullOrEmpty() ? storefrontName : editData.Storefront;
 
@@ -798,6 +739,7 @@ namespace HowLongToBeat.Services
                         editData.General.Progress.Hours = time.Hours + (24 * time.Days);
                         editData.General.Progress.Minutes = time.Minutes;
                         editData.General.Progress.Seconds = time.Seconds;
+
                         #endregion
 
                         return HowLongToBeatApi.ApiSubmitData(game, editData).GetAwaiter().GetResult();
@@ -821,6 +763,7 @@ namespace HowLongToBeat.Services
 
             return false;
         }
+
         #endregion
 
 
@@ -831,6 +774,7 @@ namespace HowLongToBeat.Services
             if (gameHowLongToBeat == null || !gameHowLongToBeat.HasData)
             {
                 PluginSettings.Settings.HasData = false;
+                PluginSettings.Settings.HasDataEmpty = true;
                 PluginSettings.Settings.MainStory = 0;
                 PluginSettings.Settings.MainStoryFormat = "--";
                 PluginSettings.Settings.MainExtra = 0;
@@ -851,6 +795,7 @@ namespace HowLongToBeat.Services
             }
 
             PluginSettings.Settings.HasData = gameHowLongToBeat.HasData;
+            PluginSettings.Settings.HasDataEmpty = gameHowLongToBeat.HasDataEmpty;
             PluginSettings.Settings.MainStory = gameHowLongToBeat.GetData().GameHltbData.MainStory;
             PluginSettings.Settings.MainStoryFormat = gameHowLongToBeat.GetData().GameHltbData.MainStoryFormat;
             PluginSettings.Settings.MainExtra = gameHowLongToBeat.GetData().GameHltbData.MainExtra;
@@ -867,7 +812,6 @@ namespace HowLongToBeat.Services
             PluginSettings.Settings.TimeToBeat = gameHowLongToBeat.GetData().GameHltbData.TimeToBeat;
             PluginSettings.Settings.TimeToBeatFormat = gameHowLongToBeat.GetData().GameHltbData.TimeToBeatFormat;
         }
-
 
         public override void ActionAfterGames_ItemUpdated(Game gameOld, Game gameNew)
         {

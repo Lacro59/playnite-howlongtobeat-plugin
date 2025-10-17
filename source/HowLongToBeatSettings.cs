@@ -20,6 +20,7 @@ namespace HowLongToBeat
     public class HowLongToBeatSettings : PluginSettings
     {
         #region Settings variables
+
         public bool EnableIntegrationButtonHeader { get; set; } = false;
         public bool EnableIntegrationButtonSide { get; set; } = true;
 
@@ -140,21 +141,28 @@ namespace HowLongToBeat
         public Guid GameStatusPlaying { get; set; }
         public Guid GameStatusCompleted { get; set; }
         public Guid GameStatusCompletionist { get; set; }
-        #endregion
 
+        #endregion
 
         #region Settings StartPage
+
         private HltbChartStatsOptions _hltbChartStatsOptions = new HltbChartStatsOptions();
         public HltbChartStatsOptions hltbChartStatsOptions { get => _hltbChartStatsOptions; set => SetValue(ref _hltbChartStatsOptions, value); }
-        #endregion
 
+        #endregion
 
         // Playnite serializes settings object to a JSON object and saves it as text file.
         // If you want to exclude some property from being saved then use `JsonDontSerialize` ignore attribute.
         #region Variables exposed
+
+        private bool _hasDataEmpty = true;
+        [DontSerialize]
+        public bool HasDataEmpty { get => _hasDataEmpty; set => SetValue(ref _hasDataEmpty, value); }
+
         private long _mainStory = 0;
         [DontSerialize]
         public long MainStory { get => _mainStory; set => SetValue(ref _mainStory, value); }
+
         private string _mainStoryFormat = string.Empty;
         [DontSerialize]
         public string MainStoryFormat { get => _mainStoryFormat; set => SetValue(ref _mainStoryFormat, value); }
@@ -162,6 +170,7 @@ namespace HowLongToBeat
         private long _mainExtra = 0;
         [DontSerialize]
         public long MainExtra { get => _mainExtra; set => SetValue(ref _mainExtra, value); }
+
         private string _mainExtraFormat = string.Empty;
         [DontSerialize]
         public string MainExtraFormat { get => _mainExtraFormat; set => SetValue(ref _mainExtraFormat, value); }
@@ -169,6 +178,7 @@ namespace HowLongToBeat
         private long _completionist = 0;
         [DontSerialize]
         public long Completionist { get => _completionist; set => SetValue(ref _completionist, value); }
+
         private string _completionistFormat = string.Empty;
         [DontSerialize]
         public string CompletionistFormat { get => _completionistFormat; set => SetValue(ref _completionistFormat, value); }
@@ -176,6 +186,7 @@ namespace HowLongToBeat
         private long _solo = 0;
         [DontSerialize]
         public long Solo { get => _solo; set => SetValue(ref _solo, value); }
+
         private string _soloFormat = string.Empty;
         [DontSerialize]
         public string SoloFormat { get => _soloFormat; set => SetValue(ref _soloFormat, value); }
@@ -183,6 +194,7 @@ namespace HowLongToBeat
         private long _coOp = 0;
         [DontSerialize]
         public long CoOp { get => _coOp; set => SetValue(ref _coOp, value); }
+
         private string _coOpFormat = string.Empty;
         [DontSerialize]
         public string CoOpFormat { get => _coOpFormat; set => SetValue(ref _coOpFormat, value); }
@@ -190,6 +202,7 @@ namespace HowLongToBeat
         private long _vs = 0;
         [DontSerialize]
         public long Vs { get => _vs; set => SetValue(ref _vs, value); }
+
         private string _vsFormat = string.Empty;
         [DontSerialize]
         public string VsFormat { get => _vsFormat; set => SetValue(ref _vsFormat, value); }
@@ -198,9 +211,11 @@ namespace HowLongToBeat
         private long _timeToBeat = 0;
         [DontSerialize]
         public long TimeToBeat { get => _timeToBeat; set => SetValue(ref _timeToBeat, value); }
+
         private string _timeToBeatFormat = string.Empty;
         [DontSerialize]
         public string TimeToBeatFormat { get => _timeToBeatFormat; set => SetValue(ref _timeToBeatFormat, value); }
+
         #endregion  
     }
 
@@ -210,8 +225,8 @@ namespace HowLongToBeat
         private readonly HowLongToBeat Plugin;
         private HowLongToBeatSettings EditingClone { get; set; }
 
-        private HowLongToBeatSettings settings;
-        public HowLongToBeatSettings Settings { get => settings; set => SetValue(ref settings, value); }
+        private HowLongToBeatSettings _settings;
+        public HowLongToBeatSettings Settings { get => _settings; set => SetValue(ref _settings, value); }
 
 
         public HowLongToBeatSettingsViewModel(HowLongToBeat plugin)
