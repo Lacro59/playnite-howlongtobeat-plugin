@@ -548,6 +548,7 @@ namespace HowLongToBeat.Services
                         string storefrontName = string.Empty;
 
                         #region Search platform
+
                         Platform platform = game.Platforms?.FirstOrDefault();
                         if (platform == default)
                         {
@@ -576,9 +577,11 @@ namespace HowLongToBeat.Services
                                () => Plugin.OpenSettingsView()
                             ));
                         }
+
                         #endregion
 
                         #region Search storefront
+
                         Storefront storefront = PluginSettings.Settings.StorefrontElements.FirstOrDefault(x => x.SourceId != default && x.SourceId == game.SourceId);
                         if (storefront != null)
                         {
@@ -588,9 +591,11 @@ namespace HowLongToBeat.Services
                         {
                             Logger.Warn($"No storefront find for {game.Name}");
                         }
+
                         #endregion
 
                         #region Get current data from HowLongToBeat
+
                         HltbDataUser hltbDataUser = gameHowLongToBeat.GetData();
                         TitleList HltbData = GetUserHltbDataCurrent(hltbDataUser.Id, gameHowLongToBeat.UserGameId);
                         EditData editData = new EditData();
@@ -624,13 +629,15 @@ namespace HowLongToBeat.Services
                             Logger.Warn($"No editData for {game.Name}");
                             return false;
                         }
+
                         #endregion
 
                         #region Data
+
                         editData.UserId = Database.UserHltbData.UserId;
                         editData.SubmissionId = int.Parse(submissionId);
                         editData.GameId = int.Parse(hltbDataUser.Id);
-                        editData.Title = hltbDataUser.Name;
+                        editData.Title = editData.Title.IsNullOrEmpty() ? hltbDataUser.Name : editData.Title;
                         editData.Platform = platformName;
                         editData.Storefront = editData.Storefront.IsNullOrEmpty() ? storefrontName : editData.Storefront;
 
@@ -732,6 +739,7 @@ namespace HowLongToBeat.Services
                         editData.General.Progress.Hours = time.Hours + (24 * time.Days);
                         editData.General.Progress.Minutes = time.Minutes;
                         editData.General.Progress.Seconds = time.Seconds;
+
                         #endregion
 
                         return HowLongToBeatApi.ApiSubmitData(game, editData).GetAwaiter().GetResult();
