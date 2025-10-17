@@ -353,3 +353,16 @@ Packages:
     PackageUrl: https://github.com/Lacro59/playnite-howlongtobeat-plugin/releases/download/v3.8.2/playnite-howlongtobeat-plugin_3_8_2.pext
     Changelog:
       - 'Fixed: Crash when starting Playnite'
+  - Version: 3.9
+    RequiredApiVersion: 6.8.0
+    ReleaseDate: 2025-10-17
+    PackageUrl: https://github.com/Lacro59/playnite-howlongtobeat-plugin/releases/download/v3.9/playnite-howlongtobeat-plugin_3_9.pext
+    Changelog:
+      - 'Updated: Localizations'
+      - 'Fixed: Search issues and missing game data (thanks to hcdd0304, McCovican, fewbucks)'
+      - 'Fixed: Games stuck in missing data state until manually downloaded (#291)'
+      - 'Fixed: Preferred time to beat (Completionist or MainStoryExtra) not working (#287)'
+      - 'Fixed: Updating game time removes custom title (#295)'
+      - 'Fixed: Crashes (thanks to SparrowBrain)'
+      - 'Optimized: Search data handling and mismatch tolerance'
+      - 'Optimized: Cookie management (thanks to Zidane33)'
