@@ -768,6 +768,7 @@ namespace HowLongToBeat.Services
             if (gameHowLongToBeat == null || !gameHowLongToBeat.HasData)
             {
                 PluginSettings.Settings.HasData = false;
+                PluginSettings.Settings.HasDataEmpty = true;
                 PluginSettings.Settings.MainStory = 0;
                 PluginSettings.Settings.MainStoryFormat = "--";
                 PluginSettings.Settings.MainExtra = 0;
@@ -788,6 +789,7 @@ namespace HowLongToBeat.Services
             }
 
             PluginSettings.Settings.HasData = gameHowLongToBeat.HasData;
+            PluginSettings.Settings.HasDataEmpty = gameHowLongToBeat.HasDataEmpty;
             PluginSettings.Settings.MainStory = gameHowLongToBeat.GetData().GameHltbData.MainStory;
             PluginSettings.Settings.MainStoryFormat = gameHowLongToBeat.GetData().GameHltbData.MainStoryFormat;
             PluginSettings.Settings.MainExtra = gameHowLongToBeat.GetData().GameHltbData.MainExtra;
