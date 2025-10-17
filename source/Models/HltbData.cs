@@ -1,7 +1,6 @@
 ﻿using CommonPluginsShared.Converters;
 using HowLongToBeat.Models.Enumerations;
 using HowLongToBeat.Services;
-using Playnite.SDK;
 using Playnite.SDK.Data;
 using System.Collections.Generic;
 using System.Globalization;
@@ -314,6 +313,31 @@ namespace HowLongToBeat.Models
             {
                 if (GameType != GameType.Multi)
                 {
+                    switch (PluginDatabase.PluginSettings.Settings.PreferredForTimeToBeat)
+                    {
+                        case TimeType.MainStory:
+                            if (MainStory != 0)
+                            {
+                                return MainStory;
+                            }
+                            break;
+                        case TimeType.MainStoryExtra:
+                            if (MainExtra != 0)
+                            {
+                                return MainExtra;
+                            }
+                            break;
+                        case TimeType.Completionist:
+                            if (Completionist != 0)
+                            {
+                                return Completionist;
+                            }
+                            break;
+
+                        default:
+                            break;
+                    }
+
                     if (MainStory != 0)
                     {
                         return MainStory;
