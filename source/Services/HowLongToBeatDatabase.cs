@@ -1,22 +1,23 @@
-﻿using HowLongToBeat.Models;
+﻿using CommonPlayniteShared.Common;
+using CommonPluginsShared;
+using CommonPluginsShared.Collections;
+using CommonPluginsShared.Extensions;
+using HowLongToBeat.Models;
+using HowLongToBeat.Models.Api;
+using HowLongToBeat.Models.Enumerations;
+using HowLongToBeat.Models.GameActivity;
 using Playnite.SDK;
 using Playnite.SDK.Data;
 using Playnite.SDK.Models;
-using CommonPluginsShared.Collections;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using CommonPluginsShared;
-using CommonPlayniteShared.Common;
-using CommonPluginsShared.Extensions;
-using HowLongToBeat.Models.Api;
-using HowLongToBeat.Models.GameActivity;
-using HowLongToBeat.Models.Enumerations;
 
 namespace HowLongToBeat.Services
 {

@@ -816,6 +816,10 @@ namespace HowLongToBeat.Services
                 {
                     List<HttpCookie> cookies = CookiesTools.GetStoredCookies();
                     string payload = Serialization.ToJson(editData);
+                    List<KeyValuePair<string, string>> moreHeaders = new List<KeyValuePair<string, string>>
+                    {
+                        new KeyValuePair<string, string>("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36")
+                    };
                     string response = await Web.PostStringDataPayload(UrlPostData, payload, cookies);
 
                     // Check errors
