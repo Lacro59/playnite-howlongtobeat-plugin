@@ -366,3 +366,9 @@ Packages:
       - 'Fixed: Crashes (thanks to SparrowBrain)'
       - 'Optimized: Search data handling and mismatch tolerance'
       - 'Optimized: Cookie management (thanks to Zidane33)'
+  - Version: 3.9.1
+    RequiredApiVersion: 6.8.0
+    ReleaseDate: 2025-10-20
+    PackageUrl: https://github.com/Lacro59/playnite-howlongtobeat-plugin/releases/download/v3.9.1/playnite-howlongtobeat-plugin_3_9_1.pext
+    Changelog:
+      - 'Fixed: HLTB cookies issue'
