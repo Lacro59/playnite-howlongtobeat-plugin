@@ -147,12 +147,12 @@
                                                         <StackPanel>
                                                             <StackPanel Orientation="Horizontal" Visibility="{Binding GameExist, Converter={StaticResource BooleanToVisibilityConverter}}">
                                                                 <TextBlock Visibility="{Binding IsRetired, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                                        <Hyperlink Command="{Binding GoToGame}" CommandParameter="{Binding GameId}">
-                                                            <TextBlock Text="{Binding GameName}" TextDecorations="Strikethrough"
-                                                                       Style="{DynamicResource ListExtendStyleTextBlock}" />
-                                                        </Hyperlink>
-                                                    </TextBlock>
-
+                                                                    <Hyperlink Command="{Binding GoToGame}" CommandParameter="{Binding GameId}">
+                                                                        <TextBlock Text="{Binding GameName}" TextDecorations="Strikethrough"
+                                                                                   Style="{DynamicResource ListExtendStyleTextBlock}" />
+                                                                    </Hyperlink>
+                                                                </TextBlock>
+                                                                
                                                                 <TextBlock>
                                                                     <TextBlock.Style>
                                                                         <Style TargetType="TextBlock">
@@ -168,28 +168,28 @@
                                                                         </Style>
                                                                     </TextBlock.Style>
                                             
-                                                        <Hyperlink Command="{Binding GoToGame}" CommandParameter="{Binding GameId}">
-                                                            <TextBlock Text="{Binding GameName}"
-                                                                       Style="{DynamicResource ListExtendStyleTextBlock}" />
-                                                        </Hyperlink>
-                                                    </TextBlock>
-
+                                                                    <Hyperlink Command="{Binding GoToGame}" CommandParameter="{Binding GameId}">
+                                                                        <TextBlock Text="{Binding GameName}"
+                                                                                   Style="{DynamicResource ListExtendStyleTextBlock}" />
+                                                                    </Hyperlink>
+                                                                </TextBlock>
+                                                                
                                                                 <TextBlock Visibility="{Binding IsReplay, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                                        <Hyperlink Command="{Binding GoToGame}" CommandParameter="{Binding GameId}">
-                                                            <TextBlock Text="{Binding GameName}"
-                                                                       Style="{DynamicResource ListExtendStyleTextBlock}" />
-                                                            <TextBlock Text="" FontFamily="{DynamicResource CommonFont}" 
-                                                                       Margin="10,0,0,0" 
-                                                                       Style="{DynamicResource ListExtendStyleTextBlock}" />
-                                                        </Hyperlink>
-                                                    </TextBlock>
+                                                                    <Hyperlink Command="{Binding GoToGame}" CommandParameter="{Binding GameId}">
+                                                                        <TextBlock Text="{Binding GameName}"
+                                                                                   Style="{DynamicResource ListExtendStyleTextBlock}" />
+                                                                        <TextBlock Text="" FontFamily="{DynamicResource CommonFont}" 
+                                                                                   Margin="10,0,0,0" 
+                                                                                   Style="{DynamicResource ListExtendStyleTextBlock}" />
+                                                                    </Hyperlink>
+                                                                </TextBlock>
                                                             </StackPanel>
 
                                                             <StackPanel Orientation="Horizontal" Visibility="{Binding GameExist, Converter={StaticResource InvertedBooleanToVisibilityConverter}}">
                                                                 <TextBlock Visibility="{Binding IsRetired, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                                            <TextBlock Text="{Binding GameName}" TextDecorations="Strikethrough"
-                                                                       Style="{DynamicResource ListExtendStyleTextBlock}" />
-                                                    </TextBlock>
+                                                                    <TextBlock Text="{Binding GameName}" TextDecorations="Strikethrough"
+                                                                               Style="{DynamicResource ListExtendStyleTextBlock}" />
+                                                                </TextBlock>
 
                                                                 <TextBlock>
                                                                     <TextBlock.Style>
@@ -206,36 +206,37 @@
                                                                         </Style>
                                                                     </TextBlock.Style>
                                             
-                                                      <TextBlock Text="{Binding GameName}"
-                                                                 Style="{DynamicResource ListExtendStyleTextBlock}" />
-                                                    </TextBlock>
+                                                                  <TextBlock Text="{Binding GameName}" Style="{DynamicResource ListExtendStyleTextBlock}" />
+                                                                </TextBlock>
 
                                                                 <TextBlock Visibility="{Binding IsReplay, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                                        <TextBlock Text="{Binding GameName}"
-                                                                   Style="{DynamicResource ListExtendStyleTextBlock}" />
-                                                        <TextBlock Text="" FontFamily="{DynamicResource CommonFont}" 
-                                                                    Margin="10,0,0,0" 
-                                                                    Style="{DynamicResource ListExtendStyleTextBlock}" />
-                                                    </TextBlock>
+                                                                    <TextBlock Text="{Binding GameName}" Style="{DynamicResource ListExtendStyleTextBlock}" />
+                                                                    <TextBlock Text="" FontFamily="{DynamicResource CommonFont}" 
+                                                                               Margin="10,0,0,0" 
+                                                                               Style="{DynamicResource ListExtendStyleTextBlock}" />
+                                                                </TextBlock>
                                                             </StackPanel>
                                                         </StackPanel>
                                                     </DataTemplate>
                                                 </GridViewColumn.CellTemplate>
                                             </GridViewColumn>
 
-                                            <GridViewColumn Width="120" DisplayMemberBinding="{Binding StartDate, Converter={StaticResource LocalDateConverter}}" x:Name="lvGameStartDate">
+                                            <GridViewColumn Width="120" DisplayMemberBinding="{Binding StartDate, Converter={StaticResource LocalDateConverter}}">
                                                 <GridViewColumnHeader Content="{DynamicResource LOCCommonStartDate}" />
                                             </GridViewColumn>
 
-                                            <GridViewColumn Width="120" DisplayMemberBinding="{Binding LastUpdate, Converter={StaticResource LocalDateConverter}}" x:Name="lvGameCompletion">
-                                                <GridViewColumnHeader Content="{DynamicResource LOCCommonLastUpdate}" />
+                                            <GridViewColumn Width="0" DisplayMemberBinding="{Binding LastUpdate}">
+                                                <controlsShared:GridViewColumnHeaderExtend Style="{StaticResource {x:Type GridViewColumnHeader}}" IsHitTestVisible="False" RefIndex="4" />
+                                            </GridViewColumn>
+                                            <GridViewColumn Width="120" DisplayMemberBinding="{Binding LastUpdate, Converter={StaticResource LocalDateConverter}}">
+                                                <GridViewColumnHeader Content="{DynamicResource LOCCommonLastUpdate}" Tag="LastUpdate" />
                                             </GridViewColumn>
 
-                                            <GridViewColumn Width="100" DisplayMemberBinding="{Binding Platform}" x:Name="lvGamePlatform">
+                                            <GridViewColumn Width="100" DisplayMemberBinding="{Binding Platform}">
                                                 <GridViewColumnHeader Content="{DynamicResource LOCPlatformTitle}" />
                                             </GridViewColumn>
 
-                                            <GridViewColumn Width="130" DisplayMemberBinding="{Binding Storefront}" x:Name="lvGameStorefront">
+                                            <GridViewColumn Width="130" DisplayMemberBinding="{Binding Storefront}">
                                                 <GridViewColumnHeader Content="{DynamicResource LOCHowLongToBeatStorefront}" />
                                             </GridViewColumn>
 
@@ -243,67 +244,67 @@
                                                 <GridViewColumnHeader Content="{DynamicResource LOCHowLongToBeatCompleted}" />
                                             </GridViewColumn>
 
-                                            <GridViewColumn Width="130" DisplayMemberBinding="{Binding CurrentTime, Converter={StaticResource PlayTimeToStringConverterWithZero}}" x:Name="lvGameCurrentTime">
+                                            <GridViewColumn Width="0" DisplayMemberBinding="{Binding CurrentTime}">
+                                                <controlsShared:GridViewColumnHeaderExtend Style="{StaticResource {x:Type GridViewColumnHeader}}" IsHitTestVisible="False" RefIndex="8" />
+                                            </GridViewColumn>
+                                            <GridViewColumn Width="130" DisplayMemberBinding="{Binding CurrentTime, Converter={StaticResource PlayTimeToStringConverterWithZero}}">
                                                 <GridViewColumnHeader Content="{DynamicResource LOCTimePlayed}" Tag="CurrentTime" />
                                             </GridViewColumn>
-                                            <GridViewColumn Width="0" DisplayMemberBinding="{Binding CurrentTime}">
-                                                <controlsShared:GridViewColumnHeaderExtend Style="{StaticResource {x:Type GridViewColumnHeader}}" IsHitTestVisible="False" RefIndex="4" />
-                                            </GridViewColumn>
 
+                                            <GridViewColumn Width="0" DisplayMemberBinding="{Binding TimeToBeat}">
+                                                <controlsShared:GridViewColumnHeaderExtend Style="{StaticResource {x:Type GridViewColumnHeader}}" IsHitTestVisible="False" RefIndex="10" />
+                                            </GridViewColumn>
                                             <GridViewColumn Width="130" DisplayMemberBinding="{Binding TimeToBeat, Converter={StaticResource PlayTimeToStringConverterWithZero}}">
                                                 <GridViewColumnHeader Content="{DynamicResource LOCHowLongToBeatTimeToBeat}" />
                                             </GridViewColumn>
-                                            <GridViewColumn Width="0" DisplayMemberBinding="{Binding TimeToBeat}">
-                                                <controlsShared:GridViewColumnHeaderExtend Style="{StaticResource {x:Type GridViewColumnHeader}}" IsHitTestVisible="False" />
-                                            </GridViewColumn>
 
-                                            <GridViewColumn Width="130" DisplayMemberBinding="{Binding RemainingTimeFormat}" x:Name="lvGameRemainingTime">
+                                            <GridViewColumn Width="0" DisplayMemberBinding="{Binding RemainingTime}">
+                                                <controlsShared:GridViewColumnHeaderExtend Style="{StaticResource {x:Type GridViewColumnHeader}}" IsHitTestVisible="False" RefIndex="12" />
+                                            </GridViewColumn>
+                                            <GridViewColumn Width="130" DisplayMemberBinding="{Binding RemainingTimeFormat}">
                                                 <GridViewColumnHeader Content="{DynamicResource LOCHltbRemainingTime}" Tag="RemainingTime" />
                                             </GridViewColumn>
-                                            <GridViewColumn Width="0" DisplayMemberBinding="{Binding RemainingTime}">
-                                                <controlsShared:GridViewColumnHeaderExtend Style="{StaticResource {x:Type GridViewColumnHeader}}" IsHitTestVisible="False" RefIndex="5" />
-                                            </GridViewColumn>
 
+                                            <GridViewColumn Width="0" DisplayMemberBinding="{Binding HltbUserData.MainStory}">
+                                                <controlsShared:GridViewColumnHeaderExtend Style="{StaticResource {x:Type GridViewColumnHeader}}" IsHitTestVisible="False" RefIndex="14" />
+                                            </GridViewColumn>
                                             <GridViewColumn Width="130" DisplayMemberBinding="{Binding HltbUserData.MainStoryFormat}">
                                                 <GridViewColumnHeader Content="{DynamicResource LOCHowLongToBeatMainStory}" Tag="HltbUserData.MainStory" />
                                             </GridViewColumn>
-                                            <GridViewColumn Width="0" DisplayMemberBinding="{Binding HltbUserData.MainStory}">
-                                                <controlsShared:GridViewColumnHeaderExtend Style="{StaticResource {x:Type GridViewColumnHeader}}" IsHitTestVisible="False" RefIndex="6" />
-                                            </GridViewColumn>
 
+                                            <GridViewColumn Width="0" DisplayMemberBinding="{Binding HltbUserData.MainExtra}">
+                                                <controlsShared:GridViewColumnHeaderExtend Style="{StaticResource {x:Type GridViewColumnHeader}}" IsHitTestVisible="False" RefIndex="16" />
+                                            </GridViewColumn>
                                             <GridViewColumn Width="130" DisplayMemberBinding="{Binding HltbUserData.MainExtraFormat}">
                                                 <GridViewColumnHeader Content="{DynamicResource LOCHowLongToBeatMainExtra}" Tag="HltbUserData.MainExtra" />
                                             </GridViewColumn>
-                                            <GridViewColumn Width="0" DisplayMemberBinding="{Binding HltbUserData.MainExtra}">
-                                                <controlsShared:GridViewColumnHeaderExtend Style="{StaticResource {x:Type GridViewColumnHeader}}" IsHitTestVisible="False" RefIndex="9" />
-                                            </GridViewColumn>
 
+                                            <GridViewColumn Width="0" DisplayMemberBinding="{Binding HltbUserData.Completionist}">
+                                                <controlsShared:GridViewColumnHeaderExtend Style="{StaticResource {x:Type GridViewColumnHeader}}" IsHitTestVisible="False" RefIndex="18" />
+                                            </GridViewColumn>
                                             <GridViewColumn Width="130" DisplayMemberBinding="{Binding HltbUserData.CompletionistFormat}">
                                                 <GridViewColumnHeader Content="{DynamicResource LOCHowLongToBeatCompletionist}" Tag="HltbUserData.Completionist" />
                                             </GridViewColumn>
-                                            <GridViewColumn Width="0" DisplayMemberBinding="{Binding HltbUserData.Completionist}">
-                                                <controlsShared:GridViewColumnHeaderExtend Style="{StaticResource {x:Type GridViewColumnHeader}}" IsHitTestVisible="False" RefIndex="11" />
-                                            </GridViewColumn>
 
+                                            <GridViewColumn Width="0" DisplayMemberBinding="{Binding HltbUserData.Solo}">
+                                                <controlsShared:GridViewColumnHeaderExtend Style="{StaticResource {x:Type GridViewColumnHeader}}" IsHitTestVisible="False" RefIndex="20" />
+                                            </GridViewColumn>
                                             <GridViewColumn Width="90" DisplayMemberBinding="{Binding HltbUserData.SoloFormat}">
                                                 <GridViewColumnHeader Content="{DynamicResource LOCHowLongToBeatSolo}" Tag="HltbUserData.Solo" />
                                             </GridViewColumn>
-                                            <GridViewColumn Width="0" DisplayMemberBinding="{Binding HltbUserData.Solo}">
-                                                <controlsShared:GridViewColumnHeaderExtend Style="{StaticResource {x:Type GridViewColumnHeader}}" IsHitTestVisible="False" RefIndex="13" />
-                                            </GridViewColumn>
 
+                                            <GridViewColumn Width="0" DisplayMemberBinding="{Binding HltbUserData.CoOp}">
+                                                <controlsShared:GridViewColumnHeaderExtend Style="{StaticResource {x:Type GridViewColumnHeader}}" IsHitTestVisible="False" RefIndex="22" />
+                                            </GridViewColumn>
                                             <GridViewColumn Width="90" DisplayMemberBinding="{Binding HltbUserData.CoOpFormat}">
                                                 <GridViewColumnHeader Content="{DynamicResource LOCHowLongToBeatCoOp}" Tag="HltbUserData.CoOp" />
                                             </GridViewColumn>
-                                            <GridViewColumn Width="0" DisplayMemberBinding="{Binding HltbUserData.CoOp}">
-                                                <controlsShared:GridViewColumnHeaderExtend Style="{StaticResource {x:Type GridViewColumnHeader}}" IsHitTestVisible="False" RefIndex="15" />
-                                            </GridViewColumn>
 
+                                            <GridViewColumn Width="0" DisplayMemberBinding="{Binding HltbUserData.Vs}">
+                                                <controlsShared:GridViewColumnHeaderExtend Style="{StaticResource {x:Type GridViewColumnHeader}}" IsHitTestVisible="False" RefIndex="24" />
+                                            </GridViewColumn>
                                             <GridViewColumn Width="90" DisplayMemberBinding="{Binding HltbUserData.VsFormat}">
                                                 <GridViewColumnHeader Content="{DynamicResource LOCHowLongToBeatVs}" Tag="HltbUserData.Vs" />
-                                            </GridViewColumn>
-                                            <GridViewColumn Width="0" DisplayMemberBinding="{Binding HltbUserData.Vs}">
-                                                <controlsShared:GridViewColumnHeaderExtend Style="{StaticResource {x:Type GridViewColumnHeader}}" IsHitTestVisible="False" RefIndex="17" />
                                             </GridViewColumn>
                                         </GridView>
                                     </ListView.View>

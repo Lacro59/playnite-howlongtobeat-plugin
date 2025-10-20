@@ -197,7 +197,7 @@ namespace HowLongToBeat.Views
                         }
                     }
                 }
-                else
+                else if (gameData?.GameHltbData != null)
                 {
                     Hltb_El0.Visibility = Visibility.Collapsed;
                     int ElIndicator = 0;
@@ -235,26 +235,29 @@ namespace HowLongToBeat.Views
                 TbRemainingTime.Text = rt > 0 ? (string)playTimeToStringConverterWithZero.Convert(rt, null, null, CultureInfo.CurrentCulture) : string.Empty;
 
                 // Type data
-                switch (gameHowLongToBeat.GetData().GameHltbData.DataType)
+                if (!gameHowLongToBeat?.HasDataEmpty ?? false)
                 {
-                    case DataType.Classic:
-                        Hltb_DataType.Text = ResourceProvider.GetString("LOCHltbSelectDataTypeClassic");
-                        break;
-                    case DataType.Average:
-                        Hltb_DataType.Text = ResourceProvider.GetString("LOCHltbSelectDataTypeAverage");
-                        break;
-                    case DataType.Median:
-                        Hltb_DataType.Text = ResourceProvider.GetString("LOCHltbSelectDataTypeMedian");
-                        break;
-                    case DataType.Rushed:
-                        Hltb_DataType.Text = ResourceProvider.GetString("LOCHltbSelectDataTypeRushed");
-                        break;
-                    case DataType.Leisure:
-                        Hltb_DataType.Text = ResourceProvider.GetString("LOCHltbSelectDataTypeLeisure");
-                        break;
-                    default:
-                        Hltb_DataType.Text = ResourceProvider.GetString("LOCHltbSelectDataTypeLeisure");
-                        break;
+                    switch (gameHowLongToBeat.GetData().GameHltbData.DataType)
+                    {
+                        case DataType.Classic:
+                            Hltb_DataType.Text = ResourceProvider.GetString("LOCHltbSelectDataTypeClassic");
+                            break;
+                        case DataType.Average:
+                            Hltb_DataType.Text = ResourceProvider.GetString("LOCHltbSelectDataTypeAverage");
+                            break;
+                        case DataType.Median:
+                            Hltb_DataType.Text = ResourceProvider.GetString("LOCHltbSelectDataTypeMedian");
+                            break;
+                        case DataType.Rushed:
+                            Hltb_DataType.Text = ResourceProvider.GetString("LOCHltbSelectDataTypeRushed");
+                            break;
+                        case DataType.Leisure:
+                            Hltb_DataType.Text = ResourceProvider.GetString("LOCHltbSelectDataTypeLeisure");
+                            break;
+                        default:
+                            Hltb_DataType.Text = ResourceProvider.GetString("LOCHltbSelectDataTypeLeisure");
+                            break;
+                    }
                 }
             }
             else
