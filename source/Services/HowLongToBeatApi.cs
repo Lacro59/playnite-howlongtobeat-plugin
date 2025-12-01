@@ -217,6 +217,7 @@ namespace HowLongToBeat.Services
         /// <returns>The search endpoint URL.</returns>
         private async Task<string> GetSearchUrl()
         {
+            // Fast path without locking
             if (!SearchUrl.IsNullOrEmpty())
             {
                 return SearchUrl;
@@ -225,9 +226,17 @@ namespace HowLongToBeat.Services
             try
             {
                 string url = UrlBase;
-                string response = await Web.DownloadStringData(url);
+                // Try to download the main page but guard with a short timeout so discovery is fast
+                var pageTask = Web.DownloadStringData(url);
+                var pageCompleted = await Task.WhenAny(pageTask, Task.Delay(ScriptDownloadTimeoutMs));
+                if (pageCompleted != pageTask)
+                {
+                    Logger.Warn($"Timeout {ScriptDownloadTimeoutMs}ms downloading {url}");
+                    return "/api/search";
+                }
+                string response = await pageTask;
 
-                var matches = Regex.Matches(response, @"src=""([^""]*?_app-[^""]*?\.js)""");
+                var matches = Regex.Matches(response, @"src=\"([^\"]*?_app-[^\"]*?\\.js)\"");
                 foreach (Match match in matches)
                 {
                     string scriptUrl = match.Groups[1].Value;
@@ -236,9 +245,17 @@ namespace HowLongToBeat.Services
                         scriptUrl = UrlBase + scriptUrl;
                     }
 
-                    string scriptContent = await Web.DownloadStringData(scriptUrl);
+                    // Download each script with a timeout to avoid long hangs
+                    var scriptTask = Web.DownloadStringData(scriptUrl);
+                    var completed = await Task.WhenAny(scriptTask, Task.Delay(ScriptDownloadTimeoutMs));
+                    if (completed != scriptTask)
+                    {
+                        Logger.Warn($"Timeout {ScriptDownloadTimeoutMs}ms downloading {scriptUrl}");
+                        continue;
+                    }
+                    string scriptContent = await scriptTask;
 
-                    var searchMatch = Regex.Match(scriptContent, @"fetch\s*\(\s*[""']\/api\/([a-zA-Z0-9_\/]+)[^""']*[""']\s*,\s*\{[^}]*method:\s*[""']POST[""']");
+                    var searchMatch = Regex.Match(scriptContent, @"fetch\s*\(\s*[\"\']\/api\/([a-zA-Z0-9_\/_]+)[^\"\']*[\"\']\s*,\s*\{[^}]*method:\s*[\"\']POST[\"\']");
                     if (searchMatch.Success)
                     {
                         string suffix = searchMatch.Groups[1].Value;
@@ -249,7 +266,14 @@ namespace HowLongToBeat.Services
 
                         if (suffix != "find")
                         {
-                            SearchUrl = "/api/" + suffix;
+                            // Ensure only one thread writes the cached SearchUrl
+                            lock (SearchUrlLock)
+                            {
+                                if (SearchUrl.IsNullOrEmpty())
+                                {
+                                    SearchUrl = "/api/" + suffix;
+                                }
+                            }
                             return SearchUrl;
                         }
                     }
@@ -279,9 +303,9 @@ namespace HowLongToBeat.Services
                 string response = await Web.DownloadStringData(url, headers);
 
                 var data = Serialization.FromJson<Dictionary<string, string>>(response);
-                if (data != null && data.ContainsKey("token"))
+                if (data != null && data.TryGetValue("token", out string token))
                 {
-                    return data["token"];
+                    return token;
                 }
             }
             catch (Exception ex)
@@ -387,6 +411,8 @@ namespace HowLongToBeat.Services
                 SearchResult searchResult;
                 using (HttpClient httpClient = new HttpClient())
                 {
+                    // Keep the HTTP call reasonably short in case site blocks or is slow
+                    httpClient.Timeout = TimeSpan.FromSeconds(15);
                     httpHeaders.ForEach(x =>
                     {
                         httpClient.DefaultRequestHeaders.Add(x.Key, x.Value);
