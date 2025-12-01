@@ -91,6 +91,8 @@ namespace HowLongToBeat.Services
         public int UserId { get; set; } = 0;
 
         private bool IsFirst = true;
+        private const int MaxParallelGameDataDownloads = 8;
+        private const int GameDataDownloadTimeoutMs = 15000;
 
 
         /// <summary>
@@ -173,12 +175,41 @@ namespace HowLongToBeat.Services
                         VsLeisure = gameData.InvestedMpH
                     };
                     return hltbData;
-                }
-                else
-                {
-                    Logger.Warn($"No GameData find with {id}");
-                    return null;
-                }
+
+                    // Fetch game detail pages in parallel with a bounded degree of concurrency
+                    var semaphore = new SemaphoreSlim(MaxParallelGameDataDownloads);
+                    var fetchTasks = search.Select(async x =>
+                    {
+                        await semaphore.WaitAsync();
+                        try
+                        {
+                            // Wrap GetGameData with a timeout so a slow page won't block the whole import
+                            var task = GetGameData(x.Id);
+                            var completed = await Task.WhenAny(task, Task.Delay(GameDataDownloadTimeoutMs));
+                            if (completed == task)
+                            {
+                                x.GameHltbData = await task;
+                            }
+                            else
+                            {
+                                Logger.Warn($"GetGameData timeout for id {x.Id}");
+                                x.GameHltbData = null;
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Common.LogError(ex, false, true, PluginDatabase.PluginName);
+                            x.GameHltbData = null;
+                        }
+                        finally
+                        {
+                            semaphore.Release();
+                        }
+                    }).ToList();
+
+                    await Task.WhenAll(fetchTasks);
+
+                    return search;
             }
             catch (Exception ex)
             {
