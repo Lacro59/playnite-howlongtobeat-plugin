@@ -42,7 +42,7 @@ namespace HowLongToBeat.Services
         /// </summary>
         internal string FileCookies { get; }
 
-        private static string SearchId { get; set; } = null;
+        private static string SearchUrl { get; set; } = null;
 
 
         #region Urls
@@ -212,28 +212,47 @@ namespace HowLongToBeat.Services
         #region Search
 
         /// <summary>
-        /// Retrieves the search ID required for API search requests.
+        /// Retrieves the search URL from the website scripts.
         /// </summary>
-        /// <returns>Returns the search ID as a string.</returns>
-        private async Task<string> GetSearchId()
+        /// <returns>The search endpoint URL.</returns>
+        private async Task<string> GetSearchUrl()
         {
-            if (!SearchId.IsNullOrEmpty())
+            if (!SearchUrl.IsNullOrEmpty())
             {
-                return SearchId;
+                return SearchUrl;
             }
 
             try
             {
                 string url = UrlBase;
-                var data = await Web.DownloadSourceDataWebView(url);
-                string response = data.Item1;
-                string js = Regex.Match(response, @"submit-\w*.js").Value;
-                if (!js.IsNullOrEmpty())
+                string response = await Web.DownloadStringData(url);
+
+                var matches = Regex.Matches(response, @"src=""([^""]*?_app-[^""]*?\.js)""");
+                foreach (Match match in matches)
                 {
-                    url += $"/_next/static/chunks/pages/{js}";
-                    response = await Web.DownloadStringData(url);
-                    Match matches = Regex.Match(response, $"\"{SearchEndPoint}/\".concat[(]\"(\\w*)\"[)].concat[(]\"(\\w*)\"[)]");
-                    SearchId = matches.Groups[1].Value + matches.Groups[2].Value;
+                    string scriptUrl = match.Groups[1].Value;
+                    if (!scriptUrl.StartsWith("http"))
+                    {
+                        scriptUrl = UrlBase + scriptUrl;
+                    }
+
+                    string scriptContent = await Web.DownloadStringData(scriptUrl);
+
+                    var searchMatch = Regex.Match(scriptContent, @"fetch\s*\(\s*[""']\/api\/([a-zA-Z0-9_\/]+)[^""']*[""']\s*,\s*\{[^}]*method:\s*[""']POST[""']");
+                    if (searchMatch.Success)
+                    {
+                        string suffix = searchMatch.Groups[1].Value;
+                        if (suffix.Contains("/"))
+                        {
+                            suffix = suffix.Split('/')[0];
+                        }
+
+                        if (suffix != "find")
+                        {
+                            SearchUrl = "/api/" + suffix;
+                            return SearchUrl;
+                        }
+                    }
                 }
             }
             catch (Exception ex)
@@ -241,7 +260,35 @@ namespace HowLongToBeat.Services
                 Common.LogError(ex, false, true, PluginDatabase.PluginName);
             }
 
-            return SearchId;
+            return "/api/search";
+        }
+
+        /// <summary>
+        /// Retrieves the authentication token.
+        /// </summary>
+        /// <returns>The auth token.</returns>
+        private async Task<string> GetAuthToken()
+        {
+            try
+            {
+                List<HttpHeader> headers = new List<HttpHeader>
+                {
+                    new HttpHeader { Key = "Referer", Value = UrlBase }
+                };
+                string url = UrlBase + "/api/search/init?t=" + DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+                string response = await Web.DownloadStringData(url, headers);
+
+                var data = Serialization.FromJson<Dictionary<string, string>>(response);
+                if (data != null && data.ContainsKey("token"))
+                {
+                    return data["token"];
+                }
+            }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, false, true, PluginDatabase.PluginName);
+            }
+            return null;
         }
 
 
@@ -345,6 +392,12 @@ namespace HowLongToBeat.Services
                         httpClient.DefaultRequestHeaders.Add(x.Key, x.Value);
                     });
 
+                    string token = await GetAuthToken();
+                    if (!token.IsNullOrEmpty())
+                    {
+                        httpClient.DefaultRequestHeaders.Add("x-auth-token", token);
+                    }
+
                     string serializedBody = Serialization.ToJson(searchParam);
 
                     HttpRequestMessage requestMessage = new HttpRequestMessage
@@ -352,9 +405,8 @@ namespace HowLongToBeat.Services
                         Content = new StringContent(serializedBody, Encoding.UTF8, "application/json")
                     };
 
-                    string searchId = await GetSearchId();
-                    Thread.Sleep(2000);
-                    HttpResponseMessage response = await httpClient.PostAsync(UrlSearch + "/" + searchId, requestMessage.Content);
+                    string searchUrl = await GetSearchUrl();
+                    HttpResponseMessage response = await httpClient.PostAsync(UrlBase + searchUrl, requestMessage.Content);
                     string json = await response.Content.ReadAsStringAsync();
 
                     _ = Serialization.TryFromJson(json, out searchResult);
