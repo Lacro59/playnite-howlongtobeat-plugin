@@ -87,6 +87,7 @@ namespace HowLongToBeat.Services
 
         private CancellationTokenSource monitorCts;
         private Task monitorTask;
+        private readonly object monitorSync = new object();
         private bool _disposed = false;
 
 
@@ -202,68 +203,6 @@ namespace HowLongToBeat.Services
                 CurrentSemaphoreLimit = MaxParallelGameDataDownloads;
             }
 
-            try
-            {
-                monitorCts = new CancellationTokenSource();
-                monitorTask = Task.Run(async () =>
-                {
-                    var token = monitorCts.Token;
-                    while (!token.IsCancellationRequested)
-                    {
-                        try { await Task.Delay(TimeSpan.FromSeconds(10), token); } catch { }
-                        try
-                        {
-                            int searchTarget;
-                            bool searchForced = false;
-                            try
-                            {
-                                int fixedTarget = MaxParallelSearches;
-                                lock (BackoffSync)
-                                {
-                                    if (SearchBackoffLimit > 0 && DateTime.UtcNow < SearchBackoffUntil)
-                                    {
-                                        searchTarget = Math.Min(fixedTarget, SearchBackoffLimit);
-                                    }
-                                    else
-                                    {
-                                        searchTarget = fixedTarget;
-                                    }
-                                }
-                                searchForced = true;
-                            }
-                            catch
-                            {
-                                searchTarget = SearchConcurrencyController?.TargetConcurrency ?? MaxParallelSearches;
-                            }
-
-                            int searchAvailable = SearchSemaphore?.CurrentCount ?? 0;
-                            int searchInFlight = Math.Max(0, searchTarget - searchAvailable);
-
-                            int gameTarget = ConcurrencyController?.TargetConcurrency ?? MaxParallelGameDataDownloads;
-                            int gameAvailable = DynamicSemaphore?.CurrentCount ?? 0;
-                            int gameInFlight = Math.Max(0, gameTarget - gameAvailable);
-
-                            var samples = RecentSearchSamples.ToArray();
-                            double avg = samples.Length > 0 ? samples.Average() : 0;
-                            double median = 0;
-                            double p90 = 0;
-                            if (samples.Length > 0)
-                            {
-                                var ordered = samples.OrderBy(x => x).ToArray();
-                                median = ordered[ordered.Length / 2];
-                                p90 = ordered[Math.Max(0, (int)Math.Floor(ordered.Length * 0.9) - 1)];
-                            }
-
-                            if (PluginDatabase?.PluginSettings?.Settings is HowLongToBeatSettings vs && vs.EnableVerboseLogging)
-                            {
-                                Logger.Debug($"HLTB Summary: searchTarget={searchTarget} searchInFlight={searchInFlight} gameTarget={gameTarget} gameInFlight={gameInFlight} avgSearchMs={Math.Round(avg,1)} medianSearchMs={Math.Round(median,1)} p90SearchMs={Math.Round(p90,1)} persistentCacheHits={PersistentCacheHits} inMemoryHits={InMemoryCacheHits} pageFetches={PageFetches} forced={searchForced}");
-                            }
-                        }
-                        catch { }
-                    }
-                });
-            }
-            catch { }
         }
 
         public void StopMonitoring()
@@ -277,6 +216,95 @@ namespace HowLongToBeat.Services
                 monitorTask = null;
             }
             catch { }
+        }
+
+        private void EnsureMonitoringStarted()
+        {
+            if (_disposed) return;
+            lock (monitorSync)
+            {
+                if (monitorTask != null && !monitorTask.IsCompleted && monitorCts != null && !monitorCts.IsCancellationRequested)
+                {
+                    return;
+                }
+
+                try { monitorCts?.Dispose(); } catch { }
+                monitorCts = new CancellationTokenSource();
+                try
+                {
+                    monitorTask = Task.Run(async () =>
+                    {
+                        var token = monitorCts.Token;
+                        try
+                        {
+                            while (!token.IsCancellationRequested)
+                            {
+                                try { await Task.Delay(TimeSpan.FromSeconds(10), token); } catch { }
+                                try
+                                {
+                                    int searchTarget;
+                                    bool searchForced = false;
+                                    try
+                                    {
+                                        int fixedTarget = MaxParallelSearches;
+                                        lock (BackoffSync)
+                                        {
+                                            if (SearchBackoffLimit > 0 && DateTime.UtcNow < SearchBackoffUntil)
+                                            {
+                                                searchTarget = Math.Min(fixedTarget, SearchBackoffLimit);
+                                            }
+                                            else
+                                            {
+                                                searchTarget = fixedTarget;
+                                            }
+                                        }
+                                        searchForced = true;
+                                    }
+                                    catch
+                                    {
+                                        searchTarget = SearchConcurrencyController?.TargetConcurrency ?? MaxParallelSearches;
+                                    }
+
+                                    int searchAvailable = SearchSemaphore?.CurrentCount ?? 0;
+                                    int searchInFlight = Math.Max(0, searchTarget - searchAvailable);
+
+                                    int gameTarget = ConcurrencyController?.TargetConcurrency ?? MaxParallelGameDataDownloads;
+                                    int gameAvailable = DynamicSemaphore?.CurrentCount ?? 0;
+                                    int gameInFlight = Math.Max(0, gameTarget - gameAvailable);
+
+                                    var samples = RecentSearchSamples.ToArray();
+                                    double avg = samples.Length > 0 ? samples.Average() : 0;
+                                    double median = 0;
+                                    double p90 = 0;
+                                    if (samples.Length > 0)
+                                    {
+                                        var ordered = samples.OrderBy(x => x).ToArray();
+                                        median = ordered[ordered.Length / 2];
+                                        p90 = ordered[Math.Max(0, (int)Math.Floor(ordered.Length * 0.9) - 1)];
+                                    }
+
+                                    if (PluginDatabase?.PluginSettings?.Settings is HowLongToBeatSettings vs && vs.EnableVerboseLogging)
+                                    {
+                                        Logger.Debug($"HLTB Summary: searchTarget={searchTarget} searchInFlight={searchInFlight} gameTarget={gameTarget} gameInFlight={gameInFlight} avgSearchMs={Math.Round(avg,1)} medianSearchMs={Math.Round(median,1)} p90SearchMs={Math.Round(p90,1)} persistentCacheHits={PersistentCacheHits} inMemoryHits={InMemoryCacheHits} pageFetches={PageFetches} forced={searchForced}");
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    try { Logger.Error(ex, "HLTB monitor loop error"); } catch { }
+                                }
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            try { Logger.Error(ex, "HLTB monitor task terminated unexpectedly"); } catch { }
+                        }
+                    });
+                }
+                catch (Exception ex)
+                {
+                    try { Logger.Error(ex, "Failed to start HLTB monitor task"); } catch { }
+                }
+            }
         }
 
         ~HowLongToBeatApi()
@@ -337,6 +365,7 @@ namespace HowLongToBeat.Services
         /// <returns>Returns <see cref="HltbData"/> with game times, or null if not found.</returns>
         private async Task<HltbData> GetGameData(string id)
         {
+            try { EnsureMonitoringStarted(); } catch { }
             DateTime startTime = DateTime.UtcNow;
             if (PluginDatabase?.PluginSettings?.Settings is HowLongToBeatSettings vs1 && vs1.EnableVerboseLogging)
             {
@@ -913,25 +942,12 @@ namespace HowLongToBeat.Services
         /// <returns>Returns a <see cref="SearchResult"/> object.</returns>
         private async Task<SearchResult> ApiSearch(string name, string platform = "")
         {
+            try { EnsureMonitoringStarted(); } catch { }
             int GetSearchTarget()
             {
                 try
                 {
-                    int fixedTarget = MaxParallelSearches;
-                    lock (BackoffSync)
-                    {
-                        if (SearchBackoffLimit > 0 && DateTime.UtcNow < SearchBackoffUntil)
-                        {
-                            return Math.Min(fixedTarget, SearchBackoffLimit);
-                        }
-                    }
-                    return fixedTarget;
-                }
-                catch { }
-
-                int baseTarget = SearchConcurrencyController?.TargetConcurrency ?? MaxParallelSearches;
-                try
-                {
+                    int baseTarget = MaxParallelSearches;
                     lock (BackoffSync)
                     {
                         if (SearchBackoffLimit > 0 && DateTime.UtcNow < SearchBackoffUntil)
@@ -939,9 +955,12 @@ namespace HowLongToBeat.Services
                             return Math.Min(baseTarget, SearchBackoffLimit);
                         }
                     }
+                    return baseTarget;
                 }
-                catch { }
-                return baseTarget;
+                catch
+                {
+                    return SearchConcurrencyController?.TargetConcurrency ?? MaxParallelSearches;
+                }
             }
 
             try
