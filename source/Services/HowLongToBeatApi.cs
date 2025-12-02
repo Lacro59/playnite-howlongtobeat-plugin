@@ -84,6 +84,7 @@ namespace HowLongToBeat.Services
 
         private string CachedAuthToken = null;
         private DateTime CachedAuthTokenExpiry = DateTime.MinValue;
+        private readonly object AuthTokenSync = new object();
 
         private CancellationTokenSource monitorCts;
         private Task monitorTask;
@@ -453,29 +454,30 @@ namespace HowLongToBeat.Services
                                     Common.LogError(hre, false, false, PluginDatabase.PluginName);
                                     response = string.Empty;
                                 }
-                                if (!response.IsNullOrEmpty())
+                            }
+
+                            if (!response.IsNullOrEmpty())
+                            {
+                                string maybeJson = Tools.GetJsonInString(response, @"<script[ ]?id=""__NEXT_DATA__""[ ]?type=""application/json"">");
+                                if (!maybeJson.IsNullOrEmpty())
                                 {
-                                    string maybeJson = Tools.GetJsonInString(response, @"<script[ ]?id=""__NEXT_DATA__""[ ]?type=""application/json"">");
-                                    if (!maybeJson.IsNullOrEmpty())
+                                    GamePageCache.TryAdd(id, response);
+                                    try
                                     {
-                                        GamePageCache.TryAdd(id, response);
-                                        try
-                                        {
-                                            PageCache?.Set(id, maybeJson);
-                                        }
-                                        catch (Exception ex)
-                                        {
-                                            Common.LogError(ex, false, false, PluginDatabase.PluginName);
-                                        }
-                                        try { System.Threading.Interlocked.Increment(ref PageFetches); } catch { }
-                                        jsonData = maybeJson;
-                                        break;
+                                        PageCache?.Set(id, maybeJson);
                                     }
-                                    else
+                                    catch (Exception ex)
                                     {
-                                        Common.LogDebug(true, $"GetGameData id={id} - extracted JSON was empty or incomplete (attempt={attempts})");
-                                        response = string.Empty;
+                                        Common.LogError(ex, false, false, PluginDatabase.PluginName);
                                     }
+                                    try { System.Threading.Interlocked.Increment(ref PageFetches); } catch { }
+                                    jsonData = maybeJson;
+                                    break;
+                                }
+                                else
+                                {
+                                    Common.LogDebug(true, $"GetGameData id={id} - extracted JSON was empty or incomplete (attempt={attempts})");
+                                    response = string.Empty;
                                 }
                             }
                         }
@@ -781,12 +783,15 @@ namespace HowLongToBeat.Services
                 var data = Serialization.FromJson<Dictionary<string, string>>(response);
                 if (data != null && data.TryGetValue("token", out string token))
                 {
-                    try
+                    lock (AuthTokenSync)
                     {
+                        if (!string.IsNullOrEmpty(CachedAuthToken) && DateTime.UtcNow < CachedAuthTokenExpiry)
+                        {
+                            return CachedAuthToken;
+                        }
                         CachedAuthToken = token;
                         CachedAuthTokenExpiry = DateTime.UtcNow.AddSeconds(90);
                     }
-                    catch { }
                     return token;
                 }
             }
