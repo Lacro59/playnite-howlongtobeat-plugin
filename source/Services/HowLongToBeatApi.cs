@@ -431,7 +431,28 @@ namespace HowLongToBeat.Services
                             }
                             else
                             {
-                                response = await httpClient.GetStringAsync(string.Format(UrlGame, id));
+                                try
+                                {
+                                    var httpResp = await httpClient.GetAsync(string.Format(UrlGame, id));
+                                    if (!httpResp.IsSuccessStatusCode)
+                                    {
+                                        var code = (int)httpResp.StatusCode;
+                                        if (PluginDatabase?.PluginSettings?.Settings is HowLongToBeatSettings vsHttp && vsHttp.EnableVerboseLogging)
+                                        {
+                                            Logger.Debug($"GetGameData id={id} - HTTP {code} fetching page");
+                                        }
+                                        response = string.Empty;
+                                    }
+                                    else
+                                    {
+                                        response = await httpResp.Content.ReadAsStringAsync();
+                                    }
+                                }
+                                catch (HttpRequestException hre)
+                                {
+                                    Common.LogError(hre, false, false, PluginDatabase.PluginName);
+                                    response = string.Empty;
+                                }
                                 if (!response.IsNullOrEmpty())
                                 {
                                     string maybeJson = Tools.GetJsonInString(response, @"<script[ ]?id=""__NEXT_DATA__""[ ]?type=""application/json"">");
