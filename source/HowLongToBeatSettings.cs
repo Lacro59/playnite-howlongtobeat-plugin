@@ -47,6 +47,8 @@ namespace HowLongToBeat
 
         public bool EnableSucessNotification { get; set; } = true;
 
+        public bool EnableVerboseLogging { get; set; } = false;
+
         public bool EnableProgressBarInDataView { get; set; } = true;
 
         private bool _enableIntegrationViewItem = true;

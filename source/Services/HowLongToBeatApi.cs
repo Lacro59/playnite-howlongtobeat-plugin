@@ -5,11 +5,13 @@ using HowLongToBeat.Models;
 using HowLongToBeat.Models.Api;
 using HowLongToBeat.Models.Enumerations;
 using HowLongToBeat.Views;
+using HowLongToBeat;
 using Playnite.SDK;
 using Playnite.SDK.Data;
 using Playnite.SDK.Models;
 using System;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -17,6 +19,7 @@ using System.Net.Http;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -48,6 +51,37 @@ namespace HowLongToBeat.Services
 
         private const int MaxParallelGameDataDownloads = 32;
         private const int GameDataDownloadTimeoutMs = 15000;
+
+        private const int MaxParallelSearches = 96;
+
+        private readonly ConcurrentDictionary<string, string> GamePageCache = new ConcurrentDictionary<string, string>();
+        private readonly ConcurrentDictionary<string, SearchResult> SearchCache = new ConcurrentDictionary<string, SearchResult>();
+        private SemaphoreSlim SearchSemaphore;
+        private AdaptiveConcurrencyController SearchConcurrencyController;
+        private readonly object SearchConcurrencySync = new object();
+        private int CurrentSearchLimit;
+        private int PersistentCacheHits = 0;
+        private int InMemoryCacheHits = 0;
+        private int PageFetches = 0;
+        private readonly PageCache PageCache;
+        private AdaptiveConcurrencyController ConcurrencyController;
+        private SemaphoreSlim DynamicSemaphore;
+        private readonly object ConcurrencySync = new object();
+        private int CurrentSemaphoreLimit;
+        private const int SemaphoreUpperBound = 128;
+
+        private readonly ConcurrentQueue<long> RecentSearchSamples = new ConcurrentQueue<long>();
+        private const int RecentSamplesWindow = 200;
+
+        private readonly ConcurrentQueue<int> RecentSearchStatusCodes = new ConcurrentQueue<int>();
+        private const int RecentStatusWindow = 200;
+
+        private DateTime SearchBackoffUntil = DateTime.MinValue;
+        private int SearchBackoffLimit = 0;
+        private readonly object BackoffSync = new object();
+
+        private string CachedAuthToken = null;
+        private DateTime CachedAuthTokenExpiry = DateTime.MinValue;
 
 
         #region Urls
@@ -121,6 +155,100 @@ namespace HowLongToBeat.Services
                 FileCookies,
                 CookiesDomains
             );
+
+            try
+            {
+                PageCache = new PageCache(PluginDatabase.Plugin.GetPluginUserDataPath());
+            }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, false);
+            }
+
+            try
+            {
+                ConcurrencyController = new AdaptiveConcurrencyController(MaxParallelGameDataDownloads, 4, SemaphoreUpperBound, TimeSpan.FromSeconds(2));
+                DynamicSemaphore = new SemaphoreSlim(MaxParallelGameDataDownloads, SemaphoreUpperBound);
+                CurrentSemaphoreLimit = MaxParallelGameDataDownloads;
+                try
+                {
+                    SearchConcurrencyController = new AdaptiveConcurrencyController(MaxParallelSearches, 2, SemaphoreUpperBound, TimeSpan.FromSeconds(2));
+                    CurrentSearchLimit = MaxParallelSearches;
+                    SearchSemaphore = new SemaphoreSlim(MaxParallelSearches, SemaphoreUpperBound);
+                }
+                catch
+                {
+                    SearchSemaphore = new SemaphoreSlim(MaxParallelSearches);
+                    CurrentSearchLimit = MaxParallelSearches;
+                }
+            }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, false);
+                DynamicSemaphore = new SemaphoreSlim(MaxParallelGameDataDownloads);
+                CurrentSemaphoreLimit = MaxParallelGameDataDownloads;
+            }
+
+            try
+            {
+                _ = Task.Run(async () =>
+                {
+                    while (true)
+                    {
+                        await Task.Delay(TimeSpan.FromSeconds(10));
+                        try
+                        {
+                            int searchTarget;
+                            bool searchForced = false;
+                            try
+                            {
+                                int fixedTarget = MaxParallelSearches;
+                                lock (BackoffSync)
+                                {
+                                    if (SearchBackoffLimit > 0 && DateTime.UtcNow < SearchBackoffUntil)
+                                    {
+                                        searchTarget = Math.Min(fixedTarget, SearchBackoffLimit);
+                                    }
+                                    else
+                                    {
+                                        searchTarget = fixedTarget;
+                                    }
+                                }
+                                searchForced = true;
+                            }
+                            catch
+                            {
+                                searchTarget = SearchConcurrencyController?.TargetConcurrency ?? MaxParallelSearches;
+                            }
+
+                            int searchAvailable = SearchSemaphore?.CurrentCount ?? 0;
+                            int searchInFlight = Math.Max(0, searchTarget - searchAvailable);
+
+                            int gameTarget = ConcurrencyController?.TargetConcurrency ?? MaxParallelGameDataDownloads;
+                            int gameAvailable = DynamicSemaphore?.CurrentCount ?? 0;
+                            int gameInFlight = Math.Max(0, gameTarget - gameAvailable);
+
+                            var samples = RecentSearchSamples.ToArray();
+                            double avg = samples.Length > 0 ? samples.Average() : 0;
+                            double median = 0;
+                            double p90 = 0;
+                            if (samples.Length > 0)
+                            {
+                                var ordered = samples.OrderBy(x => x).ToArray();
+                                median = ordered[ordered.Length / 2];
+                                p90 = ordered[Math.Max(0, (int)Math.Floor(ordered.Length * 0.9) - 1)];
+                            }
+
+                            if (PluginDatabase?.PluginSettings?.Settings is HowLongToBeatSettings vs && vs.EnableVerboseLogging)
+                            {
+                                Logger.Debug($"HLTB Summary: searchTarget={searchTarget} searchInFlight={searchInFlight} gameTarget={gameTarget} gameInFlight={gameInFlight} avgSearchMs={Math.Round(avg,1)} medianSearchMs={Math.Round(median,1)} p90SearchMs={Math.Round(p90,1)} persistentCacheHits={PersistentCacheHits} inMemoryHits={InMemoryCacheHits} pageFetches={PageFetches} forced={searchForced}");
+                            }
+                        }
+                        catch { }
+                    }
+                });
+            }
+            catch { }
         }
 
 
@@ -131,14 +259,116 @@ namespace HowLongToBeat.Services
         /// <returns>Returns <see cref="HltbData"/> with game times, or null if not found.</returns>
         private async Task<HltbData> GetGameData(string id)
         {
+            DateTime startTime = DateTime.UtcNow;
+            if (PluginDatabase?.PluginSettings?.Settings is HowLongToBeatSettings vs1 && vs1.EnableVerboseLogging)
+            {
+                Logger.Debug($"GetGameData START id={id} task={Task.CurrentId} thread={Thread.CurrentThread.ManagedThreadId} time={startTime:HH:mm:ss.fff}");
+            }
+
             try
             {
-                string response = await Web.DownloadStringData(string.Format(UrlGame, id));
-                string jsonData = Tools.GetJsonInString(response, @"<script[ ]?id=""__NEXT_DATA__""[ ]?type=""application/json"">");
-                _ = Serialization.TryFromJson(jsonData, out NEXT_DATA next_data, out Exception ex);
-                if (ex != null)
+                string jsonData = null;
+                try
+                {
+                    if (PageCache != null && PageCache.TryGetJson(id, out string cachedJson))
+                    {
+                        jsonData = cachedJson;
+                        try { System.Threading.Interlocked.Increment(ref PersistentCacheHits); } catch { }
+                                                if (PluginDatabase?.PluginSettings?.Settings is HowLongToBeatSettings vs2 && vs2.EnableVerboseLogging)
+                                                {
+                                                    Logger.Debug($"GetGameData id={id} - persistent cache hit");
+                                                }
+                    }
+                }
+                catch (Exception ex)
                 {
                     Common.LogError(ex, false, false, PluginDatabase.PluginName);
+                }
+
+                int attempts = 0;
+                if (jsonData.IsNullOrEmpty())
+                {
+                    string response = string.Empty;
+                    int maxAttempts = 3;
+                    int baseDelayMs = 300;
+                    var rnd = new Random();
+                    while (attempts < maxAttempts)
+                    {
+                        attempts++;
+                        try
+                        {
+                            if (GamePageCache.TryGetValue(id, out string cached))
+                            {
+                                response = cached;
+                                try { System.Threading.Interlocked.Increment(ref InMemoryCacheHits); } catch { }
+                                if (PluginDatabase?.PluginSettings?.Settings is HowLongToBeatSettings vs3 && vs3.EnableVerboseLogging)
+                                {
+                                    Logger.Debug($"GetGameData id={id} - in-memory cache hit");
+                                }
+                            }
+                            else
+                            {
+                                response = await Web.DownloadStringData(string.Format(UrlGame, id));
+                                if (!response.IsNullOrEmpty())
+                                {
+                                    string maybeJson = Tools.GetJsonInString(response, @"<script[ ]?id=""__NEXT_DATA__""[ ]?type=""application/json"">");
+                                    if (!maybeJson.IsNullOrEmpty())
+                                    {
+                                        GamePageCache.TryAdd(id, response);
+                                        try
+                                        {
+                                            PageCache?.Set(id, maybeJson);
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            Common.LogError(ex, false, false, PluginDatabase.PluginName);
+                                        }
+                                        try { System.Threading.Interlocked.Increment(ref PageFetches); } catch { }
+                                        jsonData = maybeJson;
+                                        break;
+                                    }
+                                    else
+                                    {
+                                        Common.LogDebug(true, $"GetGameData id={id} - extracted JSON was empty or incomplete (attempt={attempts})");
+                                        response = string.Empty;
+                                    }
+                                }
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Common.LogError(ex, false, false, PluginDatabase.PluginName);
+                        }
+
+                        if (attempts < maxAttempts)
+                        {
+                            var jitter = rnd.Next(0, 200);
+                            var delay = baseDelayMs * attempts + jitter;
+                            if (PluginDatabase?.PluginSettings?.Settings is HowLongToBeatSettings vs4 && vs4.EnableVerboseLogging)
+                            {
+                                Logger.Debug($"GetGameData id={id} - retry {attempts} after {delay}ms");
+                            }
+                            await Task.Delay(delay);
+                        }
+                    }
+                }
+                if (jsonData.IsNullOrEmpty())
+                {
+                    Common.LogDebug(true, $"GetGameData id={id} - no JSON extracted after {attempts} attempts");
+                    Logger.Warn($"No GameData find with {id}");
+                    double elapsed = (DateTime.UtcNow - startTime).TotalMilliseconds;
+                    try { ConcurrencyController?.ReportSample(elapsed, false); } catch { }
+                    if (PluginDatabase?.PluginSettings?.Settings is HowLongToBeatSettings vs5 && vs5.EnableVerboseLogging)
+                    {
+                        Logger.Debug($"GetGameData DONE id={id} task={Task.CurrentId} thread={Thread.CurrentThread.ManagedThreadId} elapsed={elapsed}ms");
+                    }
+                    return null;
+                }
+
+                _ = Serialization.TryFromJson(jsonData, out NEXT_DATA next_data, out Exception parseEx);
+                if (parseEx != null)
+                {
+                    Common.LogError(parseEx, false, false, PluginDatabase.PluginName);
                 }
 
                 GameData gameData = next_data?.Props?.PageProps?.Game?.Data?.Game != null
@@ -184,17 +414,31 @@ namespace HowLongToBeat.Services
                         CoOpLeisure = gameData.InvestedCoH,
                         VsLeisure = gameData.InvestedMpH
                     };
+
+                    double elapsed = (DateTime.UtcNow - startTime).TotalMilliseconds;
+                    try { ConcurrencyController?.ReportSample(elapsed, true); } catch { }
+                    if (PluginDatabase?.PluginSettings?.Settings is HowLongToBeatSettings vs6 && vs6.EnableVerboseLogging)
+                    {
+                        Logger.Debug($"GetGameData DONE id={id} task={Task.CurrentId} thread={Thread.CurrentThread.ManagedThreadId} elapsed={elapsed}ms");
+                    }
                     return hltbData;
                 }
                 else
                 {
                     Logger.Warn($"No GameData find with {id}");
+                    double elapsed = (DateTime.UtcNow - startTime).TotalMilliseconds;
+                    try { ConcurrencyController?.ReportSample(elapsed, false); } catch { }
+                    if (PluginDatabase?.PluginSettings?.Settings is HowLongToBeatSettings vs7 && vs7.EnableVerboseLogging)
+                    {
+                        Logger.Debug($"GetGameData DONE id={id} task={Task.CurrentId} thread={Thread.CurrentThread.ManagedThreadId} elapsed={elapsed}ms");
+                    }
                     return null;
                 }
             }
             catch (Exception ex)
             {
                 Common.LogError(ex, false, true, PluginDatabase.PluginName);
+                Logger.Info($"GetGameData ERROR id={id} task={Task.CurrentId} thread={Thread.CurrentThread.ManagedThreadId} elapsed={(DateTime.UtcNow - startTime).TotalMilliseconds}ms");
             }
 
             return null;
@@ -229,7 +473,6 @@ namespace HowLongToBeat.Services
         /// <returns>The search endpoint URL.</returns>
         private async Task<string> GetSearchUrl()
         {
-            // Fast path without locking
             if (!SearchUrl.IsNullOrEmpty())
             {
                 return SearchUrl;
@@ -238,7 +481,7 @@ namespace HowLongToBeat.Services
             try
             {
                 string url = UrlBase;
-                // Try to download the main page but guard with a short timeout so discovery is fast
+                
                 var pageTask = Web.DownloadStringData(url);
                 var pageCompleted = await Task.WhenAny(pageTask, Task.Delay(ScriptDownloadTimeoutMs));
                 if (pageCompleted != pageTask)
@@ -248,52 +491,98 @@ namespace HowLongToBeat.Services
                 }
                 string response = await pageTask;
 
-                    var matches = Regex.Matches(response, @"src=""([^""]*?_app-[^""]*?\.js)""");
-                foreach (Match match in matches)
-                {
-                    string scriptUrl = match.Groups[1].Value;
-                    if (!scriptUrl.StartsWith("http"))
+                    List<string> scriptUrls = new List<string>();
+                    try
                     {
-                        scriptUrl = UrlBase + scriptUrl;
-                    }
-
-                    // Download each script with a timeout to avoid long hangs
-                    var scriptTask = Web.DownloadStringData(scriptUrl);
-                    var completed = await Task.WhenAny(scriptTask, Task.Delay(ScriptDownloadTimeoutMs));
-                    if (completed != scriptTask)
-                    {
-                        Logger.Warn($"Timeout {ScriptDownloadTimeoutMs}ms downloading {scriptUrl}");
-                        continue;
-                    }
-                    string scriptContent = await scriptTask;
-
-                        // Match the JS fetch call that posts to an /api/... endpoint and ensure it uses method: "POST".
-                        // This mirrors the Python implementation: capture the path suffix after /api/ when the request
-                        // options include method: "POST". Use Singleline so the [^}]* can span newlines.
-                               string pattern = "fetch\\s*\\(\\s*[\"']\\/api\\/([a-zA-Z0-9_\\/]+)[^\"']*[\"']\\s*,\\s*\\{[^}]*method:\\s*[\"']POST[\"'][^}]*\\}";
-                        var searchMatch = Regex.Match(scriptContent, pattern, RegexOptions.Singleline | RegexOptions.IgnoreCase);
-                        if (searchMatch.Success)
-                    {
-                        string suffix = searchMatch.Groups[1].Value;
-                        if (suffix.Contains("/"))
+                        
+                        var hapDocType = Type.GetType("HtmlAgilityPack.HtmlDocument, HtmlAgilityPack");
+                        if (hapDocType != null)
                         {
-                            suffix = suffix.Split('/')[0];
-                        }
-
-                        if (suffix != "find")
-                        {
-                            // Ensure only one thread writes the cached SearchUrl
-                            lock (SearchUrlLock)
+                            dynamic doc = Activator.CreateInstance(hapDocType);
+                            var loadHtml = hapDocType.GetMethod("LoadHtml");
+                            loadHtml.Invoke(doc, new object[] { response });
+                            var documentNode = hapDocType.GetProperty("DocumentNode").GetValue(doc);
+                            var selectNodes = documentNode.GetType().GetMethod("SelectNodes", new Type[] { typeof(string) });
+                            var nodes = selectNodes.Invoke(documentNode, new object[] { "//script[@src]" }) as System.Collections.IEnumerable;
+                            if (nodes != null)
                             {
-                                if (SearchUrl.IsNullOrEmpty())
+                                foreach (var node in nodes)
                                 {
-                                    SearchUrl = "/api/" + suffix;
+                                    try
+                                    {
+                                        var attrs = node.GetType().GetProperty("Attributes").GetValue(node);
+                                        var getAttr = attrs.GetType().GetMethod("Get", new Type[] { typeof(string) });
+                                        var srcAttr = getAttr.Invoke(attrs, new object[] { "src" });
+                                        if (srcAttr != null)
+                                        {
+                                            var val = srcAttr.GetType().GetProperty("Value").GetValue(srcAttr) as string;
+                                            if (!string.IsNullOrEmpty(val)) scriptUrls.Add(val);
+                                        }
+                                    }
+                                    catch { }
                                 }
                             }
-                            return SearchUrl;
+                        }
+                        else
+                        {
+                            var matches = Regex.Matches(response, "<script[^>]*src=[\"']([^\"']+)[\"'][^>]*>", RegexOptions.IgnoreCase);
+                            foreach (Match match in matches)
+                            {
+                                scriptUrls.Add(match.Groups[1].Value);
+                            }
                         }
                     }
-                }
+                    catch
+                    {
+                        
+                        var matches = Regex.Matches(response, "<script[^>]*src=[\"']([^\"']+)[\"'][^>]*>", RegexOptions.IgnoreCase);
+                        foreach (Match match in matches)
+                        {
+                            scriptUrls.Add(match.Groups[1].Value);
+                        }
+                    }
+
+                    var ordered = scriptUrls.Where(s => s.Contains("_app-")).Concat(scriptUrls).Where(s => !string.IsNullOrEmpty(s)).Distinct();
+                    foreach (string sUrl in ordered)
+                    {
+                        string scriptUrl = sUrl;
+                        if (!scriptUrl.StartsWith("http", StringComparison.OrdinalIgnoreCase))
+                        {
+                            scriptUrl = UrlBase + scriptUrl;
+                        }
+
+                        var scriptTask = Web.DownloadStringData(scriptUrl);
+                        var completed = await Task.WhenAny(scriptTask, Task.Delay(ScriptDownloadTimeoutMs));
+                        if (completed != scriptTask)
+                        {
+                            Logger.Warn($"Timeout {ScriptDownloadTimeoutMs}ms downloading {scriptUrl}");
+                            continue;
+                        }
+                        string scriptContent = await scriptTask;
+
+                        string pattern = "fetch\\s*\\(\\s*[\"']\\/api\\/([a-zA-Z0-9_\\/]+)[^\"']*[\"']\\s*,\\s*\\{[^}]*method:\\s*[\"']POST[\"'][^}]*\\}";
+                        var searchMatch = Regex.Match(scriptContent, pattern, RegexOptions.Singleline | RegexOptions.IgnoreCase);
+                        if (searchMatch.Success)
+                        {
+                            string suffix = searchMatch.Groups[1].Value;
+                            if (suffix.Contains("/"))
+                            {
+                                suffix = suffix.Split('/')[0];
+                            }
+
+                            if (suffix != "find")
+                            {
+                                lock (SearchUrlLock)
+                                {
+                                    if (SearchUrl.IsNullOrEmpty())
+                                    {
+                                        SearchUrl = "/api/" + suffix;
+                                    }
+                                }
+                                return SearchUrl;
+                            }
+                        }
+                    }
             }
             catch (Exception ex)
             {
@@ -311,6 +600,11 @@ namespace HowLongToBeat.Services
         {
             try
             {
+                if (!string.IsNullOrEmpty(CachedAuthToken) && DateTime.UtcNow < CachedAuthTokenExpiry)
+                {
+                    return CachedAuthToken;
+                }
+
                 List<HttpHeader> headers = new List<HttpHeader>
                 {
                     new HttpHeader { Key = "Referer", Value = UrlBase }
@@ -321,6 +615,12 @@ namespace HowLongToBeat.Services
                 var data = Serialization.FromJson<Dictionary<string, string>>(response);
                 if (data != null && data.TryGetValue("token", out string token))
                 {
+                    try
+                    {
+                        CachedAuthToken = token;
+                        CachedAuthTokenExpiry = DateTime.UtcNow.AddSeconds(90);
+                    }
+                    catch { }
                     return token;
                 }
             }
@@ -368,24 +668,94 @@ namespace HowLongToBeat.Services
 
                 if (search.Any())
                 {
-                    var semaphore = new SemaphoreSlim(MaxParallelGameDataDownloads);
                     var tasks = search.Select(async x =>
                     {
-                        await semaphore.WaitAsync();
+                        try
+                        {
+                            int target = ConcurrencyController?.TargetConcurrency ?? MaxParallelGameDataDownloads;
+                            lock (ConcurrencySync)
+                            {
+                                int diff = target - CurrentSemaphoreLimit;
+                                if (diff > 0)
+                                {
+                                    DynamicSemaphore.Release(diff);
+                                    CurrentSemaphoreLimit = target;
+                                }
+                                else if (diff < 0)
+                                {
+                                    int toConsume = -diff;
+                                    _ = Task.Run(async () =>
+                                    {
+                                        for (int i = 0; i < toConsume; i++)
+                                        {
+                                            await DynamicSemaphore.WaitAsync();
+                                        }
+                                        lock (ConcurrencySync)
+                                        {
+                                            CurrentSemaphoreLimit = target;
+                                        }
+                                    });
+                                }
+                            }
+
+                            try
+                            {
+                                int targetGameLog = ConcurrencyController?.TargetConcurrency ?? MaxParallelGameDataDownloads;
+                                int availableGameLog = DynamicSemaphore?.CurrentCount ?? 0;
+                                int inFlightGameLog = Math.Max(0, targetGameLog - availableGameLog);
+                                if (PluginDatabase?.PluginSettings?.Settings is HowLongToBeatSettings s && s.EnableVerboseLogging)
+                                {
+                                    Logger.Debug($"Search: waiting semaphore for id={x.Id} target={targetGameLog} currentLimit={CurrentSemaphoreLimit} available={availableGameLog} inFlight={inFlightGameLog}");
+                                }
+                            }
+                            catch { }
+                            await DynamicSemaphore.WaitAsync();
+                            try
+                            {
+                                int targetGameLog = ConcurrencyController?.TargetConcurrency ?? MaxParallelGameDataDownloads;
+                                int availableGameLog = DynamicSemaphore?.CurrentCount ?? 0;
+                                int inFlightGameLog = Math.Max(0, targetGameLog - availableGameLog);
+                                if (PluginDatabase?.PluginSettings?.Settings is HowLongToBeatSettings s2 && s2.EnableVerboseLogging)
+                                {
+                                    Logger.Debug($"Search: acquired semaphore for id={x.Id} target={targetGameLog} currentLimit={CurrentSemaphoreLimit} available={availableGameLog} inFlight={inFlightGameLog}");
+                                }
+                            }
+                            catch { }
+                        }
+                        catch (Exception ex)
+                        {
+                            Common.LogError(ex, false, false, PluginDatabase.PluginName);
+                        }
                         try
                         {
                             try
                             {
-                                var gameTask = GetGameData(x.Id);
-                                var completed = await Task.WhenAny(gameTask, Task.Delay(GameDataDownloadTimeoutMs));
-                                if (completed == gameTask)
+                                bool hasCoreTimes = (x.GameHltbData != null) && (
+                                    (x.GameHltbData.MainStoryClassic > 0) ||
+                                    (x.GameHltbData.MainStoryAverage > 0) ||
+                                    (x.GameHltbData.MainStoryMedian > 0)
+                                );
+
+                                if (hasCoreTimes)
                                 {
-                                    x.GameHltbData = await gameTask;
+                                    if (PluginDatabase?.PluginSettings?.Settings is HowLongToBeatSettings s3 && s3.EnableVerboseLogging)
+                                    {
+                                        Logger.Debug($"Search: skipping GetGameData for id={x.Id} (search result has times)");
+                                    }
                                 }
                                 else
                                 {
-                                    Logger.Warn($"Timeout {GameDataDownloadTimeoutMs}ms getting game data for {x.Id}");
-                                    x.GameHltbData = null;
+                                    var gameTask = GetGameData(x.Id);
+                                    var completed = await Task.WhenAny(gameTask, Task.Delay(GameDataDownloadTimeoutMs));
+                                    if (completed == gameTask)
+                                    {
+                                        x.GameHltbData = await gameTask;
+                                    }
+                                    else
+                                    {
+                                        Logger.Warn($"Timeout {GameDataDownloadTimeoutMs}ms getting game data for {x.Id}");
+                                        x.GameHltbData = null;
+                                    }
                                 }
                             }
                             catch (Exception ex)
@@ -396,11 +766,27 @@ namespace HowLongToBeat.Services
                         }
                         finally
                         {
-                            semaphore.Release();
+                            try
+                            {
+                                DynamicSemaphore.Release();
+                            }
+                            catch { }
+                            if (PluginDatabase?.PluginSettings?.Settings is HowLongToBeatSettings s4 && s4.EnableVerboseLogging)
+                            {
+                                Logger.Debug($"Search: released semaphore for id={x.Id}");
+                            }
                         }
                     }).ToArray();
 
                     await Task.WhenAll(tasks);
+                    try
+                    {
+                        if (PluginDatabase?.PluginSettings?.Settings is HowLongToBeatSettings vs8 && vs8.EnableVerboseLogging)
+                        {
+                            Logger.Debug($"Search summary: persistentCacheHits={PersistentCacheHits}, inMemoryHits={InMemoryCacheHits}, pageFetches={PageFetches}");
+                        }
+                    }
+                    catch { }
                 }
                 return search;
             }
@@ -419,12 +805,17 @@ namespace HowLongToBeat.Services
         /// <returns>Returns a list of <see cref="HltbSearch"/> with match percentages.</returns>
         public async Task<List<HltbSearch>> SearchTwoMethod(string name, string platform = "")
         {
-            List<HltbDataUser> dataSearchNormalized = await Search(PlayniteTools.NormalizeGameName(name, true, true), platform);
             List<HltbDataUser> dataSearch = await Search(name, platform);
+            List<HltbDataUser> dataSearchNormalized = new List<HltbDataUser>();
+
+            if (dataSearch == null || dataSearch.Count == 0)
+            {
+                dataSearchNormalized = await Search(PlayniteTools.NormalizeGameName(name, true, true), platform);
+            }
 
             List<HltbDataUser> dataSearchFinal = new List<HltbDataUser>();
-            dataSearchFinal.AddRange(dataSearchNormalized);
-            dataSearchFinal.AddRange(dataSearch);
+            dataSearchFinal.AddRange(dataSearch ?? new List<HltbDataUser>());
+            dataSearchFinal.AddRange(dataSearchNormalized ?? new List<HltbDataUser>());
 
             dataSearchFinal = dataSearchFinal.GroupBy(x => x.Id).Select(x => x.First()).ToList();
 
@@ -441,8 +832,46 @@ namespace HowLongToBeat.Services
         /// <returns>Returns a <see cref="SearchResult"/> object.</returns>
         private async Task<SearchResult> ApiSearch(string name, string platform = "")
         {
+            int GetSearchTarget()
+            {
+                try
+                {
+                    int fixedTarget = MaxParallelSearches;
+                    lock (BackoffSync)
+                    {
+                        if (SearchBackoffLimit > 0 && DateTime.UtcNow < SearchBackoffUntil)
+                        {
+                            return Math.Min(fixedTarget, SearchBackoffLimit);
+                        }
+                    }
+                    return fixedTarget;
+                }
+                catch { }
+
+                int baseTarget = SearchConcurrencyController?.TargetConcurrency ?? MaxParallelSearches;
+                try
+                {
+                    lock (BackoffSync)
+                    {
+                        if (SearchBackoffLimit > 0 && DateTime.UtcNow < SearchBackoffUntil)
+                        {
+                            return Math.Min(baseTarget, SearchBackoffLimit);
+                        }
+                    }
+                }
+                catch { }
+                return baseTarget;
+            }
+
             try
             {
+                string cacheKey = (name ?? string.Empty) + "|" + (platform ?? string.Empty);
+                if (SearchCache.TryGetValue(cacheKey, out SearchResult cachedResult))
+                {
+                    try { if (PluginDatabase?.PluginSettings?.Settings is HowLongToBeatSettings vs9 && vs9.EnableVerboseLogging) { Logger.Debug($"ApiSearch cache hit for '{name}' platform='{platform}'"); } } catch { }
+                    return cachedResult;
+                }
+
                 List<HttpHeader> httpHeaders = new List<HttpHeader>
                 {
                     new HttpHeader { Key = "User-Agent", Value = Web.UserAgent },
@@ -456,37 +885,236 @@ namespace HowLongToBeat.Services
                     SearchOptions = new SearchOptions { Games = new Games { Platform = platform } }
                 };
 
-                SearchResult searchResult;
-                using (HttpClient httpClient = new HttpClient())
+                SearchResult searchResult = null;
+                string serializedBody = Serialization.ToJson(searchParam);
+                string searchUrl = await GetSearchUrl();
+                bool tokenReused = !string.IsNullOrEmpty(CachedAuthToken) && DateTime.UtcNow < CachedAuthTokenExpiry;
+                string token = await GetAuthToken();
+                if (!token.IsNullOrEmpty())
                 {
-                    // Keep the HTTP call reasonably short in case site blocks or is slow
-                    httpClient.Timeout = TimeSpan.FromSeconds(15);
-                    httpHeaders.ForEach(x =>
-                    {
-                        httpClient.DefaultRequestHeaders.Add(x.Key, x.Value);
-                    });
-
-                    string token = await GetAuthToken();
-                    if (!token.IsNullOrEmpty())
-                    {
-                        httpClient.DefaultRequestHeaders.Add("x-auth-token", token);
-                    }
-
-                    string serializedBody = Serialization.ToJson(searchParam);
-
-                    HttpRequestMessage requestMessage = new HttpRequestMessage
-                    {
-                        Content = new StringContent(serializedBody, Encoding.UTF8, "application/json")
-                    };
-
-                    string searchUrl = await GetSearchUrl();
-                    HttpResponseMessage response = await httpClient.PostAsync(UrlBase + searchUrl, requestMessage.Content);
-                    string json = await response.Content.ReadAsStringAsync();
-
-                    _ = Serialization.TryFromJson(json, out searchResult);
+                    httpHeaders.Add(new HttpHeader { Key = "x-auth-token", Value = token });
                 }
 
-                return searchResult;
+                bool acquired = false;
+                try
+                {
+                    try
+                    {
+                        try
+                        {
+                            int target = GetSearchTarget();
+                            lock (SearchConcurrencySync)
+                            {
+                                int diff = target - CurrentSearchLimit;
+                                if (diff > 0)
+                                {
+                                    SearchSemaphore.Release(diff);
+                                    CurrentSearchLimit = target;
+                                }
+                                else if (diff < 0)
+                                {
+                                    int toConsume = -diff;
+                                    _ = Task.Run(async () =>
+                                    {
+                                        for (int i = 0; i < toConsume; i++)
+                                        {
+                                            try { await SearchSemaphore.WaitAsync(); } catch { }
+                                        }
+                                        lock (SearchConcurrencySync)
+                                        {
+                                            CurrentSearchLimit = target;
+                                        }
+                                    });
+                                }
+                            }
+                        }
+                        catch { }
+
+                            try
+                            {
+                                int targetLog = GetSearchTarget();
+                                int availableLog = SearchSemaphore?.CurrentCount ?? 0;
+                                int inFlightLog = Math.Max(0, targetLog - availableLog);
+                                if (PluginDatabase?.PluginSettings?.Settings is HowLongToBeatSettings ss && ss.EnableVerboseLogging)
+                                {
+                                            if (PluginDatabase?.PluginSettings?.Settings is HowLongToBeatSettings vs10 && vs10.EnableVerboseLogging)
+                                            {
+                                                Logger.Debug($"ApiSearch: waiting search semaphore for '{name}' target={targetLog} currentLimit={CurrentSearchLimit} available={availableLog} inFlight={inFlightLog}");
+                                            }
+                                }
+                        }
+                        catch { }
+                        await (SearchSemaphore?.WaitAsync() ?? Task.CompletedTask);
+                        acquired = true;
+                        try
+                        {
+                            int targetLog = GetSearchTarget();
+                            int availableLog = SearchSemaphore?.CurrentCount ?? 0;
+                            int inFlightLog = Math.Max(0, targetLog - availableLog);
+                            if (PluginDatabase?.PluginSettings?.Settings is HowLongToBeatSettings ss2 && ss2.EnableVerboseLogging)
+                            {
+                                Logger.Debug($"ApiSearch: acquired search semaphore for '{name}' target={targetLog} currentLimit={CurrentSearchLimit} available={availableLog} inFlight={inFlightLog}");
+                            }
+                        }
+                        catch { }
+                    }
+                    catch (Exception ex)
+                    {
+                        Common.LogError(ex, false, false, PluginDatabase.PluginName);
+                    }
+
+                    var sw = Stopwatch.StartNew();
+                    var postResult = await Web.PostJsonWithSharedClientWithStatus(UrlBase + searchUrl, serializedBody, httpHeaders);
+                    sw.Stop();
+                    string json = postResult?.Item1 ?? string.Empty;
+                    int statusCode = postResult?.Item2 ?? 0;
+                    string retryAfterHeader = postResult?.Item3;
+
+                    try
+                    {
+                        if (statusCode == 429)
+                        {
+                            int backoffSeconds = 30;
+                            if (!string.IsNullOrEmpty(retryAfterHeader) && int.TryParse(retryAfterHeader, out int parsedSeconds))
+                            {
+                                backoffSeconds = Math.Max(1, parsedSeconds);
+                            }
+
+                            lock (BackoffSync)
+                            {
+                                int newLimit = Math.Max(1, CurrentSearchLimit / 2);
+                                SearchBackoffLimit = newLimit;
+                                SearchBackoffUntil = DateTime.UtcNow.AddSeconds(backoffSeconds);
+                            }
+
+                            Logger.Warn($"ApiSearch: received 429 for '{name}'. Immediate backoff -> limit={SearchBackoffLimit} until {SearchBackoffUntil:HH:mm:ss}");
+                        }
+                    }
+                    catch { }
+
+                    try
+                    {
+                        try
+                        {
+                            RecentSearchSamples.Enqueue(sw.ElapsedMilliseconds);
+                            while (RecentSearchSamples.Count > RecentSamplesWindow)
+                            {
+                                RecentSearchSamples.TryDequeue(out _);
+                            }
+                        }
+                        catch { }
+
+                        try
+                        {
+                            RecentSearchStatusCodes.Enqueue(statusCode);
+                            while (RecentSearchStatusCodes.Count > RecentStatusWindow)
+                            {
+                                RecentSearchStatusCodes.TryDequeue(out _);
+                            }
+                        }
+                        catch { }
+
+                        if (PluginDatabase?.PluginSettings?.Settings is HowLongToBeatSettings vs11 && vs11.EnableVerboseLogging)
+                        {
+                            Logger.Debug($"ApiSearch elapsed={sw.ElapsedMilliseconds}ms tokenReused={tokenReused} status={statusCode}");
+                        }
+                    }
+                    catch { }
+
+                    _ = Serialization.TryFromJson(json, out searchResult);
+
+                    try
+                    {
+                        bool successSample = searchResult != null && searchResult.Data != null && statusCode != 429;
+                        SearchConcurrencyController?.ReportSample(sw.ElapsedMilliseconds, successSample);
+                    }
+                    catch { }
+
+                    try
+                    {
+                        var codes = RecentSearchStatusCodes.ToArray();
+                        if (codes.Length > 0)
+                        {
+                            int count429 = codes.Count(c => c == 429);
+                            double frac = (double)count429 / (double)codes.Length;
+                            if (count429 >= 3 && frac >= 0.05)
+                            {
+                                lock (BackoffSync)
+                                {
+                                    if (SearchBackoffLimit == 0 || DateTime.UtcNow >= SearchBackoffUntil)
+                                    {
+                                        int newLimit = Math.Max(1, CurrentSearchLimit / 2);
+                                        SearchBackoffLimit = newLimit;
+                                        
+                                        int backoffSeconds = 30;
+                                        try
+                                        {
+                                            if (!string.IsNullOrEmpty(retryAfterHeader) && int.TryParse(retryAfterHeader, out int parsed))
+                                            {
+                                                backoffSeconds = Math.Max(1, parsed);
+                                            }
+                                        }
+                                        catch { }
+                                        SearchBackoffUntil = DateTime.UtcNow.AddSeconds(backoffSeconds);
+                                        Logger.Warn($"ApiSearch: detected elevated 429 rate ({count429}/{codes.Length}). Applying temporary search backoff -> limit={SearchBackoffLimit} until {SearchBackoffUntil:HH:mm:ss}");
+                                        try
+                                        {
+                                            int diff = SearchBackoffLimit - CurrentSearchLimit;
+                                            if (diff > 0)
+                                            {
+                                                SearchSemaphore.Release(diff);
+                                                CurrentSearchLimit = SearchBackoffLimit;
+                                            }
+                                            else if (diff < 0)
+                                            {
+                                                int toConsume = -diff;
+                                                _ = Task.Run(async () =>
+                                                {
+                                                    for (int i = 0; i < toConsume; i++)
+                                                    {
+                                                        try { await SearchSemaphore.WaitAsync(); } catch { }
+                                                    }
+                                                    lock (SearchConcurrencySync)
+                                                    {
+                                                        CurrentSearchLimit = SearchBackoffLimit;
+                                                    }
+                                                });
+                                            }
+                                        }
+                                        catch { }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    catch { }
+
+                    try
+                    {
+                        if (searchResult != null)
+                        {
+                            SearchCache.TryAdd(cacheKey, searchResult);
+                        }
+                    }
+                    catch { }
+
+                    return searchResult;
+                }
+                finally
+                {
+                    if (acquired)
+                    {
+                        try
+                        {
+                            SearchSemaphore.Release();
+                            if (PluginDatabase?.PluginSettings?.Settings is HowLongToBeatSettings vs12 && vs12.EnableVerboseLogging)
+                            {
+                                Logger.Debug($"ApiSearch: released search semaphore for '{name}'");
+                            }
+                        }
+                        catch { }
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -770,10 +1398,10 @@ namespace HowLongToBeat.Services
                 }
 
                 string jsonData = Tools.GetJsonInString(response, @"<script[ ]?id=""__NEXT_DATA__""[ ]?type=""application/json"">");
-                _ = Serialization.TryFromJson(jsonData, out NEXT_DATA next_data, out Exception ex);
-                if (ex != null)
+                _ = Serialization.TryFromJson(jsonData, out NEXT_DATA next_data, out Exception parseEx);
+                if (parseEx != null)
                 {
-                    Common.LogError(ex, false, false, PluginDatabase.PluginName);
+                    Common.LogError(parseEx, false, false, PluginDatabase.PluginName);
                 }
 
                 return next_data?.Props?.PageProps?.EditData?.UserId != null

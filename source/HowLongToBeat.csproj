@@ -60,6 +60,9 @@
     <Reference Include="FuzzySharp, Version=1.0.4.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>packages\FuzzySharp.2.0.2\lib\net461\FuzzySharp.dll</HintPath>
     </Reference>
+    <Reference Include="HtmlAgilityPack, Version=1.12.4.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
+      <HintPath>packages\HtmlAgilityPack.1.12.4\lib\Net45\HtmlAgilityPack.dll</HintPath>
+    </Reference>
     <Reference Include="LiveCharts, Version=0.9.7.0, Culture=neutral, PublicKeyToken=0bc1f845d1ebb8df, processorArchitecture=MSIL">
       <HintPath>packages\LiveCharts.0.9.7\lib\net45\LiveCharts.dll</HintPath>
     </Reference>
@@ -106,6 +109,9 @@
     <Reference Include="YamlDotNet, Version=5.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>packages\YamlDotNet.5.4.0\lib\net45\YamlDotNet.dll</HintPath>
       <Private>False</Private>
+    </Reference>
+    <Reference Include="HtmlAgilityPack">
+      <HintPath>packages\HtmlAgilityPack.1.11.46\lib\net45\HtmlAgilityPack.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -193,6 +199,8 @@
     </Compile>
     <Compile Include="Services\HowLongToBeatDatabase.cs" />
     <Compile Include="Services\HowLongToBeatSearch.cs" />
+    <Compile Include="Services\PageCache.cs" />
+    <Compile Include="Services\AdaptiveConcurrencyController.cs" />
     <Compile Include="Services\HowLongToBeatStats.cs" />
     <Compile Include="Services\HowLongToBeatTopPanelItem.cs" />
     <Compile Include="Services\HowLongToBeatViewSidebar.cs" />
