@@ -46,7 +46,7 @@ namespace HowLongToBeat.Services
         private static readonly object SearchUrlLock = new object();
         private const int ScriptDownloadTimeoutMs = 5000;
 
-        private const int MaxParallelGameDataDownloads = 8;
+        private const int MaxParallelGameDataDownloads = 32;
         private const int GameDataDownloadTimeoutMs = 15000;
 
 
@@ -103,6 +103,13 @@ namespace HowLongToBeat.Services
         /// </summary>
         public HowLongToBeatApi()
         {
+            // Increase the default connection limit so multiple concurrent requests
+            // to howlongtobeat.com are allowed (Framework defaults to a very low value).
+            try
+            {
+                ServicePointManager.DefaultConnectionLimit = Math.Max(ServicePointManager.DefaultConnectionLimit, MaxParallelGameDataDownloads);
+            }
+            catch { }
             UserLogin = PluginDatabase.PluginSettings.Settings.UserLogin;
 
             CookiesDomains = new List<string> { ".howlongtobeat.com", "howlongtobeat.com" };
