@@ -638,32 +638,54 @@ namespace HowLongToBeat.Services
                     List<string> scriptUrls = new List<string>();
                     try
                     {
-                        
                         var hapDocType = Type.GetType("HtmlAgilityPack.HtmlDocument, HtmlAgilityPack");
                         if (hapDocType != null)
                         {
-                            dynamic doc = Activator.CreateInstance(hapDocType);
-                            var loadHtml = hapDocType.GetMethod("LoadHtml");
-                            loadHtml.Invoke(doc, new object[] { response });
-                            var documentNode = hapDocType.GetProperty("DocumentNode").GetValue(doc);
-                            var selectNodes = documentNode.GetType().GetMethod("SelectNodes", new Type[] { typeof(string) });
-                            var nodes = selectNodes.Invoke(documentNode, new object[] { "//script[@src]" }) as System.Collections.IEnumerable;
-                            if (nodes != null)
+                            try
                             {
-                                foreach (var node in nodes)
+                                dynamic doc = Activator.CreateInstance(hapDocType);
+                                var loadHtml = hapDocType.GetMethod("LoadHtml");
+                                loadHtml.Invoke(doc, new object[] { response });
+                                var documentNode = hapDocType.GetProperty("DocumentNode").GetValue(doc);
+                                var selectNodes = documentNode.GetType().GetMethod("SelectNodes", new Type[] { typeof(string) });
+                                var nodes = selectNodes.Invoke(documentNode, new object[] { "//script[@src]" }) as System.Collections.IEnumerable;
+                                if (nodes != null)
                                 {
-                                    try
+                                    foreach (var node in nodes)
                                     {
-                                        var attrs = node.GetType().GetProperty("Attributes").GetValue(node);
-                                        var getAttr = attrs.GetType().GetMethod("Get", new Type[] { typeof(string) });
-                                        var srcAttr = getAttr.Invoke(attrs, new object[] { "src" });
-                                        if (srcAttr != null)
+                                        try
                                         {
-                                            var val = srcAttr.GetType().GetProperty("Value").GetValue(srcAttr) as string;
-                                            if (!string.IsNullOrEmpty(val)) scriptUrls.Add(val);
+                                            var attrs = node.GetType().GetProperty("Attributes").GetValue(node);
+                                            var getAttr = attrs.GetType().GetMethod("Get", new Type[] { typeof(string) });
+                                            var srcAttr = getAttr.Invoke(attrs, new object[] { "src" });
+                                            if (srcAttr != null)
+                                            {
+                                                var val = srcAttr.GetType().GetProperty("Value").GetValue(srcAttr) as string;
+                                                if (!string.IsNullOrEmpty(val)) scriptUrls.Add(val);
+                                            }
+                                        }
+                                        catch (Exception inner)
+                                        {
+                                            try { Logger.Warn(inner, "HLTB: HAP node parsing failed; continuing with remaining nodes"); } catch { }
                                         }
                                     }
-                                    catch { }
+                                }
+                                else
+                                {
+                                    var matches = Regex.Matches(response, "<script[^>]*src=[\"']([^\"']+)[\"'][^>]*>", RegexOptions.IgnoreCase);
+                                    foreach (Match match in matches)
+                                    {
+                                        scriptUrls.Add(match.Groups[1].Value);
+                                    }
+                                }
+                            }
+                            catch (Exception hapEx)
+                            {
+                                try { Logger.Warn(hapEx, "HLTB: HtmlAgilityPack reflection failed; using regex fallback"); } catch { }
+                                var matches = Regex.Matches(response, "<script[^>]*src=[\"']([^\"']+)[\"'][^>]*>", RegexOptions.IgnoreCase);
+                                foreach (Match match in matches)
+                                {
+                                    scriptUrls.Add(match.Groups[1].Value);
                                 }
                             }
                         }
@@ -676,9 +698,9 @@ namespace HowLongToBeat.Services
                             }
                         }
                     }
-                    catch
+                    catch (Exception ex)
                     {
-                        
+                        try { Logger.Warn(ex, "HLTB: script URL extraction encountered an error; using regex fallback"); } catch { }
                         var matches = Regex.Matches(response, "<script[^>]*src=[\"']([^\"']+)[\"'][^>]*>", RegexOptions.IgnoreCase);
                         foreach (Match match in matches)
                         {
@@ -838,7 +860,16 @@ namespace HowLongToBeat.Services
                                 // Consume the excess permits before lowering the visible limit to avoid races.
                                 for (int i = 0; i < pendingConsume; i++)
                                 {
-                                    try { await DynamicSemaphore.WaitAsync(); } catch { }
+                                    try
+                                    {
+                                        var delay = Task.Delay(200);
+                                        var winner = await Task.WhenAny(DynamicSemaphore.WaitAsync(), delay);
+                                        if (winner == delay)
+                                        {
+                                            break;
+                                        }
+                                    }
+                                    catch { break; }
                                 }
                                 lock (ConcurrencySync)
                                 {
