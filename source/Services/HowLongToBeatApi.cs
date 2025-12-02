@@ -91,8 +91,6 @@ namespace HowLongToBeat.Services
         public int UserId { get; set; } = 0;
 
         private bool IsFirst = true;
-        private const int MaxParallelGameDataDownloads = 8;
-        private const int GameDataDownloadTimeoutMs = 15000;
 
 
         /// <summary>
@@ -175,41 +173,12 @@ namespace HowLongToBeat.Services
                         VsLeisure = gameData.InvestedMpH
                     };
                     return hltbData;
-
-                    // Fetch game detail pages in parallel with a bounded degree of concurrency
-                    var semaphore = new SemaphoreSlim(MaxParallelGameDataDownloads);
-                    var fetchTasks = search.Select(async x =>
-                    {
-                        await semaphore.WaitAsync();
-                        try
-                        {
-                            // Wrap GetGameData with a timeout so a slow page won't block the whole import
-                            var task = GetGameData(x.Id);
-                            var completed = await Task.WhenAny(task, Task.Delay(GameDataDownloadTimeoutMs));
-                            if (completed == task)
-                            {
-                                x.GameHltbData = await task;
-                            }
-                            else
-                            {
-                                Logger.Warn($"GetGameData timeout for id {x.Id}");
-                                x.GameHltbData = null;
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            Common.LogError(ex, false, true, PluginDatabase.PluginName);
-                            x.GameHltbData = null;
-                        }
-                        finally
-                        {
-                            semaphore.Release();
-                        }
-                    }).ToList();
-
-                    await Task.WhenAll(fetchTasks);
-
-                    return search;
+                }
+                else
+                {
+                    Logger.Warn($"No GameData find with {id}");
+                    return null;
+                }
             }
             catch (Exception ex)
             {
@@ -267,7 +236,7 @@ namespace HowLongToBeat.Services
                 }
                 string response = await pageTask;
 
-                var matches = Regex.Matches(response, @"src=\"([^\"]*?_app-[^\"]*?\\.js)\"");
+                    var matches = Regex.Matches(response, @"src=""([^""]*?_app-[^""]*?\.js)""");
                 foreach (Match match in matches)
                 {
                     string scriptUrl = match.Groups[1].Value;
@@ -286,7 +255,7 @@ namespace HowLongToBeat.Services
                     }
                     string scriptContent = await scriptTask;
 
-                    var searchMatch = Regex.Match(scriptContent, @"fetch\s*\(\s*[\"\']\/api\/([a-zA-Z0-9_\/_]+)[^\"\']*[\"\']\s*,\s*\{[^}]*method:\s*[\"\']POST[\"\']");
+                        var searchMatch = Regex.Match(scriptContent, @"\/api\/([a-zA-Z0-9_\/]*)");
                     if (searchMatch.Success)
                     {
                         string suffix = searchMatch.Groups[1].Value;
@@ -324,104 +293,105 @@ namespace HowLongToBeat.Services
         /// <returns>The auth token.</returns>
         private async Task<string> GetAuthToken()
         {
-            // Add retry with exponential backoff for transient failures
-            const int maxRetries = 2; // total attempts = maxRetries + 1
-            const int baseDelayMs = 500;
-
-            for (int attempt = 0; attempt <= maxRetries; attempt++)
+            try
             {
-                try
+                List<HttpHeader> headers = new List<HttpHeader>
                 {
-                    string response = await Web.DownloadStringData(string.Format(UrlGame, id));
-                    if (string.IsNullOrEmpty(response))
-                    {
-                        throw new Exception("Empty response from game page");
-                    }
+                    new HttpHeader { Key = "Referer", Value = UrlBase }
+                };
+                string url = UrlBase + "/api/search/init?t=" + DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+                string response = await Web.DownloadStringData(url, headers);
 
-                    string jsonData = Tools.GetJsonInString(response, @"<script[ ]?id=\"__NEXT_DATA__\"[ ]?type=\"application/json\">");
-                    _ = Serialization.TryFromJson(jsonData, out NEXT_DATA next_data, out Exception ex);
-                    if (ex != null)
-                    {
-                        Common.LogError(ex, false, false, PluginDatabase.PluginName);
-                    }
-
-                    GameData gameData = next_data?.Props?.PageProps?.Game?.Data?.Game != null
-                        ? next_data.Props.PageProps.Game.Data.Game.FirstOrDefault()
-                        : null;
-
-                    if (gameData != null)
-                    {
-                        HltbData hltbData = new HltbData
-                        {
-                            MainStoryClassic = gameData.CompMain,
-                            MainExtraClassic = gameData.CompPlus,
-                            CompletionistClassic = gameData.Comp100,
-                            SoloClassic = gameData.CompAll,
-                            CoOpClassic = gameData.InvestedCo,
-                            VsClassic = gameData.InvestedMp,
-
-                            MainStoryMedian = gameData.CompMainMed,
-                            MainExtraMedian = gameData.CompPlusMed,
-                            CompletionistMedian = gameData.Comp100Med,
-                            SoloMedian = gameData.CompAllMed,
-                            CoOpMedian = gameData.InvestedCoMed,
-                            VsMedian = gameData.InvestedMpMed,
-
-                            MainStoryAverage = gameData.CompMainAvg,
-                            MainExtraAverage = gameData.CompPlusAvg,
-                            CompletionistAverage = gameData.Comp100Avg,
-                            SoloAverage = gameData.CompAllAvg,
-                            CoOpAverage = gameData.InvestedCoAvg,
-                            VsAverage = gameData.InvestedMpAvg,
-
-                            MainStoryRushed = gameData.CompMainL,
-                            MainExtraRushed = gameData.CompPlusL,
-                            CompletionistRushed = gameData.Comp100L,
-                            SoloRushed = gameData.CompAllL,
-                            CoOpRushed = gameData.InvestedCoL,
-                            VsRushed = gameData.InvestedMpL,
-
-                            MainStoryLeisure = gameData.CompMainH,
-                            MainExtraLeisure = gameData.CompPlusH,
-                            CompletionistLeisure = gameData.Comp100H,
-                            SoloLeisure = gameData.CompAllH,
-                            CoOpLeisure = gameData.InvestedCoH,
-                            VsLeisure = gameData.InvestedMpH
-                        };
-                        return hltbData;
-                    }
-                    else
-                    {
-                        Logger.Warn($"No GameData find with {id}");
-                        return null;
-                    }
-                }
-                catch (Exception ex)
+                var data = Serialization.FromJson<Dictionary<string, string>>(response);
+                if (data != null && data.TryGetValue("token", out string token))
                 {
-                    // If last attempt, log and return null
-                    if (attempt == maxRetries)
-                    {
-                        Common.LogError(ex, false, true, PluginDatabase.PluginName);
-                        return null;
-                    }
-
-                    // transient error -> wait exponential backoff with jitter
-                    try
-                    {
-                        int backoff = (int)(Math.Pow(2, attempt) * baseDelayMs);
-                        int jitter = new Random(Guid.NewGuid().GetHashCode()).Next(0, 300);
-                        int delay = backoff + jitter;
-                        Logger.Warn($"GetGameData attempt {attempt + 1} failed for id {id}, retrying in {delay}ms: {ex.Message}");
-                        await Task.Delay(delay);
-                    }
-                    catch
-                    {
-                        // ignore
-                    }
+                    return token;
                 }
             }
-
+            catch (Exception ex)
+            {
+                Common.LogError(ex, false, true, PluginDatabase.PluginName);
+            }
             return null;
+        }
+
+
+        /// <summary>
+        /// Searches for games on HowLongToBeat by name and platform.
+        /// </summary>
+        /// <param name="name">Game name to search for.</param>
+        /// <param name="platform">Optional platform filter.</param>
+        /// <returns>Returns a list of <see cref="HltbDataUser"/> matching the search.</returns>
+        private async Task<List<HltbDataUser>> Search(string name, string platform = "")
+        {
+            try
+            {
+                SearchResult searchResult = await ApiSearch(name, platform);
+
+                List<HltbDataUser> search = searchResult?.Data?.Select(x =>
+                    new HltbDataUser
+                    {
+                        Name = x.GameName,
+                        Id = x.GameId.ToString(),
+                        UrlImg = string.Format(UrlGameImg, x.GameImage),
+                        Url = string.Format(UrlGame, x.GameId),
+                        Platform = x.ProfilePlatform,
+                        GameType = x.GameType.IsEqual("game") ? GameType.Game : x.GameType.IsEqual("multi") ? GameType.Multi : GameType.Compil,
+                        GameHltbData = new HltbData
+                        {
+                            GameType = x.GameType.IsEqual("game") ? GameType.Game : x.GameType.IsEqual("multi") ? GameType.Multi : GameType.Compil,
+                            MainStoryClassic = x.CompMain,
+                            MainExtraClassic = x.CompPlus,
+                            CompletionistClassic = x.Comp100,
+                            SoloClassic = x.CompAll,
+                            CoOpClassic = x.InvestedCo,
+                            VsClassic = x.InvestedMp
+                        }
+                    }
+                )?.ToList() ?? new List<HltbDataUser>();
+
+                if (search.Any())
+                {
+                    var semaphore = new SemaphoreSlim(MaxParallelGameDataDownloads);
+                    var tasks = search.Select(async x =>
+                    {
+                        await semaphore.WaitAsync();
+                        try
+                        {
+                            try
+                            {
+                                var gameTask = GetGameData(x.Id);
+                                var completed = await Task.WhenAny(gameTask, Task.Delay(GameDataDownloadTimeoutMs));
+                                if (completed == gameTask)
+                                {
+                                    x.GameHltbData = await gameTask;
+                                }
+                                else
+                                {
+                                    Logger.Warn($"Timeout {GameDataDownloadTimeoutMs}ms getting game data for {x.Id}");
+                                    x.GameHltbData = null;
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                Common.LogError(ex, false, false, PluginDatabase.PluginName);
+                                x.GameHltbData = null;
+                            }
+                        }
+                        finally
+                        {
+                            semaphore.Release();
+                        }
+                    }).ToArray();
+
+                    await Task.WhenAll(tasks);
+                }
+                return search;
+            }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, false, true, PluginDatabase.PluginName);
+                return new List<HltbDataUser>();
             }
         }
 
