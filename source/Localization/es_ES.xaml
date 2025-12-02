@@ -166,4 +166,5 @@ Aquí está la lista de comandos:</sys:String>
     -stores={n}	Filtrar por nombre de tienda (ej:-stores=steam / -stores=steam,epic)
     -status={n}	Filtrar por nombre de estado (ej:-status=played / -status=played,playing)</sys:String>
 
+    <sys:String x:Key="LOCHowLongToBeatEnableVerboseLogging">Habilitar el registro detallado de depuración HLTB (registros adicionales en extensions.log)</sys:String>
 </ResourceDictionary>

@@ -673,6 +673,7 @@ namespace HowLongToBeat.Services
                         try
                         {
                             int target = ConcurrencyController?.TargetConcurrency ?? MaxParallelGameDataDownloads;
+                            int pendingConsume = 0;
                             lock (ConcurrencySync)
                             {
                                 int diff = target - CurrentSemaphoreLimit;
@@ -683,18 +684,20 @@ namespace HowLongToBeat.Services
                                 }
                                 else if (diff < 0)
                                 {
-                                    int toConsume = -diff;
-                                    _ = Task.Run(async () =>
-                                    {
-                                        for (int i = 0; i < toConsume; i++)
-                                        {
-                                            await DynamicSemaphore.WaitAsync();
-                                        }
-                                        lock (ConcurrencySync)
-                                        {
-                                            CurrentSemaphoreLimit = target;
-                                        }
-                                    });
+                                    pendingConsume = -diff;
+                                }
+                            }
+
+                            if (pendingConsume > 0)
+                            {
+                                // Consume the excess permits before lowering the visible limit to avoid races.
+                                for (int i = 0; i < pendingConsume; i++)
+                                {
+                                    try { await DynamicSemaphore.WaitAsync(); } catch { }
+                                }
+                                lock (ConcurrencySync)
+                                {
+                                    CurrentSemaphoreLimit = target;
                                 }
                             }
 
@@ -903,6 +906,7 @@ namespace HowLongToBeat.Services
                         try
                         {
                             int target = GetSearchTarget();
+                            int pendingSearchConsume = 0;
                             lock (SearchConcurrencySync)
                             {
                                 int diff = target - CurrentSearchLimit;
@@ -913,18 +917,19 @@ namespace HowLongToBeat.Services
                                 }
                                 else if (diff < 0)
                                 {
-                                    int toConsume = -diff;
-                                    _ = Task.Run(async () =>
-                                    {
-                                        for (int i = 0; i < toConsume; i++)
-                                        {
-                                            try { await SearchSemaphore.WaitAsync(); } catch { }
-                                        }
-                                        lock (SearchConcurrencySync)
-                                        {
-                                            CurrentSearchLimit = target;
-                                        }
-                                    });
+                                    pendingSearchConsume = -diff;
+                                }
+                            }
+
+                            if (pendingSearchConsume > 0)
+                            {
+                                for (int i = 0; i < pendingSearchConsume; i++)
+                                {
+                                    try { await SearchSemaphore.WaitAsync(); } catch { }
+                                }
+                                lock (SearchConcurrencySync)
+                                {
+                                    CurrentSearchLimit = target;
                                 }
                             }
                         }
@@ -935,12 +940,9 @@ namespace HowLongToBeat.Services
                                 int targetLog = GetSearchTarget();
                                 int availableLog = SearchSemaphore?.CurrentCount ?? 0;
                                 int inFlightLog = Math.Max(0, targetLog - availableLog);
-                                if (PluginDatabase?.PluginSettings?.Settings is HowLongToBeatSettings ss && ss.EnableVerboseLogging)
+                                if (PluginDatabase?.PluginSettings?.Settings is HowLongToBeatSettings vs10 && vs10.EnableVerboseLogging)
                                 {
-                                            if (PluginDatabase?.PluginSettings?.Settings is HowLongToBeatSettings vs10 && vs10.EnableVerboseLogging)
-                                            {
-                                                Logger.Debug($"ApiSearch: waiting search semaphore for '{name}' target={targetLog} currentLimit={CurrentSearchLimit} available={availableLog} inFlight={inFlightLog}");
-                                            }
+                                    Logger.Debug($"ApiSearch: waiting search semaphore for '{name}' target={targetLog} currentLimit={CurrentSearchLimit} available={availableLog} inFlight={inFlightLog}");
                                 }
                         }
                         catch { }
@@ -1067,18 +1069,16 @@ namespace HowLongToBeat.Services
                                             }
                                             else if (diff < 0)
                                             {
-                                                int toConsume = -diff;
-                                                _ = Task.Run(async () =>
+                                                int pending = -diff;
+                                                // consume synchronously to ensure limit is only lowered after permits are removed
+                                                for (int i = 0; i < pending; i++)
                                                 {
-                                                    for (int i = 0; i < toConsume; i++)
-                                                    {
-                                                        try { await SearchSemaphore.WaitAsync(); } catch { }
-                                                    }
-                                                    lock (SearchConcurrencySync)
-                                                    {
-                                                        CurrentSearchLimit = SearchBackoffLimit;
-                                                    }
-                                                });
+                                                    try { await SearchSemaphore.WaitAsync(); } catch { }
+                                                }
+                                                lock (SearchConcurrencySync)
+                                                {
+                                                    CurrentSearchLimit = SearchBackoffLimit;
+                                                }
                                             }
                                         }
                                         catch { }

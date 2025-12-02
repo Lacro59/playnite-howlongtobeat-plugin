@@ -83,6 +83,7 @@ namespace HowLongToBeat.Services
                     const int maxAttempts = 5;
                     int attempt = 0;
                     int delayMs = 100;
+                    var rnd = new Random();
                     while (true)
                     {
                         attempt++;
@@ -139,7 +140,7 @@ namespace HowLongToBeat.Services
                                 break;
                             }
 
-                            var jitter = new Random().Next(0, Math.Min(100, delayMs));
+                            var jitter = rnd.Next(0, Math.Min(100, delayMs));
                             Thread.Sleep(delayMs + jitter);
                             delayMs = Math.Min(2000, delayMs * 2);
                         }

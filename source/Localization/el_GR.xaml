@@ -165,4 +165,5 @@
     -stores={n}	  Φίλτρο με όνομα καταστήματος (πχ:-stores=steam / -stores=steres=steam, pic)
     -status={n}	  Φίλτρο με κατάστασης παιχνιδιού (πχ: -status=έπαιξε / -status=played,playing)</sys:String>
 
+    <sys:String x:Key="LOCHowLongToBeatEnableVerboseLogging">Enable verbose HLTB debug logging (extra logs in extensions.log)</sys:String>
 </ResourceDictionary>

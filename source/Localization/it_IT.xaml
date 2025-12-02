@@ -166,4 +166,5 @@ Ecco l'elenco dei comandi:</sys:String>
     -stores={n}	&lt;unk&gt; Filtra per nome negozio (ex:-stores=vapore / -stores=steam, epic)
     -status={n}	&lt;unk&gt; Filtra per nome di stato (ex:-status=played / -status=played,playing)</sys:String>
 
+    <sys:String x:Key="LOCHowLongToBeatEnableVerboseLogging">Abilita la registrazione dettagliata del debug HLTB (log aggiuntivi in extensions.log)</sys:String>
 </ResourceDictionary>

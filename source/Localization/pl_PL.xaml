@@ -166,4 +166,5 @@ Oto lista poleceń:</sys:String>
     -stores={n}	Filtruj wg nazwy sklepu (np:-stores=steam / -stores=steam,epic)
     -status={n}	Filttruj wg nazwy statusu (np:-status=played / -status=played,playing)</sys:String>
 
+    <sys:String x:Key="LOCHowLongToBeatEnableVerboseLogging">Enable verbose HLTB debug logging (extra logs in extensions.log)</sys:String>
 </ResourceDictionary>

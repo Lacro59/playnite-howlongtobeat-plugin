@@ -166,4 +166,5 @@ Voici la liste des commandes :</sys:String>
     -stores={n}	Filtrer par nom de bibliothèque (exemple : -stores=steam / -stores=steam,epic)
     -status={n}	Filtrer par nom de statut (exemple : -status=played / -status=played,playing)</sys:String>
 
+    <sys:String x:Key="LOCHowLongToBeatEnableVerboseLogging">Activer la journalisation de débogage HLTB détaillée (journaux supplémentaires dans extensions.log)</sys:String>
 </ResourceDictionary>

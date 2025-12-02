@@ -45,7 +45,7 @@
 
                     <CheckBox Margin="0,10,0,0" IsChecked="{Binding Settings.ShowHltbImg}" Content="{DynamicResource LOCHowLongToBeatShowHltbImage}" />
 
-                    <CheckBox Margin="0,10,0,0" IsChecked="{Binding Settings.EnableVerboseLogging}" Content="Enable verbose HLTB debug logging (extra logs in extensions.log)" />
+                    <CheckBox Margin="0,10,0,0" IsChecked="{Binding Settings.EnableVerboseLogging}" Content="{DynamicResource LOCHowLongToBeatEnableVerboseLogging}" />
 
                     <Grid Margin="0,10,0,0">
                         <Grid.ColumnDefinitions>

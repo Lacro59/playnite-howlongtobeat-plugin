@@ -166,4 +166,5 @@ Hier ist die Liste von Befehlen:</sys:String>
     -stores={n}	Filter nach Store Name (z.B.:-stores=steam / -stores=steam,epic)
     -status={n}	Filter nach Status Name (z.B.:-status=played / -status=played,playing)</sys:String>
 
+    <sys:String x:Key="LOCHowLongToBeatEnableVerboseLogging">Ausführliche HLTB-Debug-Protokollierung aktivieren (zusätzliche Protokolle in extensions.log)</sys:String>
 </ResourceDictionary>

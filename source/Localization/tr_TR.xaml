@@ -166,4 +166,5 @@ Komutlar şunlardır:</sys:String>
     -stores={n}	Mağaza adıyla filtrele (örn:-stores=steam / -stores=steam,epic)
     -status={n}	Durum adıyla filtrele (örn:-status=played / -status=played,playing)</sys:String>
 
+    <sys:String x:Key="LOCHowLongToBeatEnableVerboseLogging">Ayrıntılı HLTB hata ayıklama günlüğünü etkinleştir (extensions.log dosyasında ek günlükler)</sys:String>
 </ResourceDictionary>

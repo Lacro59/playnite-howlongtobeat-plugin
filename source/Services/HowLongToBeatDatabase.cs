@@ -123,12 +123,12 @@ namespace HowLongToBeat.Services
             }
 
             GameHowLongToBeat loadedItem = Get(id, true);
-                if (loadedItem.GetData().Id.IsNullOrEmpty())
+            if (loadedItem.GetData().Id.IsNullOrEmpty())
+            {
+                if (PluginSettings?.Settings is HowLongToBeatSettings vs2 && vs2.EnableVerboseLogging)
                 {
-                    if (PluginSettings?.Settings is HowLongToBeatSettings vs2 && vs2.EnableVerboseLogging)
-                    {
-                        Logger.Debug($"No data, try to add");
-                    }
+                    Logger.Debug($"No data, try to add");
+                }
                 AddData(game);
                 loadedItem = Get(id, true);
                 if (loadedItem.GetData().Id.IsNullOrEmpty())
@@ -594,6 +594,18 @@ namespace HowLongToBeat.Services
         {
             try
             {
+                if (game == null)
+                {
+                    Common.LogDebug(true, "SetCurrentPlayTime called with null game");
+                    return false;
+                }
+
+                if (HowLongToBeatApi == null)
+                {
+                    Common.LogError(new NullReferenceException("HowLongToBeatApi is null"), false, true, PluginName);
+                    return false;
+                }
+
                 if (HowLongToBeatApi.GetIsUserLoggedIn())
                 {
                     GameHowLongToBeat gameHowLongToBeat = Database.Get(game.Id);
@@ -692,6 +704,12 @@ namespace HowLongToBeat.Services
                         #endregion
 
                         #region Data
+
+                        if (Database.UserHltbData == null)
+                        {
+                            Common.LogDebug(true, $"User HLTB data is null, cannot submit data for {game.Name}");
+                            return false;
+                        }
 
                         editData.UserId = Database.UserHltbData.UserId;
                         editData.SubmissionId = int.Parse(submissionId);
