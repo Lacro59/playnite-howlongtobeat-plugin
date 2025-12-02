@@ -43,6 +43,11 @@ namespace HowLongToBeat.Services
         internal string FileCookies { get; }
 
         private static string SearchUrl { get; set; } = null;
+        private static readonly object SearchUrlLock = new object();
+        private const int ScriptDownloadTimeoutMs = 5000;
+
+        private const int MaxParallelGameDataDownloads = 8;
+        private const int GameDataDownloadTimeoutMs = 15000;
 
 
         #region Urls
