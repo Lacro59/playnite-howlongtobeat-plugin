@@ -157,7 +157,21 @@ namespace HowLongToBeat.Services
                 httpClient.DefaultRequestHeaders.Add("User-Agent", Web.UserAgent);
                 httpClient.DefaultRequestHeaders.Add("Referer", UrlBase);
             }
-            catch { }
+            catch (Exception ex)
+            {
+                try { Logger.Warn(ex, "HLTB: HttpClient init failed, falling back to default client"); } catch { }
+                try
+                {
+                    httpClient = new HttpClient { Timeout = TimeSpan.FromMilliseconds(GameDataDownloadTimeoutMs) };
+                    httpClient.DefaultRequestHeaders.Add("User-Agent", Web.UserAgent);
+                }
+                catch (Exception ex2)
+                {
+                    // Critical failure: rethrow to prevent unusable instance
+                    try { Logger.Error(ex2, "HLTB: HttpClient fallback failed; instance unusable"); } catch { }
+                    throw;
+                }
+            }
             UserLogin = PluginDatabase.PluginSettings.Settings.UserLogin;
 
             CookiesDomains = new List<string> { ".howlongtobeat.com", "howlongtobeat.com" };
@@ -177,6 +191,7 @@ namespace HowLongToBeat.Services
             catch (Exception ex)
             {
                 Common.LogError(ex, false);
+                try { Logger.Warn("HLTB: PageCache init failed; proceeding without persistent cache"); } catch { }
             }
 
             try
@@ -190,8 +205,9 @@ namespace HowLongToBeat.Services
                     CurrentSearchLimit = MaxParallelSearches;
                     SearchSemaphore = new SemaphoreSlim(MaxParallelSearches, SemaphoreUpperBound);
                 }
-                catch
+                catch (Exception ex)
                 {
+                    try { Logger.Warn(ex, "HLTB: Search concurrency controller init failed; using basic semaphore"); } catch { }
                     SearchSemaphore = new SemaphoreSlim(MaxParallelSearches);
                     CurrentSearchLimit = MaxParallelSearches;
                 }
@@ -199,6 +215,7 @@ namespace HowLongToBeat.Services
             catch (Exception ex)
             {
                 Common.LogError(ex, false);
+                try { Logger.Warn("HLTB: Adaptive concurrency init failed; using basic semaphore defaults"); } catch { }
                 DynamicSemaphore = new SemaphoreSlim(MaxParallelGameDataDownloads);
                 CurrentSemaphoreLimit = MaxParallelGameDataDownloads;
             }
@@ -352,7 +369,6 @@ namespace HowLongToBeat.Services
                 try { SearchSemaphore?.Dispose(); } catch { }
                 SearchSemaphore = null;
 
-                try { PageCache?.Dispose(); } catch { }
                 try { httpClient?.Dispose(); } catch { }
             }
         }
@@ -393,7 +409,7 @@ namespace HowLongToBeat.Services
                 }
 
                 int attempts = 0;
-                if (jsonData.IsNullOrEmpty())
+                if (string.IsNullOrEmpty(jsonData))
                 {
                     string response = string.Empty;
                     int maxAttempts = 3;
@@ -459,7 +475,7 @@ namespace HowLongToBeat.Services
                         }
                     }
                 }
-                if (jsonData.IsNullOrEmpty())
+                if (string.IsNullOrEmpty(jsonData))
                 {
                     Common.LogDebug(true, $"GetGameData id={id} - no JSON extracted after {attempts} attempts");
                     Logger.Warn($"No GameData find with {id}");
@@ -777,6 +793,7 @@ namespace HowLongToBeat.Services
                 {
                     var tasks = search.Select(async x =>
                     {
+                        bool acquiredGameSemaphore = false;
                         try
                         {
                             int target = ConcurrencyController?.TargetConcurrency ?? MaxParallelGameDataDownloads;
@@ -819,7 +836,13 @@ namespace HowLongToBeat.Services
                                 }
                             }
                             catch { }
-                            await DynamicSemaphore.WaitAsync();
+                            var acquired = await DynamicSemaphore.WaitAsync(TimeSpan.FromSeconds(10));
+                            if (!acquired)
+                            {
+                                Logger.Warn($"Search: timeout waiting for game data semaphore for id={x.Id}");
+                                return;
+                            }
+                            acquiredGameSemaphore = true;
                             try
                             {
                                 int targetGameLog = ConcurrencyController?.TargetConcurrency ?? MaxParallelGameDataDownloads;
@@ -876,11 +899,14 @@ namespace HowLongToBeat.Services
                         }
                         finally
                         {
-                            try
+                            if (acquiredGameSemaphore)
                             {
-                                DynamicSemaphore.Release();
+                                try
+                                {
+                                    DynamicSemaphore.Release();
+                                }
+                                catch { }
                             }
-                            catch { }
                             if (PluginDatabase?.PluginSettings?.Settings is HowLongToBeatSettings s4 && s4.EnableVerboseLogging)
                             {
                                 Logger.Debug($"Search: released semaphore for id={x.Id}");
@@ -1057,7 +1083,16 @@ namespace HowLongToBeat.Services
                                 }
                         }
                         catch { }
-                        await (SearchSemaphore?.WaitAsync() ?? Task.CompletedTask);
+                        bool waitOk = true;
+                        if (SearchSemaphore != null)
+                        {
+                            waitOk = await SearchSemaphore.WaitAsync(TimeSpan.FromSeconds(10));
+                        }
+                        if (!waitOk)
+                        {
+                            Logger.Warn($"ApiSearch: timeout waiting search semaphore for '{name}'");
+                            return null;
+                        }
                         acquired = true;
                         try
                         {
