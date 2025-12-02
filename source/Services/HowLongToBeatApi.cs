@@ -25,7 +25,7 @@ using System.Windows;
 
 namespace HowLongToBeat.Services
 {
-    public class HowLongToBeatApi : ObservableObject
+    public class HowLongToBeatApi : ObservableObject, IDisposable
     {
         private static ILogger Logger => LogManager.GetLogger();
 
@@ -70,6 +70,8 @@ namespace HowLongToBeat.Services
         private int CurrentSemaphoreLimit;
         private const int SemaphoreUpperBound = 128;
 
+        private readonly HttpClient httpClient;
+
         private readonly ConcurrentQueue<long> RecentSearchSamples = new ConcurrentQueue<long>();
         private const int RecentSamplesWindow = 200;
 
@@ -85,6 +87,7 @@ namespace HowLongToBeat.Services
 
         private CancellationTokenSource monitorCts;
         private Task monitorTask;
+        private bool _disposed = false;
 
 
         #region Urls
@@ -140,11 +143,18 @@ namespace HowLongToBeat.Services
         /// </summary>
         public HowLongToBeatApi()
         {
-            // Increase the default connection limit so multiple concurrent requests
-            // to howlongtobeat.com are allowed (Framework defaults to a very low value).
             try
             {
-                ServicePointManager.DefaultConnectionLimit = Math.Max(ServicePointManager.DefaultConnectionLimit, MaxParallelGameDataDownloads);
+                var handler = new HttpClientHandler
+                {
+                    MaxConnectionsPerServer = Math.Max(4, MaxParallelGameDataDownloads)
+                };
+                httpClient = new HttpClient(handler)
+                {
+                    Timeout = TimeSpan.FromMilliseconds(GameDataDownloadTimeoutMs)
+                };
+                httpClient.DefaultRequestHeaders.Add("User-Agent", Web.UserAgent);
+                httpClient.DefaultRequestHeaders.Add("Referer", UrlBase);
             }
             catch { }
             UserLogin = PluginDatabase.PluginSettings.Settings.UserLogin;
@@ -271,7 +281,52 @@ namespace HowLongToBeat.Services
 
         ~HowLongToBeatApi()
         {
-            try { StopMonitoring(); } catch { }
+            try { Dispose(false); } catch { }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            try { GC.SuppressFinalize(this); } catch { }
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (_disposed) return;
+
+            _disposed = true;
+
+            if (disposing)
+            {
+                try
+                {
+                    if (monitorCts != null)
+                    {
+                        try { monitorCts.Cancel(); } catch { }
+                        try { monitorTask?.Wait(2000); } catch { }
+                        try { monitorCts.Dispose(); } catch { }
+                    }
+                }
+                catch { }
+                finally
+                {
+                    monitorTask = null;
+                    monitorCts = null;
+                }
+
+                try { ConcurrencyController?.Dispose(); } catch { }
+                ConcurrencyController = null;
+                try { SearchConcurrencyController?.Dispose(); } catch { }
+                SearchConcurrencyController = null;
+
+                try { DynamicSemaphore?.Dispose(); } catch { }
+                DynamicSemaphore = null;
+                try { SearchSemaphore?.Dispose(); } catch { }
+                SearchSemaphore = null;
+
+                try { PageCache?.Dispose(); } catch { }
+                try { httpClient?.Dispose(); } catch { }
+            }
         }
 
 
@@ -331,7 +386,7 @@ namespace HowLongToBeat.Services
                             }
                             else
                             {
-                                response = await Web.DownloadStringData(string.Format(UrlGame, id));
+                                response = await httpClient.GetStringAsync(string.Format(UrlGame, id));
                                 if (!response.IsNullOrEmpty())
                                 {
                                     string maybeJson = Tools.GetJsonInString(response, @"<script[ ]?id=""__NEXT_DATA__""[ ]?type=""application/json"">");
@@ -505,7 +560,7 @@ namespace HowLongToBeat.Services
             {
                 string url = UrlBase;
                 
-                var pageTask = Web.DownloadStringData(url);
+                var pageTask = httpClient.GetStringAsync(url);
                 var pageCompleted = await Task.WhenAny(pageTask, Task.Delay(ScriptDownloadTimeoutMs));
                 if (pageCompleted != pageTask)
                 {
@@ -574,7 +629,7 @@ namespace HowLongToBeat.Services
                             scriptUrl = UrlBase + scriptUrl;
                         }
 
-                        var scriptTask = Web.DownloadStringData(scriptUrl);
+                        var scriptTask = httpClient.GetStringAsync(scriptUrl);
                         var completed = await Task.WhenAny(scriptTask, Task.Delay(ScriptDownloadTimeoutMs));
                         if (completed != scriptTask)
                         {
@@ -951,8 +1006,9 @@ namespace HowLongToBeat.Services
                                 {
                                     try
                                     {
-                                        var acquiredPermit = await Task.WhenAny(SearchSemaphore.WaitAsync(), Task.Delay(200));
-                                        if (acquiredPermit == null || acquiredPermit is Task delayTask && delayTask.IsCompleted)
+                                        var delay = Task.Delay(200);
+                                        var winner = await Task.WhenAny(SearchSemaphore.WaitAsync(), delay);
+                                        if (winner == delay)
                                         {
                                             break;
                                         }
@@ -962,7 +1018,10 @@ namespace HowLongToBeat.Services
                                 }
                                 lock (SearchConcurrencySync)
                                 {
-                                    CurrentSearchLimit = target;
+                                    int originalLimit = CurrentSearchLimit;
+                                    int newLimit = (consumed == pendingSearchConsume) ? target : Math.Max(0, originalLimit - consumed);
+                                    newLimit = Math.Min(originalLimit, newLimit);
+                                    CurrentSearchLimit = newLimit;
                                 }
                             }
                         }
@@ -1123,8 +1182,9 @@ namespace HowLongToBeat.Services
                             {
                                 try
                                 {
-                                    var acquiredPermit = await Task.WhenAny(SearchSemaphore.WaitAsync(), Task.Delay(200));
-                                    if (acquiredPermit == null || (acquiredPermit is Task d && d.IsCompleted))
+                                    var delay = Task.Delay(200);
+                                    var winner = await Task.WhenAny(SearchSemaphore.WaitAsync(), delay);
+                                    if (winner == delay)
                                     {
                                         break;
                                     }
@@ -1134,7 +1194,11 @@ namespace HowLongToBeat.Services
                             }
                             lock (SearchConcurrencySync)
                             {
-                                CurrentSearchLimit = SearchBackoffLimit;
+                                int originalLimit = CurrentSearchLimit;
+                                int target = SearchBackoffLimit;
+                                int newLimit = (consumed == postLockPendingConsume) ? target : Math.Max(0, originalLimit - consumed);
+                                newLimit = Math.Min(originalLimit, newLimit);
+                                CurrentSearchLimit = newLimit;
                             }
                         }
                     }
