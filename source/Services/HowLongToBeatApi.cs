@@ -83,6 +83,9 @@ namespace HowLongToBeat.Services
         private string CachedAuthToken = null;
         private DateTime CachedAuthTokenExpiry = DateTime.MinValue;
 
+        private CancellationTokenSource monitorCts;
+        private Task monitorTask;
+
 
         #region Urls
 
@@ -191,11 +194,13 @@ namespace HowLongToBeat.Services
 
             try
             {
-                _ = Task.Run(async () =>
+                monitorCts = new CancellationTokenSource();
+                monitorTask = Task.Run(async () =>
                 {
-                    while (true)
+                    var token = monitorCts.Token;
+                    while (!token.IsCancellationRequested)
                     {
-                        await Task.Delay(TimeSpan.FromSeconds(10));
+                        try { await Task.Delay(TimeSpan.FromSeconds(10), token); } catch { }
                         try
                         {
                             int searchTarget;
@@ -249,6 +254,24 @@ namespace HowLongToBeat.Services
                 });
             }
             catch { }
+        }
+
+        public void StopMonitoring()
+        {
+            try
+            {
+                monitorCts?.Cancel();
+                try { monitorTask?.Wait(2000); } catch { }
+                monitorCts?.Dispose();
+                monitorCts = null;
+                monitorTask = null;
+            }
+            catch { }
+        }
+
+        ~HowLongToBeatApi()
+        {
+            try { StopMonitoring(); } catch { }
         }
 
 
@@ -923,9 +946,19 @@ namespace HowLongToBeat.Services
 
                             if (pendingSearchConsume > 0)
                             {
+                                int consumed = 0;
                                 for (int i = 0; i < pendingSearchConsume; i++)
                                 {
-                                    try { await SearchSemaphore.WaitAsync(); } catch { }
+                                    try
+                                    {
+                                        var acquiredPermit = await Task.WhenAny(SearchSemaphore.WaitAsync(), Task.Delay(200));
+                                        if (acquiredPermit == null || acquiredPermit is Task delayTask && delayTask.IsCompleted)
+                                        {
+                                            break;
+                                        }
+                                        consumed++;
+                                    }
+                                    catch { break; }
                                 }
                                 lock (SearchConcurrencySync)
                                 {
@@ -1032,6 +1065,7 @@ namespace HowLongToBeat.Services
                     }
                     catch { }
 
+                    int postLockPendingConsume = 0;
                     try
                     {
                         var codes = RecentSearchStatusCodes.ToArray();
@@ -1069,21 +1103,38 @@ namespace HowLongToBeat.Services
                                             }
                                             else if (diff < 0)
                                             {
-                                                int pending = -diff;
-                                                // consume synchronously to ensure limit is only lowered after permits are removed
-                                                for (int i = 0; i < pending; i++)
-                                                {
-                                                    try { await SearchSemaphore.WaitAsync(); } catch { }
-                                                }
-                                                lock (SearchConcurrencySync)
-                                                {
-                                                    CurrentSearchLimit = SearchBackoffLimit;
-                                                }
+                                                postLockPendingConsume = -diff;
                                             }
                                         }
                                         catch { }
                                     }
                                 }
+                            }
+                        }
+                    }
+                    catch { }
+
+                    try
+                    {
+                        if (postLockPendingConsume > 0)
+                        {
+                            int consumed = 0;
+                            for (int i = 0; i < postLockPendingConsume; i++)
+                            {
+                                try
+                                {
+                                    var acquiredPermit = await Task.WhenAny(SearchSemaphore.WaitAsync(), Task.Delay(200));
+                                    if (acquiredPermit == null || (acquiredPermit is Task d && d.IsCompleted))
+                                    {
+                                        break;
+                                    }
+                                    consumed++;
+                                }
+                                catch { break; }
+                            }
+                            lock (SearchConcurrencySync)
+                            {
+                                CurrentSearchLimit = SearchBackoffLimit;
                             }
                         }
                     }
@@ -1122,7 +1173,6 @@ namespace HowLongToBeat.Services
                 return null;
             }
         }
-
 
         /// <summary>
         /// Opens a selection window for the user to choose the correct game data.

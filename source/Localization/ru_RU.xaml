@@ -167,5 +167,5 @@
     -stores={n}   Фильтр по названию магазина (напр:-stores=пар / -stores=паром, pic)
     -status={n}	Фильтр по статусу (напр.:-status=воспроизведение/-статус=воспроизведение,игра)</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatEnableVerboseLogging">Enable verbose HLTB debug logging (extra logs in extensions.log)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatEnableVerboseLogging">Включить подробное ведение журнала отладки HLTB (дополнительные записи в extensions.log)</sys:String>
 </ResourceDictionary>

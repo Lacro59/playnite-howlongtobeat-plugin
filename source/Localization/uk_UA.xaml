@@ -166,5 +166,5 @@
     -stores={n}        Фільтрувати за назвою магазину (наприклад:-stores=steam / -stores=steam,epic)
     -status={n}	Фільтрувати за статусом завершення (наприклад:-status=played / -status=played,playing)</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatEnableVerboseLogging">Enable verbose HLTB debug logging (extra logs in extensions.log)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatEnableVerboseLogging">Увімкнути детальне логування налагодження HLTB (додаткові записи в extensions.log)</sys:String>
 </ResourceDictionary>
