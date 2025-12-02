@@ -255,8 +255,12 @@ namespace HowLongToBeat.Services
                     }
                     string scriptContent = await scriptTask;
 
-                        var searchMatch = Regex.Match(scriptContent, @"\/api\/([a-zA-Z0-9_\/]*)");
-                    if (searchMatch.Success)
+                        // Match the JS fetch call that posts to an /api/... endpoint and ensure it uses method: "POST".
+                        // This mirrors the Python implementation: capture the path suffix after /api/ when the request
+                        // options include method: "POST". Use Singleline so the [^}]* can span newlines.
+                               string pattern = "fetch\\s*\\(\\s*[\"']\\/api\\/([a-zA-Z0-9_\\/]+)[^\"']*[\"']\\s*,\\s*\\{[^}]*method:\\s*[\"']POST[\"'][^}]*\\}";
+                        var searchMatch = Regex.Match(scriptContent, pattern, RegexOptions.Singleline | RegexOptions.IgnoreCase);
+                        if (searchMatch.Success)
                     {
                         string suffix = searchMatch.Groups[1].Value;
                         if (suffix.Contains("/"))
