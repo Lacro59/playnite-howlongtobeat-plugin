@@ -47,6 +47,33 @@
 
                     <CheckBox Margin="0,10,0,0" IsChecked="{Binding Settings.EnableVerboseLogging}" Content="{DynamicResource LOCHowLongToBeatEnableVerboseLogging}" />
 
+                    <!-- Export controls -->
+                    <Grid Margin="0,10,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto" />
+                            <ColumnDefinition Width="10" />
+                            <ColumnDefinition Width="auto" />
+                            <ColumnDefinition Width="10" />
+                            <ColumnDefinition Width="auto" />
+                            <ColumnDefinition Width="10" />
+                            <ColumnDefinition Width="auto" />
+                        </Grid.ColumnDefinitions>
+                        <Label Grid.Column="0" Content="{DynamicResource LOCHowLongToBeatExport}" VerticalAlignment="Center" />
+                        <Button Grid.Column="2" Content="Export CSV (comma)" MinHeight="26" VerticalAlignment="Center" Click="ButtonExportCsvComma_Click" />
+                        <Button Grid.Column="4" Content="Export CSV (semicolon)" MinHeight="26" VerticalAlignment="Center" Click="ButtonExportCsvSemicolon_Click" />
+                        <Button Grid.Column="6" Content="Export JSON" MinHeight="26" VerticalAlignment="Center" Click="ButtonExportJson_Click" />
+                    </Grid>
+
+                    <Grid Margin="0,10,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="10" />
+                            <ColumnDefinition Width="auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBox x:Name="PART_ExportFolder" Grid.Column="0" MinHeight="26" VerticalAlignment="Center" ToolTip="Destination folder for export" />
+                        <Button Grid.Column="2" Content="Browse" MinHeight="26" VerticalAlignment="Center" Click="ButtonBrowseExportFolder_Click" />
+                    </Grid>
+
                     <Grid Margin="0,10,0,0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />

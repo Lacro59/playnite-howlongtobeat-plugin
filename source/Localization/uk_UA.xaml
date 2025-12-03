@@ -12,6 +12,8 @@
     <sys:String x:Key="LOCHowLongToBeatAddTagDescription">Додати тег до ігор з інформацією про час завершення Основного сюжету</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoTag">Автоматична обробка тегів</sys:String>
     <sys:String x:Key="LOCHowLongToBeatShowHltbImage">Використовувати у вікні оригінальну обкладинку гри з HowLongToBeat</sys:String>
+        <sys:String x:Key="LOCHowLongToBeatEnableVerboseLogging">Увімкнути докладне журналювання HLTB (додаткові логи в extensions.log)</sys:String>
+        <sys:String x:Key="LOCHowLongToBeatExport">Експортувати дані HowLongToBeat</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatColorSelection">Вибір кольору:</sys:String>
 
@@ -166,5 +168,4 @@
     -stores={n}        Фільтрувати за назвою магазину (наприклад:-stores=steam / -stores=steam,epic)
     -status={n}	Фільтрувати за статусом завершення (наприклад:-status=played / -status=played,playing)</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatEnableVerboseLogging">Увімкнути детальне логування налагодження HLTB (додаткові записи в extensions.log)</sys:String>
 </ResourceDictionary>

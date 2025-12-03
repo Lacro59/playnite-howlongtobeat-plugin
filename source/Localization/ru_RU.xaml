@@ -12,6 +12,8 @@
     <sys:String x:Key="LOCHowLongToBeatAddTagDescription">Добавить тэг в игры с информацией о времени завершения основной истории</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoTag">Автоматическая обработка тэгов</sys:String>
     <sys:String x:Key="LOCHowLongToBeatShowHltbImage">Использовать HowLongToBeat оригинальное обложку игры в окне</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatEnableVerboseLogging">Включить подробное ведение журнала отладки HLTB (дополнительные записи в extensions.log)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExport">Экспорт данных HowLongToBeat</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatColorSelection">Выбор цвета:</sys:String>
 
@@ -167,5 +169,4 @@
     -stores={n}   Фильтр по названию магазина (напр:-stores=пар / -stores=паром, pic)
     -status={n}	Фильтр по статусу (напр.:-status=воспроизведение/-статус=воспроизведение,игра)</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatEnableVerboseLogging">Включить подробное ведение журнала отладки HLTB (дополнительные записи в extensions.log)</sys:String>
 </ResourceDictionary>

@@ -12,6 +12,8 @@
     <sys:String x:Key="LOCHowLongToBeatAddTagDescription">Ana hikaye tamamlanma bilgisi sunan oyunlara bir etiket ekle</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoTag">Otomatik etiketler işleniyor</sys:String>
     <sys:String x:Key="LOCHowLongToBeatShowHltbImage">Pencerede HowLongToBeat özgün kapak görselini kullan</sys:String>
+        <sys:String x:Key="LOCHowLongToBeatEnableVerboseLogging">Ayrıntılı HLTB hata ayıklama günlüklerini etkinleştir (extensions.log'da ek kayıtlar)</sys:String>
+        <sys:String x:Key="LOCHowLongToBeatExport">HowLongToBeat verilerini dışa aktar</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatColorSelection">Renk seçimi:</sys:String>
 
@@ -166,5 +168,4 @@ Komutlar şunlardır:</sys:String>
     -stores={n}	Mağaza adıyla filtrele (örn:-stores=steam / -stores=steam,epic)
     -status={n}	Durum adıyla filtrele (örn:-status=played / -status=played,playing)</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatEnableVerboseLogging">Ayrıntılı HLTB hata ayıklama günlüğünü etkinleştir (extensions.log dosyasında ek günlükler)</sys:String>
 </ResourceDictionary>

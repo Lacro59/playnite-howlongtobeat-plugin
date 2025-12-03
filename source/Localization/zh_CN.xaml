@@ -12,6 +12,8 @@
     <sys:String x:Key="LOCHowLongToBeatAddTagDescription">为游戏添加一个主线完成时间信息的标签</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoTag">自动标签</sys:String>
     <sys:String x:Key="LOCHowLongToBeatShowHltbImage">在窗口中使用攻关历时原始游戏封面图像</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatEnableVerboseLogging">启用详细的 HLTB 调试日志（在 extensions.log 中有额外日志）</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExport">导出 HowLongToBeat 数据</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatColorSelection">色彩管理：</sys:String>
 
@@ -165,5 +167,4 @@
     -stores={n}	按商店名称筛选 (ex:-stores=steam / -stores=steam,epic)
     -status={n}	按状态名称筛选 (ex:-status=played / -status=played,playing)</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatEnableVerboseLogging">启用详细的 HLTB 调试日志（在 extensions.log 中有额外日志）</sys:String>
 </ResourceDictionary>

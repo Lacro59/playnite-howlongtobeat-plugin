@@ -21,7 +21,12 @@
         </Grid.RowDefinitions>
         
         <DockPanel Grid.Row="0">
-            <Image DockPanel.Dock="Left" Source="{Binding CoverImage}" Width="200" Height="200" Stretch="Uniform"></Image>
+                 <Image DockPanel.Dock="Left"
+                     Source="{Binding CoverImage}"
+                     Width="200" Height="200" Stretch="Uniform"
+                     Cursor="Hand"
+                     Tag="{Binding SourceLink.Url}"
+                     MouseLeftButtonUp="CoverImage_MouseLeftButtonUp" />
 
             <Grid DockPanel.Dock="Right" Margin="10,0,0,0">
                 <Grid.RowDefinitions>

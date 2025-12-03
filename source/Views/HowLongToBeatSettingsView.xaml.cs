@@ -14,6 +14,7 @@ using System.IO;
 using System.Collections.Generic;
 using Playnite.SDK.Models;
 using HowLongToBeat.Models.Enumerations;
+using Playnite.SDK.Data;
 
 namespace HowLongToBeat.Views
 {
@@ -106,6 +107,208 @@ namespace HowLongToBeat.Views
         private void ButtonRemoveTag_Click(object sender, RoutedEventArgs e)
         {
             HowLongToBeat.PluginDatabase.RemoveTagAllGame();
+        }
+        #endregion
+
+        #region Export
+        private void ButtonBrowseExportFolder_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var selected = API.Instance.Dialogs.SelectFolder();
+                if (!selected.IsNullOrEmpty())
+                {
+                    PART_ExportFolder.Text = selected;
+                }
+            }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, false, true, PluginDatabase.PluginName);
+            }
+        }
+
+        private void ButtonExportCsvComma_Click(object sender, RoutedEventArgs e)
+        {
+            ExportCsv(',');
+        }
+
+        private void ButtonExportCsvSemicolon_Click(object sender, RoutedEventArgs e)
+        {
+            ExportCsv(';');
+        }
+
+        private void ExportCsv(char delimiter)
+        {
+            try
+            {
+                var folder = PART_ExportFolder.Text?.Trim();
+                if (folder.IsNullOrEmpty())
+                {
+                    API.Instance.Dialogs.ShowMessage("Please select an export folder first.");
+                    return;
+                }
+                if (!Directory.Exists(folder))
+                {
+                    API.Instance.Dialogs.ShowMessage("Selected folder does not exist.");
+                    return;
+                }
+                var path = Path.Combine(folder, $"HLTB_Export_{DateTime.UtcNow:yyyyMMdd_HHmmss}.csv");
+                var lines = new List<string>();
+                lines.Add(string.Join(delimiter.ToString(), new[] {
+                    "GameId","Name","Platform","Type",
+                    "Main (formatted)","Main+Extra (formatted)","Completionist (formatted)",
+                    "Solo (formatted)","Co-Op (formatted)","Vs (formatted)",
+                    "Developers","Publishers","Date added","Last activity"
+                }));
+                foreach (var game in API.Instance.Database.Games)
+                {
+                    try
+                    {
+                        var entry = PluginDatabase.Get(game.Id, true);
+                        var data = entry?.GetData()?.GameHltbData;
+                        if (entry != null && data != null)
+                        {
+                            var name = entry.GetData()?.Name ?? game.Name;
+                            var platform = entry.GetData()?.Platform ?? string.Empty;
+                            var type = data.GameType.ToString();
+                            var developers = game.Developers?.Select(d => d.Name)?.ToList() ?? new List<string>();
+                            var publishers = game.Publishers?.Select(p => p.Name)?.ToList() ?? new List<string>();
+
+                            string csvLine = string.Join(delimiter.ToString(),
+                                new string[]
+                                {
+                                    game.Id.ToString(),
+                                    EscapeCsvWithDelimiter(name, delimiter),
+                                    EscapeCsvWithDelimiter(platform, delimiter),
+                                    EscapeCsvWithDelimiter(type, delimiter),
+                                    EscapeCsvWithDelimiter(data.MainStoryFormat, delimiter),
+                                    EscapeCsvWithDelimiter(data.MainExtraFormat, delimiter),
+                                    EscapeCsvWithDelimiter(data.CompletionistFormat, delimiter),
+                                    EscapeCsvWithDelimiter(data.SoloFormat, delimiter),
+                                    EscapeCsvWithDelimiter(data.CoOpFormat, delimiter),
+                                    EscapeCsvWithDelimiter(data.VsFormat, delimiter),
+                                    EscapeCsvWithDelimiter(string.Join(", ", developers), delimiter),
+                                    EscapeCsvWithDelimiter(string.Join(", ", publishers), delimiter),
+                                    EscapeCsvWithDelimiter(game.Added?.ToString("yyyy-MM-ddTHH:mm:ss"), delimiter),
+                                    EscapeCsvWithDelimiter(game.LastActivity?.ToString("yyyy-MM-ddTHH:mm:ss"), delimiter)
+                                });
+                            lines.Add(csvLine);
+                        }
+                    }
+                    catch { }
+                }
+                var utf8Bom = new System.Text.UTF8Encoding(true);
+                File.WriteAllLines(path, lines, utf8Bom);
+                API.Instance.Dialogs.ShowMessage($"Exported CSV to: {path} (delimiter '{delimiter}')");
+            }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, false, true, PluginDatabase.PluginName);
+            }
+        }
+
+        private void ButtonExportJson_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var folder = PART_ExportFolder.Text?.Trim();
+                if (folder.IsNullOrEmpty())
+                {
+                    API.Instance.Dialogs.ShowMessage("Please select an export folder first.");
+                    return;
+                }
+                if (!Directory.Exists(folder))
+                {
+                    API.Instance.Dialogs.ShowMessage("Selected folder does not exist.");
+                    return;
+                }
+                var path = Path.Combine(folder, $"HLTB_Export_{DateTime.UtcNow:yyyyMMdd_HHmmss}.json");
+                var items = new List<object>();
+                foreach (var game in API.Instance.Database.Games)
+                {
+                    try
+                    {
+                        var entry = PluginDatabase.Get(game.Id, true);
+                        var data = entry?.GetData()?.GameHltbData;
+                        if (entry != null && data != null)
+                        {
+                            var developers = game.Developers?.Select(d => d.Name)?.ToList() ?? new List<string>();
+                            var publishers = game.Publishers?.Select(p => p.Name)?.ToList() ?? new List<string>();
+
+                            long? installSize = null;
+                            try
+                            {
+                                var prop = typeof(Game).GetProperty("InstallSize");
+                                if (prop != null)
+                                {
+                                    var value = prop.GetValue(game);
+                                    if (value is long l)
+                                    {
+                                        installSize = l;
+                                    }
+                                    else if (value is long?)
+                                    {
+                                        installSize = (long?)value;
+                                    }
+                                }
+                            }
+                            catch { }
+
+                            items.Add(new
+                            {
+                                GameId = game.Id,
+                                Name = entry.GetData()?.Name ?? game.Name,
+                                Platform = entry.GetData()?.Platform ?? string.Empty,
+                                Type = data.GameType.ToString(),
+
+                                Main = data.MainStoryClassic,
+                                MainExtra = data.MainExtraClassic,
+                                Completionist = data.CompletionistClassic,
+                                Solo = data.SoloClassic,
+                                CoOp = data.CoOpClassic,
+                                Vs = data.VsClassic,
+
+                                MainFormatted = data.MainStoryFormat,
+                                MainExtraFormatted = data.MainExtraFormat,
+                                CompletionistFormatted = data.CompletionistFormat,
+                                SoloFormatted = data.SoloFormat,
+                                CoOpFormatted = data.CoOpFormat,
+                                VsFormatted = data.VsFormat,
+
+                                Developers = developers,
+                                Publishers = publishers,
+                                DateAdded = game.Added,
+                                LastActivity = game.LastActivity
+                            });
+                        }
+                    }
+                    catch { }
+                }
+                var json = Serialization.ToJson(items, true);
+                File.WriteAllText(path, json);
+                API.Instance.Dialogs.ShowMessage($"Exported JSON to: {path}");
+            }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, false, true, PluginDatabase.PluginName);
+            }
+        }
+        
+
+        private static string EscapeCsv(string input)
+        {
+            if (string.IsNullOrEmpty(input)) return string.Empty;
+            bool needsQuotes = input.Contains(";") || input.Contains("\"") || input.Contains("\n") || input.Contains("\r");
+            string escaped = input.Replace("\"", "\"\"");
+            return needsQuotes ? $"\"{escaped}\"" : escaped;
+        }
+
+        private static string EscapeCsvWithDelimiter(string input, char delimiter)
+        {
+            if (string.IsNullOrEmpty(input)) return string.Empty;
+            bool needsQuotes = input.Contains(delimiter.ToString()) || input.Contains("\"") || input.Contains("\n") || input.Contains("\r");
+            string escaped = input.Replace("\"", "\"\"");
+            return needsQuotes ? $"\"{escaped}\"" : escaped;
         }
         #endregion
 

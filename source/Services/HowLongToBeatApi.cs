@@ -657,12 +657,26 @@ namespace HowLongToBeat.Services
                                     {
                                         try
                                         {
-                                            var attrs = node.GetType().GetProperty("Attributes").GetValue(node);
+                                            var attrsProp = node.GetType().GetProperty("Attributes");
+                                            if (attrsProp == null)
+                                            {
+                                                continue;
+                                            }
+                                            var attrs = attrsProp.GetValue(node);
+                                            if (attrs == null)
+                                            {
+                                                continue;
+                                            }
                                             var getAttr = attrs.GetType().GetMethod("Get", new Type[] { typeof(string) });
+                                            if (getAttr == null)
+                                            {
+                                                continue;
+                                            }
                                             var srcAttr = getAttr.Invoke(attrs, new object[] { "src" });
                                             if (srcAttr != null)
                                             {
-                                                var val = srcAttr.GetType().GetProperty("Value").GetValue(srcAttr) as string;
+                                                var valProp = srcAttr.GetType().GetProperty("Value");
+                                                var val = valProp != null ? valProp.GetValue(srcAttr) as string : null;
                                                 if (!string.IsNullOrEmpty(val)) scriptUrls.Add(val);
                                             }
                                         }
@@ -862,6 +876,7 @@ namespace HowLongToBeat.Services
 
                             if (pendingConsume > 0)
                             {
+                                int consumed = 0;
                                 // Consume the excess permits before lowering the visible limit to avoid races.
                                 for (int i = 0; i < pendingConsume; i++)
                                 {
@@ -873,12 +888,16 @@ namespace HowLongToBeat.Services
                                         {
                                             break;
                                         }
+                                        consumed++;
                                     }
                                     catch { break; }
                                 }
                                 lock (ConcurrencySync)
                                 {
-                                    CurrentSemaphoreLimit = target;
+                                    int originalLimit = CurrentSemaphoreLimit;
+                                    int newLimit = (consumed == pendingConsume) ? target : Math.Max(0, originalLimit - consumed);
+                                    newLimit = Math.Min(originalLimit, newLimit);
+                                    CurrentSemaphoreLimit = newLimit;
                                 }
                             }
 

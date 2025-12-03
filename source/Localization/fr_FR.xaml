@@ -12,6 +12,8 @@
     <sys:String x:Key="LOCHowLongToBeatAddTagDescription">Ajouter un tag aux jeux avec les informations de temps d'achèvement de l'histoire principale</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoTag">Traitement automatique des tags</sys:String>
     <sys:String x:Key="LOCHowLongToBeatShowHltbImage">Utiliser l'image originale de couverture du jeu HowLongToBeat dans la fenêtre</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatEnableVerboseLogging">Activer la journalisation de débogage HLTB détaillée (journaux supplémentaires dans extensions.log)</sys:String>
+        <sys:String x:Key="LOCHowLongToBeatExport">Exporter les données HowLongToBeat</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatColorSelection">Sélection de couleur :</sys:String>
 
@@ -166,5 +168,4 @@ Voici la liste des commandes :</sys:String>
     -stores={n}	Filtrer par nom de bibliothèque (exemple : -stores=steam / -stores=steam,epic)
     -status={n}	Filtrer par nom de statut (exemple : -status=played / -status=played,playing)</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatEnableVerboseLogging">Activer la journalisation de débogage HLTB détaillée (journaux supplémentaires dans extensions.log)</sys:String>
 </ResourceDictionary>
