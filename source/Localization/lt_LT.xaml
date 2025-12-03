@@ -14,6 +14,10 @@
     <sys:String x:Key="LOCHowLongToBeatShowHltbImage">Use HowLongToBeat original game cover image in window</sys:String>
     <sys:String x:Key="LOCHowLongToBeatEnableVerboseLogging">Enable verbose HLTB debug logging (extra logs in extensions.log)</sys:String>
     <sys:String x:Key="LOCHowLongToBeatExport">Eksportuoti HowLongToBeat duomenis</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportCsvComma">Eksportuoti CSV (kablelis)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportCsvSemicolon">Eksportuoti CSV (kabliataškis)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportJson">Eksportuoti JSON</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportFolderTooltip">Eksporto aplankas</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatColorSelection">Color selection:</sys:String>
 

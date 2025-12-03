@@ -160,6 +160,8 @@ namespace HowLongToBeat.Views
                     "Solo (formatted)","Co-Op (formatted)","Vs (formatted)",
                     "Developers","Publishers","Date added","Last activity"
                 }));
+                int exportedCount = 0;
+                int failedCount = 0;
                 foreach (var game in API.Instance.Database.Games)
                 {
                     try
@@ -193,13 +195,18 @@ namespace HowLongToBeat.Views
                                     EscapeCsvWithDelimiter(game.LastActivity?.ToString("yyyy-MM-ddTHH:mm:ss"), delimiter)
                                 });
                             lines.Add(csvLine);
+                            exportedCount++;
                         }
                     }
-                    catch { }
+                    catch (Exception ex)
+                    {
+                        failedCount++;
+                        Common.LogError(ex, false, false, PluginDatabase.PluginName);
+                    }
                 }
                 var utf8Bom = new System.Text.UTF8Encoding(true);
                 File.WriteAllLines(path, lines, utf8Bom);
-                API.Instance.Dialogs.ShowMessage($"Exported CSV to: {path} (delimiter '{delimiter}')");
+                API.Instance.Dialogs.ShowMessage($"Exported {exportedCount} games to CSV: {path} (delimiter '{delimiter}')" + (failedCount > 0 ? $"\n{failedCount} games failed to export (see logs)." : ""));
             }
             catch (Exception ex)
             {
@@ -224,6 +231,8 @@ namespace HowLongToBeat.Views
                 }
                 var path = Path.Combine(folder, $"HLTB_Export_{DateTime.UtcNow:yyyyMMdd_HHmmss}.json");
                 var items = new List<object>();
+                int exportedCount = 0;
+                int failedCount = 0;
                 foreach (var game in API.Instance.Database.Games)
                 {
                     try
@@ -278,15 +287,20 @@ namespace HowLongToBeat.Views
                                 Developers = developers,
                                 Publishers = publishers,
                                 DateAdded = game.Added,
-                                LastActivity = game.LastActivity
+                                game.LastActivity
                             });
+                            exportedCount++;
                         }
                     }
-                    catch { }
+                    catch (Exception ex)
+                    {
+                        failedCount++;
+                        Common.LogError(ex, false, false, PluginDatabase.PluginName);
+                    }
                 }
                 var json = Serialization.ToJson(items, true);
                 File.WriteAllText(path, json);
-                API.Instance.Dialogs.ShowMessage($"Exported JSON to: {path}");
+                API.Instance.Dialogs.ShowMessage($"Exported {exportedCount} games to JSON: {path}" + (failedCount > 0 ? $"\n{failedCount} games failed to export (see logs)." : ""));
             }
             catch (Exception ex)
             {

@@ -13,8 +13,12 @@
     <sys:String x:Key="LOCHowLongToBeatAutoTag">Automatic tags processing</sys:String>
     <sys:String x:Key="LOCHowLongToBeatShowHltbImage">Use HowLongToBeat original game cover image in window</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatEnableVerboseLogging">Enable verbose HLTB debug logging (extra logs in extensions.log)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatEnableVerboseLogging">הפעל רישום ניפוי שגיאות מפורט של HLTB (לוגים נוספים ב־extensions.log)</sys:String>
     <sys:String x:Key="LOCHowLongToBeatExport">ייצוא נתוני HowLongToBeat</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportCsvComma">ייצוא CSV (פסיק)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportCsvSemicolon">ייצוא CSV (נקודה־פסיק)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportJson">ייצוא JSON</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportFolderTooltip">תיקיית יעד לייצוא</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatColorSelection">Color selection:</sys:String>
 

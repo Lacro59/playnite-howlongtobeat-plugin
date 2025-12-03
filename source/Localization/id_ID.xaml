@@ -15,6 +15,10 @@
 
     <sys:String x:Key="LOCHowLongToBeatEnableVerboseLogging">Aktifkan pencatatan debug HLTB yang mendetail (log tambahan di extensions.log)</sys:String>
     <sys:String x:Key="LOCHowLongToBeatExport">Ekspor data HowLongToBeat</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportCsvComma">Ekspor CSV (koma)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportCsvSemicolon">Ekspor CSV (titik-koma)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportJson">Ekspor JSON</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportFolderTooltip">Folder ekspor</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatColorSelection">Color selection:</sys:String>
 

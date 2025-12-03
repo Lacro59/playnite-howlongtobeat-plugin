@@ -14,6 +14,10 @@
     <sys:String x:Key="LOCHowLongToBeatShowHltbImage">Use HowLongToBeat original game cover image in window</sys:String>
     <sys:String x:Key="LOCHowLongToBeatEnableVerboseLogging">상세한 HLTB 디버그 로깅 활성화 (extensions.log에 추가 로그)</sys:String>
     <sys:String x:Key="LOCHowLongToBeatExport">HowLongToBeat 데이터 내보내기</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportCsvComma">CSV 내보내기 (쉼표)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportCsvSemicolon">CSV 내보내기 (세미콜론)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportJson">JSON 내보내기</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportFolderTooltip">내보낼 대상 폴더</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatColorSelection">Color selection:</sys:String>
 

@@ -15,6 +15,10 @@
 
     <sys:String x:Key="LOCHowLongToBeatEnableVerboseLogging">Részletes HLTB hibakeresési naplózás engedélyezése (további naplók az extensions.log fájlban)</sys:String>
     <sys:String x:Key="LOCHowLongToBeatExport">HowLongToBeat adatok exportálása</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportCsvComma">CSV export (vessző)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportCsvSemicolon">CSV export (pontosvessző)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportJson">JSON exportálás</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportFolderTooltip">Export mappa</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatColorSelection">Color selection:</sys:String>
 

@@ -14,6 +14,10 @@
     <sys:String x:Key="LOCHowLongToBeatShowHltbImage">Use HowLongToBeat original game cover image in window</sys:String>
     <sys:String x:Key="LOCHowLongToBeatEnableVerboseLogging">詳細な HLTB デバッグログを有効化（extensions.log に追加ログ）</sys:String>
     <sys:String x:Key="LOCHowLongToBeatExport">HowLongToBeat のデータをエクスポート</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportCsvComma">CSV をエクスポート（カンマ）</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportCsvSemicolon">CSV をエクスポート（セミコロン）</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportJson">JSON をエクスポート</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportFolderTooltip">エクスポート先フォルダー</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatColorSelection">色を選択:</sys:String>
 

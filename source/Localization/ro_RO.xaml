@@ -14,6 +14,10 @@
     <sys:String x:Key="LOCHowLongToBeatShowHltbImage">Use HowLongToBeat original game cover image in window</sys:String>
     <sys:String x:Key="LOCHowLongToBeatEnableVerboseLogging">Activează jurnalizarea detaliată HLTB (jurnale suplimentare în extensions.log)</sys:String>
     <sys:String x:Key="LOCHowLongToBeatExport">Exportă datele HowLongToBeat</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportCsvComma">Exportă CSV (virgulă)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportCsvSemicolon">Exportă CSV (punct și virgulă)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportJson">Exportă JSON</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportFolderTooltip">Dosar de export</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatColorSelection">Color selection:</sys:String>
 

@@ -14,6 +14,10 @@
     <sys:String x:Key="LOCHowLongToBeatShowHltbImage">Usar a imagem original da capa do jogo &quot;HowLongToBeat&quot; na janela</sys:String>
     <sys:String x:Key="LOCHowLongToBeatEnableVerboseLogging">Ativar registro detalhado de depuração do HLTB (logs extras em extensions.log)</sys:String>
     <sys:String x:Key="LOCHowLongToBeatExport">Exportar dados do HowLongToBeat</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportCsvComma">Exportar CSV (vírgula)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportCsvSemicolon">Exportar CSV (ponto e vírgula)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportJson">Exportar JSON</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportFolderTooltip">Pasta de destino para exportação</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatColorSelection">Seleção de cor:</sys:String>
 
