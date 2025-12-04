@@ -14,10 +14,10 @@
     <sys:String x:Key="LOCHowLongToBeatShowHltbImage">Use HowLongToBeat original game cover image in window</sys:String>
     <sys:String x:Key="LOCHowLongToBeatEnableVerboseLogging">Aktivér detaljeret HLTB-fejlsøgningslogning (ekstra logs i extensions.log)</sys:String>
     <sys:String x:Key="LOCHowLongToBeatExport">Eksporter HowLongToBeat-data</sys:String>
-        <sys:String x:Key="LOCHowLongToBeatExportCsvComma">Eksportér CSV (komma)</sys:String>
-        <sys:String x:Key="LOCHowLongToBeatExportCsvSemicolon">Eksportér CSV (semikolon)</sys:String>
-        <sys:String x:Key="LOCHowLongToBeatExportJson">Eksportér JSON</sys:String>
-        <sys:String x:Key="LOCHowLongToBeatExportFolderTooltip">Målmappe til eksport</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportCsvComma">Eksportér CSV (komma)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportCsvSemicolon">Eksportér CSV (semikolon)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportJson">Eksportér JSON</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportFolderTooltip">Målmappe til eksport</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatColorSelection">Color selection:</sys:String>
 

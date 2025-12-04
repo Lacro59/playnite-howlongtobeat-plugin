@@ -12,12 +12,12 @@
     <sys:String x:Key="LOCHowLongToBeatAddTagDescription">Add a tag to games with Main story completion time information</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoTag">Automatic tags processing</sys:String>
     <sys:String x:Key="LOCHowLongToBeatShowHltbImage">Use HowLongToBeat original game cover image in window</sys:String>
-        <sys:String x:Key="LOCHowLongToBeatEnableVerboseLogging">Bật ghi nhật ký gỡ lỗi chi tiết HLTB (nhật ký bổ sung trong extensions.log)</sys:String>
-        <sys:String x:Key="LOCHowLongToBeatExport">Xuất dữ liệu HowLongToBeat</sys:String>
-        <sys:String x:Key="LOCHowLongToBeatExportCsvComma">Xuất CSV (dấu phẩy)</sys:String>
-        <sys:String x:Key="LOCHowLongToBeatExportCsvSemicolon">Xuất CSV (dấu chấm phẩy)</sys:String>
-        <sys:String x:Key="LOCHowLongToBeatExportJson">Xuất JSON</sys:String>
-        <sys:String x:Key="LOCHowLongToBeatExportFolderTooltip">Thư mục xuất</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatEnableVerboseLogging">Bật ghi nhật ký gỡ lỗi chi tiết HLTB (nhật ký bổ sung trong extensions.log)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExport">Xuất dữ liệu HowLongToBeat</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportCsvComma">Xuất CSV (dấu phẩy)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportCsvSemicolon">Xuất CSV (dấu chấm phẩy)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportJson">Xuất JSON</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportFolderTooltip">Thư mục xuất</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatColorSelection">Color selection:</sys:String>
 
