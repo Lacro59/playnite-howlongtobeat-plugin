@@ -31,6 +31,21 @@ namespace HowLongToBeat.Services
 
         private static HowLongToBeatDatabase PluginDatabase => HowLongToBeat.PluginDatabase;
 
+        // Helper to centralize verbose logging checks
+        private bool IsVerboseLoggingEnabled => PluginDatabase?.PluginSettings?.Settings is HowLongToBeatSettings _vs && _vs.EnableVerboseLogging;
+
+        private void LogDebugVerbose(string message)
+        {
+            try
+            {
+                if (IsVerboseLoggingEnabled)
+                {
+                    Logger.Debug(message);
+                }
+            }
+            catch { }
+        }
+
 
         /// <summary>
         /// Tool for managing cookies for HowLongToBeat sessions.
@@ -318,10 +333,7 @@ namespace HowLongToBeat.Services
                                         p90 = ordered[Math.Max(0, (int)Math.Floor(ordered.Length * 0.9) - 1)];
                                     }
 
-                                    if (PluginDatabase?.PluginSettings?.Settings is HowLongToBeatSettings vs && vs.EnableVerboseLogging)
-                                    {
-                                        Logger.Debug($"HLTB Summary: searchTarget={searchTarget} searchInFlight={searchInFlight} gameTarget={gameTarget} gameInFlight={gameInFlight} avgSearchMs={Math.Round(avg,1)} medianSearchMs={Math.Round(median,1)} p90SearchMs={Math.Round(p90,1)} persistentCacheHits={PersistentCacheHits} inMemoryHits={InMemoryCacheHits} pageFetches={PageFetches} forced={searchForced}");
-                                    }
+                                    LogDebugVerbose($"HLTB Summary: searchTarget={searchTarget} searchInFlight={searchInFlight} gameTarget={gameTarget} gameInFlight={gameInFlight} avgSearchMs={Math.Round(avg,1)} medianSearchMs={Math.Round(median,1)} p90SearchMs={Math.Round(p90,1)} persistentCacheHits={PersistentCacheHits} inMemoryHits={InMemoryCacheHits} pageFetches={PageFetches} forced={searchForced}");
                                 }
                                 catch (Exception ex)
                                 {
@@ -401,10 +413,7 @@ namespace HowLongToBeat.Services
         {
             try { EnsureMonitoringStarted(); } catch { }
             DateTime startTime = DateTime.UtcNow;
-            if (PluginDatabase?.PluginSettings?.Settings is HowLongToBeatSettings vs1 && vs1.EnableVerboseLogging)
-            {
-                Logger.Debug($"GetGameData START id={id} task={Task.CurrentId} thread={Thread.CurrentThread.ManagedThreadId} time={startTime:HH:mm:ss.fff}");
-            }
+            LogDebugVerbose($"GetGameData START id={id} task={Task.CurrentId} thread={Thread.CurrentThread.ManagedThreadId} time={startTime:HH:mm:ss.fff}");
 
             try
             {
@@ -415,10 +424,7 @@ namespace HowLongToBeat.Services
                     {
                         jsonData = cachedJson;
                         try { System.Threading.Interlocked.Increment(ref PersistentCacheHits); } catch { }
-                                                if (PluginDatabase?.PluginSettings?.Settings is HowLongToBeatSettings vs2 && vs2.EnableVerboseLogging)
-                                                {
-                                                    Logger.Debug($"GetGameData id={id} - persistent cache hit");
-                                                }
+                        LogDebugVerbose($"GetGameData id={id} - persistent cache hit");
                     }
                 }
                 catch (Exception ex)
@@ -442,10 +448,7 @@ namespace HowLongToBeat.Services
                             {
                                 response = cached;
                                 try { System.Threading.Interlocked.Increment(ref InMemoryCacheHits); } catch { }
-                                if (PluginDatabase?.PluginSettings?.Settings is HowLongToBeatSettings vs3 && vs3.EnableVerboseLogging)
-                                {
-                                    Logger.Debug($"GetGameData id={id} - in-memory cache hit");
-                                }
+                                LogDebugVerbose($"GetGameData id={id} - in-memory cache hit");
                             }
                             else
                             {
@@ -455,10 +458,7 @@ namespace HowLongToBeat.Services
                                     if (!httpResp.IsSuccessStatusCode)
                                     {
                                         var code = (int)httpResp.StatusCode;
-                                        if (PluginDatabase?.PluginSettings?.Settings is HowLongToBeatSettings vsHttp && vsHttp.EnableVerboseLogging)
-                                        {
-                                            Logger.Debug($"GetGameData id={id} - HTTP {code} fetching page");
-                                        }
+                                        LogDebugVerbose($"GetGameData id={id} - HTTP {code} fetching page");
                                         response = string.Empty;
                                     }
                                     else
@@ -507,10 +507,7 @@ namespace HowLongToBeat.Services
                         {
                             var jitter = rnd.Next(0, 200);
                             var delay = baseDelayMs * attempts + jitter;
-                            if (PluginDatabase?.PluginSettings?.Settings is HowLongToBeatSettings vs4 && vs4.EnableVerboseLogging)
-                            {
-                                Logger.Debug($"GetGameData id={id} - retry {attempts} after {delay}ms");
-                            }
+                            LogDebugVerbose($"GetGameData id={id} - retry {attempts} after {delay}ms");
                             await Task.Delay(delay);
                         }
                     }
@@ -521,10 +518,7 @@ namespace HowLongToBeat.Services
                     Logger.Warn($"No GameData find with {id}");
                     double elapsed = (DateTime.UtcNow - startTime).TotalMilliseconds;
                     try { ConcurrencyController?.ReportSample(elapsed, false); } catch { }
-                    if (PluginDatabase?.PluginSettings?.Settings is HowLongToBeatSettings vs5 && vs5.EnableVerboseLogging)
-                    {
-                        Logger.Debug($"GetGameData DONE id={id} task={Task.CurrentId} thread={Thread.CurrentThread.ManagedThreadId} elapsed={elapsed}ms");
-                    }
+                    LogDebugVerbose($"GetGameData DONE id={id} task={Task.CurrentId} thread={Thread.CurrentThread.ManagedThreadId} elapsed={elapsed}ms");
                     return null;
                 }
 
@@ -580,10 +574,7 @@ namespace HowLongToBeat.Services
 
                     double elapsed = (DateTime.UtcNow - startTime).TotalMilliseconds;
                     try { ConcurrencyController?.ReportSample(elapsed, true); } catch { }
-                    if (PluginDatabase?.PluginSettings?.Settings is HowLongToBeatSettings vs6 && vs6.EnableVerboseLogging)
-                    {
-                        Logger.Debug($"GetGameData DONE id={id} task={Task.CurrentId} thread={Thread.CurrentThread.ManagedThreadId} elapsed={elapsed}ms");
-                    }
+                    LogDebugVerbose($"GetGameData DONE id={id} task={Task.CurrentId} thread={Thread.CurrentThread.ManagedThreadId} elapsed={elapsed}ms");
                     return hltbData;
                 }
                 else
@@ -591,10 +582,7 @@ namespace HowLongToBeat.Services
                     Logger.Warn($"No GameData find with {id}");
                     double elapsed = (DateTime.UtcNow - startTime).TotalMilliseconds;
                     try { ConcurrencyController?.ReportSample(elapsed, false); } catch { }
-                    if (PluginDatabase?.PluginSettings?.Settings is HowLongToBeatSettings vs7 && vs7.EnableVerboseLogging)
-                    {
-                        Logger.Debug($"GetGameData DONE id={id} task={Task.CurrentId} thread={Thread.CurrentThread.ManagedThreadId} elapsed={elapsed}ms");
-                    }
+                    LogDebugVerbose($"GetGameData DONE id={id} task={Task.CurrentId} thread={Thread.CurrentThread.ManagedThreadId} elapsed={elapsed}ms");
                     return null;
                 }
             }
@@ -923,10 +911,7 @@ namespace HowLongToBeat.Services
                                 int targetGameLog = ConcurrencyController?.TargetConcurrency ?? MaxParallelGameDataDownloads;
                                 int availableGameLog = DynamicSemaphore?.CurrentCount ?? 0;
                                 int inFlightGameLog = Math.Max(0, targetGameLog - availableGameLog);
-                                if (PluginDatabase?.PluginSettings?.Settings is HowLongToBeatSettings s && s.EnableVerboseLogging)
-                                {
-                                    Logger.Debug($"Search: waiting semaphore for id={x.Id} target={targetGameLog} currentLimit={CurrentSemaphoreLimit} available={availableGameLog} inFlight={inFlightGameLog}");
-                                }
+                                LogDebugVerbose($"Search: waiting semaphore for id={x.Id} target={targetGameLog} currentLimit={CurrentSemaphoreLimit} available={availableGameLog} inFlight={inFlightGameLog}");
                             }
                             catch { }
                             var acquired = await DynamicSemaphore.WaitAsync(TimeSpan.FromSeconds(10));
@@ -941,10 +926,7 @@ namespace HowLongToBeat.Services
                                 int targetGameLog = ConcurrencyController?.TargetConcurrency ?? MaxParallelGameDataDownloads;
                                 int availableGameLog = DynamicSemaphore?.CurrentCount ?? 0;
                                 int inFlightGameLog = Math.Max(0, targetGameLog - availableGameLog);
-                                if (PluginDatabase?.PluginSettings?.Settings is HowLongToBeatSettings s2 && s2.EnableVerboseLogging)
-                                {
-                                    Logger.Debug($"Search: acquired semaphore for id={x.Id} target={targetGameLog} currentLimit={CurrentSemaphoreLimit} available={availableGameLog} inFlight={inFlightGameLog}");
-                                }
+                                LogDebugVerbose($"Search: acquired semaphore for id={x.Id} target={targetGameLog} currentLimit={CurrentSemaphoreLimit} available={availableGameLog} inFlight={inFlightGameLog}");
                             }
                             catch { }
                         }
@@ -964,10 +946,7 @@ namespace HowLongToBeat.Services
 
                                 if (hasCoreTimes)
                                 {
-                                    if (PluginDatabase?.PluginSettings?.Settings is HowLongToBeatSettings s3 && s3.EnableVerboseLogging)
-                                    {
-                                        Logger.Debug($"Search: skipping GetGameData for id={x.Id} (search result has times)");
-                                    }
+                                    LogDebugVerbose($"Search: skipping GetGameData for id={x.Id} (search result has times)");
                                 }
                                 else
                                 {
@@ -1000,20 +979,14 @@ namespace HowLongToBeat.Services
                                 }
                                 catch { }
                             }
-                            if (PluginDatabase?.PluginSettings?.Settings is HowLongToBeatSettings s4 && s4.EnableVerboseLogging)
-                            {
-                                Logger.Debug($"Search: released semaphore for id={x.Id}");
-                            }
+                            LogDebugVerbose($"Search: released semaphore for id={x.Id}");
                         }
                     }).ToArray();
 
                     await Task.WhenAll(tasks);
                     try
                     {
-                        if (PluginDatabase?.PluginSettings?.Settings is HowLongToBeatSettings vs8 && vs8.EnableVerboseLogging)
-                        {
-                            Logger.Debug($"Search summary: persistentCacheHits={PersistentCacheHits}, inMemoryHits={InMemoryCacheHits}, pageFetches={PageFetches}");
-                        }
+                        LogDebugVerbose($"Search summary: persistentCacheHits={PersistentCacheHits}, inMemoryHits={InMemoryCacheHits}, pageFetches={PageFetches}");
                     }
                     catch { }
                 }
@@ -1087,7 +1060,7 @@ namespace HowLongToBeat.Services
                 string cacheKey = (name ?? string.Empty) + "|" + (platform ?? string.Empty);
                 if (SearchCache.TryGetValue(cacheKey, out SearchResult cachedResult))
                 {
-                    try { if (PluginDatabase?.PluginSettings?.Settings is HowLongToBeatSettings vs9 && vs9.EnableVerboseLogging) { Logger.Debug($"ApiSearch cache hit for '{name}' platform='{platform}'"); } } catch { }
+                    try { LogDebugVerbose($"ApiSearch cache hit for '{name}' platform='{platform}'"); } catch { }
                     return cachedResult;
                 }
 
@@ -1157,7 +1130,8 @@ namespace HowLongToBeat.Services
                                 lock (SearchConcurrencySync)
                                 {
                                     int originalLimit = CurrentSearchLimit;
-                                    int newLimit = (consumed == pendingSearchConsume) ? target : Math.Max(0, originalLimit - consumed);
+                                    int backoffTarget = SearchBackoffLimit;
+                                    int newLimit = (consumed == pendingSearchConsume) ? backoffTarget : Math.Max(0, originalLimit - consumed);
                                     newLimit = Math.Min(originalLimit, newLimit);
                                     CurrentSearchLimit = newLimit;
                                 }
@@ -1170,10 +1144,7 @@ namespace HowLongToBeat.Services
                                 int targetLog = GetSearchTarget();
                                 int availableLog = SearchSemaphore?.CurrentCount ?? 0;
                                 int inFlightLog = Math.Max(0, targetLog - availableLog);
-                                if (PluginDatabase?.PluginSettings?.Settings is HowLongToBeatSettings vs10 && vs10.EnableVerboseLogging)
-                                {
-                                    Logger.Debug($"ApiSearch: waiting search semaphore for '{name}' target={targetLog} currentLimit={CurrentSearchLimit} available={availableLog} inFlight={inFlightLog}");
-                                }
+                                LogDebugVerbose($"ApiSearch: waiting search semaphore for '{name}' target={targetLog} currentLimit={CurrentSearchLimit} available={availableLog} inFlight={inFlightLog}");
                         }
                         catch { }
                         bool waitOk = true;
@@ -1192,10 +1163,7 @@ namespace HowLongToBeat.Services
                             int targetLog = GetSearchTarget();
                             int availableLog = SearchSemaphore?.CurrentCount ?? 0;
                             int inFlightLog = Math.Max(0, targetLog - availableLog);
-                            if (PluginDatabase?.PluginSettings?.Settings is HowLongToBeatSettings ss2 && ss2.EnableVerboseLogging)
-                            {
-                                Logger.Debug($"ApiSearch: acquired search semaphore for '{name}' target={targetLog} currentLimit={CurrentSearchLimit} available={availableLog} inFlight={inFlightLog}");
-                            }
+                            LogDebugVerbose($"ApiSearch: acquired search semaphore for '{name}' target={targetLog} currentLimit={CurrentSearchLimit} available={availableLog} inFlight={inFlightLog}");
                         }
                         catch { }
                     }
@@ -1255,10 +1223,7 @@ namespace HowLongToBeat.Services
                         }
                         catch { }
 
-                        if (PluginDatabase?.PluginSettings?.Settings is HowLongToBeatSettings vs11 && vs11.EnableVerboseLogging)
-                        {
-                            Logger.Debug($"ApiSearch elapsed={sw.ElapsedMilliseconds}ms tokenReused={tokenReused} status={statusCode}");
-                        }
+                        LogDebugVerbose($"ApiSearch elapsed={sw.ElapsedMilliseconds}ms tokenReused={tokenReused} status={statusCode}");
                     }
                     catch { }
 
@@ -1342,8 +1307,8 @@ namespace HowLongToBeat.Services
                             lock (SearchConcurrencySync)
                             {
                                 int originalLimit = CurrentSearchLimit;
-                                int target = SearchBackoffLimit;
-                                int newLimit = (consumed == postLockPendingConsume) ? target : Math.Max(0, originalLimit - consumed);
+                                int backoffTarget = SearchBackoffLimit;
+                                int newLimit = (consumed == postLockPendingConsume) ? backoffTarget : Math.Max(0, originalLimit - consumed);
                                 newLimit = Math.Min(originalLimit, newLimit);
                                 CurrentSearchLimit = newLimit;
                             }
@@ -1369,10 +1334,7 @@ namespace HowLongToBeat.Services
                         try
                         {
                             SearchSemaphore.Release();
-                            if (PluginDatabase?.PluginSettings?.Settings is HowLongToBeatSettings vs12 && vs12.EnableVerboseLogging)
-                            {
-                                Logger.Debug($"ApiSearch: released search semaphore for '{name}'");
-                            }
+                            LogDebugVerbose($"ApiSearch: released search semaphore for '{name}'");
                         }
                         catch { }
                     }
@@ -1492,6 +1454,8 @@ namespace HowLongToBeat.Services
                         {
                             List<HttpCookie> cookies = CookiesTools.GetWebCookies();
                             _ = CookiesTools.SetStoredCookies(cookies);
+
+                            PluginDatabase.PluginSettings.Settings.UserLogin = UserLogin;
 
                             PluginDatabase.Plugin.SavePluginSettings(PluginDatabase.PluginSettings.Settings);
 
