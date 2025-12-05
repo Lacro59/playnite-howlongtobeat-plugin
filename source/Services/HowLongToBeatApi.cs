@@ -129,6 +129,10 @@ namespace HowLongToBeat.Services
         /// </summary>
         internal string FileCookies { get; }
 
+        // Cached HtmlAgilityPack reflection types
+        private readonly Type HapDocType;
+        private readonly bool HapAvailable;
+
         private static string SearchUrl { get; set; } = null;
         private static readonly object SearchUrlLock = new object();
         private const int ScriptDownloadTimeoutMs = 5000;
@@ -270,6 +274,17 @@ namespace HowLongToBeat.Services
                     throw;
                 }
             }
+
+            // Cache HtmlAgilityPack availability once to avoid reflection on every request.
+            Type hapType = null;
+            try
+            {
+                hapType = Type.GetType("HtmlAgilityPack.HtmlDocument, HtmlAgilityPack");
+            }
+            catch { }
+            HapDocType = hapType;
+            HapAvailable = HapDocType != null;
+
             UserLogin = PluginDatabase.PluginSettings.Settings.UserLogin;
 
             CookiesDomains = new List<string> { ".howlongtobeat.com", "howlongtobeat.com" };
@@ -1886,6 +1901,60 @@ namespace HowLongToBeat.Services
                     Common.LogError(ex, false, true, PluginDatabase.PluginName);
                 }
             });
+        }
+
+        /// <summary>
+        /// Try to extract script src URLs using HtmlAgilityPack via reflection. Returns null on failure.
+        /// Reflection is used because HAP is an optional dependency for the host application.
+        /// </summary>
+        private List<string> ExtractScriptUrlsWithHap(string html)
+        {
+            if (!HapAvailable || HapDocType == null || string.IsNullOrEmpty(html))
+            {
+                return null;
+            }
+
+            try
+            {
+                // Create HtmlDocument instance
+                dynamic doc = Activator.CreateInstance(HapDocType);
+                var loadHtml = HapDocType.GetMethod("LoadHtml");
+                loadHtml.Invoke(doc, new object[] { html });
+
+                var documentNode = HapDocType.GetProperty("DocumentNode").GetValue(doc);
+                var selectNodes = documentNode.GetType().GetMethod("SelectNodes", new Type[] { typeof(string) });
+                var nodes = selectNodes.Invoke(documentNode, new object[] { "//script[@src]" }) as System.Collections.IEnumerable;
+                if (nodes == null) return new List<string>();
+
+                var urls = new List<string>();
+                foreach (var node in nodes)
+                {
+                    try
+                    {
+                        var attrsProp = node.GetType().GetProperty("Attributes");
+                        if (attrsProp == null) continue;
+                        var attrs = attrsProp.GetValue(node);
+                        if (attrs == null) continue;
+                        var getAttr = attrs.GetType().GetMethod("Get", new Type[] { typeof(string) });
+                        if (getAttr == null) continue;
+                        var srcAttr = getAttr.Invoke(attrs, new object[] { "src" });
+                        if (srcAttr != null)
+                        {
+                            var valProp = srcAttr.GetType().GetProperty("Value");
+                            var val = valProp != null ? valProp.GetValue(srcAttr) as string : null;
+                            if (!string.IsNullOrEmpty(val)) urls.Add(val);
+                        }
+                    }
+                    catch { /* ignore per-node errors */ }
+                }
+
+                return urls;
+            }
+            catch (Exception ex)
+            {
+                try { Logger.Warn(ex, "HLTB: HtmlAgilityPack reflection extraction failed"); } catch { }
+                return null;
+            }
         }
     }
 }
