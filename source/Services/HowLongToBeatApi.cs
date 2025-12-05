@@ -232,9 +232,6 @@ namespace HowLongToBeat.Services
             try
             {
                 var handler = new HttpClientHandler();
-
-                // MaxConnectionsPerServer property isn't available on older frameworks.
-                // Try to set it via reflection and otherwise fall back to ServicePointManager.
                 try
                 {
                     var prop = handler.GetType().GetProperty("MaxConnectionsPerServer");
@@ -244,12 +241,12 @@ namespace HowLongToBeat.Services
                     }
                     else
                     {
-                        ServicePointManager.DefaultConnectionLimit = Math.Max(ServicePointManager.DefaultConnectionLimit, Math.Max(4, MaxParallelGameDataDownloads));
+                        Logger.Warn("HLTB: MaxConnectionsPerServer not available; using default connection limits");
                     }
                 }
                 catch
                 {
-                    ServicePointManager.DefaultConnectionLimit = Math.Max(ServicePointManager.DefaultConnectionLimit, Math.Max(4, MaxParallelGameDataDownloads));
+                    Logger.Warn("HLTB: MaxConnectionsPerServer set failed; using default connection limits");
                 }
 
                 httpClient = new HttpClient(handler)
@@ -261,7 +258,7 @@ namespace HowLongToBeat.Services
             }
             catch (Exception ex)
             {
-                try { Logger.Warn(ex, "HLTB: HttpClient init failed, falling back to default client"); } catch { }
+                Logger.Warn(ex, "HLTB: HttpClient init failed, falling back to default client");
                 try
                 {
                     httpClient = new HttpClient { Timeout = TimeSpan.FromMilliseconds(GameDataDownloadTimeoutMs) };
@@ -269,8 +266,7 @@ namespace HowLongToBeat.Services
                 }
                 catch (Exception ex2)
                 {
-                    // Critical failure: rethrow to prevent unusable instance
-                    try { Logger.Error(ex2, "HLTB: HttpClient fallback failed; instance unusable"); } catch { }
+                    Logger.Error(ex2, "HLTB: HttpClient fallback failed; instance unusable");
                     throw;
                 }
             }
@@ -1086,7 +1082,7 @@ namespace HowLongToBeat.Services
             List<HltbDataUser> dataSearch = await Search(name, platform);
             List<HltbDataUser> dataSearchNormalized = new List<HltbDataUser>();
 
-            if (dataSearch == null || dataSearch.Count == 0)
+            if (dataSearch.Count == 0)
             {
                 dataSearchNormalized = await Search(PlayniteTools.NormalizeGameName(name, true, true), platform);
             }
