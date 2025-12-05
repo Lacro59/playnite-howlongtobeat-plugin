@@ -714,7 +714,7 @@ namespace HowLongToBeat.Services
                             }
                             catch (Exception hapEx)
                             {
-                                try { Logger.Warn(hapEx, "HLTB: HtmlAgilityPack reflection failed; using regex fallback"); } catch { }
+                                try { Logger.Warn(hapEx, "HLTB: HtmlAgilityPack reflection failed; using regex fallback. Consider updating HAP usage."); } catch { }
                                 var matches = Regex.Matches(response, "<script[^>]*src=[\"']([^\"']+)[\"'][^>]*>", RegexOptions.IgnoreCase);
                                 foreach (Match match in matches)
                                 {
