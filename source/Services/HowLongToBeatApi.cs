@@ -129,7 +129,6 @@ namespace HowLongToBeat.Services
         /// </summary>
         internal string FileCookies { get; }
 
-        // Cached HtmlAgilityPack reflection types
         private readonly Type HapDocType;
         private readonly bool HapAvailable;
 
@@ -236,21 +235,14 @@ namespace HowLongToBeat.Services
             try
             {
                 var handler = new HttpClientHandler();
-                try
+                var prop = handler.GetType().GetProperty("MaxConnectionsPerServer");
+                if (prop != null && prop.CanWrite)
                 {
-                    var prop = handler.GetType().GetProperty("MaxConnectionsPerServer");
-                    if (prop != null && prop.CanWrite)
-                    {
-                        prop.SetValue(handler, Math.Max(4, MaxParallelGameDataDownloads));
-                    }
-                    else
-                    {
-                        Logger.Warn("HLTB: MaxConnectionsPerServer not available; using default connection limits");
-                    }
+                    prop.SetValue(handler, Math.Max(4, MaxParallelGameDataDownloads));
                 }
-                catch
+                else
                 {
-                    Logger.Warn("HLTB: MaxConnectionsPerServer set failed; using default connection limits");
+                    Logger.Warn("HLTB: MaxConnectionsPerServer not available; using default connection limits");
                 }
 
                 httpClient = new HttpClient(handler)
@@ -262,17 +254,8 @@ namespace HowLongToBeat.Services
             }
             catch (Exception ex)
             {
-                Logger.Warn(ex, "HLTB: HttpClient init failed, falling back to default client");
-                try
-                {
-                    httpClient = new HttpClient { Timeout = TimeSpan.FromMilliseconds(GameDataDownloadTimeoutMs) };
-                    httpClient.DefaultRequestHeaders.Add("User-Agent", Web.UserAgent);
-                }
-                catch (Exception ex2)
-                {
-                    Logger.Error(ex2, "HLTB: HttpClient fallback failed; instance unusable");
-                    throw;
-                }
+                Logger.Error(ex, "HLTB: HttpClient init failed");
+                throw;
             }
 
             // Cache HtmlAgilityPack availability once to avoid reflection on every request.
@@ -1464,7 +1447,6 @@ namespace HowLongToBeat.Services
                             UserLogin = WebUtility.HtmlDecode(webView.GetCurrentAddress().Replace(UrlBase + "/user/", string.Empty));
                             IsConnected = true;
 
-                            PluginDatabase.PluginSettings.Settings.UserLogin = UserLogin;
 
                             Thread.Sleep(1500);
                             webView.Close();
