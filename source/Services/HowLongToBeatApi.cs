@@ -525,16 +525,18 @@ namespace HowLongToBeat.Services
                             {
                                 try
                                 {
-                                    var httpResp = await httpClient.GetAsync(string.Format(UrlGame, id), cancellationToken).ConfigureAwait(false);
-                                    if (!httpResp.IsSuccessStatusCode)
+                                    using (var httpResp = await httpClient.GetAsync(string.Format(UrlGame, id), cancellationToken).ConfigureAwait(false))
                                     {
-                                        var code = (int)httpResp.StatusCode;
-                                        LogDebugVerbose($"GetGameData id={id} - HTTP {code} fetching page");
-                                        response = string.Empty;
-                                    }
-                                    else
-                                    {
-                                        response = await httpResp.Content.ReadAsStringAsync();
+                                        if (!httpResp.IsSuccessStatusCode)
+                                        {
+                                            var code = (int)httpResp.StatusCode;
+                                            LogDebugVerbose($"GetGameData id={id} - HTTP {code} fetching page");
+                                            response = string.Empty;
+                                        }
+                                        else
+                                        {
+                                            response = await httpResp.Content.ReadAsStringAsync().ConfigureAwait(false);
+                                        }
                                     }
                                 }
                                 catch (HttpRequestException hre)
@@ -1634,7 +1636,7 @@ namespace HowLongToBeat.Services
                 List<HttpCookie> cookies = CookiesTools.GetStoredCookies();
 
                 string response = await Web.DownloadStringData(string.Format(UrlPostDataEdit, userGameId), cookies);
-                if (response.IsNullOrEmpty() && !response.Contains("__NEXT_DATA__"))
+                if (string.IsNullOrEmpty(response) || !response.Contains("__NEXT_DATA__"))
                 {
                     Logger.Warn($"No EditData for {gameName} - {userGameId}");
                     return null;
