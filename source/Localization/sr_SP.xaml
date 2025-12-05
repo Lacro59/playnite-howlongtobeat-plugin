@@ -18,6 +18,7 @@
     <sys:String x:Key="LOCHowLongToBeatExportCsvSemicolon">Извези CSV (тачка-запета)</sys:String>
     <sys:String x:Key="LOCHowLongToBeatExportJson">Извези JSON</sys:String>
     <sys:String x:Key="LOCHowLongToBeatExportFolderTooltip">Фолдер за извоз</sys:String>
+    <sys:String x:Key="LOCBrowseLabel">Претражи...</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatColorSelection">Color selection:</sys:String>
 

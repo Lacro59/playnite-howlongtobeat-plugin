@@ -19,6 +19,7 @@
     <sys:String x:Key="LOCHowLongToBeatExportCsvSemicolon">CSV export (pontosvessző)</sys:String>
     <sys:String x:Key="LOCHowLongToBeatExportJson">JSON exportálás</sys:String>
     <sys:String x:Key="LOCHowLongToBeatExportFolderTooltip">Export mappa</sys:String>
+    <sys:String x:Key="LOCBrowseLabel">Tallózás...</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatColorSelection">Color selection:</sys:String>
 

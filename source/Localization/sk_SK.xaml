@@ -18,6 +18,7 @@
     <sys:String x:Key="LOCHowLongToBeatExportCsvSemicolon">Exportovať CSV (stredník)</sys:String>
     <sys:String x:Key="LOCHowLongToBeatExportJson">Exportovať JSON</sys:String>
     <sys:String x:Key="LOCHowLongToBeatExportFolderTooltip">Zložka exportu</sys:String>
+    <sys:String x:Key="LOCBrowseLabel">Prehliadať...</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatColorSelection">Color selection:</sys:String>
 

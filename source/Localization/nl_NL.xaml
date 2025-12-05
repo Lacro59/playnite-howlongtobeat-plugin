@@ -18,6 +18,7 @@
     <sys:String x:Key="LOCHowLongToBeatExportCsvSemicolon">CSV exporteren (puntkomma)</sys:String>
     <sys:String x:Key="LOCHowLongToBeatExportJson">JSON exporteren</sys:String>
     <sys:String x:Key="LOCHowLongToBeatExportFolderTooltip">Doelmap voor export</sys:String>
+    <sys:String x:Key="LOCBrowseLabel">Bladeren...</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatColorSelection">Color selection:</sys:String>
 

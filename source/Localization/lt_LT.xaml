@@ -18,6 +18,7 @@
     <sys:String x:Key="LOCHowLongToBeatExportCsvSemicolon">Eksportuoti CSV (kabliataškis)</sys:String>
     <sys:String x:Key="LOCHowLongToBeatExportJson">Eksportuoti JSON</sys:String>
     <sys:String x:Key="LOCHowLongToBeatExportFolderTooltip">Eksporto aplankas</sys:String>
+    <sys:String x:Key="LOCBrowseLabel">Naršyti...</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatColorSelection">Color selection:</sys:String>
 

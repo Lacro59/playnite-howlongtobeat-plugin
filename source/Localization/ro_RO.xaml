@@ -18,6 +18,7 @@
     <sys:String x:Key="LOCHowLongToBeatExportCsvSemicolon">Exportă CSV (punct și virgulă)</sys:String>
     <sys:String x:Key="LOCHowLongToBeatExportJson">Exportă JSON</sys:String>
     <sys:String x:Key="LOCHowLongToBeatExportFolderTooltip">Dosar de export</sys:String>
+    <sys:String x:Key="LOCBrowseLabel">Răsfoiți...</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatColorSelection">Color selection:</sys:String>
 

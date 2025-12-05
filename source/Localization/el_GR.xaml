@@ -18,6 +18,7 @@
     <sys:String x:Key="LOCHowLongToBeatExportCsvSemicolon">Εξαγωγή CSV (άνω τελεία)</sys:String>
     <sys:String x:Key="LOCHowLongToBeatExportJson">Εξαγωγή JSON</sys:String>
     <sys:String x:Key="LOCHowLongToBeatExportFolderTooltip">Φάκελος προορισμού για εξαγωγή</sys:String>
+    <sys:String x:Key="LOCBrowseLabel">Αναζήτηση...</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatColorSelection">Επιλογή χρώματος:</sys:String>
 

@@ -18,6 +18,7 @@
     <sys:String x:Key="LOCHowLongToBeatExportCsvSemicolon">Exporta CSV (punt i coma)</sys:String>
     <sys:String x:Key="LOCHowLongToBeatExportJson">Exporta JSON</sys:String>
     <sys:String x:Key="LOCHowLongToBeatExportFolderTooltip">Carpeta de destinació per a l'exportació</sys:String>
+    <sys:String x:Key="LOCBrowseLabel">Browse...</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatColorSelection">Color selection:</sys:String>
 

@@ -18,6 +18,7 @@
     <sys:String x:Key="LOCHowLongToBeatExportCsvSemicolon">导出 CSV（分号）</sys:String>
     <sys:String x:Key="LOCHowLongToBeatExportJson">导出 JSON</sys:String>
     <sys:String x:Key="LOCHowLongToBeatExportFolderTooltip">导出目标文件夹</sys:String>
+    <sys:String x:Key="LOCBrowseLabel">浏览...</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatColorSelection">色彩管理：</sys:String>
 

@@ -147,10 +147,27 @@ namespace HowLongToBeat.Services
         {
             try
             {
-                var handler = new HttpClientHandler
+                var handler = new HttpClientHandler();
+
+                // MaxConnectionsPerServer property isn't available on older frameworks.
+                // Try to set it via reflection and otherwise fall back to ServicePointManager.
+                try
                 {
-                    MaxConnectionsPerServer = Math.Max(4, MaxParallelGameDataDownloads)
-                };
+                    var prop = handler.GetType().GetProperty("MaxConnectionsPerServer");
+                    if (prop != null && prop.CanWrite)
+                    {
+                        prop.SetValue(handler, Math.Max(4, MaxParallelGameDataDownloads));
+                    }
+                    else
+                    {
+                        ServicePointManager.DefaultConnectionLimit = Math.Max(ServicePointManager.DefaultConnectionLimit, Math.Max(4, MaxParallelGameDataDownloads));
+                    }
+                }
+                catch
+                {
+                    ServicePointManager.DefaultConnectionLimit = Math.Max(ServicePointManager.DefaultConnectionLimit, Math.Max(4, MaxParallelGameDataDownloads));
+                }
+
                 httpClient = new HttpClient(handler)
                 {
                     Timeout = TimeSpan.FromMilliseconds(GameDataDownloadTimeoutMs)

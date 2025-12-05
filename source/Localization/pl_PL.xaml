@@ -18,6 +18,7 @@
     <sys:String x:Key="LOCHowLongToBeatExportCsvSemicolon">Eksport CSV (średnik)</sys:String>
     <sys:String x:Key="LOCHowLongToBeatExportJson">Eksport JSON</sys:String>
     <sys:String x:Key="LOCHowLongToBeatExportFolderTooltip">Folder docelowy dla eksportu</sys:String>
+    <sys:String x:Key="LOCBrowseLabel">Przeglądaj...</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatColorSelection">Wybór kolorów:</sys:String>
 

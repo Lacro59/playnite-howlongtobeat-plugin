@@ -18,6 +18,7 @@
     <sys:String x:Key="LOCHowLongToBeatExportCsvSemicolon">Xuất CSV (dấu chấm phẩy)</sys:String>
     <sys:String x:Key="LOCHowLongToBeatExportJson">Xuất JSON</sys:String>
     <sys:String x:Key="LOCHowLongToBeatExportFolderTooltip">Thư mục xuất</sys:String>
+    <sys:String x:Key="LOCBrowseLabel">Duyệt...</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatColorSelection">Color selection:</sys:String>
 

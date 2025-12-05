@@ -18,6 +18,7 @@
     <sys:String x:Key="LOCHowLongToBeatExportCsvSemicolon">CSV をエクスポート（セミコロン）</sys:String>
     <sys:String x:Key="LOCHowLongToBeatExportJson">JSON をエクスポート</sys:String>
     <sys:String x:Key="LOCHowLongToBeatExportFolderTooltip">エクスポート先フォルダー</sys:String>
+    <sys:String x:Key="LOCBrowseLabel">参照...</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatColorSelection">色を選択:</sys:String>
 
