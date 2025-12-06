@@ -639,6 +639,11 @@ namespace HowLongToBeat.Services
                         VsLeisure = gameData.InvestedMpH
                     };
 
+                    try
+                    {
+                        LogDebugVerbose($"GetGameData parsed id={id} mainClassic={hltbData.MainStoryClassic} mainAvg={hltbData.MainStoryAverage} mainMed={hltbData.MainStoryMedian} mainRushed={hltbData.MainStoryRushed} mainLeisure={hltbData.MainStoryLeisure}");
+                    }
+                    catch { }
                     double elapsed = (DateTime.UtcNow - startTime).TotalMilliseconds;
                     try { ConcurrencyController?.ReportSample(elapsed, true); } catch { }
                     LogDebugVerbose($"GetGameData DONE id={id} task={Task.CurrentId} thread={Thread.CurrentThread.ManagedThreadId} elapsed={elapsed}ms");
@@ -961,9 +966,16 @@ namespace HowLongToBeat.Services
                             SoloClassic = x.CompAll,
                             CoOpClassic = x.InvestedCo,
                             VsClassic = x.InvestedMp
-                        }
+                        },
+                        NeedsDetails = true
                     }
                 )?.ToList() ?? new List<HltbDataUser>();
+
+                try
+                {
+                    LogDebugVerbose($"Api Search mapped {search.Count} items for '{name}' (platform='{platform}'). First item sample: " + (search.Count>0 ? Serialization.ToJson(search[0].GameHltbData) : "none"));
+                }
+                catch { }
 
                 if (search.Any())
                 {
@@ -1013,7 +1025,7 @@ namespace HowLongToBeat.Services
                                     (x.GameHltbData.MainStoryMedian > 0)
                                 );
 
-                                if (hasCoreTimes)
+                                if (hasCoreTimes && !x.NeedsDetails)
                                 {
                                     LogDebugVerbose($"Search: skipping GetGameData for id={x.Id} (search result has times)");
                                 }
@@ -1024,6 +1036,7 @@ namespace HowLongToBeat.Services
                                         try
                                         {
                                             x.GameHltbData = await GetGameData(x.Id, ctsGame.Token);
+                                            x.NeedsDetails = false;
                                         }
                                         catch (OperationCanceledException)
                                         {

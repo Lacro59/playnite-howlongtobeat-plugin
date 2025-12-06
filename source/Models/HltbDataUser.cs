@@ -15,6 +15,11 @@ namespace HowLongToBeat.Models
         public GameType GameType { get; set; } = GameType.Game;
 
         public HltbData GameHltbData { get; set; }
+
+        // Flag indicating that full game page data (variants/median/average/etc.) should be fetched
+        [DontSerialize]
+        public bool NeedsDetails { get; set; } = false;
+
         [DontSerialize]
         public HltbData GameHltbDataByType => GameType == GameType.Multi
                     ? new HltbData
