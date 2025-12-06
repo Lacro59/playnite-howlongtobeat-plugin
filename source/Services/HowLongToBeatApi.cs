@@ -737,86 +737,10 @@ namespace HowLongToBeat.Services
                     }
                 }
 
-                    List<string> scriptUrls = new List<string>();
-                    try
+                    // Try to extract script URLs via optional HtmlAgilityPack helper (reflection). Fall back to regex if unavailable.
+                    List<string> scriptUrls = ExtractScriptUrlsWithHap(response) ?? new List<string>();
+                    if (scriptUrls.Count == 0)
                     {
-                        var hapDocType = Type.GetType("HtmlAgilityPack.HtmlDocument, HtmlAgilityPack");
-                        if (hapDocType != null)
-                        {
-                            try
-                            {
-                                dynamic doc = Activator.CreateInstance(hapDocType);
-                                var loadHtml = hapDocType.GetMethod("LoadHtml");
-                                loadHtml.Invoke(doc, new object[] { response });
-                                var documentNode = hapDocType.GetProperty("DocumentNode").GetValue(doc);
-                                var selectNodes = documentNode.GetType().GetMethod("SelectNodes", new Type[] { typeof(string) });
-                                var nodes = selectNodes.Invoke(documentNode, new object[] { "//script[@src]" }) as System.Collections.IEnumerable;
-                                if (nodes != null)
-                                {
-                                    foreach (var node in nodes)
-                                    {
-                                        try
-                                        {
-                                            var attrsProp = node.GetType().GetProperty("Attributes");
-                                            if (attrsProp == null)
-                                            {
-                                                continue;
-                                            }
-                                            var attrs = attrsProp.GetValue(node);
-                                            if (attrs == null)
-                                            {
-                                                continue;
-                                            }
-                                            var getAttr = attrs.GetType().GetMethod("Get", new Type[] { typeof(string) });
-                                            if (getAttr == null)
-                                            {
-                                                continue;
-                                            }
-                                            var srcAttr = getAttr.Invoke(attrs, new object[] { "src" });
-                                            if (srcAttr != null)
-                                            {
-                                                var valProp = srcAttr.GetType().GetProperty("Value");
-                                                var val = valProp != null ? valProp.GetValue(srcAttr) as string : null;
-                                                if (!string.IsNullOrEmpty(val)) scriptUrls.Add(val);
-                                            }
-                                        }
-                                        catch (Exception inner)
-                                        {
-                                            try { Logger.Warn(inner, "HLTB: HAP node parsing failed; continuing with remaining nodes"); } catch { }
-                                        }
-                                    }
-                                }
-                                else
-                                {
-                                    var matches = Regex.Matches(response, "<script[^>]*src=[\"']([^\"']+)[\"'][^>]*>", RegexOptions.IgnoreCase);
-                                    foreach (Match match in matches)
-                                    {
-                                        scriptUrls.Add(match.Groups[1].Value);
-                                    }
-                                }
-                            }
-                            catch (Exception hapEx)
-                            {
-                                try { Logger.Warn(hapEx, "HLTB: HtmlAgilityPack reflection failed; using regex fallback. Consider updating HAP usage."); } catch { }
-                                var matches = Regex.Matches(response, "<script[^>]*src=[\"']([^\"']+)[\"'][^>]*>", RegexOptions.IgnoreCase);
-                                foreach (Match match in matches)
-                                {
-                                    scriptUrls.Add(match.Groups[1].Value);
-                                }
-                            }
-                        }
-                        else
-                        {
-                            var matches = Regex.Matches(response, "<script[^>]*src=[\"']([^\"']+)[\"'][^>]*>", RegexOptions.IgnoreCase);
-                            foreach (Match match in matches)
-                            {
-                                scriptUrls.Add(match.Groups[1].Value);
-                            }
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        try { Logger.Warn(ex, "HLTB: script URL extraction encountered an error; using regex fallback"); } catch { }
                         var matches = Regex.Matches(response, "<script[^>]*src=[\"']([^\"']+)[\"'][^>]*>", RegexOptions.IgnoreCase);
                         foreach (Match match in matches)
                         {
@@ -1309,7 +1233,12 @@ namespace HowLongToBeat.Services
                                         Logger.Warn($"ApiSearch: detected elevated 429 rate ({count429}/{codes.Length}). Applying temporary search backoff -> limit={SearchBackoffLimit} until {SearchBackoffUntil:HH:mm:ss}");
                                         try
                                         {
-                                            int diff = SearchBackoffLimit - CurrentSearchLimit;
+                                            int currentLimitSnapshot;
+                                            lock (SearchConcurrencySync)
+                                            {
+                                                currentLimitSnapshot = CurrentSearchLimit;
+                                            }
+                                            int diff = SearchBackoffLimit - currentLimitSnapshot;
                                             if (diff > 0)
                                             {
                                                 SearchSemaphore.Release(diff);
