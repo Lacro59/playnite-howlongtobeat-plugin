@@ -80,6 +80,9 @@ If none has this status, it takes the most recent.</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatPlaying">Playing</sys:String>
 
+    <sys:String x:Key="LOCRefresh">Refresh</sys:String>
+    <sys:String x:Key="LOCDelete">Delete</sys:String>
+
     <!-- HowLongToBeat -->
 
     <sys:String x:Key="LOCHowLongToBeatProgression">Progression</sys:String>

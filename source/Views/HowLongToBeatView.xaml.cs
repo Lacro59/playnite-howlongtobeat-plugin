@@ -2,7 +2,6 @@
 using CommonPluginsShared;
 using CommonPluginsShared.Converters;
 using CommonPluginsShared.Extensions;
-using CommonPluginsShared.Models;
 using HowLongToBeat.Models;
 using HowLongToBeat.Models.Enumerations;
 using HowLongToBeat.Services;
@@ -270,7 +269,10 @@ namespace HowLongToBeat.Views
                 if (bmp == null)
                 {
                     Common.LogDebug(true, "LoadCoverAsync: bmp is null after creation");
-                    await Dispatcher?.InvokeAsync(new Action(() => img.Source = null));
+                    if (Dispatcher != null)
+                    {
+                        await Dispatcher.InvokeAsync(new Action(() => img.Source = null));
+                    }
                     return;
                 }
 
@@ -780,6 +782,13 @@ namespace HowLongToBeat.Views
                 if (_viewDataContext != null)
                 {
                     _viewDataContext.PropertyChanged -= ViewData_PropertyChanged;
+
+                    try
+                    {
+                        _coverLoadCts?.Cancel();
+                        _coverLoadCts?.Dispose();
+                    }
+                    catch { }
                 }
 
                 _viewDataContext = DataContext as HowLongToBeatViewData;
@@ -805,6 +814,14 @@ namespace HowLongToBeat.Views
                     _viewDataContext.PropertyChanged -= ViewData_PropertyChanged;
                     _viewDataContext = null;
                 }
+
+                try
+                {
+                    _coverLoadCts?.Cancel();
+                    _coverLoadCts?.Dispose();
+                    _coverLoadCts = null;
+                }
+                catch { }
 
                 this.DataContextChanged -= OnDataContextChanged;
                 this.Unloaded -= HowLongToBeatView_Unloaded;

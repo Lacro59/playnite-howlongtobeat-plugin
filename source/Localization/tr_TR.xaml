@@ -79,6 +79,8 @@ Hiç biri bu durumda değilse, en son süre alınır.</sys:String>
     <sys:String x:Key="LOCHowLongToBeatVs">Karşı</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatPlaying">Oynanıyor</sys:String>
+    <sys:String x:Key="LOCRefresh">Yenile</sys:String>
+    <sys:String x:Key="LOCDelete">Sil</sys:String>
 
     <!-- HowLongToBeat -->
 

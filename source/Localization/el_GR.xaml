@@ -79,6 +79,8 @@
     <sys:String x:Key="LOCHowLongToBeatVs">Εναντίον</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatPlaying">Παίζεται τώρα</sys:String>
+    <sys:String x:Key="LOCRefresh">Ανανέωση</sys:String>
+    <sys:String x:Key="LOCDelete">Διαγραφή</sys:String>
 
     <!-- HowLongToBeat -->
 

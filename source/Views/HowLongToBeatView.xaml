@@ -96,9 +96,8 @@
                             </Style.Triggers>
                         </Style>
                     </Border.Style>
-                    <Image x:Name="CoverImageControl" Width="200" Height="200" Stretch="Uniform" StretchDirection="Both" Cursor="Hand"
-                           Tag="{Binding SourceLink.Url}" MouseLeftButtonUp="CoverImage_MouseLeftButtonUp" Opacity="0"
-                           Source="{Binding CoverImage, NotifyOnTargetUpdated=True, IsAsync=True}" TargetUpdated="CoverImageControl_TargetUpdated">
+                          <Image x:Name="CoverImageControl" Width="200" Height="200" Stretch="Uniform" StretchDirection="Both" Cursor="Hand"
+                              Tag="{Binding SourceLink.Url}" MouseLeftButtonUp="CoverImage_MouseLeftButtonUp" Opacity="0">
                         <Image.Effect>
                             <BlurEffect Radius="8" />
                         </Image.Effect>
@@ -192,12 +191,12 @@
                                    VerticalAlignment="Bottom" />
                     </Grid>
 
-                    <StackPanel Grid.Column="1">
-                        <Button Style="{StaticResource IconButtonStyle}" ToolTip="Refresh" Click="ButtonRefresh_Click" Content="&#xefd1;"
-                                FontFamily="{DynamicResource FontIcoFont}" Tag="{Binding GameContext.Id}" />
-                        <Button Style="{StaticResource IconButtonStyle}" Margin="0,10,0,0" ToolTip="Delete" Click="ButtonDelete_Click" Content="&#xee09;"
-                                FontFamily="{DynamicResource FontIcoFont}" Tag="{Binding GameContext.Id}" />
-                    </StackPanel>
+                        <StackPanel Grid.Column="1">
+                        <Button Style="{StaticResource IconButtonStyle}" ToolTip="{DynamicResource LOCRefresh}" Click="ButtonRefresh_Click" Content="&#xefd1;"
+                            FontFamily="{DynamicResource FontIcoFont}" Tag="{Binding GameContext.Id}" />
+                        <Button Style="{StaticResource IconButtonStyle}" Margin="0,10,0,0" ToolTip="{DynamicResource LOCDelete}" Click="ButtonDelete_Click" Content="&#xee09;"
+                            FontFamily="{DynamicResource FontIcoFont}" Tag="{Binding GameContext.Id}" />
+                        </StackPanel>
                 </Grid>
             </Grid>
         </DockPanel>

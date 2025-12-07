@@ -79,6 +79,8 @@ Se nenhum tiver este status, pegará o mais recente.</sys:String>
     <sys:String x:Key="LOCHowLongToBeatVs">Vs</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatPlaying">Jogando</sys:String>
+    <sys:String x:Key="LOCRefresh">Atualizar</sys:String>
+    <sys:String x:Key="LOCDelete">Excluir</sys:String>
 
     <!-- HowLongToBeat -->
 

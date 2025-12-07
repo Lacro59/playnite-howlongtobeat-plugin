@@ -79,6 +79,8 @@
     <sys:String x:Key="LOCHowLongToBeatVs">Vs</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatPlaying">Граю</sys:String>
+    <sys:String x:Key="LOCRefresh">Оновити</sys:String>
+    <sys:String x:Key="LOCDelete">Видалити</sys:String>
 
     <!-- HowLongToBeat -->
 

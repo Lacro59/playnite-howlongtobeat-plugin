@@ -11,10 +11,9 @@ namespace HowLongToBeat.Views.Converters
         {
             try
             {
-                if (values == null || values.Length < 3) return Visibility.Collapsed;
-                double playtime = ToDouble(values[0]);
-                double total = ToDouble(values[1]);
-                double totalWidth = ToDouble(values[2]);
+                if (values == null || values.Length < 2) return Visibility.Collapsed;
+                double playtime = ConverterHelpers.ToDouble(values[0]);
+                double total = ConverterHelpers.ToDouble(values[1]);
 
                 if (playtime <= 0) return Visibility.Collapsed;
                 if (total <= 0) return Visibility.Collapsed;
@@ -27,16 +26,6 @@ namespace HowLongToBeat.Views.Converters
             }
         }
 
-        private double ToDouble(object o)
-        {
-            if (o == null) return 0.0;
-            if (o is double d) return d;
-            if (o is float f) return f;
-            if (o is int i) return i;
-            if (o is long l) return l;
-            if (double.TryParse(o.ToString(), out double parsed)) return parsed;
-            return 0.0;
-        }
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
         {

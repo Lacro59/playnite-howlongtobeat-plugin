@@ -78,6 +78,8 @@
     <sys:String x:Key="LOCHowLongToBeatVs">对战</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatPlaying">正在游玩</sys:String>
+    <sys:String x:Key="LOCRefresh">刷新</sys:String>
+    <sys:String x:Key="LOCDelete">删除</sys:String>
 
     <!-- HowLongToBeat -->
 
