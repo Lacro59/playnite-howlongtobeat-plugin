@@ -5,11 +5,13 @@ using HowLongToBeat.Models;
 using HowLongToBeat.Models.Api;
 using HowLongToBeat.Models.Enumerations;
 using HowLongToBeat.Views;
+using HowLongToBeat;
 using Playnite.SDK;
 using Playnite.SDK.Data;
 using Playnite.SDK.Models;
 using System;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -17,16 +19,101 @@ using System.Net.Http;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows;
 
 namespace HowLongToBeat.Services
 {
-    public class HowLongToBeatApi : ObservableObject
+    public class HowLongToBeatApi : ObservableObject, IDisposable
     {
         private static ILogger Logger => LogManager.GetLogger();
 
         private static HowLongToBeatDatabase PluginDatabase => HowLongToBeat.PluginDatabase;
+
+        // Helper to centralize verbose logging checks
+        private bool IsVerboseLoggingEnabled => PluginDatabase?.PluginSettings?.Settings is HowLongToBeatSettings _vs && _vs.EnableVerboseLogging;
+
+        private void LogDebugVerbose(string message)
+        {
+            try
+            {
+                if (IsVerboseLoggingEnabled)
+                {
+                    Logger.Debug(message);
+                }
+            }
+            catch { }
+        }
+
+        /// <summary>
+        /// Adjusts a semaphore to match a target limit by releasing extra permits or consuming existing permits.
+        /// Returns the new currentLimit value which the caller should persist to the corresponding field.
+        /// This is extracted to avoid duplicating complex permit-release/consume logic in multiple places.
+        /// </summary>
+        private async Task<int> AdjustSemaphoreLimit(SemaphoreSlim semaphore, int currentLimit, int targetLimit, object syncLock, string context = null)
+        {
+            if (semaphore == null)
+            {
+                return currentLimit;
+            }
+
+            int pendingConsume = 0;
+            try
+            {
+                lock (syncLock)
+                {
+                    int diff = targetLimit - currentLimit;
+                    if (diff > 0)
+                    {
+                        try
+                        {
+                            semaphore.Release(diff);
+                            currentLimit = targetLimit;
+                        }
+                        catch { }
+                        return currentLimit;
+                    }
+                    else if (diff < 0)
+                    {
+                        pendingConsume = -diff;
+                    }
+                }
+
+                if (pendingConsume > 0)
+                {
+                    int consumed = 0;
+                    for (int i = 0; i < pendingConsume; i++)
+                    {
+                        try
+                        {
+                            var delay = Task.Delay(200);
+                            var winner = await Task.WhenAny(semaphore.WaitAsync(), delay).ConfigureAwait(false);
+                            if (winner == delay)
+                            {
+                                break;
+                            }
+                            consumed++;
+                        }
+                        catch { break; }
+                    }
+
+                    lock (syncLock)
+                    {
+                        int originalLimit = currentLimit;
+                        int newLimit = (consumed == pendingConsume) ? targetLimit : Math.Max(0, originalLimit - consumed);
+                        newLimit = Math.Min(originalLimit, newLimit);
+                        currentLimit = newLimit;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                try { Logger.Warn(ex, $"HLTB: AdjustSemaphoreLimit error ({context})"); } catch { }
+            }
+
+            return currentLimit;
+        }
 
 
         /// <summary>
@@ -42,7 +129,54 @@ namespace HowLongToBeat.Services
         /// </summary>
         internal string FileCookies { get; }
 
-        private static string SearchId { get; set; } = null;
+        private readonly Type HapDocType;
+        private readonly bool HapAvailable;
+
+        private static string SearchUrl { get; set; } = null;
+        private static readonly object SearchUrlLock = new object();
+        private const int ScriptDownloadTimeoutMs = 5000;
+
+        private const int MaxParallelGameDataDownloads = 32;
+        private const int GameDataDownloadTimeoutMs = 15000;
+
+        private const int MaxParallelSearches = 96;
+
+        private readonly ConcurrentDictionary<string, string> GamePageCache = new ConcurrentDictionary<string, string>();
+        private readonly ConcurrentDictionary<string, SearchResult> SearchCache = new ConcurrentDictionary<string, SearchResult>();
+        private SemaphoreSlim SearchSemaphore;
+        private AdaptiveConcurrencyController SearchConcurrencyController;
+        private readonly object SearchConcurrencySync = new object();
+        private int CurrentSearchLimit;
+        private int PersistentCacheHits = 0;
+        private int InMemoryCacheHits = 0;
+        private int PageFetches = 0;
+        private readonly PageCache PageCache;
+        private AdaptiveConcurrencyController ConcurrencyController;
+        private SemaphoreSlim DynamicSemaphore;
+        private readonly object ConcurrencySync = new object();
+        private int CurrentSemaphoreLimit;
+        private const int SemaphoreUpperBound = 128;
+
+        private readonly HttpClient httpClient;
+
+        private readonly ConcurrentQueue<long> RecentSearchSamples = new ConcurrentQueue<long>();
+        private const int RecentSamplesWindow = 200;
+
+        private readonly ConcurrentQueue<int> RecentSearchStatusCodes = new ConcurrentQueue<int>();
+        private const int RecentStatusWindow = 200;
+
+        private DateTime SearchBackoffUntil = DateTime.MinValue;
+        private int SearchBackoffLimit = 0;
+        private readonly object BackoffSync = new object();
+
+        private string CachedAuthToken = null;
+        private DateTime CachedAuthTokenExpiry = DateTime.MinValue;
+        private readonly object AuthTokenSync = new object();
+
+        private CancellationTokenSource monitorCts;
+        private Task monitorTask;
+        private readonly object monitorSync = new object();
+        private bool _disposed = false;
 
 
         #region Urls
@@ -98,6 +232,42 @@ namespace HowLongToBeat.Services
         /// </summary>
         public HowLongToBeatApi()
         {
+            try
+            {
+                var handler = new HttpClientHandler();
+                var prop = handler.GetType().GetProperty("MaxConnectionsPerServer");
+                if (prop != null && prop.CanWrite)
+                {
+                    prop.SetValue(handler, Math.Max(4, MaxParallelGameDataDownloads));
+                }
+                else
+                {
+                    Logger.Warn("HLTB: MaxConnectionsPerServer not available; using default connection limits");
+                }
+
+                httpClient = new HttpClient(handler)
+                {
+                    Timeout = TimeSpan.FromMilliseconds(GameDataDownloadTimeoutMs)
+                };
+                httpClient.DefaultRequestHeaders.Add("User-Agent", Web.UserAgent);
+                httpClient.DefaultRequestHeaders.Add("Referer", UrlBase);
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex, "HLTB: HttpClient init failed");
+                throw;
+            }
+
+            // Cache HtmlAgilityPack availability once to avoid reflection on every request.
+            Type hapType = null;
+            try
+            {
+                hapType = Type.GetType("HtmlAgilityPack.HtmlDocument, HtmlAgilityPack");
+            }
+            catch { }
+            HapDocType = hapType;
+            HapAvailable = HapDocType != null;
+
             UserLogin = PluginDatabase.PluginSettings.Settings.UserLogin;
 
             CookiesDomains = new List<string> { ".howlongtobeat.com", "howlongtobeat.com" };
@@ -109,6 +279,191 @@ namespace HowLongToBeat.Services
                 FileCookies,
                 CookiesDomains
             );
+
+            try
+            {
+                PageCache = new PageCache(PluginDatabase.Plugin.GetPluginUserDataPath());
+            }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, false);
+                try { Logger.Warn("HLTB: PageCache init failed; proceeding without persistent cache"); } catch { }
+            }
+
+            try
+            {
+                ConcurrencyController = new AdaptiveConcurrencyController(MaxParallelGameDataDownloads, 4, SemaphoreUpperBound, TimeSpan.FromSeconds(2));
+                DynamicSemaphore = new SemaphoreSlim(MaxParallelGameDataDownloads, SemaphoreUpperBound);
+                CurrentSemaphoreLimit = MaxParallelGameDataDownloads;
+                try
+                {
+                    SearchConcurrencyController = new AdaptiveConcurrencyController(MaxParallelSearches, 2, SemaphoreUpperBound, TimeSpan.FromSeconds(2));
+                    CurrentSearchLimit = MaxParallelSearches;
+                    SearchSemaphore = new SemaphoreSlim(MaxParallelSearches, SemaphoreUpperBound);
+                }
+                catch (Exception ex)
+                {
+                    try { Logger.Warn(ex, "HLTB: Search concurrency controller init failed; using basic semaphore"); } catch { }
+                    SearchSemaphore = new SemaphoreSlim(MaxParallelSearches);
+                    CurrentSearchLimit = MaxParallelSearches;
+                }
+            }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, false);
+                try { Logger.Warn("HLTB: Adaptive concurrency init failed; using basic semaphore defaults"); } catch { }
+                DynamicSemaphore = new SemaphoreSlim(MaxParallelGameDataDownloads);
+                CurrentSemaphoreLimit = MaxParallelGameDataDownloads;
+            }
+
+        }
+
+        public void StopMonitoring()
+        {
+            try
+            {
+                monitorCts?.Cancel();
+                try { monitorTask?.Wait(2000); } catch { }
+                monitorCts?.Dispose();
+                monitorCts = null;
+                monitorTask = null;
+            }
+            catch { }
+        }
+
+        private void EnsureMonitoringStarted()
+        {
+            if (_disposed) return;
+            lock (monitorSync)
+            {
+                if (monitorTask != null && !monitorTask.IsCompleted && monitorCts != null && !monitorCts.IsCancellationRequested)
+                {
+                    return;
+                }
+
+                try { monitorCts?.Dispose(); } catch { }
+                monitorCts = new CancellationTokenSource();
+                try
+                {
+                    monitorTask = Task.Run(async () =>
+                    {
+                        var token = monitorCts.Token;
+                        try
+                        {
+                            while (!token.IsCancellationRequested)
+                            {
+                                try { await Task.Delay(TimeSpan.FromSeconds(10), token); } catch { }
+                                try
+                                {
+                                    int searchTarget;
+                                    bool searchForced = false;
+                                    try
+                                    {
+                                        int fixedTarget = MaxParallelSearches;
+                                        lock (BackoffSync)
+                                        {
+                                            if (SearchBackoffLimit > 0 && DateTime.UtcNow < SearchBackoffUntil)
+                                            {
+                                                searchTarget = Math.Min(fixedTarget, SearchBackoffLimit);
+                                            }
+                                            else
+                                            {
+                                                searchTarget = fixedTarget;
+                                            }
+                                        }
+                                        searchForced = true;
+                                    }
+                                    catch
+                                    {
+                                        searchTarget = SearchConcurrencyController?.TargetConcurrency ?? MaxParallelSearches;
+                                    }
+
+                                    int searchAvailable = SearchSemaphore?.CurrentCount ?? 0;
+                                    int searchInFlight = Math.Max(0, searchTarget - searchAvailable);
+
+                                    int gameTarget = ConcurrencyController?.TargetConcurrency ?? MaxParallelGameDataDownloads;
+                                    int gameAvailable = DynamicSemaphore?.CurrentCount ?? 0;
+                                    int gameInFlight = Math.Max(0, gameTarget - gameAvailable);
+
+                                    var samples = RecentSearchSamples.ToArray();
+                                    double avg = samples.Length > 0 ? samples.Average() : 0;
+                                    double median = 0;
+                                    double p90 = 0;
+                                    if (samples.Length > 0)
+                                    {
+                                        var ordered = samples.OrderBy(x => x).ToArray();
+                                        median = ordered[ordered.Length / 2];
+                                        p90 = ordered[Math.Max(0, (int)Math.Floor(ordered.Length * 0.9) - 1)];
+                                    }
+
+                                    LogDebugVerbose($"HLTB Summary: searchTarget={searchTarget} searchInFlight={searchInFlight} gameTarget={gameTarget} gameInFlight={gameInFlight} avgSearchMs={Math.Round(avg,1)} medianSearchMs={Math.Round(median,1)} p90SearchMs={Math.Round(p90,1)} persistentCacheHits={PersistentCacheHits} inMemoryHits={InMemoryCacheHits} pageFetches={PageFetches} forced={searchForced}");
+                                }
+                                catch (Exception ex)
+                                {
+                                    try { Logger.Error(ex, "HLTB monitor loop error"); } catch { }
+                                }
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            try { Logger.Error(ex, "HLTB monitor task terminated unexpectedly"); } catch { }
+                        }
+                    });
+                }
+                catch (Exception ex)
+                {
+                    try { Logger.Error(ex, "Failed to start HLTB monitor task"); } catch { }
+                }
+            }
+        }
+
+        ~HowLongToBeatApi()
+        {
+            try { Dispose(false); } catch { }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            try { GC.SuppressFinalize(this); } catch { }
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (_disposed) return;
+
+            _disposed = true;
+
+            if (disposing)
+            {
+                try
+                {
+                    if (monitorCts != null)
+                    {
+                        try { monitorCts.Cancel(); } catch { }
+                        try { monitorTask?.Wait(2000); } catch { }
+                        try { monitorCts.Dispose(); } catch { }
+                    }
+                }
+                catch { }
+                finally
+                {
+                    monitorTask = null;
+                    monitorCts = null;
+                }
+
+                try { ConcurrencyController?.Dispose(); } catch { }
+                ConcurrencyController = null;
+                try { SearchConcurrencyController?.Dispose(); } catch { }
+                SearchConcurrencyController = null;
+
+                try { DynamicSemaphore?.Dispose(); } catch { }
+                DynamicSemaphore = null;
+                try { SearchSemaphore?.Dispose(); } catch { }
+                SearchSemaphore = null;
+
+                try { httpClient?.Dispose(); } catch { }
+            }
         }
 
 
@@ -117,16 +472,127 @@ namespace HowLongToBeat.Services
         /// </summary>
         /// <param name="id">The game ID.</param>
         /// <returns>Returns <see cref="HltbData"/> with game times, or null if not found.</returns>
-        private async Task<HltbData> GetGameData(string id)
+        private async Task<HltbData> GetGameData(string id, CancellationToken cancellationToken = default)
         {
+            try { EnsureMonitoringStarted(); } catch { }
+            cancellationToken.ThrowIfCancellationRequested();
+            DateTime startTime = DateTime.UtcNow;
+            LogDebugVerbose($"GetGameData START id={id} task={Task.CurrentId} thread={Thread.CurrentThread.ManagedThreadId} time={startTime:HH:mm:ss.fff}");
+
             try
             {
-                string response = await Web.DownloadStringData(string.Format(UrlGame, id));
-                string jsonData = Tools.GetJsonInString(response, @"<script[ ]?id=""__NEXT_DATA__""[ ]?type=""application/json"">");
-                _ = Serialization.TryFromJson(jsonData, out NEXT_DATA next_data, out Exception ex);
-                if (ex != null)
+                string jsonData = null;
+                try
+                {
+                    if (PageCache != null && PageCache.TryGetJson(id, out string cachedJson))
+                    {
+                        jsonData = cachedJson;
+                        try { System.Threading.Interlocked.Increment(ref PersistentCacheHits); } catch { }
+                        LogDebugVerbose($"GetGameData id={id} - persistent cache hit");
+                    }
+                }
+                catch (Exception ex)
                 {
                     Common.LogError(ex, false, false, PluginDatabase.PluginName);
+                }
+
+                int attempts = 0;
+                if (string.IsNullOrEmpty(jsonData))
+                {
+                    string response = string.Empty;
+                    int maxAttempts = 3;
+                    int baseDelayMs = 300;
+                    var rnd = new Random();
+                    while (attempts < maxAttempts)
+                    {
+                        attempts++;
+                        try
+                        {
+                            cancellationToken.ThrowIfCancellationRequested();
+                            if (GamePageCache.TryGetValue(id, out string cached))
+                            {
+                                response = cached;
+                                try { System.Threading.Interlocked.Increment(ref InMemoryCacheHits); } catch { }
+                                LogDebugVerbose($"GetGameData id={id} - in-memory cache hit");
+                            }
+                            else
+                            {
+                                try
+                                {
+                                    using (var httpResp = await httpClient.GetAsync(string.Format(UrlGame, id), cancellationToken).ConfigureAwait(false))
+                                    {
+                                        if (!httpResp.IsSuccessStatusCode)
+                                        {
+                                            var code = (int)httpResp.StatusCode;
+                                            LogDebugVerbose($"GetGameData id={id} - HTTP {code} fetching page");
+                                            response = string.Empty;
+                                        }
+                                        else
+                                        {
+                                            response = await httpResp.Content.ReadAsStringAsync().ConfigureAwait(false);
+                                        }
+                                    }
+                                }
+                                catch (HttpRequestException hre)
+                                {
+                                    Common.LogError(hre, false, false, PluginDatabase.PluginName);
+                                    response = string.Empty;
+                                }
+                            }
+
+                            if (!response.IsNullOrEmpty())
+                            {
+                                string maybeJson = Tools.GetJsonInString(response, @"<script[ ]?id=""__NEXT_DATA__""[ ]?type=""application/json"">");
+                                if (!maybeJson.IsNullOrEmpty())
+                                {
+                                    GamePageCache.TryAdd(id, response);
+                                    try
+                                    {
+                                        PageCache?.Set(id, maybeJson);
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        Common.LogError(ex, false, false, PluginDatabase.PluginName);
+                                    }
+                                    try { System.Threading.Interlocked.Increment(ref PageFetches); } catch { }
+                                    jsonData = maybeJson;
+                                    break;
+                                }
+                                else
+                                {
+                                    Common.LogDebug(true, $"GetGameData id={id} - extracted JSON was empty or incomplete (attempt={attempts})");
+                                    response = string.Empty;
+                                }
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Common.LogError(ex, false, false, PluginDatabase.PluginName);
+                        }
+
+                        if (attempts < maxAttempts)
+                        {
+                            var jitter = rnd.Next(0, 200);
+                            var delay = baseDelayMs * attempts + jitter;
+                            LogDebugVerbose($"GetGameData id={id} - retry {attempts} after {delay}ms");
+                            try { await Task.Delay(delay, cancellationToken); } catch (OperationCanceledException) { throw; }
+                        }
+                    }
+                }
+                if (string.IsNullOrEmpty(jsonData))
+                {
+                    Common.LogDebug(true, $"GetGameData id={id} - no JSON extracted after {attempts} attempts");
+                    Logger.Warn($"No GameData find with {id}");
+                    double elapsed = (DateTime.UtcNow - startTime).TotalMilliseconds;
+                    try { ConcurrencyController?.ReportSample(elapsed, false); } catch { }
+                    LogDebugVerbose($"GetGameData DONE id={id} task={Task.CurrentId} thread={Thread.CurrentThread.ManagedThreadId} elapsed={elapsed}ms");
+                    return null;
+                }
+
+                _ = Serialization.TryFromJson(jsonData, out NEXT_DATA next_data, out Exception parseEx);
+                if (parseEx != null)
+                {
+                    Common.LogError(parseEx, false, false, PluginDatabase.PluginName);
                 }
 
                 GameData gameData = next_data?.Props?.PageProps?.Game?.Data?.Game != null
@@ -172,17 +638,29 @@ namespace HowLongToBeat.Services
                         CoOpLeisure = gameData.InvestedCoH,
                         VsLeisure = gameData.InvestedMpH
                     };
+
+                    double elapsed = (DateTime.UtcNow - startTime).TotalMilliseconds;
+                    try { ConcurrencyController?.ReportSample(elapsed, true); } catch { }
+                    LogDebugVerbose($"GetGameData DONE id={id} task={Task.CurrentId} thread={Thread.CurrentThread.ManagedThreadId} elapsed={elapsed}ms");
                     return hltbData;
                 }
                 else
                 {
                     Logger.Warn($"No GameData find with {id}");
+                    double elapsed = (DateTime.UtcNow - startTime).TotalMilliseconds;
+                    try { ConcurrencyController?.ReportSample(elapsed, false); } catch { }
+                    LogDebugVerbose($"GetGameData DONE id={id} task={Task.CurrentId} thread={Thread.CurrentThread.ManagedThreadId} elapsed={elapsed}ms");
                     return null;
                 }
+            }
+            catch (OperationCanceledException)
+            {
+                throw;
             }
             catch (Exception ex)
             {
                 Common.LogError(ex, false, true, PluginDatabase.PluginName);
+                Logger.Info($"GetGameData ERROR id={id} task={Task.CurrentId} thread={Thread.CurrentThread.ManagedThreadId} elapsed={(DateTime.UtcNow - startTime).TotalMilliseconds}ms");
             }
 
             return null;
@@ -212,36 +690,169 @@ namespace HowLongToBeat.Services
         #region Search
 
         /// <summary>
-        /// Retrieves the search ID required for API search requests.
+        /// Retrieves the search URL from the website scripts.
         /// </summary>
-        /// <returns>Returns the search ID as a string.</returns>
-        private async Task<string> GetSearchId()
+        /// <returns>The search endpoint URL.</returns>
+        private async Task<string> GetSearchUrl()
         {
-            if (!SearchId.IsNullOrEmpty())
+            if (!SearchUrl.IsNullOrEmpty())
             {
-                return SearchId;
+                return SearchUrl;
             }
 
             try
             {
                 string url = UrlBase;
-                var data = await Web.DownloadSourceDataWebView(url);
-                string response = data.Item1;
-                string js = Regex.Match(response, @"submit-\w*.js").Value;
-                if (!js.IsNullOrEmpty())
+                
+                string response = null;
+                using (var cts = new CancellationTokenSource(ScriptDownloadTimeoutMs))
                 {
-                    url += $"/_next/static/chunks/pages/{js}";
-                    response = await Web.DownloadStringData(url);
-                    Match matches = Regex.Match(response, $"\"{SearchEndPoint}/\".concat[(]\"(\\w*)\"[)].concat[(]\"(\\w*)\"[)]");
-                    SearchId = matches.Groups[1].Value + matches.Groups[2].Value;
+                    try
+                    {
+                        using (var httpResp = await httpClient.GetAsync(url, cts.Token).ConfigureAwait(false))
+                        {
+                            if (!httpResp.IsSuccessStatusCode)
+                            {
+                                try { Logger.Warn($"HTTP {(int)httpResp.StatusCode} downloading {url}"); } catch { }
+                                return "/api/search";
+                            }
+
+                            response = await httpResp.Content.ReadAsStringAsync().ConfigureAwait(false);
+                        }
+                    }
+                    catch (TaskCanceledException)
+                    {
+                        try { Logger.Warn($"Timeout {ScriptDownloadTimeoutMs}ms downloading {url}"); } catch { }
+                        return "/api/search";
+                    }
+                    catch (Exception ex)
+                    {
+                        Common.LogError(ex, false, true, PluginDatabase.PluginName);
+                        return "/api/search";
+                    }
                 }
+
+                    // Try to extract script URLs via optional HtmlAgilityPack helper (reflection). Fall back to regex if unavailable.
+                    List<string> scriptUrls = ExtractScriptUrlsWithHap(response) ?? new List<string>();
+                    if (scriptUrls.Count == 0)
+                    {
+
+                        var matches = Regex.Matches(response, "<script[^>]*src=[\"']([^\"']+)[\"'][^>]*>", RegexOptions.IgnoreCase);
+                        foreach (Match match in matches)
+                        {
+                            scriptUrls.Add(match.Groups[1].Value);
+                        }
+                    }
+
+                    var ordered = scriptUrls.Where(s => s.Contains("_app-")).Concat(scriptUrls).Where(s => !string.IsNullOrEmpty(s)).Distinct();
+                    foreach (string sUrl in ordered)
+                    {
+                        string scriptUrl = sUrl;
+                        if (!scriptUrl.StartsWith("http", StringComparison.OrdinalIgnoreCase))
+                        {
+                            scriptUrl = UrlBase + scriptUrl;
+                        }
+
+                        string scriptContent = null;
+                        using (var ctsScript = new CancellationTokenSource(ScriptDownloadTimeoutMs))
+                        {
+                            try
+                            {
+                                using (var scriptResp = await httpClient.GetAsync(scriptUrl, ctsScript.Token).ConfigureAwait(false))
+                                {
+                                    if (!scriptResp.IsSuccessStatusCode)
+                                    {
+                                        try { Logger.Warn($"HTTP {(int)scriptResp.StatusCode} downloading {scriptUrl}"); } catch { }
+                                        continue;
+                                    }
+
+                                    scriptContent = await scriptResp.Content.ReadAsStringAsync().ConfigureAwait(false);
+                                }
+                            }
+                            catch (TaskCanceledException)
+                            {
+                                try { Logger.Warn($"Timeout {ScriptDownloadTimeoutMs}ms downloading {scriptUrl}"); } catch { }
+                                continue;
+                            }
+                            catch (Exception ex)
+                            {
+                                Common.LogError(ex, false, true, PluginDatabase.PluginName);
+                                continue;
+                            }
+                        }
+
+                        string pattern = "fetch\\s*\\(\\s*[\"']\\/api\\/([a-zA-Z0-9_\\/]+)[^\"']*[\"']\\s*,\\s*\\{[^}]*method:\\s*[\"']POST[\"'][^}]*\\}";
+                        var searchMatch = Regex.Match(scriptContent, pattern, RegexOptions.Singleline | RegexOptions.IgnoreCase);
+                        if (searchMatch.Success)
+                        {
+                            string suffix = searchMatch.Groups[1].Value;
+                            if (suffix.Contains("/"))
+                            {
+                                suffix = suffix.Split('/')[0];
+                            }
+
+                            if (suffix != "find")
+                            {
+                                lock (SearchUrlLock)
+                                {
+                                    if (SearchUrl.IsNullOrEmpty())
+                                    {
+                                        SearchUrl = "/api/" + suffix;
+                                    }
+                                }
+                                return SearchUrl;
+                            }
+                        }
+                    }
             }
             catch (Exception ex)
             {
                 Common.LogError(ex, false, true, PluginDatabase.PluginName);
             }
 
-            return SearchId;
+            return "/api/search";
+        }
+
+        /// <summary>
+        /// Retrieves the authentication token.
+        /// </summary>
+        /// <returns>The auth token.</returns>
+        private async Task<string> GetAuthToken()
+        {
+            try
+            {
+                if (!string.IsNullOrEmpty(CachedAuthToken) && DateTime.UtcNow < CachedAuthTokenExpiry)
+                {
+                    return CachedAuthToken;
+                }
+
+                List<HttpHeader> headers = new List<HttpHeader>
+                {
+                    new HttpHeader { Key = "Referer", Value = UrlBase }
+                };
+                string url = UrlBase + "/api/search/init?t=" + DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+                string response = await Web.DownloadStringData(url, headers);
+
+                var data = Serialization.FromJson<Dictionary<string, string>>(response);
+                if (data != null && data.TryGetValue("token", out string token))
+                {
+                    lock (AuthTokenSync)
+                    {
+                        if (!string.IsNullOrEmpty(CachedAuthToken) && DateTime.UtcNow < CachedAuthTokenExpiry)
+                        {
+                            return CachedAuthToken;
+                        }
+                        CachedAuthToken = token;
+                        CachedAuthTokenExpiry = DateTime.UtcNow.AddSeconds(90);
+                    }
+                    return token;
+                }
+            }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, false, true, PluginDatabase.PluginName);
+            }
+            return null;
         }
 
 
@@ -275,14 +886,107 @@ namespace HowLongToBeat.Services
                             SoloClassic = x.CompAll,
                             CoOpClassic = x.InvestedCo,
                             VsClassic = x.InvestedMp
-                        }
+                        },
+                        NeedsDetails = true
                     }
                 )?.ToList() ?? new List<HltbDataUser>();
 
-                search.ForEach(x =>
+                if (search.Any())
                 {
-                    x.GameHltbData = GetGameData(x.Id).GetAwaiter().GetResult();
-                });
+                    var tasks = search.Select(async x =>
+                    {
+                        bool acquiredGameSemaphore = false;
+                        try
+                        {
+                            int target = ConcurrencyController?.TargetConcurrency ?? MaxParallelGameDataDownloads;
+                            CurrentSemaphoreLimit = await AdjustSemaphoreLimit(DynamicSemaphore, CurrentSemaphoreLimit, target, ConcurrencySync, "Search");
+
+                            try
+                            {
+                                int targetGameLog = ConcurrencyController?.TargetConcurrency ?? MaxParallelGameDataDownloads;
+                                int availableGameLog = DynamicSemaphore?.CurrentCount ?? 0;
+                                int inFlightGameLog = Math.Max(0, targetGameLog - availableGameLog);
+                                LogDebugVerbose($"Search: waiting semaphore for id={x.Id} target={targetGameLog} currentLimit={CurrentSemaphoreLimit} available={availableGameLog} inFlight={inFlightGameLog}");
+                            }
+                            catch { }
+                            var acquired = await DynamicSemaphore.WaitAsync(TimeSpan.FromSeconds(10));
+                            if (!acquired)
+                            {
+                                Logger.Warn($"Search: timeout waiting for game data semaphore for id={x.Id}");
+                                return;
+                            }
+                            acquiredGameSemaphore = true;
+                            try
+                            {
+                                int targetGameLog = ConcurrencyController?.TargetConcurrency ?? MaxParallelGameDataDownloads;
+                                int availableGameLog = DynamicSemaphore?.CurrentCount ?? 0;
+                                int inFlightGameLog = Math.Max(0, targetGameLog - availableGameLog);
+                                LogDebugVerbose($"Search: acquired semaphore for id={x.Id} target={targetGameLog} currentLimit={CurrentSemaphoreLimit} available={availableGameLog} inFlight={inFlightGameLog}");
+                            }
+                            catch { }
+                        }
+                        catch (Exception ex)
+                        {
+                            Common.LogError(ex, false, false, PluginDatabase.PluginName);
+                        }
+                        try
+                        {
+                            try
+                            {
+                                bool hasCoreTimes = (x.GameHltbData != null) && (
+                                    (x.GameHltbData.MainStoryClassic > 0) ||
+                                    (x.GameHltbData.MainStoryAverage > 0) ||
+                                    (x.GameHltbData.MainStoryMedian > 0)
+                                );
+
+                                if (hasCoreTimes && !x.NeedsDetails)
+                                {
+                                    LogDebugVerbose($"Search: skipping GetGameData for id={x.Id} (search result has times)");
+                                }
+                                else
+                                {
+                                    using (var ctsGame = new CancellationTokenSource(GameDataDownloadTimeoutMs))
+                                    {
+                                        try
+                                        {
+                                            x.GameHltbData = await GetGameData(x.Id, ctsGame.Token);
+                                            x.NeedsDetails = false;
+                                        }
+                                        catch (OperationCanceledException)
+                                        {
+                                            Logger.Warn($"Timeout {GameDataDownloadTimeoutMs}ms getting game data for {x.Id}");
+                                            x.GameHltbData = null;
+                                        }
+                                    }
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                Common.LogError(ex, false, false, PluginDatabase.PluginName);
+                                x.GameHltbData = null;
+                            }
+                        }
+                        finally
+                        {
+                            if (acquiredGameSemaphore)
+                            {
+                                try
+                                {
+                                    DynamicSemaphore.Release();
+                                }
+                                catch { }
+                            }
+                            LogDebugVerbose($"Search: released semaphore for id={x.Id}");
+                        }
+                    }).ToArray();
+
+                    await Task.WhenAll(tasks);
+                    try
+                    {
+                        LogDebugVerbose($"Search summary: persistentCacheHits={PersistentCacheHits}, inMemoryHits={InMemoryCacheHits}, pageFetches={PageFetches}");
+                    }
+                    catch { }
+                }
                 return search;
             }
             catch (Exception ex)
@@ -300,12 +1004,17 @@ namespace HowLongToBeat.Services
         /// <returns>Returns a list of <see cref="HltbSearch"/> with match percentages.</returns>
         public async Task<List<HltbSearch>> SearchTwoMethod(string name, string platform = "")
         {
-            List<HltbDataUser> dataSearchNormalized = await Search(PlayniteTools.NormalizeGameName(name, true, true), platform);
             List<HltbDataUser> dataSearch = await Search(name, platform);
+            List<HltbDataUser> dataSearchNormalized = new List<HltbDataUser>();
+
+            if (dataSearch.Count == 0)
+            {
+                dataSearchNormalized = await Search(PlayniteTools.NormalizeGameName(name, true, true), platform);
+            }
 
             List<HltbDataUser> dataSearchFinal = new List<HltbDataUser>();
-            dataSearchFinal.AddRange(dataSearchNormalized);
-            dataSearchFinal.AddRange(dataSearch);
+            dataSearchFinal.AddRange(dataSearch ?? new List<HltbDataUser>());
+            dataSearchFinal.AddRange(dataSearchNormalized ?? new List<HltbDataUser>());
 
             dataSearchFinal = dataSearchFinal.GroupBy(x => x.Id).Select(x => x.First()).ToList();
 
@@ -322,8 +1031,36 @@ namespace HowLongToBeat.Services
         /// <returns>Returns a <see cref="SearchResult"/> object.</returns>
         private async Task<SearchResult> ApiSearch(string name, string platform = "")
         {
+            try { EnsureMonitoringStarted(); } catch { }
+            int GetSearchTarget()
+            {
+                try
+                {
+                    int baseTarget = MaxParallelSearches;
+                    lock (BackoffSync)
+                    {
+                        if (SearchBackoffLimit > 0 && DateTime.UtcNow < SearchBackoffUntil)
+                        {
+                            return Math.Min(baseTarget, SearchBackoffLimit);
+                        }
+                    }
+                    return baseTarget;
+                }
+                catch
+                {
+                    return SearchConcurrencyController?.TargetConcurrency ?? MaxParallelSearches;
+                }
+            }
+
             try
             {
+                string cacheKey = (name ?? string.Empty) + "|" + (platform ?? string.Empty);
+                if (SearchCache.TryGetValue(cacheKey, out SearchResult cachedResult))
+                {
+                    try { LogDebugVerbose($"ApiSearch cache hit for '{name}' platform='" + platform + "'"); } catch { }
+                    return cachedResult;
+                }
+
                 List<HttpHeader> httpHeaders = new List<HttpHeader>
                 {
                     new HttpHeader { Key = "User-Agent", Value = Web.UserAgent },
@@ -337,30 +1074,217 @@ namespace HowLongToBeat.Services
                     SearchOptions = new SearchOptions { Games = new Games { Platform = platform } }
                 };
 
-                SearchResult searchResult;
-                using (HttpClient httpClient = new HttpClient())
+                SearchResult searchResult = null;
+                string serializedBody = Serialization.ToJson(searchParam);
+                string searchUrl = await GetSearchUrl();
+                bool tokenReused = !string.IsNullOrEmpty(CachedAuthToken) && DateTime.UtcNow < CachedAuthTokenExpiry;
+                string token = await GetAuthToken();
+                if (!token.IsNullOrEmpty())
                 {
-                    httpHeaders.ForEach(x =>
-                    {
-                        httpClient.DefaultRequestHeaders.Add(x.Key, x.Value);
-                    });
-
-                    string serializedBody = Serialization.ToJson(searchParam);
-
-                    HttpRequestMessage requestMessage = new HttpRequestMessage
-                    {
-                        Content = new StringContent(serializedBody, Encoding.UTF8, "application/json")
-                    };
-
-                    string searchId = await GetSearchId();
-                    Thread.Sleep(2000);
-                    HttpResponseMessage response = await httpClient.PostAsync(UrlSearch + "/" + searchId, requestMessage.Content);
-                    string json = await response.Content.ReadAsStringAsync();
-
-                    _ = Serialization.TryFromJson(json, out searchResult);
+                    httpHeaders.Add(new HttpHeader { Key = "x-auth-token", Value = token });
                 }
 
-                return searchResult;
+                bool acquired = false;
+                try
+                {
+                    try
+                    {
+                        try
+                        {
+                            int target = GetSearchTarget();
+                            CurrentSearchLimit = await AdjustSemaphoreLimit(SearchSemaphore, CurrentSearchLimit, target, SearchConcurrencySync, "ApiSearch+Initial");
+                        }
+                        catch { }
+
+                            try
+                            {
+                                int targetLog = GetSearchTarget();
+                                int availableLog = SearchSemaphore?.CurrentCount ?? 0;
+                                int inFlightLog = Math.Max(0, targetLog - availableLog);
+                                LogDebugVerbose($"ApiSearch: waiting search semaphore for '{name}' target={targetLog} currentLimit={CurrentSearchLimit} available={availableLog} inFlight={inFlightLog}");
+                        }
+                        catch { }
+                        bool waitOk = true;
+                        if (SearchSemaphore != null)
+                        {
+                            waitOk = await SearchSemaphore.WaitAsync(TimeSpan.FromSeconds(10));
+                        }
+                        if (!waitOk)
+                        {
+                            Logger.Warn($"ApiSearch: timeout waiting search semaphore for '{name}'");
+                            return null;
+                        }
+                        acquired = true;
+                        try
+                        {
+                            int targetLog = GetSearchTarget();
+                            int availableLog = SearchSemaphore?.CurrentCount ?? 0;
+                            int inFlightLog = Math.Max(0, targetLog - availableLog);
+                            LogDebugVerbose($"ApiSearch: acquired search semaphore for '{name}' target={targetLog} currentLimit={CurrentSearchLimit} available={availableLog} inFlight={inFlightLog}");
+                        }
+                        catch { }
+                    }
+                    catch (Exception ex)
+                    {
+                        Common.LogError(ex, false, false, PluginDatabase.PluginName);
+                    }
+
+                    var sw = Stopwatch.StartNew();
+                    var postResult = await Web.PostJsonWithSharedClientWithStatus(UrlBase + searchUrl, serializedBody, httpHeaders);
+                    sw.Stop();
+                    string json = postResult?.Item1 ?? string.Empty;
+                    int statusCode = postResult?.Item2 ?? 0;
+                    string retryAfterHeader = postResult?.Item3;
+
+                    try
+                    {
+                        if (statusCode == 429)
+                        {
+                            int backoffSeconds = 30;
+                            if (!string.IsNullOrEmpty(retryAfterHeader) && int.TryParse(retryAfterHeader, out int parsedSeconds))
+                            {
+                                backoffSeconds = Math.Max(1, parsedSeconds);
+                            }
+
+                            lock (BackoffSync)
+                            {
+                                int newLimit = Math.Max(1, CurrentSearchLimit / 2);
+                                SearchBackoffLimit = newLimit;
+                                SearchBackoffUntil = DateTime.UtcNow.AddSeconds(backoffSeconds);
+                            }
+
+                            Logger.Warn($"ApiSearch: received 429 for '{name}'. Immediate backoff -> limit={SearchBackoffLimit} until {SearchBackoffUntil:HH:mm:ss}");
+                        }
+                    }
+                    catch { }
+
+                    try
+                    {
+                        try
+                        {
+                            RecentSearchSamples.Enqueue(sw.ElapsedMilliseconds);
+                            while (RecentSearchSamples.Count > RecentSamplesWindow)
+                            {
+                                RecentSearchSamples.TryDequeue(out _);
+                            }
+                        }
+                        catch { }
+
+                        try
+                        {
+                            RecentSearchStatusCodes.Enqueue(statusCode);
+                            while (RecentSearchStatusCodes.Count > RecentStatusWindow)
+                            {
+                                RecentSearchStatusCodes.TryDequeue(out _);
+                            }
+                        }
+                        catch { }
+
+                        LogDebugVerbose($"ApiSearch elapsed={sw.ElapsedMilliseconds}ms tokenReused={tokenReused} status={statusCode}");
+                    }
+                    catch { }
+
+                    _ = Serialization.TryFromJson(json, out searchResult);
+
+                    try
+                    {
+                        bool successSample = searchResult != null && searchResult.Data != null && statusCode != 429;
+                        SearchConcurrencyController?.ReportSample(sw.ElapsedMilliseconds, successSample);
+                    }
+                    catch { }
+
+                    int postLockPendingConsume = 0;
+                    try
+                    {
+                        var codes = RecentSearchStatusCodes.ToArray();
+                        if (codes.Length > 0)
+                        {
+                            int count429 = codes.Count(c => c == 429);
+                            double frac = (double)count429 / (double)codes.Length;
+                            if (count429 >= 3 && frac >= 0.05)
+                            {
+                                lock (BackoffSync)
+                                {
+                                    if (SearchBackoffLimit == 0 || DateTime.UtcNow >= SearchBackoffUntil)
+                                    {
+                                        int newLimit = Math.Max(1, CurrentSearchLimit / 2);
+                                        SearchBackoffLimit = newLimit;
+                                        
+                                        int backoffSeconds = 30;
+                                        try
+                                        {
+                                            if (!string.IsNullOrEmpty(retryAfterHeader) && int.TryParse(retryAfterHeader, out int parsed))
+                                            {
+                                                backoffSeconds = Math.Max(1, parsed);
+                                            }
+                                        }
+                                        catch { }
+                                        SearchBackoffUntil = DateTime.UtcNow.AddSeconds(backoffSeconds);
+                                        Logger.Warn($"ApiSearch: detected elevated 429 rate ({count429}/{codes.Length}). Applying temporary search backoff -> limit={SearchBackoffLimit} until {SearchBackoffUntil:HH:mm:ss}");
+                                        try
+                                        {
+                                            int currentLimitSnapshot;
+                                            lock (SearchConcurrencySync)
+                                            {
+                                                currentLimitSnapshot = CurrentSearchLimit;
+                                            }
+                                            int diff = SearchBackoffLimit - currentLimitSnapshot;
+                                            if (diff > 0)
+                                            {
+                                                SearchSemaphore.Release(diff);
+                                                CurrentSearchLimit = SearchBackoffLimit;
+                                            }
+                                            else if (diff < 0)
+                                            {
+                                                postLockPendingConsume = -diff;
+                                            }
+                                        }
+                                        catch { }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    catch { }
+
+                    try
+                    {
+                        if (postLockPendingConsume > 0)
+                        {
+                            int backoffSnapshot;
+                            lock (BackoffSync)
+                            {
+                                backoffSnapshot = SearchBackoffLimit;
+                            }
+
+                            CurrentSearchLimit = await AdjustSemaphoreLimit(SearchSemaphore, CurrentSearchLimit, backoffSnapshot, SearchConcurrencySync, "ApiSearch+PostBackoff");
+                        }
+                    }
+                    catch { }
+
+                    try
+                    {
+                        if (searchResult != null)
+                        {
+                            SearchCache.TryAdd(cacheKey, searchResult);
+                        }
+                    }
+                    catch { }
+
+                    return searchResult;
+                }
+                finally
+                {
+                    if (acquired)
+                    {
+                        try
+                        {
+                            SearchSemaphore.Release();
+                            LogDebugVerbose($"ApiSearch: released search semaphore for '{name}'");
+                        }
+                        catch { }
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -368,7 +1292,6 @@ namespace HowLongToBeat.Services
                 return null;
             }
         }
-
 
         /// <summary>
         /// Opens a selection window for the user to choose the correct game data.
@@ -456,7 +1379,6 @@ namespace HowLongToBeat.Services
                             UserLogin = WebUtility.HtmlDecode(webView.GetCurrentAddress().Replace(UrlBase + "/user/", string.Empty));
                             IsConnected = true;
 
-                            PluginDatabase.PluginSettings.Settings.UserLogin = UserLogin;
 
                             Thread.Sleep(1500);
                             webView.Close();
@@ -477,6 +1399,8 @@ namespace HowLongToBeat.Services
                         {
                             List<HttpCookie> cookies = CookiesTools.GetWebCookies();
                             _ = CookiesTools.SetStoredCookies(cookies);
+
+                            PluginDatabase.PluginSettings.Settings.UserLogin = UserLogin;
 
                             PluginDatabase.Plugin.SavePluginSettings(PluginDatabase.PluginSettings.Settings);
 
@@ -528,7 +1452,7 @@ namespace HowLongToBeat.Services
                 UserGamesListParam userGamesListParam = new UserGamesListParam { UserId = UserId };
                 string payload = Serialization.ToJson(userGamesListParam);
 
-                string json = await Web.PostStringDataPayload(string.Format(UrlUserGamesList, UserId), payload, cookies);
+                string json = await PostJson(string.Format(UrlUserGamesList, UserId), payload, cookies);
                 _ = Serialization.TryFromJson(json, out UserGamesList userGamesList);
 
                 return userGamesList;
@@ -637,17 +1561,17 @@ namespace HowLongToBeat.Services
                 List<HttpCookie> cookies = CookiesTools.GetStoredCookies();
 
                 string response = await Web.DownloadStringData(string.Format(UrlPostDataEdit, userGameId), cookies);
-                if (response.IsNullOrEmpty() && !response.Contains("__NEXT_DATA__"))
+                if (string.IsNullOrEmpty(response) || !response.Contains("__NEXT_DATA__"))
                 {
                     Logger.Warn($"No EditData for {gameName} - {userGameId}");
                     return null;
                 }
 
                 string jsonData = Tools.GetJsonInString(response, @"<script[ ]?id=""__NEXT_DATA__""[ ]?type=""application/json"">");
-                _ = Serialization.TryFromJson(jsonData, out NEXT_DATA next_data, out Exception ex);
-                if (ex != null)
+                _ = Serialization.TryFromJson(jsonData, out NEXT_DATA next_data, out Exception parseEx);
+                if (parseEx != null)
                 {
-                    Common.LogError(ex, false, false, PluginDatabase.PluginName);
+                    Common.LogError(parseEx, false, false, PluginDatabase.PluginName);
                 }
 
                 return next_data?.Props?.PageProps?.EditData?.UserId != null
@@ -820,7 +1744,7 @@ namespace HowLongToBeat.Services
                     {
                         new KeyValuePair<string, string>("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36")
                     };
-                    string response = await Web.PostStringDataPayload(UrlPostData, payload, cookies);
+                    string response = await PostJson(UrlPostData, payload, cookies);
 
                     // Check errors
                     // TODO Rewrite
@@ -872,25 +1796,134 @@ namespace HowLongToBeat.Services
         /// </summary>
         public void UpdatedCookies()
         {
-            _ = Task.Run(() =>
+            try
             {
-                try
+                // Ensure operations using WebViews run on UI thread
+                Application.Current.Dispatcher.Invoke(() =>
                 {
-                    // Wait extension database are loaded
-                    _ = SpinWait.SpinUntil(() => PluginDatabase.IsLoaded, -1);
-
-                    if (PluginDatabase.Database.UserHltbData?.UserId != null && PluginDatabase.Database.UserHltbData.UserId != 0)
+                    try
                     {
-                        Logger.Info($"Refresh HowLongToBeat user cookies");
-                        List<HttpCookie> cookies = CookiesTools.GetNewWebCookies(new List<string> { UrlBase, UrlUser }, true);
-                        _ = CookiesTools.SetStoredCookies(cookies);
+                        // Wait extension database are loaded
+                        SpinWait.SpinUntil(() => PluginDatabase.IsLoaded, -1);
+
+                        if (PluginDatabase.Database.UserHltbData?.UserId != null && PluginDatabase.Database.UserHltbData.UserId != 0)
+                        {
+                            Logger.Info($"Refresh HowLongToBeat user cookies");
+                            List<HttpCookie> cookies = CookiesTools.GetNewWebCookies(new List<string> { UrlBase, UrlUser }, true);
+                            _ = CookiesTools.SetStoredCookies(cookies);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Common.LogError(ex, false, true, PluginDatabase.PluginName);
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, false, true, PluginDatabase.PluginName);
+            }
+        }
+
+        /// <summary>
+        /// Try to extract script src URLs using HtmlAgilityPack via reflection. Returns null on failure.
+        /// Reflection is used because HAP is an optional dependency for the host application.
+        /// </summary>
+        private List<string> ExtractScriptUrlsWithHap(string html)
+        {
+            if (!HapAvailable || HapDocType == null || string.IsNullOrEmpty(html))
+            {
+                return null;
+            }
+
+            try
+            {
+                // Create HtmlDocument instance
+                dynamic doc = Activator.CreateInstance(HapDocType);
+                var loadHtml = HapDocType.GetMethod("LoadHtml");
+                loadHtml.Invoke(doc, new object[] { html });
+
+                var documentNode = HapDocType.GetProperty("DocumentNode").GetValue(doc);
+                var selectNodes = documentNode.GetType().GetMethod("SelectNodes", new Type[] { typeof(string) });
+                var nodes = selectNodes.Invoke(documentNode, new object[] { "//script[@src]" }) as System.Collections.IEnumerable;
+                if (nodes == null) return new List<string>();
+
+                var urls = new List<string>();
+                foreach (var node in nodes)
+                {
+                    try
+                    {
+                        var attrsProp = node.GetType().GetProperty("Attributes");
+                        if (attrsProp == null) continue;
+                        var attrs = attrsProp.GetValue(node);
+                        if (attrs == null) continue;
+                        var getAttr = attrs.GetType().GetMethod("Get", new Type[] { typeof(string) });
+                        if (getAttr == null) continue;
+                        var srcAttr = getAttr.Invoke(attrs, new object[] { "src" });
+                        if (srcAttr != null)
+                        {
+                            var valProp = srcAttr.GetType().GetProperty("Value");
+                            var val = valProp != null ? valProp.GetValue(srcAttr) as string : null;
+                            if (!string.IsNullOrEmpty(val)) urls.Add(val);
+                        }
+                    }
+                    catch { /* ignore per-node errors */ }
+                }
+
+                return urls;
+            }
+            catch (Exception ex)
+            {
+                try { Logger.Warn(ex, "HLTB: HtmlAgilityPack reflection extraction failed"); } catch { }
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Posts JSON payload to URL, optionally with cookies, and returns response string.
+        /// </summary>
+        private async Task<string> PostJson(string url, string payload, List<HttpCookie> cookies = null)
+        {
+            try
+            {
+                HttpClientHandler handler = null;
+                if (cookies != null)
+                {
+                    try
+                    {
+                        var mi = typeof(CommonPluginsShared.Web).GetMethod("CreateCookiesContainer", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static);
+                        if (mi != null)
+                        {
+                            var container = mi.Invoke(null, new object[] { cookies }) as CookieContainer;
+                            handler = new HttpClientHandler { CookieContainer = container };
+                        }
+                    }
+                    catch { handler = new HttpClientHandler(); }
+                }
+
+                using (var client = handler != null ? new HttpClient(handler) : new HttpClient())
+                {
+                    try { client.DefaultRequestHeaders.Add("User-Agent", Web.UserAgent); } catch { }
+                    try { client.DefaultRequestHeaders.Add("accept", "application/json, text/javascript, */*; q=0.01"); } catch { }
+
+                    var content = new StringContent(payload ?? string.Empty, Encoding.UTF8, "application/json");
+                    using (var resp = await client.PostAsync(url, content).ConfigureAwait(false))
+                    {
+                        if (!resp.IsSuccessStatusCode)
+                        {
+                            try { Logger.Warn($"HTTP {(int)resp.StatusCode} posting to {url}"); } catch { }
+                            return string.Empty;
+                        }
+
+                        return await resp.Content.ReadAsStringAsync().ConfigureAwait(false);
                     }
                 }
-                catch (Exception ex)
-                {
-                    Common.LogError(ex, false, true, PluginDatabase.PluginName);
-                }
-            });
+            }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, false, $"Error posting to {url}");
+                return string.Empty;
+            }
         }
     }
 }

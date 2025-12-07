@@ -1,19 +1,21 @@
 ﻿using CommonPluginsShared.Models;
+using CommonPluginsShared.Plugins;
 using FuzzySharp;
 using HowLongToBeat.Models;
+using HowLongToBeat.Models.Enumerations;
 using HowLongToBeat.Models.StartPage;
+using HowLongToBeat.Services;
 using HowLongToBeat.Views;
 using Playnite.SDK;
 using Playnite.SDK.Data;
 using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
+using System.Runtime;
 using System.Threading.Tasks;
-using System.Windows.Media;
+using System.Web.Compilation;
 using System.Windows;
-using CommonPluginsShared.Plugins;
-using HowLongToBeat.Services;
-using HowLongToBeat.Models.Enumerations;
+using System.Windows.Media;
 
 namespace HowLongToBeat
 {
@@ -46,6 +48,8 @@ namespace HowLongToBeat
 
 
         public bool EnableSucessNotification { get; set; } = true;
+
+        public bool EnableVerboseLogging { get; set; } = false;
 
         public bool EnableProgressBarInDataView { get; set; } = true;
 

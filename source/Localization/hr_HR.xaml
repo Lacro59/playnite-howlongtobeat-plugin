@@ -13,6 +13,14 @@
     <sys:String x:Key="LOCHowLongToBeatAutoTag">Automatic tags processing</sys:String>
     <sys:String x:Key="LOCHowLongToBeatShowHltbImage">Use HowLongToBeat original game cover image in window</sys:String>
 
+    <sys:String x:Key="LOCHowLongToBeatEnableVerboseLogging">Omogući detaljno HLTB zapisivanje otklanjanja pogrešaka (dodatni zapisi u extensions.log)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExport">Izvezi HowLongToBeat podatke</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportCsvComma">Izvezi CSV (zarez)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportCsvSemicolon">Izvezi CSV (točka-zarez)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportJson">Izvezi JSON</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportFolderTooltip">Mapa za izvoz</sys:String>
+    <sys:String x:Key="LOCBrowseLabel">Pretraži...</sys:String>
+
     <sys:String x:Key="LOCHowLongToBeatColorSelection">Color selection:</sys:String>
 
     <sys:String x:Key="LOCHltbEnableProgressBarInDataView">View progress bar in Playnite data view</sys:String>

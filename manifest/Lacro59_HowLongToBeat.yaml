@@ -372,3 +372,14 @@ Packages:
     PackageUrl: https://github.com/Lacro59/playnite-howlongtobeat-plugin/releases/download/v3.9.1/playnite-howlongtobeat-plugin_3_9_1.pext
     Changelog:
       - 'Fixed: HLTB cookies issue'
+  - Version: 3.10.0
+    RequiredApiVersion: 6.8.0
+    ReleaseDate: 2025-12-02
+    PackageUrl: https://github.com/Lacro59/playnite-howlongtobeat-plugin/releases/download/v3.10.0/playnite-howlongtobeat-plugin_3_10_0.pext
+    Changelog:
+      - 'Updated: Compatibility with HLTB site changes (auth token retrieval + robust endpoint discovery using script parsing and POST-only detection)'
+      - 'Optimized: Bulk import throughput (shared HttpClient, adaptive concurrency, higher parallelism, and in-memory + persistent page caches)'
+      - 'Hardened: Respect server rate limits (honors Retry-After header and applies immediate 429-driven temporary backoff)'
+      - 'Fixed: Atomic page-cache writes with retry to avoid file-in-use IOExceptions'
+      - 'Changed: Reduced noisy logs; added new `EnableVerboseLogging` setting for detailed HLTB diagnostics'
+      - 'Fixed: Prevent duplicate database initialization on startup'

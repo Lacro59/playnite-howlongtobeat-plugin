@@ -12,6 +12,13 @@
     <sys:String x:Key="LOCHowLongToBeatAddTagDescription">Προσθήκη ετικέτας σε παιχνίδια με πληροφορίες χρόνου ολοκλήρωσης της Κύριας ιστορίας</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoTag">Αυτόματη επεξεργασία ετικετών</sys:String>
     <sys:String x:Key="LOCHowLongToBeatShowHltbImage">Χρήση της αρχικής εικόνας εξωφύλλου παιχνιδιού HowLongToBeat στο παράθυρο</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatEnableVerboseLogging">Ενεργοποίηση λεπτομερούς καταγραφής αποσφαλμάτωσης HLTB (επιπλέον καταγραφές στο extensions.log)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExport">Εξαγωγή δεδομένων HowLongToBeat</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportCsvComma">Εξαγωγή CSV (κόμμα)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportCsvSemicolon">Εξαγωγή CSV (άνω τελεία)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportJson">Εξαγωγή JSON</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportFolderTooltip">Φάκελος προορισμού για εξαγωγή</sys:String>
+    <sys:String x:Key="LOCBrowseLabel">Αναζήτηση...</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatColorSelection">Επιλογή χρώματος:</sys:String>
 

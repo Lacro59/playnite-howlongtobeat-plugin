@@ -12,6 +12,13 @@
     <sys:String x:Key="LOCHowLongToBeatAddTagDescription">Add a tag to games with Main story completion time information</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoTag">Automatic tags processing</sys:String>
     <sys:String x:Key="LOCHowLongToBeatShowHltbImage">Use HowLongToBeat original game cover image in window</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatEnableVerboseLogging">فعال‌سازی ثبت گزارش اشکال‌زدایی دقیق HLTB (گزارش‌های اضافی در extensions.log)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExport">صدور داده‌های HowLongToBeat</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportCsvComma">صدور CSV (ویرگول)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportCsvSemicolon">صدور CSV (نقطه ویرگول)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportJson">صدور JSON</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportFolderTooltip">پوشه مقصد برای صدور</sys:String>
+    <sys:String x:Key="LOCBrowseLabel">مرور...</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatColorSelection">Color selection:</sys:String>
 

@@ -12,6 +12,13 @@
     <sys:String x:Key="LOCHowLongToBeatAddTagDescription">Aggiungi un tag ai giochi con le informazioni del tempo di completamento della storia Principale</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoTag">Elaborazione automatica dei tag</sys:String>
     <sys:String x:Key="LOCHowLongToBeatShowHltbImage">Usa l'immagine di copertina del gioco originale HowLongToBeat nella finestra</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatEnableVerboseLogging">Abilita la registrazione dettagliata del debug HLTB (log aggiuntivi in extensions.log)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExport">Esporta dati HowLongToBeat</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportCsvComma">Esporta CSV (virgola)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportCsvSemicolon">Esporta CSV (punto e virgola)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportJson">Esporta JSON</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportFolderTooltip">Cartella di destinazione per l'esportazione</sys:String>
+    <sys:String x:Key="LOCBrowseLabel">Sfoglia...</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatColorSelection">Selezione colore:</sys:String>
 

@@ -372,6 +372,30 @@ namespace HowLongToBeat.Views
             }
         }
 
+        private void CoverImage_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            try
+            {
+                var fe = sender as FrameworkElement;
+                string url = fe?.Tag as string;
+                if (url.IsNullOrEmpty())
+                {
+                    if (DataContext is HowLongToBeatViewData ctx && ctx.SourceLink != null)
+                    {
+                        url = ctx.SourceLink.Url;
+                    }
+                }
+                if (!url.IsNullOrEmpty())
+                {
+                    _ = Process.Start(url);
+                }
+            }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, false, true, PluginDatabase.PluginName);
+            }
+        }
+
 
         private void ButtonDelete_Click(object sender, RoutedEventArgs e)
         {

@@ -12,6 +12,13 @@
     <sys:String x:Key="LOCHowLongToBeatAddTagDescription">Add a tag to games with Main story completion time information</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoTag">Automatic tags processing</sys:String>
     <sys:String x:Key="LOCHowLongToBeatShowHltbImage">Use HowLongToBeat original game cover image in window</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatEnableVerboseLogging">Povolit podrobné protokolování ladění HLTB (další logy v extensions.log)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExport">Exportovat data HowLongToBeat</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportCsvComma">Export CSV (čárka)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportCsvSemicolon">Export CSV (středník)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportJson">Export JSON</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportFolderTooltip">Cílová složka pro export</sys:String>
+    <sys:String x:Key="LOCBrowseLabel">Procházet...</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatColorSelection">Color selection:</sys:String>
 

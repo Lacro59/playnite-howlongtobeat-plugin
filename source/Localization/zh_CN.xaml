@@ -12,6 +12,13 @@
     <sys:String x:Key="LOCHowLongToBeatAddTagDescription">为游戏添加一个主线完成时间信息的标签</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoTag">自动标签</sys:String>
     <sys:String x:Key="LOCHowLongToBeatShowHltbImage">在窗口中使用攻关历时原始游戏封面图像</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatEnableVerboseLogging">启用详细的 HLTB 调试日志（在 extensions.log 中有额外日志）</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExport">导出 HowLongToBeat 数据</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportCsvComma">导出 CSV（逗号）</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportCsvSemicolon">导出 CSV（分号）</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportJson">导出 JSON</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportFolderTooltip">导出目标文件夹</sys:String>
+    <sys:String x:Key="LOCBrowseLabel">浏览...</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatColorSelection">色彩管理：</sys:String>
 

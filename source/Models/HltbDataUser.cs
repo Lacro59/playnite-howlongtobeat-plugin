@@ -15,6 +15,10 @@ namespace HowLongToBeat.Models
         public GameType GameType { get; set; } = GameType.Game;
 
         public HltbData GameHltbData { get; set; }
+
+        [DontSerialize]
+        public bool NeedsDetails { get; set; } = false;
+
         [DontSerialize]
         public HltbData GameHltbDataByType => GameType == GameType.Multi
                     ? new HltbData

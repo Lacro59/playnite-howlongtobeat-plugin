@@ -117,17 +117,26 @@ namespace HowLongToBeat.Services
         public override void RefreshNoLoader(Guid id)
         {
             Game game = API.Instance.Database.Games.Get(id);
-            Logger.Info($"RefreshNoLoader({game?.Name} - {game?.Id})");
+            if (PluginSettings?.Settings is HowLongToBeatSettings vs && vs.EnableVerboseLogging)
+            {
+                Logger.Debug($"RefreshNoLoader({game?.Name} - {game?.Id})");
+            }
 
             GameHowLongToBeat loadedItem = Get(id, true);
             if (loadedItem.GetData().Id.IsNullOrEmpty())
             {
-                Logger.Info($"No data, try to add");
+                if (PluginSettings?.Settings is HowLongToBeatSettings vs2 && vs2.EnableVerboseLogging)
+                {
+                    Logger.Debug($"No data, try to add");
+                }
                 AddData(game);
                 loadedItem = Get(id, true);
                 if (loadedItem.GetData().Id.IsNullOrEmpty())
                 {
-                    Logger.Info($"No find");
+                    if (PluginSettings?.Settings is HowLongToBeatSettings vs3 && vs3.EnableVerboseLogging)
+                    {
+                        Logger.Debug($"No find");
+                    }
                 }
             }
             else
@@ -407,7 +416,10 @@ namespace HowLongToBeat.Services
 
         public void RefreshUserData()
         {
-            Logger.Info("RefreshUserData()");
+            if (PluginSettings?.Settings is HowLongToBeatSettings vs4 && vs4.EnableVerboseLogging)
+            {
+                Logger.Debug("RefreshUserData()");
+            }
 
             GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions($"{PluginName} - {ResourceProvider.GetString("LOCHowLongToBeatPluginGetUserView")}")
             {
@@ -423,7 +435,10 @@ namespace HowLongToBeat.Services
 
                     if (UserHltbData != null)
                     {
-                        Logger.Info($"Find {UserHltbData.TitlesList?.Count ?? 0} games");
+                        if (PluginSettings?.Settings is HowLongToBeatSettings vs5 && vs5.EnableVerboseLogging)
+                        {
+                            Logger.Debug($"Find {UserHltbData.TitlesList?.Count ?? 0} games");
+                        }
                         FileSystem.WriteStringToFileSafe(Path.Combine(Paths.PluginUserDataPath, "HltbUserStats.json"), Serialization.ToJson(UserHltbData));
                         Database.UserHltbData = UserHltbData;
 
@@ -439,7 +454,10 @@ namespace HowLongToBeat.Services
                     }
                     else
                     {
-                        Logger.Info($"Find no data");
+                        if (PluginSettings?.Settings is HowLongToBeatSettings vs6 && vs6.EnableVerboseLogging)
+                        {
+                            Logger.Debug($"Find no data");
+                        }
                     }
                 }
                 catch (Exception ex)
@@ -501,34 +519,71 @@ namespace HowLongToBeat.Services
 
                 a.ProgressMaxValue = ids.Count();
 
+                int parallelism = Math.Min(16, Math.Max(1, Environment.ProcessorCount * 2));
+                var sem = new SemaphoreSlim(parallelism, parallelism);
+                var tasks = new List<Task>();
+
                 foreach (Guid id in ids)
                 {
-                    Game game = API.Instance.Database.Games.Get(id);
-                    a.Text = $"{PluginName} - {ResourceProvider.GetString("LOCCommonProcessing")}"
-                        + (ids.Count() == 1 ? string.Empty : "\n\n" + $"{a.CurrentProgressValue}/{a.ProgressMaxValue}")
-                        + "\n" + game?.Name + (game?.Source == null ? string.Empty : $" ({game?.Source.Name})");
-
-                    if (a.CancelToken.IsCancellationRequested)
+                    tasks.Add(Task.Run(async () =>
                     {
-                        break;
-                    }
+                        if (a.CancelToken.IsCancellationRequested)
+                        {
+                            return;
+                        }
 
-                    try
-                    {
-                        Thread.Sleep(100);
-                        _ = SetCurrentPlayTime(game, noPlaying, isCompleted, isMain, isMainSide, is100, isSolo, isCoOp, isVs);
-                    }
-                    catch (Exception ex)
-                    {
-                        Common.LogError(ex, false, true, PluginName);
-                    }
+                        await sem.WaitAsync();
+                        try
+                        {
+                            Game game = API.Instance.Database.Games.Get(id);
 
-                    a.CurrentProgressValue++;
+                            try
+                            {
+                                Application.Current.Dispatcher?.Invoke(() =>
+                                {
+                                    a.Text = PluginName + " - " + ResourceProvider.GetString("LOCCommonProcessing")
+                                        + (ids.Count() == 1 ? string.Empty : "\n\n" + $"{a.CurrentProgressValue}/{a.ProgressMaxValue}")
+                                        + "\n" + game?.Name + (game?.Source == null ? string.Empty : $" ({game?.Source.Name})");
+                                });
+                            }
+                            catch { }
+
+                            try
+                            {
+                                _ = SetCurrentPlayTime(game, noPlaying, isCompleted, isMain, isMainSide, is100, isSolo, isCoOp, isVs);
+                            }
+                            catch (Exception ex)
+                            {
+                                Common.LogError(ex, false, true, PluginName);
+                            }
+                        }
+                        finally
+                        {
+                            try { sem.Release(); } catch { }
+                            try
+                            {
+                                Application.Current.Dispatcher?.Invoke(() => { a.CurrentProgressValue++; });
+                            }
+                            catch { }
+                        }
+                    }));
+                }
+
+                try
+                {
+                    Task.WaitAll(tasks.ToArray());
+                }
+                catch (AggregateException ex)
+                {
+                    Common.LogError(ex, false, true, PluginName);
                 }
 
                 stopWatch.Stop();
                 TimeSpan ts = stopWatch.Elapsed;
-                Logger.Info($"Task SetCurrentPlaytime(){(a.CancelToken.IsCancellationRequested ? " canceled" : string.Empty)} - {string.Format("{0:00}:{1:00}.{2:00}", ts.Minutes, ts.Seconds, ts.Milliseconds / 10)} for {a.CurrentProgressValue}/{ids.Count()} items");
+                if (PluginSettings?.Settings is HowLongToBeatSettings vs7 && vs7.EnableVerboseLogging)
+                {
+                    Logger.Debug($"Task SetCurrentPlaytime(){(a.CancelToken.IsCancellationRequested ? " canceled" : string.Empty)} - {string.Format("{0:00}:{1:00}.{2:00}", ts.Minutes, ts.Seconds, ts.Milliseconds / 10)} for {a.CurrentProgressValue}/{ids.Count()} items");
+                }
 
                 //Database.EndBufferUpdate();
                 API.Instance.Database.EndBufferUpdate();
@@ -539,6 +594,18 @@ namespace HowLongToBeat.Services
         {
             try
             {
+                if (game == null)
+                {
+                    Common.LogDebug(true, "SetCurrentPlayTime called with null game");
+                    return false;
+                }
+
+                if (HowLongToBeatApi == null)
+                {
+                    Common.LogError(new NullReferenceException("HowLongToBeatApi is null"), false, true, PluginName);
+                    return false;
+                }
+
                 if (HowLongToBeatApi.GetIsUserLoggedIn())
                 {
                     GameHowLongToBeat gameHowLongToBeat = Database.Get(game.Id);
@@ -620,7 +687,10 @@ namespace HowLongToBeat.Services
                                 }
                                 else
                                 {
-                                    Logger.Info($"No existing data in website find for {game.Name}");
+                                    if (PluginSettings?.Settings is HowLongToBeatSettings vs8 && vs8.EnableVerboseLogging)
+                                    {
+                                        Logger.Debug($"No existing data in website find for {game.Name}");
+                                    }
                                 }
                             }
                         }
@@ -634,6 +704,12 @@ namespace HowLongToBeat.Services
                         #endregion
 
                         #region Data
+
+                        if (Database.UserHltbData == null)
+                        {
+                            Common.LogDebug(true, $"User HLTB data is null, cannot submit data for {game.Name}");
+                            return false;
+                        }
 
                         editData.UserId = Database.UserHltbData.UserId;
                         editData.SubmissionId = int.Parse(submissionId);

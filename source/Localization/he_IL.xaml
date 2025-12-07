@@ -1,4 +1,4 @@
-﻿<?xml version="1.0"?>
+<?xml version="1.0"?>
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:sys="clr-namespace:System;assembly=mscorlib">
 
     <sys:String x:Key="LOCHowLongToBeatTimeToBeat">Time to beat</sys:String>
@@ -12,6 +12,14 @@
     <sys:String x:Key="LOCHowLongToBeatAddTagDescription">Add a tag to games with Main story completion time information</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoTag">Automatic tags processing</sys:String>
     <sys:String x:Key="LOCHowLongToBeatShowHltbImage">Use HowLongToBeat original game cover image in window</sys:String>
+
+    <sys:String x:Key="LOCHowLongToBeatEnableVerboseLogging">הפעל רישום ניפוי שגיאות מפורט של HLTB (לוגים נוספים ב־extensions.log)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExport">ייצוא נתוני HowLongToBeat</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportCsvComma">ייצוא CSV (פסיק)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportCsvSemicolon">ייצוא CSV (נקודה־פסיק)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportJson">ייצוא JSON</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportFolderTooltip">תיקיית יעד לייצוא</sys:String>
+    <sys:String x:Key="LOCBrowseLabel">עיון...</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatColorSelection">Color selection:</sys:String>
 

@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Net.Http;
 
 namespace HowLongToBeat.Services
 {
@@ -21,6 +22,31 @@ namespace HowLongToBeat.Services
         private static string UrlApi => "https://api.vndb.org/kana";
         private static string UrlSearch => UrlApi + "/vn";
 
+        private static async Task<string> PostJson(string url, string payload)
+        {
+            try
+            {
+                using (var client = new HttpClient())
+                {
+                    client.DefaultRequestHeaders.Add("User-Agent", CommonPluginsShared.Web.UserAgent);
+                    var content = new StringContent(payload ?? string.Empty, Encoding.UTF8, "application/json");
+                    using (var resp = await client.PostAsync(url, content).ConfigureAwait(false))
+                    {
+                        if (!resp.IsSuccessStatusCode)
+                        {
+                            try { Logger.Error($"VNDB error status {(int)resp.StatusCode}"); } catch { }
+                            return string.Empty;
+                        }
+                        return await resp.Content.ReadAsStringAsync().ConfigureAwait(false);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, false, $"Error posting to {url}");
+                return string.Empty;
+            }
+        }
 
         private static List<HltbDataUser> Search(string payload)
         {
@@ -28,7 +54,7 @@ namespace HowLongToBeat.Services
 
             try
             {
-                string data = Web.PostStringDataPayload(UrlSearch, payload).GetAwaiter().GetResult();
+                string data = PostJson(UrlSearch, payload).GetAwaiter().GetResult();
                 _ = Serialization.TryFromJson(data, out VndbSearch vndbSearch);
 
                 vndbSearch?.Results?.ForEach(x =>
@@ -71,7 +97,6 @@ namespace HowLongToBeat.Services
             string payload = "{\"filters\":[\"id\", \"=\", \"" + id + "\"], \"fields\":\"id, title, alttitle, image.url, length, length_minutes\"}";
             return Search(payload);
         }
-
 
         private static int GetTime(int length)
         {

@@ -119,7 +119,7 @@
             </Slider.Style>
         </Slider>
 
-        <Grid Name="PART_SliderUserContener" Height="{Binding ElementName=PART_ProgressBarFirst, Path=IndicatorHeight}">
+        <Grid Name="PART_SliderUserContener" Height="{Binding ElementName=PART_ProgressBarFirst, Path=IndicatorHeight}" ClipToBounds="True">
             <Grid.Style>
                 <Style TargetType="{x:Type Grid}">
                     <Style.Triggers>
@@ -148,17 +148,17 @@
                                               Height="{Binding ElementName=PART_ProgressBarFirst, Path=IndicatorDemiHeight}" 
                                               Margin="{Binding ElementName=SliderPlaytime, Path=Margin}" />
 
-            <StackPanel Name="spHltb_El3" Background="Transparent" HorizontalAlignment="Left"
+            <StackPanel Name="spHltb_El3" Background="Transparent" HorizontalAlignment="Left" ClipToBounds="True"
                         Visibility="{Binding ShowToolTip, Converter={StaticResource BooleanToVisibilityConverter}}" 
                         Height="{Binding ElementName=PART_ProgressBarFirst, Path=IndicatorHeight}"
                         ToolTip="{Binding ToolTipThird, UpdateSourceTrigger=PropertyChanged}"
                         IsEnabled="{Binding ToolTipThird, Converter={StaticResource StringNullOrEmptyToBoolConverter}}" />
-            <StackPanel Name="spHltb_El2" Background="Transparent" HorizontalAlignment="Left"
+            <StackPanel Name="spHltb_El2" Background="Transparent" HorizontalAlignment="Left" ClipToBounds="True"
                         Visibility="{Binding ShowToolTip, Converter={StaticResource BooleanToVisibilityConverter}}" 
                         Height="{Binding ElementName=PART_ProgressBarFirst, Path=IndicatorHeight}"
                         ToolTip="{Binding ToolTipSecond, UpdateSourceTrigger=PropertyChanged}"
                         IsEnabled="{Binding ToolTipSecond, Converter={StaticResource StringNullOrEmptyToBoolConverter}}" />
-            <StackPanel Name="spHltb_El1" Background="Transparent" HorizontalAlignment="Left"
+            <StackPanel Name="spHltb_El1" Background="Transparent" HorizontalAlignment="Left" ClipToBounds="True"
                         Visibility="{Binding ShowToolTip, Converter={StaticResource BooleanToVisibilityConverter}}" 
                         Height="{Binding ElementName=PART_ProgressBarFirst, Path=IndicatorHeight}"
                         ToolTip="{Binding ToolTipFirst, UpdateSourceTrigger=PropertyChanged}"
