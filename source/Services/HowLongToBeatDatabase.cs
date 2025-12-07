@@ -143,7 +143,7 @@ namespace HowLongToBeat.Services
             {
                 if (loadedItem.GetData().IsVndb)
                 {
-                    List<HltbDataUser> dataSearch = VndbApi.SearchById(loadedItem.GetData().Id);
+                    var dataSearch = VndbApi.SearchByIdAsync(loadedItem.GetData().Id).GetAwaiter().GetResult() ?? new List<HltbDataUser>();
                     HltbDataUser webDataSearch = dataSearch.Find(x => x.Id == loadedItem.GetData().Id);
                     if (webDataSearch != null)
                     {

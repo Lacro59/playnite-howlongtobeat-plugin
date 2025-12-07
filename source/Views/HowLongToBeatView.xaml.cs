@@ -16,8 +16,15 @@ using CommonPluginsShared;
 using CommonPluginsShared.Converters;
 using System.Globalization;
 using CommonPluginsShared.Extensions;
-using Playnite.SDK.Data;
 using HowLongToBeat.Models.Enumerations;
+using System.IO;
+using System.ComponentModel;
+using System.Windows.Media.Animation;
+using System.Windows.Media.Imaging;
+using System.Windows.Media.Effects;
+using System.Net.Http;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace HowLongToBeat.Views
 {
@@ -28,6 +35,7 @@ namespace HowLongToBeat.Views
     {
         private HowLongToBeatDatabase PluginDatabase => HowLongToBeat.PluginDatabase;
         private GameHowLongToBeat GameHowLongToBeat { get; set; }
+        private CancellationTokenSource _coverLoadCts;
 
 
         public HowLongToBeatView(GameHowLongToBeat gameHowLongToBeat)
@@ -37,7 +45,243 @@ namespace HowLongToBeat.Views
             InitializeComponent();
             DataContext = new HowLongToBeatViewData();
 
+            if (DataContext is HowLongToBeatViewData vm)
+            {
+                vm.PropertyChanged += ViewData_PropertyChanged;
+            }
+
             Init(gameHowLongToBeat);
+        }
+
+        private void CoverImageControl_TargetUpdated(object sender, System.Windows.Data.DataTransferEventArgs e)
+        {
+            try
+            {
+                if (!(sender is Image img)) return;
+
+                if (img.Source is BitmapImage source && source.UriSource != null)
+                {
+                    Common.LogDebug(true, $"Cover TargetUpdated: UriSource={source.UriSource}");
+
+                    var opacityAnimation = new DoubleAnimation(0, 1, TimeSpan.FromMilliseconds(300));
+                    img.BeginAnimation(UIElement.OpacityProperty, opacityAnimation);
+
+                    if (img.Effect is BlurEffect blur)
+                    {
+                        var blurAnimation = new DoubleAnimation(8, 0, TimeSpan.FromMilliseconds(400)) { EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut } };
+                        blur.BeginAnimation(BlurEffect.RadiusProperty, blurAnimation);
+                    }
+                }
+                else
+                {
+                    Common.LogDebug(true, "Cover TargetUpdated: non-Uri or stream source — skipping automatic reload");
+                }
+            }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, false, true, PluginDatabase.PluginName);
+            }
+        }
+
+        private void SetCoverImageSource(string path)
+        {
+            try
+            {
+                Common.LogDebug(true, $"SetCoverImageSource request for path='{path}'");
+
+                _coverLoadCts?.Cancel();
+            }
+            catch { }
+
+            _coverLoadCts = new CancellationTokenSource();
+            var token = _coverLoadCts.Token;
+            _ = LoadCoverAsync(path, token);
+        }
+
+        private async Task LoadCoverAsync(string path, CancellationToken token)
+        {
+            try
+            {
+                Common.LogDebug(true, $"LoadCoverAsync start path='{path}'");
+
+                var img = null as Image;
+                await Dispatcher?.InvokeAsync(new Action(() => { img = FindName("CoverImageControl") as Image; }));
+                if (img == null || token.IsCancellationRequested)
+                {
+                    Common.LogDebug(true, "LoadCoverAsync: image control missing or cancelled");
+                    return;
+                }
+
+                await Dispatcher?.InvokeAsync(new Action(() =>
+                {
+                    img.Opacity = 0;
+                    var blur = img.Effect as BlurEffect;
+                    if (blur == null)
+                    {
+                        img.Effect = new BlurEffect { Radius = 8 };
+                    }
+                    else
+                    {
+                        blur.Radius = 8;
+                    }
+                }));
+
+                if (string.IsNullOrEmpty(path) || token.IsCancellationRequested)
+                {
+                    Common.LogDebug(true, "LoadCoverAsync: empty path or cancelled");
+                    await Dispatcher?.InvokeAsync(new Action(() => img.Source = null));
+                    return;
+                }
+
+                byte[] bytes = null;
+                if (Uri.IsWellFormedUriString(path, UriKind.Absolute) && (path.StartsWith("http:", StringComparison.OrdinalIgnoreCase) || path.StartsWith("https:", StringComparison.OrdinalIgnoreCase)))
+                {
+                    Common.LogDebug(true, $"LoadCoverAsync: applying remote Uri directly '{path}' on UI thread");
+                    await Dispatcher?.InvokeAsync(new Action(() =>
+                    {
+                        try
+                        {
+                            var b = new BitmapImage();
+                            b.BeginInit();
+                            b.UriSource = new Uri(path, UriKind.Absolute);
+                            b.CacheOption = BitmapCacheOption.OnLoad;
+                            b.CreateOptions = BitmapCreateOptions.None;
+                            b.EndInit();
+                            img.Source = b;
+
+                            var opacityAnimation = new DoubleAnimation(0, 1, TimeSpan.FromMilliseconds(300));
+                            img.BeginAnimation(UIElement.OpacityProperty, opacityAnimation);
+
+                            if (img.Effect is BlurEffect blur3)
+                            {
+                                var blurAnimation = new DoubleAnimation(8, 0, TimeSpan.FromMilliseconds(400)) { EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut } };
+                                blur3.BeginAnimation(BlurEffect.RadiusProperty, blurAnimation);
+                            }
+
+                            Common.LogDebug(true, "LoadCoverAsync: remote Uri applied to control");
+                        }
+                        catch (Exception ex)
+                        {
+                            Common.LogError(ex, false, true, PluginDatabase.PluginName);
+                        }
+                    }));
+
+                    return;
+                }
+
+                if (File.Exists(path))
+                {
+                    Common.LogDebug(true, $"LoadCoverAsync: loading local file '{path}'");
+                    bytes = await Task.Run(() => File.ReadAllBytes(path));
+                }
+                else if (Uri.IsWellFormedUriString(path, UriKind.Absolute))
+                {
+                    Common.LogDebug(true, $"LoadCoverAsync: downloading remote url '{path}'");
+                    try
+                    {
+                        using (var http = new HttpClient())
+                        {
+                            bytes = await http.GetByteArrayAsync(path);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Common.LogError(ex, false, true, PluginDatabase.PluginName);
+                        bytes = null;
+                    }
+                }
+                else
+                {
+                    Common.LogDebug(true, $"LoadCoverAsync: attempting read relative path '{path}'");
+                    try
+                    {
+                        bytes = await Task.Run(() => File.ReadAllBytes(path));
+                    }
+                    catch (Exception ex)
+                    {
+                        Common.LogError(ex, false, true, PluginDatabase.PluginName);
+                        bytes = null;
+                    }
+                }
+
+                if (token.IsCancellationRequested)
+                {
+                    Common.LogDebug(true, "LoadCoverAsync: cancelled after load");
+                    return;
+                }
+
+                if (bytes == null || bytes.Length == 0)
+                {
+                    Common.LogDebug(true, "LoadCoverAsync: no bytes loaded");
+                    await Dispatcher?.InvokeAsync(new Action(() => img.Source = null));
+                    return;
+                }
+
+                BitmapImage bmp = null;
+                await Task.Run(() =>
+                {
+                    try
+                    {
+                        using (var ms = new MemoryStream(bytes))
+                        {
+                            var b = new BitmapImage();
+                            b.BeginInit();
+                            b.CacheOption = BitmapCacheOption.OnLoad;
+                            b.CreateOptions = BitmapCreateOptions.None;
+                            b.StreamSource = ms;
+                            b.EndInit();
+                            try { b.Freeze(); } catch { }
+                            bmp = b;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Common.LogError(ex, false, true, PluginDatabase.PluginName);
+                        bmp = null;
+                    }
+                });
+
+                if (token.IsCancellationRequested)
+                {
+                    Common.LogDebug(true, "LoadCoverAsync: cancelled after bitmap creation");
+                    return;
+                }
+
+                if (bmp == null)
+                {
+                    Common.LogDebug(true, "LoadCoverAsync: bmp is null after creation");
+                    await Dispatcher?.InvokeAsync(new Action(() => img.Source = null));
+                    return;
+                }
+
+                await Dispatcher?.InvokeAsync(new Action(() =>
+                {
+                    try
+                    {
+                        img.Source = bmp;
+
+                        var opacityAnimation = new DoubleAnimation(0, 1, TimeSpan.FromMilliseconds(300));
+                        img.BeginAnimation(UIElement.OpacityProperty, opacityAnimation);
+
+                        if (img.Effect is BlurEffect blur2)
+                        {
+                            var blurAnimation = new DoubleAnimation(8, 0, TimeSpan.FromMilliseconds(400)) { EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut } };
+                            blur2.BeginAnimation(BlurEffect.RadiusProperty, blurAnimation);
+                        }
+
+                        Common.LogDebug(true, "LoadCoverAsync: image applied to control");
+                    }
+                    catch (Exception ex)
+                    {
+                        Common.LogError(ex, false, true, PluginDatabase.PluginName);
+                    }
+                }));
+            }
+            catch (OperationCanceledException) { }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, false, true, PluginDatabase.PluginName);
+            }
         }
 
 
@@ -72,6 +316,8 @@ namespace HowLongToBeat.Views
             if (gameData != null)
             {
                 ((HowLongToBeatViewData)DataContext).CoverImage = gameData.UrlImg;
+
+                _ = Dispatcher?.BeginInvoke(new Action(() => SetCoverImageSource(((HowLongToBeatViewData)DataContext).CoverImage)));
 
                 if (!PluginDatabase.PluginSettings.Settings.ShowHltbImg)
                 {
@@ -190,7 +436,7 @@ namespace HowLongToBeat.Views
                             SetColor(ElIndicator, PluginDatabase.PluginSettings.Settings.ColorFirstMulti.Color);
 
                             ElIndicator += 1;
-                            SetDataInView(ElIndicator, ResourceProvider.GetString("LOCHowLongToBeatCoOp"), gameData.GameHltbData.CoOpFormat, (titleList != null) ? titleList.HltbUserData.CoOpFormat : string.Empty, idx);
+                            SetDataInView(ElIndicator, ResourceProvider.GetString("LOCHowToBeatCoOp"), gameData.GameHltbData.CoOpFormat, (titleList != null) ? titleList.HltbUserData.CoOpFormat : string.Empty, idx);
 
                             ElIndicator += 1;
                             SetDataInView(ElIndicator, ResourceProvider.GetString("LOCHowLongToBeatVs"), gameData.GameHltbData.VsFormat, (titleList != null) ? titleList.HltbUserData.VsFormat : string.Empty, idx);
@@ -223,7 +469,7 @@ namespace HowLongToBeat.Views
                         SetColor(ElIndicator, PluginDatabase.PluginSettings.Settings.ColorFirstMulti.Color);
 
                         ElIndicator += 1;
-                        SetDataInView(ElIndicator, ResourceProvider.GetString("LOCHowLongToBeatCoOp"), gameData.GameHltbData.CoOpFormat, (titleList != null) ? titleList.HltbUserData.CoOpFormat : string.Empty, 0);
+                        SetDataInView(ElIndicator, ResourceProvider.GetString("LOCHowToBeatCoOp"), gameData.GameHltbData.CoOpFormat, (titleList != null) ? titleList.HltbUserData.CoOpFormat : string.Empty, 0);
 
                         ElIndicator += 1;
                         SetDataInView(ElIndicator, ResourceProvider.GetString("LOCHowLongToBeatVs"), gameData.GameHltbData.VsFormat, (titleList != null) ? titleList.HltbUserData.VsFormat : string.Empty, 0);
@@ -470,6 +716,17 @@ namespace HowLongToBeat.Views
             catch (Exception ex)
             {
                 Common.LogError(ex, false, true, PluginDatabase.PluginName);
+            }
+        }
+
+        private void ViewData_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(HowLongToBeatViewData.CoverImage))
+            {
+                if (sender is HowLongToBeatViewData vm)
+                {
+                    _ = Dispatcher?.BeginInvoke(new Action(() => SetCoverImageSource(vm.CoverImage)));
+                }
             }
         }
     }

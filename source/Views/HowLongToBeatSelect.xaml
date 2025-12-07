@@ -20,7 +20,7 @@
         <converters:StringNullOrEmptyToBoolConverter x:Key="StringNullOrEmptyToBoolConverter" />
         <converters:StringNullOrEmptyToVisibilityConverter x:Key="StringNullOrEmptyToVisibilityConverter" />
 
-        <!-- Color resources for dark cards and buttons -->
+        <!-- Color resources for dark cards and buttons (theme-overridable via DynamicResource keys) -->
         <SolidColorBrush x:Key="CardBackgroundBrush" Color="#2E2F33" />
         <SolidColorBrush x:Key="CardForegroundBrush" Color="#FFFFFF" />
         <SolidColorBrush x:Key="CardBorderBrush" Color="#444" />
@@ -38,24 +38,21 @@
             <Setter Property="SnapsToDevicePixels" Value="True" />
             <Setter Property="BorderBrush" Value="{DynamicResource CardBorderBrush}" />
             <Setter Property="BorderThickness" Value="1" />
-            <Setter Property="Effect">
-                <Setter.Value>
-                    <DropShadowEffect Color="#22000000" BlurRadius="6" ShadowDepth="2" />
-                </Setter.Value>
-            </Setter>
+            <!-- Removed default DropShadowEffect for performance; only use light shadows on hover/selection -->
             <Setter Property="RenderTransform">
                 <Setter.Value>
                     <TranslateTransform Y="0" />
                 </Setter.Value>
             </Setter>
             <Style.Triggers>
-                <!-- When the containing ListBoxItem is hovered, highlight only the card -->
+                <!-- When the containing ListBoxItem is hovered, highlight only the card (light effect) -->
                 <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=ListBoxItem}}" Value="True">
                     <Setter Property="BorderBrush" Value="{DynamicResource PrimaryButtonBackgroundBrush}" />
                     <Setter Property="BorderThickness" Value="1.5" />
                     <Setter Property="Effect">
                         <Setter.Value>
-                            <DropShadowEffect Color="#552A6EA8" BlurRadius="14" ShadowDepth="4" />
+                            <!-- lighter, less expensive shadow -->
+                            <DropShadowEffect Color="#22000000" BlurRadius="8" ShadowDepth="2" Opacity="0.45" />
                         </Setter.Value>
                     </Setter>
                     <Setter Property="RenderTransform">
@@ -72,7 +69,8 @@
                     <Setter Property="Background" Value="#33363A" />
                     <Setter Property="Effect">
                         <Setter.Value>
-                            <DropShadowEffect Color="#663F7FB0" BlurRadius="18" ShadowDepth="6" />
+                            <!-- slightly stronger but still moderate shadow -->
+                            <DropShadowEffect Color="#33000000" BlurRadius="10" ShadowDepth="3" Opacity="0.6" />
                         </Setter.Value>
                     </Setter>
                     <Setter Property="RenderTransform">
@@ -94,6 +92,15 @@
             <Setter Property="FontWeight" Value="SemiBold" />
             <Setter Property="BorderBrush" Value="#2E6A9C" />
             <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="RenderTransformOrigin" Value="0.5,0.5" />
+            <Setter Property="RenderTransform">
+                <Setter.Value>
+                    <TransformGroup>
+                        <ScaleTransform ScaleX="1" ScaleY="1" />
+                        <TranslateTransform X="0" Y="0" />
+                    </TransformGroup>
+                </Setter.Value>
+            </Setter>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
@@ -107,7 +114,38 @@
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter Property="Background" Value="{DynamicResource PrimaryButtonHoverBrush}" />
+                                <Setter Property="BorderBrush" Value="#1F6EA0" />
+                                <Setter Property="Effect">
+                                    <Setter.Value>
+                                        <DropShadowEffect Color="#22000000" BlurRadius="10" ShadowDepth="2" Opacity="0.6" />
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="RenderTransform">
+                                    <Setter.Value>
+                                        <TransformGroup>
+                                            <ScaleTransform ScaleX="1.02" ScaleY="1.02" />
+                                            <TranslateTransform X="0" Y="-1" />
+                                        </TransformGroup>
+                                    </Setter.Value>
+                                </Setter>
                             </Trigger>
+
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="RenderTransform">
+                                    <Setter.Value>
+                                        <TransformGroup>
+                                            <ScaleTransform ScaleX="0.99" ScaleY="0.99" />
+                                            <TranslateTransform X="0" Y="0" />
+                                        </TransformGroup>
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="Effect">
+                                    <Setter.Value>
+                                        <DropShadowEffect Color="#18000000" BlurRadius="6" ShadowDepth="1" Opacity="0.5" />
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+
                             <Trigger Property="IsEnabled" Value="False">
                                 <Setter Property="Opacity" Value="0.6" />
                             </Trigger>
@@ -217,8 +255,12 @@
 
                                 <Grid Grid.Row="0">
                                     <TextBlock x:Name="HltbName" Text="{Binding Name, FallbackValue=GameName}" FontWeight="Bold" FontSize="16" 
-                                               TextTrimming="CharacterEllipsis" MouseEnter="TextBlock_MouseEnter" />
-                                </Grid>
+                                               TextTrimming="CharacterEllipsis" MouseEnter="TextBlock_MouseEnter">
+                                        <TextBlock.ToolTip>
+                                            <ToolTip Content="{Binding Name}" />
+                                        </TextBlock.ToolTip>
+                                    </TextBlock>
+                                 </Grid>
 
                                 <Grid Grid.Row="1" Margin="0,10,0,0">
                                     <Grid.ColumnDefinitions>

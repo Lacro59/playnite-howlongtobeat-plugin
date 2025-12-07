@@ -499,16 +499,25 @@ namespace HowLongToBeat.Controls
         #region Events
         private void PART_ProgressBarFirst_LayoutUpdated(object sender, EventArgs e)
         {
-            double width1 = PART_ProgressBarFirst.IndicatorWidth;
-            double width2 = PART_ProgressBarSecond.IndicatorWidth;
-            double width3 = PART_ProgressBarThird.IndicatorWidth;
+            // Defer update to ensure all indicators have their final ActualWidth
+            _ = Dispatcher?.BeginInvoke((Action)(() =>
+            {
+                try
+                {
+                    double width1 = PART_ProgressBarFirst.IndicatorWidth;
+                    double width2 = PART_ProgressBarSecond.IndicatorWidth;
+                    double width3 = PART_ProgressBarThird.IndicatorWidth;
 
-            PART_ProgressBarSecond.MarginLeft = width1;
-            PART_ProgressBarThird.MarginLeft = width2;
+                    PART_ProgressBarSecond.MarginLeft = width1;
+                    // third indicator should be offset by sum of previous indicator widths
+                    PART_ProgressBarThird.MarginLeft = width1 + width2;
 
-            spHltb_El1.Width = width1;
-            spHltb_El2.Width = width2;
-            spHltb_El3.Width = width3;
+                    spHltb_El1.Width = width1;
+                    spHltb_El2.Width = width2;
+                    spHltb_El3.Width = width3;
+                }
+                catch { }
+            }));
         }
         #endregion
     }

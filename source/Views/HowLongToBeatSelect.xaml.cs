@@ -139,9 +139,16 @@ namespace HowLongToBeat.Views
                 List<HltbDataUser> dataSearch = new List<HltbDataUser>();
                 try
                 {
-                    dataSearch = isVndb
-                        ? VndbApi.SearchByName(gameSearch)?.Select(x => x.Data).ToList()
-                        : PluginDatabase.HowLongToBeatApi.SearchTwoMethod(gameSearch, gamePlatform).GetAwaiter().GetResult()?.Select(x => x.Data).ToList();
+                    if (isVndb)
+                    {
+                        var vndbResults = VndbApi.SearchByNameAsync(gameSearch).GetAwaiter().GetResult();
+                        dataSearch = vndbResults?.Select(x => x.Data).ToList() ?? new List<HltbDataUser>();
+                    }
+                    else
+                    {
+                        var hlResults = PluginDatabase.HowLongToBeatApi.SearchTwoMethod(gameSearch, gamePlatform).GetAwaiter().GetResult();
+                        dataSearch = hlResults?.Select(x => x.Data).ToList() ?? new List<HltbDataUser>();
+                    }
                 }
                 catch (Exception ex)
                 {

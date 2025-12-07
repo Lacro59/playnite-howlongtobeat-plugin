@@ -44,22 +44,22 @@ namespace HowLongToBeat.Services
                 using (content)
                 {
                     using (var resp = await httpClient.PostAsync(url, content).ConfigureAwait(false))
-                     {
-                         if (!resp.IsSuccessStatusCode)
-                         {
-                             try { Logger.Error($"VNDB error status {(int)resp.StatusCode}"); } catch { }
-                             return string.Empty;
-                         }
-                         return await resp.Content.ReadAsStringAsync().ConfigureAwait(false);
-                     }
+                    {
+                        if (!resp.IsSuccessStatusCode)
+                        {
+                            try { Logger.Error($"VNDB error status {(int)resp.StatusCode}"); } catch { }
+                            return string.Empty;
+                        }
+                        return await resp.Content.ReadAsStringAsync().ConfigureAwait(false);
+                    }
                 }
-             }
-             catch (Exception ex)
-             {
-                 Common.LogError(ex, false, $"Error posting to {url}");
-                 return string.Empty;
-             }
-         }
+            }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, false, $"Error posting to {url}");
+                return string.Empty;
+            }
+        }
 
         private static async Task<List<HltbDataUser>> Search(string payload)
         {
@@ -105,21 +105,11 @@ namespace HowLongToBeat.Services
                 .ToList();
         }
 
-        public static List<HltbSearch> SearchByName(string name)
-        {
-            return Task.Run(() => SearchByNameAsync(name)).GetAwaiter().GetResult();
-        }
-
         public static async Task<List<HltbDataUser>> SearchByIdAsync(string id)
         {
             Logger.Info($"VndbApi.Search({id})");
             string payload = "{\"filters\":[\"id\", \"=\", \"" + id + "\"], \"fields\":\"id, title, alttitle, image.url, length, length_minutes\"}";
             return await Search(payload).ConfigureAwait(false);
-        }
-
-        public static List<HltbDataUser> SearchById(string id)
-        {
-            return Task.Run(() => SearchByIdAsync(id)).GetAwaiter().GetResult();
         }
 
         private static int GetTime(int length)
