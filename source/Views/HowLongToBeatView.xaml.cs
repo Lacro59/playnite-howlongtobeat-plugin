@@ -37,6 +37,7 @@ namespace HowLongToBeat.Views
         private HowLongToBeatDatabase PluginDatabase => HowLongToBeat.PluginDatabase;
         private GameHowLongToBeat GameHowLongToBeat { get; set; }
         private CancellationTokenSource _coverLoadCts;
+        private HowLongToBeatViewData _viewDataContext;
 
 
         public HowLongToBeatView(GameHowLongToBeat gameHowLongToBeat)
@@ -46,10 +47,12 @@ namespace HowLongToBeat.Views
             InitializeComponent();
             DataContext = new HowLongToBeatViewData();
 
-            if (DataContext is HowLongToBeatViewData vm)
-            {
-                vm.PropertyChanged += ViewData_PropertyChanged;
-            }
+            // Attach and track the DataContext so we can unsubscribe later to avoid leaks
+            AttachViewModel();
+
+            // Monitor DataContext changes and unload to detach handlers
+            this.DataContextChanged += OnDataContextChanged;
+            this.Unloaded += HowLongToBeatView_Unloaded;
 
             Init(gameHowLongToBeat);
         }
@@ -117,24 +120,30 @@ namespace HowLongToBeat.Views
                     return;
                 }
 
-                await Dispatcher?.InvokeAsync(new Action(() =>
+                if (Dispatcher != null)
                 {
-                    img.Opacity = 0;
-                    var blur = img.Effect as BlurEffect;
-                    if (blur == null)
+                    await Dispatcher.InvokeAsync(new Action(() =>
                     {
-                        img.Effect = new BlurEffect { Radius = 8 };
-                    }
-                    else
-                    {
-                        blur.Radius = 8;
-                    }
-                }));
+                        img.Opacity = 0;
+                        var blur = img.Effect as BlurEffect;
+                        if (blur == null)
+                        {
+                            img.Effect = new BlurEffect { Radius = 8 };
+                        }
+                        else
+                        {
+                            blur.Radius = 8;
+                        }
+                    }));
+                }
 
                 if (string.IsNullOrEmpty(path) || token.IsCancellationRequested)
                 {
                     Common.LogDebug(true, "LoadCoverAsync: empty path or cancelled");
-                    await Dispatcher?.InvokeAsync(new Action(() => img.Source = null));
+                    if (Dispatcher != null)
+                    {
+                        await Dispatcher.InvokeAsync(new Action(() => img.Source = null));
+                    }
                     return;
                 }
 
@@ -142,34 +151,37 @@ namespace HowLongToBeat.Views
                 if (Uri.IsWellFormedUriString(path, UriKind.Absolute) && (path.StartsWith("http:", StringComparison.OrdinalIgnoreCase) || path.StartsWith("https:", StringComparison.OrdinalIgnoreCase)))
                 {
                     Common.LogDebug(true, $"LoadCoverAsync: applying remote Uri directly '{path}' on UI thread");
-                    await Dispatcher?.InvokeAsync(new Action(() =>
+                    if (Dispatcher != null)
                     {
-                        try
+                        await Dispatcher.InvokeAsync(new Action(() =>
                         {
-                            var b = new BitmapImage();
-                            b.BeginInit();
-                            b.UriSource = new Uri(path, UriKind.Absolute);
-                            b.CacheOption = BitmapCacheOption.OnLoad;
-                            b.CreateOptions = BitmapCreateOptions.None;
-                            b.EndInit();
-                            img.Source = b;
-
-                            var opacityAnimation = new DoubleAnimation(0, 1, TimeSpan.FromMilliseconds(300));
-                            img.BeginAnimation(UIElement.OpacityProperty, opacityAnimation);
-
-                            if (img.Effect is BlurEffect blur3)
+                            try
                             {
-                                var blurAnimation = new DoubleAnimation(8, 0, TimeSpan.FromMilliseconds(400)) { EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut } };
-                                blur3.BeginAnimation(BlurEffect.RadiusProperty, blurAnimation);
-                            }
+                                var b = new BitmapImage();
+                                b.BeginInit();
+                                b.UriSource = new Uri(path, UriKind.Absolute);
+                                b.CacheOption = BitmapCacheOption.OnLoad;
+                                b.CreateOptions = BitmapCreateOptions.None;
+                                b.EndInit();
+                                img.Source = b;
 
-                            Common.LogDebug(true, "LoadCoverAsync: remote Uri applied to control");
-                        }
-                        catch (Exception ex)
-                        {
-                            Common.LogError(ex, false, true, PluginDatabase.PluginName);
-                        }
-                    }));
+                                var opacityAnimation = new DoubleAnimation(0, 1, TimeSpan.FromMilliseconds(300));
+                                img.BeginAnimation(UIElement.OpacityProperty, opacityAnimation);
+
+                                if (img.Effect is BlurEffect blur3)
+                                {
+                                    var blurAnimation = new DoubleAnimation(8, 0, TimeSpan.FromMilliseconds(400)) { EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut } };
+                                    blur3.BeginAnimation(BlurEffect.RadiusProperty, blurAnimation);
+                                }
+
+                                Common.LogDebug(true, "LoadCoverAsync: remote Uri applied to control");
+                            }
+                            catch (Exception ex)
+                            {
+                                Common.LogError(ex, false, true, PluginDatabase.PluginName);
+                            }
+                        }));
+                    }
 
                     return;
                 }
@@ -218,7 +230,10 @@ namespace HowLongToBeat.Views
                 if (bytes == null || bytes.Length == 0)
                 {
                     Common.LogDebug(true, "LoadCoverAsync: no bytes loaded");
-                    await Dispatcher?.InvokeAsync(new Action(() => img.Source = null));
+                    if (Dispatcher != null)
+                    {
+                        await Dispatcher.InvokeAsync(new Action(() => img.Source = null));
+                    }
                     return;
                 }
 
@@ -259,28 +274,31 @@ namespace HowLongToBeat.Views
                     return;
                 }
 
-                await Dispatcher?.InvokeAsync(new Action(() =>
+                if (Dispatcher != null)
                 {
-                    try
+                    await Dispatcher.InvokeAsync(new Action(() =>
                     {
-                        img.Source = bmp;
-
-                        var opacityAnimation = new DoubleAnimation(0, 1, TimeSpan.FromMilliseconds(300));
-                        img.BeginAnimation(UIElement.OpacityProperty, opacityAnimation);
-
-                        if (img.Effect is BlurEffect blur2)
+                        try
                         {
-                            var blurAnimation = new DoubleAnimation(8, 0, TimeSpan.FromMilliseconds(400)) { EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut } };
-                            blur2.BeginAnimation(BlurEffect.RadiusProperty, blurAnimation);
-                        }
+                            img.Source = bmp;
 
-                        Common.LogDebug(true, "LoadCoverAsync: image applied to control");
-                    }
-                    catch (Exception ex)
-                    {
-                        Common.LogError(ex, false, true, PluginDatabase.PluginName);
-                    }
-                }));
+                            var opacityAnimation = new DoubleAnimation(0, 1, TimeSpan.FromMilliseconds(300));
+                            img.BeginAnimation(UIElement.OpacityProperty, opacityAnimation);
+
+                            if (img.Effect is BlurEffect blur2)
+                            {
+                                var blurAnimation = new DoubleAnimation(8, 0, TimeSpan.FromMilliseconds(400)) { EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut } };
+                                blur2.BeginAnimation(BlurEffect.RadiusProperty, blurAnimation);
+                            }
+
+                            Common.LogDebug(true, "LoadCoverAsync: image applied to control");
+                        }
+                        catch (Exception ex)
+                        {
+                            Common.LogError(ex, false, true, PluginDatabase.PluginName);
+                        }
+                    }));
+                }
             }
             catch (OperationCanceledException) { }
             catch (Exception ex)
@@ -332,6 +350,24 @@ namespace HowLongToBeat.Views
 
                 ((HowLongToBeatViewData)DataContext).GameContext = API.Instance.Database.Games.Get(gameHowLongToBeat.Id);
                 ((HowLongToBeatViewData)DataContext).SourceLink = gameHowLongToBeat.SourceLink;
+
+                try
+                {
+                    var hltb = gameHowLongToBeat.GetData()?.GameHltbData;
+                    if (hltb != null)
+                    {
+                        // Keep numeric values in the same unit as HltbData (seconds) for proportional calculation
+                        ((HowLongToBeatViewData)DataContext).MainHours = hltb.MainStory;
+                        ((HowLongToBeatViewData)DataContext).MainExtraHours = hltb.MainExtra;
+                        ((HowLongToBeatViewData)DataContext).CompletionistHours = hltb.Completionist;
+
+                        // Provide formatted strings for display (e.g. "6h 6m")
+                        ((HowLongToBeatViewData)DataContext).MainHoursFormat = hltb.MainStoryFormat;
+                        ((HowLongToBeatViewData)DataContext).MainExtraHoursFormat = hltb.MainExtraFormat;
+                        ((HowLongToBeatViewData)DataContext).CompletionistHoursFormat = hltb.CompletionistFormat;
+                    }
+                }
+                catch { }
             }
 
             if (!gameHowLongToBeat.HasData)
@@ -439,7 +475,7 @@ namespace HowLongToBeat.Views
                             SetColor(ElIndicator, PluginDatabase.PluginSettings.Settings.ColorFirstMulti.Color);
 
                             ElIndicator += 1;
-                            SetDataInView(ElIndicator, ResourceProvider.GetString("LOCHowToBeatCoOp"), gameData.GameHltbData.CoOpFormat, (titleList != null) ? titleList.HltbUserData.CoOpFormat : string.Empty, idx);
+                            SetDataInView(ElIndicator, ResourceProvider.GetString("LOCHowLongToBeatCoOp"), gameData.GameHltbData.CoOpFormat, (titleList != null) ? titleList.HltbUserData.CoOpFormat : string.Empty, idx);
 
                             ElIndicator += 1;
                             SetDataInView(ElIndicator, ResourceProvider.GetString("LOCHowLongToBeatVs"), gameData.GameHltbData.VsFormat, (titleList != null) ? titleList.HltbUserData.VsFormat : string.Empty, idx);
@@ -728,9 +764,52 @@ namespace HowLongToBeat.Views
             {
                 if (sender is HowLongToBeatViewData vm)
                 {
-                    _ = Dispatcher?.BeginInvoke(new Action(() => SetCoverImageSource(vm.CoverImage)));
+                    if (Dispatcher != null)
+                    {
+                        _ = Dispatcher.BeginInvoke(new Action(() => SetCoverImageSource(vm.CoverImage)));
+                    }
                 }
             }
+        }
+
+        private void AttachViewModel()
+        {
+            try
+            {
+                // Detach previous
+                if (_viewDataContext != null)
+                {
+                    _viewDataContext.PropertyChanged -= ViewData_PropertyChanged;
+                }
+
+                _viewDataContext = DataContext as HowLongToBeatViewData;
+                if (_viewDataContext != null)
+                {
+                    _viewDataContext.PropertyChanged += ViewData_PropertyChanged;
+                }
+            }
+            catch { }
+        }
+
+        private void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            AttachViewModel();
+        }
+
+        private void HowLongToBeatView_Unloaded(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (_viewDataContext != null)
+                {
+                    _viewDataContext.PropertyChanged -= ViewData_PropertyChanged;
+                    _viewDataContext = null;
+                }
+
+                this.DataContextChanged -= OnDataContextChanged;
+                this.Unloaded -= HowLongToBeatView_Unloaded;
+            }
+            catch { }
         }
     }
 
@@ -745,5 +824,23 @@ namespace HowLongToBeat.Views
 
         private string _coverImage = string.Empty;
         public string CoverImage { get => _coverImage; set => SetValue(ref _coverImage, value); }
+
+        private double _mainHours = 0;
+        public double MainHours { get => _mainHours; set => SetValue(ref _mainHours, value); }
+
+        private double _mainExtraHours = 0;
+        public double MainExtraHours { get => _mainExtraHours; set => SetValue(ref _mainExtraHours, value); }
+
+        private double _completionistHours = 0;
+        public double CompletionistHours { get => _completionistHours; set => SetValue(ref _completionistHours, value); }
+
+        private string _mainHoursFormat = string.Empty;
+        public string MainHoursFormat { get => _mainHoursFormat; set => SetValue(ref _mainHoursFormat, value); }
+
+        private string _mainExtraHoursFormat = string.Empty;
+        public string MainExtraHoursFormat { get => _mainExtraHoursFormat; set => SetValue(ref _mainExtraHoursFormat, value); }
+
+        private string _completionistHoursFormat = string.Empty;
+        public string CompletionistHoursFormat { get => _completionistHoursFormat; set => SetValue(ref _completionistHoursFormat, value); }
     }
 }

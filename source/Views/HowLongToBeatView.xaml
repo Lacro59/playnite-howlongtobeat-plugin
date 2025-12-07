@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:controls="clr-namespace:HowLongToBeat.Controls"
              xmlns:local="clr-namespace:HowLongToBeat.Views"
+             xmlns:conv="clr-namespace:HowLongToBeat.Views.Converters"
              xmlns:converters="clr-namespace:CommonPlayniteShared.Converters"
              mc:Ignorable="d" Width="900" Height="400"
              d:DataContext="{d:DesignInstance local:HowLongToBeatViewData}">
@@ -215,7 +216,134 @@
                        Style="{DynamicResource BaseTextBlockStyle}" HorizontalAlignment="Center" />
 
             <Grid Grid.Row="2" Name="PART_GridProgressBar" Height="50" Tag="{Binding GameContext}">
-                <controls:PluginProgressBar Height="50" GameContext="{Binding ElementName=PART_GridProgressBar, Path=Tag}" IgnoreSettings="True" />
+                <Grid.Resources>
+                    <conv:HoursToSegmentConverter x:Key="HoursToSegmentConverter" />
+                    <conv:PlaytimeToMarkerConverter x:Key="PlaytimeToMarkerConverter" />
+                    <conv:PlaytimeMarkerVisibilityConverter x:Key="PlaytimeMarkerVisibilityConverter" />
+                </Grid.Resources>
+
+                <StackPanel Orientation="Vertical" VerticalAlignment="Center" Margin="10,0" HorizontalAlignment="Stretch">
+                    <!-- Proportional segmented bar -->
+                    <Border x:Name="ProgressBarContainer" Height="14" CornerRadius="7" Background="#2a2a2a" HorizontalAlignment="Stretch">
+                        <Border.Triggers>
+                            <EventTrigger RoutedEvent="FrameworkElement.Loaded">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetName="Seg0Fill" Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.4" />
+                                            <DoubleAnimation Storyboard.TargetName="Seg1Fill" Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.4" BeginTime="0:0:0.08" />
+                                            <DoubleAnimation Storyboard.TargetName="Seg2Fill" Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.4" BeginTime="0:0:0.16" />
+                                            <DoubleAnimation Storyboard.TargetName="Seg0Fill" Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)" From="0" To="1" Duration="0:0:0.4" />
+                                            <DoubleAnimation Storyboard.TargetName="Seg1Fill" Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)" From="0" To="1" Duration="0:0:0.4" BeginTime="0:0:0.08" />
+                                            <DoubleAnimation Storyboard.TargetName="Seg2Fill" Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)" From="0" To="1" Duration="0:0:0.4" BeginTime="0:0:0.16" />
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                        </Border.Triggers>
+                        <Grid ClipToBounds="True">
+                            <Border x:Name="Seg0" Background="Transparent" Height="14" HorizontalAlignment="Left" ClipToBounds="True">
+                                <Border.Width>
+                                    <MultiBinding Converter="{StaticResource HoursToSegmentConverter}" ConverterParameter="width0">
+                                        <Binding Path="MainHours" />
+                                        <Binding Path="MainExtraHours" />
+                                        <Binding Path="CompletionistHours" />
+                                        <Binding ElementName="ProgressBarContainer" Path="ActualWidth" />
+                                    </MultiBinding>
+                                </Border.Width>
+                                <Border.Margin>
+                                    <MultiBinding Converter="{StaticResource HoursToSegmentConverter}" ConverterParameter="left0">
+                                        <Binding Path="MainHours" />
+                                        <Binding Path="MainExtraHours" />
+                                        <Binding Path="CompletionistHours" />
+                                        <Binding ElementName="ProgressBarContainer" Path="ActualWidth" />
+                                    </MultiBinding>
+                                </Border.Margin>
+                                <Border x:Name="Seg0Fill" Background="{DynamicResource DataColorClassicBrush}" Height="14" HorizontalAlignment="Stretch" RenderTransformOrigin="0,0.5" Opacity="0">
+                                    <Border.RenderTransform>
+                                        <ScaleTransform ScaleX="0" ScaleY="1" />
+                                    </Border.RenderTransform>
+                                </Border>
+                            </Border>
+
+                            <Border x:Name="Seg1" Background="Transparent" Height="14" HorizontalAlignment="Left" ClipToBounds="True">
+                                <Border.Width>
+                                    <MultiBinding Converter="{StaticResource HoursToSegmentConverter}" ConverterParameter="width1">
+                                        <Binding Path="MainHours" />
+                                        <Binding Path="MainExtraHours" />
+                                        <Binding Path="CompletionistHours" />
+                                        <Binding ElementName="ProgressBarContainer" Path="ActualWidth" />
+                                    </MultiBinding>
+                                </Border.Width>
+                                <Border.Margin>
+                                    <MultiBinding Converter="{StaticResource HoursToSegmentConverter}" ConverterParameter="left1">
+                                        <Binding Path="MainHours" />
+                                        <Binding Path="MainExtraHours" />
+                                        <Binding Path="CompletionistHours" />
+                                        <Binding ElementName="ProgressBarContainer" Path="ActualWidth" />
+                                    </MultiBinding>
+                                </Border.Margin>
+                                <Border x:Name="Seg1Fill" Background="{DynamicResource DataColorAverageBrush}" Height="14" HorizontalAlignment="Stretch" RenderTransformOrigin="0,0.5" Opacity="0">
+                                    <Border.RenderTransform>
+                                        <ScaleTransform ScaleX="0" ScaleY="1" />
+                                    </Border.RenderTransform>
+                                </Border>
+                            </Border>
+
+                            <Border x:Name="Seg2" Background="Transparent" Height="14" HorizontalAlignment="Left" ClipToBounds="True">
+                                <Border.Width>
+                                    <MultiBinding Converter="{StaticResource HoursToSegmentConverter}" ConverterParameter="width2">
+                                        <Binding Path="MainHours" />
+                                        <Binding Path="MainExtraHours" />
+                                        <Binding Path="CompletionistHours" />
+                                        <Binding ElementName="ProgressBarContainer" Path="ActualWidth" />
+                                    </MultiBinding>
+                                </Border.Width>
+                                <Border.Margin>
+                                    <MultiBinding Converter="{StaticResource HoursToSegmentConverter}" ConverterParameter="left2">
+                                        <Binding Path="MainHours" />
+                                        <Binding Path="MainExtraHours" />
+                                        <Binding Path="CompletionistHours" />
+                                        <Binding ElementName="ProgressBarContainer" Path="ActualWidth" />
+                                    </MultiBinding>
+                                </Border.Margin>
+                                <Border x:Name="Seg2Fill" Background="{DynamicResource DataColorCompletionistBrush}" Height="14" HorizontalAlignment="Stretch" RenderTransformOrigin="0,0.5" Opacity="0">
+                                    <Border.RenderTransform>
+                                        <ScaleTransform ScaleX="0" ScaleY="1" />
+                                    </Border.RenderTransform>
+                                </Border>
+                            </Border>
+                            <!-- Current playtime marker -->
+                            <Border x:Name="PlaytimeMarker" Width="12" Height="12" Background="Yellow" BorderBrush="Black" BorderThickness="1" CornerRadius="6" VerticalAlignment="Center" HorizontalAlignment="Left" Panel.ZIndex="100">
+                                <Border.Margin>
+                                    <MultiBinding Converter="{StaticResource PlaytimeToMarkerConverter}">
+                                        <Binding Path="GameContext.Playtime" />
+                                        <Binding Path="CompletionistHours" />
+                                        <Binding ElementName="ProgressBarContainer" Path="ActualWidth" />
+                                    </MultiBinding>
+                                </Border.Margin>
+                                <Border.Visibility>
+                                    <MultiBinding Converter="{StaticResource PlaytimeMarkerVisibilityConverter}">
+                                        <Binding Path="GameContext.Playtime" />
+                                        <Binding Path="CompletionistHours" />
+                                        <Binding ElementName="ProgressBarContainer" Path="ActualWidth" />
+                                    </MultiBinding>
+                                </Border.Visibility>
+                                <ToolTipService.ToolTip>
+                                    <TextBlock Text="{Binding GameContext.Playtime, Converter={StaticResource PlayTimeToStringConverter}}" />
+                                </ToolTipService.ToolTip>
+                            </Border>
+                        </Grid>
+                    </Border>
+
+                    <!-- Legend / values on the right -->
+                    <StackPanel Orientation="Horizontal" Margin="0,6,0,0" HorizontalAlignment="Center">
+                        <TextBlock Style="{DynamicResource BaseTextBlockStyle}" Foreground="{DynamicResource DataColorClassicBrush}" Text="Main story: " />
+                        <TextBlock Style="{DynamicResource BaseTextBlockStyle}" Text="{Binding MainHoursFormat}" />
+                        <TextBlock Style="{DynamicResource BaseTextBlockStyle}" Foreground="{DynamicResource DataColorAverageBrush}" Margin="20,0,0,0" Text="Main + extra: " />
+                        <TextBlock Style="{DynamicResource BaseTextBlockStyle}" Text="{Binding MainExtraHoursFormat}" />
+                        <TextBlock Style="{DynamicResource BaseTextBlockStyle}" Foreground="{DynamicResource DataColorCompletionistBrush}" Margin="20,0,0,0" Text="Completionist: " />
+                        <TextBlock Style="{DynamicResource BaseTextBlockStyle}" Text="{Binding CompletionistHoursFormat}" />
+                    </StackPanel>
+                </StackPanel>
             </Grid>
 
             <Grid Grid.Row="4">

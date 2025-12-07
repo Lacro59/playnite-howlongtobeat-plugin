@@ -220,6 +220,9 @@
     <Compile Include="Views\HowLongToBeatView.xaml.cs">
       <DependentUpon>HowLongToBeatView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Converters\HoursToSegmentConverter.cs" />
+    <Compile Include="Views\Converters\PlaytimeToMarkerConverter.cs" />
+    <Compile Include="Views\Converters\PlaytimeMarkerVisibilityConverter.cs" />
     <Compile Include="Views\StartPage\HltbChartStats.xaml.cs">
       <DependentUpon>HltbChartStats.xaml</DependentUpon>
     </Compile>
