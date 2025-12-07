@@ -134,19 +134,19 @@ namespace HowLongToBeat.Views
                 IsIndeterminate = true
             };
 
-            _ = API.Instance.Dialogs.ActivateGlobalProgress((activateGlobalProgress) =>
+            _ = API.Instance.Dialogs.ActivateGlobalProgress(async (activateGlobalProgress) =>
             {
                 List<HltbDataUser> dataSearch = new List<HltbDataUser>();
                 try
                 {
                     if (isVndb)
                     {
-                        var vndbResults = VndbApi.SearchByNameAsync(gameSearch).GetAwaiter().GetResult();
+                        var vndbResults = await VndbApi.SearchByNameAsync(gameSearch);
                         dataSearch = vndbResults?.Select(x => x.Data).ToList() ?? new List<HltbDataUser>();
                     }
                     else
                     {
-                        var hlResults = PluginDatabase.HowLongToBeatApi.SearchTwoMethod(gameSearch, gamePlatform).GetAwaiter().GetResult();
+                        var hlResults = await PluginDatabase.HowLongToBeatApi.SearchTwoMethod(gameSearch, gamePlatform);
                         dataSearch = hlResults?.Select(x => x.Data).ToList() ?? new List<HltbDataUser>();
                     }
                 }

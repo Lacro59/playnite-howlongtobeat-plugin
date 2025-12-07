@@ -1,30 +1,31 @@
-﻿using HowLongToBeat.Models;
+﻿using CommonPlayniteShared.Converters;
+using CommonPluginsShared;
+using CommonPluginsShared.Converters;
+using CommonPluginsShared.Extensions;
+using CommonPluginsShared.Models;
+using HowLongToBeat.Models;
+using HowLongToBeat.Models.Enumerations;
 using HowLongToBeat.Services;
 using Playnite.SDK;
 using Playnite.SDK.Models;
-using System.Linq;
-using System.Windows;
-using System.Diagnostics;
-using System.Windows.Controls;
-using System.Windows.Media;
-using System.Windows.Input;
 using System;
 using System.Collections.Generic;
-using System.Windows.Documents;
-using CommonPluginsShared.Models;
-using CommonPluginsShared;
-using CommonPluginsShared.Converters;
-using System.Globalization;
-using CommonPluginsShared.Extensions;
-using HowLongToBeat.Models.Enumerations;
-using System.IO;
 using System.ComponentModel;
-using System.Windows.Media.Animation;
-using System.Windows.Media.Imaging;
-using System.Windows.Media.Effects;
+using System.Diagnostics;
+using System.Globalization;
+using System.IO;
+using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Animation;
+using System.Windows.Media.Effects;
+using System.Windows.Media.Imaging;
 
 namespace HowLongToBeat.Views
 {
@@ -90,6 +91,7 @@ namespace HowLongToBeat.Views
                 Common.LogDebug(true, $"SetCoverImageSource request for path='{path}'");
 
                 _coverLoadCts?.Cancel();
+                _coverLoadCts?.Dispose();
             }
             catch { }
 
@@ -105,7 +107,10 @@ namespace HowLongToBeat.Views
                 Common.LogDebug(true, $"LoadCoverAsync start path='{path}'");
 
                 var img = null as Image;
-                await Dispatcher?.InvokeAsync(new Action(() => { img = FindName("CoverImageControl") as Image; }));
+                if (Dispatcher != null)
+                {
+                    await Dispatcher.InvokeAsync(() => { img = FindName("CoverImageControl") as Image; });
+                }
                 if (img == null || token.IsCancellationRequested)
                 {
                     Common.LogDebug(true, "LoadCoverAsync: image control missing or cancelled");
@@ -317,8 +322,6 @@ namespace HowLongToBeat.Views
             {
                 ((HowLongToBeatViewData)DataContext).CoverImage = gameData.UrlImg;
 
-                _ = Dispatcher?.BeginInvoke(new Action(() => SetCoverImageSource(((HowLongToBeatViewData)DataContext).CoverImage)));
-
                 if (!PluginDatabase.PluginSettings.Settings.ShowHltbImg)
                 {
                     if (!gameHowLongToBeat.CoverImage.IsNullOrEmpty())
@@ -469,7 +472,7 @@ namespace HowLongToBeat.Views
                         SetColor(ElIndicator, PluginDatabase.PluginSettings.Settings.ColorFirstMulti.Color);
 
                         ElIndicator += 1;
-                        SetDataInView(ElIndicator, ResourceProvider.GetString("LOCHowToBeatCoOp"), gameData.GameHltbData.CoOpFormat, (titleList != null) ? titleList.HltbUserData.CoOpFormat : string.Empty, 0);
+                        SetDataInView(ElIndicator, ResourceProvider.GetString("LOCHowLongToBeatCoOp"), gameData.GameHltbData.CoOpFormat, (titleList != null) ? titleList.HltbUserData.CoOpFormat : string.Empty, 0);
 
                         ElIndicator += 1;
                         SetDataInView(ElIndicator, ResourceProvider.GetString("LOCHowLongToBeatVs"), gameData.GameHltbData.VsFormat, (titleList != null) ? titleList.HltbUserData.VsFormat : string.Empty, 0);

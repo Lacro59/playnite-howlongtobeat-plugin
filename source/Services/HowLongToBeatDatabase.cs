@@ -539,12 +539,12 @@ namespace HowLongToBeat.Services
 
                             try
                             {
-                                Application.Current.Dispatcher?.Invoke(() =>
+                                Application.Current.Dispatcher?.BeginInvoke(new Action(() =>
                                 {
                                     a.Text = PluginName + " - " + ResourceProvider.GetString("LOCCommonProcessing")
                                         + (ids.Count() == 1 ? string.Empty : "\n\n" + $"{a.CurrentProgressValue}/{a.ProgressMaxValue}")
                                         + "\n" + game?.Name + (game?.Source == null ? string.Empty : $" ({game?.Source.Name})");
-                                });
+                                }));
                             }
                             catch { }
 
@@ -562,7 +562,7 @@ namespace HowLongToBeat.Services
                             try { sem.Release(); } catch { }
                             try
                             {
-                                Application.Current.Dispatcher?.Invoke(() => { a.CurrentProgressValue++; });
+                                Application.Current.Dispatcher?.BeginInvoke(new Action(() => { a.CurrentProgressValue++; }));
                             }
                             catch { }
                         }

@@ -516,8 +516,11 @@ namespace HowLongToBeat.Controls
                     spHltb_El2.Width = width2;
                     spHltb_El3.Width = width3;
                 }
-                catch { }
-            }));
+                catch (Exception ex)
+                {
+                    Common.LogError(ex, false, "Error updating progress bar layout");
+                }
+        }));
         }
         #endregion
     }
