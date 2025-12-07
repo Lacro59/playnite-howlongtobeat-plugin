@@ -124,7 +124,7 @@ namespace HowLongToBeat.Views
             string gameSearch = SearchElement.Text;
             string gamePlatform = (PART_SelectPlatform.SelectedValue == null)
                   ? string.Empty
-                  : ((HltbPlatform) PART_SelectPlatform.SelectedValue).GetDescription();
+                  : ((HltbPlatform)PART_SelectPlatform.SelectedValue).GetDescription();
 
             bool isVndb = (bool)PART_Vndb.IsChecked;
 

@@ -13,7 +13,6 @@ namespace HowLongToBeat.Views.Converters
             if (o is long l) return l;
             if (o is ulong ul)
             {
-                // clamp to double range
                 return ul;
             }
             if (double.TryParse(o.ToString(), out double parsed)) return parsed;

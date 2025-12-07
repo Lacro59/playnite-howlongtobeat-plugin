@@ -25,8 +25,9 @@ namespace HowLongToBeat.Views.Converters
                 fraction = Math.Max(0.0, Math.Min(1.0, fraction));
                 const double markerHalf = 7.0;
                 double left = fraction * totalWidth - markerHalf;
+                double maxLeft = Math.Max(0, totalWidth - 2 * markerHalf);
                 if (left < 0) left = 0;
-                if (left > totalWidth - 2 * markerHalf) left = totalWidth - 2 * markerHalf;
+                if (left > maxLeft) left = maxLeft;
 
                 return new Thickness(left, 0, 0, 0);
             }

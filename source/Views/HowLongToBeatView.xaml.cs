@@ -2,6 +2,7 @@
 using CommonPluginsShared;
 using CommonPluginsShared.Converters;
 using CommonPluginsShared.Extensions;
+using CommonPluginsShared.Models;
 using HowLongToBeat.Models;
 using HowLongToBeat.Models.Enumerations;
 using HowLongToBeat.Services;
@@ -102,6 +103,8 @@ namespace HowLongToBeat.Views
             _ = LoadCoverAsync(path, token);
         }
 
+        private static readonly HttpClient _sharedHttpClient = new HttpClient();
+
         private async Task LoadCoverAsync(string path, CancellationToken token)
         {
             try
@@ -195,10 +198,7 @@ namespace HowLongToBeat.Views
                     Common.LogDebug(true, $"LoadCoverAsync: downloading remote url '{path}'");
                     try
                     {
-                        using (var http = new HttpClient())
-                        {
-                            bytes = await http.GetByteArrayAsync(path);
-                        }
+                        bytes = await _sharedHttpClient.GetByteArrayAsync(path);
                     }
                     catch (Exception ex)
                     {

@@ -22,7 +22,6 @@ namespace HowLongToBeat.Services
         private static string UrlApi => "https://api.vndb.org/kana";
         private static string UrlSearch => UrlApi + "/vn";
 
-        // Shared HttpClient for the class to avoid socket exhaustion
         private static readonly HttpClient httpClient;
 
         static VndbApi()
@@ -30,7 +29,6 @@ namespace HowLongToBeat.Services
             httpClient = new HttpClient();
             try
             {
-                // Add User-Agent safely
                 httpClient.DefaultRequestHeaders.TryAddWithoutValidation("User-Agent", CommonPluginsShared.Web.UserAgent);
             }
             catch { }
@@ -129,7 +127,7 @@ namespace HowLongToBeat.Services
                 case 4:
                     return 35 * 3600;
                 case 5:
-                //> 50 hours
+                    //> 50 hours
                     return 50 * 3600;
                 default:
                     return 0;

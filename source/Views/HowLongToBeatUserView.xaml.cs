@@ -83,7 +83,8 @@ namespace HowLongToBeat.Views
                             break;
                         default:
                             break;
-                    };
+                    }
+                    ;
                     ListViewGames.SortingDefaultDataName = SortingDefaultDataName;
                     ListViewGames.SortingSortDirection = PluginDatabase.PluginSettings.Settings.IsAsc ? ListSortDirection.Ascending : ListSortDirection.Descending;
                     ListViewGames.Sorting();
@@ -594,7 +595,7 @@ namespace HowLongToBeat.Views
 
             if (!Name.IsNullOrEmpty())
             {
-                UserViewDataContext.ItemsSource = UserViewDataContext.ItemsSource.Where(x => x.GameName.Contains(Name, StringComparison.InvariantCultureIgnoreCase))                    .ToObservable();
+                UserViewDataContext.ItemsSource = UserViewDataContext.ItemsSource.Where(x => x.GameName.Contains(Name, StringComparison.InvariantCultureIgnoreCase)).ToObservable();
             }
 
             if ((bool)PART_Replays.IsChecked)

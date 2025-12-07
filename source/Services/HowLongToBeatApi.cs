@@ -396,7 +396,7 @@ namespace HowLongToBeat.Services
                                         p90 = ordered[Math.Max(0, (int)Math.Floor(ordered.Length * 0.9) - 1)];
                                     }
 
-                                    LogDebugVerbose($"HLTB Summary: searchTarget={searchTarget} searchInFlight={searchInFlight} gameTarget={gameTarget} gameInFlight={gameInFlight} avgSearchMs={Math.Round(avg,1)} medianSearchMs={Math.Round(median,1)} p90SearchMs={Math.Round(p90,1)} persistentCacheHits={PersistentCacheHits} inMemoryHits={InMemoryCacheHits} pageFetches={PageFetches} forced={searchForced}");
+                                    LogDebugVerbose($"HLTB Summary: searchTarget={searchTarget} searchInFlight={searchInFlight} gameTarget={gameTarget} gameInFlight={gameInFlight} avgSearchMs={Math.Round(avg, 1)} medianSearchMs={Math.Round(median, 1)} p90SearchMs={Math.Round(p90, 1)} persistentCacheHits={PersistentCacheHits} inMemoryHits={InMemoryCacheHits} pageFetches={PageFetches} forced={searchForced}");
                                 }
                                 catch (Exception ex)
                                 {
@@ -703,7 +703,7 @@ namespace HowLongToBeat.Services
             try
             {
                 string url = UrlBase;
-                
+
                 string response = null;
                 using (var cts = new CancellationTokenSource(ScriptDownloadTimeoutMs))
                 {
@@ -732,78 +732,78 @@ namespace HowLongToBeat.Services
                     }
                 }
 
-                    // Try to extract script URLs via optional HtmlAgilityPack helper (reflection). Fall back to regex if unavailable.
-                    List<string> scriptUrls = ExtractScriptUrlsWithHap(response) ?? new List<string>();
-                    if (scriptUrls.Count == 0)
-                    {
+                // Try to extract script URLs via optional HtmlAgilityPack helper (reflection). Fall back to regex if unavailable.
+                List<string> scriptUrls = ExtractScriptUrlsWithHap(response) ?? new List<string>();
+                if (scriptUrls.Count == 0)
+                {
 
-                        var matches = Regex.Matches(response, "<script[^>]*src=[\"']([^\"']+)[\"'][^>]*>", RegexOptions.IgnoreCase);
-                        foreach (Match match in matches)
+                    var matches = Regex.Matches(response, "<script[^>]*src=[\"']([^\"']+)[\"'][^>]*>", RegexOptions.IgnoreCase);
+                    foreach (Match match in matches)
+                    {
+                        scriptUrls.Add(match.Groups[1].Value);
+                    }
+                }
+
+                var ordered = scriptUrls.Where(s => s.Contains("_app-")).Concat(scriptUrls).Where(s => !string.IsNullOrEmpty(s)).Distinct();
+                foreach (string sUrl in ordered)
+                {
+                    string scriptUrl = sUrl;
+                    if (!scriptUrl.StartsWith("http", StringComparison.OrdinalIgnoreCase))
+                    {
+                        scriptUrl = UrlBase + scriptUrl;
+                    }
+
+                    string scriptContent = null;
+                    using (var ctsScript = new CancellationTokenSource(ScriptDownloadTimeoutMs))
+                    {
+                        try
                         {
-                            scriptUrls.Add(match.Groups[1].Value);
+                            using (var scriptResp = await httpClient.GetAsync(scriptUrl, ctsScript.Token).ConfigureAwait(false))
+                            {
+                                if (!scriptResp.IsSuccessStatusCode)
+                                {
+                                    try { Logger.Warn($"HTTP {(int)scriptResp.StatusCode} downloading {scriptUrl}"); } catch { }
+                                    continue;
+                                }
+
+                                scriptContent = await scriptResp.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            }
+                        }
+                        catch (TaskCanceledException)
+                        {
+                            try { Logger.Warn($"Timeout {ScriptDownloadTimeoutMs}ms downloading {scriptUrl}"); } catch { }
+                            continue;
+                        }
+                        catch (Exception ex)
+                        {
+                            Common.LogError(ex, false, true, PluginDatabase.PluginName);
+                            continue;
                         }
                     }
 
-                    var ordered = scriptUrls.Where(s => s.Contains("_app-")).Concat(scriptUrls).Where(s => !string.IsNullOrEmpty(s)).Distinct();
-                    foreach (string sUrl in ordered)
+                    string pattern = "fetch\\s*\\(\\s*[\"']\\/api\\/([a-zA-Z0-9_\\/]+)[^\"']*[\"']\\s*,\\s*\\{[^}]*method:\\s*[\"']POST[\"'][^}]*\\}";
+                    var searchMatch = Regex.Match(scriptContent, pattern, RegexOptions.Singleline | RegexOptions.IgnoreCase);
+                    if (searchMatch.Success)
                     {
-                        string scriptUrl = sUrl;
-                        if (!scriptUrl.StartsWith("http", StringComparison.OrdinalIgnoreCase))
+                        string suffix = searchMatch.Groups[1].Value;
+                        if (suffix.Contains("/"))
                         {
-                            scriptUrl = UrlBase + scriptUrl;
+                            suffix = suffix.Split('/')[0];
                         }
 
-                        string scriptContent = null;
-                        using (var ctsScript = new CancellationTokenSource(ScriptDownloadTimeoutMs))
+                        if (suffix != "find")
                         {
-                            try
+                            lock (SearchUrlLock)
                             {
-                                using (var scriptResp = await httpClient.GetAsync(scriptUrl, ctsScript.Token).ConfigureAwait(false))
+                                if (SearchUrl.IsNullOrEmpty())
                                 {
-                                    if (!scriptResp.IsSuccessStatusCode)
-                                    {
-                                        try { Logger.Warn($"HTTP {(int)scriptResp.StatusCode} downloading {scriptUrl}"); } catch { }
-                                        continue;
-                                    }
-
-                                    scriptContent = await scriptResp.Content.ReadAsStringAsync().ConfigureAwait(false);
+                                    SearchUrl = "/api/" + suffix;
                                 }
                             }
-                            catch (TaskCanceledException)
-                            {
-                                try { Logger.Warn($"Timeout {ScriptDownloadTimeoutMs}ms downloading {scriptUrl}"); } catch { }
-                                continue;
-                            }
-                            catch (Exception ex)
-                            {
-                                Common.LogError(ex, false, true, PluginDatabase.PluginName);
-                                continue;
-                            }
-                        }
-
-                        string pattern = "fetch\\s*\\(\\s*[\"']\\/api\\/([a-zA-Z0-9_\\/]+)[^\"']*[\"']\\s*,\\s*\\{[^}]*method:\\s*[\"']POST[\"'][^}]*\\}";
-                        var searchMatch = Regex.Match(scriptContent, pattern, RegexOptions.Singleline | RegexOptions.IgnoreCase);
-                        if (searchMatch.Success)
-                        {
-                            string suffix = searchMatch.Groups[1].Value;
-                            if (suffix.Contains("/"))
-                            {
-                                suffix = suffix.Split('/')[0];
-                            }
-
-                            if (suffix != "find")
-                            {
-                                lock (SearchUrlLock)
-                                {
-                                    if (SearchUrl.IsNullOrEmpty())
-                                    {
-                                        SearchUrl = "/api/" + suffix;
-                                    }
-                                }
-                                return SearchUrl;
-                            }
+                            return SearchUrl;
                         }
                     }
+                }
             }
             catch (Exception ex)
             {
@@ -1096,12 +1096,12 @@ namespace HowLongToBeat.Services
                         }
                         catch { }
 
-                            try
-                            {
-                                int targetLog = GetSearchTarget();
-                                int availableLog = SearchSemaphore?.CurrentCount ?? 0;
-                                int inFlightLog = Math.Max(0, targetLog - availableLog);
-                                LogDebugVerbose($"ApiSearch: waiting search semaphore for '{name}' target={targetLog} currentLimit={CurrentSearchLimit} available={availableLog} inFlight={inFlightLog}");
+                        try
+                        {
+                            int targetLog = GetSearchTarget();
+                            int availableLog = SearchSemaphore?.CurrentCount ?? 0;
+                            int inFlightLog = Math.Max(0, targetLog - availableLog);
+                            LogDebugVerbose($"ApiSearch: waiting search semaphore for '{name}' target={targetLog} currentLimit={CurrentSearchLimit} available={availableLog} inFlight={inFlightLog}");
                         }
                         catch { }
                         bool waitOk = true;
@@ -1209,7 +1209,7 @@ namespace HowLongToBeat.Services
                                     {
                                         int newLimit = Math.Max(1, CurrentSearchLimit / 2);
                                         SearchBackoffLimit = newLimit;
-                                        
+
                                         int backoffSeconds = 30;
                                         try
                                         {

@@ -386,7 +386,7 @@ namespace HowLongToBeat
                 MenuInExtensions = "@";
             }
 
-            List <MainMenuItem> mainMenuItems = new List<MainMenuItem>
+            List<MainMenuItem> mainMenuItems = new List<MainMenuItem>
             {
                 new MainMenuItem
                 {
@@ -561,7 +561,7 @@ namespace HowLongToBeat
 
             return mainMenuItems;
         }
-        
+
         #endregion
 
         #region Game event
@@ -747,7 +747,7 @@ namespace HowLongToBeat
         // Add code to be executed when Playnite is shutting down.
         public override void OnApplicationStopped(OnApplicationStoppedEventArgs args)
         {
-            
+
         }
 
         #endregion

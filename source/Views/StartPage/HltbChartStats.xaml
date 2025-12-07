@@ -1,38 +1,51 @@
 ﻿<UserControl x:Class="HowLongToBeat.Views.StartPage.HltbChartStats"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:HowLongToBeat.Views.StartPage" 
-             xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf" 
-             xmlns:livechartscommon="clr-namespace:CommonPluginsControls.LiveChartsCommon" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:HowLongToBeat.Views.StartPage"
+             xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
+             xmlns:livechartscommon="clr-namespace:CommonPluginsControls.LiveChartsCommon"
              d:DataContext="{d:DesignInstance Type=local:HltbChartStatsDataContext}"
-             mc:Ignorable="d" d:DesignHeight="450" d:DesignWidth="800">
+             mc:Ignorable="d"
+        d:DesignHeight="450"
+        d:DesignWidth="800">
 
     <UserControl.Resources>
-        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
     </UserControl.Resources>
 
     <Grid Margin="{Binding Margin, FallbackValue=10}">
         <Grid.RowDefinitions>
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="*" />
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <Label Grid.Row="0" Margin="0,0,0,10" Content="{DynamicResource LOCHowLongToBeatCompletationProgress}" HorizontalAlignment="Center"
+        <Label Grid.Row="0"
+                Margin="0,0,0,10"
+                Content="{DynamicResource LOCHowLongToBeatCompletationProgress}"
+                HorizontalAlignment="Center"
                Visibility="{Binding ChartTitle, Converter={StaticResource BooleanToVisibilityConverter}}"/>
 
-        <lvc:CartesianChart LegendLocation="none" Series="{Binding SeriesViews}" Grid.Row="1">
+        <lvc:CartesianChart LegendLocation="none"
+                Series="{Binding SeriesViews}"
+                Grid.Row="1">
             <lvc:CartesianChart.DataTooltip>
-                <livechartscommon:CustomerToolTipForSingle />
+                <livechartscommon:CustomerToolTipForSingle/>
             </lvc:CartesianChart.DataTooltip>
 
             <lvc:CartesianChart.AxisX>
-                <lvc:Axis LabelsRotation="160" ShowLabels="{Binding ChartLabels, FallbackValue=True}" FontSize="{DynamicResource FontSize}" MinValue="0" />
+                <lvc:Axis LabelsRotation="160"
+                        ShowLabels="{Binding ChartLabels, FallbackValue=True}"
+                        FontSize="{DynamicResource FontSize}"
+                        MinValue="0"/>
             </lvc:CartesianChart.AxisX>
 
             <lvc:CartesianChart.AxisY>
-                <lvc:Axis MinValue="0" ShowLabels="{Binding ChartLabelsOrdinates, FallbackValue=True}" Labels="{Binding Labels}" FontSize="{DynamicResource FontSize}" />
+                <lvc:Axis MinValue="0"
+                        ShowLabels="{Binding ChartLabelsOrdinates, FallbackValue=True}"
+                        Labels="{Binding Labels}"
+                        FontSize="{DynamicResource FontSize}"/>
             </lvc:CartesianChart.AxisY>
         </lvc:CartesianChart>
     </Grid>

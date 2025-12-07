@@ -307,7 +307,7 @@ namespace HowLongToBeat.Views
                 Common.LogError(ex, false, true, PluginDatabase.PluginName);
             }
         }
-        
+
 
         private static string EscapeCsv(string input)
         {
@@ -568,7 +568,8 @@ namespace HowLongToBeat.Views
         private void PART_BtAuthenticate_Click(object sender, RoutedEventArgs e)
         {
             PART_LbUserLogin.Visibility = Visibility.Collapsed;
-            var task = Task.Run(() => {
+            var task = Task.Run(() =>
+            {
                 PluginDatabase.HowLongToBeatApi.Login();
             });
         }
@@ -576,7 +577,7 @@ namespace HowLongToBeat.Views
 
         protected void OnPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            this.Dispatcher.Invoke(new Action(() => 
+            this.Dispatcher.Invoke(new Action(() =>
             {
                 if ((bool)PluginDatabase.HowLongToBeatApi.IsConnected)
                 {
@@ -601,7 +602,8 @@ namespace HowLongToBeat.Views
 
         // TODO: Probably better to react to library metadata edits
         // Although this method might not be invoked so many times as to make a difference in performance
-        private void SetPlatforms(HowLongToBeatSettings settings) {
+        private void SetPlatforms(HowLongToBeatSettings settings)
+        {
             List<Platform> platforms = API.Instance.Database
                     .Platforms.Distinct().OrderBy(x => x.Name).ToList();
 
@@ -621,7 +623,7 @@ namespace HowLongToBeat.Views
         private void CbDefaultSorting_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             string index = ((ComboBoxItem)cbDefaultSorting.SelectedItem).Tag.ToString();
-            switch(index)
+            switch (index)
             {
                 case "0":
                     PluginDatabase.PluginSettings.Settings.TitleListSort = TitleListSort.GameName;

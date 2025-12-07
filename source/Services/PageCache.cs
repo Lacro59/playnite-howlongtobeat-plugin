@@ -79,7 +79,7 @@ namespace HowLongToBeat.Services
                         Common.LogError(ex, false);
                         return;
                     }
-                    
+
                     const int maxAttempts = 5;
                     int attempt = 0;
                     int delayMs = 100;
