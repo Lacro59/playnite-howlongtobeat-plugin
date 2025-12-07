@@ -96,7 +96,7 @@
                             </Style.Triggers>
                         </Style>
                     </Border.Style>
-                    <Image x:Name="CoverImageControl" Width="200" Height="200" Stretch="UniformToFill" Cursor="Hand"
+                    <Image x:Name="CoverImageControl" Width="200" Height="200" Stretch="Uniform" StretchDirection="Both" Cursor="Hand"
                            Tag="{Binding SourceLink.Url}" MouseLeftButtonUp="CoverImage_MouseLeftButtonUp" Opacity="0"
                            Source="{Binding CoverImage, NotifyOnTargetUpdated=True, IsAsync=True}" TargetUpdated="CoverImageControl_TargetUpdated">
                         <Image.Effect>
@@ -311,8 +311,10 @@
                                     </Border.RenderTransform>
                                 </Border>
                             </Border>
-                            <!-- Current playtime marker -->
-                            <Border x:Name="PlaytimeMarker" Width="12" Height="12" Background="Yellow" BorderBrush="Black" BorderThickness="1" CornerRadius="6" VerticalAlignment="Center" HorizontalAlignment="Left" Panel.ZIndex="100">
+                            <Border x:Name="PlaytimeMarker" Width="14" Height="14" Background="#3A3A3A" BorderBrush="White" BorderThickness="2" CornerRadius="7" VerticalAlignment="Center" HorizontalAlignment="Left" Panel.ZIndex="100" Opacity="0.9">
+                                <Border.Effect>
+                                    <DropShadowEffect Color="#22000000" BlurRadius="8" ShadowDepth="2" Opacity="0.6" />
+                                </Border.Effect>
                                 <Border.Margin>
                                     <MultiBinding Converter="{StaticResource PlaytimeToMarkerConverter}">
                                         <Binding Path="GameContext.Playtime" />

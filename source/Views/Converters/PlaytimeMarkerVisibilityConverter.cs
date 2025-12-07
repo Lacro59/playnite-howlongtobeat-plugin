@@ -16,8 +16,8 @@ namespace HowLongToBeat.Views.Converters
                 double total = ToDouble(values[1]);
                 double totalWidth = ToDouble(values[2]);
 
-                if (total <= 0 || totalWidth <= 0) return Visibility.Collapsed;
                 if (playtime <= 0) return Visibility.Collapsed;
+                if (total <= 0) return Visibility.Collapsed;
 
                 return Visibility.Visible;
             }
