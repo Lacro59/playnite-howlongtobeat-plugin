@@ -22,39 +22,52 @@ namespace HowLongToBeat.Services
         private static string UrlApi => "https://api.vndb.org/kana";
         private static string UrlSearch => UrlApi + "/vn";
 
+        // Shared HttpClient for the class to avoid socket exhaustion
+        private static readonly HttpClient httpClient;
+
+        static VndbApi()
+        {
+            httpClient = new HttpClient();
+            try
+            {
+                // Add User-Agent safely
+                httpClient.DefaultRequestHeaders.TryAddWithoutValidation("User-Agent", CommonPluginsShared.Web.UserAgent);
+            }
+            catch { }
+        }
+
         private static async Task<string> PostJson(string url, string payload)
         {
             try
             {
-                using (var client = new HttpClient())
+                var content = new StringContent(payload ?? string.Empty, Encoding.UTF8, "application/json");
+                using (content)
                 {
-                    client.DefaultRequestHeaders.Add("User-Agent", CommonPluginsShared.Web.UserAgent);
-                    var content = new StringContent(payload ?? string.Empty, Encoding.UTF8, "application/json");
-                    using (var resp = await client.PostAsync(url, content).ConfigureAwait(false))
-                    {
-                        if (!resp.IsSuccessStatusCode)
-                        {
-                            try { Logger.Error($"VNDB error status {(int)resp.StatusCode}"); } catch { }
-                            return string.Empty;
-                        }
-                        return await resp.Content.ReadAsStringAsync().ConfigureAwait(false);
-                    }
+                    using (var resp = await httpClient.PostAsync(url, content).ConfigureAwait(false))
+                     {
+                         if (!resp.IsSuccessStatusCode)
+                         {
+                             try { Logger.Error($"VNDB error status {(int)resp.StatusCode}"); } catch { }
+                             return string.Empty;
+                         }
+                         return await resp.Content.ReadAsStringAsync().ConfigureAwait(false);
+                     }
                 }
-            }
-            catch (Exception ex)
-            {
-                Common.LogError(ex, false, $"Error posting to {url}");
-                return string.Empty;
-            }
-        }
+             }
+             catch (Exception ex)
+             {
+                 Common.LogError(ex, false, $"Error posting to {url}");
+                 return string.Empty;
+             }
+         }
 
-        private static List<HltbDataUser> Search(string payload)
+        private static async Task<List<HltbDataUser>> Search(string payload)
         {
             List<HltbDataUser> hltbDataUsers = new List<HltbDataUser>();
 
             try
             {
-                string data = PostJson(UrlSearch, payload).GetAwaiter().GetResult();
+                string data = await PostJson(UrlSearch, payload).ConfigureAwait(false);
                 _ = Serialization.TryFromJson(data, out VndbSearch vndbSearch);
 
                 vndbSearch?.Results?.ForEach(x =>
@@ -81,21 +94,32 @@ namespace HowLongToBeat.Services
             return hltbDataUsers;
         }
 
-        public static List<HltbSearch> SearchByName(string name)
+
+        public static async Task<List<HltbSearch>> SearchByNameAsync(string name)
         {
             Logger.Info($"VndbApi.Search({name})");
             string payload = "{\"filters\":[\"search\", \"=\", \"" + PlayniteTools.NormalizeGameName(name) + "\"], \"fields\":\"id, title, alttitle, image.url, length, length_minutes\"}";
-            List<HltbDataUser> search = Search(payload);
+            List<HltbDataUser> search = await Search(payload).ConfigureAwait(false);
             return search.Select(x => new HltbSearch { MatchPercent = Fuzz.Ratio(name.ToLower(), x.Name.ToLower()), Data = x })
                 .OrderByDescending(x => x.MatchPercent)
                 .ToList();
         }
 
-        public static List<HltbDataUser> SearchById(string id)
+        public static List<HltbSearch> SearchByName(string name)
+        {
+            return Task.Run(() => SearchByNameAsync(name)).GetAwaiter().GetResult();
+        }
+
+        public static async Task<List<HltbDataUser>> SearchByIdAsync(string id)
         {
             Logger.Info($"VndbApi.Search({id})");
             string payload = "{\"filters\":[\"id\", \"=\", \"" + id + "\"], \"fields\":\"id, title, alttitle, image.url, length, length_minutes\"}";
-            return Search(payload);
+            return await Search(payload).ConfigureAwait(false);
+        }
+
+        public static List<HltbDataUser> SearchById(string id)
+        {
+            return Task.Run(() => SearchByIdAsync(id)).GetAwaiter().GetResult();
         }
 
         private static int GetTime(int length)

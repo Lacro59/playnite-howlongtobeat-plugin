@@ -1,12 +1,4 @@
-﻿using CommonPluginsShared;
-using FuzzySharp;
-using HowLongToBeat.Models;
-using HowLongToBeat.Models.Enumerations;
-using HowLongToBeat.Services;
-using Playnite.SDK;
-using Playnite.SDK.Data;
-using Playnite.SDK.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -14,6 +6,14 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+
+using CommonPluginsShared;
+using HowLongToBeat.Models;
+using HowLongToBeat.Models.Enumerations;
+using HowLongToBeat.Services;
+using Playnite.SDK;
+using Playnite.SDK.Data;
+using Playnite.SDK.Models;
 
 namespace HowLongToBeat.Views
 {
@@ -164,26 +164,60 @@ namespace HowLongToBeat.Views
         /// <param name="e"></param>
         private void TextBlock_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
         {
-            TextBlock textBlock = (TextBlock)sender;
+            var textBlock = sender as TextBlock;
+            if (textBlock == null)
+            {
+                return;
+            }
 
-            Typeface typeface = new Typeface(
-                textBlock.FontFamily,
-                textBlock.FontStyle,
-                textBlock.FontWeight,
-                textBlock.FontStretch);
+            var toolTip = textBlock.ToolTip as ToolTip;
+            if (toolTip == null)
+            {
+                return;
+            }
 
-            FormattedText formattedText = new FormattedText(
-                textBlock.Text,
-                System.Threading.Thread.CurrentThread.CurrentCulture,
-                textBlock.FlowDirection,
-                typeface,
-                textBlock.FontSize,
-                textBlock.Foreground,
-                VisualTreeHelper.GetDpi(this).PixelsPerDip);
+            try
+            {
+                var text = textBlock.Text ?? string.Empty;
+                if (string.IsNullOrEmpty(text))
+                {
+                    toolTip.Visibility = Visibility.Hidden;
+                    return;
+                }
 
-            ((ToolTip)((TextBlock)sender).ToolTip).Visibility = formattedText.Width > textBlock.DesiredSize.Width 
-                ? Visibility.Visible 
-                : Visibility.Hidden;
+                var typeface = new Typeface(
+                    textBlock.FontFamily,
+                    textBlock.FontStyle,
+                    textBlock.FontWeight,
+                    textBlock.FontStretch);
+
+                // Use the FormattedText overload with PixelsPerDip to avoid obsolete warning
+                double pixelsPerDip = 1.0;
+                try
+                {
+                    pixelsPerDip = VisualTreeHelper.GetDpi(this).PixelsPerDip;
+                }
+                catch { }
+
+                var formattedText = new FormattedText(
+                    text,
+                    System.Threading.Thread.CurrentThread.CurrentCulture,
+                    textBlock.FlowDirection,
+                    typeface,
+                    textBlock.FontSize,
+                    textBlock.Foreground,
+                    pixelsPerDip);
+
+                // Compare measured width with actual available width. If larger, show tooltip.
+                toolTip.Visibility = formattedText.Width > (textBlock.ActualWidth - 1.0)
+                    ? Visibility.Visible
+                    : Visibility.Hidden;
+            }
+            catch
+            {
+                // On any error, hide tooltip rather than crash
+                try { toolTip.Visibility = Visibility.Hidden; } catch { }
+            }
         }
 
         /// <summary>
@@ -197,6 +231,18 @@ namespace HowLongToBeat.Views
             {
                 ButtonSearch_Click(null, null);
             }
+        }
+
+        private void ListBoxItem_PreviewMouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            var lbi = sender as ListBoxItem;
+            if (lbi == null) return;
+
+            if (!lbi.IsSelected)
+            {
+                lbi.IsSelected = true;
+            }
+            e.Handled = false;
         }
     }
 }
