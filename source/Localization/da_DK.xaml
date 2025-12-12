@@ -18,7 +18,13 @@
     <sys:String x:Key="LOCHowLongToBeatExportCsvSemicolon">Eksportér CSV (semikolon)</sys:String>
     <sys:String x:Key="LOCHowLongToBeatExportJson">Eksportér JSON</sys:String>
     <sys:String x:Key="LOCHowLongToBeatExportFolderTooltip">Målmappe til eksport</sys:String>
-    <sys:String x:Key="LOCBrowseLabel">Browse...</sys:String>
+    <sys:String x:Key="LOCBrowseLabel">Gennemse...</sys:String>
+
+    <sys:String x:Key="LOCExportSelectFolderFirst">Vælg venligst en eksportmappe først.</sys:String>
+    <sys:String x:Key="LOCExportFolderNotExist">Den valgte mappe findes ikke.</sys:String>
+    <sys:String x:Key="LOCExportedCsvMessage">{0} spil eksporteret til CSV: {1} (separator '{2}')</sys:String>
+    <sys:String x:Key="LOCExportedJsonMessage">{0} spil eksporteret til JSON: {1}</sys:String>
+    <sys:String x:Key="LOCExportFailedCount">{0} spil kunne ikke eksporteres (se logs).</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatColorSelection">Color selection:</sys:String>
 

@@ -20,6 +20,12 @@
     <sys:String x:Key="LOCHowLongToBeatExportFolderTooltip">Pasta de exportação</sys:String>
     <sys:String x:Key="LOCBrowseLabel">Procurar...</sys:String>
 
+    <sys:String x:Key="LOCExportSelectFolderFirst">Por favor seleccione primeiro uma pasta de exportação.</sys:String>
+    <sys:String x:Key="LOCExportFolderNotExist">A pasta selecionada não existe.</sys:String>
+    <sys:String x:Key="LOCExportedCsvMessage">{0} jogos exportados para CSV: {1} (separador '{2}')</sys:String>
+    <sys:String x:Key="LOCExportedJsonMessage">{0} jogos exportados para JSON: {1}</sys:String>
+    <sys:String x:Key="LOCExportFailedCount">Falha na exportação de {0} jogos (ver logs).</sys:String>
+
     <sys:String x:Key="LOCHowLongToBeatColorSelection">Color selection:</sys:String>
 
     <sys:String x:Key="LOCHltbEnableProgressBarInDataView">View progress bar in Playnite data view</sys:String>

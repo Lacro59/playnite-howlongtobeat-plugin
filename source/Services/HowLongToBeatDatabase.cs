@@ -38,13 +38,35 @@ namespace HowLongToBeat.Services
         public void InitializeClient(HowLongToBeat plugin)
         {
             Plugin = plugin;
-            HowLongToBeatApi = new HowLongToBeatApi();
+            try
+            {
+                if (HowLongToBeatApi == null)
+                {
+                    HowLongToBeatApi = new HowLongToBeatApi();
+                }
+            }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, false, true, PluginName);
+            }
         }
 
         protected override void LoadMoreData()
         {
             try
             {
+                if (HowLongToBeatApi == null)
+                {
+                    int waited = 0;
+                    const int waitStep = 100;
+                    const int maxWait = 2000;
+                    while (HowLongToBeatApi == null && waited < maxWait)
+                    {
+                        try { Thread.Sleep(waitStep); } catch { }
+                        waited += waitStep;
+                    }
+                }
+
                 if (HowLongToBeatApi == null)
                 {
                     Logger.Warn("HowLongToBeatApi not initialized yet during LoadMoreData(); using empty UserHltbData placeholder");

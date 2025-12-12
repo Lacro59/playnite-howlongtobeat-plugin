@@ -21,6 +21,12 @@
     <sys:String x:Key="LOCHowLongToBeatExportFolderTooltip">Export mappa</sys:String>
     <sys:String x:Key="LOCBrowseLabel">Tallózás...</sys:String>
 
+    <sys:String x:Key="LOCExportSelectFolderFirst">Kérjük válasszon ki egy export mappát először.</sys:String>
+    <sys:String x:Key="LOCExportFolderNotExist">A kiválasztott mappa nem létezik.</sys:String>
+    <sys:String x:Key="LOCExportedCsvMessage">{0} játék exportálva CSV-be: {1} (elválasztó '{2}')</sys:String>
+    <sys:String x:Key="LOCExportedJsonMessage">{0} játék exportálva JSON-ba: {1}</sys:String>
+    <sys:String x:Key="LOCExportFailedCount">{0} játék exportja sikertelen volt (lásd a naplókat).</sys:String>
+
     <sys:String x:Key="LOCHowLongToBeatColorSelection">Color selection:</sys:String>
 
     <sys:String x:Key="LOCHltbEnableProgressBarInDataView">View progress bar in Playnite data view</sys:String>

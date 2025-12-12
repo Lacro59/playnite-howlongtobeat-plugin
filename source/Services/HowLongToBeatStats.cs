@@ -26,7 +26,7 @@ namespace HowLongToBeat.Services
                 {
                     if (DataByMonth.TryGetValue(Month, out int value))
                     {
-                        DataByMonth[Month] = ++value;
+                        DataByMonth[Month]++;
                     }
                     else
                     {

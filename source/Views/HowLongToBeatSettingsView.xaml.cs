@@ -47,7 +47,14 @@ namespace HowLongToBeat.Views
         public HowLongToBeatSettingsView(HowLongToBeatSettings settings)
         {
             _settingsRef = settings;
-            PluginDatabase.HowLongToBeatApi.PropertyChanged += OnPropertyChanged;
+            try
+            {
+                if (PluginDatabase?.HowLongToBeatApi != null)
+                {
+                    PluginDatabase.HowLongToBeatApi.PropertyChanged += OnPropertyChanged;
+                }
+            }
+            catch { }
 
             InitializeComponent();
 
@@ -154,12 +161,12 @@ namespace HowLongToBeat.Views
                 var folder = PART_ExportFolder.Text?.Trim();
                 if (folder.IsNullOrEmpty())
                 {
-                    API.Instance.Dialogs.ShowMessage("Please select an export folder first.");
+                    API.Instance.Dialogs.ShowMessage(ResourceProvider.GetString("LOCExportSelectFolderFirst"));
                     return;
                 }
                 if (!Directory.Exists(folder))
                 {
-                    API.Instance.Dialogs.ShowMessage("Selected folder does not exist.");
+                    API.Instance.Dialogs.ShowMessage(ResourceProvider.GetString("LOCExportFolderNotExist"));
                     return;
                 }
                 var path = Path.Combine(folder, $"HLTB_Export_{DateTime.UtcNow:yyyyMMdd_HHmmss}.csv");
@@ -218,7 +225,12 @@ namespace HowLongToBeat.Views
                 }
                 var utf8Bom = new System.Text.UTF8Encoding(true);
                 File.WriteAllLines(path, lines, utf8Bom);
-                API.Instance.Dialogs.ShowMessage($"Exported {exportedCount} games to CSV: {path} (delimiter '{delimiter}')" + (failedCount > 0 ? $"\n{failedCount} games failed to export (see logs)." : ""));
+                var msg = string.Format(ResourceProvider.GetString("LOCExportedCsvMessage"), exportedCount, path, delimiter);
+                if (failedCount > 0)
+                {
+                    msg += "\n" + string.Format(ResourceProvider.GetString("LOCExportFailedCount"), failedCount);
+                }
+                API.Instance.Dialogs.ShowMessage(msg);
             }
             catch (Exception ex)
             {
@@ -233,12 +245,12 @@ namespace HowLongToBeat.Views
                 var folder = PART_ExportFolder.Text?.Trim();
                 if (folder.IsNullOrEmpty())
                 {
-                    API.Instance.Dialogs.ShowMessage("Please select an export folder first.");
+                    API.Instance.Dialogs.ShowMessage(ResourceProvider.GetString("LOCExportSelectFolderFirst"));
                     return;
                 }
                 if (!Directory.Exists(folder))
                 {
-                    API.Instance.Dialogs.ShowMessage("Selected folder does not exist.");
+                    API.Instance.Dialogs.ShowMessage(ResourceProvider.GetString("LOCExportFolderNotExist"));
                     return;
                 }
                 var path = Path.Combine(folder, $"HLTB_Export_{DateTime.UtcNow:yyyyMMdd_HHmmss}.json");
@@ -312,7 +324,12 @@ namespace HowLongToBeat.Views
                 }
                 var json = Serialization.ToJson(items, true);
                 File.WriteAllText(path, json);
-                API.Instance.Dialogs.ShowMessage($"Exported {exportedCount} games to JSON: {path}" + (failedCount > 0 ? $"\n{failedCount} games failed to export (see logs)." : ""));
+                var msgJson = string.Format(ResourceProvider.GetString("LOCExportedJsonMessage"), exportedCount, path);
+                if (failedCount > 0)
+                {
+                    msgJson += "\n" + string.Format(ResourceProvider.GetString("LOCExportFailedCount"), failedCount);
+                }
+                API.Instance.Dialogs.ShowMessage(msgJson);
             }
             catch (Exception ex)
             {
@@ -591,23 +608,28 @@ namespace HowLongToBeat.Views
         {
             this.Dispatcher.Invoke(new Action(() =>
             {
-                if ((bool)PluginDatabase.HowLongToBeatApi.IsConnected)
+                try
                 {
-                    PART_LbAuthenticate.Content = ResourceProvider.GetString("LOCCommonLoggedIn");
-                    PART_LbUserLogin.Visibility = Visibility.Visible;
-
-                    string UserLogin = PluginDatabase.HowLongToBeatApi.UserLogin;
-                    if (UserLogin.IsNullOrEmpty())
+                    var api = PluginDatabase?.HowLongToBeatApi;
+                    if (api != null && (bool?)(api.IsConnected) == true)
                     {
-                        UserLogin = PluginDatabase.Database.UserHltbData.Login;
-                    }
+                        PART_LbAuthenticate.Content = ResourceProvider.GetString("LOCCommonLoggedIn");
+                        PART_LbUserLogin.Visibility = Visibility.Visible;
 
-                    PART_LbUserLogin.Content = ResourceProvider.GetString("LOCCommonAccountName") + " " + UserLogin;
+                        string UserLogin = api.UserLogin;
+                        if (UserLogin.IsNullOrEmpty())
+                        {
+                            UserLogin = PluginDatabase?.Database?.UserHltbData?.Login ?? string.Empty;
+                        }
+
+                        PART_LbUserLogin.Content = ResourceProvider.GetString("LOCCommonAccountName") + " " + UserLogin;
+                    }
+                    else
+                    {
+                        PART_LbAuthenticate.Content = ResourceProvider.GetString("LOCCommonNotLoggedIn");
+                    }
                 }
-                else
-                {
-                    PART_LbAuthenticate.Content = ResourceProvider.GetString("LOCCommonNotLoggedIn");
-                }
+                catch { }
             }));
         }
         #endregion
@@ -622,6 +644,14 @@ namespace HowLongToBeat.Views
             try
             {
                 API.Instance.Database.Platforms.ItemUpdated -= Platforms_ItemUpdated;
+            }
+            catch { }
+            try
+            {
+                if (PluginDatabase?.HowLongToBeatApi != null)
+                {
+                    PluginDatabase.HowLongToBeatApi.PropertyChanged -= OnPropertyChanged;
+                }
             }
             catch { }
             try { this.Unloaded -= HowLongToBeatSettingsView_Unloaded; } catch { }

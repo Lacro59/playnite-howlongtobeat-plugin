@@ -4,16 +4,14 @@ using FuzzySharp;
 using HowLongToBeat.Models;
 using HowLongToBeat.Models.Enumerations;
 using HowLongToBeat.Models.StartPage;
-using HowLongToBeat.Services;
 using HowLongToBeat.Views;
 using Playnite.SDK;
 using Playnite.SDK.Data;
+using CommonPluginsShared;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime;
 using System.Threading.Tasks;
-using System.Web.Compilation;
 using System.Windows;
 using System.Windows.Media;
 
@@ -342,109 +340,133 @@ namespace HowLongToBeat
 
             _ = Task.Run(async () =>
             {
-                while (!API.Instance.Database.IsOpen)
-                {
-                    await Task.Delay(100).ConfigureAwait(false);
-                }
-
-                if (Settings.StorefrontElements.Count == 0)
-                {
-                    API.Instance.Database.Sources.ForEach(x =>
-                    {
-                        Settings.StorefrontElements.Add(new Storefront { SourceId = x.Id });
-                    });
-
-                    // TODO TMP
-                    if (!Settings.IsConverted)
-                    {
-                        Settings.Storefronts.ForEach(x =>
-                        {
-                            if (x.HltbStorefrontId != HltbStorefront.None)
-                            {
-                                if (Settings.StorefrontElements.Find(y => y.SourceId == x.SourceId) != null)
-                                {
-                                    Settings.StorefrontElements.Find(y => y.SourceId == x.SourceId).HltbStorefrontId = x.HltbStorefrontId;
-                                }
-                            }
-                        });
-                        Settings.IsConverted = true;
-                        try
-                        {
-                            Application.Current.Dispatcher?.Invoke(() => { Plugin.SavePluginSettings(Settings); });
-                        }
-                        catch { }
-                    }
-                }
-
-                // Delete missing source
-                Settings.StorefrontElements = Settings.StorefrontElements.Where(x => !x.SourceName.IsNullOrEmpty()).ToList();
-                Settings.StorefrontElements = Settings.StorefrontElements.OrderBy(x => x.SourceName).ToList();
-            });
-
-
-            if (Settings.Platforms.Count == 0)
-            {
-                _ = Task.Run(async () =>
+                try
                 {
                     while (!API.Instance.Database.IsOpen)
                     {
                         await Task.Delay(100).ConfigureAwait(false);
                     }
-                    API.Instance.Database.Platforms.ForEach(x =>
+
+                    if (Settings.StorefrontElements.Count == 0)
                     {
-                        foreach (HltbPlatform hltbPlatform in (HltbPlatform[])Enum.GetValues(typeof(HltbPlatform)))
+                        API.Instance.Database.Sources.ForEach(x =>
                         {
-                            string tmpName = string.Empty;
-                            if (x.Name.Contains("Sony", StringComparison.InvariantCultureIgnoreCase) && x.Name.Contains("PlayStation", StringComparison.InvariantCultureIgnoreCase))
-                            {
-                                tmpName = x.Name.Replace("Sony", "").Replace("sony", "").Trim();
-                            }
-                            if (x.Name.Contains("SNK", StringComparison.InvariantCultureIgnoreCase) && x.Name.Contains("Neo Geo", StringComparison.InvariantCultureIgnoreCase))
-                            {
-                                tmpName = x.Name.Replace("SNK", "").Replace("snk", "").Trim();
-                            }
-                            if (x.Name.Contains("Nintendo", StringComparison.InvariantCultureIgnoreCase))
-                            {
-                                tmpName = x.Name.Replace("Nintendo", "").Replace("nintendo", "").Trim();
-                            }
-                            if (x.Name.Contains("Microsoft", StringComparison.InvariantCultureIgnoreCase))
-                            {
-                                tmpName = x.Name.Replace("Microsoft", "").Replace("microsoft", "").Trim();
-                            }
+                            Settings.StorefrontElements.Add(new Storefront { SourceId = x.Id });
+                        });
 
-                            if (Fuzz.Ratio(x.Name, hltbPlatform.GetDescription()) >= 99 || Fuzz.Ratio(tmpName, hltbPlatform.GetDescription()) >= 99)
+                        // TODO TMP
+                        if (!Settings.IsConverted)
+                        {
+                            Settings.Storefronts.ForEach(x =>
                             {
-                                HltbPlatformMatch a = new HltbPlatformMatch
+                                if (x.HltbStorefrontId != HltbStorefront.None)
                                 {
-                                    HltbPlatform = hltbPlatform,
-                                    Platform = x
-                                };
-                                Settings.Platforms.Add(a);
+                                    if (Settings.StorefrontElements.Find(y => y.SourceId == x.SourceId) != null)
+                                    {
+                                        Settings.StorefrontElements.Find(y => y.SourceId == x.SourceId).HltbStorefrontId = x.HltbStorefrontId;
+                                    }
+                                }
+                            });
+                            Settings.IsConverted = true;
+                            try
+                            {
+                                Application.Current.Dispatcher?.Invoke(() => { Plugin.SavePluginSettings(Settings); });
                             }
-
-                            if (x.Name == "PC (DOS)" && hltbPlatform == HltbPlatform.PC)
+                            catch (Exception ex)
                             {
-                                HltbPlatformMatch a = new HltbPlatformMatch
-                                {
-                                    HltbPlatform = hltbPlatform,
-                                    Platform = x
-                                };
-                                Settings.Platforms.Add(a);
-                            }
-
-                            if (x.Name == "PC (Windows)" && hltbPlatform == HltbPlatform.PC)
-                            {
-                                HltbPlatformMatch a = new HltbPlatformMatch
-                                {
-                                    HltbPlatform = hltbPlatform,
-                                    Platform = x
-                                };
-                                Settings.Platforms.Add(a);
+                                Common.LogError(ex, false);
                             }
                         }
-                    });
-                });
-            }
+                    }
+
+                    // Delete missing source
+                    Settings.StorefrontElements = Settings.StorefrontElements.Where(x => !x.SourceName.IsNullOrEmpty()).ToList();
+                    Settings.StorefrontElements = Settings.StorefrontElements.OrderBy(x => x.SourceName).ToList();
+                }
+                catch (Exception ex)
+                {
+                    Common.LogError(ex, false);
+                }
+            });
+
+
+            if (Settings.Platforms.Count == 0)
+            {
+                 _ = Task.Run(async () =>
+                 {
+                    try
+                    {
+                        while (!API.Instance.Database.IsOpen)
+                        {
+                            await Task.Delay(100).ConfigureAwait(false);
+                        }
+                        API.Instance.Database.Platforms.ForEach(x =>
+                        {
+                            try
+                            {
+                                foreach (HltbPlatform hltbPlatform in (HltbPlatform[])Enum.GetValues(typeof(HltbPlatform)))
+                                {
+                                    string tmpName = string.Empty;
+                                    if (x.Name.Contains("Sony", StringComparison.InvariantCultureIgnoreCase) && x.Name.Contains("PlayStation", StringComparison.InvariantCultureIgnoreCase))
+                                    {
+                                        tmpName = x.Name.Replace("Sony", "").Replace("sony", "").Trim();
+                                    }
+                                    if (x.Name.Contains("SNK", StringComparison.InvariantCultureIgnoreCase) && x.Name.Contains("Neo Geo", StringComparison.InvariantCultureIgnoreCase))
+                                    {
+                                        tmpName = x.Name.Replace("SNK", "").Replace("snk", "").Trim();
+                                    }
+                                    if (x.Name.Contains("Nintendo", StringComparison.InvariantCultureIgnoreCase))
+                                    {
+                                        tmpName = x.Name.Replace("Nintendo", "").Replace("nintendo", "").Trim();
+                                    }
+                                    if (x.Name.Contains("Microsoft", StringComparison.InvariantCultureIgnoreCase))
+                                    {
+                                        tmpName = x.Name.Replace("Microsoft", "").Replace("microsoft", "").Trim();
+                                    }
+
+                                    if (Fuzz.Ratio(x.Name, hltbPlatform.GetDescription()) >= 99 || Fuzz.Ratio(tmpName, hltbPlatform.GetDescription()) >= 99)
+                                    {
+                                        HltbPlatformMatch a = new HltbPlatformMatch
+                                        {
+                                            HltbPlatform = hltbPlatform,
+                                            Platform = x
+                                        };
+                                        Settings.Platforms.Add(a);
+                                    }
+
+                                    if (x.Name == "PC (DOS)" && hltbPlatform == HltbPlatform.PC)
+                                    {
+                                        HltbPlatformMatch a = new HltbPlatformMatch
+                                        {
+                                            HltbPlatform = hltbPlatform,
+                                            Platform = x
+                                        };
+                                        Settings.Platforms.Add(a);
+                                    }
+
+                                    if (x.Name == "PC (Windows)" && hltbPlatform == HltbPlatform.PC)
+                                    {
+                                        HltbPlatformMatch a = new HltbPlatformMatch
+                                        {
+                                            HltbPlatform = hltbPlatform,
+                                            Platform = x
+                                        };
+                                        Settings.Platforms.Add(a);
+                                    }
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                Common.LogError(ex, false);
+                            }
+                        });
+                    }
+                    catch (Exception ex)
+                    {
+                        Common.LogError(ex, false);
+                    }
+                 });
+             }
 
             if (Settings.ThumbLinearGradient == null && Settings.ThumbSolidColorBrush == null)
             {

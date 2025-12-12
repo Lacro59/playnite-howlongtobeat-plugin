@@ -20,6 +20,12 @@
     <sys:String x:Key="LOCHowLongToBeatExportFolderTooltip">エクスポート先フォルダー</sys:String>
     <sys:String x:Key="LOCBrowseLabel">参照...</sys:String>
 
+    <sys:String x:Key="LOCExportSelectFolderFirst">まずエクスポートフォルダを選択してください。</sys:String>
+    <sys:String x:Key="LOCExportFolderNotExist">選択したフォルダは存在しません。</sys:String>
+    <sys:String x:Key="LOCExportedCsvMessage">{0} 件のゲームを CSV にエクスポートしました: {1} (区切り文字 '{2}')</sys:String>
+    <sys:String x:Key="LOCExportedJsonMessage">{0} 件のゲームを JSON にエクスポートしました: {1}</sys:String>
+    <sys:String x:Key="LOCExportFailedCount">{0} 件のゲームのエクスポートに失敗しました（ログを参照）。</sys:String>
+
     <sys:String x:Key="LOCHowLongToBeatColorSelection">色を選択:</sys:String>
 
     <sys:String x:Key="LOCHltbEnableProgressBarInDataView">View progress bar in Playnite data view</sys:String>
@@ -81,6 +87,7 @@ If none has this status, it takes the most recent.</sys:String>
     <sys:String x:Key="LOCHowLongToBeatPlaying">Playing</sys:String>
     <sys:String x:Key="LOCRefresh">更新</sys:String>
     <sys:String x:Key="LOCDelete">削除</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatCompletationStore">Games completed by storefront</sys:String>
 
     <!-- HowLongToBeat -->
 

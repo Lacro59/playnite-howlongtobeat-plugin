@@ -20,6 +20,12 @@
     <sys:String x:Key="LOCHowLongToBeatExportFolderTooltip">Cílová složka pro export</sys:String>
     <sys:String x:Key="LOCBrowseLabel">Procházet...</sys:String>
 
+    <sys:String x:Key="LOCExportSelectFolderFirst">Nejprve vyberte složku pro export.</sys:String>
+    <sys:String x:Key="LOCExportFolderNotExist">Vybraná složka neexistuje.</sys:String>
+    <sys:String x:Key="LOCExportedCsvMessage">{0} her exportováno do CSV: {1} (oddělovač '{2}')</sys:String>
+    <sys:String x:Key="LOCExportedJsonMessage">{0} her exportováno do JSON: {1}</sys:String>
+    <sys:String x:Key="LOCExportFailedCount">Export {0} her selhal (viz protokoly).</sys:String>
+
     <sys:String x:Key="LOCHowLongToBeatColorSelection">Color selection:</sys:String>
 
     <sys:String x:Key="LOCHltbEnableProgressBarInDataView">View progress bar in Playnite data view</sys:String>

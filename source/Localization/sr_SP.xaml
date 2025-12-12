@@ -18,7 +18,13 @@
     <sys:String x:Key="LOCHowLongToBeatExportCsvSemicolon">Извези CSV (тачка-запета)</sys:String>
     <sys:String x:Key="LOCHowLongToBeatExportJson">Извези JSON</sys:String>
     <sys:String x:Key="LOCHowLongToBeatExportFolderTooltip">Фолдер за извоз</sys:String>
-    <sys:String x:Key="LOCBrowseLabel">Претражи...</sys:String>
+    <sys:String x:Key="LOCBrowseLabel">Прегледај...</sys:String>
+
+    <sys:String x:Key="LOCExportSelectFolderFirst">Молимо изаберите фолдер за извоз прво.</sys:String>
+    <sys:String x:Key="LOCExportFolderNotExist">Изабрани фолдер не постоји.</sys:String>
+    <sys:String x:Key="LOCExportedCsvMessage">{0} игара је извршено у CSV: {1} (одвајач '{2}')</sys:String>
+    <sys:String x:Key="LOCExportedJsonMessage">{0} игара је извршено у JSON: {1}</sys:String>
+    <sys:String x:Key="LOCExportFailedCount">Извоз није успео за {0} игара (погледајте логове).</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatColorSelection">Color selection:</sys:String>
 

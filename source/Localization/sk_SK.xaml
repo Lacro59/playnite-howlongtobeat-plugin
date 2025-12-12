@@ -18,7 +18,13 @@
     <sys:String x:Key="LOCHowLongToBeatExportCsvSemicolon">Exportovať CSV (stredník)</sys:String>
     <sys:String x:Key="LOCHowLongToBeatExportJson">Exportovať JSON</sys:String>
     <sys:String x:Key="LOCHowLongToBeatExportFolderTooltip">Zložka exportu</sys:String>
-    <sys:String x:Key="LOCBrowseLabel">Prehliadať...</sys:String>
+    <sys:String x:Key="LOCBrowseLabel">Prehľadávať...</sys:String>
+
+    <sys:String x:Key="LOCExportSelectFolderFirst">Vyberte najprv priečinok pre export.</sys:String>
+    <sys:String x:Key="LOCExportFolderNotExist">Vybraný priečinok neexistuje.</sys:String>
+    <sys:String x:Key="LOCExportedCsvMessage">{0} hier bolo exportovaných do CSV: {1} (oddeľovač '{2}')</sys:String>
+    <sys:String x:Key="LOCExportedJsonMessage">{0} hier bolo exportovaných do JSON: {1}</sys:String>
+    <sys:String x:Key="LOCExportFailedCount">Export zlyhal pre {0} hier (pozrite si logy).</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatColorSelection">Color selection:</sys:String>
 

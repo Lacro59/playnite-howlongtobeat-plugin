@@ -20,6 +20,12 @@
     <sys:String x:Key="LOCHowLongToBeatExportFolderTooltip">Destination folder for export</sys:String>
     <sys:String x:Key="LOCBrowseLabel">Browse...</sys:String>
 
+    <sys:String x:Key="LOCExportSelectFolderFirst">Please select an export folder first.</sys:String>
+    <sys:String x:Key="LOCExportFolderNotExist">Selected folder does not exist.</sys:String>
+    <sys:String x:Key="LOCExportedCsvMessage">{0} games exported to CSV: {1} (delimiter '{2}')</sys:String>
+    <sys:String x:Key="LOCExportedJsonMessage">{0} games exported to JSON: {1}</sys:String>
+    <sys:String x:Key="LOCExportFailedCount">{0} games failed to export (see logs).</sys:String>
+
     <sys:String x:Key="LOCHowLongToBeatColorSelection">Color selection:</sys:String>
 
     <sys:String x:Key="LOCHltbEnableProgressBarInDataView">View progress bar in Playnite data view</sys:String>

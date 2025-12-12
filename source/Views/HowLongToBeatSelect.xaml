@@ -107,6 +107,28 @@
                                                 </Setter.Value>
                                         </Setter>
                                 </DataTrigger>
+
+                                <!-- When the containing ListBoxItem has keyboard focus, show a focus indicator similar to hover -->
+                                <DataTrigger Binding="{Binding IsKeyboardFocusWithin, RelativeSource={RelativeSource AncestorType=ListBoxItem}}"
+                                             Value="True">
+                                        <Setter Property="BorderBrush"
+                                                Value="{DynamicResource PrimaryButtonBackgroundBrush}"/>
+                                        <Setter Property="BorderThickness"
+                                                Value="1.5"/>
+                                        <Setter Property="Effect">
+                                                <Setter.Value>
+                                                        <DropShadowEffect Color="#22000000"
+                                                                          BlurRadius="8"
+                                                                          ShadowDepth="2"
+                                                                          Opacity="0.5"/>
+                                                </Setter.Value>
+                                        </Setter>
+                                        <Setter Property="RenderTransform">
+                                                <Setter.Value>
+                                                        <TranslateTransform Y="-2"/>
+                                                </Setter.Value>
+                                        </Setter>
+                                </DataTrigger>
                         </Style.Triggers>
                 </Style>
 
@@ -215,37 +237,35 @@
                 <!-- Make listbox items stretch to full width and remove default highlighting -->
                 <Style x:Key="ListBoxItemContainerStyle"
                        TargetType="ListBoxItem">
-                        <Setter Property="Padding"
-                                Value="0"/>
-                        <Setter Property="Margin"
-                                Value="0"/>
-                        <Setter Property="HorizontalContentAlignment"
-                                Value="Stretch"/>
-                        <Setter Property="VerticalContentAlignment"
-                                Value="Top"/>
-                        <Setter Property="Background"
-                                Value="Transparent"/>
-                        <Setter Property="FocusVisualStyle"
-                                Value="{x:Null}"/>
-                        <Setter Property="IsTabStop"
-                                Value="False"/>
-                        <Setter Property="Template">
-                                <Setter.Value>
-                                        <ControlTemplate TargetType="ListBoxItem">
-                                                <ContentPresenter/>
-                                        </ControlTemplate>
-                                </Setter.Value>
-                        </Setter>
-                        <EventSetter Event="PreviewMouseLeftButtonDown"
-                                     Handler="ListBoxItem_PreviewMouseLeftButtonDown"/>
-                        <Style.Triggers>
-                                <Trigger Property="IsMouseOver"
-                                         Value="True">
-                                        <Setter Property="Cursor"
-                                                Value="Hand"/>
-                                </Trigger>
-                        </Style.Triggers>
-                </Style>
+                         <Setter Property="Padding"
+                                 Value="0"/>
+                         <Setter Property="Margin"
+                                 Value="0"/>
+                         <Setter Property="HorizontalContentAlignment"
+                                 Value="Stretch"/>
+                         <Setter Property="VerticalContentAlignment"
+                                 Value="Top"/>
+                         <Setter Property="Background"
+                                 Value="Transparent"/>
+                         <!-- Keep items tabbable so keyboard users can navigate. Avoid removing focus visuals; use the ItemBorderStyle focus trigger above. -->
+                         <Setter Property="IsTabStop" Value="True"/>
+                         <Setter Property="Template">
+                                 <Setter.Value>
+                                         <ControlTemplate TargetType="ListBoxItem">
+                                                 <ContentPresenter/>
+                                         </ControlTemplate>
+                                 </Setter.Value>
+                         </Setter>
+                         <EventSetter Event="PreviewMouseLeftButtonDown"
+                                      Handler="ListBoxItem_PreviewMouseLeftButtonDown"/>
+                         <Style.Triggers>
+                                 <Trigger Property="IsMouseOver"
+                                          Value="True">
+                                         <Setter Property="Cursor"
+                                                 Value="Hand"/>
+                                 </Trigger>
+                         </Style.Triggers>
+                 </Style>
         </UserControl.Resources>
 
         <DockPanel LastChildFill="True"

@@ -1,4 +1,5 @@
 ﻿using CommonPluginsControls.LiveChartsCommon;
+using CommonPluginsShared;
 using CommonPluginsShared.Converters;
 using HowLongToBeat.Models;
 using HowLongToBeat.Models.StartPage;
@@ -58,9 +59,26 @@ namespace HowLongToBeat.Views.StartPage
 
         private async void Update()
         {
-            while (!PluginDatabase.IsLoaded)
+            int maxWaitMs = 30000;
+            int elapsed = 0;
+            try
             {
-                await Task.Delay(100).ConfigureAwait(false);
+                while (!PluginDatabase.IsLoaded && elapsed < maxWaitMs)
+                {
+                    await Task.Delay(100).ConfigureAwait(false);
+                    elapsed += 100;
+                }
+
+                if (!PluginDatabase.IsLoaded)
+                {
+                    try { Common.LogDebug(true, "HltbChartStats: Database not loaded after timeout"); } catch { }
+                    return;
+                }
+            }
+            catch (Exception ex)
+            {
+                try { Common.LogError(ex, false, true, PluginDatabase.PluginName); } catch { }
+                return;
             }
 
             ControlDataContext.Margin = PluginDatabase.PluginSettings.Settings.hltbChartStatsOptions.Margin;

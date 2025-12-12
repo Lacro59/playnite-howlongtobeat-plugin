@@ -21,6 +21,12 @@
     <sys:String x:Key="LOCHowLongToBeatExportFolderTooltip">תיקיית יעד לייצוא</sys:String>
     <sys:String x:Key="LOCBrowseLabel">עיון...</sys:String>
 
+    <sys:String x:Key="LOCExportSelectFolderFirst">אנא בחר תיקיית ייצוא תחילה.</sys:String>
+    <sys:String x:Key="LOCExportFolderNotExist">התיקייה שנבחרה אינה קיימת.</sys:String>
+    <sys:String x:Key="LOCExportedCsvMessage">{0} משחקים ייצאו ל-CSV: {1} (מפריד '{2}')</sys:String>
+    <sys:String x:Key="LOCExportedJsonMessage">{0} משחקים ייצאו ל-JSON: {1}</sys:String>
+    <sys:String x:Key="LOCExportFailedCount">ייצוא נכשל עבור {0} משחקים (ראה לוגים).</sys:String>
+
     <sys:String x:Key="LOCHowLongToBeatColorSelection">Color selection:</sys:String>
 
     <sys:String x:Key="LOCHltbEnableProgressBarInDataView">View progress bar in Playnite data view</sys:String>

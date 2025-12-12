@@ -1,4 +1,5 @@
-﻿using CommonPluginsShared.Collections;
+﻿using CommonPluginsShared;
+using CommonPluginsShared.Collections;
 using CommonPluginsShared.Controls;
 using CommonPluginsShared.Converters;
 using CommonPluginsShared.Interfaces;
@@ -9,7 +10,9 @@ using Playnite.SDK.Models;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace HowLongToBeat.Controls
 {
@@ -22,9 +25,11 @@ namespace HowLongToBeat.Controls
         protected override IDataContext controlDataContext
         {
             get => ControlDataContext;
-            set => ControlDataContext = (PluginViewItemDataContext)value;
+            set => ControlDataContext = value as PluginViewItemDataContext
+                ?? throw new InvalidCastException($"Expected {nameof(PluginViewItemDataContext)}");
         }
 
+        private CancellationTokenSource _loadedCts;
 
         public PluginViewItem()
         {
@@ -33,28 +38,84 @@ namespace HowLongToBeat.Controls
 
             // Use async Loaded handler to perform awaited initialization without compiler warnings
             this.Loaded += PluginViewItem_Loaded;
+            this.Unloaded += PluginViewItem_Unloaded;
         }
 
         private async void PluginViewItem_Loaded(object sender, EventArgs e)
         {
             this.Loaded -= PluginViewItem_Loaded;
 
-            while (!PluginDatabase.IsLoaded)
+            // Create CTS tied to this control's lifetime
+            _loadedCts?.Dispose();
+            _loadedCts = new CancellationTokenSource();
+
+            try
             {
-                await Task.Delay(100).ConfigureAwait(false);
+                // Wait for PluginDatabase to be loaded with timeout and cancellation support
+                using (var timeoutCts = new CancellationTokenSource(TimeSpan.FromSeconds(10)))
+                using (var linked = CancellationTokenSource.CreateLinkedTokenSource(_loadedCts.Token, timeoutCts.Token))
+                {
+                    while (!PluginDatabase.IsLoaded)
+                    {
+                        if (linked.Token.IsCancellationRequested)
+                        {
+                            throw new OperationCanceledException();
+                        }
+                        await Task.Delay(100, linked.Token).ConfigureAwait(false);
+                    }
+                }
+
+                // Ensure the registration runs on the UI thread and await its completion
+                await this.Dispatcher.InvokeAsync((Action)delegate
+                {
+                    try { PluginDatabase.PluginSettings.PropertyChanged += PluginSettings_PropertyChanged; } catch { }
+                    try { PluginDatabase.Database.ItemUpdated += Database_ItemUpdated; } catch { }
+                    try { PluginDatabase.Database.ItemCollectionChanged += Database_ItemCollectionChanged; } catch { }
+                    try { API.Instance.Database.Games.ItemUpdated += Games_ItemUpdated; } catch { }
+
+                    // Apply settings
+                    try { PluginSettings_PropertyChanged(null, null); } catch { }
+                }).Task.ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                // Timeout or control unloaded before initialization completed - bail out gracefully
+                try { Common.LogDebug(true, "PluginViewItem initialization cancelled or timed out"); } catch { }
+            }
+            catch (Exception ex)
+            {
+                try { Common.LogError(ex, false, true, PluginDatabase.PluginName); } catch { }
+            }
+        }
+
+        private void PluginViewItem_Unloaded(object sender, RoutedEventArgs e)
+        {
+            try { this.Unloaded -= PluginViewItem_Unloaded; } catch { }
+
+            try
+            {
+                // Cancel any pending initialization waits
+                _loadedCts?.Cancel();
+            }
+            catch { }
+            finally
+            {
+                try { _loadedCts?.Dispose(); } catch { }
+                _loadedCts = null;
             }
 
-            // Ensure the registration runs on the UI thread and await its completion
-            await this.Dispatcher.InvokeAsync((Action)delegate
+            // Unsubscribe global handlers to avoid leaks
+            try
             {
-                PluginDatabase.PluginSettings.PropertyChanged += PluginSettings_PropertyChanged;
-                PluginDatabase.Database.ItemUpdated += Database_ItemUpdated;
-                PluginDatabase.Database.ItemCollectionChanged += Database_ItemCollectionChanged;
-                API.Instance.Database.Games.ItemUpdated += Games_ItemUpdated;
-
-                // Apply settings
-                PluginSettings_PropertyChanged(null, null);
-            }).Task.ConfigureAwait(false);
+                this.Dispatcher.Invoke(() =>
+                {
+                    try { PluginDatabase.PluginSettings.PropertyChanged -= PluginSettings_PropertyChanged; } catch { }
+                    try { PluginDatabase.Database.ItemUpdated -= Database_ItemUpdated; } catch { }
+                    try { PluginDatabase.Database.ItemCollectionChanged -= Database_ItemCollectionChanged; } catch { }
+                    try { API.Instance.Database.Games.ItemUpdated -= Games_ItemUpdated; } catch { }
+                });
+            }
+            catch { }
         }
 
 

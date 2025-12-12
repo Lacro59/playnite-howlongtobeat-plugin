@@ -19,6 +19,12 @@
     <sys:String x:Key="LOCHowLongToBeatExportJson">Εξαγωγή JSON</sys:String>
     <sys:String x:Key="LOCHowLongToBeatExportFolderTooltip">Φάκελος προορισμού για εξαγωγή</sys:String>
     <sys:String x:Key="LOCBrowseLabel">Αναζήτηση...</sys:String>
+ 
+    <sys:String x:Key="LOCExportSelectFolderFirst">Παρακαλώ επιλέξτε πρώτα έναν φάκελο εξαγωγής.</sys:String>
+    <sys:String x:Key="LOCExportFolderNotExist">Ο επιλεγμένος φάκελος δεν υπάρχει.</sys:String>
+    <sys:String x:Key="LOCExportedCsvMessage">{0} παιχνίδια εξήχθησαν σε CSV: {1} (διαχωριστικό '{2}')</sys:String>
+    <sys:String x:Key="LOCExportedJsonMessage">{0} παιχνίδια εξήχθησαν σε JSON: {1}</sys:String>
+    <sys:String x:Key="LOCExportFailedCount">Η εξαγωγή απέτυχε για {0} παιχνίδια (δείτε τα αρχεία καταγραφής).</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatColorSelection">Επιλογή χρώματος:</sys:String>
 

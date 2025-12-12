@@ -21,6 +21,12 @@
     <sys:String x:Key="LOCHowLongToBeatExportFolderTooltip">Folder ekspor</sys:String>
     <sys:String x:Key="LOCBrowseLabel">Telusuri...</sys:String>
 
+    <sys:String x:Key="LOCExportSelectFolderFirst">Silakan pilih folder ekspor terlebih dahulu.</sys:String>
+    <sys:String x:Key="LOCExportFolderNotExist">Folder yang dipilih tidak ada.</sys:String>
+    <sys:String x:Key="LOCExportedCsvMessage">{0} game diekspor ke CSV: {1} (delimiter '{2}')</sys:String>
+    <sys:String x:Key="LOCExportedJsonMessage">{0} game diekspor ke JSON: {1}</sys:String>
+    <sys:String x:Key="LOCExportFailedCount">Gagal mengekspor {0} game (lihat log).</sys:String>
+
     <sys:String x:Key="LOCHowLongToBeatColorSelection">Color selection:</sys:String>
 
     <sys:String x:Key="LOCHltbEnableProgressBarInDataView">View progress bar in Playnite data view</sys:String>

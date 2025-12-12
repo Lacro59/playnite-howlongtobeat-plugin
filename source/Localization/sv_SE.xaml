@@ -20,6 +20,12 @@
     <sys:String x:Key="LOCHowLongToBeatExportFolderTooltip">Mapp för export</sys:String>
     <sys:String x:Key="LOCBrowseLabel">Bläddra...</sys:String>
 
+    <sys:String x:Key="LOCExportSelectFolderFirst">Vänligen välj en exportmapp först.</sys:String>
+    <sys:String x:Key="LOCExportFolderNotExist">Den valda mappen finns inte.</sys:String>
+    <sys:String x:Key="LOCExportedCsvMessage">{0} spel exporterades till CSV: {1} (avgränsare '{2}')</sys:String>
+    <sys:String x:Key="LOCExportedJsonMessage">{0} spel exporterades till JSON: {1}</sys:String>
+    <sys:String x:Key="LOCExportFailedCount">Exporten misslyckades för {0} spel (se loggar).</sys:String>
+
     <sys:String x:Key="LOCHowLongToBeatColorSelection">Color selection:</sys:String>
 
     <sys:String x:Key="LOCHltbEnableProgressBarInDataView">View progress bar in Playnite data view</sys:String>

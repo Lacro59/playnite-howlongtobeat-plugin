@@ -141,8 +141,9 @@ namespace HowLongToBeat.Services
 
         private const int MaxParallelSearches = 96;
 
-        private readonly ConcurrentDictionary<string, string> GamePageCache = new ConcurrentDictionary<string, string>();
-        private readonly ConcurrentDictionary<string, SearchResult> SearchCache = new ConcurrentDictionary<string, SearchResult>();
+        // Replace unbounded dictionaries with bounded LRU caches to avoid unbounded memory growth
+        private readonly LruCache<string, string> GamePageCache;
+        private readonly LruCache<string, SearchResult> SearchCache;
         private SemaphoreSlim SearchSemaphore;
         private AdaptiveConcurrencyController SearchConcurrencyController;
         private readonly object SearchConcurrencySync = new object();
@@ -289,6 +290,11 @@ namespace HowLongToBeat.Services
                 Common.LogError(ex, false);
                 try { Logger.Warn("HLTB: PageCache init failed; proceeding without persistent cache"); } catch { }
             }
+
+            // Configure bounded in-memory caches to avoid unbounded growth during large imports
+            // Sizes are conservative defaults; can be tuned via settings later.
+            GamePageCache = new LruCache<string, string>(capacity: 2000, ttl: TimeSpan.FromHours(6));
+            SearchCache = new LruCache<string, SearchResult>(capacity: 2000, ttl: TimeSpan.FromHours(6));
 
             try
             {
@@ -821,9 +827,21 @@ namespace HowLongToBeat.Services
         {
             try
             {
-                if (!string.IsNullOrEmpty(CachedAuthToken) && DateTime.UtcNow < CachedAuthTokenExpiry)
+                // Double-checked locking: quick snapshot first to avoid locking in common case
+                var snapshotToken = CachedAuthToken;
+                var snapshotExpiry = CachedAuthTokenExpiry;
+                if (!string.IsNullOrEmpty(snapshotToken) && DateTime.UtcNow < snapshotExpiry)
                 {
-                    return CachedAuthToken;
+                    return snapshotToken;
+                }
+
+                // Re-check under lock to avoid race with a concurrent writer
+                lock (AuthTokenSync)
+                {
+                    if (!string.IsNullOrEmpty(CachedAuthToken) && DateTime.UtcNow < CachedAuthTokenExpiry)
+                    {
+                        return CachedAuthToken;
+                    }
                 }
 
                 List<HttpHeader> headers = new List<HttpHeader>
@@ -838,6 +856,7 @@ namespace HowLongToBeat.Services
                 {
                     lock (AuthTokenSync)
                     {
+                        // Final re-check before writing to shared fields
                         if (!string.IsNullOrEmpty(CachedAuthToken) && DateTime.UtcNow < CachedAuthTokenExpiry)
                         {
                             return CachedAuthToken;
@@ -1130,7 +1149,8 @@ namespace HowLongToBeat.Services
                     }
 
                     var sw = Stopwatch.StartNew();
-                    var postResult = await Web.PostJsonWithSharedClientWithStatus(UrlBase + searchUrl, serializedBody, httpHeaders);
+                    // Use local helper to avoid dependency on optional CommonPluginsShared submodule.
+                    var postResult = await PostJsonWithSharedClientWithStatus(UrlBase + searchUrl, serializedBody, httpHeaders);
                     sw.Stop();
                     string json = postResult?.Item1 ?? string.Empty;
                     int statusCode = postResult?.Item2 ?? 0;
@@ -1961,8 +1981,22 @@ namespace HowLongToBeat.Services
                     catch { handler = new HttpClientHandler(); }
                 }
 
-                using (var client = handler != null ? new HttpClient(handler) : new HttpClient())
+                HttpClient client = null;
+                bool disposeClient = false;
+                try
                 {
+                    if (handler != null)
+                    {
+                        client = new HttpClient(handler);
+                        disposeClient = true;
+                    }
+                    else
+                    {
+                        // Reuse the shared instance-level httpClient to avoid socket exhaustion
+                        client = httpClient ?? new HttpClient();
+                        disposeClient = false;
+                    }
+
                     try { client.DefaultRequestHeaders.Add("User-Agent", Web.UserAgent); } catch { }
                     try { client.DefaultRequestHeaders.Add("accept", "application/json, text/javascript, */*; q=0.01"); } catch { }
 
@@ -1978,11 +2012,78 @@ namespace HowLongToBeat.Services
                         return await resp.Content.ReadAsStringAsync().ConfigureAwait(false);
                     }
                 }
+                finally
+                {
+                    if (disposeClient && client != null)
+                    {
+                        try { client.Dispose(); } catch { }
+                    }
+                }
             }
             catch (Exception ex)
             {
                 Common.LogError(ex, false, $"Error posting to {url}");
                 return string.Empty;
+            }
+        }
+
+        /// <summary>
+        /// Posts JSON payload using shared HttpClient and returns tuple (responseBody, statusCode, retryAfterHeader).
+        /// This is a local replacement for CommonPluginsShared.Web.PostJsonWithSharedClientWithStatus when the submodule isn't available.
+        /// </summary>
+        private async Task<Tuple<string, int, string>> PostJsonWithSharedClientWithStatus(string url, string payload, List<HttpHeader> headers = null)
+        {
+            try
+            {
+                using (var request = new HttpRequestMessage(HttpMethod.Post, url))
+                {
+                    request.Content = new StringContent(payload ?? string.Empty, Encoding.UTF8, "application/json");
+
+                    if (headers != null)
+                    {
+                        foreach (var h in headers)
+                        {
+                            try
+                            {
+                                // Try to add to request headers; if invalid, try content headers
+                                if (!request.Headers.TryAddWithoutValidation(h.Key, h.Value))
+                                {
+                                    try { request.Content?.Headers.TryAddWithoutValidation(h.Key, h.Value); } catch { }
+                                }
+                            }
+                            catch { }
+                        }
+                    }
+
+                    using (var resp = await httpClient.SendAsync(request).ConfigureAwait(false))
+                    {
+                        int status = (int)resp.StatusCode;
+                        string retry = null;
+                        try
+                        {
+                            if (resp.Headers.TryGetValues("Retry-After", out var vals))
+                            {
+                                retry = vals.FirstOrDefault();
+                            }
+                        }
+                        catch { }
+
+                        string body = string.Empty;
+                        try { body = await resp.Content.ReadAsStringAsync().ConfigureAwait(false); } catch { body = string.Empty; }
+
+                        if (!resp.IsSuccessStatusCode)
+                        {
+                            try { Logger.Warn($"HTTP {status} posting to {url}"); } catch { }
+                        }
+
+                        return Tuple.Create(body, status, retry);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, false, $"Error posting to {url}");
+                return Tuple.Create(string.Empty, 0, (string)null);
             }
         }
         private static readonly Regex _scriptSrcRegex = new Regex("<script[^>]*src=[\\\"']([^\\\"']+)[\\\"'][^>]*>", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);

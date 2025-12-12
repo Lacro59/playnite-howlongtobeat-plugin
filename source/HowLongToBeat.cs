@@ -669,18 +669,45 @@ namespace HowLongToBeat
         // Add code to be executed when Playnite is initialized.
         public override void OnApplicationStarted(OnApplicationStartedEventArgs args)
         {
-            _ = Task.Run(() =>
+            try
             {
                 try
                 {
+                    var initTask = CommonPluginsShared.Web.InitializeAsync(createInBackground: true);
+                    initTask.ContinueWith(t =>
+                    {
+                        if (t.IsFaulted)
+                        {
+                            try { Common.LogError(t.Exception?.GetBaseException() ?? new Exception("Web.InitializeAsync failed"), false, "Web initialization"); } catch { }
+                        }
+                    }, TaskScheduler.Default);
+                }
+                catch { }
+
+                try
+                {
                     PluginDatabase.InitializeClient(this);
-                    try { PluginDatabase.HowLongToBeatApi?.UpdatedCookies(); } catch { }
                 }
                 catch (Exception ex)
                 {
                     Common.LogError(ex, false, true, PluginDatabase.PluginName);
                 }
-            });
+
+                // Run expensive/optional cookie refresh in background to avoid blocking startup.
+                // Catch and log any exceptions to prevent unobserved task exceptions.
+                _ = Task.Run(() =>
+                {
+                    try
+                    {
+                        PluginDatabase.HowLongToBeatApi?.UpdatedCookies();
+                    }
+                    catch (Exception ex)
+                    {
+                        Common.LogError(ex, false, true, PluginDatabase.PluginName);
+                    }
+                });
+            }
+            catch { }
 
             _ = Task.Run(() =>
              {
@@ -699,7 +726,17 @@ namespace HowLongToBeat
                  HltbCommand.Actions.Add(HltbSubItemsAction);
                  _ = QuickSearch.QuickSearchSDK.AddCommand(HltbCommand);
              }
-             catch { }
+             catch (Exception ex)
+             {
+                 try
+                 {
+                     if (PluginDatabase?.PluginSettings?.Settings is HowLongToBeatSettings s && s.EnableVerboseLogging)
+                     {
+                         Common.LogError(ex, false, true, PluginDatabase.PluginName);
+                     }
+                 }
+                 catch { }
+             }
 
 
             // TEMP Database convert

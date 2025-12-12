@@ -20,6 +20,12 @@
     <sys:String x:Key="LOCHowLongToBeatExportFolderTooltip">پوشه مقصد برای صدور</sys:String>
     <sys:String x:Key="LOCBrowseLabel">مرور...</sys:String>
 
+    <sys:String x:Key="LOCExportSelectFolderFirst">لطفاً ابتدا یک پوشه خروجی انتخاب کنید.</sys:String>
+    <sys:String x:Key="LOCExportFolderNotExist">پوشه انتخاب شده وجود ندارد.</sys:String>
+    <sys:String x:Key="LOCExportedCsvMessage">{0} بازی به CSV صادر شد: {1} (جداساز '{2}')</sys:String>
+    <sys:String x:Key="LOCExportedJsonMessage">{0} بازی به JSON صادر شد: {1}</sys:String>
+    <sys:String x:Key="LOCExportFailedCount">صدور {0} بازی با خطا مواجه شد (به لاگ‌ها مراجعه کنید).</sys:String>
+
     <sys:String x:Key="LOCHowLongToBeatColorSelection">Color selection:</sys:String>
 
     <sys:String x:Key="LOCHltbEnableProgressBarInDataView">View progress bar in Playnite data view</sys:String>

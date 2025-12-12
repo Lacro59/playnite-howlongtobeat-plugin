@@ -20,6 +20,12 @@
     <sys:String x:Key="LOCHowLongToBeatExportFolderTooltip">导出目标文件夹</sys:String>
     <sys:String x:Key="LOCBrowseLabel">浏览...</sys:String>
 
+    <sys:String x:Key="LOCExportSelectFolderFirst">请先选择一个导出文件夹。</sys:String>
+    <sys:String x:Key="LOCExportFolderNotExist">所选文件夹不存在。</sys:String>
+    <sys:String x:Key="LOCExportedCsvMessage">已将 {0} 个游戏导出为 CSV：{1}（分隔符 '{2}'）</sys:String>
+    <sys:String x:Key="LOCExportedJsonMessage">已将 {0} 个游戏导出为 JSON：{1}</sys:String>
+    <sys:String x:Key="LOCExportFailedCount">导出 {0} 个游戏失败（查看日志）。</sys:String>
+
     <sys:String x:Key="LOCHowLongToBeatColorSelection">色彩管理：</sys:String>
 
     <sys:String x:Key="LOCHltbEnableProgressBarInDataView">在 Playnite 数据视图中查看进度</sys:String>

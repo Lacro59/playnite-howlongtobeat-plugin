@@ -20,6 +20,12 @@
     <sys:String x:Key="LOCHowLongToBeatExportFolderTooltip">Cartella di destinazione per l'esportazione</sys:String>
     <sys:String x:Key="LOCBrowseLabel">Sfoglia...</sys:String>
 
+    <sys:String x:Key="LOCExportSelectFolderFirst">Seleziona prima una cartella di esportazione.</sys:String>
+    <sys:String x:Key="LOCExportFolderNotExist">La cartella selezionata non esiste.</sys:String>
+    <sys:String x:Key="LOCExportedCsvMessage">{0} giochi esportati in CSV: {1} (separatore '{2}')</sys:String>
+    <sys:String x:Key="LOCExportedJsonMessage">{0} giochi esportati in JSON: {1}</sys:String>
+    <sys:String x:Key="LOCExportFailedCount">Errore nell'esportazione di {0} giochi (vedi i log).</sys:String>
+
     <sys:String x:Key="LOCHowLongToBeatColorSelection">Selezione colore:</sys:String>
 
     <sys:String x:Key="LOCHltbEnableProgressBarInDataView">Visualizza la barra di avanzamento nella visualizzazione dati Playnite</sys:String>
@@ -95,6 +101,7 @@ Se nessuno ha questo stato, richiede il più recente.</sys:String>
     <sys:String x:Key="LocHowLongToBeatPlayniteData">Dati playnite</sys:String>
     <sys:String x:Key="LOCHowLongToBeatCompleted">Completato</sys:String>
 
+    <sys:String x:Key="LOCHowLongToBeatCompletions">Completamenti</sys:String>
     <sys:String x:Key="LOCHltbOnlyReplays">Solo replay</sys:String>
     <sys:String x:Key="LOCHltbOnlyNotPlayed">Solo non giocato</sys:String>
 

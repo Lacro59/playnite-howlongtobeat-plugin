@@ -18,7 +18,13 @@
     <sys:String x:Key="LOCHowLongToBeatExportCsvSemicolon">Exporta CSV (punt i coma)</sys:String>
     <sys:String x:Key="LOCHowLongToBeatExportJson">Exporta JSON</sys:String>
     <sys:String x:Key="LOCHowLongToBeatExportFolderTooltip">Carpeta de destinació per a l'exportació</sys:String>
-    <sys:String x:Key="LOCBrowseLabel">Browse...</sys:String>
+    <sys:String x:Key="LOCBrowseLabel">Navega...</sys:String>
+
+    <sys:String x:Key="LOCExportSelectFolderFirst">Si us plau seleccioneu una carpeta d'exportació primer.</sys:String>
+    <sys:String x:Key="LOCExportFolderNotExist">La carpeta seleccionada no existeix.</sys:String>
+    <sys:String x:Key="LOCExportedCsvMessage">{0} jocs exportats a CSV: {1} (delimitador '{2}')</sys:String>
+    <sys:String x:Key="LOCExportedJsonMessage">{0} jocs exportats a JSON: {1}</sys:String>
+    <sys:String x:Key="LOCExportFailedCount">{0} jocs no s'han pogut exportar (vegeu els registres).</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatColorSelection">Color selection:</sys:String>
 

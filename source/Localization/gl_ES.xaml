@@ -18,7 +18,13 @@
     <sys:String x:Key="LOCHowLongToBeatExportCsvSemicolon">Exportar CSV (punto e coma)</sys:String>
     <sys:String x:Key="LOCHowLongToBeatExportJson">Exportar JSON</sys:String>
     <sys:String x:Key="LOCHowLongToBeatExportFolderTooltip">Cartafol de exportación</sys:String>
-    <sys:String x:Key="LOCBrowseLabel">Navegar...</sys:String>
+    <sys:String x:Key="LOCBrowseLabel">Explorar...</sys:String>
+
+    <sys:String x:Key="LOCExportSelectFolderFirst">Seleccione primeiro unha carpeta de exportación.</sys:String>
+    <sys:String x:Key="LOCExportFolderNotExist">A carpeta seleccionada non existe.</sys:String>
+    <sys:String x:Key="LOCExportedCsvMessage">{0} xogos exportados a CSV: {1} (separador '{2}')</sys:String>
+    <sys:String x:Key="LOCExportedJsonMessage">{0} xogos exportados a JSON: {1}</sys:String>
+    <sys:String x:Key="LOCExportFailedCount">Erro ao exportar {0} xogos (ver rexistros).</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatColorSelection">Color selection:</sys:String>
 
@@ -86,6 +92,7 @@ If none has this status, it takes the most recent.</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatProgression">Progression</sys:String>
 
+    <sys:String x:Key="LOCHowLongToBeatCompleted">Completed</sys:String>
     <!-- HowLongToBeatUserView -->
 
     <sys:String x:Key="LOCHowLongToBeatCompletationStore">Games completed by storefront</sys:String>

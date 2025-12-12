@@ -18,7 +18,13 @@
     <sys:String x:Key="LOCHowLongToBeatExportCsvSemicolon">Exportă CSV (punct și virgulă)</sys:String>
     <sys:String x:Key="LOCHowLongToBeatExportJson">Exportă JSON</sys:String>
     <sys:String x:Key="LOCHowLongToBeatExportFolderTooltip">Dosar de export</sys:String>
-    <sys:String x:Key="LOCBrowseLabel">Răsfoiți...</sys:String>
+    <sys:String x:Key="LOCBrowseLabel">Răsfoiește...</sys:String>
+
+    <sys:String x:Key="LOCExportSelectFolderFirst">Vă rugăm selectați mai întâi un folder de export.</sys:String>
+    <sys:String x:Key="LOCExportFolderNotExist">Folderul selectat nu există.</sys:String>
+    <sys:String x:Key="LOCExportedCsvMessage">{0} jocuri exportate în CSV: {1} (separator '{2}')</sys:String>
+    <sys:String x:Key="LOCExportedJsonMessage">{0} jocuri exportate în JSON: {1}</sys:String>
+    <sys:String x:Key="LOCExportFailedCount">Exportul a eșuat pentru {0} jocuri (vedeți jurnalele).</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatColorSelection">Color selection:</sys:String>
 

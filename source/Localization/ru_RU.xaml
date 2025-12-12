@@ -20,6 +20,12 @@
     <sys:String x:Key="LOCHowLongToBeatExportFolderTooltip">Папка назначения для экспорта</sys:String>
     <sys:String x:Key="LOCBrowseLabel">Обзор...</sys:String>
 
+    <sys:String x:Key="LOCExportSelectFolderFirst">Пожалуйста, сначала выберите папку для экспорта.</sys:String>
+    <sys:String x:Key="LOCExportFolderNotExist">Выбранная папка не существует.</sys:String>
+    <sys:String x:Key="LOCExportedCsvMessage">{0} игр экспортировано в CSV: {1} (разделитель '{2}')</sys:String>
+    <sys:String x:Key="LOCExportedJsonMessage">{0} игр экспортировано в JSON: {1}</sys:String>
+    <sys:String x:Key="LOCExportFailedCount">Не удалось экспортировать {0} игр (см. логи).</sys:String>
+
     <sys:String x:Key="LOCHowLongToBeatColorSelection">Выбор цвета:</sys:String>
 
     <sys:String x:Key="LOCHltbEnableProgressBarInDataView">Просмотр индикатора прогресса при просмотре данных Playnite</sys:String>

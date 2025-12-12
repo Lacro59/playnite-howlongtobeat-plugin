@@ -72,6 +72,22 @@ namespace HowLongToBeat.Views
 
         private static readonly HttpClient _sharedHttpClient = new HttpClient();
 
+        static HowLongToBeatView()
+        {
+            try
+            {
+                var ua = CommonPluginsShared.Web.UserAgent;
+                if (!string.IsNullOrEmpty(ua))
+                {
+                    if (!_sharedHttpClient.DefaultRequestHeaders.UserAgent.TryParseAdd(ua))
+                    {
+                        try { _sharedHttpClient.DefaultRequestHeaders.Add("User-Agent", ua); } catch { }
+                    }
+                }
+            }
+            catch { }
+        }
+
         private async Task LoadCoverAsync(string path, CancellationToken token)
         {
             try
@@ -117,55 +133,46 @@ namespace HowLongToBeat.Views
                 }
 
                 byte[] bytes = null;
+
                 if (Uri.IsWellFormedUriString(path, UriKind.Absolute) && (path.StartsWith("http:", StringComparison.OrdinalIgnoreCase) || path.StartsWith("https:", StringComparison.OrdinalIgnoreCase)))
-                {
-                    Common.LogDebug(true, $"LoadCoverAsync: applying remote Uri directly '{path}' on UI thread");
-                    if (Dispatcher != null)
-                    {
-                        await Dispatcher.InvokeAsync(new Action(() =>
-                        {
-                            try
-                            {
-                                var b = new BitmapImage();
-                                b.BeginInit();
-                                b.UriSource = new Uri(path, UriKind.Absolute);
-                                b.CacheOption = BitmapCacheOption.OnLoad;
-                                b.CreateOptions = BitmapCreateOptions.None;
-                                b.EndInit();
-                                img.Source = b;
-
-                                var opacityAnimation = new DoubleAnimation(0, 1, TimeSpan.FromMilliseconds(300));
-                                img.BeginAnimation(UIElement.OpacityProperty, opacityAnimation);
-
-                                if (img.Effect is BlurEffect blur3)
-                                {
-                                    var blurAnimation = new DoubleAnimation(8, 0, TimeSpan.FromMilliseconds(400)) { EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut } };
-                                    blur3.BeginAnimation(BlurEffect.RadiusProperty, blurAnimation);
-                                }
-
-                                Common.LogDebug(true, "LoadCoverAsync: remote Uri applied to control");
-                            }
-                            catch (Exception ex)
-                            {
-                                Common.LogError(ex, false, true, PluginDatabase.PluginName);
-                            }
-                        }));
-                    }
-
-                    return;
-                }
-
-                if (File.Exists(path))
-                {
-                    Common.LogDebug(true, $"LoadCoverAsync: loading local file '{path}'");
-                    bytes = await Task.Run(() => File.ReadAllBytes(path));
-                }
-                else if (Uri.IsWellFormedUriString(path, UriKind.Absolute))
                 {
                     Common.LogDebug(true, $"LoadCoverAsync: downloading remote url '{path}'");
                     try
                     {
-                        bytes = await _sharedHttpClient.GetByteArrayAsync(path);
+                        using (var resp = await _sharedHttpClient.GetAsync(path, HttpCompletionOption.ResponseContentRead, token).ConfigureAwait(false))
+                        {
+                            if (!resp.IsSuccessStatusCode)
+                            {
+                                Common.LogDebug(true, $"LoadCoverAsync: HTTP {(int)resp.StatusCode} for '{path}'");
+                            }
+                            else
+                            {
+                                bytes = await resp.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
+                            }
+                        }
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        Common.LogDebug(true, "LoadCoverAsync: cancelled during download");
+                        return;
+                    }
+                    catch (Exception ex)
+                    {
+                        Common.LogError(ex, false, true, PluginDatabase.PluginName);
+                        bytes = null;
+                    }
+                }
+                else if (File.Exists(path))
+                {
+                    Common.LogDebug(true, $"LoadCoverAsync: loading local file '{path}'");
+                    try
+                    {
+                        bytes = await Task.Run(() => File.ReadAllBytes(path), token).ConfigureAwait(false);
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        Common.LogDebug(true, "LoadCoverAsync: cancelled during file read");
+                        return;
                     }
                     catch (Exception ex)
                     {
@@ -178,7 +185,12 @@ namespace HowLongToBeat.Views
                     Common.LogDebug(true, $"LoadCoverAsync: attempting read relative path '{path}'");
                     try
                     {
-                        bytes = await Task.Run(() => File.ReadAllBytes(path));
+                        bytes = await Task.Run(() => File.ReadAllBytes(path), token).ConfigureAwait(false);
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        Common.LogDebug(true, "LoadCoverAsync: cancelled during relative file read");
+                        return;
                     }
                     catch (Exception ex)
                     {
@@ -204,28 +216,44 @@ namespace HowLongToBeat.Views
                 }
 
                 BitmapImage bmp = null;
-                await Task.Run(() =>
+                if (bytes != null && bytes.Length > 0)
                 {
                     try
                     {
-                        using (var ms = new MemoryStream(bytes))
+                        bmp = await Task.Run(() =>
                         {
-                            var b = new BitmapImage();
-                            b.BeginInit();
-                            b.CacheOption = BitmapCacheOption.OnLoad;
-                            b.CreateOptions = BitmapCreateOptions.None;
-                            b.StreamSource = ms;
-                            b.EndInit();
-                            try { b.Freeze(); } catch { }
-                            bmp = b;
-                        }
+                            try
+                            {
+                                using (var ms = new MemoryStream(bytes))
+                                {
+                                    var b = new BitmapImage();
+                                    b.BeginInit();
+                                    b.CacheOption = BitmapCacheOption.OnLoad;
+                                    b.CreateOptions = BitmapCreateOptions.None;
+                                    b.StreamSource = ms;
+                                    b.EndInit();
+                                    b.Freeze();
+                                    return b;
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                Common.LogError(ex, false, true, PluginDatabase.PluginName);
+                                return null;
+                            }
+                        }).ConfigureAwait(false);
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        Common.LogDebug(true, "LoadCoverAsync: cancelled during bitmap creation");
+                        return;
                     }
                     catch (Exception ex)
                     {
                         Common.LogError(ex, false, true, PluginDatabase.PluginName);
                         bmp = null;
                     }
-                });
+                }
 
                 if (token.IsCancellationRequested)
                 {
@@ -620,7 +648,15 @@ namespace HowLongToBeat.Views
             string url = (string)((Hyperlink)sender).Tag;
             if (!url.IsNullOrEmpty())
             {
-                _ = Process.Start((string)((Hyperlink)sender).Tag);
+                try
+                {
+                    var psi = new ProcessStartInfo(url) { UseShellExecute = true };
+                    Process.Start(psi);
+                }
+                catch (Exception ex)
+                {
+                    Common.LogError(ex, false, true, PluginDatabase.PluginName);
+                }
             }
         }
 
@@ -639,7 +675,15 @@ namespace HowLongToBeat.Views
                 }
                 if (!url.IsNullOrEmpty())
                 {
-                    _ = Process.Start(url);
+                    try
+                    {
+                        var psi = new ProcessStartInfo(url) { UseShellExecute = true };
+                        Process.Start(psi);
+                    }
+                    catch (Exception ex)
+                    {
+                        Common.LogError(ex, false, true, PluginDatabase.PluginName);
+                    }
                 }
             }
             catch (Exception ex)

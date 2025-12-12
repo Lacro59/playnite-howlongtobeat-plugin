@@ -20,6 +20,12 @@
     <sys:String x:Key="LOCHowLongToBeatExportFolderTooltip">Doelmap voor export</sys:String>
     <sys:String x:Key="LOCBrowseLabel">Bladeren...</sys:String>
 
+    <sys:String x:Key="LOCExportSelectFolderFirst">Selecteer eerst een exportmap.</sys:String>
+    <sys:String x:Key="LOCExportFolderNotExist">De geselecteerde map bestaat niet.</sys:String>
+    <sys:String x:Key="LOCExportedCsvMessage">{0} games geëxporteerd naar CSV: {1} (scheidingsteken '{2}')</sys:String>
+    <sys:String x:Key="LOCExportedJsonMessage">{0} games geëxporteerd naar JSON: {1}</sys:String>
+    <sys:String x:Key="LOCExportFailedCount">Exporteren mislukt voor {0} games (zie logs).</sys:String>
+
     <sys:String x:Key="LOCHowLongToBeatColorSelection">Color selection:</sys:String>
 
     <sys:String x:Key="LOCHltbEnableProgressBarInDataView">View progress bar in Playnite data view</sys:String>

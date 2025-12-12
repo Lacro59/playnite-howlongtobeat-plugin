@@ -9,6 +9,7 @@ using Playnite.SDK;
 using Playnite.SDK.Models;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -23,8 +24,11 @@ namespace HowLongToBeat.Controls
         protected override IDataContext controlDataContext
         {
             get => ControlDataContext;
-            set => ControlDataContext = (PluginButtonDataContext)value;
+            set => ControlDataContext = value as PluginButtonDataContext
+                ?? throw new InvalidCastException($"Expected {nameof(PluginButtonDataContext)}");
         }
+
+        private bool eventsWired;
 
         public PluginButton()
         {
@@ -34,27 +38,54 @@ namespace HowLongToBeat.Controls
             this.DataContext = ControlDataContext;
 
             this.Loaded += PluginButton_Loaded;
+            this.Unloaded += PluginButton_Unloaded;
+        }
+
+        private void PluginButton_Unloaded(object sender, RoutedEventArgs e)
+        {
+            if (!eventsWired) return;
+            eventsWired = false;
+            try { PluginDatabase.PluginSettings.PropertyChanged -= PluginSettings_PropertyChanged; } catch { }
+            try { PluginDatabase.Database.ItemUpdated -= Database_ItemUpdated; } catch { }
+            try { PluginDatabase.Database.ItemCollectionChanged -= Database_ItemCollectionChanged; } catch { }
+            try { API.Instance.Database.Games.ItemUpdated -= Games_ItemUpdated; } catch { }
         }
 
         private async void PluginButton_Loaded(object sender, RoutedEventArgs e)
         {
             this.Loaded -= PluginButton_Loaded;
 
-            while (!PluginDatabase.IsLoaded)
+            try
             {
-                await Task.Delay(100).ConfigureAwait(false);
+                var sw = Stopwatch.StartNew();
+                while (!PluginDatabase.IsLoaded)
+                {
+                    await Task.Delay(100).ConfigureAwait(false);
+                    if (sw.Elapsed > TimeSpan.FromSeconds(30))
+                    {
+                        try { Debug.WriteLine("PluginButton init timeout waiting for PluginDatabase.IsLoaded"); } catch { }
+                        return;
+                    }
+                }
+
+                await this.Dispatcher.InvokeAsync((Action)(() =>
+                {
+                    if (!eventsWired)
+                    {
+                        try { PluginDatabase.PluginSettings.PropertyChanged += PluginSettings_PropertyChanged; } catch { }
+                        try { PluginDatabase.Database.ItemUpdated += Database_ItemUpdated; } catch { }
+                        try { PluginDatabase.Database.ItemCollectionChanged += Database_ItemCollectionChanged; } catch { }
+                        try { API.Instance.Database.Games.ItemUpdated += Games_ItemUpdated; } catch { }
+                        eventsWired = true;
+                    }
+
+                    try { PluginSettings_PropertyChanged(null, null); } catch { }
+                })).Task.ConfigureAwait(false);
             }
-
-            await this.Dispatcher.InvokeAsync((Action)delegate
+            catch (Exception ex)
             {
-                PluginDatabase.PluginSettings.PropertyChanged += PluginSettings_PropertyChanged;
-                PluginDatabase.Database.ItemUpdated += Database_ItemUpdated;
-                PluginDatabase.Database.ItemCollectionChanged += Database_ItemCollectionChanged;
-                API.Instance.Database.Games.ItemUpdated += Games_ItemUpdated;
-
-                // Apply settings
-                PluginSettings_PropertyChanged(null, null);
-            }).Task.ConfigureAwait(false);
+                try { Common.LogError(ex, false, true, PluginDatabase.PluginName); } catch { }
+            }
         }
 
 

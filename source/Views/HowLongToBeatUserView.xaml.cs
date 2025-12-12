@@ -33,6 +33,21 @@ namespace HowLongToBeat.Views
 
         private CancellationTokenSource _loadCts;
 
+        private void DisposeCts()
+        {
+            try
+            {
+                _loadCts?.Cancel();
+            }
+            catch { }
+            try
+            {
+                _loadCts?.Dispose();
+            }
+            catch { }
+            _loadCts = null;
+        }
+
         private static HowLongToBeatDatabase PluginDatabase => HowLongToBeat.PluginDatabase;
         private UserViewDataContext UserViewDataContext { get; set; } = new UserViewDataContext();
 
@@ -69,7 +84,7 @@ namespace HowLongToBeat.Views
 
             this.Unloaded += (s, e) =>
             {
-                try { _loadCts?.Cancel(); } catch { }
+                DisposeCts();
             };
 
             if (!PluginDatabase.PluginSettings.Settings.EnableProgressBarInDataView)
@@ -148,7 +163,7 @@ namespace HowLongToBeat.Views
         {
             try
             {
-                _loadCts?.Cancel();
+                DisposeCts();
             }
             catch { }
             _loadCts = new CancellationTokenSource();
@@ -161,10 +176,10 @@ namespace HowLongToBeat.Views
             {
                 var tasks = new List<Task>
                 {
-                    SetChartDataStore(),
-                    SetChartDataYear(),
-                    SetChartData(),
-                    SetStats()
+                    SetChartDataStore(cancellationToken),
+                    SetChartDataYear(4, cancellationToken),
+                    SetChartData(cancellationToken: cancellationToken),
+                    SetStats(cancellationToken)
                 };
 
                 await Task.WhenAll(tasks).ConfigureAwait(false);
@@ -193,10 +208,11 @@ namespace HowLongToBeat.Views
         }
 
 
-        private Task SetChartDataYear(int axis = 4)
+        private Task SetChartDataYear(int axis = 4, CancellationToken cancellationToken = default)
         {
             return Task.Run(() =>
             {
+                if (cancellationToken.IsCancellationRequested) return;
                 if (PluginDatabase.Database.UserHltbData?.TitlesList == null)
                 {
                     return;
@@ -210,6 +226,7 @@ namespace HowLongToBeat.Views
 
                     for (int i = axis - 1; i >= 0; i--)
                     {
+                        if (cancellationToken.IsCancellationRequested) return;
                         ChartDataLabels[axis - 1 - i] = DateTime.Now.AddYears(-i).ToString("yyyy");
                         ChartDataSeries.Add(new CustomerForSingle
                         {
@@ -221,6 +238,7 @@ namespace HowLongToBeat.Views
                     // Set data
                     foreach (TitleList titleList in PluginDatabase.Database.UserHltbData.TitlesList)
                     {
+                        if (cancellationToken.IsCancellationRequested) return;
                         if (titleList?.Completion != null)
                         {
                             string tempDateTime = ((DateTime)titleList.Completion).ToString("yyyy");
@@ -234,29 +252,33 @@ namespace HowLongToBeat.Views
 
                     // Create chart
                     SeriesCollection ChartSeriesCollection = new SeriesCollection();
-                    Application.Current.Dispatcher?.Invoke(() =>
+                    if (!cancellationToken.IsCancellationRequested)
                     {
-                        ChartSeriesCollection.Add(new ColumnSeries
+                        Application.Current.Dispatcher?.Invoke(() =>
                         {
-                            Title = string.Empty,
-                            Values = ChartDataSeries
+                            ChartSeriesCollection.Add(new ColumnSeries
+                            {
+                                Title = string.Empty,
+                                Values = ChartDataSeries
+                            });
                         });
-                    });
 
-                    UserViewDataContext.ChartUserDataYear_Series = ChartSeriesCollection;
-                    UserViewDataContext.ChartUserDataYearLabelsX_Labels = ChartDataLabels;
+                        UserViewDataContext.ChartUserDataYear_Series = ChartSeriesCollection;
+                        UserViewDataContext.ChartUserDataYearLabelsX_Labels = ChartDataLabels;
+                    }
                 }
                 catch (Exception ex)
                 {
                     Common.LogError(ex, false, false, PluginDatabase.PluginName);
                 }
-            });
+            }, cancellationToken);
         }
 
-        private Task SetChartDataStore()
+        private Task SetChartDataStore(CancellationToken cancellationToken = default)
         {
             return Task.Run(() =>
             {
+                if (cancellationToken.IsCancellationRequested) return;
                 if (PluginDatabase.Database.UserHltbData?.TitlesList == null)
                 {
                     return;
@@ -276,6 +298,7 @@ namespace HowLongToBeat.Views
 
                     for (int i = 0; i < dataLabel.Count; i++)
                     {
+                        if (cancellationToken.IsCancellationRequested) return;
                         ChartDataLabels[i] = dataLabel[i].Storefront;
                         ChartDataSeries.Add(new CustomerForSingle
                         {
@@ -286,29 +309,33 @@ namespace HowLongToBeat.Views
 
                     // Create chart
                     SeriesCollection ChartSeriesCollection = new SeriesCollection();
-                    Application.Current.Dispatcher?.Invoke(() =>
+                    if (!cancellationToken.IsCancellationRequested)
                     {
-                        ChartSeriesCollection.Add(new ColumnSeries
+                        Application.Current.Dispatcher?.Invoke(() =>
                         {
-                            Title = string.Empty,
-                            Values = ChartDataSeries
+                            ChartSeriesCollection.Add(new ColumnSeries
+                            {
+                                Title = string.Empty,
+                                Values = ChartDataSeries
+                            });
                         });
-                    });
 
-                    UserViewDataContext.ChartUserDataStore_Series = ChartSeriesCollection;
-                    UserViewDataContext.ChartUserDataStoreLabelsX_Labels = ChartDataLabels;
+                        UserViewDataContext.ChartUserDataStore_Series = ChartSeriesCollection;
+                        UserViewDataContext.ChartUserDataStoreLabelsX_Labels = ChartDataLabels;
+                    }
                 }
                 catch (Exception ex)
                 {
                     Common.LogError(ex, false, false, PluginDatabase.PluginName);
                 }
-            });
+            }, cancellationToken);
         }
 
-        private Task SetChartData()
+        private Task SetChartData(int axis = 16, CancellationToken cancellationToken = default)
         {
             return Task.Run(() =>
             {
+                if (cancellationToken.IsCancellationRequested) return;
                 if (PluginDatabase.Database.UserHltbData?.TitlesList == null)
                 {
                     return;
@@ -319,12 +346,13 @@ namespace HowLongToBeat.Views
                     LocalDateYMConverter localDateYMConverter = new LocalDateYMConverter();
 
                     // Default data
-                    string[] ChartDataLabels = new string[16];
+                    string[] ChartDataLabels = new string[axis];
                     ChartValues<CustomerForSingle> ChartDataSeries = new ChartValues<CustomerForSingle>();
 
-                    for (int i = 15; i >= 0; i--)
+                    for (int i = axis - 1; i >= 0; i--)
                     {
-                        ChartDataLabels[15 - i] = (string)localDateYMConverter.Convert(DateTime.Now.AddMonths(-i), null, null, null);
+                        if (cancellationToken.IsCancellationRequested) return;
+                        ChartDataLabels[axis - 1 - i] = (string)localDateYMConverter.Convert(DateTime.Now.AddMonths(-i), null, null, null);
                         ChartDataSeries.Add(new CustomerForSingle
                         {
                             Name = (string)localDateYMConverter.Convert(DateTime.Now.AddMonths(-i), null, null, null),
@@ -337,6 +365,7 @@ namespace HowLongToBeat.Views
                     {
                         foreach (TitleList titleList in PluginDatabase.Database.UserHltbData.TitlesList)
                         {
+                            if (cancellationToken.IsCancellationRequested) return;
                             if (titleList?.Completion != null)
                             {
                                 string tempDateTime = (string)localDateYMConverter.Convert((DateTime)titleList.Completion, null, null, null);
@@ -351,29 +380,33 @@ namespace HowLongToBeat.Views
 
                     // Create chart
                     SeriesCollection ChartSeriesCollection = new SeriesCollection();
-                    Application.Current.Dispatcher?.Invoke(() =>
+                    if (!cancellationToken.IsCancellationRequested)
                     {
-                        ChartSeriesCollection.Add(new ColumnSeries
+                        Application.Current.Dispatcher?.Invoke(() =>
                         {
-                            Title = string.Empty,
-                            Values = ChartDataSeries
+                            ChartSeriesCollection.Add(new ColumnSeries
+                            {
+                                Title = string.Empty,
+                                Values = ChartDataSeries
+                            });
                         });
-                    });
 
-                    UserViewDataContext.ChartUserData_Series = ChartSeriesCollection;
-                    UserViewDataContext.ChartUserDataLabelsX_Labels = ChartDataLabels;
+                        UserViewDataContext.ChartUserData_Series = ChartSeriesCollection;
+                        UserViewDataContext.ChartUserDataLabelsX_Labels = ChartDataLabels;
+                    }
                 }
                 catch (Exception ex)
                 {
                     Common.LogError(ex, false, false, PluginDatabase.PluginName);
                 }
-            });
+            }, cancellationToken);
         }
 
-        private Task SetStats()
+        private Task SetStats(CancellationToken cancellationToken = default)
         {
             return Task.Run(() =>
             {
+                if (cancellationToken.IsCancellationRequested) return;
                 if (PluginDatabase.Database.UserHltbData?.TitlesList == null)
                 {
                     return;
@@ -383,6 +416,7 @@ namespace HowLongToBeat.Views
                 {
                     List<TitleList> titleLists = PluginDatabase.Database.UserHltbData.TitlesList;
 
+                    if (cancellationToken.IsCancellationRequested) return;
                     UserViewDataContext.CompletionsCount = titleLists.Where(x => x.GameStatuses.Where(y => y.Status == StatusType.Completed).Count() > 0).Count().ToString();
 
                     long TimeSinglePlayer = 0;
@@ -391,6 +425,7 @@ namespace HowLongToBeat.Views
 
                     foreach (TitleList titleList in titleLists)
                     {
+                        if (cancellationToken.IsCancellationRequested) return;
                         if (titleList.HltbUserData.Completionist != 0)
                         {
                             TimeSinglePlayer += titleList.HltbUserData.Completionist;
@@ -426,7 +461,7 @@ namespace HowLongToBeat.Views
                 {
                     Common.LogError(ex, false, false, PluginDatabase.PluginName);
                 }
-            });
+            }, cancellationToken);
         }
 
         private void SetPlayniteData()

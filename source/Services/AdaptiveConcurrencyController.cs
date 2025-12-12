@@ -28,7 +28,8 @@ namespace HowLongToBeat.Services
             maxConcurrency = max;
             adjustInterval = interval ?? TimeSpan.FromSeconds(2);
             cts = new CancellationTokenSource();
-            adjustTask = Task.Run(() => AdjustLoop(cts.Token));
+            adjustTask = Task.Factory.StartNew(() => AdjustLoop(cts.Token),
+                cts.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default).Unwrap();
         }
 
         public int TargetConcurrency

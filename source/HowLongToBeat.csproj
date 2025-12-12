@@ -199,6 +199,7 @@
     </Compile>
     <Compile Include="Services\HowLongToBeatDatabase.cs" />
     <Compile Include="Services\HowLongToBeatSearch.cs" />
+    <Compile Include="Services\LruCache.cs" />
     <Compile Include="Services\PageCache.cs" />
     <Compile Include="Services\AdaptiveConcurrencyController.cs" />
     <Compile Include="Services\HowLongToBeatStats.cs" />

@@ -20,6 +20,12 @@
     <sys:String x:Key="LOCHowLongToBeatExportFolderTooltip">Dışa aktarma klasörü</sys:String>
     <sys:String x:Key="LOCBrowseLabel">Gözat...</sys:String>
 
+    <sys:String x:Key="LOCExportSelectFolderFirst">Lütfen önce bir dışa aktarma klasörü seçin.</sys:String>
+    <sys:String x:Key="LOCExportFolderNotExist">Seçilen klasör mevcut değil.</sys:String>
+    <sys:String x:Key="LOCExportedCsvMessage">{0} oyun CSV olarak dışa aktarıldı: {1} (ayırıcı '{2}')</sys:String>
+    <sys:String x:Key="LOCExportedJsonMessage">{0} oyun JSON olarak dışa aktarıldı: {1}</sys:String>
+    <sys:String x:Key="LOCExportFailedCount">{0} oyun dışa aktarılamadı (loglara bakın).</sys:String>
+
     <sys:String x:Key="LOCHowLongToBeatColorSelection">Renk seçimi:</sys:String>
 
     <sys:String x:Key="LOCHltbEnableProgressBarInDataView">Playnite veri görünümünde ilerleme çubuğunu görüntüle</sys:String>

@@ -20,6 +20,12 @@
     <sys:String x:Key="LOCHowLongToBeatExportFolderTooltip">Eksporto aplankas</sys:String>
     <sys:String x:Key="LOCBrowseLabel">Naršyti...</sys:String>
 
+    <sys:String x:Key="LOCExportSelectFolderFirst">Prašome pirmiausia pasirinkti eksportavimo aplanką.</sys:String>
+    <sys:String x:Key="LOCExportFolderNotExist">Pasirinktas aplankas neegzistuoja.</sys:String>
+    <sys:String x:Key="LOCExportedCsvMessage">{0} žaidimai eksportuoti į CSV: {1} (skirtukas '{2}')</sys:String>
+    <sys:String x:Key="LOCExportedJsonMessage">{0} žaidimai eksportuoti į JSON: {1}</sys:String>
+    <sys:String x:Key="LOCExportFailedCount">Nepavyko eksportuoti {0} žaidimų (žiūrėkite žurnalus).</sys:String>
+
     <sys:String x:Key="LOCHowLongToBeatColorSelection">Color selection:</sys:String>
 
     <sys:String x:Key="LOCHltbEnableProgressBarInDataView">View progress bar in Playnite data view</sys:String>

@@ -19,7 +19,13 @@
     <sys:String x:Key="LOCHowLongToBeatExportCsvSemicolon">Izvezi CSV (točka-zarez)</sys:String>
     <sys:String x:Key="LOCHowLongToBeatExportJson">Izvezi JSON</sys:String>
     <sys:String x:Key="LOCHowLongToBeatExportFolderTooltip">Mapa za izvoz</sys:String>
-    <sys:String x:Key="LOCBrowseLabel">Pretraži...</sys:String>
+    <sys:String x:Key="LOCBrowseLabel">Pregledaj...</sys:String>
+
+    <sys:String x:Key="LOCExportSelectFolderFirst">Molimo najprije odaberite mapu za izvoz.</sys:String>
+    <sys:String x:Key="LOCExportFolderNotExist">Odabrana mapa ne postoji.</sys:String>
+    <sys:String x:Key="LOCExportedCsvMessage">{0} igara izvezeno u CSV: {1} (odvajač '{2}')</sys:String>
+    <sys:String x:Key="LOCExportedJsonMessage">{0} igara izvezeno u JSON: {1}</sys:String>
+    <sys:String x:Key="LOCExportFailedCount">Izvoz nije uspio za {0} igara (pogledajte zapise).</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatColorSelection">Color selection:</sys:String>
 

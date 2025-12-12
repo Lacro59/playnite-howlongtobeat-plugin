@@ -18,7 +18,13 @@
     <sys:String x:Key="LOCHowLongToBeatExportCsvSemicolon">Експорт CSV (точка и запетая)</sys:String>
     <sys:String x:Key="LOCHowLongToBeatExportJson">Експорт JSON</sys:String>
     <sys:String x:Key="LOCHowLongToBeatExportFolderTooltip">Целева папка за експорт</sys:String>
-    <sys:String x:Key="LOCBrowseLabel">Разглеждане...</sys:String>
+    <sys:String x:Key="LOCBrowseLabel">Преглед...</sys:String>
+
+    <sys:String x:Key="LOCExportSelectFolderFirst">Моля, изберете папка за експортиране първо.</sys:String>
+    <sys:String x:Key="LOCExportFolderNotExist">Избраната папка не съществува.</sys:String>
+    <sys:String x:Key="LOCExportedCsvMessage">{0} игри експортирани в CSV: {1} (разделител '{2}')</sys:String>
+    <sys:String x:Key="LOCExportedJsonMessage">{0} игри експортирани в JSON: {1}</sys:String>
+    <sys:String x:Key="LOCExportFailedCount">{0} игри не бяха експортирани (вижте логовете).</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatColorSelection">Color selection:</sys:String>
 

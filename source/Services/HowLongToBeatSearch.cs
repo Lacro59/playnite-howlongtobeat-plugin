@@ -14,8 +14,15 @@ namespace HowLongToBeat.Services
 {
     public partial class HowLongToBeatSearch : SearchContext
     {
-        private HowLongToBeatDatabase PluginDatabase { get; set; } = HowLongToBeat.PluginDatabase;
+        // Regex patterns (static, precompiled) - keep at top for discoverability
+        private static readonly Regex _regexStores = new Regex(@"-stores=(\w*,)*\w*", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+        private static readonly Regex _regexStatus = new Regex(@"-status=(\w*,)*\w*", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+        private static readonly Regex _regexPercent = new Regex(@"-percent=(<|>|\w*<>)*\w*", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+        private static readonly Regex _regexTime = new Regex(@"-time=(<|>|\w*<>)*\w*", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+        private static readonly Regex _regexGeneric = new Regex(@"-\w*", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
 
+
+        private HowLongToBeatDatabase PluginDatabase { get; set; } = HowLongToBeat.PluginDatabase;
 
         public HowLongToBeatSearch()
         {
@@ -68,7 +75,7 @@ namespace HowLongToBeat.Services
                     }
                 }
 
-                string SearchTerm = Regex.Replace(args.SearchTerm, @"-stores=(\w*,)*\w*", string.Empty, RegexOptions.IgnoreCase).Trim();
+                string SearchTerm = _regexStores.Replace(args.SearchTerm, string.Empty).Trim();
                 SearchTerm = _regexStatus.Replace(SearchTerm, string.Empty).Trim();
                 SearchTerm = _regexPercent.Replace(SearchTerm, string.Empty).Trim();
                 SearchTerm = _regexTime.Replace(SearchTerm, string.Empty).Trim();
@@ -157,10 +164,5 @@ namespace HowLongToBeat.Services
 
             return false;
         }
-
-        private static readonly Regex _regexStatus = new Regex(@"-status=(\w*,)*\w*", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
-        private static readonly Regex _regexPercent = new Regex(@"-percent=(<|>|\w*<>)*\w*", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
-        private static readonly Regex _regexTime = new Regex(@"-time=(<|>|\w*<>)*\w*", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
-        private static readonly Regex _regexGeneric = new Regex(@"-\w*", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
     }
 }
