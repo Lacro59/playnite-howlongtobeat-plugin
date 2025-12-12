@@ -137,7 +137,7 @@ namespace HowLongToBeat.Views.StartPage
                         {
                             string tempDateTime = (string)localDateYMConverter.Convert((DateTime)titleList.Completion, null, null, null);
                             int index = Array.IndexOf(ChartDataLabels, tempDateTime);
-                            if (index > 0)
+                            if (index >= 0)
                             {
                                 ChartDataSeries[index].Values += 1;
                             }
@@ -186,7 +186,7 @@ namespace HowLongToBeat.Views.StartPage
                     {
                         string tempDateTime = ((DateTime)titleList.Completion).ToString("yyyy");
                         int index = Array.IndexOf(ChartDataLabels, tempDateTime);
-                        if (index > 0)
+                        if (index >= 0)
                         {
                             ChartDataSeries[index].Values += 1;
                         }

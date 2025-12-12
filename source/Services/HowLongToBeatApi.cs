@@ -151,7 +151,7 @@ namespace HowLongToBeat.Services
         private int PersistentCacheHits = 0;
         private int InMemoryCacheHits = 0;
         private int PageFetches = 0;
-        private readonly PageCache PageCache;
+        private PageCache PageCache;
         private AdaptiveConcurrencyController ConcurrencyController;
         private SemaphoreSlim DynamicSemaphore;
         private readonly object ConcurrencySync = new object();
@@ -159,6 +159,7 @@ namespace HowLongToBeat.Services
         private const int SemaphoreUpperBound = 128;
 
         private readonly HttpClient httpClient;
+        private Task PageCacheInitTask;
 
         private readonly ConcurrentQueue<long> RecentSearchSamples = new ConcurrentQueue<long>();
         private const int RecentSamplesWindow = 200;
@@ -283,12 +284,23 @@ namespace HowLongToBeat.Services
 
             try
             {
-                PageCache = new PageCache(PluginDatabase.Plugin.GetPluginUserDataPath());
+                PageCacheInitTask = Task.Run(() =>
+                {
+                    try
+                    {
+                        var pc = new PageCache(PluginDatabase.Plugin.GetPluginUserDataPath());
+                        PageCache = pc;
+                    }
+                    catch (Exception ex)
+                    {
+                        Common.LogError(ex, false);
+                        try { Logger.Warn("HLTB: PageCache init failed; proceeding without persistent cache"); } catch { }
+                    }
+                });
             }
             catch (Exception ex)
             {
                 Common.LogError(ex, false);
-                try { Logger.Warn("HLTB: PageCache init failed; proceeding without persistent cache"); } catch { }
             }
 
             // Configure bounded in-memory caches to avoid unbounded growth during large imports
@@ -482,6 +494,15 @@ namespace HowLongToBeat.Services
         {
             try { EnsureMonitoringStarted(); } catch { }
             cancellationToken.ThrowIfCancellationRequested();
+            try
+            {
+                var init = PageCacheInitTask;
+                if (init != null && PageCache == null)
+                {
+                    await Task.WhenAny(init, Task.Delay(500)).ConfigureAwait(false);
+                }
+            }
+            catch { }
             DateTime startTime = DateTime.UtcNow;
             LogDebugVerbose($"GetGameData START id={id} task={Task.CurrentId} thread={Thread.CurrentThread.ManagedThreadId} time={startTime:HH:mm:ss.fff}");
 
@@ -1345,10 +1366,10 @@ namespace HowLongToBeat.Services
         #region user account
 
         /// <summary>
-        /// Checks if the user is currently logged in to HowLongToBeat.
+        /// Checks if the user is currently logged in to HowLongToBeat (async).
         /// </summary>
         /// <returns>True if logged in, otherwise false.</returns>
-        public bool GetIsUserLoggedIn()
+        public async Task<bool> GetIsUserLoggedInAsync()
         {
             if (UserId == 0)
             {
@@ -1367,11 +1388,23 @@ namespace HowLongToBeat.Services
 
             if (IsConnected == null)
             {
-                IsConnected = GetUserId().GetAwaiter().GetResult() != 0;
+                try
+                {
+                    IsConnected = await GetUserId().ConfigureAwait(false) != 0;
+                }
+                catch
+                {
+                    IsConnected = false;
+                }
             }
 
             IsConnected = (bool)IsConnected;
             return (bool)IsConnected;
+        }
+
+        public bool GetIsUserLoggedIn()
+        {
+            try { return Task.Run(() => GetIsUserLoggedInAsync()).Result; } catch { return false; }
         }
 
         /// <summary>
@@ -1427,10 +1460,10 @@ namespace HowLongToBeat.Services
 
                             PluginDatabase.Plugin.SavePluginSettings(PluginDatabase.PluginSettings.Settings);
 
-                            _ = Task.Run(() =>
+                            _ = Task.Run(async () =>
                             {
-                                UserId = GetUserId().GetAwaiter().GetResult();
-                                PluginDatabase.RefreshUserData();
+                                try { UserId = await GetUserId().ConfigureAwait(false); } catch { }
+                                try { PluginDatabase.RefreshUserData(); } catch { }
                             });
                         }
                         catch (Exception ex)
@@ -1645,12 +1678,12 @@ namespace HowLongToBeat.Services
         }
 
         /// <summary>
-        /// Retrieves the user data from HowLongToBeat.
+        /// Retrieves the user data from HowLongToBeat (async).
         /// </summary>
         /// <returns>Returns a <see cref="HltbUserStats"/> object, or null if not logged in.</returns>
-        public HltbUserStats GetUserData()
+        public async Task<HltbUserStats> GetUserDataAsync()
         {
-            if (GetIsUserLoggedIn())
+            if (await GetIsUserLoggedInAsync().ConfigureAwait(false))
             {
                 HltbUserStats hltbUserStats = new HltbUserStats
                 {
@@ -1659,7 +1692,8 @@ namespace HowLongToBeat.Services
                     TitlesList = new List<TitleList>()
                 };
 
-                UserGamesList userGamesList = GetUserGamesList().GetAwaiter().GetResult();
+                UserGamesList userGamesList = null;
+                try { userGamesList = await GetUserGamesList().ConfigureAwait(false); } catch { userGamesList = null; }
                 if (userGamesList == null)
                 {
                     return null;
@@ -1694,56 +1728,65 @@ namespace HowLongToBeat.Services
         }
 
         /// <summary>
-        /// Retrieves user data for a specific game by game ID.
+        /// Synchronous wrapper for backwards compatibility; runs async method on thread-pool.
         /// </summary>
-        /// <param name="gameId">The game ID.</param>
-        /// <returns>Returns a <see cref="TitleList"/> object, or null if not found.</returns>
-        public TitleList GetUserData(string gameId)
+        public HltbUserStats GetUserData()
         {
-            if (GetIsUserLoggedIn())
-            {
-                try
-                {
-                    HltbUserStats data = GetUserData();
-                    return data?.TitlesList?.Find(x => x.Id == gameId);
-                }
-                catch (Exception ex)
-                {
-                    Common.LogError(ex, false, true, PluginDatabase.PluginName);
-                }
+            try { return Task.Run(() => GetUserDataAsync()).Result; } catch { return null; }
+        }
 
-                return null;
-            }
-            else
+        /// <summary>
+        /// Finds the existing user game ID for a given game ID (async).
+        /// </summary>
+        public async Task<string> FindIdExistingAsync(string gameId)
+        {
+            try
             {
-                API.Instance.Notifications.Add(new NotificationMessage(
-                    $"{PluginDatabase.PluginName}-Import-Error",
-                    PluginDatabase.PluginName + Environment.NewLine + ResourceProvider.GetString("LOCCommonNotLoggedIn"),
-                    NotificationType.Error,
-                    () => PluginDatabase.Plugin.OpenSettingsView()
-                ));
+                var ug = await GetUserGamesList().ConfigureAwait(false);
+                return ug?.Data?.GamesList?.Find(x => x.GameId.ToString().IsEqual(gameId))?.Id.ToString() ?? null;
+            }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, false, true, PluginDatabase.PluginName);
                 return null;
             }
         }
 
         /// <summary>
-        /// Checks if a user game ID exists in the user's games list.
+        /// Synchronous wrapper for backwards compatibility.
         /// </summary>
-        /// <param name="userGameId">The user game ID.</param>
-        /// <returns>True if the ID exists, otherwise false.</returns>
-        public bool EditIdExist(string userGameId)
-        {
-            return GetUserGamesList()?.GetAwaiter().GetResult()?.Data?.GamesList?.Find(x => x.Id.ToString().IsEqual(userGameId))?.Id != null;
-        }
-
-        /// <summary>
-        /// Finds the existing user game ID for a given game ID.
-        /// </summary>
-        /// <param name="gameId">The game ID.</param>
-        /// <returns>Returns the user game ID as a string, or null if not found.</returns>
         public string FindIdExisting(string gameId)
         {
-            return GetUserGamesList()?.GetAwaiter().GetResult().Data?.GamesList?.Find(x => x.GameId.ToString().IsEqual(gameId))?.Id.ToString() ?? null;
+            try { return Task.Run(() => FindIdExistingAsync(gameId)).Result; } catch { return null; }
+        }
+
+        /// <summary>
+        /// Synchronous helper: get TitleList for a specific game id from user data.
+        /// </summary>
+        public TitleList GetUserData(string gameId)
+        {
+            try
+            {
+                var userData = Task.Run(() => GetUserDataAsync()).Result;
+                return userData?.TitlesList?.Find(x => x.Id == gameId);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        public bool EditIdExist(string userGameId)
+        {
+            try
+            {
+                var ug = Task.Run(() => GetUserGamesList()).Result;
+                return ug?.Data?.GamesList?.Find(x => x.Id.ToString().IsEqual(userGameId))?.Id != null;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         #endregion

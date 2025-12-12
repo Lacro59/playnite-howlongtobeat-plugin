@@ -32,12 +32,14 @@ namespace HowLongToBeat.Views
         private bool DisplayFirst { get; set; } = true;
 
         private CancellationTokenSource _loadCts;
+        private Task _loadTask;
 
         private void DisposeCts()
         {
             try
             {
                 _loadCts?.Cancel();
+                try { _loadTask?.Wait(500); } catch { }
             }
             catch { }
             try
@@ -46,6 +48,7 @@ namespace HowLongToBeat.Views
             }
             catch { }
             _loadCts = null;
+            _loadTask = null;
         }
 
         private static HowLongToBeatDatabase PluginDatabase => HowLongToBeat.PluginDatabase;
@@ -121,7 +124,6 @@ namespace HowLongToBeat.Views
                         default:
                             break;
                     }
-                    ;
                     ListViewGames.SortingDefaultDataName = SortingDefaultDataName;
                     ListViewGames.SortingSortDirection = PluginDatabase.PluginSettings.Settings.IsAsc ? ListSortDirection.Ascending : ListSortDirection.Descending;
                     ListViewGames.Sorting();
@@ -167,7 +169,7 @@ namespace HowLongToBeat.Views
             }
             catch { }
             _loadCts = new CancellationTokenSource();
-            _ = LoadUserDataAsync(_loadCts.Token);
+            _loadTask = LoadUserDataAsync(_loadCts.Token);
         }
 
         private async Task LoadUserDataAsync(CancellationToken cancellationToken)

@@ -42,7 +42,18 @@ namespace HowLongToBeat.Services
             {
                 if (HowLongToBeatApi == null)
                 {
-                    HowLongToBeatApi = new HowLongToBeatApi();
+                    Task.Run(() =>
+                    {
+                        try
+                        {
+                            var api = new HowLongToBeatApi();
+                            HowLongToBeatApi = api;
+                        }
+                        catch (Exception ex)
+                        {
+                            Common.LogError(ex, false, true, PluginName);
+                        }
+                    });
                 }
             }
             catch (Exception ex)
@@ -57,24 +68,28 @@ namespace HowLongToBeat.Services
             {
                 if (HowLongToBeatApi == null)
                 {
-                    int waited = 0;
-                    const int waitStep = 100;
-                    const int maxWait = 2000;
-                    while (HowLongToBeatApi == null && waited < maxWait)
-                    {
-                        try { Thread.Sleep(waitStep); } catch { }
-                        waited += waitStep;
-                    }
-                }
-
-                if (HowLongToBeatApi == null)
-                {
                     Logger.Warn("HowLongToBeatApi not initialized yet during LoadMoreData(); using empty UserHltbData placeholder");
                     Database.UserHltbData = new HltbUserStats();
                     return;
                 }
 
-                Database.UserHltbData = HowLongToBeatApi.LoadUserData();
+                Database.UserHltbData = new HltbUserStats();
+                _ = Task.Run(() =>
+                {
+                    try
+                    {
+                        var data = HowLongToBeatApi.LoadUserData();
+                        if (data != null)
+                        {
+                            Database.UserHltbData = data;
+                            try { Application.Current.Dispatcher?.Invoke(() => Database.OnCollectionChanged(null, null)); } catch { }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Common.LogError(ex, false, true, PluginName);
+                    }
+                });
             }
             catch (Exception ex)
             {
@@ -125,7 +140,7 @@ namespace HowLongToBeat.Services
                 return;
             }
 
-            List<HltbSearch> data = HowLongToBeatApi.SearchTwoMethod(game.Name).GetAwaiter().GetResult();
+            List<HltbSearch> data = Task.Run(() => HowLongToBeatApi.SearchTwoMethod(game.Name)).Result;
             if (data.Count == 1 && PluginSettings.Settings.AutoAccept)
             {
                 gameHowLongToBeat.Items = new List<HltbDataUser>() { data.First().Data };
@@ -180,7 +195,7 @@ namespace HowLongToBeat.Services
             {
                 if (loadedItem.GetData().IsVndb)
                 {
-                    var dataSearch = VndbApi.SearchByIdAsync(loadedItem.GetData().Id).GetAwaiter().GetResult() ?? new List<HltbDataUser>();
+                    var dataSearch = Task.Run(() => VndbApi.SearchByIdAsync(loadedItem.GetData().Id)).Result ?? new List<HltbDataUser>();
                     HltbDataUser webDataSearch = dataSearch.Find(x => x.Id == loadedItem.GetData().Id);
                     if (webDataSearch != null)
                     {
@@ -191,7 +206,7 @@ namespace HowLongToBeat.Services
                 }
                 else
                 {
-                    loadedItem.Items = new List<HltbDataUser> { HowLongToBeatApi.UpdateGameData(loadedItem.Items.First()).GetAwaiter().GetResult() };
+                    loadedItem.Items = new List<HltbDataUser> { Task.Run(() => HowLongToBeatApi.UpdateGameData(loadedItem.Items.First())).Result };
                     loadedItem.DateLastRefresh = DateTime.Now;
                     Update(loadedItem);
 
@@ -451,7 +466,7 @@ namespace HowLongToBeat.Services
         }
 
 
-        public void RefreshUserData()
+        public async Task RefreshUserDataAsync()
         {
             if (PluginSettings?.Settings is HowLongToBeatSettings vs4 && vs4.EnableVerboseLogging)
             {
@@ -468,7 +483,7 @@ namespace HowLongToBeat.Services
             {
                 try
                 {
-                    HltbUserStats UserHltbData = HowLongToBeatApi.GetUserData();
+                    HltbUserStats UserHltbData = Task.Run(() => HowLongToBeatApi.GetUserDataAsync()).Result;
 
                     if (UserHltbData != null)
                     {
@@ -502,6 +517,14 @@ namespace HowLongToBeat.Services
                     Common.LogError(ex, false, true, PluginName);
                 }
             }, globalProgressOptions);
+
+            // Small delay to allow UI notifications to settle when caller awaited this Task; keep minimal
+            await Task.Delay(200).ConfigureAwait(false);
+        }
+
+        public void RefreshUserData()
+        {
+            _ = RefreshUserDataAsync();
         }
 
         public void RefreshUserData(string gameId)
@@ -546,10 +569,9 @@ namespace HowLongToBeat.Services
                 IsIndeterminate = ids.Count() == 1
             };
 
-            _ = API.Instance.Dialogs.ActivateGlobalProgress((a) =>
+            _ = API.Instance.Dialogs.ActivateGlobalProgress(async (a) =>
             {
                 API.Instance.Database.BeginBufferUpdate();
-                //Database.BeginBufferUpdate();
 
                 Stopwatch stopWatch = new Stopwatch();
                 stopWatch.Start();
@@ -608,7 +630,7 @@ namespace HowLongToBeat.Services
 
                 try
                 {
-                    Task.WaitAll(tasks.ToArray());
+                    await Task.WhenAll(tasks.ToArray()).ConfigureAwait(false);
                 }
                 catch (AggregateException ex)
                 {
@@ -622,7 +644,6 @@ namespace HowLongToBeat.Services
                     Logger.Debug($"Task SetCurrentPlaytime(){(a.CancelToken.IsCancellationRequested ? " canceled" : string.Empty)} - {string.Format("{0:00}:{1:00}.{2:00}", ts.Minutes, ts.Seconds, ts.Milliseconds / 10)} for {a.CurrentProgressValue}/{ids.Count()} items");
                 }
 
-                //Database.EndBufferUpdate();
                 API.Instance.Database.EndBufferUpdate();
             }, globalProgressOptions);
         }
@@ -709,7 +730,7 @@ namespace HowLongToBeat.Services
                         if (HltbData != null && HowLongToBeatApi.EditIdExist(HltbData.UserGameId))
                         {
                             submissionId = HltbData.UserGameId;
-                            editData = HowLongToBeatApi.GetEditData(gameHowLongToBeat.Name, submissionId).GetAwaiter().GetResult();
+                            editData = Task.Run(() => HowLongToBeatApi.GetEditData(gameHowLongToBeat.Name, submissionId)).Result;
                         }
                         else
                         {
@@ -720,7 +741,7 @@ namespace HowLongToBeat.Services
                                 if (!tmpEditId.IsNullOrEmpty())
                                 {
                                     submissionId = tmpEditId;
-                                    editData = HowLongToBeatApi.GetEditData(gameHowLongToBeat.Name, submissionId).GetAwaiter().GetResult();
+                                    editData = Task.Run(() => HowLongToBeatApi.GetEditData(gameHowLongToBeat.Name, submissionId)).Result;
                                 }
                                 else
                                 {
@@ -856,7 +877,7 @@ namespace HowLongToBeat.Services
 
                         #endregion
 
-                        return HowLongToBeatApi.ApiSubmitData(game, editData).GetAwaiter().GetResult();
+                        return Task.Run(() => HowLongToBeatApi.ApiSubmitData(game, editData)).Result;
                     }
                 }
                 else

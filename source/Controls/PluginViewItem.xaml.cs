@@ -68,13 +68,18 @@ namespace HowLongToBeat.Controls
                 // Ensure the registration runs on the UI thread and await its completion
                 await this.Dispatcher.InvokeAsync((Action)delegate
                 {
-                    try { PluginDatabase.PluginSettings.PropertyChanged += PluginSettings_PropertyChanged; } catch { }
-                    try { PluginDatabase.Database.ItemUpdated += Database_ItemUpdated; } catch { }
-                    try { PluginDatabase.Database.ItemCollectionChanged += Database_ItemCollectionChanged; } catch { }
-                    try { API.Instance.Database.Games.ItemUpdated += Games_ItemUpdated; } catch { }
+                    try { PluginDatabase.PluginSettings.PropertyChanged += PluginSettings_PropertyChanged; }
+                    catch (Exception ex) { try { Common.LogError(ex, false, true, PluginDatabase.PluginName); } catch { } }
+                    try { PluginDatabase.Database.ItemUpdated += Database_ItemUpdated; }
+                    catch (Exception ex) { try { Common.LogError(ex, false, true, PluginDatabase.PluginName); } catch { } }
+                    try { PluginDatabase.Database.ItemCollectionChanged += Database_ItemCollectionChanged; }
+                    catch (Exception ex) { try { Common.LogError(ex, false, true, PluginDatabase.PluginName); } catch { } }
+                    try { API.Instance.Database.Games.ItemUpdated += Games_ItemUpdated; }
+                    catch (Exception ex) { try { Common.LogError(ex, false, true, PluginDatabase.PluginName); } catch { } }
 
                     // Apply settings
-                    try { PluginSettings_PropertyChanged(null, null); } catch { }
+                    try { PluginSettings_PropertyChanged(null, null); }
+                    catch (Exception ex) { try { Common.LogError(ex, false, true, PluginDatabase.PluginName); } catch { } }
                 }).Task.ConfigureAwait(false);
             }
             catch (OperationCanceledException)
@@ -107,13 +112,18 @@ namespace HowLongToBeat.Controls
             // Unsubscribe global handlers to avoid leaks
             try
             {
-                this.Dispatcher.Invoke(() =>
+                // Schedule unsubscription on the UI thread without blocking during teardown
+                try
                 {
-                    try { PluginDatabase.PluginSettings.PropertyChanged -= PluginSettings_PropertyChanged; } catch { }
-                    try { PluginDatabase.Database.ItemUpdated -= Database_ItemUpdated; } catch { }
-                    try { PluginDatabase.Database.ItemCollectionChanged -= Database_ItemCollectionChanged; } catch { }
-                    try { API.Instance.Database.Games.ItemUpdated -= Games_ItemUpdated; } catch { }
-                });
+                    this.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Background, (Action)(() =>
+                    {
+                        try { PluginDatabase.PluginSettings.PropertyChanged -= PluginSettings_PropertyChanged; } catch { }
+                        try { PluginDatabase.Database.ItemUpdated -= Database_ItemUpdated; } catch { }
+                        try { PluginDatabase.Database.ItemCollectionChanged -= Database_ItemCollectionChanged; } catch { }
+                        try { API.Instance.Database.Games.ItemUpdated -= Games_ItemUpdated; } catch { }
+                    }));
+                }
+                catch { }
             }
             catch { }
         }

@@ -25,7 +25,7 @@ namespace HowLongToBeat.Controls
         {
             get => ControlDataContext;
             set => ControlDataContext = value as PluginButtonDataContext
-                ?? throw new InvalidCastException($"Expected {nameof(PluginButtonDataContext)}");
+                ?? throw new InvalidCastException($"Expected {nameof(PluginButtonDataContext)} but got {value?.GetType().FullName ?? "<null>"}");
         }
 
         private bool eventsWired;
@@ -45,15 +45,26 @@ namespace HowLongToBeat.Controls
         {
             if (!eventsWired) return;
             eventsWired = false;
-            try { PluginDatabase.PluginSettings.PropertyChanged -= PluginSettings_PropertyChanged; } catch { }
-            try { PluginDatabase.Database.ItemUpdated -= Database_ItemUpdated; } catch { }
-            try { PluginDatabase.Database.ItemCollectionChanged -= Database_ItemCollectionChanged; } catch { }
-            try { API.Instance.Database.Games.ItemUpdated -= Games_ItemUpdated; } catch { }
+
+            if (PluginDatabase?.PluginSettings != null)
+            {
+                PluginDatabase.PluginSettings.PropertyChanged -= PluginSettings_PropertyChanged;
+            }
+
+            if (PluginDatabase?.Database != null)
+            {
+                PluginDatabase.Database.ItemUpdated -= Database_ItemUpdated;
+                PluginDatabase.Database.ItemCollectionChanged -= Database_ItemCollectionChanged;
+            }
+
+            if (API.Instance?.Database?.Games != null)
+            {
+                API.Instance.Database.Games.ItemUpdated -= Games_ItemUpdated;
+            }
         }
 
         private async void PluginButton_Loaded(object sender, RoutedEventArgs e)
         {
-            this.Loaded -= PluginButton_Loaded;
 
             try
             {

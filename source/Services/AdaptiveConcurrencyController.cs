@@ -69,23 +69,24 @@ namespace HowLongToBeat.Services
                     }
                 }
             }
-            catch (TaskCanceledException) { }
+            catch (OperationCanceledException) { }
         }
 
         private void AdjustOnce()
         {
             double latency;
             double error;
+            int current;
             lock (sync)
             {
                 latency = emaLatencyMs < 0 ? 0 : emaLatencyMs;
                 error = emaError;
+                current = targetConcurrency;
             }
 
             // - If error rate high (>0.15) or latency high (>2000ms): decrease concurrency by 25%
             // - If latency modest (<400ms) and error low (<0.05): increase concurrency by 1 (up to max)
             // - Otherwise keep stable
-            int current = TargetConcurrency;
             int newTarget = current;
 
             if (error > 0.15 || latency > 2000)
