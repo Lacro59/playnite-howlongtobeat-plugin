@@ -43,7 +43,24 @@ namespace HowLongToBeat.Services
 
         protected override void LoadMoreData()
         {
-            Database.UserHltbData = HowLongToBeatApi.LoadUserData();
+            try
+            {
+                if (HowLongToBeatApi == null)
+                {
+                    // HowLongToBeatApi may not be initialized yet (we delay initialization to OnApplicationStarted).
+                    // Provide an empty placeholder to avoid NullReferenceException during plugin load.
+                    Logger.Warn("HowLongToBeatApi not initialized yet during LoadMoreData(); using empty UserHltbData placeholder");
+                    Database.UserHltbData = new HltbUserStats();
+                    return;
+                }
+
+                Database.UserHltbData = HowLongToBeatApi.LoadUserData();
+            }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, false, true, PluginName);
+                Database.UserHltbData = new HltbUserStats();
+            }
         }
 
         public override GameHowLongToBeat Get(Guid id, bool onlyCache = false, bool force = false)

@@ -32,6 +32,8 @@ namespace HowLongToBeat.Views
         {
             InitializeComponent();
 
+            ApplyThemeResources();
+
             GameContext = game;
             SearchElement.Text = GameContext.Name;
 
@@ -250,6 +252,29 @@ namespace HowLongToBeat.Views
                 lbi.IsSelected = true;
             }
             e.Handled = false;
+        }
+
+        private void ApplyThemeResources()
+        {
+            try
+            {
+                // Try to get common theme brushes from the host via ResourceProvider
+                var normal = ResourceProvider.GetResource("NormalBrush") as Brush;
+                var controlBg = ResourceProvider.GetResource("ControlBackgroundBrush") as Brush ?? normal;
+                var controlFg = ResourceProvider.GetResource("ControlForegroundBrush") as Brush ?? Brushes.White;
+                var controlBorder = ResourceProvider.GetResource("ControlBorderBrush") as Brush ?? Brushes.Gray;
+                var accent = ResourceProvider.GetResource("AccentColorBrush") as Brush ?? normal;
+
+                // Override the local resource keys defined in XAML so DynamicResource bindings pick them
+                this.Resources["CardBackgroundBrush"] = controlBg ?? new SolidColorBrush(Color.FromRgb(0x2E, 0x2F, 0x33));
+                this.Resources["CardForegroundBrush"] = controlFg ?? Brushes.White;
+                this.Resources["CardBorderBrush"] = controlBorder ?? new SolidColorBrush(Color.FromRgb(0x44, 0x44, 0x44));
+
+                this.Resources["PrimaryButtonBackgroundBrush"] = accent ?? new SolidColorBrush(Color.FromRgb(0x5A, 0x9B, 0xD5));
+                this.Resources["PrimaryButtonHoverBrush"] = accent ?? new SolidColorBrush(Color.FromRgb(0x4B, 0x89, 0xC6));
+                this.Resources["PrimaryButtonForegroundBrush"] = controlFg ?? Brushes.White;
+            }
+            catch { }
         }
     }
 }

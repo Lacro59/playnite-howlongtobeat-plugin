@@ -47,8 +47,10 @@ namespace HowLongToBeat.Views
             InitializeComponent();
             DataContext = new HowLongToBeatViewData();
 
-            // Attach and track the DataContext so we can unsubscribe later to avoid leaks
-            AttachViewModel();
+            ApplyThemeResources();
+
+             // Attach and track the DataContext so we can unsubscribe later to avoid leaks
+             AttachViewModel();
 
             // Monitor DataContext changes and unload to detach handlers
             this.DataContextChanged += OnDataContextChanged;
@@ -795,6 +797,20 @@ namespace HowLongToBeat.Views
 
                 this.DataContextChanged -= OnDataContextChanged;
                 this.Unloaded -= HowLongToBeatView_Unloaded;
+            }
+            catch { }
+        }
+        private void ApplyThemeResources()
+        {
+            try
+            {
+                var accent = ResourceProvider.GetResource("AccentColorBrush") as Brush ?? new SolidColorBrush(Colors.DarkCyan);
+                var accentSecondary = ResourceProvider.GetResource("AccentSecondaryBrush") as Brush ?? new SolidColorBrush(Colors.RoyalBlue);
+                var success = ResourceProvider.GetResource("SuccessBrush") as Brush ?? new SolidColorBrush(Colors.ForestGreen);
+
+                this.Resources["DataColorClassicBrush"] = accent;
+                this.Resources["DataColorAverageBrush"] = accentSecondary;
+                this.Resources["DataColorCompletionistBrush"] = success;
             }
             catch { }
         }

@@ -19,6 +19,7 @@ using System.Collections.ObjectModel;
 using CommonPluginsShared;
 using System.Windows.Data;
 using HowLongToBeat.Models.Enumerations;
+using System.Windows.Media;
 
 namespace HowLongToBeat.Views
 {
@@ -41,6 +42,21 @@ namespace HowLongToBeat.Views
                 && (!(bool)PART_HidePlayedGames.IsChecked || (item as PlayniteData).Playtime == 0);
         }
 
+        private void ApplyThemeResources()
+        {
+            try
+            {
+                var accent = ResourceProvider.GetResource("AccentColorBrush") as Brush;
+                if (accent == null)
+                {
+                    accent = ResourceProvider.GetResource("NormalBrush") as Brush ?? new SolidColorBrush(Colors.DarkCyan);
+                }
+
+                this.Resources["ChartAccentBrush"] = accent;
+            }
+            catch { }
+        }
+
 
         public HowLongToBeatUserView(HowLongToBeat plugin)
         {
@@ -49,87 +65,88 @@ namespace HowLongToBeat.Views
             InitializeComponent();
             DataContext = UserViewDataContext;
 
+            ApplyThemeResources();
 
-            if (!PluginDatabase.PluginSettings.Settings.EnableProgressBarInDataView)
-            {
-                GridView lvView = (GridView)ListViewDataGames.View;
-                lvView.Columns.RemoveAt(lvView.Columns.Count - 1);
-                lvView.Columns.RemoveAt(lvView.Columns.Count - 1);
-            }
+             if (!PluginDatabase.PluginSettings.Settings.EnableProgressBarInDataView)
+             {
+                 GridView lvView = (GridView)ListViewDataGames.View;
+                 lvView.Columns.RemoveAt(lvView.Columns.Count - 1);
+                 lvView.Columns.RemoveAt(lvView.Columns.Count - 1);
+             }
 
-            if (PluginDatabase.Database.UserHltbData?.TitlesList?.Count != 0)
-            {
-                if (PluginDatabase.Database.UserHltbData?.TitlesList != null)
-                {
-                    UserViewDataContext.ItemsSource = PluginDatabase.Database.UserHltbData.TitlesList.ToObservable();
+             if (PluginDatabase.Database.UserHltbData?.TitlesList?.Count != 0)
+             {
+                 if (PluginDatabase.Database.UserHltbData?.TitlesList != null)
+                 {
+                     UserViewDataContext.ItemsSource = PluginDatabase.Database.UserHltbData.TitlesList.ToObservable();
 
-                    string SortingDefaultDataName = string.Empty;
-                    switch (PluginDatabase.PluginSettings.Settings.TitleListSort)
-                    {
-                        case TitleListSort.GameName:
-                            SortingDefaultDataName = "GameName";
-                            break;
-                        case TitleListSort.Platform:
-                            SortingDefaultDataName = "Platform";
-                            break;
-                        case TitleListSort.Completion:
-                            SortingDefaultDataName = "Completion";
-                            break;
-                        case TitleListSort.LastUpdate:
-                            SortingDefaultDataName = "LastUpdate";
-                            break;
-                        case TitleListSort.CurrentTime:
-                            SortingDefaultDataName = "CurrentTime";
-                            break;
-                        default:
-                            break;
-                    }
-                    ;
-                    ListViewGames.SortingDefaultDataName = SortingDefaultDataName;
-                    ListViewGames.SortingSortDirection = PluginDatabase.PluginSettings.Settings.IsAsc ? ListSortDirection.Ascending : ListSortDirection.Descending;
-                    ListViewGames.Sorting();
+                     string SortingDefaultDataName = string.Empty;
+                     switch (PluginDatabase.PluginSettings.Settings.TitleListSort)
+                     {
+                         case TitleListSort.GameName:
+                             SortingDefaultDataName = "GameName";
+                             break;
+                         case TitleListSort.Platform:
+                             SortingDefaultDataName = "Platform";
+                             break;
+                         case TitleListSort.Completion:
+                             SortingDefaultDataName = "Completion";
+                             break;
+                         case TitleListSort.LastUpdate:
+                             SortingDefaultDataName = "LastUpdate";
+                             break;
+                         case TitleListSort.CurrentTime:
+                             SortingDefaultDataName = "CurrentTime";
+                             break;
+                         default:
+                             break;
+                     }
+                     ;
+                     ListViewGames.SortingDefaultDataName = SortingDefaultDataName;
+                     ListViewGames.SortingSortDirection = PluginDatabase.PluginSettings.Settings.IsAsc ? ListSortDirection.Ascending : ListSortDirection.Descending;
+                     ListViewGames.Sorting();
 
-                    SetFilter();
-                }
+                     SetFilter();
+                 }
 
 
-                PART_UserDataLoad.Visibility = Visibility.Visible;
-                PART_Data.Visibility = Visibility.Collapsed;
-                _ = Task.Run(() =>
-                {
-                    try
-                    {
-                        List<Task> TaskList = new List<Task>
-                        {
-                            SetChartDataStore(),
-                            SetChartDataYear(),
-                            SetChartData(),
-                            SetStats()
-                        };
-                        Task.WaitAll(TaskList.ToArray());
-                    }
-                    catch (Exception ex)
-                    {
-                        Common.LogError(ex, false, false, PluginDatabase.PluginName);
-                    }
-                })
-                .ContinueWith((antecedent) =>
-                {
-                    Application.Current.Dispatcher?.Invoke(() =>
-                    {
-                        PART_UserDataLoad.Visibility = Visibility.Collapsed;
-                        PART_Data.Visibility = Visibility.Visible;
-                        PART_LvDataContener.IsVisibleChanged += PART_PlayniteData_IsVisibleChanged;
-                    });
-                });
-            }
-            else
-            {
-                SetPlayniteData();
-                PART_UserData.Visibility = Visibility.Collapsed;
-                PART_TabControl.SelectedIndex = 1;
-            }
-        }
+                 PART_UserDataLoad.Visibility = Visibility.Visible;
+                 PART_Data.Visibility = Visibility.Collapsed;
+                 _ = Task.Run(() =>
+                 {
+                     try
+                     {
+                         List<Task> TaskList = new List<Task>
+                         {
+                             SetChartDataStore(),
+                             SetChartDataYear(),
+                             SetChartData(),
+                             SetStats()
+                         };
+                         Task.WaitAll(TaskList.ToArray());
+                     }
+                     catch (Exception ex)
+                     {
+                         Common.LogError(ex, false, false, PluginDatabase.PluginName);
+                     }
+                 })
+                 .ContinueWith((antecedent) =>
+                 {
+                     Application.Current.Dispatcher?.Invoke(() =>
+                     {
+                         PART_UserDataLoad.Visibility = Visibility.Collapsed;
+                         PART_Data.Visibility = Visibility.Visible;
+                         PART_LvDataContener.IsVisibleChanged += PART_PlayniteData_IsVisibleChanged;
+                     });
+                 });
+             }
+             else
+             {
+                 SetPlayniteData();
+                 PART_UserData.Visibility = Visibility.Collapsed;
+                 PART_TabControl.SelectedIndex = 1;
+             }
+         }
 
 
         private void PART_BtRefreshUserData_Click(object sender, RoutedEventArgs e)

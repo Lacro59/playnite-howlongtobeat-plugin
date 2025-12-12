@@ -41,7 +41,6 @@ namespace HowLongToBeat
 
         public HowLongToBeat(IPlayniteAPI playniteAPI) : base(playniteAPI)
         {
-            PluginDatabase.InitializeClient(this);
 
             // Custom theme button
             EventManager.RegisterClassHandler(typeof(Button), Button.ClickEvent, new RoutedEventHandler(OnCustomThemeButtonClick));
@@ -672,25 +671,36 @@ namespace HowLongToBeat
         {
             _ = Task.Run(() =>
             {
-                Thread.Sleep(10000);
-                PreventLibraryUpdatedOnStart = false;
+                try
+                {
+                    PluginDatabase.InitializeClient(this);
+                    try { PluginDatabase.HowLongToBeatApi?.UpdatedCookies(); } catch { }
+                }
+                catch (Exception ex)
+                {
+                    Common.LogError(ex, false, true, PluginDatabase.PluginName);
+                }
             });
 
-            // QuickSearch support
-            try
-            {
-                string icon = Path.Combine(PluginDatabase.Paths.PluginPath, "Resources", "hltb.png");
+            _ = Task.Run(() =>
+             {
+                 Thread.Sleep(10000);
+                 PreventLibraryUpdatedOnStart = false;
+             });
 
-                SubItemsAction HltbSubItemsAction = new SubItemsAction() { Action = () => { }, Name = "", CloseAfterExecute = false, SubItemSource = new QuickSearchItemSource() };
-                CommandItem HltbCommand = new CommandItem(PluginDatabase.PluginName, new List<CommandAction>(), ResourceProvider.GetString("LOCHltbQuickSearchDescription"), icon);
-                HltbCommand.Keys.Add(new CommandItemKey() { Key = "hltb", Weight = 1 });
-                HltbCommand.Actions.Add(HltbSubItemsAction);
-                _ = QuickSearch.QuickSearchSDK.AddCommand(HltbCommand);
-            }
-            catch { }
+             // QuickSearch support
+             try
+             {
+                 string icon = Path.Combine(PluginDatabase.Paths.PluginPath, "Resources", "hltb.png");
 
-            HowLongToBeatApi howLongToBeatClient = new HowLongToBeatApi();
-            howLongToBeatClient.UpdatedCookies();
+                 SubItemsAction HltbSubItemsAction = new SubItemsAction() { Action = () => { }, Name = "", CloseAfterExecute = false, SubItemSource = new QuickSearchItemSource() };
+                 CommandItem HltbCommand = new CommandItem(PluginDatabase.PluginName, new List<CommandAction>(), ResourceProvider.GetString("LOCHltbQuickSearchDescription"), icon);
+                 HltbCommand.Keys.Add(new CommandItemKey() { Key = "hltb", Weight = 1 });
+                 HltbCommand.Actions.Add(HltbSubItemsAction);
+                 _ = QuickSearch.QuickSearchSDK.AddCommand(HltbCommand);
+             }
+             catch { }
+
 
             // TEMP Database convert
             if (!PluginDatabase.PluginSettings.Settings.IsConvertedDb)
