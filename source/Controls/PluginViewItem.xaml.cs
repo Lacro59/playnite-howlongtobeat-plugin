@@ -26,10 +26,11 @@ namespace HowLongToBeat.Controls
         {
             get => ControlDataContext;
             set => ControlDataContext = value as PluginViewItemDataContext
-                ?? throw new InvalidCastException($"Expected {nameof(PluginViewItemDataContext)}");
+                ?? throw new InvalidCastException($"Expected {nameof(PluginViewItemDataContext)}, got {value?.GetType().FullName ?? "null"}");
         }
 
         private CancellationTokenSource _loadedCts;
+        private bool _eventsWired;
 
         public PluginViewItem()
         {
@@ -43,16 +44,18 @@ namespace HowLongToBeat.Controls
 
         private async void PluginViewItem_Loaded(object sender, EventArgs e)
         {
-            this.Loaded -= PluginViewItem_Loaded;
+            // If already initialized, nothing to do
+            if (_eventsWired) return;
 
             // Create CTS tied to this control's lifetime
             _loadedCts?.Dispose();
             _loadedCts = new CancellationTokenSource();
 
+            const int PluginLoadTimeoutSeconds = 10;
             try
             {
                 // Wait for PluginDatabase to be loaded with timeout and cancellation support
-                using (var timeoutCts = new CancellationTokenSource(TimeSpan.FromSeconds(10)))
+                using (var timeoutCts = new CancellationTokenSource(TimeSpan.FromSeconds(PluginLoadTimeoutSeconds)))
                 using (var linked = CancellationTokenSource.CreateLinkedTokenSource(_loadedCts.Token, timeoutCts.Token))
                 {
                     while (!PluginDatabase.IsLoaded)
@@ -81,6 +84,9 @@ namespace HowLongToBeat.Controls
                     try { PluginSettings_PropertyChanged(null, null); }
                     catch (Exception ex) { try { Common.LogError(ex, false, true, PluginDatabase.PluginName); } catch { } }
                 }).Task.ConfigureAwait(false);
+
+                // Mark as initialized so subsequent Loaded events skip initialization until Unloaded resets it
+                _eventsWired = true;
             }
             catch (OperationCanceledException)
             {
@@ -95,8 +101,6 @@ namespace HowLongToBeat.Controls
 
         private void PluginViewItem_Unloaded(object sender, RoutedEventArgs e)
         {
-            try { this.Unloaded -= PluginViewItem_Unloaded; } catch { }
-
             try
             {
                 // Cancel any pending initialization waits
@@ -109,23 +113,28 @@ namespace HowLongToBeat.Controls
                 _loadedCts = null;
             }
 
-            // Unsubscribe global handlers to avoid leaks
-            try
+            // If we previously wired events, unsubscribe them so control can be reinitialized later
+            if (_eventsWired)
             {
-                // Schedule unsubscription on the UI thread without blocking during teardown
-                try
+                Action unsub = () =>
                 {
-                    this.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Background, (Action)(() =>
-                    {
-                        try { PluginDatabase.PluginSettings.PropertyChanged -= PluginSettings_PropertyChanged; } catch { }
-                        try { PluginDatabase.Database.ItemUpdated -= Database_ItemUpdated; } catch { }
-                        try { PluginDatabase.Database.ItemCollectionChanged -= Database_ItemCollectionChanged; } catch { }
-                        try { API.Instance.Database.Games.ItemUpdated -= Games_ItemUpdated; } catch { }
-                    }));
+                    try { PluginDatabase.PluginSettings.PropertyChanged -= PluginSettings_PropertyChanged; } catch { }
+                    try { PluginDatabase.Database.ItemUpdated -= Database_ItemUpdated; } catch { }
+                    try { PluginDatabase.Database.ItemCollectionChanged -= Database_ItemCollectionChanged; } catch { }
+                    try { API.Instance.Database.Games.ItemUpdated -= Games_ItemUpdated; } catch { }
+                };
+
+                if (this.Dispatcher.CheckAccess())
+                {
+                    try { unsub(); } catch { }
                 }
-                catch { }
+                else
+                {
+                    try { this.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Background, unsub); } catch { }
+                }
+
+                _eventsWired = false;
             }
-            catch { }
         }
 
 

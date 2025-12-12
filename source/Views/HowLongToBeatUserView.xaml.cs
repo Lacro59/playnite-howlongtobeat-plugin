@@ -21,35 +21,17 @@ using CommonPluginsShared;
 using System.Windows.Data;
 using HowLongToBeat.Models.Enumerations;
 using System.Windows.Media;
+using System.Reflection;
 
 namespace HowLongToBeat.Views
 {
 
     public partial class HowLongToBeatUserView : UserControl
     {
-        private HowLongToBeat Plugin { get; set; }
-
-        private bool DisplayFirst { get; set; } = true;
-
         private CancellationTokenSource _loadCts;
         private Task _loadTask;
-
-        private void DisposeCts()
-        {
-            try
-            {
-                _loadCts?.Cancel();
-                try { _loadTask?.Wait(500); } catch { }
-            }
-            catch { }
-            try
-            {
-                _loadCts?.Dispose();
-            }
-            catch { }
-            _loadCts = null;
-            _loadTask = null;
-        }
+        private HowLongToBeat Plugin { get; set; }
+        private bool DisplayFirst { get; set; } = true;
 
         private static HowLongToBeatDatabase PluginDatabase => HowLongToBeat.PluginDatabase;
         private UserViewDataContext UserViewDataContext { get; set; } = new UserViewDataContext();
@@ -71,10 +53,17 @@ namespace HowLongToBeat.Views
                 }
 
                 this.Resources["ChartAccentBrush"] = accent;
+
+                Brush controlBg = ResourceProvider.GetResource("ControlBackgroundBrush") as Brush;
+                if (controlBg == null)
+                {
+                    controlBg = ResourceProvider.GetResource("NormalBrush") as Brush ?? new SolidColorBrush(Colors.Transparent);
+                }
+
+                this.Resources["PrimaryButtonForegroundBrush"] = controlBg ?? Brushes.White;
             }
             catch { }
         }
-
 
         public HowLongToBeatUserView(HowLongToBeat plugin)
         {
@@ -194,6 +183,8 @@ namespace HowLongToBeat.Views
                     {
                         PART_UserDataLoad.Visibility = Visibility.Collapsed;
                         PART_Data.Visibility = Visibility.Visible;
+                        // Ensure the handler is not attached multiple times
+                        try { PART_LvDataContener.IsVisibleChanged -= PART_PlayniteData_IsVisibleChanged; } catch { }
                         PART_LvDataContener.IsVisibleChanged += PART_PlayniteData_IsVisibleChanged;
                     }
                     catch (Exception ex)
@@ -755,6 +746,13 @@ namespace HowLongToBeat.Views
             {
                 Part_Found.Visibility = PART_TabControl.SelectedIndex == 0 ? Visibility.Visible : Visibility.Collapsed;
             }
+        }
+
+        private void DisposeCts()
+        {
+            try { _loadCts?.Cancel(); } catch { }
+            try { _loadCts?.Dispose(); } catch { }
+            _loadCts = null;
         }
     }
 

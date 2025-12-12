@@ -66,8 +66,8 @@ namespace HowLongToBeat.Models
                         break;
                 }
             }
-            return Task.FromResult(Enumerable.Empty<ISearchItem<string>>() as IEnumerable<ISearchItem<string>>);
-        }
+            return Task.FromResult(Enumerable.Empty<ISearchItem<string>>());
+         }
 
 
         private List<string> GetParameters(string query)
@@ -163,7 +163,10 @@ namespace HowLongToBeat.Models
                                     }
                                 }
                             }
-                            catch { }
+                            catch (Exception ex)
+                            {
+                                try { LogManager.GetLogger().Warn($"QuickSearch: failed to parse/execute '>' query '{query}': {ex.Message}"); } catch { }
+                            }
                             break;
 
                         case "<":
@@ -178,8 +181,11 @@ namespace HowLongToBeat.Models
                                     }
                                 }
                              }
-                             catch { }
-                             break;
+                             catch (Exception ex)
+                             {
+                                 try { LogManager.GetLogger().Warn($"QuickSearch: failed to parse/execute '<' query '{query}': {ex.Message}"); } catch { }
+                             }
+                              break;
 
                          default:
                              break;
@@ -209,7 +215,10 @@ namespace HowLongToBeat.Models
                                     }
                                 }
                             }
-                            catch { }
+                            catch (Exception ex)
+                            {
+                                try { LogManager.GetLogger().Warn($"QuickSearch: failed to parse/execute '<>' query '{query}': {ex.Message}"); } catch { }
+                            }
                             break;
 
                         default:
@@ -220,7 +229,7 @@ namespace HowLongToBeat.Models
                 });
             }
 
-            return Task.FromResult(Enumerable.Empty<ISearchItem<string>>() as IEnumerable<ISearchItem<string>>);
-         }
-     }
+            return Task.FromResult(Enumerable.Empty<ISearchItem<string>>());
  }
+}
+}

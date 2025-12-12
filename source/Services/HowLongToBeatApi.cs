@@ -58,9 +58,11 @@ namespace HowLongToBeat.Services
                 return currentLimit;
             }
 
-            int pendingConsume = 0;
             try
             {
+                int pendingConsume = 0;
+
+                // Compute difference under lock and handle immediate increases (release permits)
                 lock (syncLock)
                 {
                     int diff = targetLimit - currentLimit;
@@ -72,37 +74,64 @@ namespace HowLongToBeat.Services
                             currentLimit = targetLimit;
                         }
                         catch { }
+
                         return currentLimit;
                     }
-                    else if (diff < 0)
+
+                    if (diff < 0)
                     {
-                        pendingConsume = -diff;
+                        pendingConsume = -diff; // how many permits we need to consume to lower the available count
                     }
                 }
 
                 if (pendingConsume > 0)
                 {
+                    // Try to consume up to pendingConsume permits with short, bounded waits so no orphaned tasks remain.
                     int consumed = 0;
+                    TimeSpan tryWait = TimeSpan.FromMilliseconds(200);
+
                     for (int i = 0; i < pendingConsume; i++)
                     {
                         try
                         {
-                            var delay = Task.Delay(200);
-                            var winner = await Task.WhenAny(semaphore.WaitAsync(), delay).ConfigureAwait(false);
-                            if (winner == delay)
+                            // WaitAsync with a timeout returns true if a permit was acquired, false on timeout.
+                            bool got = await semaphore.WaitAsync(tryWait).ConfigureAwait(false);
+                            if (!got)
                             {
-                                break;
+                                break; // timed out acquiring next permit; stop trying
                             }
+
                             consumed++;
                         }
-                        catch { break; }
+                        catch (OperationCanceledException)
+                        {
+                            break;
+                        }
+                        catch
+                        {
+                            break;
+                        }
                     }
 
+                    // Update the shared currentLimit under lock based on how many permits we actually consumed
                     lock (syncLock)
                     {
                         int originalLimit = currentLimit;
-                        int newLimit = (consumed == pendingConsume) ? targetLimit : Math.Max(0, originalLimit - consumed);
-                        newLimit = Math.Min(originalLimit, newLimit);
+                        int newLimit;
+
+                        if (consumed == pendingConsume)
+                        {
+                            // Successfully consumed all intended permits
+                            newLimit = targetLimit;
+                        }
+                        else
+                        {
+                            // We consumed fewer than requested; lower the limit by the number we consumed (but not below 0)
+                            newLimit = Math.Max(0, originalLimit - consumed);
+                            // Ensure we don't accidentally increase above originalLimit
+                            newLimit = Math.Min(originalLimit, newLimit);
+                        }
+
                         currentLimit = newLimit;
                     }
                 }
@@ -160,6 +189,9 @@ namespace HowLongToBeat.Services
 
         private readonly HttpClient httpClient;
         private Task PageCacheInitTask;
+        // Thread-local Random to provide jitter without creating many Sequential Random instances
+        private static readonly ThreadLocal<Random> _rnd = new ThreadLocal<Random>(() => new Random(Guid.NewGuid().GetHashCode()));
+
 
         private readonly ConcurrentQueue<long> RecentSearchSamples = new ConcurrentQueue<long>();
         private const int RecentSamplesWindow = 200;
@@ -297,6 +329,19 @@ namespace HowLongToBeat.Services
                         try { Logger.Warn("HLTB: PageCache init failed; proceeding without persistent cache"); } catch { }
                     }
                 });
+
+                // Observe any exceptions from the init task so they don't go unobserved
+                PageCacheInitTask.ContinueWith(t =>
+                {
+                    try
+                    {
+                        if (t.IsFaulted && t.Exception != null)
+                        {
+                            Common.LogError(t.Exception, false);
+                        }
+                    }
+                    catch { }
+                }, TaskContinuationOptions.OnlyOnFaulted);
             }
             catch (Exception ex)
             {
@@ -340,10 +385,11 @@ namespace HowLongToBeat.Services
         {
             try
             {
-                monitorCts?.Cancel();
-                try { monitorTask?.Wait(2000); } catch { }
-                monitorCts?.Dispose();
+                // Cancel the monitor task but do not block waiting for it here.
+                try { monitorCts?.Cancel(); } catch { }
+                try { monitorCts?.Dispose(); } catch { }
                 monitorCts = null;
+                // Do not wait on monitorTask; let it finish asynchronously.
                 monitorTask = null;
             }
             catch { }
@@ -456,12 +502,8 @@ namespace HowLongToBeat.Services
             {
                 try
                 {
-                    if (monitorCts != null)
-                    {
-                        try { monitorCts.Cancel(); } catch { }
-                        try { monitorTask?.Wait(2000); } catch { }
-                        try { monitorCts.Dispose(); } catch { }
-                    }
+                    // Use StopMonitoring as single shutdown path; it will cancel and cleanup without blocking.
+                    try { StopMonitoring(); } catch { }
                 }
                 catch { }
                 finally
@@ -481,6 +523,17 @@ namespace HowLongToBeat.Services
                 SearchSemaphore = null;
 
                 try { httpClient?.Dispose(); } catch { }
+
+                // Dispose page cache if it implements IDisposable
+                try
+                {
+                    if (PageCache is IDisposable disposableCache)
+                    {
+                        try { disposableCache.Dispose(); } catch { }
+                    }
+                }
+                catch { }
+                PageCache = null;
             }
         }
 
@@ -529,7 +582,7 @@ namespace HowLongToBeat.Services
                     string response = string.Empty;
                     int maxAttempts = 3;
                     int baseDelayMs = 300;
-                    var rnd = new Random();
+                    var rnd = _rnd.Value;
                     while (attempts < maxAttempts)
                     {
                         attempts++;
@@ -1171,11 +1224,11 @@ namespace HowLongToBeat.Services
 
                     var sw = Stopwatch.StartNew();
                     // Use local helper to avoid dependency on optional CommonPluginsShared submodule.
-                    var postResult = await PostJsonWithSharedClientWithStatus(UrlBase + searchUrl, serializedBody, httpHeaders);
+                    var postResult = await PostJsonWithSharedClientWithStatus(UrlBase + searchUrl, serializedBody, httpHeaders, CancellationToken.None);
                     sw.Stop();
-                    string json = postResult?.Item1 ?? string.Empty;
-                    int statusCode = postResult?.Item2 ?? 0;
-                    string retryAfterHeader = postResult?.Item3;
+                    string json = postResult.body ?? string.Empty;
+                    int statusCode = postResult.status;
+                    string retryAfterHeader = postResult.retry;
 
                     try
                     {
@@ -1272,8 +1325,11 @@ namespace HowLongToBeat.Services
                                             int diff = SearchBackoffLimit - currentLimitSnapshot;
                                             if (diff > 0)
                                             {
-                                                SearchSemaphore.Release(diff);
-                                                CurrentSearchLimit = SearchBackoffLimit;
+                                                try { SearchSemaphore.Release(diff); } catch { }
+                                                lock (SearchConcurrencySync)
+                                                {
+                                                    CurrentSearchLimit = SearchBackoffLimit;
+                                                }
                                             }
                                             else if (diff < 0)
                                             {
@@ -2005,7 +2061,7 @@ namespace HowLongToBeat.Services
         /// <summary>
         /// Posts JSON payload to URL, optionally with cookies, and returns response string.
         /// </summary>
-        private async Task<string> PostJson(string url, string payload, List<HttpCookie> cookies = null)
+        private async Task<string> PostJson(string url, string payload, List<HttpCookie> cookies = null, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -2074,32 +2130,32 @@ namespace HowLongToBeat.Services
         /// Posts JSON payload using shared HttpClient and returns tuple (responseBody, statusCode, retryAfterHeader).
         /// This is a local replacement for CommonPluginsShared.Web.PostJsonWithSharedClientWithStatus when the submodule isn't available.
         /// </summary>
-        private async Task<Tuple<string, int, string>> PostJsonWithSharedClientWithStatus(string url, string payload, List<HttpHeader> headers = null)
-        {
-            try
-            {
-                using (var request = new HttpRequestMessage(HttpMethod.Post, url))
-                {
-                    request.Content = new StringContent(payload ?? string.Empty, Encoding.UTF8, "application/json");
+        private async Task<(string body, int status, string retry)> PostJsonWithSharedClientWithStatus(string url, string payload, List<HttpHeader> headers = null, CancellationToken cancellationToken = default)
+         {
+             try
+             {
+                 using (var request = new HttpRequestMessage(HttpMethod.Post, url))
+                 {
+                     request.Content = new StringContent(payload ?? string.Empty, Encoding.UTF8, "application/json");
 
-                    if (headers != null)
-                    {
-                        foreach (var h in headers)
-                        {
-                            try
-                            {
-                                // Try to add to request headers; if invalid, try content headers
-                                if (!request.Headers.TryAddWithoutValidation(h.Key, h.Value))
-                                {
-                                    try { request.Content?.Headers.TryAddWithoutValidation(h.Key, h.Value); } catch { }
-                                }
+                     if (headers != null)
+                     {
+                         foreach (var h in headers)
+                         {
+                             try
+                             {
+                                 // Try to add to request headers; if invalid, try content headers
+                                 if (!request.Headers.TryAddWithoutValidation(h.Key, h.Value))
+                                 {
+                                     try { request.Content?.Headers.TryAddWithoutValidation(h.Key, h.Value); } catch { }
+                                 }
                             }
                             catch { }
                         }
-                    }
+                     }
 
-                    using (var resp = await httpClient.SendAsync(request).ConfigureAwait(false))
-                    {
+                     using (var resp = await httpClient.SendAsync(request, cancellationToken).ConfigureAwait(false))
+                     {
                         int status = (int)resp.StatusCode;
                         string retry = null;
                         try
@@ -2119,16 +2175,16 @@ namespace HowLongToBeat.Services
                             try { Logger.Warn($"HTTP {status} posting to {url}"); } catch { }
                         }
 
-                        return Tuple.Create(body, status, retry);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Common.LogError(ex, false, $"Error posting to {url}");
-                return Tuple.Create(string.Empty, 0, (string)null);
-            }
-        }
+                        return (body, status, retry);
+                     }
+                 }
+             }
+             catch (Exception ex)
+             {
+                 Common.LogError(ex, false, $"Error posting to {url}");
+                 return (string.Empty, 0, (string)null);
+             }
+         }
         private static readonly Regex _scriptSrcRegex = new Regex("<script[^>]*src=[\\\"']([^\\\"']+)[\\\"'][^>]*>", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
         private static Regex MyRegex() => _scriptSrcRegex;
     }

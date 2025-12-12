@@ -23,7 +23,34 @@ namespace HowLongToBeat.Services
 
         public AdaptiveConcurrencyController(int initial, int min, int max, TimeSpan? interval = null)
         {
-            targetConcurrency = Math.Max(min, Math.Min(max, initial));
+            // Validate inputs
+            if (min < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(min), "min must be >= 0");
+            }
+
+            if (max < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(max), "max must be >= 0");
+            }
+
+            if (min > max)
+            {
+                throw new ArgumentException("min must be less than or equal to max", nameof(min));
+            }
+
+            if (initial < min || initial > max)
+            {
+                throw new ArgumentOutOfRangeException(nameof(initial), $"initial must be within [{min}, {max}]");
+            }
+
+            if (interval.HasValue && interval.Value <= TimeSpan.Zero)
+            {
+                throw new ArgumentOutOfRangeException(nameof(interval), "interval must be null or greater than TimeSpan.Zero");
+            }
+
+            // After validation assign fields
+            targetConcurrency = initial;
             minConcurrency = min;
             maxConcurrency = max;
             adjustInterval = interval ?? TimeSpan.FromSeconds(2);

@@ -10,6 +10,7 @@ using Playnite.SDK.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -29,6 +30,7 @@ namespace HowLongToBeat.Controls
         }
 
         private bool eventsWired;
+        private CancellationTokenSource _loadedCts;
 
         public PluginButton()
         {
@@ -43,6 +45,11 @@ namespace HowLongToBeat.Controls
 
         private void PluginButton_Unloaded(object sender, RoutedEventArgs e)
         {
+            // Cancel any pending load wait
+            try { _loadedCts?.Cancel(); } catch { }
+            try { _loadedCts?.Dispose(); } catch { }
+            _loadedCts = null;
+
             if (!eventsWired) return;
             eventsWired = false;
 
@@ -65,13 +72,19 @@ namespace HowLongToBeat.Controls
 
         private async void PluginButton_Loaded(object sender, RoutedEventArgs e)
         {
+            // If already wired, nothing to do
+            if (eventsWired) return;
+
+            // Create a CTS to allow cancelling wait if Unloaded fires
+            try { _loadedCts?.Dispose(); } catch { }
+            _loadedCts = new CancellationTokenSource();
 
             try
             {
                 var sw = Stopwatch.StartNew();
                 while (!PluginDatabase.IsLoaded)
                 {
-                    await Task.Delay(100).ConfigureAwait(false);
+                    try { await Task.Delay(100, _loadedCts.Token).ConfigureAwait(false); } catch (OperationCanceledException) { return; }
                     if (sw.Elapsed > TimeSpan.FromSeconds(30))
                     {
                         try { Debug.WriteLine("PluginButton init timeout waiting for PluginDatabase.IsLoaded"); } catch { }
@@ -96,6 +109,11 @@ namespace HowLongToBeat.Controls
             catch (Exception ex)
             {
                 try { Common.LogError(ex, false, true, PluginDatabase.PluginName); } catch { }
+            }
+            finally
+            {
+                try { _loadedCts?.Dispose(); } catch { }
+                _loadedCts = null;
             }
         }
 

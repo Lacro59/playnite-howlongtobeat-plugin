@@ -676,11 +676,8 @@ namespace HowLongToBeat
                     var initTask = CommonPluginsShared.Web.InitializeAsync(createInBackground: true);
                     initTask.ContinueWith(t =>
                     {
-                        if (t.IsFaulted)
-                        {
-                            try { Common.LogError(t.Exception?.GetBaseException() ?? new Exception("Web.InitializeAsync failed"), false, "Web initialization"); } catch { }
-                        }
-                    }, TaskScheduler.Default);
+                        try { Common.LogError(t.Exception?.GetBaseException() ?? new Exception("Web.InitializeAsync failed"), false, "Web initialization"); } catch { }
+                    }, CancellationToken.None, TaskContinuationOptions.OnlyOnFaulted, TaskScheduler.Default);
                 }
                 catch { }
 
@@ -709,9 +706,10 @@ namespace HowLongToBeat
             }
             catch { }
 
-            _ = Task.Run(() =>
+            // Run a non-blocking delay on the thread-pool and then clear the flag
+            _ = Task.Run(async () =>
              {
-                 Thread.Sleep(10000);
+                 await Task.Delay(10000).ConfigureAwait(false);
                  PreventLibraryUpdatedOnStart = false;
              });
 
