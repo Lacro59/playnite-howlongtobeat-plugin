@@ -11,8 +11,8 @@
              xmlns:controls="clr-namespace:HowLongToBeat.Controls"
              xmlns:views="clr-namespace:HowLongToBeat.Views"
              mc:Ignorable="d"
-        d:DesignHeight="740"
-        d:DesignWidth="1280"
+             d:DesignHeight="740"
+             d:DesignWidth="1280"
              d:DataContext="{d:DesignInstance Type=views:UserViewDataContext, IsDesignTimeCreatable=True}">
 
     <UserControl.Resources>
@@ -25,19 +25,19 @@
 
     <Grid>
         <TabControl Margin="10"
-                Name="PART_TabControl"
-                SelectionChanged="PART_TabControl_SelectionChanged">
+                    Name="PART_TabControl"
+                    SelectionChanged="PART_TabControl_SelectionChanged">
             <TabItem Header="{DynamicResource LOCHowLongToBeatUserData}"
-                    Name="PART_UserData">
+                     Name="PART_UserData">
                 <Grid Margin="0,10,0,0">
                     <Grid Name="PART_UserDataLoad">
                         <ProgressBar IsIndeterminate="True"
-                                Width="350"
-                                Height="40"/>
+                                     Width="350"
+                                     Height="40"/>
                         <TextBlock Text="{DynamicResource LOCLoadingLabel}"
-                                Style="{DynamicResource BaseTextBlockStyle}"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"/>
+                                   Style="{DynamicResource BaseTextBlockStyle}"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"/>
                     </Grid>
 
                     <Grid Name="PART_Data">
@@ -58,7 +58,7 @@
                             </Grid.RowDefinitions>
 
                             <Grid Grid.Row="0"
-                                    Margin="0,10,0,10">
+                                  Margin="0,10,0,10">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="auto"/>
                                     <ColumnDefinition Width="10"/>
@@ -78,27 +78,27 @@
                                 </Grid.ColumnDefinitions>
 
                                 <StackPanel Grid.Column="0"
-                                        Orientation="Horizontal">
+                                            Orientation="Horizontal">
                                     <Label Content="{DynamicResource LOCNameLabel}"
-                                            FontSize="16"
-                                            Margin="0,0,10,0"
-                                            VerticalAlignment="Center"/>
+                                           FontSize="16"
+                                           Margin="0,0,10,0"
+                                           VerticalAlignment="Center"/>
 
                                     <TextBox TextChanged="TextBox_TextChanged"
-                                            Name="PART_NameSearch"
-                                            Width="150"/>
+                                             Name="PART_NameSearch"
+                                             Width="150"/>
                                 </StackPanel>
 
                                 <StackPanel Grid.Column="2"
-                                        Orientation="Horizontal">
+                                            Orientation="Horizontal">
                                     <Label Content="{DynamicResource LOCCommonYearLabel}"
-                                            FontSize="16"
-                                            Margin="0,0,10,0"
-                                            VerticalAlignment="Center"/>
+                                           FontSize="16"
+                                           Margin="0,0,10,0"
+                                           VerticalAlignment="Center"/>
 
                                     <ComboBox Width="70"
-                                            Name="PART_CbYear"
-                                            SelectionChanged="PART_CbYear_SelectionChanged">
+                                              Name="PART_CbYear"
+                                              SelectionChanged="PART_CbYear_SelectionChanged">
                                         <ComboBox.ItemTemplate>
                                             <DataTemplate>
                                                 <StackPanel Orientation="Horizontal">
@@ -110,15 +110,15 @@
                                 </StackPanel>
 
                                 <StackPanel Grid.Column="4"
-                                        Orientation="Horizontal">
+                                            Orientation="Horizontal">
                                     <Label Content="{DynamicResource LOCHowLongToBeatStorefront}"
-                                            FontSize="16"
-                                            Margin="0,0,10,0"
-                                            VerticalAlignment="Center"/>
+                                           FontSize="16"
+                                           Margin="0,0,10,0"
+                                           VerticalAlignment="Center"/>
 
                                     <ComboBox Width="200"
-                                            Name="PART_CbStorefront"
-                                            SelectionChanged="PART_CbStorefront_SelectionChanged">
+                                              Name="PART_CbStorefront"
+                                              SelectionChanged="PART_CbStorefront_SelectionChanged">
                                         <ComboBox.ItemTemplate>
                                             <DataTemplate>
                                                 <StackPanel Orientation="Horizontal">
@@ -130,15 +130,15 @@
                                 </StackPanel>
 
                                 <StackPanel Grid.Column="6"
-                                        Orientation="Horizontal">
+                                            Orientation="Horizontal">
                                     <Label Content="{DynamicResource LOCPlatformTitle}"
-                                            FontSize="16"
-                                            Margin="0,0,10,0"
-                                            VerticalAlignment="Center"/>
+                                           FontSize="16"
+                                           Margin="0,0,10,0"
+                                           VerticalAlignment="Center"/>
 
                                     <ComboBox Width="200"
-                                            Name="PART_CbPlatform"
-                                            SelectionChanged="PART_CbPlatform_SelectionChanged">
+                                              Name="PART_CbPlatform"
+                                              SelectionChanged="PART_CbPlatform_SelectionChanged">
                                         <ComboBox.ItemTemplate>
                                             <DataTemplate>
                                                 <StackPanel Orientation="Horizontal">
@@ -150,23 +150,23 @@
                                 </StackPanel>
 
                                 <StackPanel Grid.Column="8"
-                                        Orientation="Horizontal">
+                                            Orientation="Horizontal">
                                     <CheckBox Content="{DynamicResource LOCHltbOnlyReplays}"
-                                            Checked="CheckBox_Checked"
-                                            Unchecked="CheckBox_Checked"
+                                              Checked="CheckBox_Checked"
+                                              Unchecked="CheckBox_Checked"
                                               Name="PART_Replays"
-                                            VerticalAlignment="Center"/>
+                                              VerticalAlignment="Center"/>
 
                                     <CheckBox Content="{DynamicResource LOCHltbOnlyNotPlayed}"
-                                            Checked="CheckBox_Checked"
-                                            Unchecked="CheckBox_Checked"
+                                              Checked="CheckBox_Checked"
+                                              Unchecked="CheckBox_Checked"
                                               Name="PART_OnlyNotPlayed"
-                                            VerticalAlignment="Center"
-                                            Margin="10,0,0,0"/>
+                                              VerticalAlignment="Center"
+                                              Margin="10,0,0,0"/>
                                 </StackPanel>
 
                                 <StackPanel Orientation="Horizontal"
-                                        Grid.Column="20">
+                                            Grid.Column="20">
                                     <Button Content="&#xEEBB;"
                                             FontFamily="{DynamicResource FontIcoFont}"
                                             ToolTip="{DynamicResource LOCCommonDefaultFilters}"
@@ -180,38 +180,38 @@
                             </Grid>
 
                             <Grid Grid.Row="1"
-                                    Name="PART_LvContener">
+                                  Name="PART_LvContener">
                                 <controlsShared:ListViewExtend x:Name="ListViewGames"
-                                        FontSize="24"
-                                        Height="{Binding ElementName=PART_LvContener, Path=ActualHeight}"
+                                                               FontSize="24"
+                                                               Height="{Binding ElementName=PART_LvContener, Path=ActualHeight}"
                                                                Style="{StaticResource {x:Type ListView}}"
                                                                ItemsSource="{Binding ItemsSource}"
                                                                VirtualizingStackPanel.IsVirtualizing="True"
                                                                VirtualizingStackPanel.VirtualizationMode="Recycling"
                                                                SortingSortDirection="Descending"
-                                        SortingDefaultDataName="LastUpdate"
-                                        SortingEnable="True">
+                                                               SortingDefaultDataName="LastUpdate"
+                                                               SortingEnable="True">
                                     <ListView.View>
                                         <GridView>
                                             <GridViewColumn Width="0"
-                                                    DisplayMemberBinding="{Binding GameName}">
+                                                            DisplayMemberBinding="{Binding GameName}">
                                                 <controlsShared:GridViewColumnHeaderExtend Style="{StaticResource {x:Type GridViewColumnHeader}}"
-                                                        IsHitTestVisible="False"
-                                                        RefIndex="1"/>
+                                                                                           IsHitTestVisible="False"
+                                                                                           RefIndex="1"/>
                                             </GridViewColumn>
                                             <GridViewColumn Width="300">
                                                 <GridViewColumnHeader Content="{DynamicResource LOCGameNameTitle}"
-                                                        Tag="GameName"/>
+                                                                      Tag="GameName"/>
                                                 <GridViewColumn.CellTemplate>
                                                     <DataTemplate>
                                                         <StackPanel>
                                                             <StackPanel Orientation="Horizontal"
-                                                                    Visibility="{Binding GameExist, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                                                        Visibility="{Binding GameExist, Converter={StaticResource BooleanToVisibilityConverter}}">
                                                                 <TextBlock Visibility="{Binding IsRetired, Converter={StaticResource BooleanToVisibilityConverter}}">
                                                                     <Hyperlink Command="{Binding GoToGame}"
-                                                                            CommandParameter="{Binding GameId}">
+                                                                               CommandParameter="{Binding GameId}">
                                                                         <TextBlock Text="{Binding GameName}"
-                                                                                TextDecorations="Strikethrough"
+                                                                                   TextDecorations="Strikethrough"
                                                                                    Style="{DynamicResource ListExtendStyleTextBlock}"/>
                                                                     </Hyperlink>
                                                                 </TextBlock>
@@ -223,12 +223,12 @@
                                                                                     Value="Visible"/>
                                                                             <Style.Triggers>
                                                                                 <DataTrigger Binding="{Binding IsRetired}"
-                                                                                        Value="True">
+                                                                                             Value="True">
                                                                                     <Setter Property="Visibility"
                                                                                             Value="Collapsed"/>
                                                                                 </DataTrigger>
                                                                                 <DataTrigger Binding="{Binding IsReplay}"
-                                                                                        Value="True">
+                                                                                             Value="True">
                                                                                     <Setter Property="Visibility"
                                                                                             Value="Collapsed"/>
                                                                                 </DataTrigger>
@@ -237,7 +237,7 @@
                                                                     </TextBlock.Style>
                                             
                                                                     <Hyperlink Command="{Binding GoToGame}"
-                                                                            CommandParameter="{Binding GameId}">
+                                                                               CommandParameter="{Binding GameId}">
                                                                         <TextBlock Text="{Binding GameName}"
                                                                                    Style="{DynamicResource ListExtendStyleTextBlock}"/>
                                                                     </Hyperlink>
@@ -245,11 +245,11 @@
 
                                                                 <TextBlock Visibility="{Binding IsReplay, Converter={StaticResource BooleanToVisibilityConverter}}">
                                                                     <Hyperlink Command="{Binding GoToGame}"
-                                                                            CommandParameter="{Binding GameId}">
+                                                                               CommandParameter="{Binding GameId}">
                                                                         <TextBlock Text="{Binding GameName}"
                                                                                    Style="{DynamicResource ListExtendStyleTextBlock}"/>
                                                                         <TextBlock Text=""
-                                                                                FontFamily="{DynamicResource CommonFont}"
+                                                                                   FontFamily="{DynamicResource CommonFont}"
                                                                                    Margin="10,0,0,0"
                                                                                    Style="{DynamicResource ListExtendStyleTextBlock}"/>
                                                                     </Hyperlink>
@@ -257,10 +257,10 @@
                                                             </StackPanel>
 
                                                             <StackPanel Orientation="Horizontal"
-                                                                    Visibility="{Binding GameExist, Converter={StaticResource InvertedBooleanToVisibilityConverter}}">
+                                                                        Visibility="{Binding GameExist, Converter={StaticResource InvertedBooleanToVisibilityConverter}}">
                                                                 <TextBlock Visibility="{Binding IsRetired, Converter={StaticResource BooleanToVisibilityConverter}}">
                                                                     <TextBlock Text="{Binding GameName}"
-                                                                            TextDecorations="Strikethrough"
+                                                                               TextDecorations="Strikethrough"
                                                                                Style="{DynamicResource ListExtendStyleTextBlock}"/>
                                                                 </TextBlock>
 
@@ -271,12 +271,12 @@
                                                                                     Value="Visible"/>
                                                                             <Style.Triggers>
                                                                                 <DataTrigger Binding="{Binding IsRetired}"
-                                                                                        Value="True">
+                                                                                             Value="True">
                                                                                     <Setter Property="Visibility"
                                                                                             Value="Collapsed"/>
                                                                                 </DataTrigger>
                                                                                 <DataTrigger Binding="{Binding IsReplay}"
-                                                                                        Value="True">
+                                                                                             Value="True">
                                                                                     <Setter Property="Visibility"
                                                                                             Value="Collapsed"/>
                                                                                 </DataTrigger>
@@ -285,14 +285,14 @@
                                                                     </TextBlock.Style>
                                             
                                                                   <TextBlock Text="{Binding GameName}"
-                                                                            Style="{DynamicResource ListExtendStyleTextBlock}"/>
+                                                                             Style="{DynamicResource ListExtendStyleTextBlock}"/>
                                                                 </TextBlock>
 
                                                                 <TextBlock Visibility="{Binding IsReplay, Converter={StaticResource BooleanToVisibilityConverter}}">
                                                                     <TextBlock Text="{Binding GameName}"
-                                                                            Style="{DynamicResource ListExtendStyleTextBlock}"/>
+                                                                               Style="{DynamicResource ListExtendStyleTextBlock}"/>
                                                                     <TextBlock Text=""
-                                                                            FontFamily="{DynamicResource CommonFont}"
+                                                                               FontFamily="{DynamicResource CommonFont}"
                                                                                Margin="10,0,0,0"
                                                                                Style="{DynamicResource ListExtendStyleTextBlock}"/>
                                                                 </TextBlock>
@@ -303,142 +303,142 @@
                                             </GridViewColumn>
 
                                             <GridViewColumn Width="120"
-                                                    DisplayMemberBinding="{Binding StartDate, Converter={StaticResource LocalDateConverter}}">
+                                                            DisplayMemberBinding="{Binding StartDate, Converter={StaticResource LocalDateConverter}}">
                                                 <GridViewColumnHeader Content="{DynamicResource LOCCommonStartDate}"/>
                                             </GridViewColumn>
 
                                             <GridViewColumn Width="0"
-                                                    DisplayMemberBinding="{Binding LastUpdate}">
+                                                            DisplayMemberBinding="{Binding LastUpdate}">
                                                 <controlsShared:GridViewColumnHeaderExtend Style="{StaticResource {x:Type GridViewColumnHeader}}"
-                                                        IsHitTestVisible="False"
-                                                        RefIndex="4"/>
+                                                                                           IsHitTestVisible="False"
+                                                                                           RefIndex="4"/>
                                             </GridViewColumn>
                                             <GridViewColumn Width="120"
-                                                    DisplayMemberBinding="{Binding LastUpdate, Converter={StaticResource LocalDateConverter}}">
+                                                            DisplayMemberBinding="{Binding LastUpdate, Converter={StaticResource LocalDateConverter}}">
                                                 <GridViewColumnHeader Content="{DynamicResource LOCCommonLastUpdate}"
-                                                        Tag="LastUpdate"/>
+                                                                      Tag="LastUpdate"/>
                                             </GridViewColumn>
 
                                             <GridViewColumn Width="100"
-                                                    DisplayMemberBinding="{Binding Platform}">
+                                                            DisplayMemberBinding="{Binding Platform}">
                                                 <GridViewColumnHeader Content="{DynamicResource LOCPlatformTitle}"/>
                                             </GridViewColumn>
 
                                             <GridViewColumn Width="130"
-                                                    DisplayMemberBinding="{Binding Storefront}">
+                                                            DisplayMemberBinding="{Binding Storefront}">
                                                 <GridViewColumnHeader Content="{DynamicResource LOCHowLongToBeatStorefront}"/>
                                             </GridViewColumn>
 
                                             <GridViewColumn Width="120"
-                                                    DisplayMemberBinding="{Binding Completion, Converter={StaticResource LocalDateConverter}}">
+                                                            DisplayMemberBinding="{Binding Completion, Converter={StaticResource LocalDateConverter}}">
                                                 <GridViewColumnHeader Content="{DynamicResource LOCHowLongToBeatCompleted}"/>
                                             </GridViewColumn>
 
                                             <GridViewColumn Width="0"
-                                                    DisplayMemberBinding="{Binding CurrentTime}">
+                                                            DisplayMemberBinding="{Binding CurrentTime}">
                                                 <controlsShared:GridViewColumnHeaderExtend Style="{StaticResource {x:Type GridViewColumnHeader}}"
-                                                        IsHitTestVisible="False"
-                                                        RefIndex="8"/>
+                                                                                           IsHitTestVisible="False"
+                                                                                           RefIndex="8"/>
                                             </GridViewColumn>
                                             <GridViewColumn Width="130"
-                                                    DisplayMemberBinding="{Binding CurrentTime, Converter={StaticResource PlayTimeToStringConverterWithZero}}">
+                                                            DisplayMemberBinding="{Binding CurrentTime, Converter={StaticResource PlayTimeToStringConverterWithZero}}">
                                                 <GridViewColumnHeader Content="{DynamicResource LOCTimePlayed}"
-                                                        Tag="CurrentTime"/>
+                                                                      Tag="CurrentTime"/>
                                             </GridViewColumn>
 
                                             <GridViewColumn Width="0"
-                                                    DisplayMemberBinding="{Binding TimeToBeat}">
+                                                            DisplayMemberBinding="{Binding TimeToBeat}">
                                                 <controlsShared:GridViewColumnHeaderExtend Style="{StaticResource {x:Type GridViewColumnHeader}}"
-                                                        IsHitTestVisible="False"
-                                                        RefIndex="10"/>
+                                                                                           IsHitTestVisible="False"
+                                                                                           RefIndex="10"/>
                                             </GridViewColumn>
                                             <GridViewColumn Width="130"
-                                                    DisplayMemberBinding="{Binding TimeToBeat, Converter={StaticResource PlayTimeToStringConverterWithZero}}">
+                                                            DisplayMemberBinding="{Binding TimeToBeat, Converter={StaticResource PlayTimeToStringConverterWithZero}}">
                                                 <GridViewColumnHeader Content="{DynamicResource LOCHowLongToBeatTimeToBeat}"/>
                                             </GridViewColumn>
 
                                             <GridViewColumn Width="0"
-                                                    DisplayMemberBinding="{Binding RemainingTime}">
+                                                            DisplayMemberBinding="{Binding RemainingTime}">
                                                 <controlsShared:GridViewColumnHeaderExtend Style="{StaticResource {x:Type GridViewColumnHeader}}"
-                                                        IsHitTestVisible="False"
-                                                        RefIndex="12"/>
+                                                                                           IsHitTestVisible="False"
+                                                                                           RefIndex="12"/>
                                             </GridViewColumn>
                                             <GridViewColumn Width="130"
-                                                    DisplayMemberBinding="{Binding RemainingTimeFormat}">
+                                                            DisplayMemberBinding="{Binding RemainingTimeFormat}">
                                                 <GridViewColumnHeader Content="{DynamicResource LOCHltbRemainingTime}"
-                                                        Tag="RemainingTime"/>
+                                                                      Tag="RemainingTime"/>
                                             </GridViewColumn>
 
                                             <GridViewColumn Width="0"
-                                                    DisplayMemberBinding="{Binding HltbUserData.MainStory}">
+                                                            DisplayMemberBinding="{Binding HltbUserData.MainStory}">
                                                 <controlsShared:GridViewColumnHeaderExtend Style="{StaticResource {x:Type GridViewColumnHeader}}"
-                                                        IsHitTestVisible="False"
-                                                        RefIndex="14"/>
+                                                                                           IsHitTestVisible="False"
+                                                                                           RefIndex="14"/>
                                             </GridViewColumn>
                                             <GridViewColumn Width="130"
-                                                    DisplayMemberBinding="{Binding HltbUserData.MainStoryFormat}">
+                                                            DisplayMemberBinding="{Binding HltbUserData.MainStoryFormat}">
                                                 <GridViewColumnHeader Content="{DynamicResource LOCHowLongToBeatMainStory}"
-                                                        Tag="HltbUserData.MainStory"/>
+                                                                      Tag="HltbUserData.MainStory"/>
                                             </GridViewColumn>
 
                                             <GridViewColumn Width="0"
-                                                    DisplayMemberBinding="{Binding HltbUserData.MainExtra}">
+                                                            DisplayMemberBinding="{Binding HltbUserData.MainExtra}">
                                                 <controlsShared:GridViewColumnHeaderExtend Style="{StaticResource {x:Type GridViewColumnHeader}}"
-                                                        IsHitTestVisible="False"
-                                                        RefIndex="16"/>
+                                                                                           IsHitTestVisible="False"
+                                                                                           RefIndex="16"/>
                                             </GridViewColumn>
                                             <GridViewColumn Width="130"
-                                                    DisplayMemberBinding="{Binding HltbUserData.MainExtraFormat}">
+                                                            DisplayMemberBinding="{Binding HltbUserData.MainExtraFormat}">
                                                 <GridViewColumnHeader Content="{DynamicResource LOCHowLongToBeatMainExtra}"
-                                                        Tag="HltbUserData.MainExtra"/>
+                                                                      Tag="HltbUserData.MainExtra"/>
                                             </GridViewColumn>
 
                                             <GridViewColumn Width="0"
-                                                    DisplayMemberBinding="{Binding HltbUserData.Completionist}">
+                                                            DisplayMemberBinding="{Binding HltbUserData.Completionist}">
                                                 <controlsShared:GridViewColumnHeaderExtend Style="{StaticResource {x:Type GridViewColumnHeader}}"
-                                                        IsHitTestVisible="False"
-                                                        RefIndex="18"/>
+                                                                                           IsHitTestVisible="False"
+                                                                                           RefIndex="18"/>
                                             </GridViewColumn>
                                             <GridViewColumn Width="130"
-                                                    DisplayMemberBinding="{Binding HltbUserData.CompletionistFormat}">
+                                                            DisplayMemberBinding="{Binding HltbUserData.CompletionistFormat}">
                                                 <GridViewColumnHeader Content="{DynamicResource LOCHowLongToBeatCompletionist}"
-                                                        Tag="HltbUserData.Completionist"/>
+                                                                      Tag="HltbUserData.Completionist"/>
                                             </GridViewColumn>
 
                                             <GridViewColumn Width="0"
-                                                    DisplayMemberBinding="{Binding HltbUserData.Solo}">
+                                                            DisplayMemberBinding="{Binding HltbUserData.Solo}">
                                                 <controlsShared:GridViewColumnHeaderExtend Style="{StaticResource {x:Type GridViewColumnHeader}}"
-                                                        IsHitTestVisible="False"
-                                                        RefIndex="20"/>
+                                                                                           IsHitTestVisible="False"
+                                                                                           RefIndex="20"/>
                                             </GridViewColumn>
                                             <GridViewColumn Width="90"
-                                                    DisplayMemberBinding="{Binding HltbUserData.SoloFormat}">
+                                                            DisplayMemberBinding="{Binding HltbUserData.SoloFormat}">
                                                 <GridViewColumnHeader Content="{DynamicResource LOCHowLongToBeatSolo}"
-                                                        Tag="HltbUserData.Solo"/>
+                                                                      Tag="HltbUserData.Solo"/>
                                             </GridViewColumn>
 
                                             <GridViewColumn Width="0"
-                                                    DisplayMemberBinding="{Binding HltbUserData.CoOp}">
+                                                            DisplayMemberBinding="{Binding HltbUserData.CoOp}">
                                                 <controlsShared:GridViewColumnHeaderExtend Style="{StaticResource {x:Type GridViewColumnHeader}}"
-                                                        IsHitTestVisible="False"
-                                                        RefIndex="22"/>
+                                                                                           IsHitTestVisible="False"
+                                                                                           RefIndex="22"/>
                                             </GridViewColumn>
                                             <GridViewColumn Width="90"
-                                                    DisplayMemberBinding="{Binding HltbUserData.CoOpFormat}">
+                                                            DisplayMemberBinding="{Binding HltbUserData.CoOpFormat}">
                                                 <GridViewColumnHeader Content="{DynamicResource LOCHowLongToBeatCoOp}"
-                                                        Tag="HltbUserData.CoOp"/>
+                                                                      Tag="HltbUserData.CoOp"/>
                                             </GridViewColumn>
 
                                             <GridViewColumn Width="0"
-                                                    DisplayMemberBinding="{Binding HltbUserData.Vs}">
+                                                            DisplayMemberBinding="{Binding HltbUserData.Vs}">
                                                 <controlsShared:GridViewColumnHeaderExtend Style="{StaticResource {x:Type GridViewColumnHeader}}"
-                                                        IsHitTestVisible="False"
-                                                        RefIndex="24"/>
+                                                                                           IsHitTestVisible="False"
+                                                                                           RefIndex="24"/>
                                             </GridViewColumn>
                                             <GridViewColumn Width="90"
-                                                    DisplayMemberBinding="{Binding HltbUserData.VsFormat}">
+                                                            DisplayMemberBinding="{Binding HltbUserData.VsFormat}">
                                                 <GridViewColumnHeader Content="{DynamicResource LOCHowLongToBeatVs}"
-                                                        Tag="HltbUserData.Vs"/>
+                                                                      Tag="HltbUserData.Vs"/>
                                             </GridViewColumn>
                                         </GridView>
                                     </ListView.View>
@@ -454,7 +454,7 @@
                                 </Grid.RowDefinitions>
 
                                 <Grid Grid.Row="0"
-                                        Margin="0,0,0,10">
+                                      Margin="0,0,0,10">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="1.8*"/>
                                         <ColumnDefinition Width="10"/>
@@ -464,10 +464,10 @@
                                     </Grid.ColumnDefinitions>
 
                                     <Label Grid.Column="0"
-                                            Content="{DynamicResource LOCHowLongToBeatCompletationStore}"/>
+                                           Content="{DynamicResource LOCHowLongToBeatCompletationStore}"/>
                                     <Label Grid.Column="2"
-                                            Grid.ColumnSpan="4"
-                                            Content="{DynamicResource LOCHowLongToBeatCompletationProgress}"/>
+                                           Grid.ColumnSpan="4"
+                                           Content="{DynamicResource LOCHowLongToBeatCompletationProgress}"/>
                                 </Grid>
 
                                 <Grid Grid.Row="1">
@@ -480,20 +480,20 @@
                                     </Grid.ColumnDefinitions>
 
                                     <lvc:CartesianChart LegendLocation="none"
-                                            Name="PART_ChartUserDataStore"
-                                            Grid.Column="0"
-                                            Series="{Binding ChartUserDataStore_Series}">
+                                                        Name="PART_ChartUserDataStore"
+                                                        Grid.Column="0"
+                                                        Series="{Binding ChartUserDataStore_Series}">
                                         <lvc:CartesianChart.DataTooltip>
                                             <livechartscommon:CustomerToolTipForSingle/>
                                         </lvc:CartesianChart.DataTooltip>
 
                                         <lvc:CartesianChart.AxisX>
                                             <lvc:Axis Name="PART_ChartUserDataStoreLabelsX"
-                                                    ShowLabels="True"
+                                                      ShowLabels="True"
                                                       LabelsRotation="160"
-                                                    Labels="{Binding ChartUserDataStoreLabelsX_Labels}"
+                                                      Labels="{Binding ChartUserDataStoreLabelsX_Labels}"
                                                       FontSize="{DynamicResource FontSize}"
-                                                    MinValue="0">
+                                                      MinValue="0">
                                                 <lvc:Axis.Separator>
                                                     <lvc:Separator Step="1"/>
                                                 </lvc:Axis.Separator>
@@ -502,26 +502,26 @@
 
                                         <lvc:CartesianChart.AxisY>
                                             <lvc:Axis Name="PART_ChartUserDataStoreY"
-                                                    MinValue="0"
-                                                    FontSize="{DynamicResource FontSize}"></lvc:Axis>
+                                                      MinValue="0"
+                                                      FontSize="{DynamicResource FontSize}"></lvc:Axis>
                                         </lvc:CartesianChart.AxisY>
                                     </lvc:CartesianChart>
 
                                     <lvc:CartesianChart LegendLocation="none"
-                                            Name="PART_ChartUserDataYear"
-                                            Grid.Column="2"
-                                            Series="{Binding ChartUserDataYear_Series}">
+                                                        Name="PART_ChartUserDataYear"
+                                                        Grid.Column="2"
+                                                        Series="{Binding ChartUserDataYear_Series}">
                                         <lvc:CartesianChart.DataTooltip>
                                             <livechartscommon:CustomerToolTipForSingle/>
                                         </lvc:CartesianChart.DataTooltip>
 
                                         <lvc:CartesianChart.AxisX>
                                             <lvc:Axis Name="PART_ChartUserDataYearLabelsX"
-                                                    ShowLabels="True"
+                                                      ShowLabels="True"
                                                       LabelsRotation="160"
-                                                    Labels="{Binding ChartUserDataYearLabelsX_Labels}"
+                                                      Labels="{Binding ChartUserDataYearLabelsX_Labels}"
                                                       FontSize="{DynamicResource FontSize}"
-                                                    MinValue="0">
+                                                      MinValue="0">
                                                 <lvc:Axis.Separator>
                                                     <lvc:Separator Step="1"/>
                                                 </lvc:Axis.Separator>
@@ -530,7 +530,7 @@
 
                                         <lvc:CartesianChart.AxisY>
                                             <lvc:Axis Name="PART_ChartUserDataYearLabelsY"
-                                                    MinValue="0"
+                                                      MinValue="0"
                                                       FontSize="{DynamicResource FontSize}"/>
                                         </lvc:CartesianChart.AxisY>
                                     </lvc:CartesianChart>
@@ -544,20 +544,20 @@
                                             HorizontalAlignment="Right"/>
 
                                     <lvc:CartesianChart LegendLocation="none"
-                                            Name="PART_ChartUserData"
-                                            Grid.Column="4"
-                                            Series="{Binding ChartUserData_Series}">
+                                                        Name="PART_ChartUserData"
+                                                        Grid.Column="4"
+                                                        Series="{Binding ChartUserData_Series}">
                                         <lvc:CartesianChart.DataTooltip>
                                             <livechartscommon:CustomerToolTipForSingle/>
                                         </lvc:CartesianChart.DataTooltip>
 
                                         <lvc:CartesianChart.AxisX>
                                             <lvc:Axis Name="PART_ChartUserDataLabelsX"
-                                                    ShowLabels="True"
+                                                      ShowLabels="True"
                                                       LabelsRotation="160"
-                                                    Labels="{Binding ChartUserDataLabelsX_Labels}"
+                                                      Labels="{Binding ChartUserDataLabelsX_Labels}"
                                                       FontSize="{DynamicResource FontSize}"
-                                                    MinValue="0">
+                                                      MinValue="0">
                                                 <lvc:Axis.Separator>
                                                     <lvc:Separator Step="1"/>
                                                 </lvc:Axis.Separator>
@@ -566,8 +566,8 @@
 
                                         <lvc:CartesianChart.AxisY>
                                             <lvc:Axis Name="PART_ChartUserDataLabelsY"
-                                                    MinValue="0"
-                                                    FontSize="{DynamicResource FontSize}"></lvc:Axis>
+                                                      MinValue="0"
+                                                      FontSize="{DynamicResource FontSize}"></lvc:Axis>
                                         </lvc:CartesianChart.AxisY>
                                     </lvc:CartesianChart>
                                 </Grid>
@@ -582,12 +582,12 @@
                             </Grid.RowDefinitions>
 
                             <Label Grid.Row="0"
-                                    Grid.Column="0"
-                                    Grid.ColumnSpan="3"
-                                    Content="{DynamicResource LOCStatistics}"/>
+                                   Grid.Column="0"
+                                   Grid.ColumnSpan="3"
+                                   Content="{DynamicResource LOCStatistics}"/>
 
                             <Grid Grid.Row="2"
-                                    Grid.Column="1">
+                                  Grid.Column="1">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width=".8*"/>
                                     <ColumnDefinition Width="100"/>
@@ -607,68 +607,68 @@
                                     </Grid.RowDefinitions>
 
                                     <Grid Grid.Column="0"
-                                            Grid.Row="0">
+                                          Grid.Row="0">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="auto"/>
                                             <ColumnDefinition Width="*"/>
                                         </Grid.ColumnDefinitions>
 
                                         <Label Content="{DynamicResource LOCHowLongToBeatCompletions}"
-                                                Grid.Column="0"/>
+                                               Grid.Column="0"/>
                                         <Label Name="PART_CompletionsCount"
-                                                Content="{Binding CompletionsCount}"
-                                                Grid.Column="1"
-                                                HorizontalAlignment="Right"/>
+                                               Content="{Binding CompletionsCount}"
+                                               Grid.Column="1"
+                                               HorizontalAlignment="Right"/>
                                     </Grid>
 
                                     <Grid Grid.Column="0"
-                                            Grid.Row="2">
+                                          Grid.Row="2">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="auto"/>
                                             <ColumnDefinition Width="*"/>
                                         </Grid.ColumnDefinitions>
 
                                         <Label Content="{DynamicResource LOCHowLongToBeatTimeSinglePlayer}"
-                                                Grid.Column="0"/>
+                                               Grid.Column="0"/>
                                         <Label Name="PART_TimeSinglePlayer"
-                                                Content="{Binding TimeSinglePlayer}"
-                                                Grid.Column="1"
-                                                HorizontalAlignment="Right"/>
+                                               Content="{Binding TimeSinglePlayer}"
+                                               Grid.Column="1"
+                                               HorizontalAlignment="Right"/>
                                     </Grid>
 
                                     <Grid Grid.Column="2"
-                                            Grid.Row="0">
+                                          Grid.Row="0">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="auto"/>
                                             <ColumnDefinition Width="*"/>
                                         </Grid.ColumnDefinitions>
 
                                         <Label Content="{DynamicResource LOCHowLongToBeatTimeCoOp}"
-                                                Grid.Column="0"/>
+                                               Grid.Column="0"/>
                                         <Label Name="PART_TimeCoOp"
-                                                Content="{Binding TimeCoOp}"
-                                                Grid.Column="1"
-                                                HorizontalAlignment="Right"/>
+                                               Content="{Binding TimeCoOp}"
+                                               Grid.Column="1"
+                                               HorizontalAlignment="Right"/>
                                     </Grid>
 
                                     <Grid Grid.Column="2"
-                                            Grid.Row="2">
+                                          Grid.Row="2">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="auto"/>
                                             <ColumnDefinition Width="*"/>
                                         </Grid.ColumnDefinitions>
 
                                         <Label Content="{DynamicResource LOCHowLongToBeatTimeVs}"
-                                                Grid.Column="0"/>
+                                               Grid.Column="0"/>
                                         <Label Name="PART_TimeVs"
-                                                Content="{Binding TimeVs}"
-                                                Grid.Column="1"
-                                                HorizontalAlignment="Right"/>
+                                               Content="{Binding TimeVs}"
+                                               Grid.Column="1"
+                                               HorizontalAlignment="Right"/>
                                     </Grid>
                                 </Grid>
 
                                 <Grid Margin="30,0,0,0"
-                                        Grid.Column="2">
+                                      Grid.Column="2">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="30"/>
@@ -683,93 +683,93 @@
                                     </Grid.RowDefinitions>
 
                                     <Grid Grid.Column="0"
-                                            Grid.Row="0">
+                                          Grid.Row="0">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="auto"/>
                                             <ColumnDefinition Width="*"/>
                                         </Grid.ColumnDefinitions>
 
                                         <Label Content="{DynamicResource LOCHltbCountGameBeatenBeforeTime}"
-                                                Grid.Column="0"/>
+                                               Grid.Column="0"/>
                                         <Label Name="PART_CountGameBeatenBeforeTime"
-                                                Content="{Binding CountGameBeatenBeforeTime}"
-                                                Grid.Column="1"
-                                                HorizontalAlignment="Right"/>
+                                               Content="{Binding CountGameBeatenBeforeTime}"
+                                               Grid.Column="1"
+                                               HorizontalAlignment="Right"/>
                                     </Grid>
 
                                     <Grid Grid.Column="0"
-                                            Grid.Row="2">
+                                          Grid.Row="2">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="auto"/>
                                             <ColumnDefinition Width="*"/>
                                         </Grid.ColumnDefinitions>
 
                                         <Label Content="{DynamicResource LOCHltbCountGameBeatenAfterTime}"
-                                                Grid.Column="0"/>
+                                               Grid.Column="0"/>
                                         <Label Name="PART_CountGameBeatenAfterTime"
-                                                Content="{Binding CountGameBeatenAfterTime}"
-                                                Grid.Column="1"
-                                                HorizontalAlignment="Right"/>
+                                               Content="{Binding CountGameBeatenAfterTime}"
+                                               Grid.Column="1"
+                                               HorizontalAlignment="Right"/>
                                     </Grid>
 
                                     <Grid Grid.Column="0"
-                                            Grid.Row="4">
+                                          Grid.Row="4">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="auto"/>
                                             <ColumnDefinition Width="*"/>
                                         </Grid.ColumnDefinitions>
 
                                         <Label Content="{DynamicResource LOCHltbCountGameBeatenReplays}"
-                                                Grid.Column="0"/>
+                                               Grid.Column="0"/>
                                         <Label Name="PART_CountGameBeatenReplays"
-                                                Content="{Binding CountGameBeatenReplays}"
-                                                Grid.Column="1"
-                                                HorizontalAlignment="Right"/>
+                                               Content="{Binding CountGameBeatenReplays}"
+                                               Grid.Column="1"
+                                               HorizontalAlignment="Right"/>
                                     </Grid>
 
                                     <Grid Grid.Column="2"
-                                            Grid.Row="0">
+                                          Grid.Row="0">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="auto"/>
                                             <ColumnDefinition Width="*"/>
                                         </Grid.ColumnDefinitions>
 
                                         <Label Content="{DynamicResource LOCHltbAvgGameByMonth}"
-                                                Grid.Column="0"/>
+                                               Grid.Column="0"/>
                                         <Label Name="PART_AvgGameByMonth"
-                                                Content="{Binding AvgGameByMonth}"
-                                                Grid.Column="1"
-                                                HorizontalAlignment="Right"/>
+                                               Content="{Binding AvgGameByMonth}"
+                                               Grid.Column="1"
+                                               HorizontalAlignment="Right"/>
                                     </Grid>
 
                                     <Grid Grid.Column="2"
-                                            Grid.Row="2">
+                                          Grid.Row="2">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="auto"/>
                                             <ColumnDefinition Width="*"/>
                                         </Grid.ColumnDefinitions>
 
                                         <Label Content="{DynamicResource LOCHltbAvgTimeByGame}"
-                                                Grid.Column="0"/>
+                                               Grid.Column="0"/>
                                         <Label Name="PART_AvgTimeByGame"
-                                                Content="{Binding AvgTimeByGame}"
-                                                Grid.Column="1"
-                                                HorizontalAlignment="Right"/>
+                                               Content="{Binding AvgTimeByGame}"
+                                               Grid.Column="1"
+                                               HorizontalAlignment="Right"/>
                                     </Grid>
 
                                     <Grid Grid.Column="2"
-                                            Grid.Row="4">
+                                          Grid.Row="4">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="auto"/>
                                             <ColumnDefinition Width="*"/>
                                         </Grid.ColumnDefinitions>
 
                                         <Label Content="{DynamicResource LOCHltbCountGameRetired}"
-                                                Grid.Column="0"/>
+                                               Grid.Column="0"/>
                                         <Label Name="PART_CountGameRetired"
-                                                Content="{Binding CountGameRetired}"
-                                                Grid.Column="1"
-                                                HorizontalAlignment="Right"/>
+                                               Content="{Binding CountGameRetired}"
+                                               Grid.Column="1"
+                                               HorizontalAlignment="Right"/>
                                     </Grid>
                                 </Grid>
                             </Grid>
@@ -787,7 +787,7 @@
             </TabItem>
 
             <TabItem Header="{DynamicResource LocHowLongToBeatPlayniteData}"
-                    Name="PART_PlayniteData">
+                     Name="PART_PlayniteData">
                 <Grid Margin="0,10,0,0">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*"/>
@@ -795,12 +795,12 @@
 
                     <Grid Name="PART_DataLoad">
                         <ProgressBar IsIndeterminate="True"
-                                Width="350"
-                                Height="40"/>
+                                     Width="350"
+                                     Height="40"/>
                         <TextBlock Text="{DynamicResource LOCLoadingLabel}"
-                                Style="{DynamicResource BaseTextBlockStyle}"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"/>
+                                   Style="{DynamicResource BaseTextBlockStyle}"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"/>
                     </Grid>
 
                     <Grid Name="PART_LvDataContener">
@@ -823,16 +823,16 @@
                             </Grid.ColumnDefinitions>
 
                             <CheckBox Grid.Column="0"
-                                    IsChecked="True"
-                                    Name="PART_FilteredGames"
-                                    Click="PART_FilteredGames_Click">
+                                      IsChecked="True"
+                                      Name="PART_FilteredGames"
+                                      Click="PART_FilteredGames_Click">
                                 <Label Content="{DynamicResource LOCHltbUsedFilteredGames}"/>
                             </CheckBox>
 
                             <CheckBox Grid.Column="2"
-                                    IsChecked="True"
-                                    Name="PART_HidePlayedGames"
-                                    Click="PART_HidePlayedGames_Click">
+                                      IsChecked="True"
+                                      Name="PART_HidePlayedGames"
+                                      Click="PART_HidePlayedGames_Click">
                                 <Label Content="{DynamicResource LOCHltbOnlyNotPlayedGames}"/>
                             </CheckBox>
 
@@ -843,17 +843,17 @@
                                     ToolTip="{DynamicResource LOCCommonSaveFilters}"/>
 
                             <StackPanel Grid.Column="50"
-                                    Orientation="Horizontal">
+                                        Orientation="Horizontal">
                                 <Label Content="{DynamicResource LOCCommonTotalFound}"/>
                                 <Label Margin="10,0,0,0"
-                                        Content="{Binding ElementName=ListViewDataGames, Path=Items.Count,  Mode=OneWay}"/>
+                                       Content="{Binding ElementName=ListViewDataGames, Path=Items.Count,  Mode=OneWay}"/>
                             </StackPanel>
                         </Grid>
 
                         <Grid Grid.Row="2"
-                                Name="PART_LvGridContener">
+                              Name="PART_LvGridContener">
                             <controlsShared:ListViewExtend x:Name="ListViewDataGames"
-                                    FontSize="24"
+                                                           FontSize="24"
                                                            Height="{Binding ElementName=PART_LvGridContener, Path=ActualHeight}"
                                                            Style="{StaticResource {x:Type ListView}}"
                                                            VirtualizingStackPanel.IsVirtualizing="True"
@@ -864,39 +864,39 @@
                                 <ListView.View>
                                     <GridView>
                                         <GridViewColumn Width="50"
-                                                x:Name="lvGameIcon">
+                                                        x:Name="lvGameIcon">
                                             <GridViewColumnHeader Content="{DynamicResource LOCGameIconTitle}"
-                                                    Tag="noSort"/>
+                                                                  Tag="noSort"/>
                                             <GridViewColumn.CellTemplate>
                                                 <DataTemplate>
                                                     <Image HorizontalAlignment="Center"
-                                                            Height="32"
-                                                            VerticalAlignment="Center"
-                                                            Width="32"
+                                                           Height="32"
+                                                           VerticalAlignment="Center"
+                                                           Width="32"
                                                            Source="{Binding Icon, Converter={StaticResource DefaultIconConverter}, IsAsync=True}"/>
                                                 </DataTemplate>
                                             </GridViewColumn.CellTemplate>
                                         </GridViewColumn>
 
                                         <GridViewColumn Width="0"
-                                                DisplayMemberBinding="{Binding GameName}">
+                                                        DisplayMemberBinding="{Binding GameName}">
                                             <controlsShared:GridViewColumnHeaderExtend Style="{StaticResource {x:Type GridViewColumnHeader}}"
-                                                    IsHitTestVisible="False"
-                                                    RefIndex="1"/>
+                                                                                       IsHitTestVisible="False"
+                                                                                       RefIndex="1"/>
                                         </GridViewColumn>
                                         <GridViewColumn Width="300">
                                             <GridViewColumnHeader Content="{DynamicResource LOCGameNameTitle}"
-                                                    Tag="GameName"/>
+                                                                  Tag="GameName"/>
                                             <GridViewColumn.CellTemplate>
                                                 <DataTemplate>
                                                     <StackPanel>
                                                         <StackPanel Orientation="Horizontal"
-                                                                Visibility="{Binding GameExist, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                                                    Visibility="{Binding GameExist, Converter={StaticResource BooleanToVisibilityConverter}}">
                                                             <TextBlock Visibility="{Binding IsRetired, Converter={StaticResource BooleanToVisibilityConverter}}">
                                                             <Hyperlink Command="{Binding GoToGame}"
-                                                                        CommandParameter="{Binding GameId}">
+                                                                       CommandParameter="{Binding GameId}">
                                                                 <TextBlock Text="{Binding GameName}"
-                                                                            Style="{DynamicResource ListExtendStyleTextBlock}"/>
+                                                                           Style="{DynamicResource ListExtendStyleTextBlock}"/>
                                                             </Hyperlink>
                                                         </TextBlock>
                                                         </StackPanel>
@@ -906,61 +906,61 @@
                                         </GridViewColumn>
 
                                         <GridViewColumn Width="150"
-                                                DisplayMemberBinding="{Binding Source}">
+                                                        DisplayMemberBinding="{Binding Source}">
                                             <GridViewColumnHeader Content="{DynamicResource LOCSourceLabel}"/>
                                         </GridViewColumn>
 
                                         <GridViewColumn Width="130"
-                                                DisplayMemberBinding="{Binding CompletionStatus}">
+                                                        DisplayMemberBinding="{Binding CompletionStatus}">
                                             <GridViewColumnHeader Content="{DynamicResource LOCHowLongToBeatCompleted}"/>
                                         </GridViewColumn>
 
                                         <GridViewColumn Width="130"
-                                                DisplayMemberBinding="{Binding Playtime, Converter={StaticResource PlayTimeToStringConverterWithZero}}">
+                                                        DisplayMemberBinding="{Binding Playtime, Converter={StaticResource PlayTimeToStringConverterWithZero}}">
                                             <GridViewColumnHeader Content="{DynamicResource LOCTimePlayed}"
-                                                    Tag="Playtime"/>
+                                                                  Tag="Playtime"/>
                                         </GridViewColumn>
                                         <GridViewColumn Width="0"
-                                                DisplayMemberBinding="{Binding Playtime}">
+                                                        DisplayMemberBinding="{Binding Playtime}">
                                             <controlsShared:GridViewColumnHeaderExtend Style="{StaticResource {x:Type GridViewColumnHeader}}"
-                                                    IsHitTestVisible="False"/>
+                                                                                       IsHitTestVisible="False"/>
                                         </GridViewColumn>
 
                                         <GridViewColumn Width="130"
-                                                DisplayMemberBinding="{Binding TimeToBeat, Converter={StaticResource PlayTimeToStringConverterWithZero}}">
+                                                        DisplayMemberBinding="{Binding TimeToBeat, Converter={StaticResource PlayTimeToStringConverterWithZero}}">
                                             <GridViewColumnHeader Content="{DynamicResource LOCHowLongToBeatTimeToBeat}"/>
                                         </GridViewColumn>
 
                                         <GridViewColumn Width="130"
-                                                DisplayMemberBinding="{Binding RemainingTimeFormat}">
+                                                        DisplayMemberBinding="{Binding RemainingTimeFormat}">
                                             <GridViewColumnHeader Content="{DynamicResource LOCHltbRemainingTime}"
-                                                    Tag="RemainingTime"/>
+                                                                  Tag="RemainingTime"/>
                                         </GridViewColumn>
                                         <GridViewColumn Width="0"
-                                                DisplayMemberBinding="{Binding RemainingTime}">
+                                                        DisplayMemberBinding="{Binding RemainingTime}">
                                             <controlsShared:GridViewColumnHeaderExtend Style="{StaticResource {x:Type GridViewColumnHeader}}"
-                                                    IsHitTestVisible="False"/>
+                                                                                       IsHitTestVisible="False"/>
                                         </GridViewColumn>
 
                                         <GridViewColumn Width="500">
                                             <GridViewColumnHeader Content="{DynamicResource LOCHowLongToBeat}"
-                                                    Tag="TimeToBeat"/>
+                                                                  Tag="TimeToBeat"/>
                                             <GridViewColumn.CellTemplate>
                                                 <DataTemplate>
                                                     <StackPanel Name="PART_SpContener"
-                                                            Tag="{Binding GameContext}">
+                                                                Tag="{Binding GameContext}">
                                                         <controls:PluginProgressBar GameContext="{Binding ElementName=PART_SpContener, Path=Tag}"
                                                                                     IgnoreSettings="True"
-                                                                Height="30"
-                                                                Delay="50"/>
+                                                                                    Height="30"
+                                                                                    Delay="50"/>
                                                     </StackPanel>
                                                 </DataTemplate>
                                             </GridViewColumn.CellTemplate>
                                         </GridViewColumn>
                                         <GridViewColumn Width="0"
-                                                DisplayMemberBinding="{Binding TimeToBeat}">
+                                                        DisplayMemberBinding="{Binding TimeToBeat}">
                                             <controlsShared:GridViewColumnHeaderExtend Style="{StaticResource {x:Type GridViewColumnHeader}}"
-                                                    IsHitTestVisible="False"/>
+                                                                                       IsHitTestVisible="False"/>
                                         </GridViewColumn>
                                     </GridView>
                                 </ListView.View>
@@ -972,16 +972,16 @@
         </TabControl>
 
         <StackPanel Orientation="Horizontal"
-                VerticalAlignment="Top"
-                HorizontalAlignment="Right"
-                Margin="10"
+                    VerticalAlignment="Top"
+                    HorizontalAlignment="Right"
+                    Margin="10"
                     Height="{Binding ElementName=PART_UserData, Path=ActualHeight}"
-                Name="Part_Found">
+                    Name="Part_Found">
             <Label Content="{DynamicResource LOCCommonTotalFound}"
-                    Margin="0,0,10,0"
-                    VerticalAlignment="Center"/>
+                   Margin="0,0,10,0"
+                   VerticalAlignment="Center"/>
             <Label Content="{Binding ElementName=ListViewGames, Path=ItemsSource.Count}"
-                    VerticalAlignment="Center"/>
+                   VerticalAlignment="Center"/>
         </StackPanel>
     </Grid>
 </UserControl>

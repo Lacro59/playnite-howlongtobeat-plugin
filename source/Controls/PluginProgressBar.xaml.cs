@@ -9,6 +9,7 @@ using Playnite.SDK;
 using Playnite.SDK.Models;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
@@ -33,32 +34,36 @@ namespace HowLongToBeat.Controls
 
         private bool ShowUserData = true;
 
-
         public PluginProgressBar()
         {
             InitializeComponent();
             DataContext = ControlDataContext;
 
-            _ = Task.Run(async () =>
+            ThreadPool.QueueUserWorkItem(_ =>
             {
-                while (!PluginDatabase.IsLoaded)
+                try
                 {
-                    await Task.Delay(100).ConfigureAwait(false);
+                    while (!PluginDatabase.IsLoaded)
+                    {
+                        Thread.Sleep(100);
+                    }
+
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        PluginDatabase.PluginSettings.PropertyChanged += PluginSettings_PropertyChanged;
+                        PluginDatabase.Database.ItemUpdated += Database_ItemUpdated;
+                        PluginDatabase.Database.ItemCollectionChanged += Database_ItemCollectionChanged;
+                        API.Instance.Database.Games.ItemUpdated += Games_ItemUpdated;
+
+                        PluginSettings_PropertyChanged(null, null);
+                    });
                 }
-
-                _ = Dispatcher.BeginInvoke((Action)delegate
+                catch (Exception ex)
                 {
-                    PluginDatabase.PluginSettings.PropertyChanged += PluginSettings_PropertyChanged;
-                    PluginDatabase.Database.ItemUpdated += Database_ItemUpdated;
-                    PluginDatabase.Database.ItemCollectionChanged += Database_ItemCollectionChanged;
-                    API.Instance.Database.Games.ItemUpdated += Games_ItemUpdated;
-
-                    // Apply settings
-                    PluginSettings_PropertyChanged(null, null);
-                });
+                    Common.LogError(ex, false, true, PluginDatabase.PluginName);
+                }
             });
         }
-
 
         public override void SetDefaultDataContext()
         {
@@ -116,270 +121,54 @@ namespace HowLongToBeat.Controls
                 : (dynamic)PluginDatabase.PluginSettings.Settings.ThumbSolidColorBrush;
         }
 
-
-        public override void SetData(Game newContext, PluginDataBaseGameBase PluginGameData)
+        public override async void SetData(Game newContext, PluginDataBaseGameBase PluginGameData)
         {
             GameHowLongToBeat gameHowLongToBeat = (GameHowLongToBeat)PluginGameData;
-            LoadData(gameHowLongToBeat);
-
-
-            SliderPlaytime.Maximum = ControlDataContext.MaxValue;
-            SliderPlaytime.Value = ControlDataContext.PlaytimeValue;
-
-
-            PART_ProgressBarFirst.Value = ControlDataContext.ProgressBarFirstValue;
-            PART_ProgressBarFirst.TextValue = ControlDataContext.ToolTipFirst;
-            PART_ProgressBarFirst.Foreground = ControlDataContext.ThumbFirst;
-            PART_ProgressBarFirst.Maximum = ControlDataContext.MaxValue;
-            PART_ProgressBarFirst.TextAboveVisibility = ControlDataContext.TextAboveVisibility;
-            PART_ProgressBarFirst.TextInsideVisibility = ControlDataContext.TextInsideVisibility;
-            PART_ProgressBarFirst.TextBelowVisibility = ControlDataContext.TextBelowVisibility;
-
-            PART_ProgressBarSecond.Value = ControlDataContext.ProgressBarSecondValue;
-            PART_ProgressBarSecond.TextValue = ControlDataContext.ToolTipSecond;
-            PART_ProgressBarSecond.Foreground = ControlDataContext.ThumbSecond;
-            PART_ProgressBarSecond.Maximum = ControlDataContext.MaxValue;
-            PART_ProgressBarSecond.TextAboveVisibility = ControlDataContext.TextAboveVisibility;
-            PART_ProgressBarSecond.TextInsideVisibility = ControlDataContext.TextInsideVisibility;
-            PART_ProgressBarSecond.TextBelowVisibility = ControlDataContext.TextBelowVisibility;
-
-            PART_ProgressBarThird.Value = ControlDataContext.ProgressBarThirdValue;
-            PART_ProgressBarThird.TextValue = ControlDataContext.ToolTipThird;
-            PART_ProgressBarThird.Foreground = ControlDataContext.ThumbThird;
-            PART_ProgressBarThird.Maximum = ControlDataContext.MaxValue;
-            PART_ProgressBarThird.TextAboveVisibility = ControlDataContext.TextAboveVisibility;
-            PART_ProgressBarThird.TextInsideVisibility = ControlDataContext.TextInsideVisibility;
-            PART_ProgressBarThird.TextBelowVisibility = ControlDataContext.TextBelowVisibility;
-
-
-            PartSliderFirst.ThumbFill = ControlDataContext.ThumbSecondUser;
-            PartSliderFirst.Visibility = ControlDataContext.SliderSecondVisibility;
-            PartSliderFirst.Value = ControlDataContext.SliderSecondValue;
-            PartSliderFirst.Maximum = ControlDataContext.MaxValue;
-
-            PartSliderSecond.ThumbFill = ControlDataContext.ThumbFirstUser;
-            PartSliderSecond.Visibility = ControlDataContext.SliderFirstVisibility;
-            PartSliderSecond.Value = ControlDataContext.SliderFirstValue;
-            PartSliderSecond.Maximum = ControlDataContext.MaxValue;
-
-            PartSliderThird.ThumbFill = ControlDataContext.ThumbThirdUser;
-            PartSliderThird.Visibility = ControlDataContext.SliderThirdVisibility;
-            PartSliderThird.Value = ControlDataContext.SliderThirdValue;
-            PartSliderThird.Maximum = ControlDataContext.MaxValue;
-        }
-
-
-        private void LoadData(GameHowLongToBeat gameHowLongToBeat)
-        {
             try
             {
-                // Definied data value in different component.
-                int elIndicator = 0;
-                int elIndicatorUser = 0;
-                double maxValue = 0;
-                double maxHltb = 0;
-                ulong playtime = gameHowLongToBeat.Playtime;
-                List<ListProgressBar> listProgressBars = new List<ListProgressBar>();
-                TitleList titleList = PluginDatabase.GetUserHltbDataCurrent(gameHowLongToBeat.GetData().Id, gameHowLongToBeat.UserGameId);
-                dynamic color;
+                await LoadDataAsync(gameHowLongToBeat);
 
-                if (gameHowLongToBeat.HasData)
-                {
-                    HltbDataUser HltbData = gameHowLongToBeat.GetData();
+                SliderPlaytime.Maximum = ControlDataContext.MaxValue;
+                SliderPlaytime.Value = ControlDataContext.PlaytimeValue;
 
-                    if (HltbData.GameType != GameType.Multi)
-                    {
-                        color = PluginDatabase.PluginSettings.Settings.FirstLinearGradient != null
-                            ? (dynamic)PluginDatabase.PluginSettings.Settings.FirstLinearGradient.ToLinearGradientBrush
-                            : (dynamic)PluginDatabase.PluginSettings.Settings.FirstColorBrush;
+                PART_ProgressBarFirst.Value = ControlDataContext.ProgressBarFirstValue;
+                PART_ProgressBarFirst.TextValue = ControlDataContext.ToolTipFirst;
+                PART_ProgressBarFirst.Foreground = ControlDataContext.ThumbFirst;
+                PART_ProgressBarFirst.Maximum = ControlDataContext.MaxValue;
+                PART_ProgressBarFirst.TextAboveVisibility = ControlDataContext.TextAboveVisibility;
+                PART_ProgressBarFirst.TextInsideVisibility = ControlDataContext.TextInsideVisibility;
+                PART_ProgressBarFirst.TextBelowVisibility = ControlDataContext.TextBelowVisibility;
 
-                        if ((IgnoreSettings || PluginDatabase.PluginSettings.Settings.ShowMainTime) && HltbData?.GameHltbData?.MainStory != null && HltbData.GameHltbData.MainStory > 0)
-                        {
-                            elIndicator += 1;
+                PART_ProgressBarSecond.Value = ControlDataContext.ProgressBarSecondValue;
+                PART_ProgressBarSecond.TextValue = ControlDataContext.ToolTipSecond;
+                PART_ProgressBarSecond.Foreground = ControlDataContext.ThumbSecond;
+                PART_ProgressBarSecond.Maximum = ControlDataContext.MaxValue;
+                PART_ProgressBarSecond.TextAboveVisibility = ControlDataContext.TextAboveVisibility;
+                PART_ProgressBarSecond.TextInsideVisibility = ControlDataContext.TextInsideVisibility;
+                PART_ProgressBarSecond.TextBelowVisibility = ControlDataContext.TextBelowVisibility;
 
-                            if (HltbData.GameHltbData.MainStory > 0)
-                            {
-                                listProgressBars.Add(new ListProgressBar { Indicator = elIndicator, Value = HltbData.GameHltbData.MainStory, Format = HltbData.GameHltbData.MainStoryFormat });
-                            }
+                PART_ProgressBarThird.Value = ControlDataContext.ProgressBarThirdValue;
+                PART_ProgressBarThird.TextValue = ControlDataContext.ToolTipThird;
+                PART_ProgressBarThird.Foreground = ControlDataContext.ThumbThird;
+                PART_ProgressBarThird.Maximum = ControlDataContext.MaxValue;
+                PART_ProgressBarThird.TextAboveVisibility = ControlDataContext.TextAboveVisibility;
+                PART_ProgressBarThird.TextInsideVisibility = ControlDataContext.TextInsideVisibility;
+                PART_ProgressBarThird.TextBelowVisibility = ControlDataContext.TextBelowVisibility;
 
-                            if (maxValue < HltbData.GameHltbData.MainStory)
-                            {
-                                maxValue = HltbData.GameHltbData.MainStory;
-                            }
+                PartSliderFirst.ThumbFill = ControlDataContext.ThumbSecondUser;
+                PartSliderFirst.Visibility = ControlDataContext.SliderSecondVisibility;
+                PartSliderFirst.Value = ControlDataContext.SliderSecondValue;
+                PartSliderFirst.Maximum = ControlDataContext.MaxValue;
 
-                            SetColor(elIndicator, color);
-                        }
-                        if (titleList?.HltbUserData?.MainStory != null && titleList?.HltbUserData?.MainStory > 0 && ShowUserData)
-                        {
-                            elIndicatorUser += 1;
-                            SetColorUser(elIndicatorUser, color);
-                            SetUserData(elIndicatorUser, titleList.HltbUserData.MainStory, PluginDatabase.PluginSettings.Settings.ColorFirst.Color);
-                        }
+                PartSliderSecond.ThumbFill = ControlDataContext.ThumbFirstUser;
+                PartSliderSecond.Visibility = ControlDataContext.SliderFirstVisibility;
+                PartSliderSecond.Value = ControlDataContext.SliderFirstValue;
+                PartSliderSecond.Maximum = ControlDataContext.MaxValue;
 
-
-                        color = PluginDatabase.PluginSettings.Settings.SecondLinearGradient != null
-                            ? (dynamic)PluginDatabase.PluginSettings.Settings.SecondLinearGradient.ToLinearGradientBrush
-                            : (dynamic)PluginDatabase.PluginSettings.Settings.SecondColorBrush;
-
-                        if ((IgnoreSettings || PluginDatabase.PluginSettings.Settings.ShowExtraTime) && HltbData?.GameHltbData?.MainExtra != null && HltbData.GameHltbData.MainExtra > 0)
-                        {
-                            elIndicator += 1;
-
-                            if (HltbData.GameHltbData.MainExtra > 0)
-                            {
-                                listProgressBars.Add(new ListProgressBar { Indicator = elIndicator, Value = HltbData.GameHltbData.MainExtra, Format = HltbData.GameHltbData.MainExtraFormat });
-                            }
-
-                            if (maxValue < HltbData.GameHltbData.MainExtra)
-                            {
-                                maxValue = HltbData.GameHltbData.MainExtra;
-                            }
-
-                            SetColor(elIndicator, color);
-                        }
-                        if (titleList?.HltbUserData?.MainExtra != null && titleList?.HltbUserData?.MainExtra > 0 && ShowUserData)
-                        {
-                            elIndicatorUser += 1;
-                            SetColorUser(elIndicatorUser, color);
-                            SetUserData(elIndicatorUser, titleList.HltbUserData.MainExtra, PluginDatabase.PluginSettings.Settings.ColorSecond.Color);
-                        }
-
-
-                        color = PluginDatabase.PluginSettings.Settings.ThirdLinearGradient != null
-                            ? (dynamic)PluginDatabase.PluginSettings.Settings.ThirdLinearGradient.ToLinearGradientBrush
-                            : (dynamic)PluginDatabase.PluginSettings.Settings.ThirdColorBrush;
-
-                        if ((IgnoreSettings || PluginDatabase.PluginSettings.Settings.ShowCompletionistTime) && HltbData?.GameHltbData?.Completionist != null && HltbData.GameHltbData.Completionist != 0)
-                        {
-                            elIndicator += 1;
-
-                            if (HltbData.GameHltbData.Completionist != 0)
-                            {
-                                listProgressBars.Add(new ListProgressBar { Indicator = elIndicator, Value = HltbData.GameHltbData.Completionist, Format = HltbData.GameHltbData.CompletionistFormat });
-                            }
-
-                            if (maxValue < HltbData.GameHltbData.Completionist)
-                            {
-                                maxValue = HltbData.GameHltbData.Completionist;
-                            }
-
-                            SetColor(elIndicator, color);
-                        }
-                        if (titleList?.HltbUserData?.Completionist != null && titleList?.HltbUserData?.Completionist > 0 && ShowUserData)
-                        {
-                            elIndicatorUser += 1;
-                            SetColorUser(elIndicatorUser, color);
-                            SetUserData(elIndicatorUser, titleList.HltbUserData.Completionist, PluginDatabase.PluginSettings.Settings.ColorThird.Color);
-                        }
-                    }
-                    else
-                    {
-                        color = PluginDatabase.PluginSettings.Settings.FirstMultiLinearGradient != null
-                            ? (dynamic)PluginDatabase.PluginSettings.Settings.FirstMultiLinearGradient.ToLinearGradientBrush
-                            : (dynamic)PluginDatabase.PluginSettings.Settings.FirstMultiColorBrush;
-
-                        if ((IgnoreSettings || PluginDatabase.PluginSettings.Settings.ShowSoloTime) && HltbData?.GameHltbData?.Solo != null && HltbData.GameHltbData.Solo != 0)
-                        {
-                            elIndicator += 1;
-
-                            if (HltbData.GameHltbData.Solo != 0)
-                            {
-                                listProgressBars.Add(new ListProgressBar { Indicator = elIndicator, Value = HltbData.GameHltbData.Solo, Format = HltbData.GameHltbData.SoloFormat });
-                            }
-
-                            if (maxValue < HltbData.GameHltbData.Solo)
-                            {
-                                maxValue = HltbData.GameHltbData.Solo;
-                            }
-
-                            SetColor(elIndicator, color);
-                        }
-                        if (titleList?.HltbUserData?.Solo != null && titleList?.HltbUserData?.Solo > 0 && ShowUserData)
-                        {
-                            elIndicatorUser += 1;
-                            SetColorUser(elIndicatorUser, color);
-                            SetUserData(elIndicatorUser, titleList.HltbUserData.Solo, PluginDatabase.PluginSettings.Settings.ColorFirstMulti.Color);
-                        }
-
-
-                        color = PluginDatabase.PluginSettings.Settings.SecondMultiLinearGradient != null
-                            ? (dynamic)PluginDatabase.PluginSettings.Settings.SecondMultiLinearGradient.ToLinearGradientBrush
-                            : (dynamic)PluginDatabase.PluginSettings.Settings.SecondMultiColorBrush;
-
-                        if ((IgnoreSettings || PluginDatabase.PluginSettings.Settings.ShowCoOpTime) && HltbData?.GameHltbData?.CoOp != null && HltbData.GameHltbData.CoOp != 0)
-                        {
-                            elIndicator += 1;
-
-                            if (HltbData.GameHltbData.CoOp != 0)
-                            {
-                                listProgressBars.Add(new ListProgressBar { Indicator = elIndicator, Value = HltbData.GameHltbData.CoOp, Format = HltbData.GameHltbData.CoOpFormat });
-                            }
-
-                            if (maxValue < HltbData.GameHltbData.CoOp)
-                            {
-                                maxValue = HltbData.GameHltbData.CoOp;
-                            }
-
-                            SetColor(elIndicator, color);
-                        }
-                        if (titleList?.HltbUserData?.CoOp != null && titleList?.HltbUserData?.CoOp > 0 && ShowUserData)
-                        {
-                            elIndicatorUser += 1;
-                            SetColorUser(elIndicatorUser, color);
-                            SetUserData(elIndicatorUser, titleList.HltbUserData.CoOp, PluginDatabase.PluginSettings.Settings.ColorSecondMulti.Color);
-                        }
-
-
-                        color = PluginDatabase.PluginSettings.Settings.ThirdMultiLinearGradient != null
-                            ? (dynamic)PluginDatabase.PluginSettings.Settings.ThirdMultiLinearGradient.ToLinearGradientBrush
-                            : (dynamic)PluginDatabase.PluginSettings.Settings.ThirdMultiColorBrush;
-
-                        if ((IgnoreSettings || PluginDatabase.PluginSettings.Settings.ShowVsTime) && HltbData?.GameHltbData?.Vs != null && HltbData.GameHltbData.Vs != 0)
-                        {
-                            elIndicator += 1;
-
-                            if (HltbData.GameHltbData.Vs != 0)
-                            {
-                                listProgressBars.Add(new ListProgressBar { Indicator = elIndicator, Value = HltbData.GameHltbData.Vs, Format = HltbData.GameHltbData.VsFormat });
-                            }
-
-                            if (maxValue < HltbData.GameHltbData.Vs)
-                            {
-                                maxValue = HltbData.GameHltbData.Vs;
-                            }
-
-                            SetColor(elIndicator, color);
-                        }
-                        if (titleList?.HltbUserData?.Vs != null && titleList?.HltbUserData?.Vs > 0 && ShowUserData)
-                        {
-                            elIndicatorUser += 1;
-                            SetColorUser(elIndicatorUser, color);
-                            SetUserData(elIndicatorUser, titleList.HltbUserData.Vs, PluginDatabase.PluginSettings.Settings.ColorThirdMulti.Color);
-                        }
-                    }
-                }
-
-                // Define the maxvalue for progressbar & slider
-                maxHltb = maxValue;
-                if (playtime > maxValue)
-                {
-                    maxValue = playtime;
-                }
-
-                // Limit MaxValue when playtime is more than MaxHltb
-                long MaxPercent = (long)Math.Ceiling((double)(10 * maxHltb / 100));
-                if (maxValue > maxHltb + MaxPercent)
-                {
-                    maxValue = maxHltb + MaxPercent;
-                }
-
-                foreach (ListProgressBar listProgressBar in listProgressBars)
-                {
-                    SetDataInView(listProgressBar.Indicator, listProgressBar.Value, listProgressBar.Format);
-                }
-
-                ControlDataContext.MaxValue = maxValue;
-                ControlDataContext.PlaytimeValue = playtime;
+                PartSliderThird.ThumbFill = ControlDataContext.ThumbThirdUser;
+                PartSliderThird.Visibility = ControlDataContext.SliderThirdVisibility;
+                PartSliderThird.Value = ControlDataContext.SliderThirdValue;
+                PartSliderThird.Maximum = ControlDataContext.MaxValue;
             }
             catch (Exception ex)
             {
@@ -387,6 +176,235 @@ namespace HowLongToBeat.Controls
             }
         }
 
+        private Task LoadDataAsync(GameHowLongToBeat gameHowLongToBeat)
+        {
+            bool showUserData = this.ShowUserData;
+            bool ignoreSettings = false;
+
+            try
+            {
+                Dispatcher.Invoke(() =>
+                {
+                    ignoreSettings = this.IgnoreSettings;
+                });
+            }
+            catch
+            {
+                ignoreSettings = false;
+            }
+
+            return Task.Run(() =>
+            {
+                try
+                {
+                    int elIndicator = 0;
+                    int elIndicatorUser = 0;
+                    double maxValue = 0;
+                    double maxHltb = 0;
+                    ulong playtime = gameHowLongToBeat.Playtime;
+                    var listProgressBars = new List<ListProgressBar>();
+                    TitleList titleList = PluginDatabase.GetUserHltbDataCurrent(gameHowLongToBeat.GetData().Id, gameHowLongToBeat.UserGameId);
+
+                    var thumbColors = new Dictionary<int, dynamic>();
+                    var thumbUserColors = new Dictionary<int, dynamic>();
+                    var userValues = new Dictionary<int, long>();
+
+                    if (gameHowLongToBeat.HasData)
+                    {
+                        HltbDataUser HltbData = gameHowLongToBeat.GetData();
+
+                        if (HltbData.GameType != GameType.Multi)
+                        {
+                            dynamic color = PluginDatabase.PluginSettings.Settings.FirstLinearGradient != null
+                                ? (dynamic)PluginDatabase.PluginSettings.Settings.FirstLinearGradient.ToLinearGradientBrush
+                                : (dynamic)PluginDatabase.PluginSettings.Settings.FirstColorBrush;
+
+                            if ((ignoreSettings || PluginDatabase.PluginSettings.Settings.ShowMainTime) && HltbData?.GameHltbData?.MainStory != null && HltbData.GameHltbData.MainStory > 0)
+                            {
+                                elIndicator += 1;
+                                listProgressBars.Add(new ListProgressBar { Indicator = elIndicator, Value = HltbData.GameHltbData.MainStory, Format = HltbData.GameHltbData.MainStoryFormat });
+                                if (maxValue < HltbData.GameHltbData.MainStory) maxValue = HltbData.GameHltbData.MainStory;
+                                thumbColors[elIndicator] = color;
+                            }
+
+                            if (titleList?.HltbUserData?.MainStory != null && titleList?.HltbUserData?.MainStory > 0 && showUserData)
+                            {
+                                elIndicatorUser += 1;
+                                thumbUserColors[elIndicatorUser] = color;
+                                userValues[elIndicatorUser] = titleList.HltbUserData.MainStory;
+                            }
+
+                            color = PluginDatabase.PluginSettings.Settings.SecondLinearGradient != null
+                                ? (dynamic)PluginDatabase.PluginSettings.Settings.SecondLinearGradient.ToLinearGradientBrush
+                                : (dynamic)PluginDatabase.PluginSettings.Settings.SecondColorBrush;
+
+                            if ((ignoreSettings || PluginDatabase.PluginSettings.Settings.ShowExtraTime) && HltbData?.GameHltbData?.MainExtra != null && HltbData.GameHltbData.MainExtra > 0)
+                            {
+                                elIndicator += 1;
+                                listProgressBars.Add(new ListProgressBar { Indicator = elIndicator, Value = HltbData.GameHltbData.MainExtra, Format = HltbData.GameHltbData.MainExtraFormat });
+                                if (maxValue < HltbData.GameHltbData.MainExtra) maxValue = HltbData.GameHltbData.MainExtra;
+                                thumbColors[elIndicator] = color;
+                            }
+
+                            if (titleList?.HltbUserData?.MainExtra != null && titleList?.HltbUserData?.MainExtra > 0 && showUserData)
+                            {
+                                elIndicatorUser += 1;
+                                thumbUserColors[elIndicatorUser] = color;
+                                userValues[elIndicatorUser] = titleList.HltbUserData.MainExtra;
+                            }
+
+                            color = PluginDatabase.PluginSettings.Settings.ThirdLinearGradient != null
+                                ? (dynamic)PluginDatabase.PluginSettings.Settings.ThirdLinearGradient.ToLinearGradientBrush
+                                : (dynamic)PluginDatabase.PluginSettings.Settings.ThirdColorBrush;
+
+                            if ((ignoreSettings || PluginDatabase.PluginSettings.Settings.ShowCompletionistTime) && HltbData?.GameHltbData?.Completionist != null && HltbData.GameHltbData.Completionist != 0)
+                            {
+                                elIndicator += 1;
+                                listProgressBars.Add(new ListProgressBar { Indicator = elIndicator, Value = HltbData.GameHltbData.Completionist, Format = HltbData.GameHltbData.CompletionistFormat });
+                                if (maxValue < HltbData.GameHltbData.Completionist) maxValue = HltbData.GameHltbData.Completionist;
+                                thumbColors[elIndicator] = color;
+                            }
+
+                            if (titleList?.HltbUserData?.Completionist != null && titleList?.HltbUserData?.Completionist > 0 && showUserData)
+                            {
+                                elIndicatorUser += 1;
+                                thumbUserColors[elIndicatorUser] = color;
+                                userValues[elIndicatorUser] = titleList.HltbUserData.Completionist;
+                            }
+                        }
+                        else
+                        {
+                            dynamic color = PluginDatabase.PluginSettings.Settings.FirstMultiLinearGradient != null
+                                ? (dynamic)PluginDatabase.PluginSettings.Settings.FirstMultiLinearGradient.ToLinearGradientBrush
+                                : (dynamic)PluginDatabase.PluginSettings.Settings.FirstMultiColorBrush;
+
+                            if ((ignoreSettings || PluginDatabase.PluginSettings.Settings.ShowSoloTime) && HltbData?.GameHltbData?.Solo != null && HltbData.GameHltbData.Solo != 0)
+                            {
+                                elIndicator += 1;
+                                listProgressBars.Add(new ListProgressBar { Indicator = elIndicator, Value = HltbData.GameHltbData.Solo, Format = HltbData.GameHltbData.SoloFormat });
+                                if (maxValue < HltbData.GameHltbData.Solo) maxValue = HltbData.GameHltbData.Solo;
+                                thumbColors[elIndicator] = color;
+                            }
+
+                            if (titleList?.HltbUserData?.Solo != null && titleList?.HltbUserData?.Solo > 0 && showUserData)
+                            {
+                                elIndicatorUser += 1;
+                                thumbUserColors[elIndicatorUser] = color;
+                                userValues[elIndicatorUser] = titleList.HltbUserData.Solo;
+                            }
+
+                            color = PluginDatabase.PluginSettings.Settings.SecondMultiLinearGradient != null
+                                ? (dynamic)PluginDatabase.PluginSettings.Settings.SecondMultiLinearGradient.ToLinearGradientBrush
+                                : (dynamic)PluginDatabase.PluginSettings.Settings.SecondMultiColorBrush;
+
+                            if ((ignoreSettings || PluginDatabase.PluginSettings.Settings.ShowCoOpTime) && HltbData?.GameHltbData?.CoOp != null && HltbData.GameHltbData.CoOp != 0)
+                            {
+                                elIndicator += 1;
+                                listProgressBars.Add(new ListProgressBar { Indicator = elIndicator, Value = HltbData.GameHltbData.CoOp, Format = HltbData.GameHltbData.CoOpFormat });
+                                if (maxValue < HltbData.GameHltbData.CoOp) maxValue = HltbData.GameHltbData.CoOp;
+                                thumbColors[elIndicator] = color;
+                            }
+
+                            if (titleList?.HltbUserData?.CoOp != null && titleList?.HltbUserData?.CoOp > 0 && showUserData)
+                            {
+                                elIndicatorUser += 1;
+                                thumbUserColors[elIndicatorUser] = color;
+                                userValues[elIndicatorUser] = titleList.HltbUserData.CoOp;
+                            }
+
+                            color = PluginDatabase.PluginSettings.Settings.ThirdMultiLinearGradient != null
+                                ? (dynamic)PluginDatabase.PluginSettings.Settings.ThirdMultiLinearGradient.ToLinearGradientBrush
+                                : (dynamic)PluginDatabase.PluginSettings.Settings.ThirdMultiColorBrush;
+
+                            if ((ignoreSettings || PluginDatabase.PluginSettings.Settings.ShowVsTime) && HltbData?.GameHltbData?.Vs != null && HltbData.GameHltbData.Vs != 0)
+                            {
+                                elIndicator += 1;
+                                listProgressBars.Add(new ListProgressBar { Indicator = elIndicator, Value = HltbData.GameHltbData.Vs, Format = HltbData.GameHltbData.VsFormat });
+                                if (maxValue < HltbData.GameHltbData.Vs) maxValue = HltbData.GameHltbData.Vs;
+                                thumbColors[elIndicator] = color;
+                            }
+
+                            if (titleList?.HltbUserData?.Vs != null && titleList?.HltbUserData?.Vs > 0 && showUserData)
+                            {
+                                elIndicatorUser += 1;
+                                thumbUserColors[elIndicatorUser] = color;
+                                userValues[elIndicatorUser] = titleList.HltbUserData.Vs;
+                            }
+                        }
+                    }
+
+                    maxHltb = maxValue;
+                    if (playtime > maxValue)
+                    {
+                        maxValue = playtime;
+                    }
+
+                    long MaxPercent = (long)Math.Ceiling((double)(10 * maxHltb / 100));
+                    if (maxValue > maxHltb + MaxPercent)
+                    {
+                        maxValue = maxHltb + MaxPercent;
+                    }
+
+                    Dispatcher.BeginInvoke((Action)(() =>
+                    {
+                        try
+                        {
+                            ControlDataContext.ProgressBarFirstValue = 0;
+                            ControlDataContext.ProgressBarFirstVisibility = Visibility.Collapsed;
+                            ControlDataContext.ToolTipFirst = string.Empty;
+
+                            ControlDataContext.ProgressBarSecondValue = 0;
+                            ControlDataContext.ProgressBarSecondVisibility = Visibility.Collapsed;
+                            ControlDataContext.ToolTipSecond = string.Empty;
+
+                            ControlDataContext.ProgressBarThirdValue = 0;
+                            ControlDataContext.ProgressBarThirdVisibility = Visibility.Collapsed;
+                            ControlDataContext.ToolTipThird = string.Empty;
+
+                            ControlDataContext.SliderFirstValue = 0;
+                            ControlDataContext.SliderFirstVisibility = Visibility.Collapsed;
+
+                            ControlDataContext.SliderSecondValue = 0;
+                            ControlDataContext.SliderSecondVisibility = Visibility.Collapsed;
+
+                            ControlDataContext.SliderThirdValue = 0;
+                            ControlDataContext.SliderThirdVisibility = Visibility.Collapsed;
+
+                            foreach (var listProgressBar in listProgressBars)
+                            {
+                                SetDataInView(listProgressBar.Indicator, listProgressBar.Value, listProgressBar.Format);
+                            }
+
+                            foreach (var kv in thumbColors)
+                            {
+                                SetColor(kv.Key, kv.Value);
+                            }
+
+                            foreach (var kv in thumbUserColors)
+                            {
+                                SetColorUser(kv.Key, kv.Value);
+                            }
+
+                            foreach (var kv in userValues)
+                            {
+                                SetUserData(kv.Key, kv.Value, default(Color));
+                            }
+
+                            ControlDataContext.MaxValue = maxValue;
+                            ControlDataContext.PlaytimeValue = playtime;
+                        }
+                        catch (Exception ex)
+                        {
+                            Common.LogError(ex, false, true, PluginDatabase.PluginName);
+                        }
+                    }));
+                }
+                catch (Exception ex)
+                {
+                    Common.LogError(ex, false, true, PluginDatabase.PluginName);
+                }
+            });
+        }
 
         public void SetUserData(int elIndicator, long value, Color color)
         {
@@ -617,7 +635,6 @@ namespace HowLongToBeat.Controls
         private Visibility _sliderThirdVisibility;
         public Visibility SliderThirdVisibility { get => _sliderThirdVisibility; set => SetValue(ref _sliderThirdVisibility, value); }
     }
-
 
     internal class ListProgressBar
     {
