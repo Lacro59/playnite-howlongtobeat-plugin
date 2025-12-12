@@ -23,7 +23,8 @@
                          Color="ForestGreen"/>
 
         <Style x:Key="IconButtonStyle"
-               TargetType="Button">
+               TargetType="Button"
+               BasedOn="{StaticResource {x:Type Button}}">
             <Setter Property="Width"
                     Value="36"/>
             <Setter Property="Height"
@@ -32,11 +33,6 @@
                     Value="0"/>
             <Setter Property="Margin"
                     Value="0"/>
-            <Setter Property="Foreground"
-                    Value="{DynamicResource PrimaryButtonForegroundBrush}"/>
-            <Setter Property="Background"
-                    Value="{DynamicResource PrimaryButtonBackgroundBrush}"/>
-            <Setter Property="BorderBrush"
                     Value="{DynamicResource CardBorderBrush}"/>
             <Setter Property="BorderThickness"
                     Value="0"/>
@@ -163,7 +159,7 @@
                            TextTrimming="CharacterEllipsis"
                            MouseEnter="TextBlock_MouseEnter">
                     <TextBlock.ToolTip>
-                        <ToolTip Content="{Binding GameName}"/>
+                        <ToolTip Content="{Binding GameContext.Name}"/>
                     </TextBlock.ToolTip>
                 </TextBlock>
 
@@ -707,18 +703,21 @@
                                    Foreground="{DynamicResource DataColorClassicBrush}"
                                    Text="{DynamicResource LOCHowLongToBeatMainStory}"/>
                         <TextBlock Style="{DynamicResource BaseTextBlockStyle}"
+                                   Margin="6,0,0,0"
                                    Text="{Binding MainHoursFormat}"/>
                         <TextBlock Style="{DynamicResource BaseTextBlockStyle}"
                                    Foreground="{DynamicResource DataColorAverageBrush}"
                                    Margin="20,0,0,0"
                                    Text="{DynamicResource LOCHowLongToBeatMainExtra}"/>
                         <TextBlock Style="{DynamicResource BaseTextBlockStyle}"
+                                   Margin="6,0,0,0"
                                    Text="{Binding MainExtraHoursFormat}"/>
                         <TextBlock Style="{DynamicResource BaseTextBlockStyle}"
                                    Foreground="{DynamicResource DataColorCompletionistBrush}"
                                    Margin="20,0,0,0"
                                    Text="{DynamicResource LOCHowLongToBeatCompletionist}"/>
                         <TextBlock Style="{DynamicResource BaseTextBlockStyle}"
+                                   Margin="6,0,0,0"
                                    Text="{Binding CompletionistHoursFormat}"/>
                     </StackPanel>
                 </StackPanel>

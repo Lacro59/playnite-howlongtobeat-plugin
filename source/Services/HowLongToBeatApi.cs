@@ -1332,7 +1332,10 @@ namespace HowLongToBeat.Services
         {
             if (UserId == 0)
             {
-                _ = SpinWait.SpinUntil(() => PluginDatabase.IsLoaded, -1);
+                if (!PluginDatabase.IsLoaded)
+                {
+                    return false;
+                }
                 UserId = PluginDatabase.Database.UserHltbData.UserId;
             }
 
@@ -1798,20 +1801,32 @@ namespace HowLongToBeat.Services
         {
             try
             {
-                // Ensure operations using WebViews run on UI thread
-                Application.Current.Dispatcher.Invoke(() =>
+                // Run wait off the UI thread, then invoke UI work when ready
+                _ = Task.Run(async () =>
                 {
+                    while (!PluginDatabase.IsLoaded)
+                    {
+                        await Task.Delay(100).ConfigureAwait(false);
+                    }
+
                     try
                     {
-                        // Wait extension database are loaded
-                        SpinWait.SpinUntil(() => PluginDatabase.IsLoaded, -1);
-
-                        if (PluginDatabase.Database.UserHltbData?.UserId != null && PluginDatabase.Database.UserHltbData.UserId != 0)
+                        await Application.Current.Dispatcher.InvokeAsync(() =>
                         {
-                            Logger.Info($"Refresh HowLongToBeat user cookies");
-                            List<HttpCookie> cookies = CookiesTools.GetNewWebCookies(new List<string> { UrlBase, UrlUser }, true);
-                            _ = CookiesTools.SetStoredCookies(cookies);
-                        }
+                            try
+                            {
+                                if (PluginDatabase.Database.UserHltbData?.UserId != null && PluginDatabase.Database.UserHltbData.UserId != 0)
+                                {
+                                    Logger.Info($"Refresh HowLongToBeat user cookies");
+                                    List<HttpCookie> cookies = CookiesTools.GetNewWebCookies(new List<string> { UrlBase, UrlUser }, true);
+                                    _ = CookiesTools.SetStoredCookies(cookies);
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                Common.LogError(ex, false, true, PluginDatabase.PluginName);
+                            }
+                        });
                     }
                     catch (Exception ex)
                     {

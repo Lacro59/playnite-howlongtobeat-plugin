@@ -39,10 +39,12 @@ namespace HowLongToBeat.Controls
             InitializeComponent();
             DataContext = ControlDataContext;
 
-            _ = Task.Run(() =>
+            _ = Task.Run(async () =>
             {
-                // Wait extension database are loaded
-                _ = System.Threading.SpinWait.SpinUntil(() => PluginDatabase.IsLoaded, -1);
+                while (!PluginDatabase.IsLoaded)
+                {
+                    await Task.Delay(100).ConfigureAwait(false);
+                }
 
                 _ = Dispatcher.BeginInvoke((Action)delegate
                 {
@@ -63,7 +65,7 @@ namespace HowLongToBeat.Controls
             ShowUserData = PluginDatabase.PluginSettings.Settings.ProgressBarShowTimeUser;
 
             bool isActivated = PluginDatabase.PluginSettings.Settings.EnableIntegrationProgressBar;
-            bool textAboveVisibility = PluginDatabase.PluginSettings.Settings.ProgressBarShowTime ? PluginDatabase.PluginSettings.Settings.ProgressBarShowTimeAbove : false; 
+            bool textAboveVisibility = PluginDatabase.PluginSettings.Settings.ProgressBarShowTime ? PluginDatabase.PluginSettings.Settings.ProgressBarShowTimeAbove : false;
             bool textInsideVisibility = PluginDatabase.PluginSettings.Settings.ProgressBarShowTime ? PluginDatabase.PluginSettings.Settings.ProgressBarShowTimeInterior : false;
             bool textBelowVisibility = PluginDatabase.PluginSettings.Settings.ProgressBarShowTime ? PluginDatabase.PluginSettings.Settings.ProgressBarShowTimeBelow : false;
             if (IgnoreSettings)
@@ -520,7 +522,7 @@ namespace HowLongToBeat.Controls
                 {
                     Common.LogError(ex, false, "Error updating progress bar layout");
                 }
-        }));
+            }));
         }
         #endregion
     }

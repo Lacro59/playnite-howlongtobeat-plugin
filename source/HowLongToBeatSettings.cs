@@ -340,9 +340,13 @@ namespace HowLongToBeat
             }
 
 
-            _ = Task.Run(() =>
+            _ = Task.Run(async () =>
             {
-                _ = System.Threading.SpinWait.SpinUntil(() => API.Instance.Database.IsOpen, -1);
+                while (!API.Instance.Database.IsOpen)
+                {
+                    await Task.Delay(100).ConfigureAwait(false);
+                }
+
                 if (Settings.StorefrontElements.Count == 0)
                 {
                     API.Instance.Database.Sources.ForEach(x =>
@@ -380,9 +384,12 @@ namespace HowLongToBeat
 
             if (Settings.Platforms.Count == 0)
             {
-                _ = Task.Run(() =>
+                _ = Task.Run(async () =>
                 {
-                    _ = System.Threading.SpinWait.SpinUntil(() => API.Instance.Database.IsOpen, -1);
+                    while (!API.Instance.Database.IsOpen)
+                    {
+                        await Task.Delay(100).ConfigureAwait(false);
+                    }
                     API.Instance.Database.Platforms.ForEach(x =>
                     {
                         foreach (HltbPlatform hltbPlatform in (HltbPlatform[])Enum.GetValues(typeof(HltbPlatform)))

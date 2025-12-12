@@ -705,40 +705,54 @@ namespace HowLongToBeat
 
                 _ = API.Instance.Dialogs.ActivateGlobalProgress((activateGlobalProgress) =>
                 {
-                    _ = SpinWait.SpinUntil(() => PluginDatabase.IsLoaded, -1);
-                    PluginDatabase.Database.BeginBufferUpdate();
-                    PluginDatabase.Database.ForEach(x =>
+                    _ = Task.Run(async () =>
                     {
+                        while (!PluginDatabase.IsLoaded)
+                        {
+                            await Task.Delay(100).ConfigureAwait(false);
+                        }
+
                         try
                         {
-                            if (Serialization.TryFromJsonFile(Path.Combine(PluginDatabase.Paths.PluginDatabasePath, x.Game.Id.ToString() + ".json"), out dynamic data))
+                            PluginDatabase.Database.BeginBufferUpdate();
+                            PluginDatabase.Database.ForEach(x =>
                             {
-                                dynamic items = data.Items[0].GameHltbData;
-                                string s = Serialization.ToJson(items);
-                                if (Serialization.TryFromJson(s, out HltbData_old hltbData_old))
+                                try
                                 {
-                                    x.Items[0].GameHltbData.MainStoryClassic = hltbData_old.MainStory;
-                                    x.Items[0].GameHltbData.MainExtraClassic = hltbData_old.MainExtra;
-                                    x.Items[0].GameHltbData.CompletionistClassic = hltbData_old.Completionist;
-                                    x.Items[0].GameHltbData.SoloClassic = hltbData_old.Solo;
-                                    x.Items[0].GameHltbData.CoOpClassic = hltbData_old.CoOp;
-                                    x.Items[0].GameHltbData.VsClassic = hltbData_old.Vs;
+                                    if (Serialization.TryFromJsonFile(Path.Combine(PluginDatabase.Paths.PluginDatabasePath, x.Game.Id.ToString() + ".json"), out dynamic data))
+                                    {
+                                        dynamic items = data.Items[0].GameHltbData;
+                                        string s = Serialization.ToJson(items);
+                                        if (Serialization.TryFromJson(s, out HltbData_old hltbData_old))
+                                        {
+                                            x.Items[0].GameHltbData.MainStoryClassic = hltbData_old.MainStory;
+                                            x.Items[0].GameHltbData.MainExtraClassic = hltbData_old.MainExtra;
+                                            x.Items[0].GameHltbData.CompletionistClassic = hltbData_old.Completionist;
+                                            x.Items[0].GameHltbData.SoloClassic = hltbData_old.Solo;
+                                            x.Items[0].GameHltbData.CoOpClassic = hltbData_old.CoOp;
+                                            x.Items[0].GameHltbData.VsClassic = hltbData_old.Vs;
 
-                                    PluginDatabase.Database.Update(x);
+                                            PluginDatabase.Database.Update(x);
+                                        }
+                                    }
                                 }
-                            }
+                                catch (Exception ex)
+                                {
+                                    Common.LogError(ex, true, true, PluginDatabase.PluginName);
+                                }
+                            });
+                            PluginDatabase.Database.EndBufferUpdate();
+
+                            _ = Application.Current.Dispatcher?.BeginInvoke((Action)delegate
+                            {
+                                PluginSettings.Settings.IsConvertedDb = true;
+                                SavePluginSettings(PluginSettings.Settings);
+                            });
                         }
                         catch (Exception ex)
                         {
                             Common.LogError(ex, true, true, PluginDatabase.PluginName);
                         }
-                    });
-                    PluginDatabase.Database.EndBufferUpdate();
-
-                    _ = Application.Current.Dispatcher?.BeginInvoke((Action)delegate
-                    {
-                        PluginSettings.Settings.IsConvertedDb = true;
-                        SavePluginSettings(PluginSettings.Settings);
                     });
                 }, globalProgressOptions);
             }

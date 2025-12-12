@@ -34,22 +34,30 @@ namespace HowLongToBeat.Controls
             InitializeComponent();
             this.DataContext = ControlDataContext;
 
-            _ = Task.Run(() =>
+            // Use async Loaded handler to perform awaited initialization without compiler warnings
+            this.Loaded += PluginViewItem_Loaded;
+        }
+
+        private async void PluginViewItem_Loaded(object sender, EventArgs e)
+        {
+            this.Loaded -= PluginViewItem_Loaded;
+
+            while (!PluginDatabase.IsLoaded)
             {
-                // Wait extension database are loaded
-                _ = System.Threading.SpinWait.SpinUntil(() => PluginDatabase.IsLoaded, -1);
+                await Task.Delay(100).ConfigureAwait(false);
+            }
 
-                this.Dispatcher.BeginInvoke((Action)delegate
-                {
-                    PluginDatabase.PluginSettings.PropertyChanged += PluginSettings_PropertyChanged;
-                    PluginDatabase.Database.ItemUpdated += Database_ItemUpdated;
-                    PluginDatabase.Database.ItemCollectionChanged += Database_ItemCollectionChanged;
-                    API.Instance.Database.Games.ItemUpdated += Games_ItemUpdated;
+            // Ensure the registration runs on the UI thread and await its completion
+            await this.Dispatcher.InvokeAsync((Action)delegate
+            {
+                PluginDatabase.PluginSettings.PropertyChanged += PluginSettings_PropertyChanged;
+                PluginDatabase.Database.ItemUpdated += Database_ItemUpdated;
+                PluginDatabase.Database.ItemCollectionChanged += Database_ItemCollectionChanged;
+                API.Instance.Database.Games.ItemUpdated += Games_ItemUpdated;
 
-                    // Apply settings
-                    PluginSettings_PropertyChanged(null, null);
-                });
-            });
+                // Apply settings
+                PluginSettings_PropertyChanged(null, null);
+            }).Task.ConfigureAwait(false);
         }
 
 

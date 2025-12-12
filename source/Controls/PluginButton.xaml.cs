@@ -22,7 +22,7 @@ namespace HowLongToBeat.Controls
         private static HowLongToBeatDatabase PluginDatabase => HowLongToBeat.PluginDatabase;
         protected override IPluginDatabase pluginDatabase => PluginDatabase;
 
-        private PluginButtonDataContext ControlDataContext =  new PluginButtonDataContext();
+        private PluginButtonDataContext ControlDataContext = new PluginButtonDataContext();
         protected override IDataContext controlDataContext
         {
             get => ControlDataContext;
@@ -36,22 +36,28 @@ namespace HowLongToBeat.Controls
             InitializeComponent();
             this.DataContext = ControlDataContext;
 
-            _ = Task.Run(() =>
+            this.Loaded += PluginButton_Loaded;
+        }
+
+        private async void PluginButton_Loaded(object sender, RoutedEventArgs e)
+        {
+            this.Loaded -= PluginButton_Loaded;
+
+            while (!PluginDatabase.IsLoaded)
             {
-                // Wait extension database are loaded
-                _ = System.Threading.SpinWait.SpinUntil(() => PluginDatabase.IsLoaded, -1);
+                await Task.Delay(100).ConfigureAwait(false);
+            }
 
-                this.Dispatcher.BeginInvoke((Action)delegate
-                {
-                    PluginDatabase.PluginSettings.PropertyChanged += PluginSettings_PropertyChanged;
-                    PluginDatabase.Database.ItemUpdated += Database_ItemUpdated;
-                    PluginDatabase.Database.ItemCollectionChanged += Database_ItemCollectionChanged;
-                    API.Instance.Database.Games.ItemUpdated += Games_ItemUpdated;
+            await this.Dispatcher.InvokeAsync((Action)delegate
+            {
+                PluginDatabase.PluginSettings.PropertyChanged += PluginSettings_PropertyChanged;
+                PluginDatabase.Database.ItemUpdated += Database_ItemUpdated;
+                PluginDatabase.Database.ItemCollectionChanged += Database_ItemCollectionChanged;
+                API.Instance.Database.Games.ItemUpdated += Games_ItemUpdated;
 
-                    // Apply settings
-                    PluginSettings_PropertyChanged(null, null);
-                });
-            });
+                // Apply settings
+                PluginSettings_PropertyChanged(null, null);
+            }).Task.ConfigureAwait(false);
         }
 
 

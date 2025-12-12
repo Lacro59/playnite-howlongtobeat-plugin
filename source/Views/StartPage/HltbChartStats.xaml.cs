@@ -59,9 +59,12 @@ namespace HowLongToBeat.Views.StartPage
         }
 
 
-        private void Update()
+        private async void Update()
         {
-            SpinWait.SpinUntil(() => PluginDatabase.IsLoaded, -1);
+            while (!PluginDatabase.IsLoaded)
+            {
+                await Task.Delay(100).ConfigureAwait(false);
+            }
 
             ControlDataContext.Margin = PluginDatabase.PluginSettings.Settings.hltbChartStatsOptions.Margin;
             ControlDataContext.ChartTitle = PluginDatabase.PluginSettings.Settings.hltbChartStatsOptions.ChartTitle;

@@ -57,36 +57,6 @@ namespace HowLongToBeat.Views
             Init(gameHowLongToBeat);
         }
 
-        private void CoverImageControl_TargetUpdated(object sender, System.Windows.Data.DataTransferEventArgs e)
-        {
-            try
-            {
-                if (!(sender is Image img)) return;
-
-                if (img.Source is BitmapImage source && source.UriSource != null)
-                {
-                    Common.LogDebug(true, $"Cover TargetUpdated: UriSource={source.UriSource}");
-
-                    var opacityAnimation = new DoubleAnimation(0, 1, TimeSpan.FromMilliseconds(300));
-                    img.BeginAnimation(UIElement.OpacityProperty, opacityAnimation);
-
-                    if (img.Effect is BlurEffect blur)
-                    {
-                        var blurAnimation = new DoubleAnimation(8, 0, TimeSpan.FromMilliseconds(400)) { EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut } };
-                        blur.BeginAnimation(BlurEffect.RadiusProperty, blurAnimation);
-                    }
-                }
-                else
-                {
-                    Common.LogDebug(true, "Cover TargetUpdated: non-Uri or stream source — skipping automatic reload");
-                }
-            }
-            catch (Exception ex)
-            {
-                Common.LogError(ex, false, true, PluginDatabase.PluginName);
-            }
-        }
-
         private void SetCoverImageSource(string path)
         {
             try
