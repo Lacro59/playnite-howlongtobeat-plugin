@@ -16,12 +16,8 @@ using System.Windows.Media;
 
 namespace HowLongToBeat.Controls
 {
-    /// <summary>
-    /// Logique d'interaction pour PluginProgressBar.xaml
-    /// </summary>
     public partial class PluginProgressBar : PluginUserControlExtend
     {
-        // TODO Rewrite this control to resolve latency
         private static HowLongToBeatDatabase PluginDatabase => HowLongToBeat.PluginDatabase;
         protected override IPluginDatabase pluginDatabase => PluginDatabase;
 
@@ -29,8 +25,14 @@ namespace HowLongToBeat.Controls
         protected override IDataContext controlDataContext
         {
             get => ControlDataContext;
-            set => ControlDataContext = (PluginProgressBarDataContext)controlDataContext;
+            set => ControlDataContext = (PluginProgressBarDataContext)value;
         }
+
+        private CancellationTokenSource _loadCts;
+        private readonly Brush[] _cachedThumbBrushes = new Brush[3];
+        private readonly Brush[] _cachedThumbUserBrushes = new Brush[3];
+        private ProgressSnapshot _lastSnapshot = null;
+        private readonly int _debounceMs = 120;
 
         private bool ShowUserData = true;
 
@@ -117,8 +119,36 @@ namespace HowLongToBeat.Controls
             ControlDataContext.ThumbThird = null;
 
             ControlDataContext.ThumbColor = PluginDatabase.PluginSettings.Settings.ThumbSolidColorBrush == null
-                ? (dynamic)PluginDatabase.PluginSettings.Settings.ThumbLinearGradient.ToLinearGradientBrush
-                : (dynamic)PluginDatabase.PluginSettings.Settings.ThumbSolidColorBrush;
+                ? PluginDatabase.PluginSettings.Settings.ThumbLinearGradient?.ToLinearGradientBrush as Brush
+                : PluginDatabase.PluginSettings.Settings.ThumbSolidColorBrush as Brush;
+
+            _cachedThumbBrushes[0] = PluginDatabase.PluginSettings.Settings.FirstLinearGradient != null
+                ? PluginDatabase.PluginSettings.Settings.FirstLinearGradient.ToLinearGradientBrush as Brush
+                : PluginDatabase.PluginSettings.Settings.FirstColorBrush as Brush;
+            _cachedThumbBrushes[1] = PluginDatabase.PluginSettings.Settings.SecondLinearGradient != null
+                ? PluginDatabase.PluginSettings.Settings.SecondLinearGradient.ToLinearGradientBrush as Brush
+                : PluginDatabase.PluginSettings.Settings.SecondColorBrush as Brush;
+            _cachedThumbBrushes[2] = PluginDatabase.PluginSettings.Settings.ThirdLinearGradient != null
+                ? PluginDatabase.PluginSettings.Settings.ThirdLinearGradient.ToLinearGradientBrush as Brush
+                : PluginDatabase.PluginSettings.Settings.ThirdColorBrush as Brush;
+
+            _cachedThumbUserBrushes[0] = PluginDatabase.PluginSettings.Settings.FirstMultiLinearGradient != null
+                ? PluginDatabase.PluginSettings.Settings.FirstMultiLinearGradient.ToLinearGradientBrush as Brush
+                : PluginDatabase.PluginSettings.Settings.FirstMultiColorBrush as Brush;
+            _cachedThumbUserBrushes[1] = PluginDatabase.PluginSettings.Settings.SecondMultiLinearGradient != null
+                ? PluginDatabase.PluginSettings.Settings.SecondMultiLinearGradient.ToLinearGradientBrush as Brush
+                : PluginDatabase.PluginSettings.Settings.SecondMultiColorBrush as Brush;
+            _cachedThumbUserBrushes[2] = PluginDatabase.PluginSettings.Settings.ThirdMultiLinearGradient != null
+                ? PluginDatabase.PluginSettings.Settings.ThirdMultiLinearGradient.ToLinearGradientBrush as Brush
+                : PluginDatabase.PluginSettings.Settings.ThirdMultiColorBrush as Brush;
+
+            ControlDataContext.ThumbFirst = _cachedThumbBrushes[0];
+            ControlDataContext.ThumbSecond = _cachedThumbBrushes[1];
+            ControlDataContext.ThumbThird = _cachedThumbBrushes[2];
+
+            ControlDataContext.ThumbFirstUser = _cachedThumbUserBrushes[0];
+            ControlDataContext.ThumbSecondUser = _cachedThumbUserBrushes[1];
+            ControlDataContext.ThumbThirdUser = _cachedThumbUserBrushes[2];
         }
 
         public override async void SetData(Game newContext, PluginDataBaseGameBase PluginGameData)
@@ -126,49 +156,117 @@ namespace HowLongToBeat.Controls
             GameHowLongToBeat gameHowLongToBeat = (GameHowLongToBeat)PluginGameData;
             try
             {
-                await LoadDataAsync(gameHowLongToBeat);
+                try { _loadCts?.Cancel(); } catch { }
+                try { _loadCts?.Dispose(); } catch { }
+                _loadCts = new CancellationTokenSource();
+                try
+                {
+                    await Task.Delay(_debounceMs, _loadCts.Token).ConfigureAwait(false);
+                }
+                catch (OperationCanceledException)
+                {
+                    return;
+                }
 
-                SliderPlaytime.Maximum = ControlDataContext.MaxValue;
-                SliderPlaytime.Value = ControlDataContext.PlaytimeValue;
+                var snapshot = await LoadDataAsync(gameHowLongToBeat, _loadCts.Token).ConfigureAwait(false);
 
-                PART_ProgressBarFirst.Value = ControlDataContext.ProgressBarFirstValue;
-                PART_ProgressBarFirst.TextValue = ControlDataContext.ToolTipFirst;
-                PART_ProgressBarFirst.Foreground = ControlDataContext.ThumbFirst;
-                PART_ProgressBarFirst.Maximum = ControlDataContext.MaxValue;
-                PART_ProgressBarFirst.TextAboveVisibility = ControlDataContext.TextAboveVisibility;
-                PART_ProgressBarFirst.TextInsideVisibility = ControlDataContext.TextInsideVisibility;
-                PART_ProgressBarFirst.TextBelowVisibility = ControlDataContext.TextBelowVisibility;
+                if (snapshot == null) return;
 
-                PART_ProgressBarSecond.Value = ControlDataContext.ProgressBarSecondValue;
-                PART_ProgressBarSecond.TextValue = ControlDataContext.ToolTipSecond;
-                PART_ProgressBarSecond.Foreground = ControlDataContext.ThumbSecond;
-                PART_ProgressBarSecond.Maximum = ControlDataContext.MaxValue;
-                PART_ProgressBarSecond.TextAboveVisibility = ControlDataContext.TextAboveVisibility;
-                PART_ProgressBarSecond.TextInsideVisibility = ControlDataContext.TextInsideVisibility;
-                PART_ProgressBarSecond.TextBelowVisibility = ControlDataContext.TextBelowVisibility;
+                if (_lastSnapshot != null && SnapshotEquals(_lastSnapshot, snapshot))
+                {
+                    return;
+                }
 
-                PART_ProgressBarThird.Value = ControlDataContext.ProgressBarThirdValue;
-                PART_ProgressBarThird.TextValue = ControlDataContext.ToolTipThird;
-                PART_ProgressBarThird.Foreground = ControlDataContext.ThumbThird;
-                PART_ProgressBarThird.Maximum = ControlDataContext.MaxValue;
-                PART_ProgressBarThird.TextAboveVisibility = ControlDataContext.TextAboveVisibility;
-                PART_ProgressBarThird.TextInsideVisibility = ControlDataContext.TextInsideVisibility;
-                PART_ProgressBarThird.TextBelowVisibility = ControlDataContext.TextBelowVisibility;
+                try
+                {
+                    var op = Dispatcher?.InvokeAsync(() =>
+                    {
+                        try
+                        {
+                            SliderPlaytime.Maximum = snapshot.MaxValue;
+                            SliderPlaytime.Value = snapshot.PlaytimeValue;
 
-                PartSliderFirst.ThumbFill = ControlDataContext.ThumbSecondUser;
-                PartSliderFirst.Visibility = ControlDataContext.SliderSecondVisibility;
-                PartSliderFirst.Value = ControlDataContext.SliderSecondValue;
-                PartSliderFirst.Maximum = ControlDataContext.MaxValue;
+                            PART_ProgressBarFirst.Value = snapshot.ProgressValues[0];
+                            PART_ProgressBarFirst.TextValue = snapshot.ProgressFormats[0];
+                            PART_ProgressBarFirst.Foreground = snapshot.ThumbBrushes[0];
+                            PART_ProgressBarFirst.Maximum = snapshot.MaxValue;
+                            PART_ProgressBarFirst.TextAboveVisibility = ControlDataContext.TextAboveVisibility;
+                            PART_ProgressBarFirst.TextInsideVisibility = ControlDataContext.TextInsideVisibility;
+                            PART_ProgressBarFirst.TextBelowVisibility = ControlDataContext.TextBelowVisibility;
 
-                PartSliderSecond.ThumbFill = ControlDataContext.ThumbFirstUser;
-                PartSliderSecond.Visibility = ControlDataContext.SliderFirstVisibility;
-                PartSliderSecond.Value = ControlDataContext.SliderFirstValue;
-                PartSliderSecond.Maximum = ControlDataContext.MaxValue;
+                            PART_ProgressBarSecond.Value = snapshot.ProgressValues[1];
+                            PART_ProgressBarSecond.TextValue = snapshot.ProgressFormats[1];
+                            PART_ProgressBarSecond.Foreground = snapshot.ThumbBrushes[1];
+                            PART_ProgressBarSecond.Maximum = snapshot.MaxValue;
+                            PART_ProgressBarSecond.TextAboveVisibility = ControlDataContext.TextAboveVisibility;
+                            PART_ProgressBarSecond.TextInsideVisibility = ControlDataContext.TextInsideVisibility;
+                            PART_ProgressBarSecond.TextBelowVisibility = ControlDataContext.TextBelowVisibility;
 
-                PartSliderThird.ThumbFill = ControlDataContext.ThumbThirdUser;
-                PartSliderThird.Visibility = ControlDataContext.SliderThirdVisibility;
-                PartSliderThird.Value = ControlDataContext.SliderThirdValue;
-                PartSliderThird.Maximum = ControlDataContext.MaxValue;
+                            PART_ProgressBarThird.Value = snapshot.ProgressValues[2];
+                            PART_ProgressBarThird.TextValue = snapshot.ProgressFormats[2];
+                            PART_ProgressBarThird.Foreground = snapshot.ThumbBrushes[2];
+                            PART_ProgressBarThird.Maximum = snapshot.MaxValue;
+                            PART_ProgressBarThird.TextAboveVisibility = ControlDataContext.TextAboveVisibility;
+                            PART_ProgressBarThird.TextInsideVisibility = ControlDataContext.TextInsideVisibility;
+                            PART_ProgressBarThird.TextBelowVisibility = ControlDataContext.TextBelowVisibility;
+
+                            PartSliderFirst.ThumbFill = snapshot.ThumbUserBrushes[0];
+                            PartSliderFirst.Visibility = snapshot.SliderVisibilities[0];
+                            PartSliderFirst.Value = snapshot.SliderValues[0];
+                            PartSliderFirst.Maximum = snapshot.MaxValue;
+
+                            PartSliderSecond.ThumbFill = snapshot.ThumbUserBrushes[1];
+                            PartSliderSecond.Visibility = snapshot.SliderVisibilities[1];
+                            PartSliderSecond.Value = snapshot.SliderValues[1];
+                            PartSliderSecond.Maximum = snapshot.MaxValue;
+
+                            PartSliderThird.ThumbFill = snapshot.ThumbUserBrushes[2];
+                            PartSliderThird.Visibility = snapshot.SliderVisibilities[2];
+                            PartSliderThird.Value = snapshot.SliderValues[2];
+                            PartSliderThird.Maximum = snapshot.MaxValue;
+
+                            ControlDataContext.MaxValue = snapshot.MaxValue;
+                            ControlDataContext.PlaytimeValue = snapshot.PlaytimeValue;
+                            ControlDataContext.ThumbFirst = snapshot.ThumbBrushes?[0] ?? ControlDataContext.ThumbFirst;
+                            ControlDataContext.ThumbSecond = snapshot.ThumbBrushes?[1] ?? ControlDataContext.ThumbSecond;
+                            ControlDataContext.ThumbThird = snapshot.ThumbBrushes?[2] ?? ControlDataContext.ThumbThird;
+                            ControlDataContext.ThumbFirstUser = snapshot.ThumbUserBrushes?[0] ?? ControlDataContext.ThumbFirstUser;
+                            ControlDataContext.ThumbSecondUser = snapshot.ThumbUserBrushes?[1] ?? ControlDataContext.ThumbSecondUser;
+                            ControlDataContext.ThumbThirdUser = snapshot.ThumbUserBrushes?[2] ?? ControlDataContext.ThumbThirdUser;
+                        }
+                        catch (Exception ex)
+                        {
+                            Common.LogError(ex, false, true, PluginDatabase.PluginName);
+                        }
+                    });
+
+                    if (op != null)
+                    {
+                        try
+                        {
+                            await op.Task.ConfigureAwait(false);
+                        }
+                        catch (Exception ex)
+                        {
+                            Common.LogError(ex, false, true, PluginDatabase.PluginName);
+                        }
+                    }
+                    else
+                    {
+                        try
+                        {
+                            ControlDataContext.MaxValue = snapshot.MaxValue;
+                            ControlDataContext.PlaytimeValue = snapshot.PlaytimeValue;
+                        }
+                        catch { }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Common.LogError(ex, false, true, PluginDatabase.PluginName);
+                }
+
+                _lastSnapshot = snapshot;
             }
             catch (Exception ex)
             {
@@ -176,7 +274,24 @@ namespace HowLongToBeat.Controls
             }
         }
 
-        private Task LoadDataAsync(GameHowLongToBeat gameHowLongToBeat)
+        private bool SnapshotEquals(ProgressSnapshot a, ProgressSnapshot b)
+        {
+            if (a == null || b == null) return false;
+            if (a.MaxValue != b.MaxValue) return false;
+            if (a.PlaytimeValue != b.PlaytimeValue) return false;
+            for (int i = 0; i < 3; i++)
+            {
+                if (a.ProgressValues?[i] != b.ProgressValues?[i]) return false;
+                if (!string.Equals(a.ProgressFormats?[i], b.ProgressFormats?[i])) return false;
+                if (a.SliderValues?[i] != b.SliderValues?[i]) return false;
+                if (a.SliderVisibilities?[i] != b.SliderVisibilities?[i]) return false;
+                if (!object.ReferenceEquals(a.ThumbBrushes?[i], b.ThumbBrushes?[i])) return false;
+                if (!object.ReferenceEquals(a.ThumbUserBrushes?[i], b.ThumbUserBrushes?[i])) return false;
+            }
+            return true;
+        }
+
+        private Task<ProgressSnapshot> LoadDataAsync(GameHowLongToBeat gameHowLongToBeat, CancellationToken cancellationToken)
         {
             bool showUserData = this.ShowUserData;
             bool ignoreSettings = false;
@@ -197,17 +312,21 @@ namespace HowLongToBeat.Controls
             {
                 try
                 {
+                    if (cancellationToken.IsCancellationRequested) return null;
+
                     int elIndicator = 0;
                     int elIndicatorUser = 0;
                     double maxValue = 0;
                     double maxHltb = 0;
                     ulong playtime = gameHowLongToBeat.Playtime;
-                    var listProgressBars = new List<ListProgressBar>();
                     TitleList titleList = PluginDatabase.GetUserHltbDataCurrent(gameHowLongToBeat.GetData().Id, gameHowLongToBeat.UserGameId);
 
-                    var thumbColors = new Dictionary<int, dynamic>();
-                    var thumbUserColors = new Dictionary<int, dynamic>();
-                    var userValues = new Dictionary<int, long>();
+                    long[] progressValues = new long[3];
+                    string[] progressFormats = new string[3];
+                    Brush[] thumbBrushes = new Brush[3];
+                    Brush[] thumbUserBrushes = new Brush[3];
+                    long[] sliderValues = new long[3];
+                    Visibility[] sliderVisibilities = new Visibility[3] { Visibility.Collapsed, Visibility.Collapsed, Visibility.Collapsed };
 
                     if (gameHowLongToBeat.HasData)
                     {
@@ -215,120 +334,120 @@ namespace HowLongToBeat.Controls
 
                         if (HltbData.GameType != GameType.Multi)
                         {
-                            dynamic color = PluginDatabase.PluginSettings.Settings.FirstLinearGradient != null
-                                ? (dynamic)PluginDatabase.PluginSettings.Settings.FirstLinearGradient.ToLinearGradientBrush
-                                : (dynamic)PluginDatabase.PluginSettings.Settings.FirstColorBrush;
+                            Brush color = _cachedThumbBrushes[0] ?? (PluginDatabase.PluginSettings.Settings.FirstLinearGradient != null ? PluginDatabase.PluginSettings.Settings.FirstLinearGradient.ToLinearGradientBrush as Brush : PluginDatabase.PluginSettings.Settings.FirstColorBrush as Brush);
 
                             if ((ignoreSettings || PluginDatabase.PluginSettings.Settings.ShowMainTime) && HltbData?.GameHltbData?.MainStory != null && HltbData.GameHltbData.MainStory > 0)
                             {
-                                elIndicator += 1;
-                                listProgressBars.Add(new ListProgressBar { Indicator = elIndicator, Value = HltbData.GameHltbData.MainStory, Format = HltbData.GameHltbData.MainStoryFormat });
+                                progressValues[elIndicator] = HltbData.GameHltbData.MainStory;
+                                progressFormats[elIndicator] = HltbData.GameHltbData.MainStoryFormat;
+                                thumbBrushes[elIndicator] = color;
                                 if (maxValue < HltbData.GameHltbData.MainStory) maxValue = HltbData.GameHltbData.MainStory;
-                                thumbColors[elIndicator] = color;
+                                elIndicator++;
                             }
 
                             if (titleList?.HltbUserData?.MainStory != null && titleList?.HltbUserData?.MainStory > 0 && showUserData)
                             {
-                                elIndicatorUser += 1;
-                                thumbUserColors[elIndicatorUser] = color;
-                                userValues[elIndicatorUser] = titleList.HltbUserData.MainStory;
+                                thumbUserBrushes[elIndicatorUser] = color;
+                                sliderValues[elIndicatorUser] = titleList.HltbUserData.MainStory;
+                                sliderVisibilities[elIndicatorUser] = Visibility.Visible;
+                                elIndicatorUser++;
                             }
 
-                            color = PluginDatabase.PluginSettings.Settings.SecondLinearGradient != null
-                                ? (dynamic)PluginDatabase.PluginSettings.Settings.SecondLinearGradient.ToLinearGradientBrush
-                                : (dynamic)PluginDatabase.PluginSettings.Settings.SecondColorBrush;
+                            color = _cachedThumbBrushes[1] ?? (PluginDatabase.PluginSettings.Settings.SecondLinearGradient != null ? PluginDatabase.PluginSettings.Settings.SecondLinearGradient.ToLinearGradientBrush as Brush : PluginDatabase.PluginSettings.Settings.SecondColorBrush as Brush);
 
                             if ((ignoreSettings || PluginDatabase.PluginSettings.Settings.ShowExtraTime) && HltbData?.GameHltbData?.MainExtra != null && HltbData.GameHltbData.MainExtra > 0)
                             {
-                                elIndicator += 1;
-                                listProgressBars.Add(new ListProgressBar { Indicator = elIndicator, Value = HltbData.GameHltbData.MainExtra, Format = HltbData.GameHltbData.MainExtraFormat });
+                                progressValues[elIndicator] = HltbData.GameHltbData.MainExtra;
+                                progressFormats[elIndicator] = HltbData.GameHltbData.MainExtraFormat;
+                                thumbBrushes[elIndicator] = color;
                                 if (maxValue < HltbData.GameHltbData.MainExtra) maxValue = HltbData.GameHltbData.MainExtra;
-                                thumbColors[elIndicator] = color;
+                                elIndicator++;
                             }
 
                             if (titleList?.HltbUserData?.MainExtra != null && titleList?.HltbUserData?.MainExtra > 0 && showUserData)
                             {
-                                elIndicatorUser += 1;
-                                thumbUserColors[elIndicatorUser] = color;
-                                userValues[elIndicatorUser] = titleList.HltbUserData.MainExtra;
+                                thumbUserBrushes[elIndicatorUser] = color;
+                                sliderValues[elIndicatorUser] = titleList.HltbUserData.MainExtra;
+                                sliderVisibilities[elIndicatorUser] = Visibility.Visible;
+                                elIndicatorUser++;
                             }
 
-                            color = PluginDatabase.PluginSettings.Settings.ThirdLinearGradient != null
-                                ? (dynamic)PluginDatabase.PluginSettings.Settings.ThirdLinearGradient.ToLinearGradientBrush
-                                : (dynamic)PluginDatabase.PluginSettings.Settings.ThirdColorBrush;
+                            color = _cachedThumbBrushes[2] ?? (PluginDatabase.PluginSettings.Settings.ThirdLinearGradient != null ? PluginDatabase.PluginSettings.Settings.ThirdLinearGradient.ToLinearGradientBrush as Brush : PluginDatabase.PluginSettings.Settings.ThirdColorBrush as Brush);
 
                             if ((ignoreSettings || PluginDatabase.PluginSettings.Settings.ShowCompletionistTime) && HltbData?.GameHltbData?.Completionist != null && HltbData.GameHltbData.Completionist != 0)
                             {
-                                elIndicator += 1;
-                                listProgressBars.Add(new ListProgressBar { Indicator = elIndicator, Value = HltbData.GameHltbData.Completionist, Format = HltbData.GameHltbData.CompletionistFormat });
+                                progressValues[elIndicator] = HltbData.GameHltbData.Completionist;
+                                progressFormats[elIndicator] = HltbData.GameHltbData.CompletionistFormat;
+                                thumbBrushes[elIndicator] = color;
                                 if (maxValue < HltbData.GameHltbData.Completionist) maxValue = HltbData.GameHltbData.Completionist;
-                                thumbColors[elIndicator] = color;
+                                elIndicator++;
                             }
 
                             if (titleList?.HltbUserData?.Completionist != null && titleList?.HltbUserData?.Completionist > 0 && showUserData)
                             {
-                                elIndicatorUser += 1;
-                                thumbUserColors[elIndicatorUser] = color;
-                                userValues[elIndicatorUser] = titleList.HltbUserData.Completionist;
+                                thumbUserBrushes[elIndicatorUser] = color;
+                                sliderValues[elIndicatorUser] = titleList.HltbUserData.Completionist;
+                                sliderVisibilities[elIndicatorUser] = Visibility.Visible;
+                                elIndicatorUser++;
                             }
                         }
                         else
                         {
-                            dynamic color = PluginDatabase.PluginSettings.Settings.FirstMultiLinearGradient != null
-                                ? (dynamic)PluginDatabase.PluginSettings.Settings.FirstMultiLinearGradient.ToLinearGradientBrush
-                                : (dynamic)PluginDatabase.PluginSettings.Settings.FirstMultiColorBrush;
+                            Brush color = _cachedThumbBrushes[0] ?? (PluginDatabase.PluginSettings.Settings.FirstMultiLinearGradient != null ? PluginDatabase.PluginSettings.Settings.FirstMultiLinearGradient.ToLinearGradientBrush as Brush : PluginDatabase.PluginSettings.Settings.FirstMultiColorBrush as Brush);
 
                             if ((ignoreSettings || PluginDatabase.PluginSettings.Settings.ShowSoloTime) && HltbData?.GameHltbData?.Solo != null && HltbData.GameHltbData.Solo != 0)
                             {
-                                elIndicator += 1;
-                                listProgressBars.Add(new ListProgressBar { Indicator = elIndicator, Value = HltbData.GameHltbData.Solo, Format = HltbData.GameHltbData.SoloFormat });
+                                progressValues[elIndicator] = HltbData.GameHltbData.Solo;
+                                progressFormats[elIndicator] = HltbData.GameHltbData.SoloFormat;
+                                thumbBrushes[elIndicator] = color;
                                 if (maxValue < HltbData.GameHltbData.Solo) maxValue = HltbData.GameHltbData.Solo;
-                                thumbColors[elIndicator] = color;
+                                elIndicator++;
                             }
 
                             if (titleList?.HltbUserData?.Solo != null && titleList?.HltbUserData?.Solo > 0 && showUserData)
                             {
-                                elIndicatorUser += 1;
-                                thumbUserColors[elIndicatorUser] = color;
-                                userValues[elIndicatorUser] = titleList.HltbUserData.Solo;
+                                thumbUserBrushes[elIndicatorUser] = color;
+                                sliderValues[elIndicatorUser] = titleList.HltbUserData.Solo;
+                                sliderVisibilities[elIndicatorUser] = Visibility.Visible;
+                                elIndicatorUser++;
                             }
 
-                            color = PluginDatabase.PluginSettings.Settings.SecondMultiLinearGradient != null
-                                ? (dynamic)PluginDatabase.PluginSettings.Settings.SecondMultiLinearGradient.ToLinearGradientBrush
-                                : (dynamic)PluginDatabase.PluginSettings.Settings.SecondMultiColorBrush;
+                            color = _cachedThumbBrushes[1] ?? (PluginDatabase.PluginSettings.Settings.SecondMultiLinearGradient != null ? PluginDatabase.PluginSettings.Settings.SecondMultiLinearGradient.ToLinearGradientBrush as Brush : PluginDatabase.PluginSettings.Settings.SecondMultiColorBrush as Brush);
 
                             if ((ignoreSettings || PluginDatabase.PluginSettings.Settings.ShowCoOpTime) && HltbData?.GameHltbData?.CoOp != null && HltbData.GameHltbData.CoOp != 0)
                             {
-                                elIndicator += 1;
-                                listProgressBars.Add(new ListProgressBar { Indicator = elIndicator, Value = HltbData.GameHltbData.CoOp, Format = HltbData.GameHltbData.CoOpFormat });
+                                progressValues[elIndicator] = HltbData.GameHltbData.CoOp;
+                                progressFormats[elIndicator] = HltbData.GameHltbData.CoOpFormat;
+                                thumbBrushes[elIndicator] = color;
                                 if (maxValue < HltbData.GameHltbData.CoOp) maxValue = HltbData.GameHltbData.CoOp;
-                                thumbColors[elIndicator] = color;
+                                elIndicator++;
                             }
 
                             if (titleList?.HltbUserData?.CoOp != null && titleList?.HltbUserData?.CoOp > 0 && showUserData)
                             {
-                                elIndicatorUser += 1;
-                                thumbUserColors[elIndicatorUser] = color;
-                                userValues[elIndicatorUser] = titleList.HltbUserData.CoOp;
+                                thumbUserBrushes[elIndicatorUser] = color;
+                                sliderValues[elIndicatorUser] = titleList.HltbUserData.CoOp;
+                                sliderVisibilities[elIndicatorUser] = Visibility.Visible;
+                                elIndicatorUser++;
                             }
 
-                            color = PluginDatabase.PluginSettings.Settings.ThirdMultiLinearGradient != null
-                                ? (dynamic)PluginDatabase.PluginSettings.Settings.ThirdMultiLinearGradient.ToLinearGradientBrush
-                                : (dynamic)PluginDatabase.PluginSettings.Settings.ThirdMultiColorBrush;
+                            color = _cachedThumbBrushes[2] ?? (PluginDatabase.PluginSettings.Settings.ThirdMultiLinearGradient != null ? PluginDatabase.PluginSettings.Settings.ThirdMultiLinearGradient.ToLinearGradientBrush as Brush : PluginDatabase.PluginSettings.Settings.ThirdMultiColorBrush as Brush);
 
                             if ((ignoreSettings || PluginDatabase.PluginSettings.Settings.ShowVsTime) && HltbData?.GameHltbData?.Vs != null && HltbData.GameHltbData.Vs != 0)
                             {
-                                elIndicator += 1;
-                                listProgressBars.Add(new ListProgressBar { Indicator = elIndicator, Value = HltbData.GameHltbData.Vs, Format = HltbData.GameHltbData.VsFormat });
+                                progressValues[elIndicator] = HltbData.GameHltbData.Vs;
+                                progressFormats[elIndicator] = HltbData.GameHltbData.VsFormat;
+                                thumbBrushes[elIndicator] = color;
                                 if (maxValue < HltbData.GameHltbData.Vs) maxValue = HltbData.GameHltbData.Vs;
-                                thumbColors[elIndicator] = color;
+                                elIndicator++;
                             }
 
                             if (titleList?.HltbUserData?.Vs != null && titleList?.HltbUserData?.Vs > 0 && showUserData)
                             {
-                                elIndicatorUser += 1;
-                                thumbUserColors[elIndicatorUser] = color;
-                                userValues[elIndicatorUser] = titleList.HltbUserData.Vs;
+                                thumbUserBrushes[elIndicatorUser] = color;
+                                sliderValues[elIndicatorUser] = titleList.HltbUserData.Vs;
+                                sliderVisibilities[elIndicatorUser] = Visibility.Visible;
+                                elIndicatorUser++;
                             }
                         }
                     }
@@ -345,64 +464,27 @@ namespace HowLongToBeat.Controls
                         maxValue = maxHltb + MaxPercent;
                     }
 
-                    Dispatcher.BeginInvoke((Action)(() =>
+                    if (cancellationToken.IsCancellationRequested) return null;
+
+                    var snapshot = new ProgressSnapshot
                     {
-                        try
-                        {
-                            ControlDataContext.ProgressBarFirstValue = 0;
-                            ControlDataContext.ProgressBarFirstVisibility = Visibility.Collapsed;
-                            ControlDataContext.ToolTipFirst = string.Empty;
+                        ProgressValues = progressValues,
+                        ProgressFormats = progressFormats,
+                        ThumbBrushes = thumbBrushes,
+                        ThumbUserBrushes = thumbUserBrushes,
+                        SliderValues = sliderValues,
+                        SliderVisibilities = sliderVisibilities,
+                        MaxValue = maxValue,
+                        PlaytimeValue = playtime
+                    };
 
-                            ControlDataContext.ProgressBarSecondValue = 0;
-                            ControlDataContext.ProgressBarSecondVisibility = Visibility.Collapsed;
-                            ControlDataContext.ToolTipSecond = string.Empty;
-
-                            ControlDataContext.ProgressBarThirdValue = 0;
-                            ControlDataContext.ProgressBarThirdVisibility = Visibility.Collapsed;
-                            ControlDataContext.ToolTipThird = string.Empty;
-
-                            ControlDataContext.SliderFirstValue = 0;
-                            ControlDataContext.SliderFirstVisibility = Visibility.Collapsed;
-
-                            ControlDataContext.SliderSecondValue = 0;
-                            ControlDataContext.SliderSecondVisibility = Visibility.Collapsed;
-
-                            ControlDataContext.SliderThirdValue = 0;
-                            ControlDataContext.SliderThirdVisibility = Visibility.Collapsed;
-
-                            foreach (var listProgressBar in listProgressBars)
-                            {
-                                SetDataInView(listProgressBar.Indicator, listProgressBar.Value, listProgressBar.Format);
-                            }
-
-                            foreach (var kv in thumbColors)
-                            {
-                                SetColor(kv.Key, kv.Value);
-                            }
-
-                            foreach (var kv in thumbUserColors)
-                            {
-                                SetColorUser(kv.Key, kv.Value);
-                            }
-
-                            foreach (var kv in userValues)
-                            {
-                                SetUserData(kv.Key, kv.Value, default(Color));
-                            }
-
-                            ControlDataContext.MaxValue = maxValue;
-                            ControlDataContext.PlaytimeValue = playtime;
-                        }
-                        catch (Exception ex)
-                        {
-                            Common.LogError(ex, false, true, PluginDatabase.PluginName);
-                        }
-                    }));
+                    return snapshot;
                 }
                 catch (Exception ex)
                 {
                     Common.LogError(ex, false, true, PluginDatabase.PluginName);
                 }
+                return null;
             });
         }
 
@@ -430,7 +512,7 @@ namespace HowLongToBeat.Controls
             }
         }
 
-        private void SetColor(int elIndicator, dynamic color)
+        private void SetColor(int elIndicator, Brush color)
         {
             switch (elIndicator)
             {
@@ -451,7 +533,7 @@ namespace HowLongToBeat.Controls
             }
         }
 
-        private void SetColorUser(int elIndicator, dynamic color)
+        private void SetColorUser(int elIndicator, Brush color)
         {
             switch (elIndicator)
             {
@@ -563,26 +645,26 @@ namespace HowLongToBeat.Controls
         private bool _textBelowVisibility;
         public bool TextBelowVisibility { get => _textBelowVisibility; set => SetValue(ref _textBelowVisibility, value); }
 
-        private dynamic _thumbColor = ResourceProvider.GetResource("NormalBrush");
-        public dynamic ThumbColor { get => _thumbColor; set => SetValue(ref _thumbColor, value); }
+        private Brush _thumbColor = ResourceProvider.GetResource("NormalBrush") as Brush;
+        public Brush ThumbColor { get => _thumbColor; set => SetValue(ref _thumbColor, value); }
 
-        private dynamic _thumbFirst = new SolidColorBrush(Brushes.DarkCyan.Color);
-        public dynamic ThumbFirst { get => _thumbFirst; set => SetValue(ref _thumbFirst, value); }
+        private Brush _thumbFirst = new SolidColorBrush(Brushes.DarkCyan.Color);
+        public Brush ThumbFirst { get => _thumbFirst; set => SetValue(ref _thumbFirst, value); }
 
-        private dynamic _thumbSecond = new SolidColorBrush(Brushes.RoyalBlue.Color);
-        public dynamic ThumbSecond { get => _thumbSecond; set => SetValue(ref _thumbSecond, value); }
+        private Brush _thumbSecond = new SolidColorBrush(Brushes.RoyalBlue.Color);
+        public Brush ThumbSecond { get => _thumbSecond; set => SetValue(ref _thumbSecond, value); }
 
-        private dynamic _thumbThird = new SolidColorBrush(Brushes.ForestGreen.Color);
-        public dynamic ThumbThird { get => _thumbThird; set => SetValue(ref _thumbThird, value); }
+        private Brush _thumbThird = new SolidColorBrush(Brushes.ForestGreen.Color);
+        public Brush ThumbThird { get => _thumbThird; set => SetValue(ref _thumbThird, value); }
 
-        private dynamic _thumbFirstUser = new SolidColorBrush(Brushes.DarkCyan.Color);
-        public dynamic ThumbFirstUser { get => _thumbFirstUser; set => SetValue(ref _thumbFirstUser, value); }
+        private Brush _thumbFirstUser = new SolidColorBrush(Brushes.DarkCyan.Color);
+        public Brush ThumbFirstUser { get => _thumbFirstUser; set => SetValue(ref _thumbFirstUser, value); }
 
-        private dynamic _thumbSecondUser = new SolidColorBrush(Brushes.RoyalBlue.Color);
-        public dynamic ThumbSecondUser { get => _thumbSecondUser; set => SetValue(ref _thumbSecondUser, value); }
+        private Brush _thumbSecondUser = new SolidColorBrush(Brushes.RoyalBlue.Color);
+        public Brush ThumbSecondUser { get => _thumbSecondUser; set => SetValue(ref _thumbSecondUser, value); }
 
-        private dynamic _thumbThirdUser = new SolidColorBrush(Brushes.ForestGreen.Color);
-        public dynamic ThumbThirdUser { get => _thumbThirdUser; set => SetValue(ref _thumbThirdUser, value); }
+        private Brush _thumbThirdUser = new SolidColorBrush(Brushes.ForestGreen.Color);
+        public Brush ThumbThirdUser { get => _thumbThirdUser; set => SetValue(ref _thumbThirdUser, value); }
 
         private double _playtimeValue = 75;
         public double PlaytimeValue { get => _playtimeValue; set => SetValue(ref _playtimeValue, value); }
@@ -641,5 +723,17 @@ namespace HowLongToBeat.Controls
         public int Indicator { get; set; }
         public long Value { get; set; }
         public string Format { get; set; }
+    }
+
+    internal class ProgressSnapshot
+    {
+        public long[] ProgressValues { get; set; }
+        public string[] ProgressFormats { get; set; }
+        public Brush[] ThumbBrushes { get; set; }
+        public Brush[] ThumbUserBrushes { get; set; }
+        public long[] SliderValues { get; set; }
+        public Visibility[] SliderVisibilities { get; set; }
+        public double MaxValue { get; set; }
+        public ulong PlaytimeValue { get; set; }
     }
 }

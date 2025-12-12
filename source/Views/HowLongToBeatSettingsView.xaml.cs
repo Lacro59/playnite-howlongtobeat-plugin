@@ -25,6 +25,7 @@ namespace HowLongToBeat.Views
         private static HowLongToBeatDatabase PluginDatabase => HowLongToBeat.PluginDatabase;
 
         private TextBlock tbControl;
+        private HowLongToBeatSettings _settingsRef;
 
         public static SolidColorBrush ThumbSolidColorBrush;
         public static ThemeLinearGradient ThumbLinearGradient;
@@ -45,12 +46,21 @@ namespace HowLongToBeat.Views
 
         public HowLongToBeatSettingsView(HowLongToBeatSettings settings)
         {
+            _settingsRef = settings;
             PluginDatabase.HowLongToBeatApi.PropertyChanged += OnPropertyChanged;
 
             InitializeComponent();
 
             CheckAuthenticate();
             SetPlatforms(settings);
+
+            try
+            {
+                API.Instance.Database.Platforms.ItemCollectionChanged += Platforms_ItemCollectionChanged;
+                API.Instance.Database.Platforms.ItemUpdated += Platforms_ItemUpdated;
+                this.Unloaded += HowLongToBeatSettingsView_Unloaded;
+            }
+            catch { }
 
             PART_SelectorColorPicker.OnlySimpleColor = false;
 
@@ -153,13 +163,15 @@ namespace HowLongToBeat.Views
                     return;
                 }
                 var path = Path.Combine(folder, $"HLTB_Export_{DateTime.UtcNow:yyyyMMdd_HHmmss}.csv");
-                var lines = new List<string>();
-                lines.Add(string.Join(delimiter.ToString(), new[] {
+                var lines = new List<string>
+                {
+                    string.Join(delimiter.ToString(), new[] {
                     "GameId","Name","Platform","Type",
                     "Main (formatted)","Main+Extra (formatted)","Completionist (formatted)",
                     "Solo (formatted)","Co-Op (formatted)","Vs (formatted)",
                     "Developers","Publishers","Date added","Last activity"
-                }));
+                })
+                };
                 int exportedCount = 0;
                 int failedCount = 0;
                 foreach (var game in API.Instance.Database.Games)
@@ -443,7 +455,7 @@ namespace HowLongToBeat.Views
 
         private void PART_TM_ColorOK_Click(object sender, RoutedEventArgs e)
         {
-            Color color = default(Color);
+            Color color = default;
 
             if (tbControl != null)
             {
@@ -600,8 +612,39 @@ namespace HowLongToBeat.Views
         }
         #endregion
 
-        // TODO: Probably better to react to library metadata edits
-        // Although this method might not be invoked so many times as to make a difference in performance
+        private void HowLongToBeatSettingsView_Unloaded(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                API.Instance.Database.Platforms.ItemCollectionChanged -= Platforms_ItemCollectionChanged;
+            }
+            catch { }
+            try
+            {
+                API.Instance.Database.Platforms.ItemUpdated -= Platforms_ItemUpdated;
+            }
+            catch { }
+            try { this.Unloaded -= HowLongToBeatSettingsView_Unloaded; } catch { }
+        }
+
+        private void Platforms_ItemUpdated(object sender, ItemUpdatedEventArgs<Platform> e)
+        {
+            try
+            {
+                Application.Current?.Dispatcher?.BeginInvoke(new Action(() => SetPlatforms(_settingsRef)));
+            }
+            catch { }
+        }
+
+        private void Platforms_ItemCollectionChanged(object sender, ItemCollectionChangedEventArgs<Platform> e)
+        {
+            try
+            {
+                Application.Current?.Dispatcher?.BeginInvoke(new Action(() => SetPlatforms(_settingsRef)));
+            }
+            catch { }
+        }
+
         private void SetPlatforms(HowLongToBeatSettings settings)
         {
             List<Platform> platforms = API.Instance.Database

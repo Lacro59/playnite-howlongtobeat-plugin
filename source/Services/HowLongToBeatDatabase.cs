@@ -47,8 +47,6 @@ namespace HowLongToBeat.Services
             {
                 if (HowLongToBeatApi == null)
                 {
-                    // HowLongToBeatApi may not be initialized yet (we delay initialization to OnApplicationStarted).
-                    // Provide an empty placeholder to avoid NullReferenceException during plugin load.
                     Logger.Warn("HowLongToBeatApi not initialized yet during LoadMoreData(); using empty UserHltbData placeholder");
                     Database.UserHltbData = new HltbUserStats();
                     return;

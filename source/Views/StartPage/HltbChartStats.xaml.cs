@@ -26,9 +26,6 @@ using System.Windows.Threading;
 
 namespace HowLongToBeat.Views.StartPage
 {
-    /// <summary>
-    /// Logique d'interaction pour HltbChartStats.xaml
-    /// </summary>
     public partial class HltbChartStats : UserControl
     {
         private HowLongToBeatDatabase PluginDatabase => HowLongToBeat.PluginDatabase;
@@ -153,9 +150,9 @@ namespace HowLongToBeat.Views.StartPage
                 string[] ChartDataLabels = new string[axis];
                 ChartValues<CustomerForSingle> ChartDataSeries = new ChartValues<CustomerForSingle>();
 
-                for (int i = (axis - 1); i >= 0; i--)
+                for (int i = axis - 1; i >= 0; i--)
                 {
-                    ChartDataLabels[((axis - 1) - i)] = DateTime.Now.AddYears(-i).ToString("yyyy");
+                    ChartDataLabels[axis - 1 - i] = DateTime.Now.AddYears(-i).ToString("yyyy");
                     ChartDataSeries.Add(new CustomerForSingle
                     {
                         Name = DateTime.Now.AddYears(-i).ToString("yyyy"),

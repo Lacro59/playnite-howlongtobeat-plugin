@@ -29,9 +29,6 @@ using System.Windows.Media.Imaging;
 
 namespace HowLongToBeat.Views
 {
-    /// <summary>
-    /// Logique d'interaction pour HowLongToBeatView.xaml
-    /// </summary>
     public partial class HowLongToBeatView : UserControl
     {
         private HowLongToBeatDatabase PluginDatabase => HowLongToBeat.PluginDatabase;
@@ -49,10 +46,8 @@ namespace HowLongToBeat.Views
 
             ApplyThemeResources();
 
-             // Attach and track the DataContext so we can unsubscribe later to avoid leaks
-             AttachViewModel();
+            AttachViewModel();
 
-            // Monitor DataContext changes and unload to detach handlers
             this.DataContextChanged += OnDataContextChanged;
             this.Unloaded += HowLongToBeatView_Unloaded;
 
@@ -99,14 +94,14 @@ namespace HowLongToBeat.Views
                     await Dispatcher.InvokeAsync(new Action(() =>
                     {
                         img.Opacity = 0;
-                        var blur = img.Effect as BlurEffect;
-                        if (blur == null)
+                        var blurLocal = img.Effect as BlurEffect;
+                        if (blurLocal == null)
                         {
                             img.Effect = new BlurEffect { Radius = 8 };
                         }
                         else
                         {
-                            blur.Radius = 8;
+                            blurLocal.Radius = 8;
                         }
                     }));
                 }
@@ -330,12 +325,10 @@ namespace HowLongToBeat.Views
                     var hltb = gameHowLongToBeat.GetData()?.GameHltbData;
                     if (hltb != null)
                     {
-                        // Keep numeric values in the same unit as HltbData (seconds) for proportional calculation
                         ((HowLongToBeatViewData)DataContext).MainHours = hltb.MainStory;
                         ((HowLongToBeatViewData)DataContext).MainExtraHours = hltb.MainExtra;
                         ((HowLongToBeatViewData)DataContext).CompletionistHours = hltb.Completionist;
 
-                        // Provide formatted strings for display (e.g. "6h 6m")
                         ((HowLongToBeatViewData)DataContext).MainHoursFormat = hltb.MainStoryFormat;
                         ((HowLongToBeatViewData)DataContext).MainExtraHoursFormat = hltb.MainExtraFormat;
                         ((HowLongToBeatViewData)DataContext).CompletionistHoursFormat = hltb.CompletionistFormat;
@@ -704,7 +697,7 @@ namespace HowLongToBeat.Views
 
             FormattedText formattedText = new FormattedText(
                 textBlock.Text,
-                System.Threading.Thread.CurrentThread.CurrentCulture,
+                Thread.CurrentThread.CurrentCulture,
                 textBlock.FlowDirection,
                 typeface,
                 textBlock.FontSize,
@@ -800,6 +793,7 @@ namespace HowLongToBeat.Views
             }
             catch { }
         }
+
         private void ApplyThemeResources()
         {
             try

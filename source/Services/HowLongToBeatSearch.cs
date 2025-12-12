@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace HowLongToBeat.Services
 {
-    public class HowLongToBeatSearch : SearchContext
+    public partial class HowLongToBeatSearch : SearchContext
     {
         private HowLongToBeatDatabase PluginDatabase { get; set; } = HowLongToBeat.PluginDatabase;
 
@@ -39,7 +39,7 @@ namespace HowLongToBeat.Services
                 List<string> stores = new List<string>();
                 List<string> status = new List<string>();
 
-                args.SearchTerm.Split(' ').ForEach(x =>
+                foreach (var x in args.SearchTerm.Split(' '))
                 {
                     if (x.Contains("-time=", StringComparison.InvariantCultureIgnoreCase))
                     {
@@ -66,13 +66,13 @@ namespace HowLongToBeat.Services
                     {
                         status = x.Replace("-status=", string.Empty, StringComparison.InvariantCultureIgnoreCase).Split(',').ToList();
                     }
-                });
+                }
 
                 string SearchTerm = Regex.Replace(args.SearchTerm, @"-stores=(\w*,)*\w*", string.Empty, RegexOptions.IgnoreCase).Trim();
-                SearchTerm = Regex.Replace(SearchTerm, @"-status=(\w*,)*\w*", string.Empty, RegexOptions.IgnoreCase).Trim();
-                SearchTerm = Regex.Replace(SearchTerm, @"-percent=(<|>|\w*<>)*\w*", string.Empty, RegexOptions.IgnoreCase).Trim();
-                SearchTerm = Regex.Replace(SearchTerm, @"-time=(<|>|\w*<>)*\w*", string.Empty, RegexOptions.IgnoreCase).Trim();
-                SearchTerm = Regex.Replace(SearchTerm, @"-\w*", string.Empty, RegexOptions.IgnoreCase).Trim();
+                SearchTerm = _regexStatus.Replace(SearchTerm, string.Empty).Trim();
+                SearchTerm = _regexPercent.Replace(SearchTerm, string.Empty).Trim();
+                SearchTerm = _regexTime.Replace(SearchTerm, string.Empty).Trim();
+                SearchTerm = _regexGeneric.Replace(SearchTerm, string.Empty).Trim();
 
 
                 // Search
@@ -116,7 +116,7 @@ namespace HowLongToBeat.Services
             if (query.Contains("<>"))
             {
                 string[] data = query.Replace("<>", "#").Split('#');
-                if (data.Count() == 2)
+                if (data.Length == 2)
                 {
                     double timeMin = Tools.GetElapsedSeconde(data[0]);
                     double timeMax = Tools.GetElapsedSeconde(data[1]);
@@ -127,7 +127,7 @@ namespace HowLongToBeat.Services
                     }
                 }
             }
-            else if (query.Contains("<"))
+            else if (query.Contains('<'))
             {
                 double time = Tools.GetElapsedSeconde(query.Replace("<", string.Empty));
 
@@ -136,7 +136,7 @@ namespace HowLongToBeat.Services
                     return (x.Items[0]?.GameHltbData?.TimeToBeat) != 0 && x.Items[0]?.GameHltbData?.TimeToBeat <= time;
                 }
             }
-            else if (query.Contains(">"))
+            else if (query.Contains('>'))
             {
                 double time = Tools.GetElapsedSeconde(query.Replace(">", string.Empty));
 
@@ -157,5 +157,10 @@ namespace HowLongToBeat.Services
 
             return false;
         }
+
+        private static readonly Regex _regexStatus = new Regex(@"-status=(\w*,)*\w*", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+        private static readonly Regex _regexPercent = new Regex(@"-percent=(<|>|\w*<>)*\w*", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+        private static readonly Regex _regexTime = new Regex(@"-time=(<|>|\w*<>)*\w*", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+        private static readonly Regex _regexGeneric = new Regex(@"-\w*", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
     }
 }

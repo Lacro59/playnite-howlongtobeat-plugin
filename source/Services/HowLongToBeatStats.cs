@@ -24,9 +24,9 @@ namespace HowLongToBeat.Services
                 string Month = titleList.Completion?.ToString("yyyy-MM");
                 if (!Month.IsNullOrEmpty())
                 {
-                    if (DataByMonth.ContainsKey(Month))
+                    if (DataByMonth.TryGetValue(Month, out int value))
                     {
-                        DataByMonth[Month]++;
+                        DataByMonth[Month] = ++value;
                     }
                     else
                     {

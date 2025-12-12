@@ -25,14 +25,14 @@ using System.Windows;
 
 namespace HowLongToBeat.Services
 {
-    public class HowLongToBeatApi : ObservableObject, IDisposable
+    public partial class HowLongToBeatApi : ObservableObject, IDisposable
     {
         private static ILogger Logger => LogManager.GetLogger();
 
         private static HowLongToBeatDatabase PluginDatabase => HowLongToBeat.PluginDatabase;
 
         // Helper to centralize verbose logging checks
-        private bool IsVerboseLoggingEnabled => PluginDatabase?.PluginSettings?.Settings is HowLongToBeatSettings _vs && _vs.EnableVerboseLogging;
+        private static bool IsVerboseLoggingEnabled => PluginDatabase?.PluginSettings?.Settings is HowLongToBeatSettings _vs && _vs.EnableVerboseLogging;
 
         private void LogDebugVerbose(string message)
         {
@@ -737,7 +737,7 @@ namespace HowLongToBeat.Services
                 if (scriptUrls.Count == 0)
                 {
 
-                    var matches = Regex.Matches(response, "<script[^>]*src=[\"']([^\"']+)[\"'][^>]*>", RegexOptions.IgnoreCase);
+                    var matches = MyRegex().Matches(response);
                     foreach (Match match in matches)
                     {
                         scriptUrls.Add(match.Groups[1].Value);
@@ -891,7 +891,7 @@ namespace HowLongToBeat.Services
                     }
                 )?.ToList() ?? new List<HltbDataUser>();
 
-                if (search.Any())
+                if (search.Count != 0)
                 {
                     var tasks = search.Select(async x =>
                     {
@@ -1012,9 +1012,9 @@ namespace HowLongToBeat.Services
                 dataSearchNormalized = await Search(PlayniteTools.NormalizeGameName(name, true, true), platform);
             }
 
-            List<HltbDataUser> dataSearchFinal = new List<HltbDataUser>();
-            dataSearchFinal.AddRange(dataSearch ?? new List<HltbDataUser>());
-            dataSearchFinal.AddRange(dataSearchNormalized ?? new List<HltbDataUser>());
+            var dataSearchFinal = new List<HltbDataUser>();
+            if (dataSearch != null) dataSearchFinal.AddRange(dataSearch);
+            if (dataSearchNormalized != null) dataSearchFinal.AddRange(dataSearchNormalized);
 
             dataSearchFinal = dataSearchFinal.GroupBy(x => x.Id).Select(x => x.First()).ToList();
 
@@ -1200,7 +1200,7 @@ namespace HowLongToBeat.Services
                         if (codes.Length > 0)
                         {
                             int count429 = codes.Count(c => c == 429);
-                            double frac = (double)count429 / (double)codes.Length;
+                            double frac = count429 / (double)codes.Length;
                             if (count429 >= 3 && frac >= 0.05)
                             {
                                 lock (BackoffSync)
@@ -1749,29 +1749,76 @@ namespace HowLongToBeat.Services
                     };
                     string response = await PostJson(UrlPostData, payload, cookies);
 
-                    // Check errors
-                    // TODO Rewrite
-                    if (response.Contains("error"))
+                    if (string.IsNullOrEmpty(response))
                     {
-                        _ = Serialization.TryFromJson(response, out dynamic error);
                         API.Instance.Notifications.Add(new NotificationMessage(
                             $"{PluginDatabase.PluginName}-{game.Id}-Error",
-                            PluginDatabase.PluginName + Environment.NewLine + game.Name + (error?["error"]?[0] != null ? Environment.NewLine + error["error"][0] : string.Empty),
+                            PluginDatabase.PluginName + Environment.NewLine + game.Name,
                             NotificationType.Error
                         ));
+                        Logger.Warn($"ApiSubmitData: empty response when posting data for game {game.Id}");
+                        return false;
                     }
-                    else if (response.IsNullOrEmpty())
+
+                    try
                     {
-                        API.Instance.Notifications.Add(new NotificationMessage(
-                              $"{PluginDatabase.PluginName}-{game.Id}-Error",
-                              PluginDatabase.PluginName + Environment.NewLine + game.Name,
-                              NotificationType.Error
-                          ));
+                        var success = false;
+                        _ = Serialization.TryFromJson(response, out dynamic respObj);
+                        if (respObj != null)
+                        {
+                            try
+                            {
+                                if (respObj.error != null)
+                                {
+                                    string msg = string.Empty;
+                                    try { msg = respObj.error[0]?.ToString() ?? respObj.error.ToString(); } catch { msg = respObj.error.ToString(); }
+                                    API.Instance.Notifications.Add(new NotificationMessage(
+                                        $"{PluginDatabase.PluginName}-{game.Id}-Error",
+                                        PluginDatabase.PluginName + Environment.NewLine + game.Name + (msg.IsNullOrEmpty() ? string.Empty : Environment.NewLine + msg),
+                                        NotificationType.Error
+                                    ));
+                                    Logger.Warn($"ApiSubmitData error for game {game.Id}: {msg}");
+                                }
+                                else if (respObj.errors != null)
+                                {
+                                    string msg = respObj.errors.ToString();
+                                    API.Instance.Notifications.Add(new NotificationMessage(
+                                        $"{PluginDatabase.PluginName}-{game.Id}-Error",
+                                        PluginDatabase.PluginName + Environment.NewLine + game.Name + Environment.NewLine + msg,
+                                        NotificationType.Error
+                                    ));
+                                    Logger.Warn($"ApiSubmitData errors for game {game.Id}: {msg}");
+                                }
+                                else
+                                {
+                                    success = true;
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                Common.LogError(ex, false, false, PluginDatabase.PluginName);
+                            }
+                        }
+                        else
+                        {
+                            Logger.Debug("ApiSubmitData: non-JSON response received; treating as success");
+                            success = true;
+                        }
+
+                        if (success)
+                        {
+                            PluginDatabase.RefreshUserData(editData.GameId.ToString());
+                            return true;
+                        }
+                        else
+                        {
+                            return false;
+                        }
                     }
-                    else
+                    catch (Exception ex)
                     {
-                        PluginDatabase.RefreshUserData(editData.GameId.ToString());
-                        return true;
+                        Common.LogError(ex, false, true, PluginDatabase.PluginName);
+                        return false;
                     }
                 }
                 catch (Exception ex)
@@ -1790,8 +1837,6 @@ namespace HowLongToBeat.Services
                 ));
                 return false;
             }
-
-            return false;
         }
 
         /// <summary>
@@ -1940,5 +1985,7 @@ namespace HowLongToBeat.Services
                 return string.Empty;
             }
         }
+        private static readonly Regex _scriptSrcRegex = new Regex("<script[^>]*src=[\\\"']([^\\\"']+)[\\\"'][^>]*>", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+        private static Regex MyRegex() => _scriptSrcRegex;
     }
 }

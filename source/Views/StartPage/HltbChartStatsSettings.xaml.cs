@@ -19,9 +19,6 @@ using System.Windows.Shapes;
 
 namespace HowLongToBeat.Views.StartPage
 {
-    /// <summary>
-    /// Logique d'interaction pour HltbChartStatsSettings.xaml
-    /// </summary>
     public partial class HltbChartStatsSettings : UserControl
     {
         private HowLongToBeat plugin { get; }

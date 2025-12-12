@@ -6,88 +6,88 @@
              xmlns:local="clr-namespace:HowLongToBeat.Views.StartPage"
              xmlns:hltb="clr-namespace:HowLongToBeat"
              mc:Ignorable="d"
-        d:DataContext="{d:DesignInstance IsDesignTimeCreatable=False, Type={x:Type hltb:HowLongToBeatSettings}}">
+             d:DataContext="{d:DesignInstance IsDesignTimeCreatable=False, Type={x:Type hltb:HowLongToBeatSettings}}">
 
-    <Grid Unloaded="Grid_Unloaded">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="auto"/>
-            <ColumnDefinition Width="10"/>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="10"/>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="10"/>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="10"/>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="10"/>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="10"/>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="10"/>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="10"/>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="10"/>
-            <RowDefinition Height="auto"/>
-        </Grid.RowDefinitions>
+        <Grid Unloaded="Grid_Unloaded">
+                <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="10"/>
+                        <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="10"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="10"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="10"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="10"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="10"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="10"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="10"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="10"/>
+                        <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
 
-        <Label Content="{DynamicResource LOCCommonMargin}"
-                Grid.Column="0"
-                Grid.Row="0"/>
-        <Slider Minimum="0"
-                Maximum="50"
-                Value="{Binding Settings.hltbChartStatsOptions.Margin, FallbackValue=10}"
-                VerticalAlignment="Center"
-                IsSnapToTickEnabled="True"
-                TickFrequency="1"
-                AutoToolTipPlacement="TopLeft"
-                Width="200"
-                Grid.Column="2"
-                Grid.Row="0"/>
+                <Label Content="{DynamicResource LOCCommonMargin}"
+                       Grid.Column="0"
+                       Grid.Row="0"/>
+                <Slider Minimum="0"
+                        Maximum="50"
+                        Value="{Binding Settings.hltbChartStatsOptions.Margin, FallbackValue=10}"
+                        VerticalAlignment="Center"
+                        IsSnapToTickEnabled="True"
+                        TickFrequency="1"
+                        AutoToolTipPlacement="TopLeft"
+                        Width="200"
+                        Grid.Column="2"
+                        Grid.Row="0"/>
 
-        <CheckBox Grid.Column="0"
-                Grid.ColumnSpan="3"
-                Grid.Row="2"
-                Content="{DynamicResource LOCHtlbChartStatsChartTitle}"
-                  IsChecked="{Binding Settings.hltbChartStatsOptions.ChartTitle}"/>
+                <CheckBox Grid.Column="0"
+                          Grid.ColumnSpan="3"
+                          Grid.Row="2"
+                          Content="{DynamicResource LOCHtlbChartStatsChartTitle}"
+                          IsChecked="{Binding Settings.hltbChartStatsOptions.ChartTitle}"/>
 
-        <CheckBox Grid.Column="0"
-                Grid.ColumnSpan="3"
-                Grid.Row="4"
-                Content="{DynamicResource LOCHtlbChartStatsChartLabels}"
-                  IsChecked="{Binding Settings.hltbChartStatsOptions.ChartLabels}"/>
+                <CheckBox Grid.Column="0"
+                          Grid.ColumnSpan="3"
+                          Grid.Row="4"
+                          Content="{DynamicResource LOCHtlbChartStatsChartLabels}"
+                          IsChecked="{Binding Settings.hltbChartStatsOptions.ChartLabels}"/>
 
-        <CheckBox Grid.Column="0"
-                Grid.ColumnSpan="3"
-                Grid.Row="6"
-                Content="{DynamicResource LOCHtlbChartStatsChartLabelsOrdinates}"
-                  IsChecked="{Binding Settings.hltbChartStatsOptions.ChartLabelsOrdinates}"/>
+                <CheckBox Grid.Column="0"
+                          Grid.ColumnSpan="3"
+                          Grid.Row="6"
+                          Content="{DynamicResource LOCHtlbChartStatsChartLabelsOrdinates}"
+                          IsChecked="{Binding Settings.hltbChartStatsOptions.ChartLabelsOrdinates}"/>
 
-        <Label Content="{DynamicResource LOCHtlbChartStatsChartType}"
-                Grid.Column="0"
-                Grid.Row="8"/>
-        <ComboBox Grid.Column="2"
-                Grid.Row="8"
-                  SelectedValuePath="Id"
-                DisplayMemberPath="Name"
-                Name="PART_CbType"
-                  SelectedValue="{Binding Settings.hltbChartStatsOptions.StatsType}"/>
+                <Label Content="{DynamicResource LOCHtlbChartStatsChartType}"
+                       Grid.Column="0"
+                       Grid.Row="8"/>
+                <ComboBox Grid.Column="2"
+                          Grid.Row="8"
+                          SelectedValuePath="Id"
+                          DisplayMemberPath="Name"
+                          Name="PART_CbType"
+                          SelectedValue="{Binding Settings.hltbChartStatsOptions.StatsType}"/>
 
-        <Label Content="{DynamicResource LOCHtlbChartStatsChartDataNumber}"
-                Grid.Column="0"
-                Grid.Row="10"/>
-        <Slider Minimum="5"
-                Maximum="50"
-                Value="{Binding Settings.hltbChartStatsOptions.DataNumber, FallbackValue=10}"
-                VerticalAlignment="Center"
-                IsSnapToTickEnabled="True"
-                TickFrequency="1"
-                AutoToolTipPlacement="TopLeft"
-                Width="200"
-                Grid.Column="2"
-                Grid.Row="10"/>
-    </Grid>
+                <Label Content="{DynamicResource LOCHtlbChartStatsChartDataNumber}"
+                       Grid.Column="0"
+                       Grid.Row="10"/>
+                <Slider Minimum="5"
+                        Maximum="50"
+                        Value="{Binding Settings.hltbChartStatsOptions.DataNumber, FallbackValue=10}"
+                        VerticalAlignment="Center"
+                        IsSnapToTickEnabled="True"
+                        TickFrequency="1"
+                        AutoToolTipPlacement="TopLeft"
+                        Width="200"
+                        Grid.Column="2"
+                        Grid.Row="10"/>
+        </Grid>
 </UserControl>

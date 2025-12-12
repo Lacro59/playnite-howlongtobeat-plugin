@@ -18,8 +18,8 @@ namespace HowLongToBeat.Services
         private readonly double errorAlpha = 0.1;
 
         private int targetConcurrency;
-        private CancellationTokenSource cts;
-        private Task adjustTask;
+        private readonly CancellationTokenSource cts;
+        private readonly Task adjustTask;
 
         public AdaptiveConcurrencyController(int initial, int min, int max, TimeSpan? interval = null)
         {

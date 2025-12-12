@@ -14,6 +14,7 @@ using System.Windows;
 using System.Windows.Controls;
 using Playnite.SDK.Models;
 using System.Threading.Tasks;
+using System.Threading;
 using CommonPluginsShared.Extensions;
 using System.Collections.ObjectModel;
 using CommonPluginsShared;
@@ -23,15 +24,14 @@ using System.Windows.Media;
 
 namespace HowLongToBeat.Views
 {
-    /// <summary>
-    /// Logique d'interaction pour HowLongToBeatUserView.xaml
-    /// </summary>
-    // TODO Optimize loading
+
     public partial class HowLongToBeatUserView : UserControl
     {
         private HowLongToBeat Plugin { get; set; }
 
         private bool DisplayFirst { get; set; } = true;
+
+        private CancellationTokenSource _loadCts;
 
         private static HowLongToBeatDatabase PluginDatabase => HowLongToBeat.PluginDatabase;
         private UserViewDataContext UserViewDataContext { get; set; } = new UserViewDataContext();
@@ -46,7 +46,7 @@ namespace HowLongToBeat.Views
         {
             try
             {
-                var accent = ResourceProvider.GetResource("AccentColorBrush") as Brush;
+                Brush accent = ResourceProvider.GetResource("AccentColorBrush") as Brush;
                 if (accent == null)
                 {
                     accent = ResourceProvider.GetResource("NormalBrush") as Brush ?? new SolidColorBrush(Colors.DarkCyan);
@@ -67,86 +67,65 @@ namespace HowLongToBeat.Views
 
             ApplyThemeResources();
 
-             if (!PluginDatabase.PluginSettings.Settings.EnableProgressBarInDataView)
-             {
-                 GridView lvView = (GridView)ListViewDataGames.View;
-                 lvView.Columns.RemoveAt(lvView.Columns.Count - 1);
-                 lvView.Columns.RemoveAt(lvView.Columns.Count - 1);
-             }
+            this.Unloaded += (s, e) =>
+            {
+                try { _loadCts?.Cancel(); } catch { }
+            };
 
-             if (PluginDatabase.Database.UserHltbData?.TitlesList?.Count != 0)
-             {
-                 if (PluginDatabase.Database.UserHltbData?.TitlesList != null)
-                 {
-                     UserViewDataContext.ItemsSource = PluginDatabase.Database.UserHltbData.TitlesList.ToObservable();
+            if (!PluginDatabase.PluginSettings.Settings.EnableProgressBarInDataView)
+            {
+                GridView lvView = (GridView)ListViewDataGames.View;
+                lvView.Columns.RemoveAt(lvView.Columns.Count - 1);
+                lvView.Columns.RemoveAt(lvView.Columns.Count - 1);
+            }
 
-                     string SortingDefaultDataName = string.Empty;
-                     switch (PluginDatabase.PluginSettings.Settings.TitleListSort)
-                     {
-                         case TitleListSort.GameName:
-                             SortingDefaultDataName = "GameName";
-                             break;
-                         case TitleListSort.Platform:
-                             SortingDefaultDataName = "Platform";
-                             break;
-                         case TitleListSort.Completion:
-                             SortingDefaultDataName = "Completion";
-                             break;
-                         case TitleListSort.LastUpdate:
-                             SortingDefaultDataName = "LastUpdate";
-                             break;
-                         case TitleListSort.CurrentTime:
-                             SortingDefaultDataName = "CurrentTime";
-                             break;
-                         default:
-                             break;
-                     }
-                     ;
-                     ListViewGames.SortingDefaultDataName = SortingDefaultDataName;
-                     ListViewGames.SortingSortDirection = PluginDatabase.PluginSettings.Settings.IsAsc ? ListSortDirection.Ascending : ListSortDirection.Descending;
-                     ListViewGames.Sorting();
+            if (PluginDatabase.Database.UserHltbData?.TitlesList?.Count != 0)
+            {
+                if (PluginDatabase.Database.UserHltbData?.TitlesList != null)
+                {
+                    UserViewDataContext.ItemsSource = PluginDatabase.Database.UserHltbData.TitlesList.ToObservable();
 
-                     SetFilter();
-                 }
+                    string SortingDefaultDataName = string.Empty;
+                    switch (PluginDatabase.PluginSettings.Settings.TitleListSort)
+                    {
+                        case TitleListSort.GameName:
+                            SortingDefaultDataName = "GameName";
+                            break;
+                        case TitleListSort.Platform:
+                            SortingDefaultDataName = "Platform";
+                            break;
+                        case TitleListSort.Completion:
+                            SortingDefaultDataName = "Completion";
+                            break;
+                        case TitleListSort.LastUpdate:
+                            SortingDefaultDataName = "LastUpdate";
+                            break;
+                        case TitleListSort.CurrentTime:
+                            SortingDefaultDataName = "CurrentTime";
+                            break;
+                        default:
+                            break;
+                    }
+                    ;
+                    ListViewGames.SortingDefaultDataName = SortingDefaultDataName;
+                    ListViewGames.SortingSortDirection = PluginDatabase.PluginSettings.Settings.IsAsc ? ListSortDirection.Ascending : ListSortDirection.Descending;
+                    ListViewGames.Sorting();
+
+                    SetFilter();
+                }
 
 
-                 PART_UserDataLoad.Visibility = Visibility.Visible;
-                 PART_Data.Visibility = Visibility.Collapsed;
-                 _ = Task.Run(() =>
-                 {
-                     try
-                     {
-                         List<Task> TaskList = new List<Task>
-                         {
-                             SetChartDataStore(),
-                             SetChartDataYear(),
-                             SetChartData(),
-                             SetStats()
-                         };
-                         Task.WaitAll(TaskList.ToArray());
-                     }
-                     catch (Exception ex)
-                     {
-                         Common.LogError(ex, false, false, PluginDatabase.PluginName);
-                     }
-                 })
-                 .ContinueWith((antecedent) =>
-                 {
-                     Application.Current.Dispatcher?.Invoke(() =>
-                     {
-                         PART_UserDataLoad.Visibility = Visibility.Collapsed;
-                         PART_Data.Visibility = Visibility.Visible;
-                         PART_LvDataContener.IsVisibleChanged += PART_PlayniteData_IsVisibleChanged;
-                     });
-                 });
-             }
-             else
-             {
-                 SetPlayniteData();
-                 PART_UserData.Visibility = Visibility.Collapsed;
-                 PART_TabControl.SelectedIndex = 1;
-             }
-         }
+                PART_UserDataLoad.Visibility = Visibility.Visible;
+                PART_Data.Visibility = Visibility.Collapsed;
+                StartLoadUserData();
+            }
+            else
+            {
+                SetPlayniteData();
+                PART_UserData.Visibility = Visibility.Collapsed;
+                PART_TabControl.SelectedIndex = 1;
+            }
+        }
 
 
         private void PART_BtRefreshUserData_Click(object sender, RoutedEventArgs e)
@@ -162,23 +141,55 @@ namespace HowLongToBeat.Views
 
             SetFilter();
 
-            _ = Task.Run(() =>
+            StartLoadUserData();
+        }
+
+        private void StartLoadUserData()
+        {
+            try
             {
-                List<Task> TaskList = new List<Task>
+                _loadCts?.Cancel();
+            }
+            catch { }
+            _loadCts = new CancellationTokenSource();
+            _ = LoadUserDataAsync(_loadCts.Token);
+        }
+
+        private async Task LoadUserDataAsync(CancellationToken cancellationToken)
+        {
+            try
+            {
+                var tasks = new List<Task>
                 {
                     SetChartDataStore(),
                     SetChartDataYear(),
                     SetChartData(),
                     SetStats()
                 };
-                Task.WaitAll(TaskList.ToArray());
 
-                Application.Current.Dispatcher?.Invoke(() =>
+                await Task.WhenAll(tasks).ConfigureAwait(false);
+
+                if (cancellationToken.IsCancellationRequested) return;
+
+                await Application.Current.Dispatcher.InvokeAsync(() =>
                 {
-                    PART_UserDataLoad.Visibility = Visibility.Collapsed;
-                    PART_Data.Visibility = Visibility.Visible;
+                    try
+                    {
+                        PART_UserDataLoad.Visibility = Visibility.Collapsed;
+                        PART_Data.Visibility = Visibility.Visible;
+                        PART_LvDataContener.IsVisibleChanged += PART_PlayniteData_IsVisibleChanged;
+                    }
+                    catch (Exception ex)
+                    {
+                        Common.LogError(ex, false, false, PluginDatabase.PluginName);
+                    }
                 });
-            });
+            }
+            catch (OperationCanceledException) { }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, false, false, PluginDatabase.PluginName);
+            }
         }
 
 
@@ -197,9 +208,9 @@ namespace HowLongToBeat.Views
                     string[] ChartDataLabels = new string[axis];
                     ChartValues<CustomerForSingle> ChartDataSeries = new ChartValues<CustomerForSingle>();
 
-                    for (int i = (axis - 1); i >= 0; i--)
+                    for (int i = axis - 1; i >= 0; i--)
                     {
-                        ChartDataLabels[((axis - 1) - i)] = DateTime.Now.AddYears(-i).ToString("yyyy");
+                        ChartDataLabels[axis - 1 - i] = DateTime.Now.AddYears(-i).ToString("yyyy");
                         ChartDataSeries.Add(new CustomerForSingle
                         {
                             Name = DateTime.Now.AddYears(-i).ToString("yyyy"),

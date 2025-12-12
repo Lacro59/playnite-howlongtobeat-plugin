@@ -17,9 +17,6 @@ using Playnite.SDK.Models;
 
 namespace HowLongToBeat.Views
 {
-    /// <summary>
-    /// Logique d'interaction pour HowLongToBeatSelect.xaml
-    /// </summary>
     public partial class HowLongToBeatSelect : UserControl
     {
         private static HowLongToBeatDatabase PluginDatabase => HowLongToBeat.PluginDatabase;
@@ -174,16 +171,10 @@ namespace HowLongToBeat.Views
         private void TextBlock_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
         {
             var textBlock = sender as TextBlock;
-            if (textBlock == null)
-            {
-                return;
-            }
+            if (textBlock == null) return;
 
             var toolTip = textBlock.ToolTip as ToolTip;
-            if (toolTip == null)
-            {
-                return;
-            }
+            if (toolTip == null) return;
 
             try
             {

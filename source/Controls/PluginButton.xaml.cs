@@ -14,9 +14,6 @@ using System.Windows;
 
 namespace HowLongToBeat.Controls
 {
-    /// <summary>
-    /// Logique d'interaction pour PluginButton.xaml
-    /// </summary>
     public partial class PluginButton : PluginUserControlExtend
     {
         private static HowLongToBeatDatabase PluginDatabase => HowLongToBeat.PluginDatabase;
@@ -26,7 +23,7 @@ namespace HowLongToBeat.Controls
         protected override IDataContext controlDataContext
         {
             get => ControlDataContext;
-            set => ControlDataContext = (PluginButtonDataContext)controlDataContext;
+            set => ControlDataContext = (PluginButtonDataContext)value;
         }
 
         public PluginButton()

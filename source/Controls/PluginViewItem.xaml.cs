@@ -13,9 +13,6 @@ using System.Threading.Tasks;
 
 namespace HowLongToBeat.Controls
 {
-    /// <summary>
-    /// Logique d'interaction pour PluginViewItem.xaml
-    /// </summary>
     public partial class PluginViewItem : PluginUserControlExtend
     {
         private static HowLongToBeatDatabase PluginDatabase => HowLongToBeat.PluginDatabase;
@@ -25,7 +22,7 @@ namespace HowLongToBeat.Controls
         protected override IDataContext controlDataContext
         {
             get => ControlDataContext;
-            set => ControlDataContext = (PluginViewItemDataContext)controlDataContext;
+            set => ControlDataContext = (PluginViewItemDataContext)value;
         }
 
 
