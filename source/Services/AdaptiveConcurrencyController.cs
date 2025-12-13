@@ -154,31 +154,20 @@ namespace HowLongToBeat.Services
 
         public void Dispose()
         {
+            try { cts?.Cancel(); } catch { }
             try
             {
-                try { cts?.Cancel(); } catch { }
-
-                try
+                var t = adjustTask;
+                if (t != null && !t.Wait(0))
                 {
-                    var t = adjustTask;
-                    if (t != null)
-                    {
-                        if (!t.Wait(0))
-                        {
-                            Task.Run(() =>
-                            {
-                                try { t.Wait(500); } catch { }
-                            });
-                        }
-                    }
-                }
-                catch { }
-            }
-            catch { }
-            finally
-            {
+                    _ = Task.Run(() => { try { t.Wait(500); } catch { } });
+                 }
+             }
+             catch { }
+             finally
+             {
                 try { cts?.Dispose(); } catch { }
-            }
+             }
         }
     }
 }

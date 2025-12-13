@@ -155,6 +155,8 @@ namespace HowLongToBeat.Controls
                     try { PluginDatabase.Database.ItemUpdated -= Database_ItemUpdated; } catch { }
                     try { PluginDatabase.Database.ItemCollectionChanged -= Database_ItemCollectionChanged; } catch { }
                     try { API.Instance.Database.Games.ItemUpdated -= Games_ItemUpdated; } catch { }
+                    // Mark as unwired while performing the actual unsubscribe on the UI thread to avoid races with re-loaded events
+                    _eventsWired = false;
                 };
 
                 if (this.Dispatcher.CheckAccess())
@@ -165,8 +167,6 @@ namespace HowLongToBeat.Controls
                 {
                     try { this.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Background, unsub); } catch { }
                 }
-
-                _eventsWired = false;
             }
         }
 

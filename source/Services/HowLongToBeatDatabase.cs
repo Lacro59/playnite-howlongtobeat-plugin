@@ -871,7 +871,7 @@ namespace HowLongToBeat.Services
                         if (HltbData != null && HowLongToBeatApi.EditIdExist(HltbData.UserGameId))
                         {
                             submissionId = HltbData.UserGameId;
-                            editData = Task.Run(() => HowLongToBeatApi.GetEditData(gameHowLongToBeat.Name, submissionId)).Result;
+                            editData = RunSyncWithTimeout(() => HowLongToBeatApi.GetEditData(gameHowLongToBeat.Name, submissionId), 15000);
                         }
                         else
                         {
@@ -882,7 +882,7 @@ namespace HowLongToBeat.Services
                                 if (!tmpEditId.IsNullOrEmpty())
                                 {
                                     submissionId = tmpEditId;
-                                    editData = Task.Run(() => HowLongToBeatApi.GetEditData(gameHowLongToBeat.Name, submissionId)).Result;
+                                    editData = RunSyncWithTimeout(() => HowLongToBeatApi.GetEditData(gameHowLongToBeat.Name, submissionId), 15000);
                                 }
                                 else
                                 {
@@ -1018,11 +1018,11 @@ namespace HowLongToBeat.Services
 
                         #endregion
 
-                        return Task.Run(() => HowLongToBeatApi.ApiSubmitData(game, editData)).Result;
-                    }
-                }
-                else
-                {
+                        return RunSyncWithTimeout(() => HowLongToBeatApi.ApiSubmitData(game, editData), 15000);
+                     }
+                 }
+                 else
+                 {
                     API.Instance.Notifications.Add(new NotificationMessage(
                         $"{PluginName}-NotLoggedIn-Error",
                         PluginName + Environment.NewLine + ResourceProvider.GetString("LOCCommonNotLoggedIn"),

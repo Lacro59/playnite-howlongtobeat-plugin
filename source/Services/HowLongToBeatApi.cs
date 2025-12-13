@@ -1262,7 +1262,12 @@ namespace HowLongToBeat.Services
 
                     var sw = Stopwatch.StartNew();
                     // Use local helper to avoid dependency on optional CommonPluginsShared submodule.
-                    var postResult = await PostJsonWithSharedClientWithStatus(UrlBase + searchUrl, serializedBody, httpHeaders, CancellationToken.None);
+                    // Allow the POST to be cancelled/timeout independently of the shared HttpClient timeout by using a bounded CTS.
+                    (string body, int status, string retry) postResult;
+                    using (var postCts = new CancellationTokenSource(TimeSpan.FromSeconds(30)))
+                    {
+                        postResult = await PostJsonWithSharedClientWithStatus(UrlBase + searchUrl, serializedBody, httpHeaders, postCts.Token);
+                    }
                     sw.Stop();
                     string json = postResult.body ?? string.Empty;
                     int statusCode = postResult.status;
@@ -1498,7 +1503,15 @@ namespace HowLongToBeat.Services
 
         public bool GetIsUserLoggedIn()
         {
-            try { return Task.Run(() => GetIsUserLoggedInAsync()).Result; } catch { return false; }
+            try
+            {
+                return Task.Run(() => GetIsUserLoggedInAsync()).Result;
+            }
+            catch (Exception ex)
+            {
+                try { Common.LogError(ex, false, false, PluginDatabase?.PluginName); } catch { }
+                return false;
+            }
         }
 
         /// <summary>

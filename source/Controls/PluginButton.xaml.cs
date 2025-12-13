@@ -30,6 +30,7 @@ namespace HowLongToBeat.Controls
         }
 
         private bool eventsWired;
+        private volatile bool _isUnloading = false;
         private CancellationTokenSource _loadedCts;
         private int _initGate = 0;
 
@@ -46,6 +47,8 @@ namespace HowLongToBeat.Controls
 
         private void PluginButton_Unloaded(object sender, RoutedEventArgs e)
         {
+            // Mark unloading to prevent a queued Dispatcher.InvokeAsync from re-wiring events
+            _isUnloading = true;
             // Cancel any pending load wait
             try { _loadedCts?.Cancel(); } catch { }
             try { _loadedCts?.Dispose(); } catch { }
@@ -73,6 +76,8 @@ namespace HowLongToBeat.Controls
 
         private async void PluginButton_Loaded(object sender, RoutedEventArgs e)
         {
+            // Clear unloading marker — we're now loading
+            _isUnloading = false;
             // If already wired, nothing to do
             if (eventsWired) return;
 
@@ -110,6 +115,9 @@ namespace HowLongToBeat.Controls
 
                 await this.Dispatcher.InvokeAsync((Action)(() =>
                 {
+                    // Ensure the control is still loaded and not in the middle of unloading to avoid re-wiring after Unloaded.
+                    if (!this.IsLoaded || _isUnloading) return;
+
                     if (!eventsWired)
                     {
                         try { PluginDatabase.PluginSettings.PropertyChanged += PluginSettings_PropertyChanged; } catch { }
