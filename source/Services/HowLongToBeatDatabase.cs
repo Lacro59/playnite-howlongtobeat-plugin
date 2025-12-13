@@ -46,12 +46,21 @@ namespace HowLongToBeat.Services
                 {
                     var task = Task.Run(() => taskFactory(linked.Token), linked.Token);
 
-                    if (Task.WhenAny(task, Task.Delay(timeoutMs)).ConfigureAwait(false).GetAwaiter().GetResult() == task)
+                    var delayTask = Task.Delay(timeoutMs, linked.Token);
+                    var completed = Task.WhenAny(task, delayTask).ConfigureAwait(false).GetAwaiter().GetResult();
+                    if (completed == task)
                     {
                         try { return task.GetAwaiter().GetResult(); } catch (Exception ex) { Common.LogError(ex, false); return default; }
                     }
                     else
                     {
+                        if (delayTask.IsCanceled || linked.Token.IsCancellationRequested)
+                        {
+                            try { ctsTimeout.Cancel(); } catch { }
+                            try { task.ContinueWith(t => { var _ = t.Exception; }, TaskContinuationOptions.OnlyOnFaulted); } catch { }
+                            return default;
+                        }
+
                         try { ctsTimeout.Cancel(); } catch { }
                         try { Common.LogError(new TimeoutException($"Operation timed out after {timeoutMs}ms"), false, true, "HowLongToBeatDatabase"); } catch { }
                         try { task.ContinueWith(t => { var _ = t.Exception; }, TaskContinuationOptions.OnlyOnFaulted); } catch { }
@@ -564,6 +573,12 @@ namespace HowLongToBeat.Services
                 Logger.Debug("RefreshUserData()");
             }
 
+            if (HowLongToBeatApi == null)
+            {
+                try { Logger.Warn("HowLongToBeatApi not initialized; cannot refresh user data"); } catch { }
+                return;
+            }
+
             GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions($"{PluginName} - {ResourceProvider.GetString("LOCHowLongToBeatPluginGetUserView")}")
             {
                 Cancelable = false,
@@ -663,7 +678,7 @@ namespace HowLongToBeat.Services
                         return;
                     }
 
-                    TitleList titleList = RunSyncWithTimeout(() => Task.FromResult(HowLongToBeatApi.GetUserData(gameId)), 15000);
+                    TitleList titleList = HowLongToBeatApi.GetUserData(gameId);
                     if (titleList != null)
                     {
                         int index = Database.UserHltbData.TitlesList.FindIndex(x => x.Id == gameId);

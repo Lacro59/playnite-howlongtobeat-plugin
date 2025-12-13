@@ -48,15 +48,18 @@ namespace HowLongToBeat.Services
 
         /// <summary>
         /// Adjusts a semaphore to match a target limit by releasing extra permits or consuming existing permits.
-        /// Returns the new currentLimit value which the caller should persist to the corresponding field.
-        /// This is extracted to avoid duplicating complex permit-release/consume logic in multiple places.
+        /// The helper reads and writes the shared current limit via the provided delegates under the provided syncLock
+        /// to avoid races where callers supply stale snapshots. The method returns once adjustments are applied.
         /// </summary>
-        private async Task<int> AdjustSemaphoreLimit(SemaphoreSlim semaphore, int currentLimitSnapshot, int targetLimit, object syncLock, string context = null)
+        private async Task AdjustSemaphoreLimit(
+            SemaphoreSlim semaphore,
+            Func<int> getCurrentLimit,
+            Action<int> setCurrentLimit,
+            int targetLimit,
+            object syncLock,
+            string context = null)
         {
-            if (semaphore == null)
-            {
-                return currentLimitSnapshot;
-            }
+            if (semaphore == null) return;
 
             try
             {
@@ -65,17 +68,18 @@ namespace HowLongToBeat.Services
                 // Compute difference under lock and handle immediate increases (release permits)
                 lock (syncLock)
                 {
-                    int diff = targetLimit - currentLimitSnapshot;
+                    int current = getCurrentLimit();
+                    int diff = targetLimit - current;
                     if (diff > 0)
                     {
                         try
                         {
                             semaphore.Release(diff);
-                            currentLimitSnapshot = targetLimit;
+                            setCurrentLimit(targetLimit);
                         }
                         catch { }
 
-                        return currentLimitSnapshot;
+                        return;
                     }
 
                     if (diff < 0)
@@ -94,7 +98,6 @@ namespace HowLongToBeat.Services
                     {
                         try
                         {
-                            // WaitAsync with a timeout returns true if a permit was acquired, false on timeout.
                             bool got = await semaphore.WaitAsync(tryWait).ConfigureAwait(false);
                             if (!got)
                             {
@@ -116,7 +119,7 @@ namespace HowLongToBeat.Services
                     // Update the shared currentLimit under lock based on how many permits we actually consumed
                     lock (syncLock)
                     {
-                        int originalLimit = currentLimitSnapshot;
+                        int originalLimit = getCurrentLimit();
                         int newLimit;
 
                         if (consumed == pendingConsume)
@@ -132,7 +135,7 @@ namespace HowLongToBeat.Services
                             newLimit = Math.Min(originalLimit, newLimit);
                         }
 
-                        currentLimitSnapshot = newLimit;
+                        setCurrentLimit(newLimit);
                     }
                 }
             }
@@ -140,8 +143,6 @@ namespace HowLongToBeat.Services
             {
                 try { Logger.Warn(ex, $"HLTB: AdjustSemaphoreLimit error ({context})"); } catch { }
             }
-
-            return currentLimitSnapshot;
         }
 
 
@@ -960,7 +961,26 @@ namespace HowLongToBeat.Services
                     new HttpHeader { Key = "Referer", Value = UrlBase }
                 };
                 string url = UrlBase + "/api/search/init?t=" + DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-                string response = await Web.DownloadStringData(url, headers);
+                string response = null;
+                try
+                {
+                    var downloadTask = Web.DownloadStringData(url, headers);
+                    var completed = await Task.WhenAny(downloadTask, Task.Delay(ScriptDownloadTimeoutMs)).ConfigureAwait(false);
+                    if (completed == downloadTask)
+                    {
+                        response = await downloadTask.ConfigureAwait(false);
+                    }
+                    else
+                    {
+                        try { Logger.Warn($"Timeout {ScriptDownloadTimeoutMs}ms downloading auth init {url}"); } catch { }
+                        return null;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Common.LogError(ex, false, true, PluginDatabase.PluginName);
+                    return null;
+                }
 
                 var data = Serialization.FromJson<Dictionary<string, string>>(response);
                 if (data != null && data.TryGetValue("token", out string token))
@@ -1029,8 +1049,8 @@ namespace HowLongToBeat.Services
                         try
                         {
                             int target = ConcurrencyController?.TargetConcurrency ?? MaxParallelGameDataDownloads;
-                            var newSemLimit = await AdjustSemaphoreLimit(DynamicSemaphore, CurrentSemaphoreLimit, target, ConcurrencySync, "Search");
-                            try { lock (ConcurrencySync) { CurrentSemaphoreLimit = newSemLimit; } } catch { }
+                            await AdjustSemaphoreLimit(DynamicSemaphore, () => CurrentSemaphoreLimit, l => CurrentSemaphoreLimit = l, target, ConcurrencySync, "Search");
+                            try { /* CurrentSemaphoreLimit updated by AdjustSemaphoreLimit via setCurrentLimit delegate */ } catch { }
 
                             try
                             {
@@ -1223,7 +1243,7 @@ namespace HowLongToBeat.Services
                         try
                         {
                             int target = GetSearchTarget();
-                            CurrentSearchLimit = await AdjustSemaphoreLimit(SearchSemaphore, CurrentSearchLimit, target, SearchConcurrencySync, "ApiSearch+Initial");
+                            await AdjustSemaphoreLimit(SearchSemaphore, () => CurrentSearchLimit, l => CurrentSearchLimit = l, target, SearchConcurrencySync, "ApiSearch+Initial");
                         }
                         catch { }
 
@@ -1397,7 +1417,7 @@ namespace HowLongToBeat.Services
                                 backoffSnapshot = SearchBackoffLimit;
                             }
 
-                            CurrentSearchLimit = await AdjustSemaphoreLimit(SearchSemaphore, CurrentSearchLimit, backoffSnapshot, SearchConcurrencySync, "ApiSearch+PostBackoff");
+                            await AdjustSemaphoreLimit(SearchSemaphore, () => CurrentSearchLimit, l => CurrentSearchLimit = l, backoffSnapshot, SearchConcurrencySync, "ApiSearch+PostBackoff");
                         }
                     }
                     catch { }
