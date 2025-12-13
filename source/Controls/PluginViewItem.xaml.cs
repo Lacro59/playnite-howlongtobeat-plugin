@@ -31,6 +31,7 @@ namespace HowLongToBeat.Controls
 
         private CancellationTokenSource _loadedCts;
         private bool _eventsWired;
+        private int _initGate = 0;
 
         public PluginViewItem()
         {
@@ -47,16 +48,23 @@ namespace HowLongToBeat.Controls
             // If already initialized, nothing to do
             if (_eventsWired) return;
 
-            // Create CTS tied to this control's lifetime
-            _loadedCts?.Dispose();
-            _loadedCts = new CancellationTokenSource();
+            var localCts = new CancellationTokenSource();
 
-            const int PluginLoadTimeoutSeconds = 10;
+            if (System.Threading.Interlocked.CompareExchange(ref _initGate, 1, 0) != 0)
+            {
+                try { localCts.Dispose(); } catch { }
+                return;
+            }
+
+            _loadedCts = localCts;
+
+            const int PluginLoadTimeoutSeconds = 30;
+            bool initialized = false;
             try
             {
-                // Wait for PluginDatabase to be loaded with timeout and cancellation support
+                // Wait for PluginDatabase to be loaded with timeout and cancellation support (use localCts for all waits)
                 using (var timeoutCts = new CancellationTokenSource(TimeSpan.FromSeconds(PluginLoadTimeoutSeconds)))
-                using (var linked = CancellationTokenSource.CreateLinkedTokenSource(_loadedCts.Token, timeoutCts.Token))
+                using (var linked = CancellationTokenSource.CreateLinkedTokenSource(localCts.Token, timeoutCts.Token))
                 {
                     while (!PluginDatabase.IsLoaded)
                     {
@@ -87,15 +95,40 @@ namespace HowLongToBeat.Controls
 
                 // Mark as initialized so subsequent Loaded events skip initialization until Unloaded resets it
                 _eventsWired = true;
+                initialized = true;
             }
             catch (OperationCanceledException)
             {
                 // Timeout or control unloaded before initialization completed - bail out gracefully
-                try { Common.LogDebug(true, "PluginViewItem initialization cancelled or timed out"); } catch { }
+                try
+                {
+                    if (PluginDatabase?.PluginSettings?.Settings?.EnableVerboseLogging == true)
+                    {
+                        Common.LogDebug(true, "PluginViewItem initialization cancelled or timed out");
+                    }
+                }
+                catch { }
             }
             catch (Exception ex)
             {
                 try { Common.LogError(ex, false, true, PluginDatabase.PluginName); } catch { }
+            }
+            finally
+            {
+                System.Threading.Interlocked.Exchange(ref _initGate, 0);
+
+                if (!initialized)
+                {
+                    try
+                    {
+                        if (_loadedCts == localCts)
+                        {
+                            try { localCts.Dispose(); } catch { }
+                            _loadedCts = null;
+                        }
+                    }
+                    catch { }
+                }
             }
         }
 

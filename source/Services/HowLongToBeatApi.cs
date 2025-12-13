@@ -192,7 +192,6 @@ namespace HowLongToBeat.Services
         // Thread-local Random to provide jitter without creating many Sequential Random instances
         private static readonly ThreadLocal<Random> _rnd = new ThreadLocal<Random>(() => new Random(Guid.NewGuid().GetHashCode()));
 
-
         private readonly ConcurrentQueue<long> RecentSearchSamples = new ConcurrentQueue<long>();
         private const int RecentSamplesWindow = 200;
 
@@ -285,6 +284,7 @@ namespace HowLongToBeat.Services
                 };
                 httpClient.DefaultRequestHeaders.Add("User-Agent", Web.UserAgent);
                 httpClient.DefaultRequestHeaders.Add("Referer", UrlBase);
+                try { httpClient.DefaultRequestHeaders.Add("accept", "application/json, text/javascript, */*; q=0.01"); } catch { }
             }
             catch (Exception ex)
             {
@@ -385,11 +385,29 @@ namespace HowLongToBeat.Services
         {
             try
             {
-                // Cancel the monitor task but do not block waiting for it here.
-                try { monitorCts?.Cancel(); } catch { }
-                try { monitorCts?.Dispose(); } catch { }
+                var task = monitorTask;
+                var cts = monitorCts;
+
+                try { cts?.Cancel(); } catch { }
+
+                if (task != null)
+                {
+                    try
+                    {
+                        Task.Run(() =>
+                        {
+                            try
+                            {
+                                task.Wait(5000);
+                            }
+                            catch { }
+                        }).Wait(5000);
+                    }
+                    catch { }
+                }
+
+                try { cts?.Dispose(); } catch { }
                 monitorCts = null;
-                // Do not wait on monitorTask; let it finish asynchronously.
                 monitorTask = null;
             }
             catch { }
@@ -416,7 +434,16 @@ namespace HowLongToBeat.Services
                         {
                             while (!token.IsCancellationRequested)
                             {
-                                try { await Task.Delay(TimeSpan.FromSeconds(10), token); } catch { }
+                                try
+                                {
+                                    if (token.IsCancellationRequested) break;
+                                    await Task.Delay(TimeSpan.FromSeconds(10), token).ConfigureAwait(false);
+                                }
+                                catch (OperationCanceledException)
+                                {
+                                    break;
+                                }
+                                catch (Exception) { }
                                 try
                                 {
                                     int searchTarget;
@@ -442,12 +469,22 @@ namespace HowLongToBeat.Services
                                         searchTarget = SearchConcurrencyController?.TargetConcurrency ?? MaxParallelSearches;
                                     }
 
-                                    int searchAvailable = SearchSemaphore?.CurrentCount ?? 0;
-                                    int searchInFlight = Math.Max(0, searchTarget - searchAvailable);
+                                    int searchAvailable = 0;
+                                    int searchInFlight = 0;
+                                    int gameTarget = 0;
+                                    int gameAvailable = 0;
+                                    int gameInFlight = 0;
+                                    try
+                                    {
+                                        searchAvailable = SearchSemaphore?.CurrentCount ?? 0;
+                                        searchInFlight = Math.Max(0, searchTarget - searchAvailable);
 
-                                    int gameTarget = ConcurrencyController?.TargetConcurrency ?? MaxParallelGameDataDownloads;
-                                    int gameAvailable = DynamicSemaphore?.CurrentCount ?? 0;
-                                    int gameInFlight = Math.Max(0, gameTarget - gameAvailable);
+                                        gameTarget = ConcurrencyController?.TargetConcurrency ?? MaxParallelGameDataDownloads;
+                                        gameAvailable = DynamicSemaphore?.CurrentCount ?? 0;
+                                        gameInFlight = Math.Max(0, gameTarget - gameAvailable);
+                                    }
+                                    catch (ObjectDisposedException) { break; }
+                                    catch (InvalidOperationException) { break; }
 
                                     var samples = RecentSearchSamples.ToArray();
                                     double avg = samples.Length > 0 ? samples.Average() : 0;
@@ -992,7 +1029,8 @@ namespace HowLongToBeat.Services
                         try
                         {
                             int target = ConcurrencyController?.TargetConcurrency ?? MaxParallelGameDataDownloads;
-                            CurrentSemaphoreLimit = await AdjustSemaphoreLimit(DynamicSemaphore, CurrentSemaphoreLimit, target, ConcurrencySync, "Search");
+                            var newSemLimit = await AdjustSemaphoreLimit(DynamicSemaphore, CurrentSemaphoreLimit, target, ConcurrencySync, "Search");
+                            try { lock (ConcurrencySync) { CurrentSemaphoreLimit = newSemLimit; } } catch { }
 
                             try
                             {
@@ -2096,11 +2134,14 @@ namespace HowLongToBeat.Services
                         disposeClient = false;
                     }
 
-                    try { client.DefaultRequestHeaders.Add("User-Agent", Web.UserAgent); } catch { }
-                    try { client.DefaultRequestHeaders.Add("accept", "application/json, text/javascript, */*; q=0.01"); } catch { }
+                    if (handler != null)
+                    {
+                        try { client.DefaultRequestHeaders.Add("User-Agent", Web.UserAgent); } catch { }
+                        try { client.DefaultRequestHeaders.Add("accept", "application/json, text/javascript, */*; q=0.01"); } catch { }
+                    }
 
                     var content = new StringContent(payload ?? string.Empty, Encoding.UTF8, "application/json");
-                    using (var resp = await client.PostAsync(url, content).ConfigureAwait(false))
+                    using (var resp = await client.PostAsync(url, content, cancellationToken).ConfigureAwait(false))
                     {
                         if (!resp.IsSuccessStatusCode)
                         {
@@ -2179,7 +2220,7 @@ namespace HowLongToBeat.Services
                      }
                  }
              }
-             catch (Exception ex)
+             catch ( Exception ex)
              {
                  Common.LogError(ex, false, $"Error posting to {url}");
                  return (string.Empty, 0, (string)null);

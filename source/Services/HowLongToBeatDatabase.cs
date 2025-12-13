@@ -35,19 +35,26 @@ namespace HowLongToBeat.Services
          }
 
         // Helper to run a Task-returning operation with a bounded synchronous wait to avoid indefinite UI blocking.
-        private static T RunSyncWithTimeout<T>(Func<Task<T>> taskFactory, int timeoutMs = 15000)
+        private static T RunSyncWithTimeout<T>(Func<CancellationToken, Task<T>> taskFactory, int timeoutMs = 15000, CancellationToken externalToken = default)
         {
             try
             {
-                var task = Task.Run(taskFactory);
-                if (Task.WhenAny(task, Task.Delay(timeoutMs)).ConfigureAwait(false).GetAwaiter().GetResult() == task)
+                using (var ctsTimeout = new CancellationTokenSource())
+                using (var linked = CancellationTokenSource.CreateLinkedTokenSource(ctsTimeout.Token, externalToken))
                 {
-                    try { return task.GetAwaiter().GetResult(); } catch (Exception ex) { Common.LogError(ex, false); return default; }
-                }
-                else
-                {
-                    try { Common.LogError(new TimeoutException($"Operation timed out after {timeoutMs}ms"), false, true, "HowLongToBeatDatabase"); } catch { }
-                    return default;
+                    var task = Task.Run(() => taskFactory(linked.Token), linked.Token);
+
+                    if (Task.WhenAny(task, Task.Delay(timeoutMs)).ConfigureAwait(false).GetAwaiter().GetResult() == task)
+                    {
+                        try { return task.GetAwaiter().GetResult(); } catch (Exception ex) { Common.LogError(ex, false); return default; }
+                    }
+                    else
+                    {
+                        try { ctsTimeout.Cancel(); } catch { }
+                        try { Common.LogError(new TimeoutException($"Operation timed out after {timeoutMs}ms"), false, true, "HowLongToBeatDatabase"); } catch { }
+                        try { task.ContinueWith(t => { var _ = t.Exception; }, TaskContinuationOptions.OnlyOnFaulted); } catch { }
+                        return default;
+                    }
                 }
             }
             catch (Exception ex)
@@ -55,6 +62,11 @@ namespace HowLongToBeat.Services
                 try { Common.LogError(ex, false, true, "HowLongToBeatDatabase"); } catch { }
                 return default;
             }
+        }
+
+        private static T RunSyncWithTimeout<T>(Func<Task<T>> taskFactory, int timeoutMs = 15000)
+        {
+            return RunSyncWithTimeout(ct => taskFactory(), timeoutMs, CancellationToken.None);
         }
 
         public void InitializeClient(HowLongToBeat plugin)
@@ -118,15 +130,34 @@ namespace HowLongToBeat.Services
                         var data = HowLongToBeatApi.LoadUserData();
                         if (data != null)
                         {
-                            Database.UserHltbData = data;
-                            try { Application.Current.Dispatcher?.Invoke(() => Database.OnCollectionChanged(null, null)); } catch { }
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        Common.LogError(ex, false, true, PluginName);
-                    }
-                });
+                            try
+                            {
+                                Application.Current.Dispatcher?.Invoke(() =>
+                                {
+                                    try
+                                    {
+                                        Database.UserHltbData = data;
+                                        Database.OnCollectionChanged(null, null);
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        Common.LogError(ex, false, true, PluginName);
+                                    }
+                                });
+                            }
+                            catch (Exception ex)
+                            {
+                                Common.LogError(ex, false, true, PluginName);
+                                try { Database.UserHltbData = data; } catch { }
+                                try { Application.Current.Dispatcher?.BeginInvoke(new Action(() => Database.OnCollectionChanged(null, null))); } catch { }
+                            }
+                         }
+                     }
+                     catch (Exception ex)
+                     {
+                         Common.LogError(ex, false, true, PluginName);
+                     }
+                 });
             }
             catch (Exception ex)
             {
@@ -633,6 +664,7 @@ namespace HowLongToBeat.Services
                 IsIndeterminate = ids.Count() == 1
             };
 
+            SemaphoreSlim sem = null;
             _ = API.Instance.Dialogs.ActivateGlobalProgress(async (a) =>
              {
                 API.Instance.Database.BeginBufferUpdate();
@@ -644,8 +676,8 @@ namespace HowLongToBeat.Services
                     a.ProgressMaxValue = ids.Count();
 
                     int parallelism = Math.Min(16, Math.Max(1, Environment.ProcessorCount * 2));
-                    var sem = new SemaphoreSlim(parallelism, parallelism);
-                    var tasks = new List<Task>();
+                    sem = new SemaphoreSlim(parallelism, parallelism);
+                     var tasks = new List<Task>();
 
                     foreach (Guid id in ids)
                     {
@@ -736,6 +768,15 @@ namespace HowLongToBeat.Services
                 }
                 finally
                 {
+                    try
+                    {
+                        sem?.Dispose();
+                    }
+                    catch (Exception ex)
+                    {
+                        try { Common.LogError(ex, false, true, PluginName); } catch { }
+                    }
+
                     try
                     {
                         API.Instance.Database.EndBufferUpdate();

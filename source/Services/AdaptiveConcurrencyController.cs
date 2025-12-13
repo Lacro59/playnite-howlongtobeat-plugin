@@ -29,35 +29,40 @@ namespace HowLongToBeat.Services
                 throw new ArgumentOutOfRangeException(nameof(min), "min must be >= 0");
             }
 
-            if (max < 0)
+            if (min < 1)
             {
-                throw new ArgumentOutOfRangeException(nameof(max), "max must be >= 0");
+                throw new ArgumentOutOfRangeException(nameof(min), "min must be >= 1");
             }
+            
+             if (max < 0)
+             {
+                 throw new ArgumentOutOfRangeException(nameof(max), "max must be >= 0");
+             }
 
-            if (min > max)
-            {
-                throw new ArgumentException("min must be less than or equal to max", nameof(min));
-            }
+             if (min > max)
+             {
+                 throw new ArgumentException("min must be less than or equal to max", nameof(min));
+             }
 
-            if (initial < min || initial > max)
-            {
-                throw new ArgumentOutOfRangeException(nameof(initial), $"initial must be within [{min}, {max}]");
-            }
+             if (initial < min || initial > max)
+             {
+                 throw new ArgumentOutOfRangeException(nameof(initial), $"initial must be within [{min}, {max}]");
+             }
 
-            if (interval.HasValue && interval.Value <= TimeSpan.Zero)
-            {
-                throw new ArgumentOutOfRangeException(nameof(interval), "interval must be null or greater than TimeSpan.Zero");
-            }
+             if (interval.HasValue && interval.Value <= TimeSpan.Zero)
+             {
+                 throw new ArgumentOutOfRangeException(nameof(interval), "interval must be null or greater than TimeSpan.Zero");
+             }
 
-            // After validation assign fields
-            targetConcurrency = initial;
-            minConcurrency = min;
-            maxConcurrency = max;
-            adjustInterval = interval ?? TimeSpan.FromSeconds(2);
-            cts = new CancellationTokenSource();
-            adjustTask = Task.Factory.StartNew(() => AdjustLoop(cts.Token),
-                cts.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default).Unwrap();
-        }
+             // After validation assign fields
+             targetConcurrency = initial;
+             minConcurrency = min;
+             maxConcurrency = max;
+             adjustInterval = interval ?? TimeSpan.FromSeconds(2);
+             cts = new CancellationTokenSource();
+             adjustTask = Task.Factory.StartNew(() => AdjustLoop(cts.Token),
+                 cts.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default).Unwrap();
+         }
 
         public int TargetConcurrency
         {
@@ -118,7 +123,19 @@ namespace HowLongToBeat.Services
 
             if (error > 0.15 || latency > 2000)
             {
-                newTarget = Math.Max(minConcurrency, (int)Math.Ceiling(current * 0.75));
+                if (current > minConcurrency)
+                {
+                    int decreased = (int)Math.Floor(current * 0.75);
+                    if (decreased >= current)
+                    {
+                        decreased = current - 1;
+                    }
+                    newTarget = Math.Max(minConcurrency, decreased);
+                }
+                else
+                {
+                    newTarget = current;
+                }
             }
             else if (latency < 400 && error < 0.05)
             {
@@ -139,13 +156,28 @@ namespace HowLongToBeat.Services
         {
             try
             {
-                cts?.Cancel();
-                adjustTask?.Wait(500);
+                try { cts?.Cancel(); } catch { }
+
+                try
+                {
+                    var t = adjustTask;
+                    if (t != null)
+                    {
+                        if (!t.Wait(0))
+                        {
+                            Task.Run(() =>
+                            {
+                                try { t.Wait(500); } catch { }
+                            });
+                        }
+                    }
+                }
+                catch { }
             }
             catch { }
             finally
             {
-                cts?.Dispose();
+                try { cts?.Dispose(); } catch { }
             }
         }
     }

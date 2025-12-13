@@ -31,6 +31,7 @@ namespace HowLongToBeat.Controls
 
         private bool eventsWired;
         private CancellationTokenSource _loadedCts;
+        private int _initGate = 0;
 
         public PluginButton()
         {
@@ -75,19 +76,34 @@ namespace HowLongToBeat.Controls
             // If already wired, nothing to do
             if (eventsWired) return;
 
-            // Create a CTS to allow cancelling wait if Unloaded fires
-            try { _loadedCts?.Dispose(); } catch { }
-            _loadedCts = new CancellationTokenSource();
+            var localCts = new CancellationTokenSource();
 
+            if (System.Threading.Interlocked.CompareExchange(ref _initGate, 1, 0) != 0)
+            {
+                try { localCts.Dispose(); } catch { }
+                return;
+            }
+
+            _loadedCts = localCts;
+
+            bool initialized = false;
             try
             {
                 var sw = Stopwatch.StartNew();
+                var token = localCts.Token;
                 while (!PluginDatabase.IsLoaded)
                 {
-                    try { await Task.Delay(100, _loadedCts.Token).ConfigureAwait(false); } catch (OperationCanceledException) { return; }
+                    try { await Task.Delay(100, token).ConfigureAwait(false); } catch (OperationCanceledException) { return; }
                     if (sw.Elapsed > TimeSpan.FromSeconds(30))
                     {
-                        try { Debug.WriteLine("PluginButton init timeout waiting for PluginDatabase.IsLoaded"); } catch { }
+                        try
+                        {
+                            if (PluginDatabase?.PluginSettings?.Settings?.EnableVerboseLogging == true)
+                            {
+                                Debug.WriteLine("PluginButton init timeout waiting for PluginDatabase.IsLoaded");
+                            }
+                        }
+                        catch { }
                         return;
                     }
                 }
@@ -105,6 +121,8 @@ namespace HowLongToBeat.Controls
 
                     try { PluginSettings_PropertyChanged(null, null); } catch { }
                 })).Task.ConfigureAwait(false);
+
+                initialized = true;
             }
             catch (Exception ex)
             {
@@ -112,8 +130,20 @@ namespace HowLongToBeat.Controls
             }
             finally
             {
-                try { _loadedCts?.Dispose(); } catch { }
-                _loadedCts = null;
+                System.Threading.Interlocked.Exchange(ref _initGate, 0);
+
+                if (!initialized)
+                {
+                    try
+                    {
+                        if (_loadedCts == localCts)
+                        {
+                            try { localCts.Dispose(); } catch { }
+                            _loadedCts = null;
+                        }
+                    }
+                    catch { }
+                }
             }
         }
 

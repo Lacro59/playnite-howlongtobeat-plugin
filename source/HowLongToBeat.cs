@@ -690,28 +690,34 @@ namespace HowLongToBeat
                     Common.LogError(ex, false, true, PluginDatabase.PluginName);
                 }
 
-                // Run expensive/optional cookie refresh in background to avoid blocking startup.
-                // Catch and log any exceptions to prevent unobserved task exceptions.
-                _ = Task.Run(() =>
+                try
                 {
-                    try
-                    {
-                        PluginDatabase.HowLongToBeatApi?.UpdatedCookies();
-                    }
-                    catch (Exception ex)
-                    {
-                        Common.LogError(ex, false, true, PluginDatabase.PluginName);
-                    }
-                });
+                }
+                catch (Exception ex)
+                {
+                    Common.LogError(ex, false, true, PluginDatabase.PluginName);
+                }
             }
             catch { }
 
-            // Run a non-blocking delay on the thread-pool and then clear the flag
             _ = Task.Run(async () =>
-             {
-                 await Task.Delay(10000).ConfigureAwait(false);
-                 PreventLibraryUpdatedOnStart = false;
-             });
+            {
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    const int maxWaitMs = 30000;
+                    while (!PluginDatabase.IsLoaded && sw.ElapsedMilliseconds < maxWaitMs)
+                    {
+                        await Task.Delay(100).ConfigureAwait(false);
+                    }
+                }
+                catch { }
+                finally
+                {
+                    PreventLibraryUpdatedOnStart = false;
+                }
+            });
+
 
              // QuickSearch support
              try
@@ -750,21 +756,29 @@ namespace HowLongToBeat
 
                 _ = API.Instance.Dialogs.ActivateGlobalProgress((activateGlobalProgress) =>
                 {
+                    var ct = activateGlobalProgress?.CancelToken ?? CancellationToken.None;
                     _ = Task.Run(async () =>
                     {
-                        while (!PluginDatabase.IsLoaded)
-                        {
-                            await Task.Delay(100).ConfigureAwait(false);
-                        }
-
                         try
                         {
+                            while (!PluginDatabase.IsLoaded)
+                            {
+                                if (ct.IsCancellationRequested) return;
+                                try { await Task.Delay(100, ct).ConfigureAwait(false); } catch (OperationCanceledException) { return; }
+                            }
+
                             bool conversionSucceeded = false;
-                            PluginDatabase.Database.BeginBufferUpdate();
                             try
                             {
-                                PluginDatabase.Database.ForEach(x =>
+                                PluginDatabase.Database.BeginBufferUpdate();
+                                foreach (var x in PluginDatabase.Database)
                                 {
+                                    if (ct.IsCancellationRequested)
+                                    {
+                                        conversionSucceeded = false;
+                                        break;
+                                    }
+
                                     try
                                     {
                                         if (Serialization.TryFromJsonFile(Path.Combine(PluginDatabase.Paths.PluginDatabasePath, x.Game.Id.ToString() + ".json"), out dynamic data))
@@ -788,9 +802,12 @@ namespace HowLongToBeat
                                     {
                                         Common.LogError(ex, true, true, PluginDatabase.PluginName);
                                     }
-                                });
+                                }
 
-                                conversionSucceeded = true;
+                                if (!ct.IsCancellationRequested)
+                                {
+                                    conversionSucceeded = true;
+                                }
                             }
                             catch (Exception ex)
                             {
@@ -822,10 +839,10 @@ namespace HowLongToBeat
                         {
                             Common.LogError(ex, true, true, PluginDatabase.PluginName);
                         }
-                    });
+                    }, ct);
                 }, globalProgressOptions);
-            }
-        }
+             }
+         }
 
         // Add code to be executed when Playnite is shutting down.
         public override void OnApplicationStopped(OnApplicationStoppedEventArgs args)
