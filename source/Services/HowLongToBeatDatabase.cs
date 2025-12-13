@@ -62,12 +62,12 @@ namespace HowLongToBeat.Services
                         }
 
                         try { ctsTimeout.Cancel(); } catch { }
-                        try { Common.LogError(new TimeoutException($"Operation timed out after {timeoutMs}ms"), false, true, "HowLongToBeatDatabase"); } catch { }
+                        try { Logger.Warn($"Operation timed out after {timeoutMs}ms"); } catch { }
                         try { task.ContinueWith(t => { var _ = t.Exception; }, TaskContinuationOptions.OnlyOnFaulted); } catch { }
                         return default;
-                    }
-                }
-            }
+                     }
+                 }
+             }
             catch (Exception ex)
             {
                 try { Common.LogError(ex, false, true, "HowLongToBeatDatabase"); } catch { }
@@ -159,8 +159,15 @@ namespace HowLongToBeat.Services
                             catch (Exception ex)
                             {
                                 Common.LogError(ex, false, true, PluginName);
-                                try { Database.UserHltbData = data; } catch { }
-                                try { Application.Current.Dispatcher?.BeginInvoke(new Action(() => Database.OnCollectionChanged(null, null))); } catch { }
+                                try
+                                {
+                                    Application.Current.Dispatcher?.BeginInvoke(new Action(() =>
+                                    {
+                                        Database.UserHltbData = data;
+                                        Database.OnCollectionChanged(null, null);
+                                    }));
+                                 }
+                                catch { }
                             }
                          }
                      }
@@ -585,57 +592,79 @@ namespace HowLongToBeat.Services
                 IsIndeterminate = true
             };
 
-            _ = API.Instance.Dialogs.ActivateGlobalProgress(async (activateGlobalProgress) =>
-              {
-                  try
-                  {
-                    HltbUserStats UserHltbData = null;
-                    try
+            var tcs = new TaskCompletionSource<bool>();
+            try
+            {
+                API.Instance.Dialogs.ActivateGlobalProgress((activateGlobalProgress) =>
+                {
+                    var ct = activateGlobalProgress?.CancelToken ?? CancellationToken.None;
+                    _ = Task.Run(async () =>
                     {
-                        UserHltbData = await HowLongToBeatApi.GetUserDataAsync().ConfigureAwait(false);
-                    }
-                    catch (Exception)
-                      {
-                        var ct = activateGlobalProgress?.CancelToken ?? CancellationToken.None;
-                        if (ct.IsCancellationRequested)
+                        try
                         {
-                            return;
+                            if (ct.IsCancellationRequested)
+                            {
+                                return;
+                            }
+
+                            HltbUserStats UserHltbData = null;
+                            try
+                            {
+                                UserHltbData = await HowLongToBeatApi.GetUserDataAsync().ConfigureAwait(false);
+                            }
+                            catch (Exception)
+                            {
+                                if (ct.IsCancellationRequested)
+                                {
+                                    return;
+                                }
+                                throw;
+                            }
+
+                            if (UserHltbData != null)
+                            {
+                                if (IsVerboseLoggingEnabled)
+                                {
+                                    Logger.Debug($"Find {UserHltbData.TitlesList?.Count ?? 0} games");
+                                }
+                                FileSystem.WriteStringToFileSafe(Path.Combine(Paths.PluginUserDataPath, "HltbUserStats.json"), Serialization.ToJson(UserHltbData));
+                                Database.UserHltbData = UserHltbData;
+
+                                if (PluginSettings.Settings.AutoSetGameStatus)
+                                {
+                                    SetGameStatusFromHltb();
+                                }
+
+                                Application.Current.Dispatcher?.Invoke(() =>
+                                {
+                                    Database.OnCollectionChanged(null, null);
+                                });
+                            }
+                            else
+                            {
+                                if (IsVerboseLoggingEnabled)
+                                {
+                                    Logger.Debug("Find no data");
+                                }
+                            }
                         }
-                        throw;
-                    }
+                        catch (Exception ex)
+                        {
+                            try { Common.LogError(ex, false, true, PluginName); } catch { }
+                        }
+                        finally
+                        {
+                            try { tcs.TrySetResult(true); } catch { }
+                        }
+                    }, ct);
+                }, globalProgressOptions);
 
-                     if (UserHltbData != null)
-                     {
-                         if (IsVerboseLoggingEnabled)
-                         {
-                             Logger.Debug($"Find {UserHltbData.TitlesList?.Count ?? 0} games");
-                         }
-                         FileSystem.WriteStringToFileSafe(Path.Combine(Paths.PluginUserDataPath, "HltbUserStats.json"), Serialization.ToJson(UserHltbData));
-                         Database.UserHltbData = UserHltbData;
-
-                         if (PluginSettings.Settings.AutoSetGameStatus)
-                         {
-                             SetGameStatusFromHltb();
-                         }
-
-                         Application.Current.Dispatcher?.Invoke(() =>
-                         {
-                             Database.OnCollectionChanged(null, null);
-                         });
-                     }
-                     else
-                     {
-                         if (IsVerboseLoggingEnabled)
-                         {
-                             Logger.Debug($"Find no data");
-                         }
-                     }
-                  }
-                  catch (Exception ex)
-                  {
-                    Common.LogError(ex, false, true, PluginName);
-                  }
-              }, globalProgressOptions);
+                await tcs.Task.ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, false, true, PluginName);
+            }
 
             // Small delay to allow UI notifications to settle when caller awaited this Task; keep minimal
             await Task.Delay(200).ConfigureAwait(false);
@@ -708,10 +737,13 @@ namespace HowLongToBeat.Services
 
         public void SetCurrentPlaytime(IEnumerable<Guid> ids, bool noPlaying = false, bool isCompleted = false, bool isMain = false, bool isMainSide = false, bool is100 = false, bool isSolo = false, bool isCoOp = false, bool isVs = false)
         {
+            var idsList = ids as IList<Guid> ?? ids.ToList();
+            int total = idsList.Count;
+
             GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions($"{PluginName} - {ResourceProvider.GetString("LOCCommonProcessing")}")
             {
                 Cancelable = true,
-                IsIndeterminate = ids.Count() == 1
+                IsIndeterminate = total == 1
             };
 
             SemaphoreSlim sem = null;
@@ -723,14 +755,14 @@ namespace HowLongToBeat.Services
                     Stopwatch stopWatch = new Stopwatch();
                     stopWatch.Start();
 
-                    a.ProgressMaxValue = ids.Count();
+                    a.ProgressMaxValue = total;
 
                     int parallelism = Math.Min(16, Math.Max(1, Environment.ProcessorCount * 2));
                     sem = new SemaphoreSlim(parallelism, parallelism);
                      var tasks = new List<Task>();
 
-                    foreach (Guid id in ids)
-                    {
+                    foreach (Guid id in idsList)
+                     {
                         tasks.Add(Task.Run(async () =>
                         {
                             if (a.CancelToken.IsCancellationRequested)
@@ -770,8 +802,8 @@ namespace HowLongToBeat.Services
                                     Application.Current.Dispatcher?.BeginInvoke(new Action(() =>
                                     {
                                         a.Text = PluginName + " - " + ResourceProvider.GetString("LOCCommonProcessing")
-                                            + (ids.Count() == 1 ? string.Empty : "\n\n" + $"{a.CurrentProgressValue}/{a.ProgressMaxValue}")
-                                            + "\n" + game?.Name + (game?.Source == null ? string.Empty : $" ({game?.Source.Name})");
+                                            + (total == 1 ? string.Empty : "\n\n" + $"{a.CurrentProgressValue}/{a.ProgressMaxValue}")
+                                             + "\n" + game?.Name + (game?.Source == null ? string.Empty : $" ({game?.Source.Name})");
                                     }));
                                 }
                                 catch { }
@@ -813,7 +845,7 @@ namespace HowLongToBeat.Services
                     TimeSpan ts = stopWatch.Elapsed;
                     if (IsVerboseLoggingEnabled)
                     {
-                        Logger.Debug($"Task SetCurrentPlaytime(){(a.CancelToken.IsCancellationRequested ? " canceled" : string.Empty)} - {string.Format("{0:00}:{1:00}.{2:00}", ts.Minutes, ts.Seconds, ts.Milliseconds / 10)} for {a.CurrentProgressValue}/{ids.Count()} items");
+                        Logger.Debug($"Task SetCurrentPlaytime(){(a.CancelToken.IsCancellationRequested ? " canceled" : string.Empty)} - {string.Format("{0:00}:{1:00}.{2:00}", ts.Minutes, ts.Seconds, ts.Milliseconds / 10)} for {a.CurrentProgressValue}/{total} items");
                     }
                 }
                 finally

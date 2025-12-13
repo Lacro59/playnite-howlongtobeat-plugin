@@ -1043,91 +1043,101 @@ namespace HowLongToBeat.Services
 
                 if (search.Count != 0)
                 {
+                    try
+                    {
+                        int target = ConcurrencyController?.TargetConcurrency ?? MaxParallelGameDataDownloads;
+                        await AdjustSemaphoreLimit(DynamicSemaphore, () => CurrentSemaphoreLimit, l => CurrentSemaphoreLimit = l, target, ConcurrencySync, "Search");
+                    }
+                    catch { }
+
                     var tasks = search.Select(async x =>
                     {
                         bool acquiredGameSemaphore = false;
                         try
                         {
-                            int target = ConcurrencyController?.TargetConcurrency ?? MaxParallelGameDataDownloads;
-                            await AdjustSemaphoreLimit(DynamicSemaphore, () => CurrentSemaphoreLimit, l => CurrentSemaphoreLimit = l, target, ConcurrencySync, "Search");
-                            try { /* CurrentSemaphoreLimit updated by AdjustSemaphoreLimit via setCurrentLimit delegate */ } catch { }
-
                             try
                             {
-                                int targetGameLog = ConcurrencyController?.TargetConcurrency ?? MaxParallelGameDataDownloads;
-                                int availableGameLog = DynamicSemaphore?.CurrentCount ?? 0;
-                                int inFlightGameLog = Math.Max(0, targetGameLog - availableGameLog);
-                                LogDebugVerbose($"Search: waiting semaphore for id={x.Id} target={targetGameLog} currentLimit={CurrentSemaphoreLimit} available={availableGameLog} inFlight={inFlightGameLog}");
-                            }
-                            catch { }
-                            var acquired = await DynamicSemaphore.WaitAsync(TimeSpan.FromSeconds(10));
-                            if (!acquired)
-                            {
-                                Logger.Warn($"Search: timeout waiting for game data semaphore for id={x.Id}");
-                                return;
-                            }
-                            acquiredGameSemaphore = true;
-                            try
-                            {
-                                int targetGameLog = ConcurrencyController?.TargetConcurrency ?? MaxParallelGameDataDownloads;
-                                int availableGameLog = DynamicSemaphore?.CurrentCount ?? 0;
-                                int inFlightGameLog = Math.Max(0, targetGameLog - availableGameLog);
-                                LogDebugVerbose($"Search: acquired semaphore for id={x.Id} target={targetGameLog} currentLimit={CurrentSemaphoreLimit} available={availableGameLog} inFlight={inFlightGameLog}");
-                            }
-                            catch { }
-                        }
-                        catch (Exception ex)
-                        {
-                            Common.LogError(ex, false, false, PluginDatabase.PluginName);
-                        }
-                        try
-                        {
-                            try
-                            {
-                                bool hasCoreTimes = (x.GameHltbData != null) && (
-                                    (x.GameHltbData.MainStoryClassic > 0) ||
-                                    (x.GameHltbData.MainStoryAverage > 0) ||
-                                    (x.GameHltbData.MainStoryMedian > 0)
-                                );
-
-                                if (hasCoreTimes && !x.NeedsDetails)
+                                try
                                 {
-                                    LogDebugVerbose($"Search: skipping GetGameData for id={x.Id} (search result has times)");
+                                    int targetGameLog = ConcurrencyController?.TargetConcurrency ?? MaxParallelGameDataDownloads;
+                                    int availableGameLog = DynamicSemaphore?.CurrentCount ?? 0;
+                                    int inFlightGameLog = Math.Max(0, targetGameLog - availableGameLog);
+                                    LogDebugVerbose($"Search: waiting semaphore for id={x.Id} target={targetGameLog} currentLimit={CurrentSemaphoreLimit} available={availableGameLog} inFlight={inFlightGameLog}");
                                 }
-                                else
+                                catch { }
+                                var acquired = await DynamicSemaphore.WaitAsync(TimeSpan.FromSeconds(10));
+                                if (!acquired)
                                 {
-                                    using (var ctsGame = new CancellationTokenSource(GameDataDownloadTimeoutMs))
-                                    {
-                                        try
-                                        {
-                                            x.GameHltbData = await GetGameData(x.Id, ctsGame.Token);
-                                            x.NeedsDetails = false;
-                                        }
-                                        catch (OperationCanceledException)
-                                        {
-                                            Logger.Warn($"Timeout {GameDataDownloadTimeoutMs}ms getting game data for {x.Id}");
-                                            x.GameHltbData = null;
-                                        }
-                                    }
+                                    Logger.Warn($"Search: timeout waiting for game data semaphore for id={x.Id}");
+                                    return;
                                 }
+                                acquiredGameSemaphore = true;
+                                try
+                                {
+                                    int targetGameLog = ConcurrencyController?.TargetConcurrency ?? MaxParallelGameDataDownloads;
+                                    int availableGameLog = DynamicSemaphore?.CurrentCount ?? 0;
+                                    int inFlightGameLog = Math.Max(0, targetGameLog - availableGameLog);
+                                    LogDebugVerbose($"Search: acquired semaphore for id={x.Id} target={targetGameLog} currentLimit={CurrentSemaphoreLimit} available={availableGameLog} inFlight={inFlightGameLog}");
+                                }
+                                catch { }
                             }
                             catch (Exception ex)
                             {
                                 Common.LogError(ex, false, false, PluginDatabase.PluginName);
-                                x.GameHltbData = null;
                             }
-                        }
-                        finally
-                        {
-                            if (acquiredGameSemaphore)
+                            try
                             {
                                 try
                                 {
-                                    DynamicSemaphore.Release();
+                                    bool hasCoreTimes = (x.GameHltbData != null) && (
+                                        (x.GameHltbData.MainStoryClassic > 0) ||
+                                        (x.GameHltbData.MainStoryAverage > 0) ||
+                                        (x.GameHltbData.MainStoryMedian > 0)
+                                    );
+
+                                    if (hasCoreTimes && !x.NeedsDetails)
+                                    {
+                                        LogDebugVerbose($"Search: skipping GetGameData for id={x.Id} (search result has times)");
+                                    }
+                                    else
+                                    {
+                                        using (var ctsGame = new CancellationTokenSource(GameDataDownloadTimeoutMs))
+                                        {
+                                            try
+                                            {
+                                                x.GameHltbData = await GetGameData(x.Id, ctsGame.Token);
+                                                x.NeedsDetails = false;
+                                            }
+                                            catch (OperationCanceledException)
+                                            {
+                                                Logger.Warn($"Timeout {GameDataDownloadTimeoutMs}ms getting game data for {x.Id}");
+                                                x.GameHltbData = null;
+                                            }
+                                        }
+                                    }
                                 }
-                                catch { }
+                                catch (Exception ex)
+                                {
+                                    Common.LogError(ex, false, false, PluginDatabase.PluginName);
+                                    x.GameHltbData = null;
+                                }
                             }
-                            LogDebugVerbose($"Search: released semaphore for id={x.Id}");
+                            finally
+                            {
+                                if (acquiredGameSemaphore)
+                                {
+                                    try
+                                    {
+                                        DynamicSemaphore.Release();
+                                    }
+                                    catch { }
+                                }
+                                LogDebugVerbose($"Search: released semaphore for id={x.Id}");
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Common.LogError(ex, false, false, PluginDatabase.PluginName);
                         }
                     }).ToArray();
 
