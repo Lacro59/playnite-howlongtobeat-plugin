@@ -34,6 +34,8 @@ namespace HowLongToBeat.Services
              TagBefore = "[HLTB]";
          }
 
+        private bool IsVerboseLoggingEnabled => PluginSettings?.Settings is HowLongToBeatSettings settings && settings.EnableVerboseLogging;
+
         // Helper to run a Task-returning operation with a bounded synchronous wait to avoid indefinite UI blocking.
         private static T RunSyncWithTimeout<T>(Func<CancellationToken, Task<T>> taskFactory, int timeoutMs = 15000, CancellationToken externalToken = default)
         {
@@ -557,7 +559,7 @@ namespace HowLongToBeat.Services
 
         public async Task RefreshUserDataAsync()
         {
-            if (PluginSettings?.Settings is HowLongToBeatSettings vs4 && vs4.EnableVerboseLogging)
+            if (IsVerboseLoggingEnabled)
             {
                 Logger.Debug("RefreshUserData()");
             }
@@ -568,15 +570,28 @@ namespace HowLongToBeat.Services
                 IsIndeterminate = true
             };
 
-            _ = API.Instance.Dialogs.ActivateGlobalProgress((activateGlobalProgress) =>
+            _ = API.Instance.Dialogs.ActivateGlobalProgress(async (activateGlobalProgress) =>
               {
                   try
                   {
-                    HltbUserStats UserHltbData = RunSyncWithTimeout(() => HowLongToBeatApi.GetUserDataAsync(), 30000);
+                    HltbUserStats UserHltbData = null;
+                    try
+                    {
+                        UserHltbData = await HowLongToBeatApi.GetUserDataAsync().ConfigureAwait(false);
+                    }
+                    catch (Exception)
+                      {
+                        var ct = activateGlobalProgress?.CancelToken ?? CancellationToken.None;
+                        if (ct.IsCancellationRequested)
+                        {
+                            return;
+                        }
+                        throw;
+                    }
 
                      if (UserHltbData != null)
                      {
-                         if (PluginSettings?.Settings is HowLongToBeatSettings vs5 && vs5.EnableVerboseLogging)
+                         if (IsVerboseLoggingEnabled)
                          {
                              Logger.Debug($"Find {UserHltbData.TitlesList?.Count ?? 0} games");
                          }
@@ -595,7 +610,7 @@ namespace HowLongToBeat.Services
                      }
                      else
                      {
-                         if (PluginSettings?.Settings is HowLongToBeatSettings vs6 && vs6.EnableVerboseLogging)
+                         if (IsVerboseLoggingEnabled)
                          {
                              Logger.Debug($"Find no data");
                          }
@@ -613,7 +628,27 @@ namespace HowLongToBeat.Services
 
         public void RefreshUserData()
         {
-            _ = RefreshUserDataAsync();
+            var t = RefreshUserDataAsync();
+            try
+            {
+                t.ContinueWith(task =>
+                {
+                    try
+                    {
+                        var ex = task.Exception?.GetBaseException() ?? task.Exception;
+                        if (ex != null)
+                        {
+                            Common.LogError(ex, false, true, PluginName);
+                        }
+                    }
+                    catch { }
+                    try { var _ = task.Exception; } catch { }
+                }, TaskContinuationOptions.OnlyOnFaulted | TaskContinuationOptions.ExecuteSynchronously);
+            }
+            catch (Exception ex)
+            {
+                try { Common.LogError(ex, false, true, PluginName); } catch { }
+            }
         }
 
         public void RefreshUserData(string gameId)
@@ -761,7 +796,7 @@ namespace HowLongToBeat.Services
 
                     stopWatch.Stop();
                     TimeSpan ts = stopWatch.Elapsed;
-                    if (PluginSettings?.Settings is HowLongToBeatSettings vs7 && vs7.EnableVerboseLogging)
+                    if (IsVerboseLoggingEnabled)
                     {
                         Logger.Debug($"Task SetCurrentPlaytime(){(a.CancelToken.IsCancellationRequested ? " canceled" : string.Empty)} - {string.Format("{0:00}:{1:00}.{2:00}", ts.Minutes, ts.Seconds, ts.Milliseconds / 10)} for {a.CurrentProgressValue}/{ids.Count()} items");
                     }
@@ -886,7 +921,7 @@ namespace HowLongToBeat.Services
                                 }
                                 else
                                 {
-                                    if (PluginSettings?.Settings is HowLongToBeatSettings vs8 && vs8.EnableVerboseLogging)
+                                    if (IsVerboseLoggingEnabled)
                                     {
                                         Logger.Debug($"No existing data in website find for {game.Name}");
                                     }

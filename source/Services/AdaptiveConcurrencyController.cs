@@ -24,19 +24,14 @@ namespace HowLongToBeat.Services
         public AdaptiveConcurrencyController(int initial, int min, int max, TimeSpan? interval = null)
         {
             // Validate inputs
-            if (min < 0)
-            {
-                throw new ArgumentOutOfRangeException(nameof(min), "min must be >= 0");
-            }
-
-            if (min < 1)
-            {
-                throw new ArgumentOutOfRangeException(nameof(min), "min must be >= 1");
-            }
-            
-             if (max < 0)
+             if (min < 1)
              {
-                 throw new ArgumentOutOfRangeException(nameof(max), "max must be >= 0");
+                 throw new ArgumentOutOfRangeException(nameof(min), "min must be >= 1");
+             }
+             
+             if (max < 1)
+             {
+                 throw new ArgumentOutOfRangeException(nameof(max), "max must be >= 1");
              }
 
              if (min > max)
@@ -111,7 +106,11 @@ namespace HowLongToBeat.Services
             int current;
             lock (sync)
             {
-                latency = emaLatencyMs < 0 ? 0 : emaLatencyMs;
+                if (emaLatencyMs < 0)
+                {
+                    return;
+                }
+                latency = emaLatencyMs;
                 error = emaError;
                 current = targetConcurrency;
             }

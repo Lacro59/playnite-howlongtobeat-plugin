@@ -31,6 +31,7 @@ namespace HowLongToBeat.Controls
 
         private CancellationTokenSource _loadedCts;
         private bool _eventsWired;
+        private int _wireGeneration = 0;
         private int _initGate = 0;
 
         public PluginViewItem()
@@ -91,10 +92,10 @@ namespace HowLongToBeat.Controls
                     // Apply settings
                     try { PluginSettings_PropertyChanged(null, null); }
                     catch (Exception ex) { try { Common.LogError(ex, false, true, PluginDatabase.PluginName); } catch { } }
+                    try { System.Threading.Interlocked.Increment(ref _wireGeneration); _eventsWired = true; } catch { }
                 }).Task.ConfigureAwait(false);
 
                 // Mark as initialized so subsequent Loaded events skip initialization until Unloaded resets it
-                _eventsWired = true;
                 initialized = true;
             }
             catch (OperationCanceledException)
@@ -149,14 +150,21 @@ namespace HowLongToBeat.Controls
             // If we previously wired events, unsubscribe them so control can be reinitialized later
             if (_eventsWired)
             {
+                int capturedGeneration = _wireGeneration;
                 Action unsub = () =>
                 {
-                    try { PluginDatabase.PluginSettings.PropertyChanged -= PluginSettings_PropertyChanged; } catch { }
-                    try { PluginDatabase.Database.ItemUpdated -= Database_ItemUpdated; } catch { }
-                    try { PluginDatabase.Database.ItemCollectionChanged -= Database_ItemCollectionChanged; } catch { }
-                    try { API.Instance.Database.Games.ItemUpdated -= Games_ItemUpdated; } catch { }
-                    // Mark as unwired while performing the actual unsubscribe on the UI thread to avoid races with re-loaded events
-                    _eventsWired = false;
+                    try
+                    {
+                        if (capturedGeneration == _wireGeneration)
+                        {
+                            try { PluginDatabase.PluginSettings.PropertyChanged -= PluginSettings_PropertyChanged; } catch { }
+                            try { PluginDatabase.Database.ItemUpdated -= Database_ItemUpdated; } catch { }
+                            try { PluginDatabase.Database.ItemCollectionChanged -= Database_ItemCollectionChanged; } catch { }
+                            try { API.Instance.Database.Games.ItemUpdated -= Games_ItemUpdated; } catch { }
+                            _eventsWired = false;
+                        }
+                    }
+                    catch { }
                 };
 
                 if (this.Dispatcher.CheckAccess())

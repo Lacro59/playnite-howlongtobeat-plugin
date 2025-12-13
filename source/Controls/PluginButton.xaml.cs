@@ -113,6 +113,9 @@ namespace HowLongToBeat.Controls
                     }
                 }
 
+                try { localCts.Dispose(); } catch { }
+                try { if (_loadedCts == localCts) _loadedCts = null; } catch { }
+
                 await this.Dispatcher.InvokeAsync((Action)(() =>
                 {
                     // Ensure the control is still loaded and not in the middle of unloading to avoid re-wiring after Unloaded.

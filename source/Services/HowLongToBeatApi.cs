@@ -51,11 +51,11 @@ namespace HowLongToBeat.Services
         /// Returns the new currentLimit value which the caller should persist to the corresponding field.
         /// This is extracted to avoid duplicating complex permit-release/consume logic in multiple places.
         /// </summary>
-        private async Task<int> AdjustSemaphoreLimit(SemaphoreSlim semaphore, int currentLimit, int targetLimit, object syncLock, string context = null)
+        private async Task<int> AdjustSemaphoreLimit(SemaphoreSlim semaphore, int currentLimitSnapshot, int targetLimit, object syncLock, string context = null)
         {
             if (semaphore == null)
             {
-                return currentLimit;
+                return currentLimitSnapshot;
             }
 
             try
@@ -65,17 +65,17 @@ namespace HowLongToBeat.Services
                 // Compute difference under lock and handle immediate increases (release permits)
                 lock (syncLock)
                 {
-                    int diff = targetLimit - currentLimit;
+                    int diff = targetLimit - currentLimitSnapshot;
                     if (diff > 0)
                     {
                         try
                         {
                             semaphore.Release(diff);
-                            currentLimit = targetLimit;
+                            currentLimitSnapshot = targetLimit;
                         }
                         catch { }
 
-                        return currentLimit;
+                        return currentLimitSnapshot;
                     }
 
                     if (diff < 0)
@@ -116,7 +116,7 @@ namespace HowLongToBeat.Services
                     // Update the shared currentLimit under lock based on how many permits we actually consumed
                     lock (syncLock)
                     {
-                        int originalLimit = currentLimit;
+                        int originalLimit = currentLimitSnapshot;
                         int newLimit;
 
                         if (consumed == pendingConsume)
@@ -132,7 +132,7 @@ namespace HowLongToBeat.Services
                             newLimit = Math.Min(originalLimit, newLimit);
                         }
 
-                        currentLimit = newLimit;
+                        currentLimitSnapshot = newLimit;
                     }
                 }
             }
@@ -141,7 +141,7 @@ namespace HowLongToBeat.Services
                 try { Logger.Warn(ex, $"HLTB: AdjustSemaphoreLimit error ({context})"); } catch { }
             }
 
-            return currentLimit;
+            return currentLimitSnapshot;
         }
 
 
@@ -280,7 +280,7 @@ namespace HowLongToBeat.Services
 
                 httpClient = new HttpClient(handler)
                 {
-                    Timeout = TimeSpan.FromMilliseconds(GameDataDownloadTimeoutMs)
+                    Timeout = System.Threading.Timeout.InfiniteTimeSpan
                 };
                 httpClient.DefaultRequestHeaders.Add("User-Agent", Web.UserAgent);
                 httpClient.DefaultRequestHeaders.Add("Referer", UrlBase);
