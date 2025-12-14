@@ -147,7 +147,7 @@ namespace HowLongToBeat
         #region Settings StartPage
 
         private HltbChartStatsOptions _hltbChartStatsOptions = new HltbChartStatsOptions();
-        public HltbChartStatsOptions hltbChartStatsOptions { get => _hltbChartStatsOptions; set => SetValue(ref _hltbChartStatsOptions, value); }
+        public HltbChartStatsOptions HltbChartStatsOptions { get => _hltbChartStatsOptions; set => SetValue(ref _hltbChartStatsOptions, value); }
 
         #endregion
 
@@ -390,15 +390,18 @@ namespace HowLongToBeat
 
             if (Settings.Platforms.Count == 0)
             {
-                 _ = Task.Run(async () =>
-                 {
+                _ = Task.Run(async () =>
+                {
                     try
                     {
                         while (!API.Instance.Database.IsOpen)
                         {
                             await Task.Delay(100).ConfigureAwait(false);
                         }
-                        API.Instance.Database.Platforms.ForEach(x =>
+
+                        var matches = new List<HltbPlatformMatch>();
+
+                        foreach (var x in API.Instance.Database.Platforms)
                         {
                             try
                             {
@@ -424,32 +427,17 @@ namespace HowLongToBeat
 
                                     if (Fuzz.Ratio(x.Name, hltbPlatform.GetDescription()) >= 99 || Fuzz.Ratio(tmpName, hltbPlatform.GetDescription()) >= 99)
                                     {
-                                        HltbPlatformMatch a = new HltbPlatformMatch
-                                        {
-                                            HltbPlatform = hltbPlatform,
-                                            Platform = x
-                                        };
-                                        Settings.Platforms.Add(a);
+                                        matches.Add(new HltbPlatformMatch { HltbPlatform = hltbPlatform, Platform = x });
                                     }
 
                                     if (x.Name == "PC (DOS)" && hltbPlatform == HltbPlatform.PC)
                                     {
-                                        HltbPlatformMatch a = new HltbPlatformMatch
-                                        {
-                                            HltbPlatform = hltbPlatform,
-                                            Platform = x
-                                        };
-                                        Settings.Platforms.Add(a);
+                                        matches.Add(new HltbPlatformMatch { HltbPlatform = hltbPlatform, Platform = x });
                                     }
 
                                     if (x.Name == "PC (Windows)" && hltbPlatform == HltbPlatform.PC)
                                     {
-                                        HltbPlatformMatch a = new HltbPlatformMatch
-                                        {
-                                            HltbPlatform = hltbPlatform,
-                                            Platform = x
-                                        };
-                                        Settings.Platforms.Add(a);
+                                        matches.Add(new HltbPlatformMatch { HltbPlatform = hltbPlatform, Platform = x });
                                     }
                                 }
                             }
@@ -457,14 +445,43 @@ namespace HowLongToBeat
                             {
                                 Common.LogError(ex, false);
                             }
-                        });
+                        }
+
+                        if (matches.Count > 0)
+                        {
+                            try
+                            {
+                                Application.Current?.Dispatcher?.Invoke(() =>
+                                {
+                                    try
+                                    {
+                                        foreach (var m in matches)
+                                        {
+                                            bool exists = Settings.Platforms.Any(p => p.Platform?.Id == m.Platform?.Id && p.HltbPlatform == m.HltbPlatform);
+                                            if (!exists)
+                                            {
+                                                Settings.Platforms.Add(m);
+                                            }
+                                        }
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        Common.LogError(ex, false);
+                                    }
+                                });
+                            }
+                            catch (Exception ex)
+                            {
+                                Common.LogError(ex, false);
+                            }
+                        }
                     }
                     catch (Exception ex)
                     {
                         Common.LogError(ex, false);
                     }
-                 });
-             }
+                });
+            }
 
             if (Settings.ThumbLinearGradient == null && Settings.ThumbSolidColorBrush == null)
             {

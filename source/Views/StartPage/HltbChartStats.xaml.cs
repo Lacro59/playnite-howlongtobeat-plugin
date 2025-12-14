@@ -81,21 +81,21 @@ namespace HowLongToBeat.Views.StartPage
                 return;
             }
 
-            ControlDataContext.Margin = PluginDatabase.PluginSettings.Settings.hltbChartStatsOptions.Margin;
-            ControlDataContext.ChartTitle = PluginDatabase.PluginSettings.Settings.hltbChartStatsOptions.ChartTitle;
-            ControlDataContext.ChartLabels = PluginDatabase.PluginSettings.Settings.hltbChartStatsOptions.ChartLabels;
-            ControlDataContext.ChartLabelsOrdinates = PluginDatabase.PluginSettings.Settings.hltbChartStatsOptions.ChartLabelsOrdinates;
+            ControlDataContext.Margin = PluginDatabase.PluginSettings.Settings.HltbChartStatsOptions.Margin;
+            ControlDataContext.ChartTitle = PluginDatabase.PluginSettings.Settings.HltbChartStatsOptions.ChartTitle;
+            ControlDataContext.ChartLabels = PluginDatabase.PluginSettings.Settings.HltbChartStatsOptions.ChartLabels;
+            ControlDataContext.ChartLabelsOrdinates = PluginDatabase.PluginSettings.Settings.HltbChartStatsOptions.ChartLabelsOrdinates;
 
             _ = Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Render, (Action)delegate
             {
-                switch (PluginDatabase.PluginSettings.Settings.hltbChartStatsOptions.StatsType)
+                switch (PluginDatabase.PluginSettings.Settings.HltbChartStatsOptions.StatsType)
                 {
                     case ChartStatsType.year:
-                        SetChartDataYear(Convert.ToInt32(PluginDatabase.PluginSettings.Settings.hltbChartStatsOptions.DataNumber));
+                        SetChartDataYear(Convert.ToInt32(PluginDatabase.PluginSettings.Settings.HltbChartStatsOptions.DataNumber));
                         break;
 
                     case ChartStatsType.month:
-                        SetChartDataMonth(Convert.ToInt32(PluginDatabase.PluginSettings.Settings.hltbChartStatsOptions.DataNumber));
+                        SetChartDataMonth(Convert.ToInt32(PluginDatabase.PluginSettings.Settings.HltbChartStatsOptions.DataNumber));
                         break;
 
                     default:

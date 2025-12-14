@@ -15,7 +15,6 @@
 
     <controls:PluginUserControlExtend.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
-        <converters:StringNullOrEmptyToBoolConverter x:Key="StringNullOrEmptyToBoolConverter"/>
     </controls:PluginUserControlExtend.Resources>
 
     <Grid Name="PART_GridContener">
@@ -24,7 +23,8 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <Grid Grid.Row="0" Margin="0,-20,0,0">
+        <Grid Grid.Row="0"
+                Margin="0,-20,0,0">
             <controlsShared:ProgressBarExtend x:Name="PART_ProgressBarThird"
                                               Background="Transparent"
                                               MarginLeft="0"
@@ -49,7 +49,10 @@
                     Margin="-6,0,-6,0"
                     Value="0"
                     Height="{Binding ElementName=PART_ProgressBarFirst, Path=IndicatorHeight}"
-                    VerticalAlignment="Center">
+                    VerticalAlignment="Center"
+                    IsHitTestVisible="False"
+                    Focusable="False"
+                    IsTabStop="False">
                 <Slider.Style>
                     <Style TargetType="{x:Type Slider}"
                            BasedOn="{StaticResource {x:Type Slider}}">
@@ -85,12 +88,18 @@
                                                        VerticalAlignment="Center">
                                                     <Thumb.Style>
                                                         <Style TargetType="{x:Type Thumb}">
-                                                            <Setter Property="Background" Value="{Binding ThumbColor}"/>
+                                                            <Setter Property="Background"
+                                                                    Value="{Binding ThumbColor}"/>
                                                             <Setter Property="Template">
                                                                 <Setter.Value>
                                                                     <ControlTemplate TargetType="{x:Type Thumb}">
-                                                                        <Grid VerticalAlignment="Center" HorizontalAlignment="Center">
-                                                                            <Polygon Points="6,0 12,12 0,12" Fill="{TemplateBinding Background}" Stroke="{TemplateBinding Background}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                                        <Grid VerticalAlignment="Center"
+                                                                                HorizontalAlignment="Center">
+                                                                            <Polygon Points="6,0 12,12 0,12"
+                                                                                    Fill="{TemplateBinding Background}"
+                                                                                    Stroke="{TemplateBinding Background}"
+                                                                                    HorizontalAlignment="Center"
+                                                                                    VerticalAlignment="Center"/>
                                                                         </Grid>
                                                                     </ControlTemplate>
                                                                 </Setter.Value>
@@ -148,8 +157,11 @@
                                                     Value="Horizontal"/>
                                         </Trigger>
 
-                                        <DataTrigger Binding="{Binding DataContext.PlaytimeValue, RelativeSource={RelativeSource AncestorType={x:Type controls:PluginUserControlExtend}}}" Value="0">
-                                            <Setter TargetName="SliderPlaytimeThumb" Property="Visibility" Value="Collapsed"/>
+                                        <DataTrigger Binding="{Binding DataContext.PlaytimeValue, RelativeSource={RelativeSource AncestorType={x:Type controls:PluginUserControlExtend}}}"
+                                                Value="0">
+                                            <Setter TargetName="SliderPlaytimeThumb"
+                                                    Property="Visibility"
+                                                    Value="Collapsed"/>
                                         </DataTrigger>
                                     </ControlTemplate.Triggers>
                                 </ControlTemplate>
@@ -200,13 +212,41 @@
                                                   Margin="{Binding ElementName=SliderPlaytime, Path=Margin}"/>
             </Grid>
         </Grid>
-        <StackPanel x:Name="PART_TimeTexts" Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,-20,0,0" VerticalAlignment="Top"
+        <StackPanel x:Name="PART_TimeTexts"
+                Grid.Row="1"
+                Orientation="Horizontal"
+                HorizontalAlignment="Center"
+                Margin="0,-20,0,0"
+                VerticalAlignment="Top"
                     Visibility="{Binding TextBelowVisibility, Converter={StaticResource BooleanToVisibilityConverter}}">
-            <TextBlock x:Name="PART_TimeText1" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" Margin="0,0,2,0" Foreground="{Binding ThumbFirst}" Visibility="Collapsed" />
-            <TextBlock x:Name="PART_TimeSep12" Text=" - " Margin="2,0" VerticalAlignment="Center" Visibility="Collapsed" />
-            <TextBlock x:Name="PART_TimeText2" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" Margin="2,0,2,0" Foreground="{Binding ThumbSecond}" Visibility="Collapsed" />
-            <TextBlock x:Name="PART_TimeSep23" Text=" - " Margin="2,0" VerticalAlignment="Center" Visibility="Collapsed" />
-            <TextBlock x:Name="PART_TimeText3" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" Margin="2,0,0,0" Foreground="{Binding ThumbThird}" Visibility="Collapsed" />
+            <TextBlock x:Name="PART_TimeText1"
+                    TextTrimming="CharacterEllipsis"
+                    VerticalAlignment="Center"
+                    Margin="0,0,2,0"
+                    Foreground="{Binding ThumbFirst}"
+                    Visibility="Collapsed"/>
+            <TextBlock x:Name="PART_TimeSep12"
+                    Text=" - "
+                    Margin="2,0"
+                    VerticalAlignment="Center"
+                    Visibility="Collapsed"/>
+            <TextBlock x:Name="PART_TimeText2"
+                    TextTrimming="CharacterEllipsis"
+                    VerticalAlignment="Center"
+                    Margin="2,0,2,0"
+                    Foreground="{Binding ThumbSecond}"
+                    Visibility="Collapsed"/>
+            <TextBlock x:Name="PART_TimeSep23"
+                    Text=" - "
+                    Margin="2,0"
+                    VerticalAlignment="Center"
+                    Visibility="Collapsed"/>
+            <TextBlock x:Name="PART_TimeText3"
+                    TextTrimming="CharacterEllipsis"
+                    VerticalAlignment="Center"
+                    Margin="2,0,0,0"
+                    Foreground="{Binding ThumbThird}"
+                    Visibility="Collapsed"/>
         </StackPanel>
     </Grid>
 </controls:PluginUserControlExtend>

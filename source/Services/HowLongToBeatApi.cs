@@ -283,7 +283,7 @@ namespace HowLongToBeat.Services
                 {
                     Timeout = System.Threading.Timeout.InfiniteTimeSpan
                 };
-                httpClient.DefaultRequestHeaders.Add("User-Agent", Web.UserAgent);
+                httpClient.DefaultRequestHeaders.TryAddWithoutValidation("User-Agent", Web.UserAgent);
                 httpClient.DefaultRequestHeaders.Add("Referer", UrlBase);
                 try { httpClient.DefaultRequestHeaders.Add("accept", "application/json, text/javascript, */*; q=0.01"); } catch { }
             }

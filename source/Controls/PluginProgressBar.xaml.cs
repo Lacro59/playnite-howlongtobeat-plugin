@@ -26,10 +26,11 @@ namespace HowLongToBeat.Controls
         protected override IDataContext controlDataContext
         {
             get => ControlDataContext;
-            set => ControlDataContext = (PluginProgressBarDataContext)value;
+            set => ControlDataContext = value as PluginProgressBarDataContext ?? new PluginProgressBarDataContext();
         }
 
         private CancellationTokenSource _loadCts;
+        private CancellationTokenSource _initCts;
         private readonly Brush[] _cachedThumbBrushes = new Brush[3];
         private readonly Brush[] _cachedThumbUserBrushes = new Brush[3];
         private ProgressSnapshot _lastSnapshot = null;
@@ -45,30 +46,64 @@ namespace HowLongToBeat.Controls
             InitializeComponent();
             DataContext = ControlDataContext;
 
-            ThreadPool.QueueUserWorkItem(_ =>
+            _initCts = new CancellationTokenSource();
+            var initToken = _initCts.Token;
+            _ = Task.Run(async () =>
             {
                 try
                 {
                     while (!PluginDatabase.IsLoaded)
                     {
-                        Thread.Sleep(100);
+                        await Task.Delay(100, initToken).ConfigureAwait(false);
                     }
 
                     Application.Current.Dispatcher.Invoke(() =>
                     {
-                        PluginDatabase.PluginSettings.PropertyChanged += PluginSettings_PropertyChanged;
-                        PluginDatabase.Database.ItemUpdated += Database_ItemUpdated;
-                        PluginDatabase.Database.ItemCollectionChanged += Database_ItemCollectionChanged;
-                        API.Instance.Database.Games.ItemUpdated += Games_ItemUpdated;
+                        try
+                        {
+                            PluginDatabase.PluginSettings.PropertyChanged += PluginSettings_PropertyChanged;
+                            PluginDatabase.Database.ItemUpdated += Database_ItemUpdated;
+                            PluginDatabase.Database.ItemCollectionChanged += Database_ItemCollectionChanged;
+                            API.Instance.Database.Games.ItemUpdated += Games_ItemUpdated;
 
-                        PluginSettings_PropertyChanged(null, null);
+                            PluginSettings_PropertyChanged(null, null);
+                        }
+                        catch (Exception ex)
+                        {
+                            Common.LogError(ex, false, true, PluginDatabase.PluginName);
+                        }
                     });
                 }
+                catch (OperationCanceledException) { }
                 catch (Exception ex)
                 {
                     Common.LogError(ex, false, true, PluginDatabase.PluginName);
                 }
-            });
+            }, initToken);
+
+            this.Unloaded += PluginProgressBar_Unloaded;
+        }
+
+        private void PluginProgressBar_Unloaded(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                try { _initCts?.Cancel(); } catch { }
+                try { _initCts?.Dispose(); _initCts = null; } catch { }
+
+                try
+                {
+                    Application.Current?.Dispatcher?.Invoke(() =>
+                    {
+                        try { if (PluginDatabase?.PluginSettings != null) PluginDatabase.PluginSettings.PropertyChanged -= PluginSettings_PropertyChanged; } catch { }
+                        try { if (PluginDatabase?.Database != null) PluginDatabase.Database.ItemUpdated -= Database_ItemUpdated; } catch { }
+                        try { if (PluginDatabase?.Database != null) PluginDatabase.Database.ItemCollectionChanged -= Database_ItemCollectionChanged; } catch { }
+                        try { if (API.Instance != null && API.Instance.Database != null) API.Instance.Database.Games.ItemUpdated -= Games_ItemUpdated; } catch { }
+                    });
+                }
+                catch { }
+            }
+            catch { }
         }
 
         protected override void PluginSettings_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -130,7 +165,10 @@ namespace HowLongToBeat.Controls
                     }
                 }));
             }
-            catch { }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, false, true, PluginDatabase.PluginName);
+            }
         }
 
         public override void SetDefaultDataContext()
@@ -224,22 +262,24 @@ namespace HowLongToBeat.Controls
             {
                 try { _loadCts?.Cancel(); } catch { }
                 try { _loadCts?.Dispose(); } catch { }
-                _loadCts = new CancellationTokenSource();
+                var cts = new CancellationTokenSource();
+                var previous = System.Threading.Interlocked.Exchange(ref _loadCts, cts);
+                try { previous?.Cancel(); } catch { }
+                try { previous?.Dispose(); } catch { }
+
                 try
                 {
-                    await Task.Delay(_debounceMs, _loadCts.Token).ConfigureAwait(false);
+                    await Task.Delay(_debounceMs, cts.Token).ConfigureAwait(false);
                 }
                 catch (OperationCanceledException)
                 {
                     return;
                 }
 
-                var snapshot = await LoadDataAsync(gameHowLongToBeat, _loadCts.Token).ConfigureAwait(false);
-
-                if (snapshot == null) return;
-
-                if (_lastSnapshot != null && SnapshotEquals(_lastSnapshot, snapshot))
+                var snapshot = await LoadDataAsync(gameHowLongToBeat, cts.Token).ConfigureAwait(false);
+                if (cts.IsCancellationRequested || !object.ReferenceEquals(_loadCts, cts))
                 {
+                    try { snapshot = null; } catch { }
                     return;
                 }
 
@@ -368,14 +408,46 @@ namespace HowLongToBeat.Controls
             if (a == null || b == null) return false;
             if (a.MaxValue != b.MaxValue) return false;
             if (a.PlaytimeValue != b.PlaytimeValue) return false;
-            for (int i = 0; i < 3; i++)
+
+            int max = 0;
+            max = Math.Max(max, a.ProgressValues?.Length ?? 0);
+            max = Math.Max(max, b.ProgressValues?.Length ?? 0);
+            max = Math.Max(max, a.ProgressFormats?.Length ?? 0);
+            max = Math.Max(max, b.ProgressFormats?.Length ?? 0);
+            max = Math.Max(max, a.SliderValues?.Length ?? 0);
+            max = Math.Max(max, b.SliderValues?.Length ?? 0);
+            max = Math.Max(max, a.SliderVisibilities?.Length ?? 0);
+            max = Math.Max(max, b.SliderVisibilities?.Length ?? 0);
+            max = Math.Max(max, a.ThumbBrushes?.Length ?? 0);
+            max = Math.Max(max, b.ThumbBrushes?.Length ?? 0);
+            max = Math.Max(max, a.ThumbUserBrushes?.Length ?? 0);
+            max = Math.Max(max, b.ThumbUserBrushes?.Length ?? 0);
+
+            for (int i = 0; i < max; i++)
             {
-                if (a.ProgressValues?[i] != b.ProgressValues?[i]) return false;
-                if (!string.Equals(a.ProgressFormats?[i], b.ProgressFormats?[i])) return false;
-                if (a.SliderValues?[i] != b.SliderValues?[i]) return false;
-                if (a.SliderVisibilities?[i] != b.SliderVisibilities?[i]) return false;
-                if (!object.ReferenceEquals(a.ThumbBrushes?[i], b.ThumbBrushes?[i])) return false;
-                if (!object.ReferenceEquals(a.ThumbUserBrushes?[i], b.ThumbUserBrushes?[i])) return false;
+                long aProgress = (a.ProgressValues != null && i < a.ProgressValues.Length) ? a.ProgressValues[i] : 0;
+                long bProgress = (b.ProgressValues != null && i < b.ProgressValues.Length) ? b.ProgressValues[i] : 0;
+                if (aProgress != bProgress) return false;
+
+                string aFmt = (a.ProgressFormats != null && i < a.ProgressFormats.Length) ? a.ProgressFormats[i] : null;
+                string bFmt = (b.ProgressFormats != null && i < b.ProgressFormats.Length) ? b.ProgressFormats[i] : null;
+                if (!string.Equals(aFmt, bFmt)) return false;
+
+                long aSlider = (a.SliderValues != null && i < a.SliderValues.Length) ? a.SliderValues[i] : 0;
+                long bSlider = (b.SliderValues != null && i < b.SliderValues.Length) ? b.SliderValues[i] : 0;
+                if (aSlider != bSlider) return false;
+
+                Visibility aVis = (a.SliderVisibilities != null && i < a.SliderVisibilities.Length) ? a.SliderVisibilities[i] : Visibility.Collapsed;
+                Visibility bVis = (b.SliderVisibilities != null && i < b.SliderVisibilities.Length) ? b.SliderVisibilities[i] : Visibility.Collapsed;
+                if (aVis != bVis) return false;
+
+                var aBrush = (a.ThumbBrushes != null && i < a.ThumbBrushes.Length) ? a.ThumbBrushes[i] : null;
+                var bBrush = (b.ThumbBrushes != null && i < b.ThumbBrushes.Length) ? b.ThumbBrushes[i] : null;
+                if (!object.ReferenceEquals(aBrush, bBrush)) return false;
+
+                var aUserBrush = (a.ThumbUserBrushes != null && i < a.ThumbUserBrushes.Length) ? a.ThumbUserBrushes[i] : null;
+                var bUserBrush = (b.ThumbUserBrushes != null && i < b.ThumbUserBrushes.Length) ? b.ThumbUserBrushes[i] : null;
+                if (!object.ReferenceEquals(aUserBrush, bUserBrush)) return false;
             }
             return true;
         }
@@ -542,15 +614,29 @@ namespace HowLongToBeat.Controls
                     }
 
                     maxHltb = maxValue;
-                    if (playtime > maxValue)
+
+                    if (maxHltb <= 0)
                     {
                         maxValue = playtime;
                     }
-
-                    long MaxPercent = (long)Math.Ceiling((double)(10 * maxHltb / 100));
-                    if (maxValue > maxHltb + MaxPercent)
+                    else
                     {
-                        maxValue = maxHltb + MaxPercent;
+                        if (playtime > maxValue)
+                        {
+                            maxValue = playtime;
+                        }
+
+                        long MaxPercent = (long)Math.Ceiling(maxHltb * 0.10);
+                        double cappedMax = maxHltb + MaxPercent;
+                        if (maxValue > cappedMax)
+                        {
+                            maxValue = cappedMax;
+                        }
+
+                        if (maxValue < playtime)
+                        {
+                            maxValue = playtime;
+                        }
                     }
 
                     if (cancellationToken.IsCancellationRequested) return null;

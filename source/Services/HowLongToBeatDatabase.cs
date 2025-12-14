@@ -41,31 +41,41 @@ namespace HowLongToBeat.Services
         {
             try
             {
-                using (var ctsTimeout = new CancellationTokenSource())
-                using (var linked = CancellationTokenSource.CreateLinkedTokenSource(ctsTimeout.Token, externalToken))
+                var ctsTimeout = new CancellationTokenSource();
+                var linked = CancellationTokenSource.CreateLinkedTokenSource(ctsTimeout.Token, externalToken);
+
+                var task = Task.Run(() => taskFactory(linked.Token), linked.Token);
+                var delayTask = Task.Delay(timeoutMs, linked.Token);
+
+                try
                 {
-                    var task = Task.Run(() => taskFactory(linked.Token), linked.Token);
-
-                    var delayTask = Task.Delay(timeoutMs, linked.Token);
-                    var completed = Task.WhenAny(task, delayTask).ConfigureAwait(false).GetAwaiter().GetResult();
-                    if (completed == task)
-                    {
-                        try { return task.GetAwaiter().GetResult(); } catch (Exception ex) { Common.LogError(ex, false); return default; }
-                    }
-                    else
-                    {
-                        if (delayTask.IsCanceled || linked.Token.IsCancellationRequested)
+                    Task.WhenAll(task.ContinueWith(t => { var _ = t.Exception; }, TaskContinuationOptions.OnlyOnFaulted), delayTask)
+                        .ContinueWith(_ =>
                         {
-                            try { ctsTimeout.Cancel(); } catch { }
-                            try { task.ContinueWith(t => { var _ = t.Exception; }, TaskContinuationOptions.OnlyOnFaulted); } catch { }
-                            return default;
-                        }
+                            try { ctsTimeout.Dispose(); } catch { }
+                            try { linked.Dispose(); } catch { }
+                        }, TaskContinuationOptions.ExecuteSynchronously);
+                }
+                catch { }
 
+                var completed = Task.WhenAny(task, delayTask).ConfigureAwait(false).GetAwaiter().GetResult();
+                if (completed == task)
+                {
+                    try { return task.GetAwaiter().GetResult(); } catch (Exception ex) { Common.LogError(ex, false); return default; }
+                }
+                else
+                {
+                    if (delayTask.IsCanceled || linked.Token.IsCancellationRequested)
+                    {
                         try { ctsTimeout.Cancel(); } catch { }
-                        try { Logger.Warn($"Operation timed out after {timeoutMs}ms"); } catch { }
                         try { task.ContinueWith(t => { var _ = t.Exception; }, TaskContinuationOptions.OnlyOnFaulted); } catch { }
                         return default;
-                     }
+                    }
+
+                    try { ctsTimeout.Cancel(); } catch { }
+                    try { Logger.Warn($"Operation timed out after {timeoutMs}ms"); } catch { }
+                    try { task.ContinueWith(t => { var _ = t.Exception; }, TaskContinuationOptions.OnlyOnFaulted); } catch { }
+                    return default;
                  }
              }
             catch (Exception ex)
@@ -607,74 +617,65 @@ namespace HowLongToBeat.Services
                 IsIndeterminate = true
             };
 
-            var tcs = new TaskCompletionSource<bool>();
             try
             {
                 API.Instance.Dialogs.ActivateGlobalProgress((activateGlobalProgress) =>
                 {
                     var ct = activateGlobalProgress?.CancelToken ?? CancellationToken.None;
-                    _ = Task.Run(async () =>
+
+                    try
                     {
+                        if (ct.IsCancellationRequested)
+                        {
+                            return;
+                        }
+
+                        HltbUserStats UserHltbData = null;
                         try
+                        {
+                            UserHltbData = HowLongToBeatApi.GetUserDataAsync().GetAwaiter().GetResult();
+                        }
+                        catch (Exception)
                         {
                             if (ct.IsCancellationRequested)
                             {
                                 return;
                             }
-
-                            HltbUserStats UserHltbData = null;
-                            try
-                            {
-                                UserHltbData = await HowLongToBeatApi.GetUserDataAsync().ConfigureAwait(false);
-                            }
-                            catch (Exception)
-                            {
-                                if (ct.IsCancellationRequested)
-                                {
-                                    return;
-                                }
-                                throw;
-                            }
-
-                            if (UserHltbData != null)
-                            {
-                                if (IsVerboseLoggingEnabled)
-                                {
-                                    Logger.Debug($"Find {UserHltbData.TitlesList?.Count ?? 0} games");
-                                }
-                                FileSystem.WriteStringToFileSafe(Path.Combine(Paths.PluginUserDataPath, "HltbUserStats.json"), Serialization.ToJson(UserHltbData));
-                                Database.UserHltbData = UserHltbData;
-
-                                if (PluginSettings.Settings.AutoSetGameStatus)
-                                {
-                                    SetGameStatusFromHltb();
-                                }
-
-                                Application.Current.Dispatcher?.Invoke(() =>
-                                {
-                                    Database.OnCollectionChanged(null, null);
-                                });
-                            }
-                            else
-                            {
-                                if (IsVerboseLoggingEnabled)
-                                {
-                                    Logger.Debug("Find no data");
-                                }
-                            }
+                            throw;
                         }
-                        catch (Exception ex)
+
+                        if (UserHltbData != null)
                         {
-                            try { Common.LogError(ex, false, true, PluginName); } catch { }
+                            if (IsVerboseLoggingEnabled)
+                            {
+                                Logger.Debug($"Find {UserHltbData.TitlesList?.Count ?? 0} games");
+                            }
+                            FileSystem.WriteStringToFileSafe(Path.Combine(Paths.PluginUserDataPath, "HltbUserStats.json"), Serialization.ToJson(UserHltbData));
+                            Database.UserHltbData = UserHltbData;
+
+                            if (PluginSettings.Settings.AutoSetGameStatus)
+                            {
+                                SetGameStatusFromHltb();
+                            }
+
+                            Application.Current.Dispatcher?.Invoke(() =>
+                            {
+                                Database.OnCollectionChanged(null, null);
+                            });
                         }
-                        finally
+                        else
                         {
-                            try { tcs.TrySetResult(true); } catch { }
+                            if (IsVerboseLoggingEnabled)
+                            {
+                                Logger.Debug("Find no data");
+                            }
                         }
-                    }, ct);
+                    }
+                    catch (Exception ex)
+                    {
+                        try { Common.LogError(ex, false, true, PluginName); } catch { }
+                    }
                 }, globalProgressOptions);
-
-                await tcs.Task.ConfigureAwait(false);
             }
             catch (Exception ex)
             {
