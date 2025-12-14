@@ -340,9 +340,16 @@ namespace HowLongToBeat
             {
                 try
                 {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    const int maxWaitMs = 30000;
                     while (!API.Instance.Database.IsOpen)
                     {
                         await Task.Delay(100).ConfigureAwait(false);
+                        if (sw.ElapsedMilliseconds > maxWaitMs)
+                        {
+                            try { if (Settings.EnableVerboseLogging) Common.LogDebug(true, "Timeout waiting for Database.IsOpen in StorefrontElements init"); } catch { }
+                            break;
+                        }
                     }
 
                     if (Settings.StorefrontElements.Count == 0)
@@ -425,9 +432,16 @@ namespace HowLongToBeat
                 {
                     try
                     {
+                        var sw = System.Diagnostics.Stopwatch.StartNew();
+                        const int maxWaitMs = 30000;
                         while (!API.Instance.Database.IsOpen)
                         {
                             await Task.Delay(100).ConfigureAwait(false);
+                            if (sw.ElapsedMilliseconds > maxWaitMs)
+                            {
+                                try { if (Settings.EnableVerboseLogging) Common.LogDebug(true, "Timeout waiting for Database.IsOpen in Platforms init"); } catch { }
+                                break;
+                            }
                         }
 
                         var matches = new List<HltbPlatformMatch>();

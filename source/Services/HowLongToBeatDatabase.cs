@@ -86,6 +86,67 @@ namespace HowLongToBeat.Services
             }
         }
 
+        // Optional: helper to try running the task and return success flag with output; callers can use this when they need explicit success semantics.
+        private static bool TryRunSyncWithTimeout<T>(Func<CancellationToken, Task<T>> taskFactory, out T result, int timeoutMs = 15000, CancellationToken externalToken = default)
+        {
+            result = default;
+            try
+            {
+                var ctsTimeout = new CancellationTokenSource();
+                var linked = CancellationTokenSource.CreateLinkedTokenSource(ctsTimeout.Token, externalToken);
+
+                var task = Task.Run(() => taskFactory(linked.Token), linked.Token);
+                var delayTask = Task.Delay(timeoutMs, linked.Token);
+
+                try
+                {
+                    Task.WhenAll(task.ContinueWith(t => { var _ = t.Exception; }, TaskContinuationOptions.OnlyOnFaulted), delayTask)
+                        .ContinueWith(_ =>
+                        {
+                            try { ctsTimeout.Dispose(); } catch { }
+                            try { linked.Dispose(); } catch { }
+                        }, TaskContinuationOptions.ExecuteSynchronously);
+                }
+                catch { }
+
+                var completed = Task.WhenAny(task, delayTask).ConfigureAwait(false).GetAwaiter().GetResult();
+                if (completed == task)
+                {
+                    try
+                    {
+                        result = task.GetAwaiter().GetResult();
+                        return true;
+                    }
+                    catch (Exception ex)
+                    {
+                        Common.LogError(ex, false);
+                        return false;
+                    }
+                }
+                else
+                {
+                    if (delayTask.IsCanceled || linked.Token.IsCancellationRequested)
+                    {
+                        try { ctsTimeout.Cancel(); } catch { }
+                        try { task.ContinueWith(t => { var _ = t.Exception; }, TaskContinuationOptions.OnlyOnFaulted); } catch { }
+                        return false;
+                    }
+
+                    try { ctsTimeout.Cancel(); } catch { }
+                    try { Logger.Warn($"Operation timed out after {timeoutMs}ms"); } catch { }
+                    try { task.ContinueWith(t => { var _ = t.Exception; }, TaskContinuationOptions.OnlyOnFaulted); } catch { }
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                try { Common.LogError(ex, false, true, "HowLongToBeatDatabase"); } catch { }
+                result = default;
+                return false;
+            }
+        }
+
+        // Overload to allow type inference when caller provides a Func<Task<T>>.
         private static T RunSyncWithTimeout<T>(Func<Task<T>> taskFactory, int timeoutMs = 15000)
         {
             return RunSyncWithTimeout(ct => taskFactory(), timeoutMs, CancellationToken.None);
@@ -332,8 +393,8 @@ namespace HowLongToBeat.Services
                 {
                     if (HowLongToBeatApi != null)
                     {
-                        var updated = RunSyncWithTimeout(() => HowLongToBeatApi.UpdateGameData(loadedItem.Items.First()), 15000);
-                        loadedItem.Items = new List<HltbDataUser> { updated ?? loadedItem.Items.First() };
+                        HltbDataUser updated = RunSyncWithTimeout(() => HowLongToBeatApi.UpdateGameData(loadedItem.Items.First()), 15000);
+                        loadedItem.Items = new List<HltbDataUser> { updated != null ? updated : loadedItem.Items.First() };
                     }
                     else
                     {
@@ -620,91 +681,79 @@ namespace HowLongToBeat.Services
 
             try
             {
-                var tcs = new TaskCompletionSource<bool>();
-
-                API.Instance.Dialogs.ActivateGlobalProgress((activateGlobalProgress) =>
+                // Fire-and-forget: activate global progress and run the async callback
+                _ = API.Instance.Dialogs.ActivateGlobalProgress(async (a) =>
                 {
-                    var ct = activateGlobalProgress?.CancelToken ?? CancellationToken.None;
+                    var ct = a?.CancelToken ?? CancellationToken.None;
 
-                    _ = Task.Run(async () =>
+                    try
                     {
+                        if (ct.IsCancellationRequested)
+                        {
+                            return;
+                        }
+
+                        HltbUserStats UserHltbData = null;
                         try
                         {
-                            if (ct.IsCancellationRequested)
+                            // Start the async operation and wait for completion or cancellation
+                            var userTask = HowLongToBeatApi.GetUserDataAsync();
+                            var completed = await Task.WhenAny(userTask, Task.Delay(Timeout.Infinite, ct)).ConfigureAwait(false);
+                            if (completed == userTask)
                             {
-                                tcs.TrySetResult(true);
-                                return;
-                            }
-
-                            HltbUserStats UserHltbData = null;
-
-                            try
-                            {
-                                var userTask = HowLongToBeatApi.GetUserDataAsync();
-                                var completed = await Task.WhenAny(userTask, Task.Delay(Timeout.Infinite, ct)).ConfigureAwait(false);
-                                if (completed == userTask)
-                                {
-                                    UserHltbData = await userTask.ConfigureAwait(false);
-                                }
-                                else
-                                {
-                                    tcs.TrySetResult(true);
-                                    return;
-                                }
-                            }
-                            catch (OperationCanceledException)
-                            {
-                                tcs.TrySetResult(true);
-                                return;
-                            }
-                            catch (Exception)
-                            {
-                                if (ct.IsCancellationRequested)
-                                {
-                                    tcs.TrySetResult(true);
-                                    return;
-                                }
-                                throw;
-                            }
-
-                            if (UserHltbData != null)
-                            {
-                                if (IsVerboseLoggingEnabled)
-                                {
-                                    Logger.Debug($"Find {UserHltbData.TitlesList?.Count ?? 0} games");
-                                }
-                                FileSystem.WriteStringToFileSafe(Path.Combine(Paths.PluginUserDataPath, "HltbUserStats.json"), Serialization.ToJson(UserHltbData));
-                                Database.UserHltbData = UserHltbData;
-
-                                if (PluginSettings.Settings.AutoSetGameStatus)
-                                {
-                                    SetGameStatusFromHltb();
-                                }
-
-                                Application.Current.Dispatcher?.Invoke(() =>
-                                {
-                                    Database.OnCollectionChanged(null, null);
-                                });
+                                UserHltbData = await userTask.ConfigureAwait(false);
                             }
                             else
                             {
-                                if (IsVerboseLoggingEnabled)
-                                {
-                                    Logger.Debug("Find no data");
-                                }
+                                // Cancelled via progress token
+                                return;
+                            }
+                        }
+                        catch (OperationCanceledException)
+                        {
+                            return;
+                        }
+                        catch (Exception)
+                        {
+                            if (ct.IsCancellationRequested)
+                            {
+                                return;
+                            }
+                            throw;
+                        }
+
+                        if (UserHltbData != null)
+                        {
+                            if (IsVerboseLoggingEnabled)
+                            {
+                                Logger.Debug($"Find {UserHltbData.TitlesList?.Count ?? 0} games");
+                            }
+                            FileSystem.WriteStringToFileSafe(Path.Combine(Paths.PluginUserDataPath, "HltbUserStats.json"), Serialization.ToJson(UserHltbData));
+                            Database.UserHltbData = UserHltbData;
+
+                            if (PluginSettings.Settings.AutoSetGameStatus)
+                            {
+                                SetGameStatusFromHltb();
                             }
 
-                            tcs.TrySetResult(true);
+                            Application.Current.Dispatcher?.Invoke(() =>
+                            {
+                                Database.OnCollectionChanged(null, null);
+                            });
                         }
-                        catch (Exception ex)
+                        else
                         {
-                            try { Common.LogError(ex, false, true, PluginName); } catch { }
-                            tcs.TrySetResult(true);
+                            if (IsVerboseLoggingEnabled)
+                            {
+                                Logger.Debug("Find no data");
+                            }
                         }
-                    }, CancellationToken.None);
+                    }
+                    catch (Exception ex)
+                    {
+                        try { Common.LogError(ex, false, true, PluginName); } catch { }
+                    }
                 }, globalProgressOptions);
-
-                await tcs.Task.ConfigureAwait(false);
             }
             catch (Exception ex)
             {

@@ -57,7 +57,8 @@ namespace HowLongToBeat.Services
             Action<int> setCurrentLimit,
             int targetLimit,
             object syncLock,
-            string context = null)
+            string context = null,
+            CancellationToken cancellationToken = default)
         {
             if (semaphore == null) return;
 
@@ -103,7 +104,11 @@ namespace HowLongToBeat.Services
                     {
                         try
                         {
-                            bool got = await semaphore.WaitAsync(tryWait).ConfigureAwait(false);
+                            if (cancellationToken.IsCancellationRequested)
+                            {
+                                break;
+                            }
+                            bool got = await semaphore.WaitAsync(tryWait, cancellationToken).ConfigureAwait(false);
                             if (!got)
                             {
                                 break; // timed out acquiring next permit; stop trying
@@ -1884,7 +1889,21 @@ namespace HowLongToBeat.Services
         /// </summary>
         public HltbUserStats GetUserData()
         {
-            try { return Task.Run(() => GetUserDataAsync()).Result; } catch { return null; }
+            try
+            {
+                var task = Task.Run(() => GetUserDataAsync());
+                if (!task.Wait(15000))
+                {
+                    try { Logger.Warn("GetUserData timed out"); } catch { }
+                    return null;
+                }
+                return task.Result;
+            }
+            catch (Exception ex)
+            {
+                try { Common.LogError(ex, false, false, PluginDatabase?.PluginName); } catch { }
+                return null;
+            }
         }
 
         /// <summary>
@@ -1909,7 +1928,21 @@ namespace HowLongToBeat.Services
         /// </summary>
         public string FindIdExisting(string gameId)
         {
-            try { return Task.Run(() => FindIdExistingAsync(gameId)).Result; } catch { return null; }
+            try
+            {
+                var task = Task.Run(() => FindIdExistingAsync(gameId));
+                if (!task.Wait(15000))
+                {
+                    try { Logger.Warn($"FindIdExisting({gameId}) timed out"); } catch { }
+                    return null;
+                }
+                return task.Result;
+            }
+            catch (Exception ex)
+            {
+                try { Common.LogError(ex, false, true, PluginDatabase.PluginName); } catch { }
+                return null;
+            }
         }
 
         /// <summary>
@@ -1919,7 +1952,13 @@ namespace HowLongToBeat.Services
         {
             try
             {
-                var userData = Task.Run(() => GetUserDataAsync()).Result;
+                var task = Task.Run(() => GetUserDataAsync());
+                if (!task.Wait(15000))
+                {
+                    try { Logger.Warn($"GetUserData (sync) timed out"); } catch { }
+                    return null;
+                }
+                var userData = task.Result;
                 return userData?.TitlesList?.Find(x => x.Id == gameId);
             }
             catch (Exception)
@@ -1932,7 +1971,13 @@ namespace HowLongToBeat.Services
         {
             try
             {
-                var ug = Task.Run(() => GetUserGamesList()).Result;
+                var task = Task.Run(() => GetUserGamesList());
+                if (!task.Wait(15000))
+                {
+                    try { Logger.Warn($"EditIdExist({userGameId}) timed out"); } catch { }
+                    return false;
+                }
+                var ug = task.Result;
                 return ug?.Data?.GamesList?.Find(x => x.Id.ToString().IsEqual(userGameId))?.Id != null;
             }
             catch
@@ -2064,9 +2109,16 @@ namespace HowLongToBeat.Services
                 // Run wait off the UI thread, then invoke UI work when ready
                 _ = Task.Run(async () =>
                 {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    const int maxWaitMs = 60000; // 60s max wait for database load
                     while (!PluginDatabase.IsLoaded)
                     {
                         await Task.Delay(100).ConfigureAwait(false);
+                        if (sw.ElapsedMilliseconds > maxWaitMs)
+                        {
+                            try { if (IsVerboseLoggingEnabled) Logger.Warn("Timeout waiting for PluginDatabase.IsLoaded in UpdatedCookies"); } catch { }
+                            break;
+                        }
                     }
 
                     try
