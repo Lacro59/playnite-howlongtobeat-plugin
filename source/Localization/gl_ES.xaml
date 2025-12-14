@@ -20,8 +20,8 @@
     <sys:String x:Key="LOCHowLongToBeatExportFolderTooltip">Cartafol de exportación</sys:String>
     <sys:String x:Key="LOCBrowseLabel">Explorar...</sys:String>
 
-    <sys:String x:Key="LOCExportSelectFolderFirst">Seleccione primeiro unha cartafol de exportación.</sys:String>
-    <sys:String x:Key="LOCExportFolderNotExist">A cartafol seleccionada non existe.</sys:String>
+    <sys:String x:Key="LOCExportSelectFolderFirst">Seleccione primeiro un cartafol de exportación.</sys:String>
+    <sys:String x:Key="LOCExportFolderNotExist">O cartafol seleccionado non existe.</sys:String>
     <sys:String x:Key="LOCExportedCsvMessage">{0} xogos exportados a CSV: {1} (separador '{2}')</sys:String>
     <sys:String x:Key="LOCExportedJsonMessage">{0} xogos exportados a JSON: {1}</sys:String>
     <sys:String x:Key="LOCExportFailedCount">Erro ao exportar {0} xogos (ver rexistros).</sys:String>
@@ -97,7 +97,6 @@ If none has this status, it takes the most recent.</sys:String>
     
     <sys:String x:Key="LOCHowLongToBeatUserData">User data</sys:String>
     <sys:String x:Key="LocHowLongToBeatPlayniteData">Playnite data</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatCompleted">Completed</sys:String>
 
     <sys:String x:Key="LOCHltbOnlyReplays">Only replays</sys:String>
     <sys:String x:Key="LOCHltbOnlyNotPlayed">Only not played</sys:String>

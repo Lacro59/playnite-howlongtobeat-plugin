@@ -347,33 +347,64 @@ namespace HowLongToBeat
 
                     if (Settings.StorefrontElements.Count == 0)
                     {
+                        var localElements = new List<Storefront>();
                         API.Instance.Database.Sources.ForEach(x =>
                         {
-                            Settings.StorefrontElements.Add(new Storefront { SourceId = x.Id });
+                            localElements.Add(new Storefront { SourceId = x.Id });
                         });
 
-                        // TODO TMP
                         if (!Settings.IsConverted)
                         {
-                            Settings.Storefronts.ForEach(x =>
-                            {
-                                if (x.HltbStorefrontId != HltbStorefront.None)
-                                {
-                                    if (Settings.StorefrontElements.Find(y => y.SourceId == x.SourceId) != null)
-                                    {
-                                        Settings.StorefrontElements.Find(y => y.SourceId == x.SourceId).HltbStorefrontId = x.HltbStorefrontId;
-                                    }
-                                }
-                            });
-                            Settings.IsConverted = true;
                             try
                             {
-                                Application.Current.Dispatcher?.Invoke(() => { Plugin.SavePluginSettings(Settings); });
+                                foreach (var s in Settings.Storefronts)
+                                {
+                                    if (s.HltbStorefrontId != HltbStorefront.None)
+                                    {
+                                        var match = localElements.Find(y => y.SourceId == s.SourceId);
+                                        if (match != null)
+                                        {
+                                            match.HltbStorefrontId = s.HltbStorefrontId;
+                                        }
+                                    }
+                                }
+
+                                Application.Current.Dispatcher?.Invoke(() =>
+                                {
+                                    try
+                                    {
+                                        Settings.StorefrontElements = localElements.Where(x => !x.SourceName.IsNullOrEmpty()).OrderBy(x => x.SourceName).ToList();
+                                        Settings.IsConverted = true;
+                                        Plugin.SavePluginSettings(Settings);
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        Common.LogError(ex, false);
+                                    }
+                                });
                             }
                             catch (Exception ex)
                             {
                                 Common.LogError(ex, false);
+                                Application.Current.Dispatcher?.Invoke(() =>
+                                {
+                                    Settings.StorefrontElements = localElements.Where(x => !x.SourceName.IsNullOrEmpty()).OrderBy(x => x.SourceName).ToList();
+                                });
                             }
+                        }
+                        else
+                        {
+                            Application.Current.Dispatcher?.Invoke(() =>
+                            {
+                                try
+                                {
+                                    Settings.StorefrontElements = localElements.Where(x => !x.SourceName.IsNullOrEmpty()).OrderBy(x => x.SourceName).ToList();
+                                }
+                                catch (Exception ex)
+                                {
+                                    Common.LogError(ex, false);
+                                }
+                            });
                         }
                     }
 

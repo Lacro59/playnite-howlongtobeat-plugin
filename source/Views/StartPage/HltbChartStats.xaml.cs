@@ -91,11 +91,11 @@ namespace HowLongToBeat.Views.StartPage
                 switch (PluginDatabase.PluginSettings.Settings.HltbChartStatsOptions.StatsType)
                 {
                     case ChartStatsType.year:
-                        SetChartDataYear(Convert.ToInt32(PluginDatabase.PluginSettings.Settings.HltbChartStatsOptions.DataNumber));
+                        SetChartDataYear(Math.Max(1, Convert.ToInt32(PluginDatabase.PluginSettings.Settings.HltbChartStatsOptions.DataNumber)));
                         break;
 
                     case ChartStatsType.month:
-                        SetChartDataMonth(Convert.ToInt32(PluginDatabase.PluginSettings.Settings.HltbChartStatsOptions.DataNumber));
+                        SetChartDataMonth(Math.Max(0, Convert.ToInt32(PluginDatabase.PluginSettings.Settings.HltbChartStatsOptions.DataNumber)));
                         break;
 
                     default:

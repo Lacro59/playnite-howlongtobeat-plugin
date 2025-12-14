@@ -11,6 +11,7 @@ using Playnite.SDK.Data;
 using Playnite.SDK.Models;
 using System;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -619,63 +620,91 @@ namespace HowLongToBeat.Services
 
             try
             {
+                var tcs = new TaskCompletionSource<bool>();
+
                 API.Instance.Dialogs.ActivateGlobalProgress((activateGlobalProgress) =>
                 {
                     var ct = activateGlobalProgress?.CancelToken ?? CancellationToken.None;
 
-                    try
+                    _ = Task.Run(async () =>
                     {
-                        if (ct.IsCancellationRequested)
-                        {
-                            return;
-                        }
-
-                        HltbUserStats UserHltbData = null;
                         try
-                        {
-                            UserHltbData = HowLongToBeatApi.GetUserDataAsync().GetAwaiter().GetResult();
-                        }
-                        catch (Exception)
                         {
                             if (ct.IsCancellationRequested)
                             {
+                                tcs.TrySetResult(true);
                                 return;
                             }
-                            throw;
-                        }
 
-                        if (UserHltbData != null)
+                            HltbUserStats UserHltbData = null;
+
+                            try
+                            {
+                                var userTask = HowLongToBeatApi.GetUserDataAsync();
+                                var completed = await Task.WhenAny(userTask, Task.Delay(Timeout.Infinite, ct)).ConfigureAwait(false);
+                                if (completed == userTask)
+                                {
+                                    UserHltbData = await userTask.ConfigureAwait(false);
+                                }
+                                else
+                                {
+                                    tcs.TrySetResult(true);
+                                    return;
+                                }
+                            }
+                            catch (OperationCanceledException)
+                            {
+                                tcs.TrySetResult(true);
+                                return;
+                            }
+                            catch (Exception)
+                            {
+                                if (ct.IsCancellationRequested)
+                                {
+                                    tcs.TrySetResult(true);
+                                    return;
+                                }
+                                throw;
+                            }
+
+                            if (UserHltbData != null)
+                            {
+                                if (IsVerboseLoggingEnabled)
+                                {
+                                    Logger.Debug($"Find {UserHltbData.TitlesList?.Count ?? 0} games");
+                                }
+                                FileSystem.WriteStringToFileSafe(Path.Combine(Paths.PluginUserDataPath, "HltbUserStats.json"), Serialization.ToJson(UserHltbData));
+                                Database.UserHltbData = UserHltbData;
+
+                                if (PluginSettings.Settings.AutoSetGameStatus)
+                                {
+                                    SetGameStatusFromHltb();
+                                }
+
+                                Application.Current.Dispatcher?.Invoke(() =>
+                                {
+                                    Database.OnCollectionChanged(null, null);
+                                });
+                            }
+                            else
+                            {
+                                if (IsVerboseLoggingEnabled)
+                                {
+                                    Logger.Debug("Find no data");
+                                }
+                            }
+
+                            tcs.TrySetResult(true);
+                        }
+                        catch (Exception ex)
                         {
-                            if (IsVerboseLoggingEnabled)
-                            {
-                                Logger.Debug($"Find {UserHltbData.TitlesList?.Count ?? 0} games");
-                            }
-                            FileSystem.WriteStringToFileSafe(Path.Combine(Paths.PluginUserDataPath, "HltbUserStats.json"), Serialization.ToJson(UserHltbData));
-                            Database.UserHltbData = UserHltbData;
-
-                            if (PluginSettings.Settings.AutoSetGameStatus)
-                            {
-                                SetGameStatusFromHltb();
-                            }
-
-                            Application.Current.Dispatcher?.Invoke(() =>
-                            {
-                                Database.OnCollectionChanged(null, null);
-                            });
+                            try { Common.LogError(ex, false, true, PluginName); } catch { }
+                            tcs.TrySetResult(true);
                         }
-                        else
-                        {
-                            if (IsVerboseLoggingEnabled)
-                            {
-                                Logger.Debug("Find no data");
-                            }
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        try { Common.LogError(ex, false, true, PluginName); } catch { }
-                    }
+                    }, CancellationToken.None);
                 }, globalProgressOptions);
+
+                await tcs.Task.ConfigureAwait(false);
             }
             catch (Exception ex)
             {
@@ -762,10 +791,12 @@ namespace HowLongToBeat.Services
                 IsIndeterminate = total == 1
             };
 
-            SemaphoreSlim sem = null;
+            // Use a producer/consumer worker pool instead of creating one Task per id for better scalability
             _ = API.Instance.Dialogs.ActivateGlobalProgress(async (a) =>
-             {
+            {
                 API.Instance.Database.BeginBufferUpdate();
+                BlockingCollection<Guid> queue = new BlockingCollection<Guid>();
+                var workers = new List<Task>();
                 try
                 {
                     Stopwatch stopWatch = new Stopwatch();
@@ -774,83 +805,90 @@ namespace HowLongToBeat.Services
                     a.ProgressMaxValue = total;
 
                     int parallelism = Math.Min(16, Math.Max(1, Environment.ProcessorCount * 2));
-                    sem = new SemaphoreSlim(parallelism, parallelism);
-                     var tasks = new List<Task>();
 
-                    foreach (Guid id in idsList)
-                     {
-                        tasks.Add(Task.Run(async () =>
+                    // Start worker tasks
+                    for (int w = 0; w < parallelism; ++w)
+                    {
+                        workers.Add(Task.Run(() =>
                         {
-                            if (a.CancelToken.IsCancellationRequested)
+                            while (true)
                             {
-                                return;
-                            }
+                                if (a.CancelToken.IsCancellationRequested) break;
 
-                            bool acquired = false;
-                            try
-                            {
+                                Guid id;
                                 try
                                 {
-                                    // Respect cancellation while waiting for a semaphore slot
-                                    await sem.WaitAsync(a.CancelToken).ConfigureAwait(false);
-                                    acquired = true;
+                                    id = queue.Take(a.CancelToken);
                                 }
                                 catch (OperationCanceledException)
                                 {
-                                    // Cancellation requested - stop this work item without releasing the semaphore
-                                    return;
+                                    break;
                                 }
-                                catch (Exception ex)
+                                catch (InvalidOperationException)
                                 {
-                                    Common.LogError(ex, false, true, PluginName);
-                                    return;
+                                    // Thrown when collection is completed
+                                    break;
                                 }
-
-                                if (a.CancelToken.IsCancellationRequested)
-                                {
-                                    return;
-                                }
-
-                                Game game = API.Instance.Database.Games.Get(id);
 
                                 try
                                 {
-                                    Application.Current.Dispatcher?.BeginInvoke(new Action(() =>
+                                    if (a.CancelToken.IsCancellationRequested) break;
+
+                                    Game game = API.Instance.Database.Games.Get(id);
+
+                                    try
                                     {
-                                        a.Text = PluginName + " - " + ResourceProvider.GetString("LOCCommonProcessing")
-                                            + (total == 1 ? string.Empty : "\n\n" + $"{a.CurrentProgressValue}/{a.ProgressMaxValue}")
-                                             + "\n" + game?.Name + (game?.Source == null ? string.Empty : $" ({game?.Source.Name})");
-                                    }));
-                                }
-                                catch { }
+                                        Application.Current.Dispatcher?.BeginInvoke(new Action(() =>
+                                        {
+                                            a.Text = PluginName + " - " + ResourceProvider.GetString("LOCCommonProcessing")
+                                                + (total == 1 ? string.Empty : "\n\n" + $"{a.CurrentProgressValue}/{a.ProgressMaxValue}")
+                                                + "\n" + game?.Name + (game?.Source == null ? string.Empty : $" ({game?.Source.Name})");
+                                        }));
+                                    }
+                                    catch { }
 
-                                try
-                                {
-                                    _ = SetCurrentPlayTime(game, noPlaying, isCompleted, isMain, isMainSide, is100, isSolo, isCoOp, isVs);
+                                    try
+                                    {
+                                        // Call synchronously; SetCurrentPlayTime is synchronous and may perform network work via RunSyncWithTimeout
+                                        _ = SetCurrentPlayTime(game, noPlaying, isCompleted, isMain, isMainSide, is100, isSolo, isCoOp, isVs);
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        Common.LogError(ex, false, true, PluginName);
+                                    }
+
+                                    try
+                                    {
+                                        Application.Current.Dispatcher?.BeginInvoke(new Action(() => { a.CurrentProgressValue++; }));
+                                    }
+                                    catch { }
                                 }
                                 catch (Exception ex)
                                 {
                                     Common.LogError(ex, false, true, PluginName);
                                 }
                             }
-                            finally
-                            {
-                                if (acquired)
-                                {
-                                    try { sem.Release(); } catch { }
-                                }
-                                try
-                                {
-                                    Application.Current.Dispatcher?.BeginInvoke(new Action(() => { a.CurrentProgressValue++; }));
-                                }
-                                catch { }
-                            }
-                        }));
+                        }, a.CancelToken));
+                    }
+
+                    // Enqueue items
+                    try
+                    {
+                        foreach (Guid id in idsList)
+                        {
+                            if (a.CancelToken.IsCancellationRequested) break;
+                            queue.Add(id, a.CancelToken);
+                        }
+                    }
+                    catch (OperationCanceledException) { }
+                    finally
+                    {
+                        queue.CompleteAdding();
                     }
 
                     try
                     {
-                        await Task.WhenAll(tasks.ToArray()).ConfigureAwait(false);
+                        await Task.WhenAll(workers.ToArray()).ConfigureAwait(false);
                     }
                     catch (AggregateException ex)
                     {
@@ -868,7 +906,7 @@ namespace HowLongToBeat.Services
                 {
                     try
                     {
-                        sem?.Dispose();
+                        queue?.Dispose();
                     }
                     catch (Exception ex)
                     {
@@ -884,7 +922,7 @@ namespace HowLongToBeat.Services
                         Common.LogError(ex, false, true, PluginName);
                     }
                 }
-             }, globalProgressOptions);
+            }, globalProgressOptions);
         }
 
         public bool SetCurrentPlayTime(Game game, bool noPlaying = false, bool isCompleted = false, bool isMain = false, bool isMainSide = false, bool is100 = false, bool isSolo = false, bool isCoOp = false, bool isVs = false)

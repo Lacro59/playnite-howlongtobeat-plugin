@@ -65,6 +65,8 @@ namespace HowLongToBeat.Services
             {
                 int pendingConsume = 0;
 
+                targetLimit = Math.Max(0, Math.Min(SemaphoreUpperBound, targetLimit));
+
                 // Compute difference under lock and handle immediate increases (release permits)
                 lock (syncLock)
                 {
@@ -75,9 +77,12 @@ namespace HowLongToBeat.Services
                         try
                         {
                             semaphore.Release(diff);
-                            setCurrentLimit(targetLimit);
+                            try { setCurrentLimit(targetLimit); } catch { }
                         }
-                        catch { }
+                        catch (Exception ex)
+                        {
+                            try { Logger.Warn(ex, $"HLTB: AdjustSemaphoreLimit failed to release {diff} permits ({context})"); } catch { }
+                        }
 
                         return;
                     }
@@ -284,7 +289,7 @@ namespace HowLongToBeat.Services
                     Timeout = System.Threading.Timeout.InfiniteTimeSpan
                 };
                 httpClient.DefaultRequestHeaders.TryAddWithoutValidation("User-Agent", Web.UserAgent);
-                httpClient.DefaultRequestHeaders.Add("Referer", UrlBase);
+                try { httpClient.DefaultRequestHeaders.TryAddWithoutValidation("Referer", UrlBase); } catch { }
                 try { httpClient.DefaultRequestHeaders.Add("accept", "application/json, text/javascript, */*; q=0.01"); } catch { }
             }
             catch (Exception ex)
@@ -2189,8 +2194,8 @@ namespace HowLongToBeat.Services
 
                     if (handler != null)
                     {
-                        try { client.DefaultRequestHeaders.Add("User-Agent", Web.UserAgent); } catch { }
-                        try { client.DefaultRequestHeaders.Add("accept", "application/json, text/javascript, */*; q=0.01"); } catch { }
+                        try { client.DefaultRequestHeaders.TryAddWithoutValidation("User-Agent", Web.UserAgent); } catch { }
+                        try { client.DefaultRequestHeaders.TryAddWithoutValidation("accept", "application/json, text/javascript, */*; q=0.01"); } catch { }
                     }
 
                     var content = new StringContent(payload ?? string.Empty, Encoding.UTF8, "application/json");
