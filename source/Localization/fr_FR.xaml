@@ -43,9 +43,6 @@
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarOptions">Options de la barre de progression</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">Afficher une info-bulle de temps dans la barre de progression</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTime">Afficher le temps dans la barre de progression</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeAbove">Au dessus</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeInterior">Intérieur</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeBelow">En dessous</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeUser">Afficher le temps HowLongToBeat de l'utilisateur</sys:String>
 
     <sys:String x:Key="LOCHltbUsedStartDateFromGameActivity">Utiliser la première session d'activité du plugin GameActivity pour la date de début</sys:String>

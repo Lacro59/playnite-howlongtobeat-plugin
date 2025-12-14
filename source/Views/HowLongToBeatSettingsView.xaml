@@ -677,29 +677,10 @@
                                             <CheckBox IsChecked="{Binding Settings.ProgressBarShowTime}"
                                                       Margin="0,0,0,10"
                                                       Name="HltB_IntegrationProgressBarShowTime"
-                                                      Content="{DynamicResource LOCHowLongToBeatIntegrationProgressBarShowTime}"/>
+                                                      Content="{DynamicResource LOCHowLongToBeatIntegrationProgressBarShowTime}"
+                                                      Checked="HltB_IntegrationProgressBarShowTime_Checked"
+                                                      Unchecked="HltB_IntegrationProgressBarShowTime_Unchecked"/>
 
-                                            <Grid Margin="30,0,0,10"
-                                                  IsEnabled="{Binding ElementName=HltB_IntegrationProgressBarShowTime, Path=IsChecked}">
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="*"/>
-                                                    <ColumnDefinition Width="*"/>
-                                                    <ColumnDefinition Width="*"/>
-                                                </Grid.ColumnDefinitions>
-
-                                                <RadioButton Grid.Column="0"
-                                                             GroupName="A"
-                                                             Content="{DynamicResource LOCHowLongToBeatIntegrationProgressBarShowTimeAbove}"
-                                                             IsChecked="{Binding Settings.ProgressBarShowTimeAbove}"/>
-                                                <RadioButton Grid.Column="1"
-                                                             GroupName="A"
-                                                             Content="{DynamicResource LOCHowLongToBeatIntegrationProgressBarShowTimeInterior}"
-                                                             IsChecked="{Binding Settings.ProgressBarShowTimeInterior}"/>
-                                                <RadioButton Grid.Column="2"
-                                                             GroupName="A"
-                                                             Content="{DynamicResource LOCHowLongToBeatIntegrationProgressBarShowTimeBelow}"
-                                                             IsChecked="{Binding Settings.ProgressBarShowTimeBelow}"/>
-                                            </Grid>
 
                                             <CheckBox IsChecked="{Binding Settings.ProgressBarShowTimeUser}"
                                                       Margin="0,0,0,10"

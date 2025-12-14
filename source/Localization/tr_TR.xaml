@@ -43,9 +43,6 @@
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarOptions">İlerleme çubuğu seçenekleri</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">İlerleme çubuğunda süre ipucunu göster</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTime">İlerleme çubuğunda süre etiketlerini göster</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeAbove">İlerleme çubuğu üzerinde</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeInterior">İlerleme çubuğu içinde</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeBelow">İlerleme çubukları altında</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeUser">Kullanıcının HowLongToBeat süresini göster</sys:String>
 
     <sys:String x:Key="LOCHltbUsedStartDateFromGameActivity">Başlangıç ​​tarihi için GameActivity eklentisinden ilk oyun oturumu kullanıldı</sys:String>

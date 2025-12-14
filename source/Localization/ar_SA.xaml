@@ -44,9 +44,6 @@
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarOptions">خيارات شريط التق</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">إظهار تلميح الوقت في شريط التق</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTime">إظهار التسميات الزمنية في شريط التق</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeAbove">فوق شريط التق</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeInterior">داخل شريط التق</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeBelow">تحت شريط التق</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeUser">أظهر للمستخدم وقت HowLongToBeat</sys:String>
 
     <sys:String x:Key="LOCHltbUsedStartDateFromGameActivity">Used first game session from GameActivity plugin for start date</sys:String>

@@ -43,9 +43,6 @@
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarOptions">Ρυθμίσεις γραμμής προόδου</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">Εμφάνιση υποδείξεων χρόνου στη γραμμή προόδου</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTime">Εμφάνιση ετικετών χρόνου στη γραμμή προόδου</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeAbove">Πάνω από τη γραμμή προόδου</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeInterior">Μέσα στη μπάρα προόδου</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeBelow">Κάτω από τις γραμμές προόδου</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeUser">Εμφάνιση χρόνου χρήστη HowLongTobeat</sys:String>
 
     <sys:String x:Key="LOCHltbUsedStartDateFromGameActivity">Χρήση της πρώτης συνεδρίας από το πρόσθετο του Game Activity</sys:String>

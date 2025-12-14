@@ -161,13 +161,28 @@ namespace HowLongToBeat.Services
                                 Common.LogError(ex, false, true, PluginName);
                                 try
                                 {
+                                    Logger.Warn("Dispatcher.Invoke failed in LoadMoreData; falling back to BeginInvoke");
+                                }
+                                catch { }
+                                try
+                                {
                                     Application.Current.Dispatcher?.BeginInvoke(new Action(() =>
                                     {
-                                        Database.UserHltbData = data;
-                                        Database.OnCollectionChanged(null, null);
+                                        try
+                                        {
+                                            Database.UserHltbData = data;
+                                            Database.OnCollectionChanged(null, null);
+                                        }
+                                        catch (Exception innerEx)
+                                        {
+                                            Common.LogError(innerEx, false, true, PluginName);
+                                        }
                                     }));
-                                 }
-                                catch { }
+                                }
+                                catch (Exception innerEx)
+                                {
+                                    Common.LogError(innerEx, false, true, PluginName);
+                                }
                             }
                          }
                      }

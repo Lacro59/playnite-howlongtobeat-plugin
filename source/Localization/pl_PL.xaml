@@ -43,9 +43,6 @@
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarOptions">Opcje paska postępu</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">Wyświetlaj dymek z czasem na pasku postępu</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTime">Wyświetlaj etykiety z czasem na pasku postępu</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeAbove">Ponad</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeInterior">Wewnątrz</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeBelow">Pod</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeUser">Pokaż czas HowLongToBeat użytkownika</sys:String>
 
     <sys:String x:Key="LOCHltbUsedStartDateFromGameActivity">Użyto pierwszej sesji gry z wtyczki GameActivity dla daty rozpoczęcia</sys:String>

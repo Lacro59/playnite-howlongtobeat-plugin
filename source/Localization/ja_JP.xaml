@@ -43,9 +43,6 @@
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarOptions">プログレスバーのオプション</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">プログレスバーでツールチップを表示</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTime">プログレスバーに時間ラベルを表示</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeAbove">プログレスバーの上</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeInterior">プログレスバーの内部</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeBelow">プログレスバーの下</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeUser">Show user HowLongToBeat time</sys:String>
 
     <sys:String x:Key="LOCHltbUsedStartDateFromGameActivity">Used first game session from GameActivity plugin for start date</sys:String>

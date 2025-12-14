@@ -63,12 +63,10 @@ namespace HowLongToBeat
         public bool EnableIntegrationProgressBar { get => _enableIntegrationProgressBar; set => SetValue(ref _enableIntegrationProgressBar, value); }
 
         public bool ProgressBarShowToolTip { get; set; } = true;
-        public bool ProgressBarShowTimeAbove { get; set; } = false;
-        public bool ProgressBarShowTimeInterior { get; set; } = true;
-        public bool ProgressBarShowTimeBelow { get; set; } = false;
+        public bool ProgressBarShowTime { get; set; } = false;
+
 
         public bool ProgressBarShowTimeUser { get; set; } = false;
-        public bool ProgressBarShowTime { get; set; } = false;
 
 
         public TimeType PreferredForTimeToBeat { get; set; } = TimeType.MainStory;
@@ -515,17 +513,6 @@ namespace HowLongToBeat
             Settings.ThirdMultiColorBrush = HowLongToBeatSettingsView.ThirdMultiColorBrush;
             Settings.ThirdMultiLinearGradient = HowLongToBeatSettingsView.ThirdMultiLinearGradient;
 
-
-            if (!Settings.ProgressBarShowTimeAbove && !Settings.ProgressBarShowTimeInterior && !Settings.ProgressBarShowTimeBelow)
-            {
-                HowLongToBeatSettings savedSettings = Plugin.LoadPluginSettings<HowLongToBeatSettings>();
-                if (savedSettings != null)
-                {
-                    Settings.ProgressBarShowTimeAbove = savedSettings.ProgressBarShowTimeAbove;
-                    Settings.ProgressBarShowTimeInterior = savedSettings.ProgressBarShowTimeInterior;
-                    Settings.ProgressBarShowTimeBelow = savedSettings.ProgressBarShowTimeBelow;
-                }
-            }
 
             if (!Settings.UseHtltbClassic && !Settings.UseHtltbAverage && !Settings.UseHtltbMedian && !Settings.UseHtltbRushed && !Settings.UseHtltbLeisure)
             {

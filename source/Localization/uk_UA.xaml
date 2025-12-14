@@ -43,9 +43,6 @@
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarOptions">Параметри смуги прогресу</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">Показувати спливаючі підказки з часом на смузі прогресу</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTime">Показувати час на смузі прогресу</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeAbove">Над смугою прогресу</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeInterior">Всередині смуги прогресу</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeBelow">Під смугою прогресу</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeUser">Показувати користувацький час HowLongToBeat</sys:String>
 
     <sys:String x:Key="LOCHltbUsedStartDateFromGameActivity">Використовується перший сеанс гри з плагіну GameActivity для початкової дати</sys:String>

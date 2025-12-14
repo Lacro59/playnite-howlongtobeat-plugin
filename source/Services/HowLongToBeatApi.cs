@@ -964,17 +964,27 @@ namespace HowLongToBeat.Services
                 string response = null;
                 try
                 {
-                    var downloadTask = Web.DownloadStringData(url, headers);
-                    var completed = await Task.WhenAny(downloadTask, Task.Delay(ScriptDownloadTimeoutMs)).ConfigureAwait(false);
-                    if (completed == downloadTask)
+                    using (var cts = new CancellationTokenSource(ScriptDownloadTimeoutMs))
+                    using (var request = new HttpRequestMessage(HttpMethod.Get, url))
                     {
-                        response = await downloadTask.ConfigureAwait(false);
+                        try { request.Headers.Add("Referer", UrlBase); } catch { }
+
+                        using (var resp = await httpClient.SendAsync(request, cts.Token).ConfigureAwait(false))
+                        {
+                            if (!resp.IsSuccessStatusCode)
+                            {
+                                try { Logger.Warn($"HTTP {(int)resp.StatusCode} downloading auth init {url}"); } catch { }
+                                return null;
+                            }
+
+                            response = await resp.Content.ReadAsStringAsync().ConfigureAwait(false);
+                        }
                     }
-                    else
-                    {
-                        try { Logger.Warn($"Timeout {ScriptDownloadTimeoutMs}ms downloading auth init {url}"); } catch { }
-                        return null;
-                    }
+                }
+                catch (TaskCanceledException)
+                {
+                    try { Logger.Warn($"Timeout {ScriptDownloadTimeoutMs}ms downloading auth init {url}"); } catch { }
+                    return null;
                 }
                 catch (Exception ex)
                 {

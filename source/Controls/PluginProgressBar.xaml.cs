@@ -13,6 +13,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
+using System.ComponentModel;
 
 namespace HowLongToBeat.Controls
 {
@@ -35,6 +36,9 @@ namespace HowLongToBeat.Controls
         private readonly int _debounceMs = 120;
 
         private bool ShowUserData = true;
+
+        private Game _currentGame;
+        private PluginDataBaseGameBase _currentPluginGameData;
 
         public PluginProgressBar()
         {
@@ -67,29 +71,88 @@ namespace HowLongToBeat.Controls
             });
         }
 
+        protected override void PluginSettings_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            try
+            {
+                Application.Current?.Dispatcher?.BeginInvoke(new Action(() =>
+                {
+                    try
+                    {
+                        ShowUserData = PluginDatabase.PluginSettings.Settings.ProgressBarShowTimeUser;
+
+                        ControlDataContext.ShowToolTip = PluginDatabase.PluginSettings.Settings.ProgressBarShowToolTip;
+                        ControlDataContext.TextBelowVisibility = PluginDatabase.PluginSettings.Settings.ProgressBarShowTime;
+
+                        _cachedThumbBrushes[0] = PluginDatabase.PluginSettings.Settings.FirstLinearGradient != null
+                            ? PluginDatabase.PluginSettings.Settings.FirstLinearGradient.ToLinearGradientBrush as Brush
+                            : PluginDatabase.PluginSettings.Settings.FirstColorBrush as Brush;
+                        _cachedThumbBrushes[1] = PluginDatabase.PluginSettings.Settings.SecondLinearGradient != null
+                            ? PluginDatabase.PluginSettings.Settings.SecondLinearGradient.ToLinearGradientBrush as Brush
+                            : PluginDatabase.PluginSettings.Settings.SecondColorBrush as Brush;
+                        _cachedThumbBrushes[2] = PluginDatabase.PluginSettings.Settings.ThirdLinearGradient != null
+                            ? PluginDatabase.PluginSettings.Settings.ThirdLinearGradient.ToLinearGradientBrush as Brush
+                            : PluginDatabase.PluginSettings.Settings.ThirdColorBrush as Brush;
+
+                        _cachedThumbUserBrushes[0] = PluginDatabase.PluginSettings.Settings.FirstMultiLinearGradient != null
+                            ? PluginDatabase.PluginSettings.Settings.FirstMultiLinearGradient.ToLinearGradientBrush as Brush
+                            : PluginDatabase.PluginSettings.Settings.FirstMultiColorBrush as Brush;
+                        _cachedThumbUserBrushes[1] = PluginDatabase.PluginSettings.Settings.SecondMultiLinearGradient != null
+                            ? PluginDatabase.PluginSettings.Settings.SecondMultiLinearGradient.ToLinearGradientBrush as Brush
+                            : PluginDatabase.PluginSettings.Settings.SecondMultiColorBrush as Brush;
+                        _cachedThumbUserBrushes[2] = PluginDatabase.PluginSettings.Settings.ThirdMultiLinearGradient != null
+                            ? PluginDatabase.PluginSettings.Settings.ThirdMultiLinearGradient.ToLinearGradientBrush as Brush
+                            : PluginDatabase.PluginSettings.Settings.ThirdMultiColorBrush as Brush;
+
+                        ControlDataContext.ThumbFirst = _cachedThumbBrushes[0];
+                        ControlDataContext.ThumbSecond = _cachedThumbBrushes[1];
+                        ControlDataContext.ThumbThird = _cachedThumbBrushes[2];
+
+                        ControlDataContext.ThumbFirstUser = _cachedThumbUserBrushes[0];
+                        ControlDataContext.ThumbSecondUser = _cachedThumbUserBrushes[1];
+                        ControlDataContext.ThumbThirdUser = _cachedThumbUserBrushes[2];
+
+                        if (_currentPluginGameData != null)
+                        {
+                            try
+                            {
+                                SetData(_currentGame, _currentPluginGameData);
+                            }
+                            catch (Exception ex)
+                            {
+                                Common.LogError(ex, false, true, PluginDatabase.PluginName);
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Common.LogError(ex, false, true, PluginDatabase.PluginName);
+                    }
+                }));
+            }
+            catch { }
+        }
+
         public override void SetDefaultDataContext()
         {
             ShowUserData = PluginDatabase.PluginSettings.Settings.ProgressBarShowTimeUser;
 
             bool isActivated = PluginDatabase.PluginSettings.Settings.EnableIntegrationProgressBar;
-            bool textAboveVisibility = PluginDatabase.PluginSettings.Settings.ProgressBarShowTime ? PluginDatabase.PluginSettings.Settings.ProgressBarShowTimeAbove : false;
-            bool textInsideVisibility = PluginDatabase.PluginSettings.Settings.ProgressBarShowTime ? PluginDatabase.PluginSettings.Settings.ProgressBarShowTimeInterior : false;
-            bool textBelowVisibility = PluginDatabase.PluginSettings.Settings.ProgressBarShowTime ? PluginDatabase.PluginSettings.Settings.ProgressBarShowTimeBelow : false;
             if (IgnoreSettings)
             {
                 isActivated = true;
-                textAboveVisibility = false;
-                textInsideVisibility = true;
-                textBelowVisibility = false;
+                ControlDataContext.TextBelowVisibility = true;
                 ShowUserData = true;
+            }
+            else
+            {
+                ControlDataContext.TextBelowVisibility = PluginDatabase.PluginSettings.Settings.ProgressBarShowTime;
             }
 
             ControlDataContext.IsActivated = isActivated;
             ControlDataContext.ShowToolTip = PluginDatabase.PluginSettings.Settings.ProgressBarShowToolTip;
 
-            ControlDataContext.TextAboveVisibility = textAboveVisibility;
-            ControlDataContext.TextInsideVisibility = textInsideVisibility;
-            ControlDataContext.TextBelowVisibility = textBelowVisibility;
+            ControlDataContext.TextBelowVisibility = PluginDatabase.PluginSettings.Settings.ProgressBarShowTime;
 
             ControlDataContext.PlaytimeValue = 0;
             ControlDataContext.MaxValue = 0;
@@ -153,6 +216,9 @@ namespace HowLongToBeat.Controls
 
         public override async void SetData(Game newContext, PluginDataBaseGameBase PluginGameData)
         {
+            _currentGame = newContext;
+            _currentPluginGameData = PluginGameData;
+
             GameHowLongToBeat gameHowLongToBeat = (GameHowLongToBeat)PluginGameData;
             try
             {
@@ -187,27 +253,18 @@ namespace HowLongToBeat.Controls
                             SliderPlaytime.Value = snapshot.PlaytimeValue;
 
                             PART_ProgressBarFirst.Value = snapshot.ProgressValues[0];
-                            PART_ProgressBarFirst.TextValue = snapshot.ProgressFormats[0];
                             PART_ProgressBarFirst.Foreground = snapshot.ThumbBrushes[0];
                             PART_ProgressBarFirst.Maximum = snapshot.MaxValue;
-                            PART_ProgressBarFirst.TextAboveVisibility = ControlDataContext.TextAboveVisibility;
-                            PART_ProgressBarFirst.TextInsideVisibility = ControlDataContext.TextInsideVisibility;
                             PART_ProgressBarFirst.TextBelowVisibility = ControlDataContext.TextBelowVisibility;
 
                             PART_ProgressBarSecond.Value = snapshot.ProgressValues[1];
-                            PART_ProgressBarSecond.TextValue = snapshot.ProgressFormats[1];
                             PART_ProgressBarSecond.Foreground = snapshot.ThumbBrushes[1];
                             PART_ProgressBarSecond.Maximum = snapshot.MaxValue;
-                            PART_ProgressBarSecond.TextAboveVisibility = ControlDataContext.TextAboveVisibility;
-                            PART_ProgressBarSecond.TextInsideVisibility = ControlDataContext.TextInsideVisibility;
                             PART_ProgressBarSecond.TextBelowVisibility = ControlDataContext.TextBelowVisibility;
 
                             PART_ProgressBarThird.Value = snapshot.ProgressValues[2];
-                            PART_ProgressBarThird.TextValue = snapshot.ProgressFormats[2];
                             PART_ProgressBarThird.Foreground = snapshot.ThumbBrushes[2];
                             PART_ProgressBarThird.Maximum = snapshot.MaxValue;
-                            PART_ProgressBarThird.TextAboveVisibility = ControlDataContext.TextAboveVisibility;
-                            PART_ProgressBarThird.TextInsideVisibility = ControlDataContext.TextInsideVisibility;
                             PART_ProgressBarThird.TextBelowVisibility = ControlDataContext.TextBelowVisibility;
 
                             PartSliderFirst.ThumbFill = snapshot.ThumbUserBrushes[0];
@@ -233,6 +290,38 @@ namespace HowLongToBeat.Controls
                             ControlDataContext.ThumbFirstUser = snapshot.ThumbUserBrushes?[0] ?? ControlDataContext.ThumbFirstUser;
                             ControlDataContext.ThumbSecondUser = snapshot.ThumbUserBrushes?[1] ?? ControlDataContext.ThumbSecondUser;
                             ControlDataContext.ThumbThirdUser = snapshot.ThumbUserBrushes?[2] ?? ControlDataContext.ThumbThirdUser;
+
+                            // Update DataContext values
+                            ControlDataContext.ToolTipFirst = snapshot.ProgressFormats != null && snapshot.ProgressFormats.Length > 0 ? snapshot.ProgressFormats[0] : string.Empty;
+                            ControlDataContext.ToolTipSecond = snapshot.ProgressFormats != null && snapshot.ProgressFormats.Length > 1 ? snapshot.ProgressFormats[1] : string.Empty;
+                            ControlDataContext.ToolTipThird = snapshot.ProgressFormats != null && snapshot.ProgressFormats.Length > 2 ? snapshot.ProgressFormats[2] : string.Empty;
+
+                            ControlDataContext.HasFirst = !string.IsNullOrEmpty(ControlDataContext.ToolTipFirst);
+                            ControlDataContext.HasSecond = !string.IsNullOrEmpty(ControlDataContext.ToolTipSecond);
+                            ControlDataContext.HasThird = !string.IsNullOrEmpty(ControlDataContext.ToolTipThird);
+
+                            // Also update the named TextBlocks directly to avoid binding/render delays
+                            try
+                            {
+                                PART_TimeText1.Text = ControlDataContext.ToolTipFirst;
+                                PART_TimeText2.Text = ControlDataContext.ToolTipSecond;
+                                PART_TimeText3.Text = ControlDataContext.ToolTipThird;
+
+                                PART_TimeText1.Foreground = ControlDataContext.ThumbFirst;
+                                PART_TimeText2.Foreground = ControlDataContext.ThumbSecond;
+                                PART_TimeText3.Foreground = ControlDataContext.ThumbThird;
+
+                                PART_TimeText1.Visibility = ControlDataContext.HasFirst ? Visibility.Visible : Visibility.Collapsed;
+                                PART_TimeSep12.Visibility = (ControlDataContext.HasFirst && ControlDataContext.HasSecond) ? Visibility.Visible : Visibility.Collapsed;
+                                PART_TimeText2.Visibility = ControlDataContext.HasSecond ? Visibility.Visible : Visibility.Collapsed;
+                                PART_TimeSep23.Visibility = (ControlDataContext.HasSecond && ControlDataContext.HasThird) ? Visibility.Visible : Visibility.Collapsed;
+                                PART_TimeText3.Visibility = ControlDataContext.HasThird ? Visibility.Visible : Visibility.Collapsed;
+
+                                PART_TimeTexts?.InvalidateMeasure();
+                                PART_TimeTexts?.InvalidateArrange();
+                                PART_TimeTexts?.UpdateLayout();
+                            }
+                            catch { }
                         }
                         catch (Exception ex)
                         {
@@ -614,9 +703,6 @@ namespace HowLongToBeat.Controls
                     // third indicator should be offset by sum of previous indicator widths
                     PART_ProgressBarThird.MarginLeft = width1 + width2;
 
-                    spHltb_El1.Width = width1;
-                    spHltb_El2.Width = width2;
-                    spHltb_El3.Width = width3;
                 }
                 catch (Exception ex)
                 {
@@ -635,12 +721,6 @@ namespace HowLongToBeat.Controls
 
         private bool _showToolTip;
         public bool ShowToolTip { get => _showToolTip; set => SetValue(ref _showToolTip, value); }
-
-        private bool _textAboveVisibility;
-        public bool TextAboveVisibility { get => _textAboveVisibility; set => SetValue(ref _textAboveVisibility, value); }
-
-        private bool _textInsideVisibility = true;
-        public bool TextInsideVisibility { get => _textInsideVisibility; set => SetValue(ref _textInsideVisibility, value); }
 
         private bool _textBelowVisibility;
         public bool TextBelowVisibility { get => _textBelowVisibility; set => SetValue(ref _textBelowVisibility, value); }
@@ -716,6 +796,15 @@ namespace HowLongToBeat.Controls
 
         private Visibility _sliderThirdVisibility;
         public Visibility SliderThirdVisibility { get => _sliderThirdVisibility; set => SetValue(ref _sliderThirdVisibility, value); }
+
+        private bool _hasFirst;
+        public bool HasFirst { get => _hasFirst; set => SetValue(ref _hasFirst, value); }
+
+        private bool _hasSecond;
+        public bool HasSecond { get => _hasSecond; set => SetValue(ref _hasSecond, value); }
+
+        private bool _hasThird;
+        public bool HasThird { get => _hasThird; set => SetValue(ref _hasThird, value); }
     }
 
     internal class ListProgressBar

@@ -693,6 +693,24 @@ namespace HowLongToBeat.Views
             PART_GridPlatformsList.ItemsSource = settings.Platforms;
         }
 
+        private void HltB_IntegrationProgressBarShowTime_Checked(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                PluginDatabase.PluginSettings.Settings.ProgressBarShowTime = true;
+            }
+            catch { }
+        }
+
+        private void HltB_IntegrationProgressBarShowTime_Unchecked(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                PluginDatabase.PluginSettings.Settings.ProgressBarShowTime = false;
+            }
+            catch { }
+        }
+
         private void CbDefaultSorting_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             string index = ((ComboBoxItem)cbDefaultSorting.SelectedItem).Tag.ToString();
