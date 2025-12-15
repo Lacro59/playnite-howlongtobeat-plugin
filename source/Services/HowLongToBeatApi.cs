@@ -69,23 +69,41 @@ namespace HowLongToBeat.Services
                 targetLimit = Math.Max(0, Math.Min(SemaphoreUpperBound, targetLimit));
 
                 // Compute difference under lock and handle immediate increases (release permits)
+                if (syncLock == null)
+                {
+                    try { Logger.Warn("HLTB: AdjustSemaphoreLimit called with null syncLock; using internal lock"); } catch { }
+                    syncLock = new object();
+                }
+
+                int current = getCurrentLimit();
+                int diff;
                 lock (syncLock)
                 {
-                    int current = getCurrentLimit();
-                    int diff = targetLimit - current;
+                    current = getCurrentLimit();
+                    diff = targetLimit - current;
                     if (diff > 0)
                     {
+                        bool released = false;
                         try
                         {
                             semaphore.Release(diff);
-                            try { setCurrentLimit(targetLimit); } catch { }
+                            released = true;
                         }
                         catch (Exception ex)
                         {
-                            try { Logger.Warn(ex, $"HLTB: AdjustSemaphoreLimit failed to release {diff} permits ({context})"); } catch { }
+                            try { Logger.Warn(ex, $"HLTB: AdjustSemaphoreLimit failed to release {diff} permits (currentLimit={current}) ({context})"); } catch { }
                         }
 
-                        return;
+                        try
+                        {
+                            if (released)
+                            {
+                                try { setCurrentLimit(targetLimit); } catch { }
+                            }
+                        }
+                        catch { }
+
+                        if (released) return;
                     }
 
                     if (diff < 0)
@@ -329,15 +347,30 @@ namespace HowLongToBeat.Services
             {
                 PageCacheInitTask = Task.Run(() =>
                 {
+                    PageCache localPc = null;
                     try
                     {
-                        var pc = new PageCache(PluginDatabase.Plugin.GetPluginUserDataPath());
-                        PageCache = pc;
+                        localPc = new PageCache(PluginDatabase.Plugin.GetPluginUserDataPath());
+                        if (!_disposed)
+                        {
+                            PageCache = localPc;
+                            localPc = null;
+                        }
+                        else
+                        {
+                            try { (localPc as IDisposable)?.Dispose(); } catch { }
+                            localPc = null;
+                        }
                     }
                     catch (Exception ex)
                     {
                         Common.LogError(ex, false);
                         try { Logger.Warn("HLTB: PageCache init failed; proceeding without persistent cache"); } catch { }
+                        if (localPc != null)
+                        {
+                            try { (localPc as IDisposable)?.Dispose(); } catch { }
+                            localPc = null;
+                        }
                     }
                 });
 
@@ -403,18 +436,7 @@ namespace HowLongToBeat.Services
 
                 if (task != null)
                 {
-                    try
-                    {
-                        Task.Run(() =>
-                        {
-                            try
-                            {
-                                task.Wait(5000);
-                            }
-                            catch { }
-                        }).Wait(5000);
-                    }
-                    catch { }
+                    try { Task.Run(() => { try { task.Wait(5000); } catch { } }); } catch { }
                 }
 
                 try { cts?.Dispose(); } catch { }
@@ -1057,8 +1079,8 @@ namespace HowLongToBeat.Services
                             CoOpClassic = x.InvestedCo,
                             VsClassic = x.InvestedMp
                         },
-                        NeedsDetails = true
-                    }
+                        NeedsDetails = !((x.CompMain > 0) || (x.CompAll > 0) || (x.CompPlus > 0) || (x.Comp100 > 0))
+                     }
                 )?.ToList() ?? new List<HltbDataUser>();
 
                 if (search.Count != 0)
@@ -1115,9 +1137,10 @@ namespace HowLongToBeat.Services
                                         (x.GameHltbData.MainStoryMedian > 0)
                                     );
 
-                                    if (hasCoreTimes && !x.NeedsDetails)
+                                    if (hasCoreTimes)
                                     {
                                         LogDebugVerbose($"Search: skipping GetGameData for id={x.Id} (search result has times)");
+                                        x.NeedsDetails = false;
                                     }
                                     else
                                     {
@@ -1185,12 +1208,32 @@ namespace HowLongToBeat.Services
         /// <returns>Returns a list of <see cref="HltbSearch"/> with match percentages.</returns>
         public async Task<List<HltbSearch>> SearchTwoMethod(string name, string platform = "")
         {
-            List<HltbDataUser> dataSearch = await Search(name, platform);
-            List<HltbDataUser> dataSearchNormalized = new List<HltbDataUser>();
+            string normalized = PlayniteTools.NormalizeGameName(name, true, true);
 
-            if (dataSearch.Count == 0)
+            List<HltbDataUser> dataSearch = null;
+            List<HltbDataUser> dataSearchNormalized = null;
+
+            try
             {
-                dataSearchNormalized = await Search(PlayniteTools.NormalizeGameName(name, true, true), platform);
+                if (!string.IsNullOrEmpty(normalized) && !normalized.Equals(name, StringComparison.Ordinal))
+                {
+                    var t1 = Search(name, platform);
+                    var t2 = Search(normalized, platform);
+                    await Task.WhenAll(t1, t2).ConfigureAwait(false);
+                    dataSearch = t1.Result ?? new List<HltbDataUser>();
+                    dataSearchNormalized = t2.Result ?? new List<HltbDataUser>();
+                }
+                else
+                {
+                    dataSearch = await Search(name, platform);
+                    dataSearchNormalized = new List<HltbDataUser>();
+                }
+            }
+            catch (Exception ex)
+            {
+                try { Common.LogError(ex, false, true, PluginDatabase.PluginName); } catch { }
+                dataSearch = dataSearch ?? new List<HltbDataUser>();
+                dataSearchNormalized = dataSearchNormalized ?? new List<HltbDataUser>();
             }
 
             var dataSearchFinal = new List<HltbDataUser>();
@@ -2234,7 +2277,10 @@ namespace HowLongToBeat.Services
                 {
                     if (handler != null)
                     {
-                        client = new HttpClient(handler);
+                        client = new HttpClient(handler)
+                        {
+                            Timeout = System.Threading.Timeout.InfiniteTimeSpan
+                        };
                         disposeClient = true;
                     }
                     else

@@ -415,9 +415,20 @@ namespace HowLongToBeat
                         }
                     }
 
-                    // Delete missing source
-                    Settings.StorefrontElements = Settings.StorefrontElements.Where(x => !x.SourceName.IsNullOrEmpty()).ToList();
-                    Settings.StorefrontElements = Settings.StorefrontElements.OrderBy(x => x.SourceName).ToList();
+                    try
+                    {
+                        Application.Current.Dispatcher?.Invoke(() =>
+                        {
+                            Settings.StorefrontElements = Settings.StorefrontElements
+                                .Where(x => !x.SourceName.IsNullOrEmpty())
+                                .OrderBy(x => x.SourceName)
+                                .ToList();
+                        });
+                    }
+                    catch (Exception)
+                    {
+                        Settings.StorefrontElements = Settings.StorefrontElements.Where(x => !x.SourceName.IsNullOrEmpty()).OrderBy(x => x.SourceName).ToList();
+                    }
                 }
                 catch (Exception ex)
                 {

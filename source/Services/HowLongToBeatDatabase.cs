@@ -55,7 +55,7 @@ namespace HowLongToBeat.Services
                         {
                             try { ctsTimeout.Dispose(); } catch { }
                             try { linked.Dispose(); } catch { }
-                        }, TaskContinuationOptions.ExecuteSynchronously);
+                        }, CancellationToken.None, TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
                 }
                 catch { }
 
@@ -105,7 +105,7 @@ namespace HowLongToBeat.Services
                         {
                             try { ctsTimeout.Dispose(); } catch { }
                             try { linked.Dispose(); } catch { }
-                        }, TaskContinuationOptions.ExecuteSynchronously);
+                        }, CancellationToken.None, TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
                 }
                 catch { }
 
