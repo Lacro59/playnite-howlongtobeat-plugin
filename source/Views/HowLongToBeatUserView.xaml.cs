@@ -801,7 +801,7 @@ namespace HowLongToBeat.Views
             try { _loadCts?.Dispose(); } catch { }
             _loadCts = null;
             _loadTask = null;
-         }
+        }
     }
 
 

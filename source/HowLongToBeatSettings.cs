@@ -68,6 +68,11 @@ namespace HowLongToBeat
 
         public bool ProgressBarShowTimeUser { get; set; } = false;
 
+        // Placement for progress bar time labels
+        public bool ProgressBarShowTimeAbove { get; set; } = false;
+        public bool ProgressBarShowTimeInterior { get; set; } = true;
+        public bool ProgressBarShowTimeBelow { get; set; } = false;
+
 
         public TimeType PreferredForTimeToBeat { get; set; } = TimeType.MainStory;
 

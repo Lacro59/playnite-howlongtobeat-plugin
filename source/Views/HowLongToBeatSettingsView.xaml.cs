@@ -711,6 +711,39 @@ namespace HowLongToBeat.Views
             catch { }
         }
 
+        private void HltB_ProgressBarTimeAbove_Checked(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                PluginDatabase.PluginSettings.Settings.ProgressBarShowTimeAbove = true;
+                PluginDatabase.PluginSettings.Settings.ProgressBarShowTimeInterior = false;
+                PluginDatabase.PluginSettings.Settings.ProgressBarShowTimeBelow = false;
+            }
+            catch { }
+        }
+
+        private void HltB_ProgressBarTimeInterior_Checked(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                PluginDatabase.PluginSettings.Settings.ProgressBarShowTimeAbove = false;
+                PluginDatabase.PluginSettings.Settings.ProgressBarShowTimeInterior = true;
+                PluginDatabase.PluginSettings.Settings.ProgressBarShowTimeBelow = false;
+            }
+            catch { }
+        }
+
+        private void HltB_ProgressBarTimeBelow_Checked(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                PluginDatabase.PluginSettings.Settings.ProgressBarShowTimeAbove = false;
+                PluginDatabase.PluginSettings.Settings.ProgressBarShowTimeInterior = false;
+                PluginDatabase.PluginSettings.Settings.ProgressBarShowTimeBelow = true;
+            }
+            catch { }
+        }
+
         private void CbDefaultSorting_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             string index = ((ComboBoxItem)cbDefaultSorting.SelectedItem).Tag.ToString();

@@ -15,16 +15,22 @@
 
     <controls:PluginUserControlExtend.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <converters:StringNullOrEmptyToBoolConverter x:Key="StringNullOrEmptyToBoolConverter" />
     </controls:PluginUserControlExtend.Resources>
 
     <Grid Name="PART_GridContener">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <Grid Grid.Row="0"
-                Margin="0,-20,0,0">
+        <!-- Above time texts (row 0) -->
+        <!-- Placeholder: shown when TextAboveVisibility is true -->
+        <!-- Will be populated below -->
+
+        <Grid Grid.Row="1"
+            Margin="0,0,0,0">
             <controlsShared:ProgressBarExtend x:Name="PART_ProgressBarThird"
                                               Background="Transparent"
                                               MarginLeft="0"
@@ -45,208 +51,199 @@
                                               TextWidth="0"
                                               Minimum="0"/>
 
-            <Slider Name="SliderPlaytime"
-                    Margin="-6,0,-6,0"
-                    Value="0"
-                    Height="{Binding ElementName=PART_ProgressBarFirst, Path=IndicatorHeight}"
-                    VerticalAlignment="Center"
-                    IsHitTestVisible="False"
-                    Focusable="False"
-                    IsTabStop="False">
-                <Slider.Style>
-                    <Style TargetType="{x:Type Slider}"
-                           BasedOn="{StaticResource {x:Type Slider}}">
-                        <Setter Property="SnapsToDevicePixels"
-                                Value="True"/>
-                        <Setter Property="Background"
-                                Value="{DynamicResource ControlBackgroundBrush}"/>
-                        <Setter Property="BorderBrush"
-                                Value="{DynamicResource NormalBorderBrush}"/>
-                        <Setter Property="Template">
-                            <Setter.Value>
-                                <ControlTemplate TargetType="{x:Type Slider}">
-                                    <Grid Name="GridRoot">
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="2"/>
-                                            <RowDefinition Height="*"/>
-                                            <RowDefinition Height="2"/>
-                                        </Grid.RowDefinitions>
-                                        <TickBar x:Name="TopTick"
-                                                 Visibility="Hidden"
-                                                 Placement="Top"
-                                                 SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
-                                                 Fill="{DynamicResource GlyphBrush}"/>
-                                        <Track Grid.Row="1"
-                                               Name="PART_Track"
-                                               VerticalAlignment="Center">
-                                            <Track.Thumb>
-                                                <Thumb Name="SliderPlaytimeThumb"
-                                                       Width="12"
-                                                       Height="12"
-                                                       SnapsToDevicePixels="True"
-                                                       IsEnabled="False"
-                                                       VerticalAlignment="Center">
-                                                    <Thumb.Style>
-                                                        <Style TargetType="{x:Type Thumb}">
-                                                            <Setter Property="Background"
-                                                                    Value="{Binding ThumbColor}"/>
-                                                            <Setter Property="Template">
-                                                                <Setter.Value>
-                                                                    <ControlTemplate TargetType="{x:Type Thumb}">
-                                                                        <Grid VerticalAlignment="Center"
-                                                                                HorizontalAlignment="Center">
-                                                                            <Polygon Points="6,0 12,12 0,12"
-                                                                                    Fill="{TemplateBinding Background}"
-                                                                                    Stroke="{TemplateBinding Background}"
-                                                                                    HorizontalAlignment="Center"
-                                                                                    VerticalAlignment="Center"/>
-                                                                        </Grid>
-                                                                    </ControlTemplate>
-                                                                </Setter.Value>
-                                                            </Setter>
-                                                        </Style>
-                                                    </Thumb.Style>
-                                                </Thumb>
-                                            </Track.Thumb>
-                                        </Track>
-                                        <TickBar Name="BottomTick"
-                                                 Visibility="Hidden"
-                                                 Grid.Row="2"
-                                                 Placement="Bottom"
-                                                 SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
-                                                 Fill="{TemplateBinding Foreground}"/>
-                                    </Grid>
-                                    <ControlTemplate.Triggers>
-                                        <Trigger Property="IsFocused"
-                                                 Value="True">
-                                            <Setter TargetName="PART_Track"
-                                                    Property="FocusManager.FocusedElement"
-                                                    Value="{Binding ElementName=PART_Track}"/>
-                                        </Trigger>
-                                        <Trigger Property="TickPlacement"
-                                                 Value="TopLeft">
-                                            <Setter Property="Visibility"
-                                                    Value="Visible"
-                                                    TargetName="TopTick"/>
-                                        </Trigger>
-                                        <Trigger Property="TickPlacement"
-                                                 Value="BottomRight">
-                                            <Setter Property="Visibility"
-                                                    Value="Visible"
-                                                    TargetName="BottomTick"/>
-                                        </Trigger>
-                                        <Trigger Property="TickPlacement"
-                                                 Value="Both">
-                                            <Setter Property="Visibility"
-                                                    Value="Visible"
-                                                    TargetName="TopTick"/>
-                                            <Setter Property="Visibility"
-                                                    Value="Visible"
-                                                    TargetName="BottomTick"/>
-                                        </Trigger>
-                                        <Trigger Property="Orientation"
-                                                 Value="Vertical">
-                                            <Setter Property="LayoutTransform"
-                                                    TargetName="GridRoot">
-                                                <Setter.Value>
-                                                    <RotateTransform Angle="-90"/>
-                                                </Setter.Value>
-                                            </Setter>
-                                            <Setter TargetName="PART_Track"
-                                                    Property="Orientation"
-                                                    Value="Horizontal"/>
-                                        </Trigger>
+            <StackPanel Name="spHltb_El3" Background="Transparent" HorizontalAlignment="Left"
+                        Visibility="{Binding ShowToolTip, Converter={StaticResource BooleanToVisibilityConverter}}"
+                        Height="{Binding ElementName=PART_ProgressBarFirst, Path=IndicatorHeight}"
+                        ToolTip="{Binding ToolTipThird, UpdateSourceTrigger=PropertyChanged}"
+                        IsEnabled="{Binding ToolTipThird, Converter={StaticResource StringNullOrEmptyToBoolConverter}}" />
+            <StackPanel Name="spHltb_El2" Background="Transparent" HorizontalAlignment="Left"
+                        Visibility="{Binding ShowToolTip, Converter={StaticResource BooleanToVisibilityConverter}}"
+                        Height="{Binding ElementName=PART_ProgressBarFirst, Path=IndicatorHeight}"
+                        ToolTip="{Binding ToolTipSecond, UpdateSourceTrigger=PropertyChanged}"
+                        IsEnabled="{Binding ToolTipSecond, Converter={StaticResource StringNullOrEmptyToBoolConverter}}" />
+            <StackPanel Name="spHltb_El1" Background="Transparent" HorizontalAlignment="Left"
+                        Visibility="{Binding ShowToolTip, Converter={StaticResource BooleanToVisibilityConverter}}"
+                        Height="{Binding ElementName=PART_ProgressBarFirst, Path=IndicatorHeight}"
+                        ToolTip="{Binding ToolTipFirst, UpdateSourceTrigger=PropertyChanged}"
+                        IsEnabled="{Binding ToolTipFirst, Converter={StaticResource StringNullOrEmptyToBoolConverter}}" />
+        </Grid>
+        <!-- Overlayed slider and user sliders so marker stays centered -->
+        <Slider Name="SliderPlaytime"
+            Grid.Row="1"
+                Margin="-6,0,-6,0"
+                Value="0"
+                Height="{Binding ElementName=PART_ProgressBarFirst, Path=IndicatorHeight}"
+                VerticalAlignment="Center"
+                IsHitTestVisible="False"
+                Focusable="False"
+                IsTabStop="False">
+            <Slider.Style>
+                <Style TargetType="{x:Type Slider}" BasedOn="{StaticResource {x:Type Slider}}">
+                    <Setter Property="SnapsToDevicePixels" Value="True" />
+                    <Setter Property="Background" Value="{DynamicResource ControlBackgroundBrush}" />
+                    <Setter Property="BorderBrush" Value="{DynamicResource NormalBorderBrush}" />
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type Slider}">
+                                <Grid Name="GridRoot">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="2" />
+                                        <RowDefinition Height="*" />
+                                        <RowDefinition Height="2" />
+                                    </Grid.RowDefinitions>
+                                    <TickBar x:Name="TopTick" Visibility="Hidden" Placement="Top" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" Fill="{DynamicResource GlyphBrush}" />
+                                    <Track Grid.Row="1" Name="PART_Track">
+                                        <Track.Thumb>
+                                            <Thumb Name="SliderPlaytimeThumb" Width="20" SnapsToDevicePixels="True" IsEnabled="False">
+                                                <Thumb.Style>
+                                                    <Style TargetType="{x:Type Thumb}">
+                                                        <Setter Property="Background" Value="{Binding ThumbColor}" />
+                                                        <Setter Property="Template">
+                                                            <Setter.Value>
+                                                                <ControlTemplate TargetType="{x:Type Thumb}">
+                                                                    <Grid>
+                                                                        <Rectangle x:Name="HoverRectangle" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                                                                                   Width="Auto" Height="Auto" RadiusX="3" RadiusY="4"
+                                                                                   Stroke="{x:Null}" Margin="4.5,1,4.5,1"
+                                                                                   Fill="{TemplateBinding Background}" />
+                                                                    </Grid>
+                                                                    <ControlTemplate.Triggers>
+                                                                        <Trigger Property="IsFocused" Value="True" />
+                                                                        <Trigger Property="IsMouseOver" Value="True" />
+                                                                    </ControlTemplate.Triggers>
+                                                                </ControlTemplate>
+                                                            </Setter.Value>
+                                                        </Setter>
+                                                    </Style>
+                                                </Thumb.Style>
+                                            </Thumb>
+                                        </Track.Thumb>
+                                    </Track>
+                                    <TickBar Name="BottomTick" Visibility="Hidden" Grid.Row="2" Placement="Bottom" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" Fill="{TemplateBinding Foreground}" />
+                                </Grid>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsFocused" Value="True">
+                                        <Setter TargetName="PART_Track" Property="FocusManager.FocusedElement" Value="{Binding ElementName=PART_Track}" />
+                                    </Trigger>
+                                    <Trigger Property="TickPlacement" Value="TopLeft">
+                                        <Setter Property="Visibility" Value="Visible" TargetName="TopTick" />
+                                    </Trigger>
+                                    <Trigger Property="TickPlacement" Value="BottomRight">
+                                        <Setter Property="Visibility" Value="Visible" TargetName="BottomTick" />
+                                    </Trigger>
+                                    <Trigger Property="TickPlacement" Value="Both">
+                                        <Setter Property="Visibility" Value="Visible" TargetName="TopTick" />
+                                        <Setter Property="Visibility" Value="Visible" TargetName="BottomTick" />
+                                    </Trigger>
+                                    <Trigger Property="Orientation" Value="Vertical">
+                                        <Setter Property="LayoutTransform" TargetName="GridRoot">
+                                            <Setter.Value>
+                                                <RotateTransform Angle="-90" />
+                                            </Setter.Value>
+                                        </Setter>
+                                        <Setter TargetName="PART_Track" Property="Orientation" Value="Horizontal" />
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
 
-                                        <DataTrigger Binding="{Binding DataContext.PlaytimeValue, RelativeSource={RelativeSource AncestorType={x:Type controls:PluginUserControlExtend}}}"
-                                                Value="0">
-                                            <Setter TargetName="SliderPlaytimeThumb"
-                                                    Property="Visibility"
-                                                    Value="Collapsed"/>
-                                        </DataTrigger>
-                                    </ControlTemplate.Triggers>
-                                </ControlTemplate>
-                            </Setter.Value>
-                        </Setter>
+                    <!-- Keep slider vertically centered over all rows; time label panels handle placement -->
+                </Style>
+            </Slider.Style>
+        </Slider>
 
-                        <Style.Triggers>
-                            <!-- Only TextBelowVisibility is supported now -->
-                            <DataTrigger Binding="{Binding TextBelowVisibility}"
-                                         Value="True">
-                                <Setter Property="VerticalAlignment"
-                                        Value="Top"/>
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </Slider.Style>
-            </Slider>
-
+        <Grid Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Center" IsHitTestVisible="False">
             <Grid Name="PART_SliderUserContener"
                   Height="{Binding ElementName=PART_ProgressBarFirst, Path=IndicatorHeight}"
-                  ClipToBounds="True">
-                <Grid.Style>
-                    <Style TargetType="{x:Type Grid}">
-                        <Style.Triggers>
-                            <!-- Only TextBelowVisibility is supported now -->
-                            <DataTrigger Binding="{Binding TextBelowVisibility}"
-                                         Value="True">
-                                <Setter Property="VerticalAlignment"
-                                        Value="Top"/>
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </Grid.Style>
+                  ClipToBounds="True"
+                  VerticalAlignment="Center">
 
                 <controlsShared:SliderWithPointer x:Name="PartSliderFirst"
-                                                  VerticalAlignment="Bottom"
+                                                  VerticalAlignment="Center"
                                                   Height="{Binding ElementName=PART_ProgressBarFirst, Path=IndicatorDemiHeight}"
                                                   Margin="{Binding ElementName=SliderPlaytime, Path=Margin}"/>
 
                 <controlsShared:SliderWithPointer x:Name="PartSliderSecond"
-                                                  VerticalAlignment="Bottom"
+                                                  VerticalAlignment="Center"
                                                   Height="{Binding ElementName=PART_ProgressBarFirst, Path=IndicatorDemiHeight}"
                                                   Margin="{Binding ElementName=SliderPlaytime, Path=Margin}"/>
 
                 <controlsShared:SliderWithPointer x:Name="PartSliderThird"
-                                                  VerticalAlignment="Bottom"
+                                                  VerticalAlignment="Center"
                                                   Height="{Binding ElementName=PART_ProgressBarFirst, Path=IndicatorDemiHeight}"
                                                   Margin="{Binding ElementName=SliderPlaytime, Path=Margin}"/>
             </Grid>
         </Grid>
-        <StackPanel x:Name="PART_TimeTexts"
-                Grid.Row="1"
+        <StackPanel x:Name="PART_TimeTextsAbove"
+                Grid.Row="0"
                 Orientation="Horizontal"
                 HorizontalAlignment="Center"
-                Margin="0,-20,0,0"
+                Margin="0,0,0,4"
+                VerticalAlignment="Bottom"
+                Visibility="{Binding TextAboveVisibility, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <TextBlock x:Name="PART_TimeText1_Above"
+                       Text="{Binding ToolTipFirst}"
+                       TextTrimming="CharacterEllipsis"
+                       VerticalAlignment="Center"
+                       Margin="0,0,2,0"
+                       Foreground="{Binding ThumbFirst}"/>
+            <TextBlock x:Name="PART_TimeSep12_Above"
+                   Text=" - "
+                   Margin="2,0"
+                   VerticalAlignment="Center"/>
+            <TextBlock x:Name="PART_TimeText2_Above"
+                       Text="{Binding ToolTipSecond}"
+                       TextTrimming="CharacterEllipsis"
+                       VerticalAlignment="Center"
+                       Margin="2,0,2,0"
+                       Foreground="{Binding ThumbSecond}"/>
+            <TextBlock x:Name="PART_TimeSep23_Above"
+                   Text=" - "
+                   Margin="2,0"
+                   VerticalAlignment="Center"/>
+            <TextBlock x:Name="PART_TimeText3_Above"
+                       Text="{Binding ToolTipThird}"
+                       TextTrimming="CharacterEllipsis"
+                       VerticalAlignment="Center"
+                       Margin="2,0,0,0"
+                       Foreground="{Binding ThumbThird}"/>
+        </StackPanel>
+
+        <!-- Below time texts -->
+        <StackPanel x:Name="PART_TimeTextsBelow"
+                Grid.Row="2"
+                Orientation="Horizontal"
+                HorizontalAlignment="Center"
+                Margin="0,4,0,0"
                 VerticalAlignment="Top"
-                    Visibility="{Binding TextBelowVisibility, Converter={StaticResource BooleanToVisibilityConverter}}">
-            <TextBlock x:Name="PART_TimeText1"
-                    TextTrimming="CharacterEllipsis"
-                    VerticalAlignment="Center"
-                    Margin="0,0,2,0"
-                    Foreground="{Binding ThumbFirst}"
-                    Visibility="Collapsed"/>
-            <TextBlock x:Name="PART_TimeSep12"
-                    Text=" - "
-                    Margin="2,0"
-                    VerticalAlignment="Center"
-                    Visibility="Collapsed"/>
-            <TextBlock x:Name="PART_TimeText2"
-                    TextTrimming="CharacterEllipsis"
-                    VerticalAlignment="Center"
-                    Margin="2,0,2,0"
-                    Foreground="{Binding ThumbSecond}"
-                    Visibility="Collapsed"/>
-            <TextBlock x:Name="PART_TimeSep23"
-                    Text=" - "
-                    Margin="2,0"
-                    VerticalAlignment="Center"
-                    Visibility="Collapsed"/>
-            <TextBlock x:Name="PART_TimeText3"
-                    TextTrimming="CharacterEllipsis"
-                    VerticalAlignment="Center"
-                    Margin="2,0,0,0"
-                    Foreground="{Binding ThumbThird}"
-                    Visibility="Collapsed"/>
+                Visibility="{Binding TextBelowVisibility, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <TextBlock x:Name="PART_TimeText1_Below"
+                       Text="{Binding ToolTipFirst}"
+                       TextTrimming="CharacterEllipsis"
+                       VerticalAlignment="Center"
+                       Margin="0,0,2,0"
+                       Foreground="{Binding ThumbFirst}"/>
+            <TextBlock x:Name="PART_TimeSep12_Below"
+                   Text=" - "
+                   Margin="2,0"
+                   VerticalAlignment="Center"/>
+            <TextBlock x:Name="PART_TimeText2_Below"
+                       Text="{Binding ToolTipSecond}"
+                       TextTrimming="CharacterEllipsis"
+                       VerticalAlignment="Center"
+                       Margin="2,0,2,0"
+                       Foreground="{Binding ThumbSecond}"/>
+            <TextBlock x:Name="PART_TimeSep23_Below"
+                   Text=" - "
+                   Margin="2,0"
+                   VerticalAlignment="Center"/>
+            <TextBlock x:Name="PART_TimeText3_Below"
+                       Text="{Binding ToolTipThird}"
+                       TextTrimming="CharacterEllipsis"
+                       VerticalAlignment="Center"
+                       Margin="2,0,0,0"
+                       Foreground="{Binding ThumbThird}"/>
         </StackPanel>
     </Grid>
 </controls:PluginUserControlExtend>

@@ -687,6 +687,26 @@
                                                       Content="{DynamicResource LOCHowLongToBeatIntegrationProgressBarShowTimeUser}"/>
 
                                             <StackPanel Margin="0,0,0,10">
+                                                <Label Content="Time labels placement:"/>
+                                                <StackPanel Orientation="Horizontal" Margin="50,5,0,0">
+                                                    <RadioButton GroupName="ProgressBarTimePlacement"
+                                                                 Content="Above"
+                                                                 IsChecked="{Binding Settings.ProgressBarShowTimeAbove}"
+                                                                 Checked="HltB_ProgressBarTimeAbove_Checked"/>
+                                                    <RadioButton GroupName="ProgressBarTimePlacement"
+                                                                 Content="Inside"
+                                                                 Margin="20,0,0,0"
+                                                                 IsChecked="{Binding Settings.ProgressBarShowTimeInterior}"
+                                                                 Checked="HltB_ProgressBarTimeInterior_Checked"/>
+                                                    <RadioButton GroupName="ProgressBarTimePlacement"
+                                                                 Content="Below"
+                                                                 Margin="20,0,0,0"
+                                                                 IsChecked="{Binding Settings.ProgressBarShowTimeBelow}"
+                                                                 Checked="HltB_ProgressBarTimeBelow_Checked"/>
+                                                </StackPanel>
+                                            </StackPanel>
+
+                                            <StackPanel Margin="0,0,0,10">
                                                 <Label Content="{DynamicResource LOCHltbVisibleData}"
                                                        Margin="0,0,0,10"/>
 

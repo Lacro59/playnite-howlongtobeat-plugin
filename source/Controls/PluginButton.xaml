@@ -13,7 +13,7 @@
 
     <Button Name="PART_PluginButton"
             Click="PART_PluginButton_Click"
-            Style="{StaticResource {x:Type Button}}">
+            Style="{DynamicResource {x:Type Button}}">
         <TextBlock Text="{Binding Text}"
                 FontFamily="{DynamicResource CommonFont}"
                    FontSize="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=FontSize}"/>
