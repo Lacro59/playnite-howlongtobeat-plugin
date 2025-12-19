@@ -52,6 +52,13 @@ namespace HowLongToBeat.Services
 
                 try
                 {
+                    // Ensure the timeout CTS is cancelled as soon as the main task completes so
+                    // disposal continuation does not wait for the full timeout when task finishes early.
+                    task.ContinueWith(_ =>
+                    {
+                        try { ctsTimeout.Cancel(); } catch { }
+                    }, CancellationToken.None, TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
+
                     Task.WhenAll(task.ContinueWith(t => { var _ = t.Exception; }, TaskContinuationOptions.OnlyOnFaulted), delayTask)
                         .ContinueWith(_ =>
                         {
@@ -101,6 +108,13 @@ namespace HowLongToBeat.Services
 
                 try
                 {
+                    // Ensure the timeout CTS is cancelled as soon as the main task completes so
+                    // disposal continuation does not wait for the full timeout when task finishes early.
+                    task.ContinueWith(_ =>
+                    {
+                        try { ctsTimeout.Cancel(); } catch { }
+                    }, CancellationToken.None, TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
+
                     Task.WhenAll(task.ContinueWith(t => { var _ = t.Exception; }, TaskContinuationOptions.OnlyOnFaulted), delayTask)
                         .ContinueWith(_ =>
                         {

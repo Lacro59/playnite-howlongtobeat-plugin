@@ -669,10 +669,10 @@ namespace HowLongToBeat.Services
                                 SetGameStatusFromHltb();
                             }
 
-                            Application.Current.Dispatcher?.Invoke(() =>
+                            Application.Current.Dispatcher?.BeginInvoke(new Action(() =>
                             {
                                 Database.OnCollectionChanged(null, null);
-                            });
+                            }));
                         }
                         else
                         {

@@ -58,7 +58,12 @@ namespace HowLongToBeat.Views
 
             InitializeComponent();
 
-            CheckAuthenticate();
+            // Run authentication check in fire-and-forget to avoid async void from constructor.
+            try
+            {
+                TaskHelpers.FireAndForget(CheckAuthenticateAsync(), "SettingsView-CheckAuthenticate", Logger);
+            }
+            catch { }
             SetPlatforms(settings);
 
             try
@@ -268,25 +273,6 @@ namespace HowLongToBeat.Views
                             var developers = game.Developers?.Select(d => d.Name)?.ToList() ?? new List<string>();
                             var publishers = game.Publishers?.Select(p => p.Name)?.ToList() ?? new List<string>();
 
-                            long? installSize = null;
-                            try
-                            {
-                                var prop = typeof(Game).GetProperty("InstallSize");
-                                if (prop != null)
-                                {
-                                    var value = prop.GetValue(game);
-                                    if (value is long l)
-                                    {
-                                        installSize = l;
-                                    }
-                                    else if (value is long?)
-                                    {
-                                        installSize = (long?)value;
-                                    }
-                                }
-                            }
-                            catch { }
-
                             items.Add(new
                             {
                                 GameId = game.Id,
@@ -311,7 +297,7 @@ namespace HowLongToBeat.Views
                                 Developers = developers,
                                 Publishers = publishers,
                                 DateAdded = game.Added,
-                                game.LastActivity
+                                LastActivity = game.LastActivity
                             });
                             exportedCount++;
                         }
@@ -577,7 +563,7 @@ namespace HowLongToBeat.Views
 
 
         #region Authenticate
-        private async void CheckAuthenticate()
+        private async Task CheckAuthenticateAsync()
         {
             PART_LbUserLogin.Visibility = Visibility.Collapsed;
             PART_LbAuthenticate.Content = ResourceProvider.GetString("LOCCommonLoginChecking");
@@ -601,38 +587,46 @@ namespace HowLongToBeat.Views
 
             try
             {
-                await Dispatcher.InvokeAsync(() =>
-                {
-                    try
-                    {
-                        var api = PluginDatabase?.HowLongToBeatApi;
-
-                        // Ensure UI is updated even if the API state was already set before we subscribed.
-                        if (isLoggedIn || (api != null && (bool?)(api.IsConnected) == true))
-                        {
-                            PART_LbAuthenticate.Content = ResourceProvider.GetString("LOCCommonLoggedIn");
-                            PART_LbUserLogin.Visibility = Visibility.Visible;
-
-                            string userLogin = api?.UserLogin;
-                            if (userLogin.IsNullOrEmpty())
-                            {
-                                userLogin = PluginDatabase?.Database?.UserHltbData?.Login ?? string.Empty;
-                            }
-
-                            PART_LbUserLogin.Content = ResourceProvider.GetString("LOCCommonAccountName") + " " + userLogin;
-                        }
-                        else
-                        {
-                            PART_LbAuthenticate.Content = ResourceProvider.GetString("LOCCommonNotLoggedIn");
-                            PART_LbUserLogin.Visibility = Visibility.Collapsed;
-                        }
-
-                        try { Logger.Info($"HLTB Auth UI: CheckAuthenticate done isLoggedIn={isLoggedIn} api.IsConnected={(api?.IsConnected?.ToString() ?? "<null>")}"); } catch { }
-                    }
-                    catch { }
-                });
+                await Dispatcher.InvokeAsync(() => UpdateAuthUi(isLoggedIn));
             }
-            catch { }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, false, true, PluginDatabase.PluginName);
+            }
+        }
+
+        private void UpdateAuthUi(bool isLoggedIn)
+        {
+            try
+            {
+                var api = PluginDatabase?.HowLongToBeatApi;
+
+                // Ensure UI is updated even if the API state was already set before we subscribed.
+                if (isLoggedIn || (api != null && (bool?)(api.IsConnected) == true))
+                {
+                    PART_LbAuthenticate.Content = ResourceProvider.GetString("LOCCommonLoggedIn");
+                    PART_LbUserLogin.Visibility = Visibility.Visible;
+
+                    string userLogin = api?.UserLogin;
+                    if (userLogin.IsNullOrEmpty())
+                    {
+                        userLogin = PluginDatabase?.Database?.UserHltbData?.Login ?? string.Empty;
+                    }
+
+                    PART_LbUserLogin.Content = ResourceProvider.GetString("LOCCommonAccountName") + " " + userLogin;
+                }
+                else
+                {
+                    PART_LbAuthenticate.Content = ResourceProvider.GetString("LOCCommonNotLoggedIn");
+                    PART_LbUserLogin.Visibility = Visibility.Collapsed;
+                }
+
+                try { Logger.Info($"HLTB Auth UI: CheckAuthenticate done isLoggedIn={isLoggedIn} api.IsConnected={(api?.IsConnected?.ToString() ?? "<null>")}"); } catch { }
+            }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, false, true, PluginDatabase.PluginName);
+            }
         }
 
         private void PART_BtAuthenticate_Click(object sender, RoutedEventArgs e)
@@ -644,37 +638,28 @@ namespace HowLongToBeat.Views
             {
                 PluginDatabase.HowLongToBeatApi.Login();
             }
-            catch { }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, false, true, PluginDatabase.PluginName);
+            }
         }
 
 
         protected void OnPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            this.Dispatcher.Invoke(new Action(() =>
+            try
             {
-                try
+                this.Dispatcher.Invoke(new Action(() =>
                 {
                     var api = PluginDatabase?.HowLongToBeatApi;
-                    if (api != null && (bool?)(api.IsConnected) == true)
-                    {
-                        PART_LbAuthenticate.Content = ResourceProvider.GetString("LOCCommonLoggedIn");
-                        PART_LbUserLogin.Visibility = Visibility.Visible;
-
-                        string UserLogin = api.UserLogin;
-                        if (UserLogin.IsNullOrEmpty())
-                        {
-                            UserLogin = PluginDatabase?.Database?.UserHltbData?.Login ?? string.Empty;
-                        }
-
-                        PART_LbUserLogin.Content = ResourceProvider.GetString("LOCCommonAccountName") + " " + UserLogin;
-                    }
-                    else
-                    {
-                        PART_LbAuthenticate.Content = ResourceProvider.GetString("LOCCommonNotLoggedIn");
-                    }
-                }
-                catch { }
-            }));
+                    bool isLoggedIn = api != null && (bool?)(api.IsConnected) == true;
+                    UpdateAuthUi(isLoggedIn);
+                }));
+            }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, false, true, PluginDatabase.PluginName);
+            }
         }
         #endregion
 
