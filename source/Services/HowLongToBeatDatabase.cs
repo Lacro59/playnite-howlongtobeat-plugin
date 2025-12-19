@@ -35,146 +35,21 @@ namespace HowLongToBeat.Services
             TagBefore = "[HLTB]";
         }
 
-        private bool IsVerboseLoggingEnabled => PluginSettings?.Settings is HowLongToBeatSettings settings && settings.EnableVerboseLogging;
+        // Change visibility to allow other classes to use the centralized verbose check
+        public bool IsVerboseLoggingEnabled => PluginSettings?.Settings is HowLongToBeatSettings settings && settings.EnableVerboseLogging;
 
         private void FireAndForget(Task task, string context)
         {
+            // Delegate to centralized helper to avoid duplication with HowLongToBeatApi
             try
             {
-                if (task == null)
-                {
-                    return;
-                }
-
-                task.ContinueWith(t =>
-                {
-                    try
-                    {
-                        if (t.Exception != null)
-                        {
-                            try { Logger.Warn(t.Exception, $"HLTB: FireAndForget faulted ({context})"); } catch { }
-                        }
-                    }
-                    catch { }
-                }, TaskContinuationOptions.OnlyOnFaulted);
+                TaskHelpers.FireAndForget(task, context, LogManager.GetLogger());
             }
             catch { }
         }
 
-        // Helper to run a Task-returning operation with a bounded synchronous wait to avoid indefinite UI blocking.
-        private static T RunSyncWithTimeout<T>(Func<CancellationToken, Task<T>> taskFactory, int timeoutMs = 15000, CancellationToken externalToken = default)
-        {
-            try
-            {
-                var ctsTimeout = new CancellationTokenSource();
-                var linked = CancellationTokenSource.CreateLinkedTokenSource(ctsTimeout.Token, externalToken);
-
-                var task = Task.Run(() => taskFactory(linked.Token), linked.Token);
-                var delayTask = Task.Delay(timeoutMs, linked.Token);
-
-                try
-                {
-                    Task.WhenAll(task.ContinueWith(t => { var _ = t.Exception; }, TaskContinuationOptions.OnlyOnFaulted), delayTask)
-                        .ContinueWith(_ =>
-                        {
-                            try { ctsTimeout.Dispose(); } catch { }
-                            try { linked.Dispose(); } catch { }
-                        }, CancellationToken.None, TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
-                }
-                catch { }
-
-                var completed = Task.WhenAny(task, delayTask).ConfigureAwait(false).GetAwaiter().GetResult();
-                if (completed == task)
-                {
-                    try { return task.GetAwaiter().GetResult(); } catch (Exception ex) { Common.LogError(ex, false); return default; }
-                }
-                else
-                {
-                    if (delayTask.IsCanceled || linked.Token.IsCancellationRequested)
-                    {
-                        try { ctsTimeout.Cancel(); } catch { }
-                        try { task.ContinueWith(t => { var _ = t.Exception; }, TaskContinuationOptions.OnlyOnFaulted); } catch { }
-                        return default;
-                    }
-
-                    try { ctsTimeout.Cancel(); } catch { }
-                    try { Logger.Warn($"Operation timed out after {timeoutMs}ms"); } catch { }
-                    try { task.ContinueWith(t => { var _ = t.Exception; }, TaskContinuationOptions.OnlyOnFaulted); } catch { }
-                    return default;
-                }
-            }
-            catch (Exception ex)
-            {
-                try { Common.LogError(ex, false, true, "HowLongToBeatDatabase"); } catch { }
-                return default;
-            }
-        }
-
-        // Optional: helper to try running the task and return success flag with output; callers can use this when they need explicit success semantics.
-        private static bool TryRunSyncWithTimeout<T>(Func<CancellationToken, Task<T>> taskFactory, out T result, int timeoutMs = 15000, CancellationToken externalToken = default)
-        {
-            result = default;
-            try
-            {
-                var ctsTimeout = new CancellationTokenSource();
-                var linked = CancellationTokenSource.CreateLinkedTokenSource(ctsTimeout.Token, externalToken);
-
-                var task = Task.Run(() => taskFactory(linked.Token), linked.Token);
-                var delayTask = Task.Delay(timeoutMs, linked.Token);
-
-                try
-                {
-                    Task.WhenAll(task.ContinueWith(t => { var _ = t.Exception; }, TaskContinuationOptions.OnlyOnFaulted), delayTask)
-                        .ContinueWith(_ =>
-                        {
-                            try { ctsTimeout.Dispose(); } catch { }
-                            try { linked.Dispose(); } catch { }
-                        }, CancellationToken.None, TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
-                }
-                catch { }
-
-                var completed = Task.WhenAny(task, delayTask).ConfigureAwait(false).GetAwaiter().GetResult();
-                if (completed == task)
-                {
-                    try
-                    {
-                        result = task.GetAwaiter().GetResult();
-                        return true;
-                    }
-                    catch (Exception ex)
-                    {
-                        Common.LogError(ex, false);
-                        return false;
-                    }
-                }
-                else
-                {
-                    if (delayTask.IsCanceled || linked.Token.IsCancellationRequested)
-                    {
-                        try { ctsTimeout.Cancel(); } catch { }
-                        try { task.ContinueWith(t => { var _ = t.Exception; }, TaskContinuationOptions.OnlyOnFaulted); } catch { }
-                        return false;
-                    }
-
-                    try { ctsTimeout.Cancel(); } catch { }
-                    try { Logger.Warn($"Operation timed out after {timeoutMs}ms"); } catch { }
-                    try { task.ContinueWith(t => { var _ = t.Exception; }, TaskContinuationOptions.OnlyOnFaulted); } catch { }
-                    return false;
-                }
-            }
-            catch (Exception ex)
-            {
-                try { Common.LogError(ex, false, true, "HowLongToBeatDatabase"); } catch { }
-                result = default;
-                return false;
-            }
-        }
-
-        // Overload to allow type inference when caller provides a Func<Task<T>>.
-        private static T RunSyncWithTimeout<T>(Func<Task<T>> taskFactory, int timeoutMs = 15000)
-        {
-            return RunSyncWithTimeout(ct => taskFactory(), timeoutMs, CancellationToken.None);
-        }
+        // Run synchronous Task helpers are centralized in Services.TaskHelpers to avoid duplication and ensure consistent behavior.
+        // Use TaskHelpers.RunSyncWithTimeout(...) or TaskHelpers.TryRunSyncWithTimeout(...) where needed.
 
         public void InitializeClient(HowLongToBeat plugin)
         {
@@ -287,35 +162,11 @@ namespace HowLongToBeat.Services
                         {
                             try
                             {
-                                Application.Current?.Dispatcher?.Invoke(() =>
+                                var dispatcher = Application.Current?.Dispatcher;
+                                if (dispatcher != null)
                                 {
-                                    try
-                                    {
-                                        if (Database == null)
-                                        {
-                                            return;
-                                        }
-
-                                        Database.UserHltbData = data;
-                                        Database.OnCollectionChanged(null, null);
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        Common.LogError(ex, false, true, PluginName);
-                                    }
-                                });
-                            }
-                            catch (Exception ex)
-                            {
-                                Common.LogError(ex, false, true, PluginName);
-                                try
-                                {
-                                    Logger.Warn("Dispatcher.Invoke failed in LoadMoreData; falling back to BeginInvoke");
-                                }
-                                catch { }
-                                try
-                                {
-                                    Application.Current?.Dispatcher?.BeginInvoke(new Action(() =>
+                                    // Use BeginInvoke to avoid blocking the background thread and keep behavior consistent.
+                                    dispatcher.BeginInvoke(new Action(() =>
                                     {
                                         try
                                         {
@@ -333,10 +184,10 @@ namespace HowLongToBeat.Services
                                         }
                                     }));
                                 }
-                                catch (Exception innerEx)
-                                {
-                                    Common.LogError(innerEx, false, true, PluginName);
-                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                Common.LogError(ex, false, true, PluginName);
                             }
                         }
                     }
@@ -407,7 +258,7 @@ namespace HowLongToBeat.Services
                 return;
             }
 
-            List<HltbSearch> data = RunSyncWithTimeout(() => HowLongToBeatApi.SearchTwoMethod(game.Name), 15000) ?? new List<HltbSearch>();
+            List<HltbSearch> data = TaskHelpers.RunSyncWithTimeout(() => HowLongToBeatApi.SearchTwoMethod(game.Name), 15000) ?? new List<HltbSearch>();
             if (data.Count == 1 && PluginSettings.Settings.AutoAccept)
             {
                 gameHowLongToBeat.Items = new List<HltbDataUser>() { data.First().Data };
@@ -436,7 +287,7 @@ namespace HowLongToBeat.Services
         public override void RefreshNoLoader(Guid id)
         {
             Game game = API.Instance.Database.Games.Get(id);
-            if (PluginSettings?.Settings is HowLongToBeatSettings vs && vs.EnableVerboseLogging)
+            if (IsVerboseLoggingEnabled)
             {
                 Logger.Debug($"RefreshNoLoader({game?.Name} - {game?.Id})");
             }
@@ -444,7 +295,7 @@ namespace HowLongToBeat.Services
             GameHowLongToBeat loadedItem = Get(id, true);
             if (loadedItem.GetData().Id.IsNullOrEmpty())
             {
-                if (PluginSettings?.Settings is HowLongToBeatSettings vs2 && vs2.EnableVerboseLogging)
+                if (IsVerboseLoggingEnabled)
                 {
                     Logger.Debug($"No data, try to add");
                 }
@@ -452,7 +303,7 @@ namespace HowLongToBeat.Services
                 loadedItem = Get(id, true);
                 if (loadedItem.GetData().Id.IsNullOrEmpty())
                 {
-                    if (PluginSettings?.Settings is HowLongToBeatSettings vs3 && vs3.EnableVerboseLogging)
+                    if (IsVerboseLoggingEnabled)
                     {
                         Logger.Debug($"No find");
                     }
@@ -462,7 +313,7 @@ namespace HowLongToBeat.Services
             {
                 if (loadedItem.GetData().IsVndb)
                 {
-                    var dataSearch = RunSyncWithTimeout(() => VndbApi.SearchByIdAsync(loadedItem.GetData().Id), 15000) ?? new List<HltbDataUser>();
+                    var dataSearch = TaskHelpers.RunSyncWithTimeout(() => VndbApi.SearchByIdAsync(loadedItem.GetData().Id), 15000) ?? new List<HltbDataUser>();
                     HltbDataUser webDataSearch = dataSearch.Find(x => x.Id == loadedItem.GetData().Id);
                     if (webDataSearch != null)
                     {
@@ -475,7 +326,7 @@ namespace HowLongToBeat.Services
                 {
                     if (HowLongToBeatApi != null)
                     {
-                        HltbDataUser updated = RunSyncWithTimeout(() => HowLongToBeatApi.UpdateGameData(loadedItem.Items.First()), 15000);
+                        HltbDataUser updated = TaskHelpers.RunSyncWithTimeout(() => HowLongToBeatApi.UpdateGameData(loadedItem.Items.First()), 15000);
                         loadedItem.Items = new List<HltbDataUser> { updated != null ? updated : loadedItem.Items.First() };
                     }
                     else
@@ -1138,7 +989,7 @@ namespace HowLongToBeat.Services
                         if (HltbData != null && HowLongToBeatApi.EditIdExist(HltbData.UserGameId))
                         {
                             submissionId = HltbData.UserGameId;
-                            editData = RunSyncWithTimeout(() => HowLongToBeatApi.GetEditData(gameHowLongToBeat.Name, submissionId), 15000);
+                            editData = TaskHelpers.RunSyncWithTimeout(() => HowLongToBeatApi.GetEditData(gameHowLongToBeat.Name, submissionId), 15000);
                         }
                         else
                         {
@@ -1149,7 +1000,7 @@ namespace HowLongToBeat.Services
                                 if (!tmpEditId.IsNullOrEmpty())
                                 {
                                     submissionId = tmpEditId;
-                                    editData = RunSyncWithTimeout(() => HowLongToBeatApi.GetEditData(gameHowLongToBeat.Name, submissionId), 15000);
+                                    editData = TaskHelpers.RunSyncWithTimeout(() => HowLongToBeatApi.GetEditData(gameHowLongToBeat.Name, submissionId), 15000);
                                 }
                                 else
                                 {
@@ -1285,7 +1136,7 @@ namespace HowLongToBeat.Services
 
                         #endregion
 
-                        return RunSyncWithTimeout(() => HowLongToBeatApi.ApiSubmitData(game, editData), 15000);
+                        return TaskHelpers.RunSyncWithTimeout(() => HowLongToBeatApi.ApiSubmitData(game, editData), 15000);
                     }
                 }
                 else

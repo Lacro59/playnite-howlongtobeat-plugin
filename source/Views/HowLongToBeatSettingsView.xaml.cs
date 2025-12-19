@@ -337,15 +337,6 @@ namespace HowLongToBeat.Views
             }
         }
 
-
-        private static string EscapeCsv(string input)
-        {
-            if (string.IsNullOrEmpty(input)) return string.Empty;
-            bool needsQuotes = input.Contains(";") || input.Contains("\"") || input.Contains("\n") || input.Contains("\r");
-            string escaped = input.Replace("\"", "\"\"");
-            return needsQuotes ? $"\"{escaped}\"" : escaped;
-        }
-
         private static string EscapeCsvWithDelimiter(string input, char delimiter)
         {
             if (string.IsNullOrEmpty(input)) return string.Empty;

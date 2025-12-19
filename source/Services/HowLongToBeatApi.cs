@@ -85,24 +85,10 @@ namespace HowLongToBeat.Services
 
         private void FireAndForget(Task task, string context)
         {
+            // Delegate to centralized helper to avoid duplication with HowLongToBeatDatabase
             try
             {
-                if (task == null)
-                {
-                    return;
-                }
-
-                task.ContinueWith(t =>
-                {
-                    try
-                    {
-                        if (t.Exception != null)
-                        {
-                            Logger.Warn(t.Exception, $"HLTB: FireAndForget faulted ({context})");
-                        }
-                    }
-                    catch { }
-                }, TaskContinuationOptions.OnlyOnFaulted);
+                TaskHelpers.FireAndForget(task, context, LogManager.GetLogger());
             }
             catch { }
         }

@@ -205,6 +205,7 @@
     <Compile Include="Services\HowLongToBeatStats.cs" />
     <Compile Include="Services\HowLongToBeatTopPanelItem.cs" />
     <Compile Include="Services\HowLongToBeatViewSidebar.cs" />
+    <Compile Include="Services\TaskHelpers.cs" />
     <Compile Include="Services\VndbApi.cs" />
     <Compile Include="Views\HowLongToBeatSelect.xaml.cs">
       <DependentUpon>HowLongToBeatSelect.xaml</DependentUpon>
