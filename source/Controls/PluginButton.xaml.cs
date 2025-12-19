@@ -175,7 +175,39 @@ namespace HowLongToBeat.Controls
         #region Events
         private void PART_PluginButton_Click(object sender, RoutedEventArgs e)
         {
-            GameHowLongToBeat gameHowLongToBeat = PluginDatabase.Get(GameContext);
+            GameHowLongToBeat gameHowLongToBeat = null;
+
+            try
+            {
+                // Prefer a cache-only lookup to avoid triggering API calls when the service isn't initialized.
+                gameHowLongToBeat = PluginDatabase.Get(GameContext, onlyCache: true);
+                // If cached lookup returned nothing, attempt a full lookup but guard against API not initialized.
+                if (gameHowLongToBeat == null)
+                {
+                    gameHowLongToBeat = PluginDatabase.Get(GameContext);
+                }
+            }
+            catch (InvalidOperationException ex)
+            {
+                // HowLongToBeatApi not initialized — log and continue gracefully.
+                try { Common.LogError(ex, false, $"HLTB API not initialized when opening view for {GameContext?.Name}", true, PluginDatabase.PluginName); } catch { }
+                try
+                {
+                    // Fall back to cache-only lookup if possible
+                    gameHowLongToBeat = PluginDatabase.Get(GameContext, onlyCache: true);
+                }
+                catch { gameHowLongToBeat = null; }
+            }
+            catch (Exception ex)
+            {
+                try { Common.LogError(ex, false, true, PluginDatabase.PluginName); } catch { }
+            }
+
+            if (gameHowLongToBeat == null)
+            {
+                // No data available (or API uninitialized) — fail gracefully.
+                return;
+            }
 
             if (gameHowLongToBeat.HasData)
             {
