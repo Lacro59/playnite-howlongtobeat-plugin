@@ -29,7 +29,7 @@ namespace HowLongToBeat.Controls
                 ?? throw new InvalidCastException($"Expected {nameof(PluginButtonDataContext)} but got {value?.GetType().FullName ?? "<null>"}");
         }
 
-        private bool eventsWired;
+        private volatile bool eventsWired;
         private volatile bool _isUnloading = false;
         private CancellationTokenSource _loadedCts;
         private int _initGate = 0;
