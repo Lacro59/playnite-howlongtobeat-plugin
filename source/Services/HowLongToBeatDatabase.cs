@@ -31,11 +31,35 @@ namespace HowLongToBeat.Services
 
 
         public HowLongToBeatDatabase(HowLongToBeatSettingsViewModel pluginSettings, string pluginUserDataPath) : base(pluginSettings, "HowLongToBeat", pluginUserDataPath)
-         {
-             TagBefore = "[HLTB]";
-         }
+        {
+            TagBefore = "[HLTB]";
+        }
 
         private bool IsVerboseLoggingEnabled => PluginSettings?.Settings is HowLongToBeatSettings settings && settings.EnableVerboseLogging;
+
+        private void FireAndForget(Task task, string context)
+        {
+            try
+            {
+                if (task == null)
+                {
+                    return;
+                }
+
+                task.ContinueWith(t =>
+                {
+                    try
+                    {
+                        if (t.Exception != null)
+                        {
+                            try { Logger.Warn(t.Exception, $"HLTB: FireAndForget faulted ({context})"); } catch { }
+                        }
+                    }
+                    catch { }
+                }, TaskContinuationOptions.OnlyOnFaulted);
+            }
+            catch { }
+        }
 
         // Helper to run a Task-returning operation with a bounded synchronous wait to avoid indefinite UI blocking.
         private static T RunSyncWithTimeout<T>(Func<CancellationToken, Task<T>> taskFactory, int timeoutMs = 15000, CancellationToken externalToken = default)
@@ -77,8 +101,8 @@ namespace HowLongToBeat.Services
                     try { Logger.Warn($"Operation timed out after {timeoutMs}ms"); } catch { }
                     try { task.ContinueWith(t => { var _ = t.Exception; }, TaskContinuationOptions.OnlyOnFaulted); } catch { }
                     return default;
-                 }
-             }
+                }
+            }
             catch (Exception ex)
             {
                 try { Common.LogError(ex, false, true, "HowLongToBeatDatabase"); } catch { }
@@ -173,7 +197,7 @@ namespace HowLongToBeat.Services
                     // Run optional/expensive warm-up work in background so initialization doesn't block.
                     if (HowLongToBeatApi != null)
                     {
-                        _ = Task.Run(() =>
+                        FireAndForget(Task.Run(() =>
                         {
                             try
                             {
@@ -184,7 +208,52 @@ namespace HowLongToBeat.Services
                             {
                                 Common.LogError(ex, false, true, PluginName);
                             }
-                        });
+                        }), "UpdatedCookies warmup");
+
+                        // Load cached user stats as soon as the API exists.
+                        // LoadMoreData can run before InitializeClient and will then set an empty placeholder.
+                        FireAndForget(Task.Run(() =>
+                        {
+                            try
+                            {
+                                var data = HowLongToBeatApi.LoadUserData();
+                                if (data == null)
+                                {
+                                    return;
+                                }
+
+                                try { Logger.Info($"HLTB UserData: loaded cached stats titles={data.TitlesList?.Count ?? 0}"); } catch { }
+
+                                try
+                                {
+                                    Application.Current?.Dispatcher?.BeginInvoke((Action)(() =>
+                                    {
+                                        try
+                                        {
+                                            if (Database == null)
+                                            {
+                                                return;
+                                            }
+
+                                            Database.UserHltbData = data;
+                                            Database.OnCollectionChanged(null, null);
+                                        }
+                                        catch (Exception innerEx)
+                                        {
+                                            Common.LogError(innerEx, false, true, PluginName);
+                                        }
+                                    }));
+                                }
+                                catch (Exception ex)
+                                {
+                                    Common.LogError(ex, false, true, PluginName);
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                Common.LogError(ex, false, true, PluginName);
+                            }
+                        }), "Load cached user data");
                     }
                 }
             }
@@ -200,13 +269,16 @@ namespace HowLongToBeat.Services
             {
                 if (HowLongToBeatApi == null)
                 {
-                    Logger.Warn("HowLongToBeatApi not initialized yet during LoadMoreData(); using empty UserHltbData placeholder");
+                    if (IsVerboseLoggingEnabled)
+                    {
+                        Logger.Debug("HowLongToBeatApi not initialized yet during LoadMoreData(); using empty UserHltbData placeholder");
+                    }
                     Database.UserHltbData = new HltbUserStats();
                     return;
                 }
 
                 Database.UserHltbData = new HltbUserStats();
-                _ = Task.Run(() =>
+                FireAndForget(Task.Run(() =>
                 {
                     try
                     {
@@ -215,10 +287,15 @@ namespace HowLongToBeat.Services
                         {
                             try
                             {
-                                Application.Current.Dispatcher?.Invoke(() =>
+                                Application.Current?.Dispatcher?.Invoke(() =>
                                 {
                                     try
                                     {
+                                        if (Database == null)
+                                        {
+                                            return;
+                                        }
+
                                         Database.UserHltbData = data;
                                         Database.OnCollectionChanged(null, null);
                                     }
@@ -238,10 +315,15 @@ namespace HowLongToBeat.Services
                                 catch { }
                                 try
                                 {
-                                    Application.Current.Dispatcher?.BeginInvoke(new Action(() =>
+                                    Application.Current?.Dispatcher?.BeginInvoke(new Action(() =>
                                     {
                                         try
                                         {
+                                            if (Database == null)
+                                            {
+                                                return;
+                                            }
+
                                             Database.UserHltbData = data;
                                             Database.OnCollectionChanged(null, null);
                                         }
@@ -256,13 +338,13 @@ namespace HowLongToBeat.Services
                                     Common.LogError(innerEx, false, true, PluginName);
                                 }
                             }
-                         }
-                     }
-                     catch (Exception ex)
-                     {
-                         Common.LogError(ex, false, true, PluginName);
-                     }
-                 });
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Common.LogError(ex, false, true, PluginName);
+                    }
+                }), "LoadMoreData LoadUserData");
             }
             catch (Exception ex)
             {
@@ -1204,10 +1286,10 @@ namespace HowLongToBeat.Services
                         #endregion
 
                         return RunSyncWithTimeout(() => HowLongToBeatApi.ApiSubmitData(game, editData), 15000);
-                     }
-                 }
-                 else
-                 {
+                    }
+                }
+                else
+                {
                     API.Instance.Notifications.Add(new NotificationMessage(
                         $"{PluginName}-NotLoggedIn-Error",
                         PluginName + Environment.NewLine + ResourceProvider.GetString("LOCCommonNotLoggedIn"),

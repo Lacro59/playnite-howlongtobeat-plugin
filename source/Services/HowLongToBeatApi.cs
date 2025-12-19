@@ -46,6 +46,67 @@ namespace HowLongToBeat.Services
             catch { }
         }
 
+        private DateTime lastLoginCheckUtc = DateTime.MinValue;
+        private bool? lastLoginCheckResult = null;
+
+        private void LogCookieSummary(string context, List<HttpCookie> cookies)
+        {
+            try
+            {
+                if (!IsVerboseLoggingEnabled)
+                {
+                    return;
+                }
+
+                cookies = cookies ?? new List<HttpCookie>();
+                var domains = cookies.Select(c => c?.Domain ?? string.Empty).Where(d => !string.IsNullOrEmpty(d)).Distinct(StringComparer.OrdinalIgnoreCase).ToList();
+
+                int expiredCount = 0;
+                DateTime? minExpiry = null;
+                DateTime? maxExpiry = null;
+                foreach (var c in cookies)
+                {
+                    if (c?.Expires is DateTime dt)
+                    {
+                        if (dt <= DateTime.Now)
+                        {
+                            expiredCount++;
+                        }
+
+                        if (minExpiry == null || dt < minExpiry) minExpiry = dt;
+                        if (maxExpiry == null || dt > maxExpiry) maxExpiry = dt;
+                    }
+                }
+
+                Logger.Debug($"HLTB Auth: {context} cookies={cookies.Count} expired={expiredCount} domains=[{string.Join(",", domains)}] minExp={(minExpiry?.ToString("o") ?? "<none>")} maxExp={(maxExpiry?.ToString("o") ?? "<none>")}");
+            }
+            catch { }
+        }
+
+        private void FireAndForget(Task task, string context)
+        {
+            try
+            {
+                if (task == null)
+                {
+                    return;
+                }
+
+                task.ContinueWith(t =>
+                {
+                    try
+                    {
+                        if (t.Exception != null)
+                        {
+                            Logger.Warn(t.Exception, $"HLTB: FireAndForget faulted ({context})");
+                        }
+                    }
+                    catch { }
+                }, TaskContinuationOptions.OnlyOnFaulted);
+            }
+            catch { }
+        }
+
         /// <summary>
         /// Adjusts a semaphore to match a target limit by releasing extra permits or consuming existing permits.
         /// The helper reads and writes the shared current limit via the provided delegates under the provided syncLock
@@ -333,7 +394,13 @@ namespace HowLongToBeat.Services
 
             UserLogin = PluginDatabase.PluginSettings.Settings.UserLogin;
 
-            CookiesDomains = new List<string> { ".howlongtobeat.com", "howlongtobeat.com" };
+            CookiesDomains = new List<string>
+            {
+                ".howlongtobeat.com",
+                "howlongtobeat.com",
+                "www.howlongtobeat.com",
+                ".www.howlongtobeat.com"
+            };
             string pathData = PluginDatabase.Paths.PluginUserDataPath;
             FileCookies = Path.Combine(pathData, CommonPlayniteShared.Common.Paths.GetSafePathName($"HowLongToBeat.dat"));
             CookiesTools = new CookiesTools(
@@ -342,6 +409,39 @@ namespace HowLongToBeat.Services
                 FileCookies,
                 CookiesDomains
             );
+
+            try
+            {
+                var exists = File.Exists(FileCookies);
+                long size = 0;
+                if (exists)
+                {
+                    try { size = new FileInfo(FileCookies).Length; } catch { }
+                }
+
+                Logger.Info($"HLTB Auth: cookie file='{FileCookies}' exists={exists} size={size}");
+                if (exists)
+                {
+                    var stored = CookiesTools.GetStoredCookies();
+                    LogCookieSummary("startup stored", stored);
+
+                    // Non-critical: validate cookies on startup to help diagnose "logged out after restart".
+                    FireAndForget(Task.Run(async () =>
+                    {
+                        try
+                        {
+                            await Task.Delay(2000).ConfigureAwait(false);
+                            bool ok = await GetIsUserLoggedInAsync().ConfigureAwait(false);
+                            Logger.Info($"HLTB Auth: startup cookie check ok={ok} userId={UserId}");
+                        }
+                        catch (Exception ex)
+                        {
+                            try { Common.LogError(ex, false, true, PluginDatabase.PluginName); } catch { }
+                        }
+                    }), "startup cookie check");
+                }
+            }
+            catch { }
 
             try
             {
@@ -436,7 +536,7 @@ namespace HowLongToBeat.Services
 
                 if (task != null)
                 {
-                    try { Task.Run(() => { try { task.Wait(5000); } catch { } }); } catch { }
+                    try { task.Wait(5000); } catch { }
                 }
 
                 try { cts?.Dispose(); } catch { }
@@ -1080,7 +1180,7 @@ namespace HowLongToBeat.Services
                             VsClassic = x.InvestedMp
                         },
                         NeedsDetails = !((x.CompMain > 0) || (x.CompAll > 0) || (x.CompPlus > 0) || (x.Comp100 > 0))
-                     }
+                    }
                 )?.ToList() ?? new List<HltbDataUser>();
 
                 if (search.Count != 0)
@@ -1206,7 +1306,7 @@ namespace HowLongToBeat.Services
         /// <param name="name">Game name to search for.</param>
         /// <param name="platform">Optional platform filter.</param>
         /// <returns>Returns a list of <see cref="HltbSearch"/> with match percentages.</returns>
-        public async Task<List<HltbSearch>> SearchTwoMethod(string name, string platform = "")
+        public async Task<List<HltbSearch>> SearchTwoMethod(string name, string platform = "", bool includeExtendedTimes = false)
         {
             string normalized = PlayniteTools.NormalizeGameName(name, true, true);
 
@@ -1242,9 +1342,89 @@ namespace HowLongToBeat.Services
 
             dataSearchFinal = dataSearchFinal.GroupBy(x => x.Id).Select(x => x.First()).ToList();
 
-            return dataSearchFinal.Select(x => new HltbSearch { MatchPercent = Fuzz.Ratio(name.ToLower(), x.Name.ToLower()), Data = x })
+            string searchNameLower = (name ?? string.Empty).ToLower();
+            var results = dataSearchFinal
+                .Where(x => x != null)
+                .Select(x => new HltbSearch
+                {
+                    MatchPercent = Fuzz.Ratio(searchNameLower, (x.Name ?? string.Empty).ToLower()),
+                    Data = x
+                })
                 .OrderByDescending(x => x.MatchPercent)
                 .ToList();
+
+            if (includeExtendedTimes)
+            {
+                try
+                {
+                    const int maxDetails = 20;
+                    var targets = results
+                        .Select(r => r?.Data)
+                        .Where(x => x != null && !string.IsNullOrEmpty(x.Id))
+                        .Take(maxDetails)
+                        .ToList();
+
+                    if (targets.Count > 0)
+                    {
+                        try
+                        {
+                            int target = ConcurrencyController?.TargetConcurrency ?? MaxParallelGameDataDownloads;
+                            await AdjustSemaphoreLimit(DynamicSemaphore, () => CurrentSemaphoreLimit, l => CurrentSemaphoreLimit = l, target, ConcurrencySync, "SearchTwoMethod+Details");
+                        }
+                        catch { }
+
+                        var tasks = targets.Select(async x =>
+                        {
+                            bool acquiredGameSemaphore = false;
+                            try
+                            {
+                                var acquired = await DynamicSemaphore.WaitAsync(TimeSpan.FromSeconds(10));
+                                if (!acquired)
+                                {
+                                    return;
+                                }
+                                acquiredGameSemaphore = true;
+
+                                using (var ctsGame = new CancellationTokenSource(GameDataDownloadTimeoutMs))
+                                {
+                                    try
+                                    {
+                                        var details = await GetGameData(x.Id, ctsGame.Token);
+                                        if (details != null)
+                                        {
+                                            x.GameHltbData = details;
+                                            x.NeedsDetails = false;
+                                        }
+                                    }
+                                    catch (OperationCanceledException)
+                                    {
+                                        // Ignore timeout; keep basic search data
+                                    }
+                                    catch
+                                    {
+                                        // Ignore; keep basic search data
+                                    }
+                                }
+                            }
+                            finally
+                            {
+                                if (acquiredGameSemaphore)
+                                {
+                                    try { DynamicSemaphore.Release(); } catch { }
+                                }
+                            }
+                        }).ToArray();
+
+                        await Task.WhenAll(tasks).ConfigureAwait(false);
+                    }
+                }
+                catch
+                {
+                    // Best-effort enrichment; never fail the whole search.
+                }
+            }
+
+            return results;
         }
 
         /// <summary>
@@ -1563,35 +1743,43 @@ namespace HowLongToBeat.Services
         /// <returns>True if logged in, otherwise false.</returns>
         public async Task<bool> GetIsUserLoggedInAsync()
         {
-            if (UserId == 0)
+            // Avoid getting stuck in a "logged out" state if this method is called before PluginDatabase is loaded.
+            // Use stored cookies directly to check the current session.
+            try
             {
-                if (!PluginDatabase.IsLoaded)
+                var now = DateTime.UtcNow;
+                if (lastLoginCheckResult != null)
                 {
-                    return false;
+                    var ttl = lastLoginCheckResult == true ? TimeSpan.FromMinutes(10) : TimeSpan.FromMinutes(1);
+                    if (now - lastLoginCheckUtc < ttl)
+                    {
+                        return lastLoginCheckResult.Value;
+                    }
                 }
-                UserId = PluginDatabase.Database.UserHltbData.UserId;
-            }
 
-            if (UserId == 0)
+                int userId = await GetUserId().ConfigureAwait(false);
+                UserId = userId;
+                IsConnected = userId != 0;
+
+                lastLoginCheckUtc = now;
+                lastLoginCheckResult = userId != 0;
+
+                if (IsVerboseLoggingEnabled)
+                {
+                    Logger.Debug($"HLTB Auth: GetIsUserLoggedInAsync userId={userId} IsConnected={IsConnected}");
+                }
+
+                return userId != 0;
+            }
+            catch (Exception ex)
             {
+                try { Common.LogError(ex, false, true, PluginDatabase.PluginName); } catch { }
+                UserId = 0;
                 IsConnected = false;
+                lastLoginCheckUtc = DateTime.UtcNow;
+                lastLoginCheckResult = false;
                 return false;
             }
-
-            if (IsConnected == null)
-            {
-                try
-                {
-                    IsConnected = await GetUserId().ConfigureAwait(false) != 0;
-                }
-                catch
-                {
-                    IsConnected = false;
-                }
-            }
-
-            IsConnected = (bool)IsConnected;
-            return (bool)IsConnected;
         }
 
         public bool GetIsUserLoggedIn()
@@ -1612,67 +1800,136 @@ namespace HowLongToBeat.Services
         /// </summary>
         public void Login()
         {
-            Application.Current.Dispatcher.BeginInvoke((Action)delegate
+            // Use a DispatcherOperation so we can attach the Completed handler cleanly
+            System.Windows.Threading.DispatcherOperation op = null;
+
+            try
             {
-                Logger.Info("Login()");
-
-                WebViewSettings settings = new WebViewSettings
+                op = Application.Current.Dispatcher.BeginInvoke((Action)delegate
                 {
-                    JavaScriptEnabled = true,
-                    WindowHeight = 670,
-                    WindowWidth = 490,
-                    UserAgent = Web.UserAgent
-                };
+                    Logger.Info("Login()");
 
-                using (IWebView webView = API.Instance.WebViews.CreateView(settings))
-                {
-                    webView.LoadingChanged += (s, e) =>
+                    bool cookiesCaptured = false;
+
+                    WebViewSettings settings = new WebViewSettings
                     {
-                        Common.LogDebug(true, $"NavigationChanged - {webView.GetCurrentAddress()}");
-
-                        if (webView.GetCurrentAddress().StartsWith(UrlBase + "/user/"))
-                        {
-                            UserLogin = WebUtility.HtmlDecode(webView.GetCurrentAddress().Replace(UrlBase + "/user/", string.Empty));
-                            IsConnected = true;
-
-
-                            Thread.Sleep(1500);
-                            webView.Close();
-                        }
+                        JavaScriptEnabled = true,
+                        WindowHeight = 670,
+                        WindowWidth = 490,
+                        UserAgent = Web.UserAgent
                     };
 
-                    IsConnected = false;
-                    webView.Navigate(UrlLogOut);
-                    _ = webView.OpenDialog();
-                }
-            }).Completed += (s, e) =>
+                    using (IWebView webView = API.Instance.WebViews.CreateView(settings))
+                    {
+                        webView.LoadingChanged += (s, e) =>
+                        {
+                            try
+                            {
+                                Common.LogDebug(true, $"NavigationChanged - {webView.GetCurrentAddress()}");
+
+                                if (!cookiesCaptured && webView.GetCurrentAddress().StartsWith(UrlBase + "/user/"))
+                                {
+                                    cookiesCaptured = true;
+                                    UserLogin = WebUtility.HtmlDecode(webView.GetCurrentAddress().Replace(UrlBase + "/user/", string.Empty));
+                                    IsConnected = true;
+
+                                    // Give the embedded WebView a moment to commit cookies.
+                                    FireAndForget(Task.Run(async () =>
+                                    {
+                                        try { await Task.Delay(1000).ConfigureAwait(false); } catch { }
+
+                                        try
+                                        {
+                                            await Application.Current.Dispatcher.InvokeAsync(() =>
+                                            {
+                                                try
+                                                {
+                                                    List<HttpCookie> cookies = CookiesTools.GetWebCookies(deleteCookies: false, webView: webView);
+                                                    bool saved = CookiesTools.SetStoredCookies(cookies);
+                                                    Logger.Info($"HLTB Auth: captured cookies from login webview count={cookies?.Count ?? 0} saved={saved}");
+                                                    LogCookieSummary("login captured", cookies);
+
+                                                    // Invalidate cached login check so next calls re-check if needed.
+                                                    lastLoginCheckResult = null;
+                                                    lastLoginCheckUtc = DateTime.MinValue;
+                                                }
+                                                catch (Exception ex)
+                                                {
+                                                    Common.LogError(ex, false, true, PluginDatabase.PluginName);
+                                                }
+                                                finally
+                                                {
+                                                    try { webView.Close(); } catch { }
+                                                }
+                                            });
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            try { Common.LogError(ex, false, true, PluginDatabase.PluginName); } catch { }
+                                            try
+                                            {
+                                                var closeOp = Application.Current.Dispatcher.BeginInvoke((Action)(() => { try { webView.Close(); } catch { } }));
+                                                try { FireAndForget(closeOp?.Task, "login close webview (BeginInvoke)"); } catch { }
+                                            }
+                                            catch { }
+                                        }
+                                    }), "login captured");
+
+                                    // (task is fire-and-forget intentionally)
+
+                                    return;
+                                }
+                            }
+                            catch { }
+                        };
+
+                        IsConnected = false;
+                        webView.Navigate(UrlLogOut);
+                        _ = webView.OpenDialog();
+                    }
+                });
+            }
+            catch (Exception ex)
             {
-                if ((bool)IsConnected)
+                try { Common.LogError(ex, false, true, PluginDatabase.PluginName); } catch { }
+            }
+
+            try
+            {
+                if (op != null)
                 {
-                    _ = Application.Current.Dispatcher?.BeginInvoke((Action)delegate
+                    op.Completed += (s, e) =>
                     {
                         try
                         {
-                            List<HttpCookie> cookies = CookiesTools.GetWebCookies();
-                            _ = CookiesTools.SetStoredCookies(cookies);
-
-                            PluginDatabase.PluginSettings.Settings.UserLogin = UserLogin;
-
-                            PluginDatabase.Plugin.SavePluginSettings(PluginDatabase.PluginSettings.Settings);
-
-                            _ = Task.Run(async () =>
+                            if ((bool)IsConnected)
                             {
-                                try { UserId = await GetUserId().ConfigureAwait(false); } catch { }
-                                try { PluginDatabase.RefreshUserData(); } catch { }
-                            });
+                                _ = Application.Current.Dispatcher?.BeginInvoke((Action)delegate
+                                {
+                                    try
+                                    {
+                                        PluginDatabase.PluginSettings.Settings.UserLogin = UserLogin;
+
+                                        PluginDatabase.Plugin.SavePluginSettings(PluginDatabase.PluginSettings.Settings);
+
+                                        FireAndForget(Task.Run(async () =>
+                                        {
+                                            try { UserId = await GetUserId().ConfigureAwait(false); } catch { }
+                                            try { PluginDatabase.RefreshUserData(); } catch { }
+                                        }), "post-login refresh");
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        Common.LogError(ex, false, true, PluginDatabase.PluginName);
+                                    }
+                                });
+                            }
                         }
-                        catch (Exception ex)
-                        {
-                            Common.LogError(ex, false, true, PluginDatabase.PluginName);
-                        }
-                    });
+                        catch { }
+                    };
                 }
-            };
+            }
+            catch { }
         }
 
         /// <summary>
@@ -1684,9 +1941,22 @@ namespace HowLongToBeat.Services
             try
             {
                 List<HttpCookie> cookies = CookiesTools.GetStoredCookies();
+                LogCookieSummary("GetUserId stored", cookies);
+
+                if (cookies == null || cookies.Count == 0)
+                {
+                    try { Logger.Info("HLTB Auth: no stored cookies available"); } catch { }
+                }
                 string response = await Web.DownloadPageText(UrlUser, cookies);
                 dynamic t = Serialization.FromJson<dynamic>(response);
-                return response == "{}" ? 0 : t?.data[0]?.user_id ?? 0;
+
+                int userId = response == "{}" ? 0 : t?.data[0]?.user_id ?? 0;
+                if (IsVerboseLoggingEnabled)
+                {
+                    Logger.Debug($"HLTB Auth: GetUserId responseLen={response?.Length ?? 0} userId={userId}");
+                }
+
+                return userId;
             }
             catch (Exception ex)
             {
@@ -2150,7 +2420,7 @@ namespace HowLongToBeat.Services
             try
             {
                 // Run wait off the UI thread, then invoke UI work when ready
-                _ = Task.Run(async () =>
+                FireAndForget(Task.Run(async () =>
                 {
                     var sw = System.Diagnostics.Stopwatch.StartNew();
                     const int maxWaitMs = 60000; // 60s max wait for database load
@@ -2187,7 +2457,7 @@ namespace HowLongToBeat.Services
                     {
                         Common.LogError(ex, false, true, PluginDatabase.PluginName);
                     }
-                });
+                }), "UpdatedCookies");
             }
             catch (Exception ex)
             {
@@ -2328,31 +2598,31 @@ namespace HowLongToBeat.Services
         /// This is a local replacement for CommonPluginsShared.Web.PostJsonWithSharedClientWithStatus when the submodule isn't available.
         /// </summary>
         private async Task<(string body, int status, string retry)> PostJsonWithSharedClientWithStatus(string url, string payload, List<HttpHeader> headers = null, CancellationToken cancellationToken = default)
-         {
-             try
-             {
-                 using (var request = new HttpRequestMessage(HttpMethod.Post, url))
-                 {
-                     request.Content = new StringContent(payload ?? string.Empty, Encoding.UTF8, "application/json");
+        {
+            try
+            {
+                using (var request = new HttpRequestMessage(HttpMethod.Post, url))
+                {
+                    request.Content = new StringContent(payload ?? string.Empty, Encoding.UTF8, "application/json");
 
-                     if (headers != null)
-                     {
-                         foreach (var h in headers)
-                         {
-                             try
-                             {
-                                 // Try to add to request headers; if invalid, try content headers
-                                 if (!request.Headers.TryAddWithoutValidation(h.Key, h.Value))
-                                 {
-                                     try { request.Content?.Headers.TryAddWithoutValidation(h.Key, h.Value); } catch { }
-                                 }
+                    if (headers != null)
+                    {
+                        foreach (var h in headers)
+                        {
+                            try
+                            {
+                                // Try to add to request headers; if invalid, try content headers
+                                if (!request.Headers.TryAddWithoutValidation(h.Key, h.Value))
+                                {
+                                    try { request.Content?.Headers.TryAddWithoutValidation(h.Key, h.Value); } catch { }
+                                }
                             }
                             catch { }
                         }
-                     }
+                    }
 
-                     using (var resp = await httpClient.SendAsync(request, cancellationToken).ConfigureAwait(false))
-                     {
+                    using (var resp = await httpClient.SendAsync(request, cancellationToken).ConfigureAwait(false))
+                    {
                         int status = (int)resp.StatusCode;
                         string retry = null;
                         try
@@ -2373,15 +2643,15 @@ namespace HowLongToBeat.Services
                         }
 
                         return (body, status, retry);
-                     }
-                 }
-             }
-             catch ( Exception ex)
-             {
-                 Common.LogError(ex, false, $"Error posting to {url}");
-                 return (string.Empty, 0, (string)null);
-             }
-         }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, false, $"Error posting to {url}");
+                return (string.Empty, 0, (string)null);
+            }
+        }
         private static readonly Regex _scriptSrcRegex = new Regex("<script[^>]*src=[\\\"']([^\\\"']+)[\\\"'][^>]*>", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
         private static Regex MyRegex() => _scriptSrcRegex;
     }

@@ -218,13 +218,13 @@ namespace HowLongToBeat.Views
                 {
                     // Default data
                     string[] ChartDataLabels = new string[axis];
-                    ChartValues<CustomerForSingle> ChartDataSeries = new ChartValues<CustomerForSingle>();
+                    var seriesItems = new List<CustomerForSingle>(axis);
 
                     for (int i = axis - 1; i >= 0; i--)
                     {
                         if (cancellationToken.IsCancellationRequested) return;
                         ChartDataLabels[axis - 1 - i] = DateTime.Now.AddYears(-i).ToString("yyyy");
-                        ChartDataSeries.Add(new CustomerForSingle
+                        seriesItems.Add(new CustomerForSingle
                         {
                             Name = DateTime.Now.AddYears(-i).ToString("yyyy"),
                             Values = 0
@@ -242,19 +242,10 @@ namespace HowLongToBeat.Views
                             int index = Array.IndexOf(ChartDataLabels, tempDateTime);
                             if (index >= 0)
                             {
-                                ChartDataSeries[index].Values += 1;
+                                seriesItems[index].Values += 1;
                             }
                         }
                     }
-
-                    var chartSeries = new SeriesCollection
-                    {
-                        new ColumnSeries
-                        {
-                            Title = string.Empty,
-                            Values = ChartDataSeries
-                        }
-                    };
 
                     if (!cancellationToken.IsCancellationRequested)
                     {
@@ -263,6 +254,22 @@ namespace HowLongToBeat.Views
                             if (cancellationToken.IsCancellationRequested) return;
                             try
                             {
+                                // LiveCharts WPF series must be created on STA/UI thread.
+                                var chartValues = new ChartValues<CustomerForSingle>();
+                                for (int i = 0; i < seriesItems.Count; i++)
+                                {
+                                    chartValues.Add(seriesItems[i]);
+                                }
+
+                                var chartSeries = new SeriesCollection
+                                {
+                                    new ColumnSeries
+                                    {
+                                        Title = string.Empty,
+                                        Values = chartValues
+                                    }
+                                };
+
                                 UserViewDataContext.ChartUserDataYear_Series = chartSeries;
                                 UserViewDataContext.ChartUserDataYearLabelsX_Labels = ChartDataLabels;
                             }
@@ -300,25 +307,18 @@ namespace HowLongToBeat.Views
                         .ToList();
 
                     string[] ChartDataLabels = new string[dataLabel.Count];
-                    ChartValues<CustomerForSingle> ChartDataSeries = new ChartValues<CustomerForSingle>();
+                    var seriesItems = new List<CustomerForSingle>(dataLabel.Count);
 
                     for (int i = 0; i < dataLabel.Count; i++)
                     {
                         if (cancellationToken.IsCancellationRequested) return;
                         ChartDataLabels[i] = dataLabel[i].Storefront;
-                        ChartDataSeries.Add(new CustomerForSingle
+                        seriesItems.Add(new CustomerForSingle
                         {
                             Name = dataLabel[i].Storefront,
                             Values = dataLabel[i].Count
                         });
                     }
-
-                    var chartSeries = new SeriesCollection();
-                    chartSeries.Add(new ColumnSeries
-                    {
-                        Title = string.Empty,
-                        Values = ChartDataSeries
-                    });
 
                     if (!cancellationToken.IsCancellationRequested)
                     {
@@ -327,6 +327,20 @@ namespace HowLongToBeat.Views
                             if (cancellationToken.IsCancellationRequested) return;
                             try
                             {
+                                // LiveCharts WPF series must be created on STA/UI thread.
+                                var chartValues = new ChartValues<CustomerForSingle>();
+                                for (int i = 0; i < seriesItems.Count; i++)
+                                {
+                                    chartValues.Add(seriesItems[i]);
+                                }
+
+                                var chartSeries = new SeriesCollection();
+                                chartSeries.Add(new ColumnSeries
+                                {
+                                    Title = string.Empty,
+                                    Values = chartValues
+                                });
+
                                 UserViewDataContext.ChartUserDataStore_Series = chartSeries;
                                 UserViewDataContext.ChartUserDataStoreLabelsX_Labels = ChartDataLabels;
                             }
@@ -360,13 +374,13 @@ namespace HowLongToBeat.Views
 
                     // Default data
                     string[] ChartDataLabels = new string[axis];
-                    ChartValues<CustomerForSingle> ChartDataSeries = new ChartValues<CustomerForSingle>();
+                    var seriesItems = new List<CustomerForSingle>(axis);
 
                     for (int i = axis - 1; i >= 0; i--)
                     {
                         if (cancellationToken.IsCancellationRequested) return;
                         ChartDataLabels[axis - 1 - i] = (string)localDateYMConverter.Convert(DateTime.Now.AddMonths(-i), null, null, null);
-                        ChartDataSeries.Add(new CustomerForSingle
+                        seriesItems.Add(new CustomerForSingle
                         {
                             Name = (string)localDateYMConverter.Convert(DateTime.Now.AddMonths(-i), null, null, null),
                             Values = 0
@@ -384,17 +398,10 @@ namespace HowLongToBeat.Views
                             int index = Array.IndexOf(ChartDataLabels, tempDateTime);
                             if (index >= 0)
                             {
-                                ChartDataSeries[index].Values += 1;
+                                seriesItems[index].Values += 1;
                             }
                         }
                     }
-
-                    var chartSeries = new SeriesCollection();
-                    chartSeries.Add(new ColumnSeries
-                    {
-                        Title = string.Empty,
-                        Values = ChartDataSeries
-                    });
 
                     if (!cancellationToken.IsCancellationRequested)
                     {
@@ -403,6 +410,20 @@ namespace HowLongToBeat.Views
                             if (cancellationToken.IsCancellationRequested) return;
                             try
                             {
+                                // LiveCharts WPF series must be created on STA/UI thread.
+                                var chartValues = new ChartValues<CustomerForSingle>();
+                                for (int i = 0; i < seriesItems.Count; i++)
+                                {
+                                    chartValues.Add(seriesItems[i]);
+                                }
+
+                                var chartSeries = new SeriesCollection();
+                                chartSeries.Add(new ColumnSeries
+                                {
+                                    Title = string.Empty,
+                                    Values = chartValues
+                                });
+
                                 UserViewDataContext.ChartUserData_Series = chartSeries;
                                 UserViewDataContext.ChartUserDataLabelsX_Labels = ChartDataLabels;
                             }

@@ -586,21 +586,74 @@ namespace HowLongToBeat.Views
 
 
         #region Authenticate
-        private void CheckAuthenticate()
+        private async void CheckAuthenticate()
         {
             PART_LbUserLogin.Visibility = Visibility.Collapsed;
             PART_LbAuthenticate.Content = ResourceProvider.GetString("LOCCommonLoginChecking");
 
-            var task = Task.Run(() => PluginDatabase.HowLongToBeatApi.GetIsUserLoggedIn());
+            try { Logger.Info("HLTB Auth UI: CheckAuthenticate start"); } catch { }
+
+            bool isLoggedIn = false;
+            try
+            {
+                var api = PluginDatabase?.HowLongToBeatApi;
+                if (api != null)
+                {
+                    isLoggedIn = await api.GetIsUserLoggedInAsync().ConfigureAwait(false);
+                }
+            }
+            catch (Exception ex)
+            {
+                try { Logger.Warn(ex, "HLTB Auth UI: CheckAuthenticate failed"); } catch { }
+                isLoggedIn = false;
+            }
+
+            try
+            {
+                await Dispatcher.InvokeAsync(() =>
+                {
+                    try
+                    {
+                        var api = PluginDatabase?.HowLongToBeatApi;
+
+                        // Ensure UI is updated even if the API state was already set before we subscribed.
+                        if (isLoggedIn || (api != null && (bool?)(api.IsConnected) == true))
+                        {
+                            PART_LbAuthenticate.Content = ResourceProvider.GetString("LOCCommonLoggedIn");
+                            PART_LbUserLogin.Visibility = Visibility.Visible;
+
+                            string userLogin = api?.UserLogin;
+                            if (userLogin.IsNullOrEmpty())
+                            {
+                                userLogin = PluginDatabase?.Database?.UserHltbData?.Login ?? string.Empty;
+                            }
+
+                            PART_LbUserLogin.Content = ResourceProvider.GetString("LOCCommonAccountName") + " " + userLogin;
+                        }
+                        else
+                        {
+                            PART_LbAuthenticate.Content = ResourceProvider.GetString("LOCCommonNotLoggedIn");
+                            PART_LbUserLogin.Visibility = Visibility.Collapsed;
+                        }
+
+                        try { Logger.Info($"HLTB Auth UI: CheckAuthenticate done isLoggedIn={isLoggedIn} api.IsConnected={(api?.IsConnected?.ToString() ?? "<null>")}"); } catch { }
+                    }
+                    catch { }
+                });
+            }
+            catch { }
         }
 
         private void PART_BtAuthenticate_Click(object sender, RoutedEventArgs e)
         {
             PART_LbUserLogin.Visibility = Visibility.Collapsed;
-            var task = Task.Run(() =>
+
+            try { Logger.Info("HLTB Auth UI: Login button clicked"); } catch { }
+            try
             {
                 PluginDatabase.HowLongToBeatApi.Login();
-            });
+            }
+            catch { }
         }
 
 

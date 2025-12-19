@@ -70,7 +70,7 @@
         <!-- Overlayed slider and user sliders so marker stays centered -->
         <Slider Name="SliderPlaytime"
             Grid.Row="1"
-                Margin="-6,0,-6,0"
+                Margin="0,0,0,0"
                 Value="0"
                 Height="{Binding ElementName=PART_ProgressBarFirst, Path=IndicatorHeight}"
                 VerticalAlignment="Center"
@@ -175,75 +175,5 @@
                                                   Margin="{Binding ElementName=SliderPlaytime, Path=Margin}"/>
             </Grid>
         </Grid>
-        <StackPanel x:Name="PART_TimeTextsAbove"
-                Grid.Row="0"
-                Orientation="Horizontal"
-                HorizontalAlignment="Center"
-                Margin="0,0,0,4"
-                VerticalAlignment="Bottom"
-                Visibility="{Binding TextAboveVisibility, Converter={StaticResource BooleanToVisibilityConverter}}">
-            <TextBlock x:Name="PART_TimeText1_Above"
-                       Text="{Binding ToolTipFirst}"
-                       TextTrimming="CharacterEllipsis"
-                       VerticalAlignment="Center"
-                       Margin="0,0,2,0"
-                       Foreground="{Binding ThumbFirst}"/>
-            <TextBlock x:Name="PART_TimeSep12_Above"
-                   Text=" - "
-                   Margin="2,0"
-                   VerticalAlignment="Center"/>
-            <TextBlock x:Name="PART_TimeText2_Above"
-                       Text="{Binding ToolTipSecond}"
-                       TextTrimming="CharacterEllipsis"
-                       VerticalAlignment="Center"
-                       Margin="2,0,2,0"
-                       Foreground="{Binding ThumbSecond}"/>
-            <TextBlock x:Name="PART_TimeSep23_Above"
-                   Text=" - "
-                   Margin="2,0"
-                   VerticalAlignment="Center"/>
-            <TextBlock x:Name="PART_TimeText3_Above"
-                       Text="{Binding ToolTipThird}"
-                       TextTrimming="CharacterEllipsis"
-                       VerticalAlignment="Center"
-                       Margin="2,0,0,0"
-                       Foreground="{Binding ThumbThird}"/>
-        </StackPanel>
-
-        <!-- Below time texts -->
-        <StackPanel x:Name="PART_TimeTextsBelow"
-                Grid.Row="2"
-                Orientation="Horizontal"
-                HorizontalAlignment="Center"
-                Margin="0,4,0,0"
-                VerticalAlignment="Top"
-                Visibility="{Binding TextBelowVisibility, Converter={StaticResource BooleanToVisibilityConverter}}">
-            <TextBlock x:Name="PART_TimeText1_Below"
-                       Text="{Binding ToolTipFirst}"
-                       TextTrimming="CharacterEllipsis"
-                       VerticalAlignment="Center"
-                       Margin="0,0,2,0"
-                       Foreground="{Binding ThumbFirst}"/>
-            <TextBlock x:Name="PART_TimeSep12_Below"
-                   Text=" - "
-                   Margin="2,0"
-                   VerticalAlignment="Center"/>
-            <TextBlock x:Name="PART_TimeText2_Below"
-                       Text="{Binding ToolTipSecond}"
-                       TextTrimming="CharacterEllipsis"
-                       VerticalAlignment="Center"
-                       Margin="2,0,2,0"
-                       Foreground="{Binding ThumbSecond}"/>
-            <TextBlock x:Name="PART_TimeSep23_Below"
-                   Text=" - "
-                   Margin="2,0"
-                   VerticalAlignment="Center"/>
-            <TextBlock x:Name="PART_TimeText3_Below"
-                       Text="{Binding ToolTipThird}"
-                       TextTrimming="CharacterEllipsis"
-                       VerticalAlignment="Center"
-                       Margin="2,0,0,0"
-                       Foreground="{Binding ThumbThird}"/>
-        </StackPanel>
     </Grid>
 </controls:PluginUserControlExtend>

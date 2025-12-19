@@ -145,7 +145,7 @@ namespace HowLongToBeat.Views
                     }
                     else
                     {
-                        var hlResults = await PluginDatabase.HowLongToBeatApi.SearchTwoMethod(gameSearch, gamePlatform);
+                        var hlResults = await PluginDatabase.HowLongToBeatApi.SearchTwoMethod(gameSearch, gamePlatform, includeExtendedTimes: true);
                         dataSearch = hlResults?.Select(x => x.Data).ToList() ?? new List<HltbDataUser>();
                     }
                 }
