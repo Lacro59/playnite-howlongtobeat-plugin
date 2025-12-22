@@ -46,6 +46,24 @@ namespace HowLongToBeat.Services
             catch { }
         }
 
+        private string SafeStr(string s)
+        {
+            try
+            {
+                if (s == null)
+                {
+                    return string.Empty;
+                }
+
+                s = s.Replace("\r", " ").Replace("\n", " ");
+                return s.Length > 120 ? s.Substring(0, 120) + "..." : s;
+            }
+            catch
+            {
+                return string.Empty;
+            }
+        }
+
         private DateTime lastLoginCheckUtc = DateTime.MinValue;
         private bool? lastLoginCheckResult = null;
 
@@ -1719,6 +1737,303 @@ namespace HowLongToBeat.Services
             return null;
         }
 
+        public HltbDataUser SearchDataAuto(string gameName, string platform = "")
+        {
+            string traceId = null;
+            try
+            {
+                if (string.IsNullOrEmpty(gameName))
+                {
+                    return null;
+                }
+
+                traceId = Guid.NewGuid().ToString("N").Substring(0, 8);
+
+                var settings = PluginDatabase?.PluginSettings?.Settings;
+
+                if (IsVerboseLoggingEnabled)
+                {
+                    try
+                    {
+                        Logger.Debug($"SearchDataAuto[{traceId}]: start name='{SafeStr(gameName)}' platform='{SafeStr(platform)}' UseMatchValue={settings?.UseMatchValue} MatchValue={settings?.MatchValue}");
+                    }
+                    catch { }
+                }
+
+                List<HltbSearch> results = null;
+                bool gotResults = false;
+                try
+                {
+                    // 1) First pass: fast search (no details fetch)
+                    gotResults = TaskHelpers.TryRunSyncWithTimeout(() => SearchTwoMethod(gameName, platform), out results, 15000, Logger);
+                    if (!gotResults)
+                    {
+                        if (IsVerboseLoggingEnabled)
+                        {
+                            try { Logger.Warn($"SearchDataAuto[{traceId}]: SearchTwoMethod timed out after 15000ms; retrying once"); } catch { }
+                        }
+
+                        gotResults = TaskHelpers.TryRunSyncWithTimeout(() => SearchTwoMethod(gameName, platform), out results, 30000, Logger);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    if (IsVerboseLoggingEnabled)
+                    {
+                        try { Logger.Warn(ex, $"SearchDataAuto[{traceId}]: SearchTwoMethod threw for name='{SafeStr(gameName)}' platform='{SafeStr(platform)}'"); } catch { }
+                    }
+                    results = null;
+                }
+
+                if (!gotResults)
+                {
+                    if (IsVerboseLoggingEnabled)
+                    {
+                        try { Logger.Debug($"SearchDataAuto[{traceId}]: no results (timeout)"); } catch { }
+                    }
+                    return null;
+                }
+
+                if (results == null || results.Count == 0)
+                {
+                    if (IsVerboseLoggingEnabled)
+                    {
+                        try { Logger.Debug($"SearchDataAuto[{traceId}]: no results"); } catch { }
+                    }
+                    return null;
+                }
+
+                if (IsVerboseLoggingEnabled)
+                {
+                    try
+                    {
+                        Logger.Debug($"SearchDataAuto[{traceId}]: results count={results.Count}");
+                        int take = Math.Min(8, results.Count);
+                        for (int i = 0; i < take; i++)
+                        {
+                            var r = results[i];
+                            var d = r?.Data;
+                            long ttb = 0;
+                            bool hasAnyTime = false;
+                            try
+                            {
+                                ttb = d?.GameHltbData?.TimeToBeat ?? 0;
+                                hasAnyTime = ttb > 0 || (d?.GameHltbData?.MainStoryClassic ?? 0) > 0 || (d?.GameHltbData?.SoloClassic ?? 0) > 0;
+                            }
+                            catch { }
+
+                            Logger.Debug($"SearchDataAuto[{traceId}]: candidate[{i}] score={r?.MatchPercent} id={SafeStr(d?.Id)} title='{SafeStr(d?.Name)}' platform='{SafeStr(d?.Platform)}' hasTime={hasAnyTime} ttb={ttb} needsDetails={d?.NeedsDetails}");
+                        }
+                    }
+                    catch { }
+                }
+
+                try
+                {
+                    var nQuery = PlayniteTools.NormalizeGameName(gameName ?? string.Empty, true, true);
+                    if (!string.IsNullOrEmpty(nQuery))
+                    {
+                        var exact = results
+                            .Where(r => r?.Data != null)
+                            .Select(r => new { r.MatchPercent, Data = r.Data, Norm = PlayniteTools.NormalizeGameName(r.Data?.Name ?? string.Empty, true, true) })
+                            .Where(x => !string.IsNullOrEmpty(x.Norm) && x.Norm.IsEqual(nQuery))
+                            .OrderByDescending(x => x.MatchPercent)
+                            .FirstOrDefault();
+
+                        if (exact?.Data != null)
+                        {
+                            if (settings != null && settings.UseMatchValue && exact.MatchPercent < settings.MatchValue && exact.MatchPercent < 98)
+                            {
+                                if (IsVerboseLoggingEnabled)
+                                {
+                                    try { Logger.Debug($"SearchDataAuto[{traceId}]: exact normalized match rejected by MatchValue score={exact.MatchPercent} threshold={settings.MatchValue}"); } catch { }
+                                }
+                                return null;
+                            }
+
+                            if (IsVerboseLoggingEnabled)
+                            {
+                                try { Logger.Debug($"SearchDataAuto[{traceId}]: selected exact normalized match id={SafeStr(exact.Data?.Id)} title='{SafeStr(exact.Data?.Name)}' score={exact.MatchPercent}"); } catch { }
+                            }
+
+                            return exact.Data;
+                        }
+                    }
+                }
+                catch { }
+
+                var best = results[0];
+                if (best?.Data == null)
+                {
+                    if (IsVerboseLoggingEnabled)
+                    {
+                        try { Logger.Debug($"SearchDataAuto[{traceId}]: best result had null data"); } catch { }
+                    }
+                    return null;
+                }
+
+                try
+                {
+                    if (settings != null && settings.UseMatchValue && best.MatchPercent < settings.MatchValue)
+                    {
+                        if (best.MatchPercent >= 98)
+                        {
+                            if (IsVerboseLoggingEnabled)
+                            {
+                                try { Logger.Debug($"SearchDataAuto[{traceId}]: best below MatchValue but accepted via near-perfect safety net score={best.MatchPercent} threshold={settings.MatchValue}"); } catch { }
+                            }
+                            return best.Data;
+                        }
+
+                        if (IsVerboseLoggingEnabled)
+                        {
+                            try { Logger.Debug($"SearchDataAuto[{traceId}]: rejected by MatchValue bestScore={best.MatchPercent} threshold={settings.MatchValue}"); } catch { }
+                        }
+                        return null;
+                    }
+                }
+                catch { }
+
+                // 2) Ambiguity handling: if multiple top results are close in score,
+                // fetch details for top candidates and prefer one that actually has times.
+                try
+                {
+                    if (results.Count > 1)
+                    {
+                        var second = results[1];
+                        bool ambiguous = false;
+                        try
+                        {
+                            ambiguous = (best.MatchPercent < 100 && second != null && (best.MatchPercent - second.MatchPercent) <= 3);
+                        }
+                        catch { }
+
+                        if (IsVerboseLoggingEnabled)
+                        {
+                            try { Logger.Debug($"SearchDataAuto[{traceId}]: ambiguity check best={best.MatchPercent} second={second?.MatchPercent} ambiguous={ambiguous}"); } catch { }
+                        }
+
+                        if (ambiguous)
+                        {
+                            List<HltbSearch> enriched = null;
+                            try
+                            {
+                                enriched = TaskHelpers.RunSyncWithTimeout(() => SearchTwoMethod(gameName, platform, includeExtendedTimes: true), 20000);
+                            }
+                            catch (Exception ex)
+                            {
+                                if (IsVerboseLoggingEnabled)
+                                {
+                                    try { Logger.Warn(ex, $"SearchDataAuto[{traceId}]: enrichment SearchTwoMethod threw for name='{SafeStr(gameName)}' platform='{SafeStr(platform)}'"); } catch { }
+                                }
+                                enriched = null;
+                            }
+
+                            if (enriched != null && enriched.Count > 0)
+                            {
+                                if (IsVerboseLoggingEnabled)
+                                {
+                                    try
+                                    {
+                                        Logger.Debug($"SearchDataAuto[{traceId}]: enriched count={enriched.Count}");
+                                        int take = Math.Min(8, enriched.Count);
+                                        for (int i = 0; i < take; i++)
+                                        {
+                                            var r = enriched[i];
+                                            var d = r?.Data;
+                                            long ttb = 0;
+                                            bool hasAnyTime = false;
+                                            try
+                                            {
+                                                ttb = d?.GameHltbData?.TimeToBeat ?? 0;
+                                                hasAnyTime = ttb > 0 || (d?.GameHltbData?.MainStoryClassic ?? 0) > 0 || (d?.GameHltbData?.SoloClassic ?? 0) > 0;
+                                            }
+                                            catch { }
+
+                                            Logger.Debug($"SearchDataAuto[{traceId}]: enriched[{i}] score={r?.MatchPercent} id={SafeStr(d?.Id)} title='{SafeStr(d?.Name)}' platform='{SafeStr(d?.Platform)}' hasTime={hasAnyTime} ttb={ttb} needsDetails={d?.NeedsDetails}");
+                                        }
+                                    }
+                                    catch { }
+                                }
+
+                                var withTimes = enriched
+                                    .Where(r => r?.Data?.GameHltbData != null)
+                                    .Where(r =>
+                                    {
+                                        try
+                                        {
+                                            return r.Data.GameHltbData.TimeToBeat > 0 || r.Data.GameHltbData.MainStoryClassic > 0 || r.Data.GameHltbData.MainExtraClassic > 0 || r.Data.GameHltbData.CompletionistClassic > 0 || r.Data.GameHltbData.SoloClassic > 0;
+                                        }
+                                        catch { return false; }
+                                    })
+                                    .OrderByDescending(r => r.MatchPercent)
+                                    .FirstOrDefault();
+
+                                if (withTimes?.Data != null)
+                                {
+                                    if (settings != null && settings.UseMatchValue && withTimes.MatchPercent < settings.MatchValue && withTimes.MatchPercent < 98)
+                                    {
+                                        if (IsVerboseLoggingEnabled)
+                                        {
+                                            try { Logger.Debug($"SearchDataAuto[{traceId}]: enriched withTimes rejected by MatchValue score={withTimes.MatchPercent} threshold={settings.MatchValue}"); } catch { }
+                                        }
+                                        return null;
+                                    }
+
+                                    if (IsVerboseLoggingEnabled)
+                                    {
+                                        try { Logger.Debug($"SearchDataAuto[{traceId}]: selected enriched withTimes id={SafeStr(withTimes.Data?.Id)} title='{SafeStr(withTimes.Data?.Name)}' score={withTimes.MatchPercent}"); } catch { }
+                                    }
+                                    return withTimes.Data;
+                                }
+
+                                var bestEnriched = enriched[0];
+                                if (bestEnriched?.Data != null)
+                                {
+                                    if (settings != null && settings.UseMatchValue && bestEnriched.MatchPercent < settings.MatchValue && bestEnriched.MatchPercent < 98)
+                                    {
+                                        if (IsVerboseLoggingEnabled)
+                                        {
+                                            try { Logger.Debug($"SearchDataAuto[{traceId}]: bestEnriched rejected by MatchValue score={bestEnriched.MatchPercent} threshold={settings.MatchValue}"); } catch { }
+                                        }
+                                        return null;
+                                    }
+
+                                    if (IsVerboseLoggingEnabled)
+                                    {
+                                        try { Logger.Debug($"SearchDataAuto[{traceId}]: selected bestEnriched id={SafeStr(bestEnriched.Data?.Id)} title='{SafeStr(bestEnriched.Data?.Name)}' score={bestEnriched.MatchPercent}"); } catch { }
+                                    }
+                                    return bestEnriched.Data;
+                                }
+                            }
+
+                            if (best.MatchPercent >= 98)
+                            {
+                                if (IsVerboseLoggingEnabled)
+                                {
+                                    try { Logger.Debug($"SearchDataAuto[{traceId}]: ambiguous but fell back to near-perfect best score={best.MatchPercent} id={SafeStr(best.Data?.Id)}"); } catch { }
+                                }
+                                return best.Data;
+                            }
+                        }
+                    }
+                }
+                catch { }
+
+                if (IsVerboseLoggingEnabled)
+                {
+                    try { Logger.Debug($"SearchDataAuto[{traceId}]: selected best (default) id={SafeStr(best.Data?.Id)} title='{SafeStr(best.Data?.Name)}' score={best.MatchPercent}"); } catch { }
+                }
+
+                return best.Data;
+            }
+            catch (Exception ex)
+            {
+                try { Common.LogError(ex, false, true, PluginDatabase?.PluginName); } catch { }
+                return null;
+            }
+        }
+
         #endregion
 
         #region user account
@@ -1822,7 +2137,11 @@ namespace HowLongToBeat.Services
                                     // Give the embedded WebView a moment to commit cookies.
                                     FireAndForget(Task.Run(async () =>
                                     {
-                                        try { await Task.Delay(1000).ConfigureAwait(false); } catch { }
+                                        try
+                                        {
+                                            await Task.Delay(1000).ConfigureAwait(false);
+                                        }
+                                        catch { }
 
                                         try
                                         {

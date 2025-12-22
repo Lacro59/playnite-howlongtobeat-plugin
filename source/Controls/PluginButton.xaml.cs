@@ -175,46 +175,107 @@ namespace HowLongToBeat.Controls
         #region Events
         private void PART_PluginButton_Click(object sender, RoutedEventArgs e)
         {
-            GameHowLongToBeat gameHowLongToBeat = null;
+            if (GameContext == null)
+            {
+                return;
+            }
+
+            var game = GameContext;
 
             try
             {
-                // Prefer a cache-only lookup to avoid triggering API calls when the service isn't initialized.
-                gameHowLongToBeat = PluginDatabase.Get(GameContext, onlyCache: true);
-                // If cached lookup returned nothing, attempt a full lookup but guard against API not initialized.
-                if (gameHowLongToBeat == null)
+                var cached = PluginDatabase.Get(game.Id, onlyCache: true);
+                if (cached != null && cached.HasData)
                 {
-                    gameHowLongToBeat = PluginDatabase.Get(GameContext);
+                    HowLongToBeatView view = new HowLongToBeatView(cached);
+                    Window window = PlayniteUiHelper.CreateExtensionWindow(PluginDatabase.PluginName, view);
+                    _ = window.ShowDialog();
+                    return;
                 }
             }
-            catch (InvalidOperationException ex)
+            catch { }
+
+            try
             {
-                // HowLongToBeatApi not initialized — log and continue gracefully.
-                try { Common.LogError(ex, false, $"HLTB API not initialized when opening view for {GameContext?.Name}", true, PluginDatabase.PluginName); } catch { }
-                try
+                if (API.Instance.ApplicationInfo.Mode == ApplicationMode.Desktop && PluginDatabase?.HowLongToBeatApi != null)
                 {
-                    // Fall back to cache-only lookup if possible
-                    gameHowLongToBeat = PluginDatabase.Get(GameContext, onlyCache: true);
+                    var selected = PluginDatabase.HowLongToBeatApi.SearchData(game);
+
+                    if (selected == null)
+                    {
+                        return;
+                    }
+
+                    if (selected.HasData)
+                    {
+                        try
+                        {
+                            selected.DateLastRefresh = DateTime.Now;
+                            PluginDatabase.AddOrUpdate(selected);
+                        }
+                        catch { }
+
+                        HowLongToBeatView view = new HowLongToBeatView(selected);
+                        Window window = PlayniteUiHelper.CreateExtensionWindow(PluginDatabase.PluginName, view);
+                        _ = window.ShowDialog();
+                        return;
+                    }
+
+                    return;
                 }
-                catch { gameHowLongToBeat = null; }
             }
             catch (Exception ex)
             {
                 try { Common.LogError(ex, false, true, PluginDatabase.PluginName); } catch { }
-            }
-
-            if (gameHowLongToBeat == null)
-            {
-                // No data available (or API uninitialized) — fail gracefully.
                 return;
             }
 
-            if (gameHowLongToBeat.HasData)
+            var gameId = game.Id;
+            var gameName = game.Name;
+            _ = Task.Run(() =>
             {
-                HowLongToBeatView ViewExtension = new HowLongToBeatView(gameHowLongToBeat);
-                Window windowExtension = PlayniteUiHelper.CreateExtensionWindow(PluginDatabase.PluginName, ViewExtension);
-                _ = windowExtension.ShowDialog();
-            }
+                try
+                {
+                    PluginDatabase.RefreshNoLoader(gameId);
+                }
+                catch (Exception ex)
+                {
+                    try { Common.LogError(ex, false, true, PluginDatabase.PluginName); } catch { }
+                }
+
+                try
+                {
+                    var updated = PluginDatabase.Get(gameId, onlyCache: true);
+                    if (updated != null && updated.HasData)
+                    {
+                        Application.Current?.Dispatcher?.BeginInvoke((Action)(() =>
+                        {
+                            try
+                            {
+                                HowLongToBeatView view = new HowLongToBeatView(updated);
+                                Window window = PlayniteUiHelper.CreateExtensionWindow(PluginDatabase.PluginName, view);
+                                _ = window.ShowDialog();
+                            }
+                            catch (Exception ex)
+                            {
+                                try { Common.LogError(ex, false, true, PluginDatabase.PluginName); } catch { }
+                            }
+                        }));
+                    }
+                    else
+                    {
+                        try
+                        {
+                            API.Instance?.Notifications?.Add(new NotificationMessage(
+                                $"{PluginDatabase.PluginName}-NoData-{gameId}",
+                                $"{PluginDatabase.PluginName}{Environment.NewLine}{gameName}{Environment.NewLine}{ResourceProvider.GetString("LOCCommonNoData")}",
+                                NotificationType.Info));
+                        }
+                        catch { }
+                    }
+                }
+                catch { }
+            });
         }
         #endregion
     }

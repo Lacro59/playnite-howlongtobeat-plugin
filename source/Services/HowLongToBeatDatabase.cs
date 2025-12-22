@@ -241,9 +241,43 @@ namespace HowLongToBeat.Services
             return gameHowLongToBeat;
         }
 
+        private string GetSearchPlatform(Game game)
+        {
+            try
+            {
+                if (game?.Platforms == null || game.Platforms.Count == 0)
+                {
+                    return string.Empty;
+                }
+
+                var platform = game.Platforms.FirstOrDefault();
+                if (platform == null)
+                {
+                    return string.Empty;
+                }
+
+                var match = PluginSettings?.Settings?.Platforms?.FirstOrDefault(p => p?.Platform != null && p.Platform.Equals(platform))?.HltbPlatform;
+                if (match != null)
+                {
+                    return match.GetDescription();
+                }
+
+                return string.Empty;
+            }
+            catch
+            {
+                return string.Empty;
+            }
+        }
+
 
         public void AddData(Game game)
         {
+            if (game == null)
+            {
+                return;
+            }
+
             GameHowLongToBeat gameHowLongToBeat = Get(game, true);
 
             if (gameHowLongToBeat.Items.Count > 0)
@@ -258,28 +292,111 @@ namespace HowLongToBeat.Services
                 return;
             }
 
-            List<HltbSearch> data = TaskHelpers.RunSyncWithTimeout(() => HowLongToBeatApi.SearchTwoMethod(game.Name), 15000) ?? new List<HltbSearch>();
-            if (data.Count == 1 && PluginSettings.Settings.AutoAccept)
+            string platform = GetSearchPlatform(game);
+
+            Func<string, bool> tryAddWithPlatform = (platformFilter) =>
             {
-                gameHowLongToBeat.Items = new List<HltbDataUser>() { data.First().Data };
-                AddOrUpdate(gameHowLongToBeat);
-            }
-            else
-            {
-                if (data.Count > 0 && PluginSettings.Settings.UseMatchValue)
+                try
                 {
-                    if (data.First().MatchPercent >= PluginSettings.Settings.MatchValue)
+                    HltbDataUser auto = HowLongToBeatApi.SearchDataAuto(game.Name, platformFilter);
+                    if (auto != null)
+                    {
+                        gameHowLongToBeat.Items = new List<HltbDataUser> { auto };
+                        gameHowLongToBeat.DateLastRefresh = DateTime.Now;
+                        AddOrUpdate(gameHowLongToBeat);
+                        return true;
+                    }
+
+                    if (PluginSettings?.Settings?.UseMatchValue == true)
+                    {
+                        var results = TaskHelpers.RunSyncWithTimeout(() => HowLongToBeatApi.SearchTwoMethod(game.Name, platformFilter), 15000);
+                        if (results != null && results.Count == 1 && results[0]?.Data != null)
+                        {
+                            var single = results[0];
+                            bool accept = false;
+
+                            try
+                            {
+                                if (single.MatchPercent >= 80)
+                                {
+                                    accept = true;
+                                }
+                                else
+                                {
+                                    var n1 = PlayniteTools.NormalizeGameName(game?.Name ?? string.Empty, true, true);
+                                    var n2 = PlayniteTools.NormalizeGameName(single.Data?.Name ?? string.Empty, true, true);
+                                    if (!string.IsNullOrEmpty(n1) && !string.IsNullOrEmpty(n2) && n1.IsEqual(n2))
+                                    {
+                                        accept = true;
+                                    }
+                                }
+                            }
+                            catch
+                            {
+                                accept = false;
+                            }
+
+                            if (accept)
+                            {
+                                gameHowLongToBeat.Items = new List<HltbDataUser> { single.Data };
+                                gameHowLongToBeat.DateLastRefresh = DateTime.Now;
+                                AddOrUpdate(gameHowLongToBeat);
+                                return true;
+                            }
+                        }
+                    }
+
+                    List<HltbSearch> data = TaskHelpers.RunSyncWithTimeout(() => HowLongToBeatApi.SearchTwoMethod(game.Name, platformFilter), 15000) ?? new List<HltbSearch>();
+                    if (data.Count == 1 && PluginSettings.Settings.AutoAccept)
                     {
                         gameHowLongToBeat.Items = new List<HltbDataUser>() { data.First().Data };
+                        gameHowLongToBeat.DateLastRefresh = DateTime.Now;
                         AddOrUpdate(gameHowLongToBeat);
-                        return;
+                        return true;
+                    }
+
+                    if (data.Count > 0 && PluginSettings.Settings.UseMatchValue)
+                    {
+                        if (data.First().MatchPercent >= PluginSettings.Settings.MatchValue)
+                        {
+                            gameHowLongToBeat.Items = new List<HltbDataUser>() { data.First().Data };
+                            gameHowLongToBeat.DateLastRefresh = DateTime.Now;
+                            AddOrUpdate(gameHowLongToBeat);
+                            return true;
+                        }
+                    }
+
+                    if (data.Count > 0 && PluginSettings.Settings.ShowWhenMismatch)
+                    {
+                        var picked = HowLongToBeatApi.SearchData(game, data.Select(x => x.Data).ToList());
+                        if (picked != null)
+                        {
+                            picked.DateLastRefresh = DateTime.Now;
+                            AddOrUpdate(picked);
+                            return true;
+                        }
                     }
                 }
-
-                if (data.Count > 0 && PluginSettings.Settings.ShowWhenMismatch)
+                catch (Exception ex)
                 {
-                    gameHowLongToBeat = HowLongToBeatApi.SearchData(game, data?.Select(x => x.Data).ToList());
-                    AddOrUpdate(gameHowLongToBeat);
+                    Common.LogError(ex, false, true, PluginName);
+                }
+
+                return false;
+            };
+
+            // 1) Try with platform filter
+            if (tryAddWithPlatform(platform))
+            {
+                return;
+            }
+
+            // 2) Fall back to no platform filter (more permissive; matches manual search behavior)
+            if (!platform.IsNullOrEmpty())
+            {
+                if (tryAddWithPlatform(string.Empty))
+                {
+                    return;
                 }
             }
         }

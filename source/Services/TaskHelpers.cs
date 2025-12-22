@@ -64,7 +64,7 @@ namespace HowLongToBeat.Services
                     task = Task.FromException<T>(ex);
                 }
 
-                var delayTask = Task.Delay(timeoutMs, linked.Token);
+                var delayTask = Task.Delay(timeoutMs, ctsTimeout.Token);
 
                 // Cancel the timeout token as soon as the main task completes so delayTask can be canceled early.
                 try
@@ -83,12 +83,26 @@ namespace HowLongToBeat.Services
                 try
                 {
                     var completed = Task.WhenAny(task, delayTask).ConfigureAwait(false).GetAwaiter().GetResult();
+
+                    if (task.IsCompleted)
+                    {
+                        try { ctsTimeout.Cancel(); } catch { }
+                        try
+                        {
+                            var result = task.GetAwaiter().GetResult();
+                            return (true, result, null);
+                        }
+                        catch (Exception ex)
+                        {
+                            return (true, default(T), ex);
+                        }
+                    }
+
                     if (completed == task)
                     {
                         try { ctsTimeout.Cancel(); } catch { }
                         try
                         {
-                            // Await/observe the task result (or exception) deterministically.
                             var result = task.GetAwaiter().GetResult();
                             return (true, result, null);
                         }
@@ -99,7 +113,7 @@ namespace HowLongToBeat.Services
                     }
 
                     // delayTask completed first: timeout or cancellation.
-                    if (delayTask.IsCanceled || linked.Token.IsCancellationRequested)
+                    if (externalToken.IsCancellationRequested)
                     {
                         try { ctsTimeout.Cancel(); } catch { }
                         // Observe faults to avoid unobserved exception warnings.
@@ -178,7 +192,12 @@ namespace HowLongToBeat.Services
         // Overload to allow type inference when caller provides a Func<Task<T>>.
         public static T RunSyncWithTimeout<T>(Func<Task<T>> taskFactory, int timeoutMs = 15000, ILogger logger = null)
         {
-            return RunSyncWithTimeout(ct => taskFactory(), timeoutMs, CancellationToken.None, logger);
+            return RunSyncWithTimeout(ct => Task.Run(taskFactory, ct), timeoutMs, CancellationToken.None, logger);
+        }
+
+        public static bool TryRunSyncWithTimeout<T>(Func<Task<T>> taskFactory, out T result, int timeoutMs = 15000, ILogger logger = null)
+        {
+            return TryRunSyncWithTimeout(ct => Task.Run(taskFactory, ct), out result, timeoutMs, CancellationToken.None, logger);
         }
     }
 }
