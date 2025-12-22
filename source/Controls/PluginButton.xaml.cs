@@ -184,17 +184,44 @@ namespace HowLongToBeat.Controls
 
             try
             {
+                if (TryShowCachedData(game))
+                {
+                    return;
+                }
+
+                if (TrySearchAndShow(game))
+                {
+                    return;
+                }
+
+                RefreshInBackground(game);
+            }
+            catch (Exception ex)
+            {
+                try { Common.LogError(ex, false, true, PluginDatabase.PluginName); } catch { }
+            }
+        }
+
+        private bool TryShowCachedData(Game game)
+        {
+            try
+            {
                 var cached = PluginDatabase.Get(game.Id, onlyCache: true);
                 if (cached != null && cached.HasData)
                 {
                     HowLongToBeatView view = new HowLongToBeatView(cached);
                     Window window = PlayniteUiHelper.CreateExtensionWindow(PluginDatabase.PluginName, view);
                     _ = window.ShowDialog();
-                    return;
+                    return true;
                 }
             }
             catch { }
 
+            return false;
+        }
+
+        private bool TrySearchAndShow(Game game)
+        {
             try
             {
                 if (API.Instance.ApplicationInfo.Mode == ApplicationMode.Desktop && PluginDatabase?.HowLongToBeatApi != null)
@@ -203,7 +230,7 @@ namespace HowLongToBeat.Controls
 
                     if (selected == null)
                     {
-                        return;
+                        return true;
                     }
 
                     if (selected.HasData)
@@ -218,18 +245,23 @@ namespace HowLongToBeat.Controls
                         HowLongToBeatView view = new HowLongToBeatView(selected);
                         Window window = PlayniteUiHelper.CreateExtensionWindow(PluginDatabase.PluginName, view);
                         _ = window.ShowDialog();
-                        return;
+                        return true;
                     }
 
-                    return;
+                    return true;
                 }
             }
             catch (Exception ex)
             {
                 try { Common.LogError(ex, false, true, PluginDatabase.PluginName); } catch { }
-                return;
+                return true;
             }
 
+            return false;
+        }
+
+        private void RefreshInBackground(Game game)
+        {
             var gameId = game.Id;
             var gameName = game.Name;
             _ = Task.Run(() =>
