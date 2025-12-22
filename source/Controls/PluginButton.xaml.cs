@@ -103,7 +103,8 @@ namespace HowLongToBeat.Controls
                     {
                         try
                         {
-                            if (PluginDatabase?.PluginSettings?.Settings?.EnableVerboseLogging == true)
+                            bool verboseEnabled = PluginDatabase?.PluginSettings?.Settings?.EnableVerboseLogging ?? false;
+                            if (verboseEnabled)
                             {
                                 Debug.WriteLine("PluginButton init timeout waiting for PluginDatabase.IsLoaded");
                             }
@@ -230,6 +231,15 @@ namespace HowLongToBeat.Controls
 
                     if (selected == null)
                     {
+                        try
+                        {
+                            API.Instance?.Notifications?.Add(new NotificationMessage(
+                                $"{PluginDatabase.PluginName}-NoData-{game.Id}",
+                                $"{PluginDatabase.PluginName}{Environment.NewLine}{game.Name}{Environment.NewLine}{ResourceProvider.GetString("LOCCommonNoData")}",
+                                NotificationType.Info));
+                        }
+                        catch { }
+
                         return true;
                     }
 
@@ -248,12 +258,31 @@ namespace HowLongToBeat.Controls
                         return true;
                     }
 
+                    try
+                    {
+                        API.Instance?.Notifications?.Add(new NotificationMessage(
+                            $"{PluginDatabase.PluginName}-NoData-{game.Id}",
+                            $"{PluginDatabase.PluginName}{Environment.NewLine}{game.Name}{Environment.NewLine}{ResourceProvider.GetString("LOCCommonNoData")}",
+                            NotificationType.Info));
+                    }
+                    catch { }
+
                     return true;
                 }
             }
             catch (Exception ex)
             {
                 try { Common.LogError(ex, false, true, PluginDatabase.PluginName); } catch { }
+
+                try
+                {
+                    API.Instance?.Notifications?.Add(new NotificationMessage(
+                        $"{PluginDatabase.PluginName}-SearchError-{game.Id}",
+                        $"{PluginDatabase.PluginName}{Environment.NewLine}{game.Name}{Environment.NewLine}{ResourceProvider.GetString("LOCHowLongToBeatSearchError")}",
+                        NotificationType.Error));
+                }
+                catch { }
+
                 return true;
             }
 
