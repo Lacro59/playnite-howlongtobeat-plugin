@@ -2229,8 +2229,17 @@ namespace HowLongToBeat.Services
                         {
                             webView.DeleteDomainCookiesRegex("howlongtobeat\\.com$");
                         }
-                        catch
+                        catch (Exception ex)
                         {
+                            try
+                            {
+                                if (IsVerboseLoggingEnabled)
+                                {
+                                    try { Logger.Debug($"HLTB Auth: DeleteDomainCookiesRegex failed, falling back to DeleteDomainCookies variants: {ex}"); } catch { }
+                                }
+                            }
+                            catch { }
+
                             try { webView.DeleteDomainCookies(".howlongtobeat.com"); } catch { }
                             try { webView.DeleteDomainCookies("howlongtobeat.com"); } catch { }
                             try { webView.DeleteDomainCookies("www.howlongtobeat.com"); } catch { }
