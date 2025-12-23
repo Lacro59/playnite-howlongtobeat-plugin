@@ -196,7 +196,10 @@ Eksempel:
     <sys:String x:Key="LOCHowLongToBeatAliasesFilePathUnavailable">Plugin brugerdatesti er ikke tilgængeligt.</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAliasesImportNotFound">Ingen alias-fil fundet: {0}</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAliasesImportFailed">Kunne ikke importere alias-fil: {0} (se logs).</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportConfirm" xml:space="preserve">Importer alias fra:\n{0}\n\nDette vil erstatte dine nuværende alias. Fortsæt?</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportConfirm" xml:space="preserve">Importer alias fra:
+{0}
+
+Dette vil erstatte dine nuværende alias. Fortsæt?</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAliasesImportOk">Alias importeret fra: {0}</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAliasesExportFailed">Kunne ikke eksportere alias-fil: {0} (se logs).</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAliasesExportOk">Alias eksporteret til: {0}</sys:String>

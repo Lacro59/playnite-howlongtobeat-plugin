@@ -238,7 +238,7 @@ namespace HowLongToBeat.Views
                                     EscapeCsvWithDelimiter(string.Join(", ", developers), delimiter),
                                     EscapeCsvWithDelimiter(string.Join(", ", publishers), delimiter),
                                     EscapeCsvWithDelimiter(game.Added?.ToString("yyyy-MM-ddTHH:mm:ss"), delimiter),
-                                    EscapeCsvWithDelimiter(game.LastActivity?.ToString("yyyy-MM-ddTHH:mmss"), delimiter)
+                                    EscapeCsvWithDelimiter(game.LastActivity?.ToString("yyyy-MM-ddTHH:mm:ss"), delimiter)
                                 });
                             lines.Add(csvLine);
                             exportedCount++;
