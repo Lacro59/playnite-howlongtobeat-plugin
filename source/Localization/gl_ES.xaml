@@ -178,4 +178,21 @@ Here is the list of commands:</sys:String>
     -stores={n}	Filter by store name (ex:-stores=steam / -stores=steam,epic)
     -status={n}	Filter by status name (ex:-status=played / -status=played,playing)</sys:String>
 
+    <!-- Aliases tab -->
+
+    <sys:String x:Key="LOCHowLongToBeatAliases">Alias</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesDescription">Asocia varios títulos de xogos a un único título de busca en HowLongToBeat.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesSource">Título orixe</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesTarget">Destino (título HLTB)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesReset">Restablecer</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImport">Importar</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesExport">Exportar</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesFilePathUnavailable">A ruta de datos de usuario do complemento non está dispoñible.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportNotFound">Non se atopou o ficheiro de alias: {0}</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportFailed">Non se puido importar o ficheiro de alias: {0} (ver rexistros).</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportConfirm">Importar alias desde:\n{0}\n\nIsto substituirá os alias actuais. Continuar?</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportOk">Importáronse os alias desde: {0}</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesExportFailed">Non se puido exportar o ficheiro de alias: {0} (ver rexistros).</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesExportOk">Exportáronse os alias a: {0}</sys:String>
+
 </ResourceDictionary>

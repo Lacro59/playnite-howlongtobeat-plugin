@@ -386,6 +386,13 @@ namespace HowLongToBeat.Services
                 throw;
             }
 
+            // Create default alias file if missing (non-fatal)
+            try
+            {
+                GameNameAliases.EnsureAliasFileExists(PluginDatabase?.Plugin?.GetPluginUserDataPath());
+            }
+            catch { }
+
             // Cache HtmlAgilityPack availability once to avoid reflection on every request.
             Type hapType = null;
             try
@@ -634,7 +641,7 @@ namespace HowLongToBeat.Services
                                         p90 = ordered[Math.Max(0, (int)Math.Floor(ordered.Length * 0.9) - 1)];
                                     }
 
-                                    LogDebugVerbose($"HLTB Summary: searchTarget={searchTarget} searchInFlight={searchInFlight} gameTarget={gameTarget} gameInFlight={gameInFlight} avgSearchMs={Math.Round(avg, 1)} medianSearchMs={Math.Round(median, 1)} p90SearchMs={Math.Round(p90, 1)} persistentCacheHits={PersistentCacheHits} inMemoryHits={InMemoryCacheHits} pageFetches={PageFetches} forced={searchForced}");
+                                    LogDebugVerbose($"HLTB Summary: searchTarget={searchTarget} searchInFlight={searchInFlight} gameTarget={gameTarget} gameInFlight={gameInFlight} avgSearchMs={Math.Round(avg, 1)} medianSearchMs={Math.Round(median, 1)} p90SearchMs={Math.Round(p90, 1)} persistentCacheHits={PersistentCacheHits} inMemoryCacheHits={InMemoryCacheHits} pageFetches={PageFetches} forced={searchForced}");
                                 }
                                 catch (Exception ex)
                                 {
@@ -1312,6 +1319,20 @@ namespace HowLongToBeat.Services
         /// <returns>Returns a list of <see cref="HltbSearch"/> with match percentages.</returns>
         public async Task<List<HltbSearch>> SearchTwoMethod(string name, string platform = "", bool includeExtendedTimes = false)
         {
+            // Apply manual aliases (exact normalized match) to support paired releases (e.g. Pokemon versions).
+            try
+            {
+                var settings = PluginDatabase?.PluginSettings?.Settings;
+                var userDataPath = PluginDatabase?.Plugin?.GetPluginUserDataPath();
+                var aliased = GameNameAliases.ApplyAlias(name, settings, userDataPath);
+                if (!string.IsNullOrEmpty(aliased) && !aliased.IsEqual(name))
+                {
+                    LogDebugVerbose($"HLTB aliases: '{SafeStr(name)}' -> '{SafeStr(aliased)}'");
+                    name = aliased;
+                }
+            }
+            catch { }
+
             string normalized = PlayniteTools.NormalizeGameName(name, true, true);
 
             List<HltbDataUser> dataSearch = null;
@@ -1747,15 +1768,29 @@ namespace HowLongToBeat.Services
                     return null;
                 }
 
+                // Apply manual aliases (exact normalized match) early so all subsequent matching uses the aliased title.
+                try
+                {
+                    var settings = PluginDatabase?.PluginSettings?.Settings;
+                    var userDataPath = PluginDatabase?.Plugin?.GetPluginUserDataPath();
+                    var aliased = GameNameAliases.ApplyAlias(gameName, settings, userDataPath);
+                    if (!string.IsNullOrEmpty(aliased) && !aliased.IsEqual(gameName))
+                    {
+                        LogDebugVerbose($"HLTB aliases: '{SafeStr(gameName)}' -> '{SafeStr(aliased)}'");
+                        gameName = aliased;
+                    }
+                }
+                catch { }
+
                 traceId = Guid.NewGuid().ToString("N").Substring(0, 8);
 
-                var settings = PluginDatabase?.PluginSettings?.Settings;
+                var hltbSettings = PluginDatabase?.PluginSettings?.Settings;
 
                 if (IsVerboseLoggingEnabled)
                 {
                     try
                     {
-                        Logger.Debug($"SearchDataAuto[{traceId}]: start name='{SafeStr(gameName)}' platform='{SafeStr(platform)}' UseMatchValue={settings?.UseMatchValue} MatchValue={settings?.MatchValue}");
+                        Logger.Debug($"SearchDataAuto[{traceId}]: start name='{SafeStr(gameName)}' platform='{SafeStr(platform)}' UseMatchValue={hltbSettings?.UseMatchValue} MatchValue={hltbSettings?.MatchValue}");
                     }
                     catch { }
                 }
@@ -1842,11 +1877,11 @@ namespace HowLongToBeat.Services
 
                         if (exact?.Data != null)
                         {
-                            if (settings != null && settings.UseMatchValue && exact.MatchPercent < settings.MatchValue && exact.MatchPercent < 98)
+                            if (hltbSettings != null && hltbSettings.UseMatchValue && exact.MatchPercent < hltbSettings.MatchValue && exact.MatchPercent < 98)
                             {
                                 if (IsVerboseLoggingEnabled)
                                 {
-                                    try { Logger.Debug($"SearchDataAuto[{traceId}]: exact normalized match rejected by MatchValue score={exact.MatchPercent} threshold={settings.MatchValue}"); } catch { }
+                                    try { Logger.Debug($"SearchDataAuto[{traceId}]: exact normalized match rejected by MatchValue score={exact.MatchPercent} threshold={hltbSettings.MatchValue}"); } catch { }
                                 }
                                 return null;
                             }
@@ -1874,20 +1909,20 @@ namespace HowLongToBeat.Services
 
                 try
                 {
-                    if (settings != null && settings.UseMatchValue && best.MatchPercent < settings.MatchValue)
+                    if (hltbSettings != null && hltbSettings.UseMatchValue && best.MatchPercent < hltbSettings.MatchValue)
                     {
                         if (best.MatchPercent >= 98)
                         {
                             if (IsVerboseLoggingEnabled)
                             {
-                                try { Logger.Debug($"SearchDataAuto[{traceId}]: best below MatchValue but accepted via near-perfect safety net score={best.MatchPercent} threshold={settings.MatchValue}"); } catch { }
+                                try { Logger.Debug($"SearchDataAuto[{traceId}]: best below MatchValue but accepted via near-perfect safety net score={best.MatchPercent} threshold={hltbSettings.MatchValue}"); } catch { }
                             }
                             return best.Data;
                         }
 
                         if (IsVerboseLoggingEnabled)
                         {
-                            try { Logger.Debug($"SearchDataAuto[{traceId}]: rejected by MatchValue bestScore={best.MatchPercent} threshold={settings.MatchValue}"); } catch { }
+                            try { Logger.Debug($"SearchDataAuto[{traceId}]: rejected by MatchValue bestScore={best.MatchPercent} threshold={hltbSettings.MatchValue}"); } catch { }
                         }
                         return null;
                     }
@@ -1971,11 +2006,11 @@ namespace HowLongToBeat.Services
 
                                 if (withTimes?.Data != null)
                                 {
-                                    if (settings != null && settings.UseMatchValue && withTimes.MatchPercent < settings.MatchValue && withTimes.MatchPercent < 98)
+                                    if (hltbSettings != null && hltbSettings.UseMatchValue && withTimes.MatchPercent < hltbSettings.MatchValue && withTimes.MatchPercent < 98)
                                     {
                                         if (IsVerboseLoggingEnabled)
                                         {
-                                            try { Logger.Debug($"SearchDataAuto[{traceId}]: enriched withTimes rejected by MatchValue score={withTimes.MatchPercent} threshold={settings.MatchValue}"); } catch { }
+                                            try { Logger.Debug($"SearchDataAuto[{traceId}]: enriched withTimes rejected by MatchValue score={withTimes.MatchPercent} threshold={hltbSettings.MatchValue}"); } catch { }
                                         }
                                         return null;
                                     }
@@ -1990,11 +2025,11 @@ namespace HowLongToBeat.Services
                                 var bestEnriched = enriched[0];
                                 if (bestEnriched?.Data != null)
                                 {
-                                    if (settings != null && settings.UseMatchValue && bestEnriched.MatchPercent < settings.MatchValue && bestEnriched.MatchPercent < 98)
+                                    if (hltbSettings != null && hltbSettings.UseMatchValue && bestEnriched.MatchPercent < hltbSettings.MatchValue && bestEnriched.MatchPercent < 98)
                                     {
                                         if (IsVerboseLoggingEnabled)
                                         {
-                                            try { Logger.Debug($"SearchDataAuto[{traceId}]: bestEnriched rejected by MatchValue score={bestEnriched.MatchPercent} threshold={settings.MatchValue}"); } catch { }
+                                            try { Logger.Debug($"SearchDataAuto[{traceId}]: bestEnriched rejected by MatchValue score={bestEnriched.MatchPercent} threshold={hltbSettings.MatchValue}"); } catch { }
                                         }
                                         return null;
                                     }
@@ -2158,7 +2193,7 @@ namespace HowLongToBeat.Services
                                                     lastLoginCheckResult = null;
                                                     lastLoginCheckUtc = DateTime.MinValue;
                                                 }
-                                                catch (Exception ex)
+                                                catch ( Exception ex)
                                                 {
                                                     Common.LogError(ex, false, true, PluginDatabase.PluginName);
                                                 }

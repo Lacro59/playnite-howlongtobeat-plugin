@@ -179,4 +179,25 @@ Here is the list of commands:</sys:String>
     -stores={n}	Filter by store name (ex:-stores=steam / -stores=steam,epic)
     -status={n}	Filter by status name (ex:-status=played / -status=played,playing)</sys:String>
 
+    <!-- Aliases Tab -->
+
+    <sys:String x:Key="LOCHowLongToBeatAliases">Àlies</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesDescription">Assigna diversos títols de joc a un sol títol de cerca a HowLongToBeat.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesSource">Títol d’origen</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesTarget">Destí (títol HLTB)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesReset">Restableix</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesResetConfirm">Vols substituir els àlies actuals pels àlies predeterminats de llançaments dobles de Pokémon?</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImport">Importa</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesExport">Exporta</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesOpenFile">Obre aliases.json</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesFilePathUnavailable">La ruta de dades d’usuari del connector no està disponible.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportNotFound">No s’ha trobat cap fitxer d’àlies: {0}</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportFailed">No s’ha pogut importar el fitxer d’àlies: {0} (vegeu els registres).</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportConfirm">Vols importar els àlies de:\n{0}\n\nAixò substituirà els àlies actuals. Vols continuar?</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportOk">S’han importat els àlies de: {0}</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesExportFailed">No s’ha pogut exportar el fitxer d’àlies: {0} (vegeu els registres).</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesExportOk">S’han exportat els àlies a: {0}</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesCellToolTip">Fes clic a una cel·la (o prem F2) per editar. Prem Enter per guardar.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesTip">Consell: fes doble clic a una cel·la per editar. Els àlies es guarden quan facis clic a Desa.</sys:String>
+
 </ResourceDictionary>

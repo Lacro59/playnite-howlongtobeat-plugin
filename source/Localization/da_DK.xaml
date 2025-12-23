@@ -179,4 +179,22 @@ Here is the list of commands:</sys:String>
     -stores={n}	Filter by store name (ex:-stores=steam / -stores=steam,epic)
     -status={n}	Filter by status name (ex:-status=played / -status=played,playing)</sys:String>
 
+    <!-- Aliases Tab -->
+
+    <sys:String x:Key="LOCHowLongToBeatAliases">Aliases</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesDescription">Map flere spiltitler til én HowLongToBeat-titel.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesSource">Kildetitel</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesTarget">Mål (HLTB-titel)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesReset">Nulstil</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesResetConfirm">Erstat dine nuværende aliases med standard Pokémon dual-release aliases?</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImport">Importer</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesExport">Eksporter</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesFilePathUnavailable">Pluginens brugerdata-sti er ikke tilgængelig.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportNotFound">Ingen aliasfil fundet: {0}</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportFailed">Kunne ikke importere aliasfil: {0} (se log).</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportConfirm">Importer alias fra:\n{0}\n\nDette erstatter dine nuværende aliases. Fortsæt?</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportOk">Importerede aliases fra: {0}</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesExportFailed">Kunne ikke eksportere aliasfil: {0} (se log).</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesExportOk">Eksporterede aliases til: {0}</sys:String>
+
 </ResourceDictionary>
