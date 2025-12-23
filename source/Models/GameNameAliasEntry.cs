@@ -3,7 +3,7 @@ using System;
 
 namespace HowLongToBeat.Models
 {
-    public class GameNameAliasEntry : ObservableObjectPlus
+    public class GameNameAliasEntry : System.Collections.Generic.ObservableObjectPlus
     {
         private string _source;
         public string Source
