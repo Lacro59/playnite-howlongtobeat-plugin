@@ -51,8 +51,8 @@
     <sys:String x:Key="LOCHowLongToBeatWithoutConfirmation">Ohne Bestätigungsmeldung</sys:String>
     <sys:String x:Key="LOCHowLongToBeatEnableSuccessNotification">Erfolgreiche Benachrichtigung aktivieren</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatus">Spielstatus automatisch mit HowLongToBeat Spielstatus aktualisieren, wenn Benutzerdaten importiert werden</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltb">Automatisch den Status bei HowLongToBeat aktualisieren wenn der Spielstatus aktualisiert wird</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatus">Spielstatus automatisch an HowLongToBeat Spielstatus angleichen, wenn Benutzerdaten importiert werden</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltb">Automatisch den Status bei HowLongToBeat mit Spielstatus aktualisieren</sys:String>
     
     <sys:String x:Key="LOCHowLongToBeatAutoData">Spieldaten herunterladen</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoAccept">Spiel automatisch auswählen, wenn nur ein Spiel während der Suche gefunden wird</sys:String>

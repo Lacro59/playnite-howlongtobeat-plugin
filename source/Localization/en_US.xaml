@@ -205,4 +205,3 @@ Example:
     <sys:String x:Key="LOCHowLongToBeatAliasesTip">Tip: double-click a cell to edit. Aliases are saved when you click Save.</sys:String>
 
 </ResourceDictionary>
-
