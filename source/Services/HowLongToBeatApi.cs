@@ -2234,6 +2234,7 @@ namespace HowLongToBeat.Services
                             try { webView.DeleteDomainCookies(".howlongtobeat.com"); } catch { }
                             try { webView.DeleteDomainCookies("howlongtobeat.com"); } catch { }
                             try { webView.DeleteDomainCookies("www.howlongtobeat.com"); } catch { }
+                            try { webView.DeleteDomainCookies(".www.howlongtobeat.com"); } catch { }
                         }
                          webView.Navigate(UrlLogOut);
                          _ = webView.OpenDialog();
