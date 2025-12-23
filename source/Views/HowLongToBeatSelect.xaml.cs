@@ -1,12 +1,4 @@
-﻿using CommonPluginsShared;
-using FuzzySharp;
-using HowLongToBeat.Models;
-using HowLongToBeat.Models.Enumerations;
-using HowLongToBeat.Services;
-using Playnite.SDK;
-using Playnite.SDK.Data;
-using Playnite.SDK.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -15,11 +7,16 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 
+using CommonPluginsShared;
+using HowLongToBeat.Models;
+using HowLongToBeat.Models.Enumerations;
+using HowLongToBeat.Services;
+using Playnite.SDK;
+using Playnite.SDK.Data;
+using Playnite.SDK.Models;
+
 namespace HowLongToBeat.Views
 {
-    /// <summary>
-    /// Logique d'interaction pour HowLongToBeatSelect.xaml
-    /// </summary>
     public partial class HowLongToBeatSelect : UserControl
     {
         private static HowLongToBeatDatabase PluginDatabase => HowLongToBeat.PluginDatabase;
@@ -31,6 +28,8 @@ namespace HowLongToBeat.Views
         public HowLongToBeatSelect(Game game, List<HltbDataUser> data)
         {
             InitializeComponent();
+
+            ApplyThemeResources();
 
             GameContext = game;
             SearchElement.Text = GameContext.Name;
@@ -124,7 +123,7 @@ namespace HowLongToBeat.Views
             string gameSearch = SearchElement.Text;
             string gamePlatform = (PART_SelectPlatform.SelectedValue == null)
                   ? string.Empty
-                  : ((HltbPlatform) PART_SelectPlatform.SelectedValue).GetDescription();
+                  : ((HltbPlatform)PART_SelectPlatform.SelectedValue).GetDescription();
 
             bool isVndb = (bool)PART_Vndb.IsChecked;
 
@@ -134,14 +133,21 @@ namespace HowLongToBeat.Views
                 IsIndeterminate = true
             };
 
-            _ = API.Instance.Dialogs.ActivateGlobalProgress((activateGlobalProgress) =>
+            _ = API.Instance.Dialogs.ActivateGlobalProgress(async (activateGlobalProgress) =>
             {
                 List<HltbDataUser> dataSearch = new List<HltbDataUser>();
                 try
                 {
-                    dataSearch = isVndb
-                        ? VndbApi.SearchByName(gameSearch)?.Select(x => x.Data).ToList()
-                        : PluginDatabase.HowLongToBeatApi.SearchTwoMethod(gameSearch, gamePlatform).GetAwaiter().GetResult()?.Select(x => x.Data).ToList();
+                    if (isVndb)
+                    {
+                        var vndbResults = await VndbApi.SearchByNameAsync(gameSearch);
+                        dataSearch = vndbResults?.Select(x => x.Data).ToList() ?? new List<HltbDataUser>();
+                    }
+                    else
+                    {
+                        var hlResults = await PluginDatabase.HowLongToBeatApi.SearchTwoMethod(gameSearch, gamePlatform, includeExtendedTimes: true);
+                        dataSearch = hlResults?.Select(x => x.Data).ToList() ?? new List<HltbDataUser>();
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -164,26 +170,54 @@ namespace HowLongToBeat.Views
         /// <param name="e"></param>
         private void TextBlock_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
         {
-            TextBlock textBlock = (TextBlock)sender;
+            var textBlock = sender as TextBlock;
+            if (textBlock == null) return;
 
-            Typeface typeface = new Typeface(
-                textBlock.FontFamily,
-                textBlock.FontStyle,
-                textBlock.FontWeight,
-                textBlock.FontStretch);
+            var toolTip = textBlock.ToolTip as ToolTip;
+            if (toolTip == null) return;
 
-            FormattedText formattedText = new FormattedText(
-                textBlock.Text,
-                System.Threading.Thread.CurrentThread.CurrentCulture,
-                textBlock.FlowDirection,
-                typeface,
-                textBlock.FontSize,
-                textBlock.Foreground,
-                VisualTreeHelper.GetDpi(this).PixelsPerDip);
+            try
+            {
+                var text = textBlock.Text ?? string.Empty;
+                if (string.IsNullOrEmpty(text))
+                {
+                    toolTip.Visibility = Visibility.Hidden;
+                    return;
+                }
 
-            ((ToolTip)((TextBlock)sender).ToolTip).Visibility = formattedText.Width > textBlock.DesiredSize.Width 
-                ? Visibility.Visible 
-                : Visibility.Hidden;
+                var typeface = new Typeface(
+                    textBlock.FontFamily,
+                    textBlock.FontStyle,
+                    textBlock.FontWeight,
+                    textBlock.FontStretch);
+
+                // Use the FormattedText overload with PixelsPerDip to avoid obsolete warning
+                double pixelsPerDip = 1.0;
+                try
+                {
+                    pixelsPerDip = VisualTreeHelper.GetDpi(this).PixelsPerDip;
+                }
+                catch { }
+
+                var formattedText = new FormattedText(
+                    text,
+                    System.Threading.Thread.CurrentThread.CurrentCulture,
+                    textBlock.FlowDirection,
+                    typeface,
+                    textBlock.FontSize,
+                    textBlock.Foreground,
+                    pixelsPerDip);
+
+                // Compare measured width with actual available width. If larger, show tooltip.
+                toolTip.Visibility = formattedText.Width > (textBlock.ActualWidth - 1.0)
+                    ? Visibility.Visible
+                    : Visibility.Hidden;
+            }
+            catch
+            {
+                // On any error, hide tooltip rather than crash
+                try { toolTip.Visibility = Visibility.Hidden; } catch { }
+            }
         }
 
         /// <summary>
@@ -197,6 +231,41 @@ namespace HowLongToBeat.Views
             {
                 ButtonSearch_Click(null, null);
             }
+        }
+
+        private void ListBoxItem_PreviewMouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            var lbi = sender as ListBoxItem;
+            if (lbi == null) return;
+
+            if (!lbi.IsSelected)
+            {
+                lbi.IsSelected = true;
+            }
+            e.Handled = false;
+        }
+
+        private void ApplyThemeResources()
+        {
+            try
+            {
+                // Try to get common theme brushes from the host via ResourceProvider
+                var normal = ResourceProvider.GetResource("NormalBrush") as Brush;
+                var controlBg = ResourceProvider.GetResource("ControlBackgroundBrush") as Brush ?? normal;
+                var controlFg = ResourceProvider.GetResource("ControlForegroundBrush") as Brush ?? Brushes.White;
+                var controlBorder = ResourceProvider.GetResource("ControlBorderBrush") as Brush ?? Brushes.Gray;
+                var accent = ResourceProvider.GetResource("AccentColorBrush") as Brush ?? normal;
+
+                // Override the local resource keys defined in XAML so DynamicResource bindings pick them
+                this.Resources["CardBackgroundBrush"] = controlBg ?? new SolidColorBrush(Color.FromRgb(0x2E, 0x2F, 0x33));
+                this.Resources["CardForegroundBrush"] = controlFg ?? Brushes.White;
+                this.Resources["CardBorderBrush"] = controlBorder ?? new SolidColorBrush(Color.FromRgb(0x44, 0x44, 0x44));
+
+                this.Resources["PrimaryButtonBackgroundBrush"] = accent ?? new SolidColorBrush(Color.FromRgb(0x5A, 0x9B, 0xD5));
+                this.Resources["PrimaryButtonHoverBrush"] = accent ?? new SolidColorBrush(Color.FromRgb(0x4B, 0x89, 0xC6));
+                this.Resources["PrimaryButtonForegroundBrush"] = controlFg ?? Brushes.White;
+            }
+            catch { }
         }
     }
 }

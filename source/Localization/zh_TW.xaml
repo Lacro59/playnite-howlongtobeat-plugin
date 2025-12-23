@@ -12,6 +12,19 @@
     <sys:String x:Key="LOCHowLongToBeatAddTagDescription">Add a tag to games with Main story completion time information</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoTag">Automatic tags processing</sys:String>
     <sys:String x:Key="LOCHowLongToBeatShowHltbImage">Use HowLongToBeat original game cover image in window</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatEnableVerboseLogging">啟用詳細的 HLTB 除錯記錄（extensions.log 中有額外記錄）</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExport">匯出 HowLongToBeat 資料</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportCsvComma">匯出 CSV（逗號）</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportCsvSemicolon">匯出 CSV（分號）</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportJson">匯出 JSON</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportFolderTooltip">匯出資料夾</sys:String>
+    <sys:String x:Key="LOCBrowseLabel">瀏覽...</sys:String>
+
+    <sys:String x:Key="LOCExportSelectFolderFirst">請先選擇一個匯出資料夾。</sys:String>
+    <sys:String x:Key="LOCExportFolderNotExist">所選資料夾不存在。</sys:String>
+    <sys:String x:Key="LOCExportedCsvMessage">已將 {0} 個遊戲匯出為 CSV：{1}（分隔符 '{2}'）</sys:String>
+    <sys:String x:Key="LOCExportedJsonMessage">已將 {0} 個遊戲匯出為 JSON：{1}</sys:String>
+    <sys:String x:Key="LOCExportFailedCount">匯出 {0} 個遊戲失敗（請查看日誌）。</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatColorSelection">Color selection:</sys:String>
 
@@ -30,9 +43,6 @@
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarOptions">Progress bar options</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">Show time tooltip in progress bar</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTime">Show time labels in progress bar</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeAbove">Above progress bar</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeInterior">Inside progress bar</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeBelow">Below progress bars</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeUser">Show user HowLongToBeat time</sys:String>
 
     <sys:String x:Key="LOCHltbUsedStartDateFromGameActivity">Used first game session from GameActivity plugin for start date</sys:String>
@@ -72,6 +82,8 @@ If none has this status, it takes the most recent.</sys:String>
     <sys:String x:Key="LOCHowLongToBeatVs">對抗</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatPlaying">Playing</sys:String>
+    <sys:String x:Key="LOCRefresh">重新整理</sys:String>
+    <sys:String x:Key="LOCDelete">刪除</sys:String>
 
     <!-- HowLongToBeat -->
 

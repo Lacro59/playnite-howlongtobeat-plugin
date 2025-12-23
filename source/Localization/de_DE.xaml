@@ -12,6 +12,19 @@
     <sys:String x:Key="LOCHowLongToBeatAddTagDescription">Füge ein Schlagwort zu Spielen mit Vervollständigung der Hauptgeschichte hinzu</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoTag">Automatische Tag-Verarbeitung</sys:String>
     <sys:String x:Key="LOCHowLongToBeatShowHltbImage">HowLongToBeat Original Spiel Cover Bild im Fenster verwenden</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatEnableVerboseLogging">Ausführliche HLTB-Debug-Protokollierung aktivieren (zusätzliche Protokolle in extensions.log)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExport">HowLongToBeat-Daten exportieren</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportCsvComma">CSV exportieren (Komma)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportCsvSemicolon">CSV exportieren (Semikolon)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportJson">JSON exportieren</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportFolderTooltip">Zielordner für den Export</sys:String>
+    <sys:String x:Key="LOCBrowseLabel">Durchsuchen...</sys:String>
+
+    <sys:String x:Key="LOCExportSelectFolderFirst">Bitte wählen Sie zunächst einen Exportordner aus.</sys:String>
+    <sys:String x:Key="LOCExportFolderNotExist">Der ausgewählte Ordner existiert nicht.</sys:String>
+    <sys:String x:Key="LOCExportedCsvMessage">{0} Spiele wurden in CSV exportiert: {1} (Trennzeichen '{2}')</sys:String>
+    <sys:String x:Key="LOCExportedJsonMessage">{0} Spiele wurden in JSON exportiert: {1}</sys:String>
+    <sys:String x:Key="LOCExportFailedCount">{0} Spiele konnten nicht exportiert werden (siehe Protokolle).</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatColorSelection">Farbauswahl:</sys:String>
 
@@ -30,9 +43,6 @@
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarOptions">Optionen der Fortschrittsanzeige</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">Zeit Tooltip in der Fortschrittsleiste anzeigen</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTime">Zeitangaben in der Fortschrittsleiste anzeigen</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeAbove">Oberhalb der Fortschrittsleiste</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeInterior">Innerhalb der Fortschrittsleiste</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeBelow">Unterhalb der Fortschrittsleiste</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeUser">Zeige meine HowLongToBeat Zeit</sys:String>
 
     <sys:String x:Key="LOCHltbUsedStartDateFromGameActivity">Erste Spielsitzung vom GameActivity Plugin als Startdatum verwendet</sys:String>
@@ -72,6 +82,9 @@ Wenn keiner diesen Status hat, wird der aktuellste genommen.</sys:String>
     <sys:String x:Key="LOCHowLongToBeatVs">VS</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatPlaying">Spielt</sys:String>
+
+    <sys:String x:Key="LOCRefresh">Aktualisieren</sys:String>
+    <sys:String x:Key="LOCDelete">Löschen</sys:String>
 
     <!-- HowLongToBeat -->
 

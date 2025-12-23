@@ -19,9 +19,6 @@ using System.Windows.Shapes;
 
 namespace HowLongToBeat.Views.StartPage
 {
-    /// <summary>
-    /// Logique d'interaction pour HltbChartStatsSettings.xaml
-    /// </summary>
     public partial class HltbChartStatsSettings : UserControl
     {
         private HowLongToBeat plugin { get; }
@@ -35,8 +32,8 @@ namespace HowLongToBeat.Views.StartPage
             this.plugin = plugin;
             this.DataContext = PluginDatabase.PluginSettings;
 
-            PART_CbType.ItemsSource = new List<CbType> 
-            { 
+            PART_CbType.ItemsSource = new List<CbType>
+            {
                 new CbType { Id = ChartStatsType.month, Name= ResourceProvider.GetString("LOCCommonMonth") },
                 new CbType { Id = ChartStatsType.year, Name= ResourceProvider.GetString("LOCCommonYear") }
             };
@@ -52,7 +49,7 @@ namespace HowLongToBeat.Views.StartPage
 
     public class CbType
     {
-        public ChartStatsType Id {get; set;}
+        public ChartStatsType Id { get; set; }
         public string Name { get; set; }
     }
 }

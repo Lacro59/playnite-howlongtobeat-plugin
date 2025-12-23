@@ -12,6 +12,7 @@
     <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -59,6 +60,9 @@
     <Reference Include="FuzzySharp, Version=1.0.4.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>packages\FuzzySharp.2.0.2\lib\net461\FuzzySharp.dll</HintPath>
     </Reference>
+    <Reference Include="HtmlAgilityPack, Version=1.12.4.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
+      <HintPath>packages\HtmlAgilityPack.1.12.4\lib\Net45\HtmlAgilityPack.dll</HintPath>
+    </Reference>
     <Reference Include="LiveCharts, Version=0.9.7.0, Culture=neutral, PublicKeyToken=0bc1f845d1ebb8df, processorArchitecture=MSIL">
       <HintPath>packages\LiveCharts.0.9.7\lib\net45\LiveCharts.dll</HintPath>
     </Reference>
@@ -93,6 +97,9 @@
     <Reference Include="System.IO.Compression" />
     <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="System.Management" />
+    <Reference Include="System.ValueTuple, Version=4.0.5.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>packages\System.ValueTuple.4.6.1\lib\net462\System.ValueTuple.dll</HintPath>
+    </Reference>
     <Reference Include="System.Web" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
@@ -192,9 +199,13 @@
     </Compile>
     <Compile Include="Services\HowLongToBeatDatabase.cs" />
     <Compile Include="Services\HowLongToBeatSearch.cs" />
+    <Compile Include="Services\LruCache.cs" />
+    <Compile Include="Services\PageCache.cs" />
+    <Compile Include="Services\AdaptiveConcurrencyController.cs" />
     <Compile Include="Services\HowLongToBeatStats.cs" />
     <Compile Include="Services\HowLongToBeatTopPanelItem.cs" />
     <Compile Include="Services\HowLongToBeatViewSidebar.cs" />
+    <Compile Include="Services\TaskHelpers.cs" />
     <Compile Include="Services\VndbApi.cs" />
     <Compile Include="Views\HowLongToBeatSelect.xaml.cs">
       <DependentUpon>HowLongToBeatSelect.xaml</DependentUpon>
@@ -211,6 +222,10 @@
     <Compile Include="Views\HowLongToBeatView.xaml.cs">
       <DependentUpon>HowLongToBeatView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Converters\HoursToSegmentConverter.cs" />
+    <Compile Include="Views\Converters\PlaytimeToMarkerConverter.cs" />
+    <Compile Include="Views\Converters\PlaytimeMarkerVisibilityConverter.cs" />
+    <Compile Include="Views\Converters\ConverterHelpers.cs" />
     <Compile Include="Views\StartPage\HltbChartStats.xaml.cs">
       <DependentUpon>HltbChartStats.xaml</DependentUpon>
     </Compile>

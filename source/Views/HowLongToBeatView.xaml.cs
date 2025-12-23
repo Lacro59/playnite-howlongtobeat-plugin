@@ -1,33 +1,40 @@
-﻿using HowLongToBeat.Models;
+﻿using CommonPlayniteShared.Converters;
+using CommonPluginsShared;
+using CommonPluginsShared.Converters;
+using CommonPluginsShared.Extensions;
+using CommonPluginsShared.Models;
+using HowLongToBeat.Models;
+using HowLongToBeat.Models.Enumerations;
 using HowLongToBeat.Services;
 using Playnite.SDK;
 using Playnite.SDK.Models;
-using System.Linq;
-using System.Windows;
-using System.Diagnostics;
-using System.Windows.Controls;
-using System.Windows.Media;
-using System.Windows.Input;
 using System;
 using System.Collections.Generic;
-using System.Windows.Documents;
-using CommonPluginsShared.Models;
-using CommonPluginsShared;
-using CommonPluginsShared.Converters;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.Globalization;
-using CommonPluginsShared.Extensions;
-using Playnite.SDK.Data;
-using HowLongToBeat.Models.Enumerations;
+using System.IO;
+using System.Linq;
+using System.Net.Http;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Animation;
+using System.Windows.Media.Effects;
+using System.Windows.Media.Imaging;
 
 namespace HowLongToBeat.Views
 {
-    /// <summary>
-    /// Logique d'interaction pour HowLongToBeatView.xaml
-    /// </summary>
     public partial class HowLongToBeatView : UserControl
     {
         private HowLongToBeatDatabase PluginDatabase => HowLongToBeat.PluginDatabase;
         private GameHowLongToBeat GameHowLongToBeat { get; set; }
+        private CancellationTokenSource _coverLoadCts;
+        private HowLongToBeatViewData _viewDataContext;
 
 
         public HowLongToBeatView(GameHowLongToBeat gameHowLongToBeat)
@@ -37,7 +44,264 @@ namespace HowLongToBeat.Views
             InitializeComponent();
             DataContext = new HowLongToBeatViewData();
 
+            ApplyThemeResources();
+
+            AttachViewModel();
+
+            this.DataContextChanged += OnDataContextChanged;
+            this.Unloaded += HowLongToBeatView_Unloaded;
+
             Init(gameHowLongToBeat);
+        }
+
+        private void SetCoverImageSource(string path)
+        {
+            try
+            {
+                Common.LogDebug(true, $"SetCoverImageSource request for path='{path}'");
+
+                _coverLoadCts?.Cancel();
+                _coverLoadCts?.Dispose();
+            }
+            catch { }
+
+            _coverLoadCts = new CancellationTokenSource();
+            var token = _coverLoadCts.Token;
+            _ = LoadCoverAsync(path, token);
+        }
+
+        private static readonly HttpClient _sharedHttpClient = new HttpClient();
+
+        static HowLongToBeatView()
+        {
+            try
+            {
+                var ua = CommonPluginsShared.Web.UserAgent;
+                if (!string.IsNullOrEmpty(ua))
+                {
+                    if (!_sharedHttpClient.DefaultRequestHeaders.UserAgent.TryParseAdd(ua))
+                    {
+                        try { _sharedHttpClient.DefaultRequestHeaders.Add("User-Agent", ua); } catch { }
+                    }
+                }
+            }
+            catch { }
+        }
+
+        private async Task LoadCoverAsync(string path, CancellationToken token)
+        {
+            try
+            {
+                Common.LogDebug(true, $"LoadCoverAsync start path='{path}'");
+
+                var img = null as Image;
+                if (Dispatcher != null)
+                {
+                    await Dispatcher.InvokeAsync(() => { img = FindName("CoverImageControl") as Image; });
+                }
+                if (img == null || token.IsCancellationRequested)
+                {
+                    Common.LogDebug(true, "LoadCoverAsync: image control missing or cancelled");
+                    return;
+                }
+
+                if (Dispatcher != null)
+                {
+                    await Dispatcher.InvokeAsync(new Action(() =>
+                    {
+                        img.Opacity = 0;
+                        var blurLocal = img.Effect as BlurEffect;
+                        if (blurLocal == null)
+                        {
+                            img.Effect = new BlurEffect { Radius = 8 };
+                        }
+                        else
+                        {
+                            blurLocal.Radius = 8;
+                        }
+                    }));
+                }
+
+                if (string.IsNullOrEmpty(path) || token.IsCancellationRequested)
+                {
+                    Common.LogDebug(true, "LoadCoverAsync: empty path or cancelled");
+                    if (Dispatcher != null)
+                    {
+                        await Dispatcher.InvokeAsync(new Action(() => img.Source = null));
+                    }
+                    return;
+                }
+
+                byte[] bytes = null;
+
+                if (Uri.IsWellFormedUriString(path, UriKind.Absolute) && (path.StartsWith("http:", StringComparison.OrdinalIgnoreCase) || path.StartsWith("https:", StringComparison.OrdinalIgnoreCase)))
+                {
+                    Common.LogDebug(true, $"LoadCoverAsync: downloading remote url '{path}'");
+                    try
+                    {
+                        using (var resp = await _sharedHttpClient.GetAsync(path, HttpCompletionOption.ResponseContentRead, token).ConfigureAwait(false))
+                        {
+                            if (!resp.IsSuccessStatusCode)
+                            {
+                                Common.LogDebug(true, $"LoadCoverAsync: HTTP {(int)resp.StatusCode} for '{path}'");
+                            }
+                            else
+                            {
+                                bytes = await resp.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
+                            }
+                        }
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        Common.LogDebug(true, "LoadCoverAsync: cancelled during download");
+                        return;
+                    }
+                    catch (Exception ex)
+                    {
+                        Common.LogError(ex, false, true, PluginDatabase.PluginName);
+                        bytes = null;
+                    }
+                }
+                else if (File.Exists(path))
+                {
+                    Common.LogDebug(true, $"LoadCoverAsync: loading local file '{path}'");
+                    try
+                    {
+                        bytes = await Task.Run(() => File.ReadAllBytes(path), token).ConfigureAwait(false);
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        Common.LogDebug(true, "LoadCoverAsync: cancelled during file read");
+                        return;
+                    }
+                    catch (Exception ex)
+                    {
+                        Common.LogError(ex, false, true, PluginDatabase.PluginName);
+                        bytes = null;
+                    }
+                }
+                else
+                {
+                    Common.LogDebug(true, $"LoadCoverAsync: attempting read relative path '{path}'");
+                    try
+                    {
+                        bytes = await Task.Run(() => File.ReadAllBytes(path), token).ConfigureAwait(false);
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        Common.LogDebug(true, "LoadCoverAsync: cancelled during relative file read");
+                        return;
+                    }
+                    catch (Exception ex)
+                    {
+                        Common.LogError(ex, false, true, PluginDatabase.PluginName);
+                        bytes = null;
+                    }
+                }
+
+                if (token.IsCancellationRequested)
+                {
+                    Common.LogDebug(true, "LoadCoverAsync: cancelled after load");
+                    return;
+                }
+
+                if (bytes == null || bytes.Length == 0)
+                {
+                    Common.LogDebug(true, "LoadCoverAsync: no bytes loaded");
+                    if (Dispatcher != null)
+                    {
+                        await Dispatcher.InvokeAsync(new Action(() => img.Source = null));
+                    }
+                    return;
+                }
+
+                BitmapImage bmp = null;
+                if (bytes != null && bytes.Length > 0)
+                {
+                    try
+                    {
+                        bmp = await Task.Run(() =>
+                        {
+                            try
+                            {
+                                using (var ms = new MemoryStream(bytes))
+                                {
+                                    var b = new BitmapImage();
+                                    b.BeginInit();
+                                    b.CacheOption = BitmapCacheOption.OnLoad;
+                                    b.CreateOptions = BitmapCreateOptions.None;
+                                    b.StreamSource = ms;
+                                    b.EndInit();
+                                    b.Freeze();
+                                    return b;
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                Common.LogError(ex, false, true, PluginDatabase.PluginName);
+                                return null;
+                            }
+                        }).ConfigureAwait(false);
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        Common.LogDebug(true, "LoadCoverAsync: cancelled during bitmap creation");
+                        return;
+                    }
+                    catch (Exception ex)
+                    {
+                        Common.LogError(ex, false, true, PluginDatabase.PluginName);
+                        bmp = null;
+                    }
+                }
+
+                if (token.IsCancellationRequested)
+                {
+                    Common.LogDebug(true, "LoadCoverAsync: cancelled after bitmap creation");
+                    return;
+                }
+
+                if (bmp == null)
+                {
+                    Common.LogDebug(true, "LoadCoverAsync: bmp is null after creation");
+                    if (Dispatcher != null)
+                    {
+                        await Dispatcher.InvokeAsync(new Action(() => img.Source = null));
+                    }
+                    return;
+                }
+
+                if (Dispatcher != null)
+                {
+                    await Dispatcher.InvokeAsync(new Action(() =>
+                    {
+                        try
+                        {
+                            img.Source = bmp;
+
+                            var opacityAnimation = new DoubleAnimation(0, 1, TimeSpan.FromMilliseconds(300));
+                            img.BeginAnimation(UIElement.OpacityProperty, opacityAnimation);
+
+                            if (img.Effect is BlurEffect blur2)
+                            {
+                                var blurAnimation = new DoubleAnimation(8, 0, TimeSpan.FromMilliseconds(400)) { EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut } };
+                                blur2.BeginAnimation(BlurEffect.RadiusProperty, blurAnimation);
+                            }
+
+                            Common.LogDebug(true, "LoadCoverAsync: image applied to control");
+                        }
+                        catch (Exception ex)
+                        {
+                            Common.LogError(ex, false, true, PluginDatabase.PluginName);
+                        }
+                    }));
+                }
+            }
+            catch (OperationCanceledException) { }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, false, true, PluginDatabase.PluginName);
+            }
         }
 
 
@@ -83,6 +347,22 @@ namespace HowLongToBeat.Views
 
                 ((HowLongToBeatViewData)DataContext).GameContext = API.Instance.Database.Games.Get(gameHowLongToBeat.Id);
                 ((HowLongToBeatViewData)DataContext).SourceLink = gameHowLongToBeat.SourceLink;
+
+                try
+                {
+                    var hltb = gameHowLongToBeat.GetData()?.GameHltbData;
+                    if (hltb != null)
+                    {
+                        ((HowLongToBeatViewData)DataContext).MainHours = hltb.MainStory;
+                        ((HowLongToBeatViewData)DataContext).MainExtraHours = hltb.MainExtra;
+                        ((HowLongToBeatViewData)DataContext).CompletionistHours = hltb.Completionist;
+
+                        ((HowLongToBeatViewData)DataContext).MainHoursFormat = hltb.MainStoryFormat;
+                        ((HowLongToBeatViewData)DataContext).MainExtraHoursFormat = hltb.MainExtraFormat;
+                        ((HowLongToBeatViewData)DataContext).CompletionistHoursFormat = hltb.CompletionistFormat;
+                    }
+                }
+                catch { }
             }
 
             if (!gameHowLongToBeat.HasData)
@@ -368,7 +648,47 @@ namespace HowLongToBeat.Views
             string url = (string)((Hyperlink)sender).Tag;
             if (!url.IsNullOrEmpty())
             {
-                _ = Process.Start((string)((Hyperlink)sender).Tag);
+                try
+                {
+                    var psi = new ProcessStartInfo(url) { UseShellExecute = true };
+                    Process.Start(psi);
+                }
+                catch (Exception ex)
+                {
+                    Common.LogError(ex, false, true, PluginDatabase.PluginName);
+                }
+            }
+        }
+
+        private void CoverImage_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            try
+            {
+                var fe = sender as FrameworkElement;
+                string url = fe?.Tag as string;
+                if (url.IsNullOrEmpty())
+                {
+                    if (DataContext is HowLongToBeatViewData ctx && ctx.SourceLink != null)
+                    {
+                        url = ctx.SourceLink.Url;
+                    }
+                }
+                if (!url.IsNullOrEmpty())
+                {
+                    try
+                    {
+                        var psi = new ProcessStartInfo(url) { UseShellExecute = true };
+                        Process.Start(psi);
+                    }
+                    catch (Exception ex)
+                    {
+                        Common.LogError(ex, false, true, PluginDatabase.PluginName);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, false, true, PluginDatabase.PluginName);
             }
         }
 
@@ -421,7 +741,7 @@ namespace HowLongToBeat.Views
 
             FormattedText formattedText = new FormattedText(
                 textBlock.Text,
-                System.Threading.Thread.CurrentThread.CurrentCulture,
+                Thread.CurrentThread.CurrentCulture,
                 textBlock.FlowDirection,
                 typeface,
                 textBlock.FontSize,
@@ -448,6 +768,90 @@ namespace HowLongToBeat.Views
                 Common.LogError(ex, false, true, PluginDatabase.PluginName);
             }
         }
+
+        private void ViewData_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(HowLongToBeatViewData.CoverImage))
+            {
+                if (sender is HowLongToBeatViewData vm)
+                {
+                    if (Dispatcher != null)
+                    {
+                        _ = Dispatcher.BeginInvoke(new Action(() => SetCoverImageSource(vm.CoverImage)));
+                    }
+                }
+            }
+        }
+
+        private void AttachViewModel()
+        {
+            try
+            {
+                // Detach previous
+                if (_viewDataContext != null)
+                {
+                    _viewDataContext.PropertyChanged -= ViewData_PropertyChanged;
+
+                    try
+                    {
+                        _coverLoadCts?.Cancel();
+                        _coverLoadCts?.Dispose();
+                    }
+                    catch { }
+                }
+
+                _viewDataContext = DataContext as HowLongToBeatViewData;
+                if (_viewDataContext != null)
+                {
+                    _viewDataContext.PropertyChanged += ViewData_PropertyChanged;
+                }
+            }
+            catch { }
+        }
+
+        private void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            AttachViewModel();
+        }
+
+        private void HowLongToBeatView_Unloaded(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (_viewDataContext != null)
+                {
+                    _viewDataContext.PropertyChanged -= ViewData_PropertyChanged;
+                    _viewDataContext = null;
+                }
+
+                try
+                {
+                    _coverLoadCts?.Cancel();
+                    _coverLoadCts?.Dispose();
+                    _coverLoadCts = null;
+                }
+                catch { }
+
+                this.DataContextChanged -= OnDataContextChanged;
+                this.Unloaded -= HowLongToBeatView_Unloaded;
+            }
+            catch { }
+        }
+
+        private void ApplyThemeResources()
+        {
+            try
+            {
+                var accent = ResourceProvider.GetResource("AccentColorBrush") as Brush ?? new SolidColorBrush(Colors.DarkCyan);
+                var accentSecondary = ResourceProvider.GetResource("AccentSecondaryBrush") as Brush ?? new SolidColorBrush(Colors.RoyalBlue);
+                var success = ResourceProvider.GetResource("SuccessBrush") as Brush ?? new SolidColorBrush(Colors.ForestGreen);
+
+                this.Resources["DataColorClassicBrush"] = accent;
+                this.Resources["DataColorAverageBrush"] = accentSecondary;
+                this.Resources["DataColorCompletionistBrush"] = success;
+            }
+            catch { }
+        }
     }
 
 
@@ -461,5 +865,23 @@ namespace HowLongToBeat.Views
 
         private string _coverImage = string.Empty;
         public string CoverImage { get => _coverImage; set => SetValue(ref _coverImage, value); }
+
+        private double _mainHours = 0;
+        public double MainHours { get => _mainHours; set => SetValue(ref _mainHours, value); }
+
+        private double _mainExtraHours = 0;
+        public double MainExtraHours { get => _mainExtraHours; set => SetValue(ref _mainExtraHours, value); }
+
+        private double _completionistHours = 0;
+        public double CompletionistHours { get => _completionistHours; set => SetValue(ref _completionistHours, value); }
+
+        private string _mainHoursFormat = string.Empty;
+        public string MainHoursFormat { get => _mainHoursFormat; set => SetValue(ref _mainHoursFormat, value); }
+
+        private string _mainExtraHoursFormat = string.Empty;
+        public string MainExtraHoursFormat { get => _mainExtraHoursFormat; set => SetValue(ref _mainExtraHoursFormat, value); }
+
+        private string _completionistHoursFormat = string.Empty;
+        public string CompletionistHoursFormat { get => _completionistHoursFormat; set => SetValue(ref _completionistHoursFormat, value); }
     }
 }

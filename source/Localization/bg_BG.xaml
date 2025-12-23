@@ -12,6 +12,19 @@
     <sys:String x:Key="LOCHowLongToBeatAddTagDescription">Add a tag to games with Main story completion time information</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoTag">Automatic tags processing</sys:String>
     <sys:String x:Key="LOCHowLongToBeatShowHltbImage">Use HowLongToBeat original game cover image in window</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatEnableVerboseLogging">Активирайте подробното регистриране за отстраняване на грешки в HLTB (допълнителни записи в extensions.log)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExport">Експортиране на данни от HowLongToBeat</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportCsvComma">Експорт CSV (запетая)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportCsvSemicolon">Експорт CSV (точка и запетая)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportJson">Експорт JSON</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportFolderTooltip">Целева папка за експорт</sys:String>
+    <sys:String x:Key="LOCBrowseLabel">Преглед...</sys:String>
+
+    <sys:String x:Key="LOCExportSelectFolderFirst">Моля, изберете папка за експортиране първо.</sys:String>
+    <sys:String x:Key="LOCExportFolderNotExist">Избраната папка не съществува.</sys:String>
+    <sys:String x:Key="LOCExportedCsvMessage">{0} игри експортирани в CSV: {1} (разделител '{2}')</sys:String>
+    <sys:String x:Key="LOCExportedJsonMessage">{0} игри експортирани в JSON: {1}</sys:String>
+    <sys:String x:Key="LOCExportFailedCount">{0} игри не бяха експортирани (вижте логовете).</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatColorSelection">Color selection:</sys:String>
 
@@ -30,9 +43,6 @@
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarOptions">Progress bar options</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">Show time tooltip in progress bar</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTime">Show time labels in progress bar</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeAbove">Above progress bar</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeInterior">Inside progress bar</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeBelow">Below progress bars</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeUser">Show user HowLongToBeat time</sys:String>
 
     <sys:String x:Key="LOCHltbUsedStartDateFromGameActivity">Used first game session from GameActivity plugin for start date</sys:String>
@@ -72,6 +82,9 @@ If none has this status, it takes the most recent.</sys:String>
     <sys:String x:Key="LOCHowLongToBeatVs">Vs</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatPlaying">Playing</sys:String>
+
+    <sys:String x:Key="LOCRefresh">Обнови</sys:String>
+    <sys:String x:Key="LOCDelete">Изтрий</sys:String>
 
     <!-- HowLongToBeat -->
 

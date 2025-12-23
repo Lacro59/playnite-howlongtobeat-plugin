@@ -11,7 +11,9 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls.Primitives;
 using System.Windows.Media;
+using System.Windows.Threading;
 
 namespace HowLongToBeat.Controls
 {
@@ -33,11 +35,33 @@ namespace HowLongToBeat.Controls
 
         private bool ShowUserData = true;
 
+        private readonly DispatcherTimer liveRefreshTimer;
+
+        private Thumb sliderPlaytimeThumb;
+        private TranslateTransform sliderPlaytimeThumbTransform;
+
 
         public PluginProgressBar()
         {
             InitializeComponent();
             DataContext = ControlDataContext;
+
+            SliderPlaytime.Loaded += (_, __) =>
+            {
+                // Ensure template parts exist before we try to adjust the thumb
+                Dispatcher.BeginInvoke((Action)UpdatePlaytimeThumbTransform, DispatcherPriority.Loaded);
+            };
+            SliderPlaytime.ValueChanged += (_, __) => UpdatePlaytimeThumbTransform();
+
+            liveRefreshTimer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromSeconds(30)
+            };
+            liveRefreshTimer.Tick += LiveRefreshTimer_Tick;
+
+            Loaded += (_, __) => UpdateLiveRefreshTimerState();
+            Unloaded += (_, __) => liveRefreshTimer.Stop();
+            IsVisibleChanged += (_, __) => UpdateLiveRefreshTimerState();
 
             _ = Task.Run(() =>
             {
@@ -58,12 +82,154 @@ namespace HowLongToBeat.Controls
         }
 
 
+        private void UpdatePlaytimeThumbTransform()
+        {
+            try
+            {
+                if (SliderPlaytime == null)
+                {
+                    return;
+                }
+
+                SliderPlaytime.ApplyTemplate();
+
+                if (sliderPlaytimeThumb == null)
+                {
+                    sliderPlaytimeThumb = SliderPlaytime.Template?.FindName("SliderPlaytimeThumb", SliderPlaytime) as Thumb;
+                }
+
+                if (sliderPlaytimeThumb == null)
+                {
+                    return;
+                }
+
+                if (sliderPlaytimeThumbTransform == null)
+                {
+                    sliderPlaytimeThumbTransform = new TranslateTransform();
+                    sliderPlaytimeThumb.RenderTransform = sliderPlaytimeThumbTransform;
+                }
+
+                double thumbWidth = sliderPlaytimeThumb.ActualWidth;
+                if (thumbWidth <= 0)
+                {
+                    thumbWidth = sliderPlaytimeThumb.Width;
+                }
+
+                double halfThumb = (thumbWidth > 0) ? thumbWidth / 2 : 10;
+                const double endInsetPx = 1.0;
+
+                const double epsilon = 0.000001;
+                if (SliderPlaytime.Value <= SliderPlaytime.Minimum + epsilon)
+                {
+                    // Shift right so the left edge aligns with the bar start
+                    sliderPlaytimeThumbTransform.X = halfThumb + endInsetPx;
+                }
+                else if (SliderPlaytime.Value >= SliderPlaytime.Maximum - epsilon)
+                {
+                    // Shift left so the right edge aligns with the bar end
+                    sliderPlaytimeThumbTransform.X = -halfThumb - endInsetPx;
+                }
+                else
+                {
+                    sliderPlaytimeThumbTransform.X = 0;
+                }
+            }
+            catch
+            {
+                // Best-effort: never crash the UI.
+            }
+        }
+
+
+        private static string FitTimeLabel(string label, double availableWidthPx)
+        {
+            if (string.IsNullOrWhiteSpace(label))
+            {
+                return string.Empty;
+            }
+
+            // Heuristic thresholds tuned for typical Playnite font sizes.
+            // If the segment is too narrow, we show a shorter label or hide it.
+            if (availableWidthPx < 32)
+            {
+                return string.Empty;
+            }
+
+            if (availableWidthPx < 55)
+            {
+                // Keep only the first token (usually hours) to reduce collisions.
+                var parts = label.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                return parts.Length > 0 ? parts[0] : label;
+            }
+
+            return label;
+        }
+
+
+        public override void GameContextChanged(Game oldContext, Game newContext)
+        {
+            base.GameContextChanged(oldContext, newContext);
+            UpdateLiveRefreshTimerState();
+        }
+
+
+        private void LiveRefreshTimer_Tick(object sender, EventArgs e)
+        {
+            var current = GameContext;
+            if (current == null)
+            {
+                liveRefreshTimer.Stop();
+                return;
+            }
+
+            var game = API.Instance?.Database?.Games?.Get(current.Id);
+            if (game?.IsRunning != true)
+            {
+                liveRefreshTimer.Stop();
+                return;
+            }
+
+            _ = UpdateDataAsync();
+        }
+
+
+        private void UpdateLiveRefreshTimerState()
+        {
+            if (!IsLoaded || !IsVisible || GameContext == null)
+            {
+                liveRefreshTimer.Stop();
+                return;
+            }
+
+            if (!(controlDataContext?.IsActivated ?? false) || !MustDisplay)
+            {
+                liveRefreshTimer.Stop();
+                return;
+            }
+
+            var game = API.Instance?.Database?.Games?.Get(GameContext.Id);
+            if (game?.IsRunning == true)
+            {
+                if (!liveRefreshTimer.IsEnabled)
+                {
+                    liveRefreshTimer.Start();
+                }
+            }
+            else
+            {
+                liveRefreshTimer.Stop();
+            }
+        }
+
+
         public override void SetDefaultDataContext()
         {
+            liveRefreshTimer?.Stop();
+
             ShowUserData = PluginDatabase.PluginSettings.Settings.ProgressBarShowTimeUser;
 
             bool isActivated = PluginDatabase.PluginSettings.Settings.EnableIntegrationProgressBar;
-            bool textAboveVisibility = PluginDatabase.PluginSettings.Settings.ProgressBarShowTime ? PluginDatabase.PluginSettings.Settings.ProgressBarShowTimeAbove : false; 
+            bool textAboveVisibility = PluginDatabase.PluginSettings.Settings.ProgressBarShowTime ? PluginDatabase.PluginSettings.Settings.ProgressBarShowTimeAbove : false;
             bool textInsideVisibility = PluginDatabase.PluginSettings.Settings.ProgressBarShowTime ? PluginDatabase.PluginSettings.Settings.ProgressBarShowTimeInterior : false;
             bool textBelowVisibility = PluginDatabase.PluginSettings.Settings.ProgressBarShowTime ? PluginDatabase.PluginSettings.Settings.ProgressBarShowTimeBelow : false;
             if (IgnoreSettings)
@@ -120,9 +286,24 @@ namespace HowLongToBeat.Controls
             GameHowLongToBeat gameHowLongToBeat = (GameHowLongToBeat)PluginGameData;
             LoadData(gameHowLongToBeat);
 
+            double ClampToMax(double value, double max)
+            {
+                if (max <= 0)
+                {
+                    return 0;
+                }
+
+                if (value < 0)
+                {
+                    return 0;
+                }
+
+                return value > max ? max : value;
+            }
+
 
             SliderPlaytime.Maximum = ControlDataContext.MaxValue;
-            SliderPlaytime.Value = ControlDataContext.PlaytimeValue;
+            SliderPlaytime.Value = ClampToMax(ControlDataContext.PlaytimeValue, ControlDataContext.MaxValue);
 
 
             PART_ProgressBarFirst.Value = ControlDataContext.ProgressBarFirstValue;
@@ -152,18 +333,20 @@ namespace HowLongToBeat.Controls
 
             PartSliderFirst.ThumbFill = ControlDataContext.ThumbSecondUser;
             PartSliderFirst.Visibility = ControlDataContext.SliderSecondVisibility;
-            PartSliderFirst.Value = ControlDataContext.SliderSecondValue;
+            PartSliderFirst.Value = ClampToMax(ControlDataContext.SliderSecondValue, ControlDataContext.MaxValue);
             PartSliderFirst.Maximum = ControlDataContext.MaxValue;
 
             PartSliderSecond.ThumbFill = ControlDataContext.ThumbFirstUser;
             PartSliderSecond.Visibility = ControlDataContext.SliderFirstVisibility;
-            PartSliderSecond.Value = ControlDataContext.SliderFirstValue;
+            PartSliderSecond.Value = ClampToMax(ControlDataContext.SliderFirstValue, ControlDataContext.MaxValue);
             PartSliderSecond.Maximum = ControlDataContext.MaxValue;
 
             PartSliderThird.ThumbFill = ControlDataContext.ThumbThirdUser;
             PartSliderThird.Visibility = ControlDataContext.SliderThirdVisibility;
-            PartSliderThird.Value = ControlDataContext.SliderThirdValue;
+            PartSliderThird.Value = ClampToMax(ControlDataContext.SliderThirdValue, ControlDataContext.MaxValue);
             PartSliderThird.Maximum = ControlDataContext.MaxValue;
+
+            UpdateLiveRefreshTimerState();
         }
 
 
@@ -509,6 +692,23 @@ namespace HowLongToBeat.Controls
             spHltb_El1.Width = width1;
             spHltb_El2.Width = width2;
             spHltb_El3.Width = width3;
+
+            // Prevent label overlaps when the max range is huge (segments become tiny).
+            // We base available space on the *segment* width (delta between cumulative indicators).
+            double seg1 = Math.Max(0, width1);
+            double seg2 = Math.Max(0, width2 - width1);
+            double seg3 = Math.Max(0, width3 - width2);
+
+            try
+            {
+                if (ControlDataContext != null)
+                {
+                    PART_ProgressBarFirst.TextValue = FitTimeLabel(ControlDataContext.ToolTipFirst, seg1);
+                    PART_ProgressBarSecond.TextValue = FitTimeLabel(ControlDataContext.ToolTipSecond, seg2);
+                    PART_ProgressBarThird.TextValue = FitTimeLabel(ControlDataContext.ToolTipThird, seg3);
+                }
+            }
+            catch { }
         }
         #endregion
     }

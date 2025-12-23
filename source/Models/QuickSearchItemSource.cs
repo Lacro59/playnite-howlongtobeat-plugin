@@ -28,7 +28,8 @@ namespace HowLongToBeat.Models
 
         public IEnumerable<ISearchItem<string>> GetItems()
         {
-            return null;
+            // Return an empty enumerable rather than null so consumers don't break.
+            return Enumerable.Empty<ISearchItem<string>>();
         }
 
         public IEnumerable<ISearchItem<string>> GetItems(string query)
@@ -65,8 +66,8 @@ namespace HowLongToBeat.Models
                         break;
                 }
             }
-            return null;
-        }
+            return Task.FromResult(Enumerable.Empty<ISearchItem<string>>());
+         }
 
 
         private List<string> GetParameters(string query)
@@ -162,7 +163,10 @@ namespace HowLongToBeat.Models
                                     }
                                 }
                             }
-                            catch { }
+                            catch (Exception ex)
+                            {
+                                try { LogManager.GetLogger().Warn($"QuickSearch: failed to parse/execute '>' query '{query}': {ex.Message}"); } catch { }
+                            }
                             break;
 
                         case "<":
@@ -176,17 +180,20 @@ namespace HowLongToBeat.Models
                                         search.Add(GetCommandItem(data.Value, query));
                                     }
                                 }
-                            }
-                            catch { }
-                            break;
+                             }
+                             catch (Exception ex)
+                             {
+                                 try { LogManager.GetLogger().Warn($"QuickSearch: failed to parse/execute '<' query '{query}': {ex.Message}"); } catch { }
+                             }
+                              break;
 
-                        default:
-                            break;
-                    }
+                         default:
+                             break;
+                     }
 
-                    return search.AsEnumerable();
-                });
-            }
+                     return search.AsEnumerable();
+                 });
+             }
 
             if (parameters.Count == 6)
             {
@@ -208,7 +215,10 @@ namespace HowLongToBeat.Models
                                     }
                                 }
                             }
-                            catch { }
+                            catch (Exception ex)
+                            {
+                                try { LogManager.GetLogger().Warn($"QuickSearch: failed to parse/execute '<>' query '{query}': {ex.Message}"); } catch { }
+                            }
                             break;
 
                         default:
@@ -219,7 +229,7 @@ namespace HowLongToBeat.Models
                 });
             }
 
-            return null;
-        }
-    }
+            return Task.FromResult(Enumerable.Empty<ISearchItem<string>>());
+ }
+}
 }

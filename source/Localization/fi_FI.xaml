@@ -12,6 +12,19 @@
     <sys:String x:Key="LOCHowLongToBeatAddTagDescription">Add a tag to games with Main story completion time information</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoTag">Automatic tags processing</sys:String>
     <sys:String x:Key="LOCHowLongToBeatShowHltbImage">Use HowLongToBeat original game cover image in window</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatEnableVerboseLogging">Ota käyttöön yksityiskohtainen HLTB-virheenkorjauksen lokitus (lisälokit extensions.logissa)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExport">Vie HowLongToBeat-tiedot</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportCsvComma">Vie CSV (pilkku)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportCsvSemicolon">Vie CSV (puolipiste)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportJson">Vie JSON</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportFolderTooltip">Kohdekansio viennille</sys:String>
+    <sys:String x:Key="LOCBrowseLabel">Selaa...</sys:String>
+
+    <sys:String x:Key="LOCExportSelectFolderFirst">Valitse ensin vientikansio.</sys:String>
+    <sys:String x:Key="LOCExportFolderNotExist">Valittua kansiota ei ole olemassa.</sys:String>
+    <sys:String x:Key="LOCExportedCsvMessage">{0} peliä viety CSV:hen: {1} (erotin '{2}')</sys:String>
+    <sys:String x:Key="LOCExportedJsonMessage">{0} peliä viety JSON-muotoon: {1}</sys:String>
+    <sys:String x:Key="LOCExportFailedCount">{0} pelin vienti epäonnistui (katso lokit).</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatColorSelection">Color selection:</sys:String>
 
@@ -30,9 +43,6 @@
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarOptions">Progress bar options</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">Show time tooltip in progress bar</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTime">Show time labels in progress bar</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeAbove">Above progress bar</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeInterior">Inside progress bar</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeBelow">Below progress bars</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeUser">Show user HowLongToBeat time</sys:String>
 
     <sys:String x:Key="LOCHltbUsedStartDateFromGameActivity">Used first game session from GameActivity plugin for start date</sys:String>
@@ -72,6 +82,8 @@ If none has this status, it takes the most recent.</sys:String>
     <sys:String x:Key="LOCHowLongToBeatVs">Vs</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatPlaying">Playing</sys:String>
+    <sys:String x:Key="LOCRefresh">Päivitä</sys:String>
+    <sys:String x:Key="LOCDelete">Poista</sys:String>
 
     <!-- HowLongToBeat -->
 

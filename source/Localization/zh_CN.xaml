@@ -12,6 +12,19 @@
     <sys:String x:Key="LOCHowLongToBeatAddTagDescription">为游戏添加一个主线完成时间信息的标签</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoTag">自动标签</sys:String>
     <sys:String x:Key="LOCHowLongToBeatShowHltbImage">在窗口中使用攻关历时原始游戏封面图像</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatEnableVerboseLogging">启用详细的 HLTB 调试日志（在 extensions.log 中有额外日志）</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExport">导出 HowLongToBeat 数据</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportCsvComma">导出 CSV（逗号）</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportCsvSemicolon">导出 CSV（分号）</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportJson">导出 JSON</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportFolderTooltip">导出目标文件夹</sys:String>
+    <sys:String x:Key="LOCBrowseLabel">浏览...</sys:String>
+
+    <sys:String x:Key="LOCExportSelectFolderFirst">请先选择一个导出文件夹。</sys:String>
+    <sys:String x:Key="LOCExportFolderNotExist">所选文件夹不存在。</sys:String>
+    <sys:String x:Key="LOCExportedCsvMessage">已将 {0} 个游戏导出为 CSV：{1}（分隔符 '{2}'）</sys:String>
+    <sys:String x:Key="LOCExportedJsonMessage">已将 {0} 个游戏导出为 JSON：{1}</sys:String>
+    <sys:String x:Key="LOCExportFailedCount">导出 {0} 个游戏失败（查看日志）。</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatColorSelection">色彩管理：</sys:String>
 
@@ -30,9 +43,6 @@
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarOptions">进度条选项</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">在进度条中显示时间提示框</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTime">在进度条中显示时间标记</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeAbove">进度条上方</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeInterior">进度条</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeBelow">进度条下方</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeUser">显示用户的攻关历时（HowLongToBeat）时间</sys:String>
 
     <sys:String x:Key="LOCHltbUsedStartDateFromGameActivity">开始日期使用 GameActivity 插件中的首次游戏会话</sys:String>
@@ -71,6 +81,8 @@
     <sys:String x:Key="LOCHowLongToBeatVs">对战</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatPlaying">正在游玩</sys:String>
+    <sys:String x:Key="LOCRefresh">刷新</sys:String>
+    <sys:String x:Key="LOCDelete">删除</sys:String>
 
     <!-- HowLongToBeat -->
 

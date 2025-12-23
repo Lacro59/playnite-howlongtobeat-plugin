@@ -372,3 +372,26 @@ Packages:
     PackageUrl: https://github.com/Lacro59/playnite-howlongtobeat-plugin/releases/download/v3.9.1/playnite-howlongtobeat-plugin_3_9_1.pext
     Changelog:
       - 'Fixed: HLTB cookies issue'
+  - Version: 3.10.0
+    RequiredApiVersion: 6.8.0
+    ReleaseDate: 2025-12-02
+    PackageUrl: https://github.com/Lacro59/playnite-howlongtobeat-plugin/releases/download/v3.10.0/playnite-howlongtobeat-plugin_3_10_0.pext
+    Changelog:
+      - 'Added: cancellation for SetData(Game, PluginDataBaseGameBase) background work (_loadCts) and debounce (120ms) to coalesce rapid calls and avoid wasted work.'
+      - 'Added: Playtime marker showing current user playtime on the progression bar'
+      - 'Added: Proportional 3-segment progress bar (Main / Main+Extra / Completionist) with fade and width-grow animations'
+      - 'Added: snapshot equality check to skip redundant UI updates when nothing changed.'
+      - 'Changed: Reduced noisy logs; added new EnableVerboseLogging setting for detailed HLTB diagnostics'
+      - 'Fixed: Atomic page-cache writes with retry to avoid file-in-use IOExceptions'
+      - 'Fixed: eliminated cross-thread exceptions by applying all UI updates with Dispatcher.InvokeAsync (non-blocking) and awaited the dispatcher operation.'
+      - 'Fixed: Prevent duplicate database initialization on startup'
+      - 'Hardened: Respect server rate limits (honors Retry-After header and applies immediate 429-driven temporary backoff)'
+      - 'Improved: Cover image loading pipeline - manual loader with cancellation, off-UI bitmap creation and freeze, and smoother fade/blur animations'
+      - 'Localization: Added multiple keys across all language resource files'
+      - 'Misc: small code robustness fixes and animation consistency improvements'
+      - 'Optimized: Bulk import throughput (shared HttpClient, adaptive concurrency, higher parallelism, and in-memory + persistent page caches)'
+      - 'Optimized: PluginProgressBar UI latency — moved heavy data computation off the UI thread and batch-applied a ProgressSnapshot DTO to update the UI in one operation.'
+      - 'Optimized: reduced allocations and runtime overhead in PluginProgressBar — replaced dynamic brushes with typed Brush, cached thumb brushes, and replaced Lists with fixed-size arrays for the 3 indicators.'
+      - 'Refactor: Consolidated converter parsing into ConverterHelpers.ToDouble and simplified HoursToSegmentConverter math'
+      - 'Refactor: introduced ProgressSnapshot DTO and tightened ControlDataContext setter/type-safety; kept data-binding PluginProgressBarDataContext in sync.'
+      - 'Updated: Compatibility with HLTB site changes (auth token retrieval + robust endpoint discovery using script parsing and POST-only detection)'

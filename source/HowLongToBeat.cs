@@ -41,7 +41,6 @@ namespace HowLongToBeat
 
         public HowLongToBeat(IPlayniteAPI playniteAPI) : base(playniteAPI)
         {
-            PluginDatabase.InitializeClient(this);
 
             // Custom theme button
             EventManager.RegisterClassHandler(typeof(Button), Button.ClickEvent, new RoutedEventHandler(OnCustomThemeButtonClick));
@@ -386,7 +385,7 @@ namespace HowLongToBeat
                 MenuInExtensions = "@";
             }
 
-            List <MainMenuItem> mainMenuItems = new List<MainMenuItem>
+            List<MainMenuItem> mainMenuItems = new List<MainMenuItem>
             {
                 new MainMenuItem
                 {
@@ -409,7 +408,7 @@ namespace HowLongToBeat
                 new MainMenuItem
                 {
                     MenuSection = MenuInExtensions + ResourceProvider.GetString("LOCHowLongToBeat"),
-                    Description = "-"
+                    Description = "-",
                 },
 
                 new MainMenuItem
@@ -441,7 +440,7 @@ namespace HowLongToBeat
                 new MainMenuItem
                 {
                     MenuSection = MenuInExtensions + ResourceProvider.GetString("LOCHowLongToBeat"),
-                    Description = "-"
+                    Description = "-",
                 },
 
                 new MainMenuItem
@@ -561,7 +560,7 @@ namespace HowLongToBeat
 
             return mainMenuItems;
         }
-        
+
         #endregion
 
         #region Game event
@@ -670,27 +669,79 @@ namespace HowLongToBeat
         // Add code to be executed when Playnite is initialized.
         public override void OnApplicationStarted(OnApplicationStartedEventArgs args)
         {
-            _ = Task.Run(() =>
-            {
-                Thread.Sleep(10000);
-                PreventLibraryUpdatedOnStart = false;
-            });
-
-            // QuickSearch support
             try
             {
-                string icon = Path.Combine(PluginDatabase.Paths.PluginPath, "Resources", "hltb.png");
+                try
+                {
+                    var initTask = CommonPluginsShared.Web.InitializeAsync(createInBackground: true);
+                    initTask.ContinueWith(t =>
+                    {
+                        try { Common.LogError(t.Exception?.GetBaseException() ?? new Exception("Web.InitializeAsync failed"), false, "Web initialization"); } catch { }
+                    }, CancellationToken.None, TaskContinuationOptions.OnlyOnFaulted, TaskScheduler.Default);
+                }
+                catch { }
 
-                SubItemsAction HltbSubItemsAction = new SubItemsAction() { Action = () => { }, Name = "", CloseAfterExecute = false, SubItemSource = new QuickSearchItemSource() };
-                CommandItem HltbCommand = new CommandItem(PluginDatabase.PluginName, new List<CommandAction>(), ResourceProvider.GetString("LOCHltbQuickSearchDescription"), icon);
-                HltbCommand.Keys.Add(new CommandItemKey() { Key = "hltb", Weight = 1 });
-                HltbCommand.Actions.Add(HltbSubItemsAction);
-                _ = QuickSearch.QuickSearchSDK.AddCommand(HltbCommand);
+                try
+                {
+                    PluginDatabase.InitializeClient(this);
+                }
+                catch (Exception ex)
+                {
+                    Common.LogError(ex, false, true, PluginDatabase.PluginName);
+                }
+
+                try
+                {
+                }
+                catch (Exception ex)
+                {
+                    Common.LogError(ex, false, true, PluginDatabase.PluginName);
+                }
             }
             catch { }
 
-            HowLongToBeatApi howLongToBeatClient = new HowLongToBeatApi();
-            howLongToBeatClient.UpdatedCookies();
+            _ = Task.Run(async () =>
+            {
+                try
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    const int maxWaitMs = 30000;
+                    while (!PluginDatabase.IsLoaded && sw.ElapsedMilliseconds < maxWaitMs)
+                    {
+                        await Task.Delay(100).ConfigureAwait(false);
+                    }
+                }
+                catch { }
+                finally
+                {
+                    PreventLibraryUpdatedOnStart = false;
+                }
+            });
+
+
+             // QuickSearch support
+             try
+             {
+                 string icon = Path.Combine(PluginDatabase.Paths.PluginPath, "Resources", "hltb.png");
+
+                 SubItemsAction HltbSubItemsAction = new SubItemsAction() { Action = () => { }, Name = "", CloseAfterExecute = false, SubItemSource = new QuickSearchItemSource() };
+                 CommandItem HltbCommand = new CommandItem(PluginDatabase.PluginName, new List<CommandAction>(), ResourceProvider.GetString("LOCHltbQuickSearchDescription"), icon);
+                 HltbCommand.Keys.Add(new CommandItemKey() { Key = "hltb", Weight = 1 });
+                 HltbCommand.Actions.Add(HltbSubItemsAction);
+                 _ = QuickSearch.QuickSearchSDK.AddCommand(HltbCommand);
+             }
+             catch (Exception ex)
+             {
+                 try
+                 {
+                     if (PluginDatabase?.PluginSettings?.Settings is HowLongToBeatSettings s && s.EnableVerboseLogging)
+                     {
+                         Common.LogError(ex, false, true, PluginDatabase.PluginName);
+                     }
+                 }
+                 catch { }
+             }
+
 
             // TEMP Database convert
             if (!PluginDatabase.PluginSettings.Settings.IsConvertedDb)
@@ -705,49 +756,98 @@ namespace HowLongToBeat
 
                 _ = API.Instance.Dialogs.ActivateGlobalProgress((activateGlobalProgress) =>
                 {
-                    _ = SpinWait.SpinUntil(() => PluginDatabase.IsLoaded, -1);
-                    PluginDatabase.Database.BeginBufferUpdate();
-                    PluginDatabase.Database.ForEach(x =>
+                    var ct = activateGlobalProgress?.CancelToken ?? CancellationToken.None;
+                    _ = Task.Run(async () =>
                     {
                         try
                         {
-                            if (Serialization.TryFromJsonFile(Path.Combine(PluginDatabase.Paths.PluginDatabasePath, x.Game.Id.ToString() + ".json"), out dynamic data))
+                            while (!PluginDatabase.IsLoaded)
                             {
-                                dynamic items = data.Items[0].GameHltbData;
-                                string s = Serialization.ToJson(items);
-                                if (Serialization.TryFromJson(s, out HltbData_old hltbData_old))
-                                {
-                                    x.Items[0].GameHltbData.MainStoryClassic = hltbData_old.MainStory;
-                                    x.Items[0].GameHltbData.MainExtraClassic = hltbData_old.MainExtra;
-                                    x.Items[0].GameHltbData.CompletionistClassic = hltbData_old.Completionist;
-                                    x.Items[0].GameHltbData.SoloClassic = hltbData_old.Solo;
-                                    x.Items[0].GameHltbData.CoOpClassic = hltbData_old.CoOp;
-                                    x.Items[0].GameHltbData.VsClassic = hltbData_old.Vs;
+                                if (ct.IsCancellationRequested) return;
+                                try { await Task.Delay(100, ct).ConfigureAwait(false); } catch (OperationCanceledException) { return; }
+                            }
 
-                                    PluginDatabase.Database.Update(x);
+                            bool conversionSucceeded = false;
+                            try
+                            {
+                                PluginDatabase.Database.BeginBufferUpdate();
+                                foreach (var x in PluginDatabase.Database)
+                                {
+                                    if (ct.IsCancellationRequested)
+                                    {
+                                        conversionSucceeded = false;
+                                        break;
+                                    }
+
+                                    try
+                                    {
+                                        if (Serialization.TryFromJsonFile(Path.Combine(PluginDatabase.Paths.PluginDatabasePath, x.Game.Id.ToString() + ".json"), out dynamic data))
+                                        {
+                                            dynamic items = data.Items[0].GameHltbData;
+                                            string s = Serialization.ToJson(items);
+                                            if (Serialization.TryFromJson(s, out HltbData_old hltbData_old))
+                                            {
+                                                x.Items[0].GameHltbData.MainStoryClassic = hltbData_old.MainStory;
+                                                x.Items[0].GameHltbData.MainExtraClassic = hltbData_old.MainExtra;
+                                                x.Items[0].GameHltbData.CompletionistClassic = hltbData_old.Completionist;
+                                                x.Items[0].GameHltbData.SoloClassic = hltbData_old.Solo;
+                                                x.Items[0].GameHltbData.CoOpClassic = hltbData_old.CoOp;
+                                                x.Items[0].GameHltbData.VsClassic = hltbData_old.Vs;
+
+                                                PluginDatabase.Database.Update(x);
+                                            }
+                                        }
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        Common.LogError(ex, true, true, PluginDatabase.PluginName);
+                                    }
                                 }
+
+                                if (!ct.IsCancellationRequested)
+                                {
+                                    conversionSucceeded = true;
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                // Log outer exceptions but always ensure EndBufferUpdate runs in finally
+                                Common.LogError(ex, true, true, PluginDatabase.PluginName);
+                            }
+                            finally
+                            {
+                                try
+                                {
+                                    PluginDatabase.Database.EndBufferUpdate();
+                                }
+                                catch (Exception ex)
+                                {
+                                    Common.LogError(ex, true, true, PluginDatabase.PluginName);
+                                }
+                            }
+
+                            if (conversionSucceeded)
+                            {
+                                _ = Application.Current.Dispatcher?.BeginInvoke((Action)delegate
+                                {
+                                    PluginSettings.Settings.IsConvertedDb = true;
+                                    SavePluginSettings(PluginSettings.Settings);
+                                });
                             }
                         }
                         catch (Exception ex)
                         {
                             Common.LogError(ex, true, true, PluginDatabase.PluginName);
                         }
-                    });
-                    PluginDatabase.Database.EndBufferUpdate();
-
-                    _ = Application.Current.Dispatcher?.BeginInvoke((Action)delegate
-                    {
-                        PluginSettings.Settings.IsConvertedDb = true;
-                        SavePluginSettings(PluginSettings.Settings);
-                    });
+                    }, ct);
                 }, globalProgressOptions);
-            }
-        }
+             }
+         }
 
         // Add code to be executed when Playnite is shutting down.
         public override void OnApplicationStopped(OnApplicationStoppedEventArgs args)
         {
-            
+
         }
 
         #endregion

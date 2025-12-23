@@ -12,6 +12,20 @@
     <sys:String x:Key="LOCHowLongToBeatAddTagDescription">إضافة علامة إلى الألعاب مع معلومات وقت إكمال القصة الرئيسي</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoTag">معالجة تلقائية للوسو</sys:String>
     <sys:String x:Key="LOCHowLongToBeatShowHltbImage">استعمل صورة غلاف اللعبة الأصلي من HowLongToBeat في النافذ</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatEnableVerboseLogging">تمكين التسجيل التفصيلي لتصحيح أخطاء HLTB (سجلات إضافية في extensions.log)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExport">تصدير بيانات HowLongToBeat</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportCsvComma">تصدير CSV (فاصلة)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportCsvSemicolon">تصدير CSV (فاصلة منقوطة)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportJson">تصدير JSON</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportFolderTooltip">مجلد الوجهة للتصدير</sys:String>
+    <sys:String x:Key="LOCBrowseLabel">تصفح...</sys:String>
+
+    <!-- Export dialog messages for settings -->
+    <sys:String x:Key="LOCExportSelectFolderFirst">الرجاء اختيار مجلد التصدير أولاً.</sys:String>
+    <sys:String x:Key="LOCExportFolderNotExist">المجلد المحدد غير موجود.</sys:String>
+    <sys:String x:Key="LOCExportedCsvMessage">تم تصدير {0} لعبة إلى CSV: {1} (الفاصل '{2}')</sys:String>
+    <sys:String x:Key="LOCExportedJsonMessage">تم تصدير {0} لعبة إلى JSON: {1}</sys:String>
+    <sys:String x:Key="LOCExportFailedCount">فشل تصدير {0} لعبة (راجع السجلات).</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatColorSelection">اختيار اللون:</sys:String>
 
@@ -30,9 +44,6 @@
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarOptions">خيارات شريط التق</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">إظهار تلميح الوقت في شريط التق</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTime">إظهار التسميات الزمنية في شريط التق</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeAbove">فوق شريط التق</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeInterior">داخل شريط التق</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeBelow">تحت شريط التق</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeUser">أظهر للمستخدم وقت HowLongToBeat</sys:String>
 
     <sys:String x:Key="LOCHltbUsedStartDateFromGameActivity">Used first game session from GameActivity plugin for start date</sys:String>
@@ -72,6 +83,9 @@ If none has this status, it takes the most recent.</sys:String>
     <sys:String x:Key="LOCHowLongToBeatVs">تواجه</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatPlaying">Playing</sys:String>
+
+    <sys:String x:Key="LOCRefresh">تحديث</sys:String>
+    <sys:String x:Key="LOCDelete">حذف</sys:String>
 
     <!-- HowLongToBeat -->
 

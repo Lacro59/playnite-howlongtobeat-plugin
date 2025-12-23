@@ -12,6 +12,19 @@
     <sys:String x:Key="LOCHowLongToBeatAddTagDescription">Ana hikaye tamamlanma bilgisi sunan oyunlara bir etiket ekle</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoTag">Otomatik etiketler işleniyor</sys:String>
     <sys:String x:Key="LOCHowLongToBeatShowHltbImage">Pencerede HowLongToBeat özgün kapak görselini kullan</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatEnableVerboseLogging">Ayrıntılı HLTB hata ayıklama günlüklerini etkinleştir (extensions.log'da ek kayıtlar)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExport">HowLongToBeat verilerini dışa aktar</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportCsvComma">CSV olarak dışa aktar (virgül)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportCsvSemicolon">CSV olarak dışa aktar (noktalı virgül)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportJson">JSON olarak dışa aktar</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportFolderTooltip">Dışa aktarma klasörü</sys:String>
+    <sys:String x:Key="LOCBrowseLabel">Gözat...</sys:String>
+
+    <sys:String x:Key="LOCExportSelectFolderFirst">Lütfen önce bir dışa aktarma klasörü seçin.</sys:String>
+    <sys:String x:Key="LOCExportFolderNotExist">Seçilen klasör mevcut değil.</sys:String>
+    <sys:String x:Key="LOCExportedCsvMessage">{0} oyun CSV olarak dışa aktarıldı: {1} (ayırıcı '{2}')</sys:String>
+    <sys:String x:Key="LOCExportedJsonMessage">{0} oyun JSON olarak dışa aktarıldı: {1}</sys:String>
+    <sys:String x:Key="LOCExportFailedCount">{0} oyun dışa aktarılamadı (loglara bakın).</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatColorSelection">Renk seçimi:</sys:String>
 
@@ -30,9 +43,6 @@
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarOptions">İlerleme çubuğu seçenekleri</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">İlerleme çubuğunda süre ipucunu göster</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTime">İlerleme çubuğunda süre etiketlerini göster</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeAbove">İlerleme çubuğu üzerinde</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeInterior">İlerleme çubuğu içinde</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeBelow">İlerleme çubukları altında</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeUser">Kullanıcının HowLongToBeat süresini göster</sys:String>
 
     <sys:String x:Key="LOCHltbUsedStartDateFromGameActivity">Başlangıç ​​tarihi için GameActivity eklentisinden ilk oyun oturumu kullanıldı</sys:String>
@@ -72,6 +82,8 @@ Hiç biri bu durumda değilse, en son süre alınır.</sys:String>
     <sys:String x:Key="LOCHowLongToBeatVs">Karşı</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatPlaying">Oynanıyor</sys:String>
+    <sys:String x:Key="LOCRefresh">Yenile</sys:String>
+    <sys:String x:Key="LOCDelete">Sil</sys:String>
 
     <!-- HowLongToBeat -->
 

@@ -1,4 +1,5 @@
 ﻿using CommonPluginsControls.LiveChartsCommon;
+using CommonPluginsShared;
 using CommonPluginsShared.Converters;
 using HowLongToBeat.Models;
 using HowLongToBeat.Models.StartPage;
@@ -26,9 +27,6 @@ using System.Windows.Threading;
 
 namespace HowLongToBeat.Views.StartPage
 {
-    /// <summary>
-    /// Logique d'interaction pour HltbChartStats.xaml
-    /// </summary>
     public partial class HltbChartStats : UserControl
     {
         private HowLongToBeatDatabase PluginDatabase => HowLongToBeat.PluginDatabase;
@@ -59,25 +57,45 @@ namespace HowLongToBeat.Views.StartPage
         }
 
 
-        private void Update()
+        private async void Update()
         {
-            SpinWait.SpinUntil(() => PluginDatabase.IsLoaded, -1);
+            int maxWaitMs = 30000;
+            int elapsed = 0;
+            try
+            {
+                while (!PluginDatabase.IsLoaded && elapsed < maxWaitMs)
+                {
+                    await Task.Delay(100).ConfigureAwait(false);
+                    elapsed += 100;
+                }
 
-            ControlDataContext.Margin = PluginDatabase.PluginSettings.Settings.hltbChartStatsOptions.Margin;
-            ControlDataContext.ChartTitle = PluginDatabase.PluginSettings.Settings.hltbChartStatsOptions.ChartTitle;
-            ControlDataContext.ChartLabels = PluginDatabase.PluginSettings.Settings.hltbChartStatsOptions.ChartLabels;
-            ControlDataContext.ChartLabelsOrdinates = PluginDatabase.PluginSettings.Settings.hltbChartStatsOptions.ChartLabelsOrdinates;
+                if (!PluginDatabase.IsLoaded)
+                {
+                    try { Common.LogDebug(true, "HltbChartStats: Database not loaded after timeout"); } catch { }
+                    return;
+                }
+            }
+            catch (Exception ex)
+            {
+                try { Common.LogError(ex, false, true, PluginDatabase.PluginName); } catch { }
+                return;
+            }
+
+            ControlDataContext.Margin = PluginDatabase.PluginSettings.Settings.HltbChartStatsOptions.Margin;
+            ControlDataContext.ChartTitle = PluginDatabase.PluginSettings.Settings.HltbChartStatsOptions.ChartTitle;
+            ControlDataContext.ChartLabels = PluginDatabase.PluginSettings.Settings.HltbChartStatsOptions.ChartLabels;
+            ControlDataContext.ChartLabelsOrdinates = PluginDatabase.PluginSettings.Settings.HltbChartStatsOptions.ChartLabelsOrdinates;
 
             _ = Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Render, (Action)delegate
             {
-                switch (PluginDatabase.PluginSettings.Settings.hltbChartStatsOptions.StatsType)
+                switch (PluginDatabase.PluginSettings.Settings.HltbChartStatsOptions.StatsType)
                 {
                     case ChartStatsType.year:
-                        SetChartDataYear(Convert.ToInt32(PluginDatabase.PluginSettings.Settings.hltbChartStatsOptions.DataNumber));
+                        SetChartDataYear(Math.Max(1, Convert.ToInt32(PluginDatabase.PluginSettings.Settings.HltbChartStatsOptions.DataNumber)));
                         break;
 
                     case ChartStatsType.month:
-                        SetChartDataMonth(Convert.ToInt32(PluginDatabase.PluginSettings.Settings.hltbChartStatsOptions.DataNumber));
+                        SetChartDataMonth(Math.Max(0, Convert.ToInt32(PluginDatabase.PluginSettings.Settings.HltbChartStatsOptions.DataNumber)));
                         break;
 
                     default:
@@ -119,7 +137,7 @@ namespace HowLongToBeat.Views.StartPage
                         {
                             string tempDateTime = (string)localDateYMConverter.Convert((DateTime)titleList.Completion, null, null, null);
                             int index = Array.IndexOf(ChartDataLabels, tempDateTime);
-                            if (index > 0)
+                            if (index >= 0)
                             {
                                 ChartDataSeries[index].Values += 1;
                             }
@@ -150,9 +168,9 @@ namespace HowLongToBeat.Views.StartPage
                 string[] ChartDataLabels = new string[axis];
                 ChartValues<CustomerForSingle> ChartDataSeries = new ChartValues<CustomerForSingle>();
 
-                for (int i = (axis - 1); i >= 0; i--)
+                for (int i = axis - 1; i >= 0; i--)
                 {
-                    ChartDataLabels[((axis - 1) - i)] = DateTime.Now.AddYears(-i).ToString("yyyy");
+                    ChartDataLabels[axis - 1 - i] = DateTime.Now.AddYears(-i).ToString("yyyy");
                     ChartDataSeries.Add(new CustomerForSingle
                     {
                         Name = DateTime.Now.AddYears(-i).ToString("yyyy"),
@@ -168,7 +186,7 @@ namespace HowLongToBeat.Views.StartPage
                     {
                         string tempDateTime = ((DateTime)titleList.Completion).ToString("yyyy");
                         int index = Array.IndexOf(ChartDataLabels, tempDateTime);
-                        if (index > 0)
+                        if (index >= 0)
                         {
                             ChartDataSeries[index].Values += 1;
                         }

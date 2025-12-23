@@ -14,22 +14,22 @@ using System.Windows;
 using System.Windows.Controls;
 using Playnite.SDK.Models;
 using System.Threading.Tasks;
+using System.Threading;
 using CommonPluginsShared.Extensions;
 using System.Collections.ObjectModel;
 using CommonPluginsShared;
 using System.Windows.Data;
 using HowLongToBeat.Models.Enumerations;
+using System.Windows.Media;
 
 namespace HowLongToBeat.Views
 {
-    /// <summary>
-    /// Logique d'interaction pour HowLongToBeatUserView.xaml
-    /// </summary>
-    // TODO Optimize loading
+
     public partial class HowLongToBeatUserView : UserControl
     {
+        private CancellationTokenSource _loadCts;
+        private Task _loadTask;
         private HowLongToBeat Plugin { get; set; }
-
         private bool DisplayFirst { get; set; } = true;
 
         private static HowLongToBeatDatabase PluginDatabase => HowLongToBeat.PluginDatabase;
@@ -41,6 +41,31 @@ namespace HowLongToBeat.Views
                 && (!(bool)PART_HidePlayedGames.IsChecked || (item as PlayniteData).Playtime == 0);
         }
 
+        private void ApplyThemeResources()
+        {
+            try
+            {
+                Brush accent = ResourceProvider.GetResource("AccentColorBrush") as Brush;
+                if (accent == null)
+                {
+                    accent = ResourceProvider.GetResource("NormalBrush") as Brush ?? new SolidColorBrush(Colors.DarkCyan);
+                }
+
+                this.Resources["ChartAccentBrush"] = accent;
+
+                Brush controlFg = ResourceProvider.GetResource("ControlForegroundBrush") as Brush;
+                if (controlFg == null)
+                {
+                    controlFg = ResourceProvider.GetResource("NormalForeground") as Brush ?? Brushes.White;
+                }
+
+                this.Resources["PrimaryButtonForegroundBrush"] = controlFg ?? Brushes.White;
+            }
+            catch (Exception ex)
+            {
+                try { Common.LogError(ex, false, false, PluginDatabase.PluginName); } catch { }
+            }
+        }
 
         public HowLongToBeatUserView(HowLongToBeat plugin)
         {
@@ -49,6 +74,12 @@ namespace HowLongToBeat.Views
             InitializeComponent();
             DataContext = UserViewDataContext;
 
+            ApplyThemeResources();
+
+            this.Unloaded += (s, e) =>
+            {
+                DisposeCts();
+            };
 
             if (!PluginDatabase.PluginSettings.Settings.EnableProgressBarInDataView)
             {
@@ -83,7 +114,7 @@ namespace HowLongToBeat.Views
                             break;
                         default:
                             break;
-                    };
+                    }
                     ListViewGames.SortingDefaultDataName = SortingDefaultDataName;
                     ListViewGames.SortingSortDirection = PluginDatabase.PluginSettings.Settings.IsAsc ? ListSortDirection.Ascending : ListSortDirection.Descending;
                     ListViewGames.Sorting();
@@ -94,33 +125,7 @@ namespace HowLongToBeat.Views
 
                 PART_UserDataLoad.Visibility = Visibility.Visible;
                 PART_Data.Visibility = Visibility.Collapsed;
-                _ = Task.Run(() =>
-                {
-                    try
-                    {
-                        List<Task> TaskList = new List<Task>
-                        {
-                            SetChartDataStore(),
-                            SetChartDataYear(),
-                            SetChartData(),
-                            SetStats()
-                        };
-                        Task.WaitAll(TaskList.ToArray());
-                    }
-                    catch (Exception ex)
-                    {
-                        Common.LogError(ex, false, false, PluginDatabase.PluginName);
-                    }
-                })
-                .ContinueWith((antecedent) =>
-                {
-                    Application.Current.Dispatcher?.Invoke(() =>
-                    {
-                        PART_UserDataLoad.Visibility = Visibility.Collapsed;
-                        PART_Data.Visibility = Visibility.Visible;
-                        PART_LvDataContener.IsVisibleChanged += PART_PlayniteData_IsVisibleChanged;
-                    });
-                });
+                StartLoadUserData();
             }
             else
             {
@@ -144,30 +149,66 @@ namespace HowLongToBeat.Views
 
             SetFilter();
 
-            _ = Task.Run(() =>
-            {
-                List<Task> TaskList = new List<Task>
-                {
-                    SetChartDataStore(),
-                    SetChartDataYear(),
-                    SetChartData(),
-                    SetStats()
-                };
-                Task.WaitAll(TaskList.ToArray());
+            StartLoadUserData();
+        }
 
-                Application.Current.Dispatcher?.Invoke(() =>
+        private void StartLoadUserData()
+        {
+            try
+            {
+                DisposeCts();
+            }
+            catch { }
+            _loadCts = new CancellationTokenSource();
+            _loadTask = LoadUserDataAsync(_loadCts.Token);
+        }
+
+        private async Task LoadUserDataAsync(CancellationToken cancellationToken)
+        {
+            try
+            {
+                var tasks = new List<Task>
                 {
-                    PART_UserDataLoad.Visibility = Visibility.Collapsed;
-                    PART_Data.Visibility = Visibility.Visible;
+                    SetChartDataStore(cancellationToken),
+                    SetChartDataYear(4, cancellationToken),
+                    SetChartData(cancellationToken: cancellationToken),
+                    SetStats(cancellationToken)
+                };
+
+                await Task.WhenAll(tasks).ConfigureAwait(false);
+
+                if (cancellationToken.IsCancellationRequested) return;
+
+                await Application.Current.Dispatcher.InvokeAsync(() =>
+                {
+                    if (cancellationToken.IsCancellationRequested) return;
+                    try
+                    {
+                        PART_UserDataLoad.Visibility = Visibility.Collapsed;
+                        PART_Data.Visibility = Visibility.Visible;
+                        // Ensure the handler is not attached multiple times
+                        try { PART_LvDataContener.IsVisibleChanged -= PART_PlayniteData_IsVisibleChanged; } catch { }
+                        PART_LvDataContener.IsVisibleChanged += PART_PlayniteData_IsVisibleChanged;
+                    }
+                    catch (Exception ex)
+                    {
+                        Common.LogError(ex, false, false, PluginDatabase.PluginName);
+                    }
                 });
-            });
+            }
+            catch (OperationCanceledException) { }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, false, false, PluginDatabase.PluginName);
+            }
         }
 
 
-        private Task SetChartDataYear(int axis = 4)
+        private Task SetChartDataYear(int axis = 4, CancellationToken cancellationToken = default)
         {
             return Task.Run(() =>
             {
+                if (cancellationToken.IsCancellationRequested) return;
                 if (PluginDatabase.Database.UserHltbData?.TitlesList == null)
                 {
                     return;
@@ -177,57 +218,80 @@ namespace HowLongToBeat.Views
                 {
                     // Default data
                     string[] ChartDataLabels = new string[axis];
-                    ChartValues<CustomerForSingle> ChartDataSeries = new ChartValues<CustomerForSingle>();
+                    var seriesItems = new List<CustomerForSingle>(axis);
 
-                    for (int i = (axis - 1); i >= 0; i--)
+                    for (int i = axis - 1; i >= 0; i--)
                     {
-                        ChartDataLabels[((axis - 1) - i)] = DateTime.Now.AddYears(-i).ToString("yyyy");
-                        ChartDataSeries.Add(new CustomerForSingle
+                        if (cancellationToken.IsCancellationRequested) return;
+                        ChartDataLabels[axis - 1 - i] = DateTime.Now.AddYears(-i).ToString("yyyy");
+                        seriesItems.Add(new CustomerForSingle
                         {
                             Name = DateTime.Now.AddYears(-i).ToString("yyyy"),
                             Values = 0
                         });
                     }
 
-                    // Set data
-                    foreach (TitleList titleList in PluginDatabase.Database.UserHltbData.TitlesList)
+                    var titles = PluginDatabase.Database.UserHltbData.TitlesList;
+                    for (int t = 0; t < titles.Count; t++)
                     {
+                        if (cancellationToken.IsCancellationRequested) return;
+                        var titleList = titles[t];
                         if (titleList?.Completion != null)
                         {
                             string tempDateTime = ((DateTime)titleList.Completion).ToString("yyyy");
                             int index = Array.IndexOf(ChartDataLabels, tempDateTime);
-                            if (index > 0)
+                            if (index >= 0)
                             {
-                                ChartDataSeries[index].Values += 1;
+                                seriesItems[index].Values += 1;
                             }
                         }
                     }
 
-                    // Create chart
-                    SeriesCollection ChartSeriesCollection = new SeriesCollection();
-                    Application.Current.Dispatcher?.Invoke(() =>
+                    if (!cancellationToken.IsCancellationRequested)
                     {
-                        ChartSeriesCollection.Add(new ColumnSeries
+                        Application.Current.Dispatcher?.Invoke(() =>
                         {
-                            Title = string.Empty,
-                            Values = ChartDataSeries
-                        });
-                    });
+                            if (cancellationToken.IsCancellationRequested) return;
+                            try
+                            {
+                                // LiveCharts WPF series must be created on STA/UI thread.
+                                var chartValues = new ChartValues<CustomerForSingle>();
+                                for (int i = 0; i < seriesItems.Count; i++)
+                                {
+                                    chartValues.Add(seriesItems[i]);
+                                }
 
-                    UserViewDataContext.ChartUserDataYear_Series = ChartSeriesCollection;
-                    UserViewDataContext.ChartUserDataYearLabelsX_Labels = ChartDataLabels;
+                                var chartSeries = new SeriesCollection
+                                {
+                                    new ColumnSeries
+                                    {
+                                        Title = string.Empty,
+                                        Values = chartValues
+                                    }
+                                };
+
+                                UserViewDataContext.ChartUserDataYear_Series = chartSeries;
+                                UserViewDataContext.ChartUserDataYearLabelsX_Labels = ChartDataLabels;
+                            }
+                            catch (Exception ex)
+                            {
+                                Common.LogError(ex, false, false, PluginDatabase.PluginName);
+                            }
+                        });
+                    }
                 }
                 catch (Exception ex)
                 {
                     Common.LogError(ex, false, false, PluginDatabase.PluginName);
                 }
-            });
+            }, cancellationToken);
         }
 
-        private Task SetChartDataStore()
+        private Task SetChartDataStore(CancellationToken cancellationToken = default)
         {
             return Task.Run(() =>
             {
+                if (cancellationToken.IsCancellationRequested) return;
                 if (PluginDatabase.Database.UserHltbData?.TitlesList == null)
                 {
                     return;
@@ -243,43 +307,62 @@ namespace HowLongToBeat.Views
                         .ToList();
 
                     string[] ChartDataLabels = new string[dataLabel.Count];
-                    ChartValues<CustomerForSingle> ChartDataSeries = new ChartValues<CustomerForSingle>();
+                    var seriesItems = new List<CustomerForSingle>(dataLabel.Count);
 
                     for (int i = 0; i < dataLabel.Count; i++)
                     {
+                        if (cancellationToken.IsCancellationRequested) return;
                         ChartDataLabels[i] = dataLabel[i].Storefront;
-                        ChartDataSeries.Add(new CustomerForSingle
+                        seriesItems.Add(new CustomerForSingle
                         {
                             Name = dataLabel[i].Storefront,
                             Values = dataLabel[i].Count
                         });
                     }
 
-                    // Create chart
-                    SeriesCollection ChartSeriesCollection = new SeriesCollection();
-                    Application.Current.Dispatcher?.Invoke(() =>
+                    if (!cancellationToken.IsCancellationRequested)
                     {
-                        ChartSeriesCollection.Add(new ColumnSeries
+                        Application.Current.Dispatcher?.Invoke(() =>
                         {
-                            Title = string.Empty,
-                            Values = ChartDataSeries
-                        });
-                    });
+                            if (cancellationToken.IsCancellationRequested) return;
+                            try
+                            {
+                                // LiveCharts WPF series must be created on STA/UI thread.
+                                var chartValues = new ChartValues<CustomerForSingle>();
+                                for (int i = 0; i < seriesItems.Count; i++)
+                                {
+                                    chartValues.Add(seriesItems[i]);
+                                }
 
-                    UserViewDataContext.ChartUserDataStore_Series = ChartSeriesCollection;
-                    UserViewDataContext.ChartUserDataStoreLabelsX_Labels = ChartDataLabels;
+                                var chartSeries = new SeriesCollection();
+                                chartSeries.Add(new ColumnSeries
+                                {
+                                    Title = string.Empty,
+                                    Values = chartValues
+                                });
+
+                                UserViewDataContext.ChartUserDataStore_Series = chartSeries;
+                                UserViewDataContext.ChartUserDataStoreLabelsX_Labels = ChartDataLabels;
+                            }
+                            catch (Exception ex)
+                            {
+                                Common.LogError(ex, false, false, PluginDatabase.PluginName);
+                            }
+                        });
+                    }
                 }
                 catch (Exception ex)
                 {
                     Common.LogError(ex, false, false, PluginDatabase.PluginName);
                 }
-            });
+            }, cancellationToken);
         }
 
-        private Task SetChartData()
+        private Task SetChartData(int axis = 16, CancellationToken cancellationToken = default)
         {
             return Task.Run(() =>
             {
+                if (cancellationToken.IsCancellationRequested) return;
                 if (PluginDatabase.Database.UserHltbData?.TitlesList == null)
                 {
                     return;
@@ -290,61 +373,79 @@ namespace HowLongToBeat.Views
                     LocalDateYMConverter localDateYMConverter = new LocalDateYMConverter();
 
                     // Default data
-                    string[] ChartDataLabels = new string[16];
-                    ChartValues<CustomerForSingle> ChartDataSeries = new ChartValues<CustomerForSingle>();
+                    string[] ChartDataLabels = new string[axis];
+                    var seriesItems = new List<CustomerForSingle>(axis);
 
-                    for (int i = 15; i >= 0; i--)
+                    for (int i = axis - 1; i >= 0; i--)
                     {
-                        ChartDataLabels[15 - i] = (string)localDateYMConverter.Convert(DateTime.Now.AddMonths(-i), null, null, null);
-                        ChartDataSeries.Add(new CustomerForSingle
+                        if (cancellationToken.IsCancellationRequested) return;
+                        ChartDataLabels[axis - 1 - i] = (string)localDateYMConverter.Convert(DateTime.Now.AddMonths(-i), null, null, null);
+                        seriesItems.Add(new CustomerForSingle
                         {
                             Name = (string)localDateYMConverter.Convert(DateTime.Now.AddMonths(-i), null, null, null),
                             Values = 0
                         });
                     }
 
-                    // Set data
-                    if (PluginDatabase.Database.UserHltbData?.TitlesList != null)
+                    var titles = PluginDatabase.Database.UserHltbData.TitlesList;
+                    for (int t = 0; t < titles.Count; t++)
                     {
-                        foreach (TitleList titleList in PluginDatabase.Database.UserHltbData.TitlesList)
+                        if (cancellationToken.IsCancellationRequested) return;
+                        var titleList = titles[t];
+                        if (titleList?.Completion != null)
                         {
-                            if (titleList?.Completion != null)
+                            string tempDateTime = (string)localDateYMConverter.Convert((DateTime)titleList.Completion, null, null, null);
+                            int index = Array.IndexOf(ChartDataLabels, tempDateTime);
+                            if (index >= 0)
                             {
-                                string tempDateTime = (string)localDateYMConverter.Convert((DateTime)titleList.Completion, null, null, null);
-                                int index = Array.IndexOf(ChartDataLabels, tempDateTime);
-                                if (index > 0)
-                                {
-                                    ChartDataSeries[index].Values += 1;
-                                }
+                                seriesItems[index].Values += 1;
                             }
                         }
                     }
 
-                    // Create chart
-                    SeriesCollection ChartSeriesCollection = new SeriesCollection();
-                    Application.Current.Dispatcher?.Invoke(() =>
+                    if (!cancellationToken.IsCancellationRequested)
                     {
-                        ChartSeriesCollection.Add(new ColumnSeries
+                        Application.Current.Dispatcher?.Invoke(() =>
                         {
-                            Title = string.Empty,
-                            Values = ChartDataSeries
-                        });
-                    });
+                            if (cancellationToken.IsCancellationRequested) return;
+                            try
+                            {
+                                // LiveCharts WPF series must be created on STA/UI thread.
+                                var chartValues = new ChartValues<CustomerForSingle>();
+                                for (int i = 0; i < seriesItems.Count; i++)
+                                {
+                                    chartValues.Add(seriesItems[i]);
+                                }
 
-                    UserViewDataContext.ChartUserData_Series = ChartSeriesCollection;
-                    UserViewDataContext.ChartUserDataLabelsX_Labels = ChartDataLabels;
+                                var chartSeries = new SeriesCollection();
+                                chartSeries.Add(new ColumnSeries
+                                {
+                                    Title = string.Empty,
+                                    Values = chartValues
+                                });
+
+                                UserViewDataContext.ChartUserData_Series = chartSeries;
+                                UserViewDataContext.ChartUserDataLabelsX_Labels = ChartDataLabels;
+                            }
+                            catch (Exception ex)
+                            {
+                                Common.LogError(ex, false, false, PluginDatabase.PluginName);
+                            }
+                        });
+                    }
                 }
                 catch (Exception ex)
                 {
                     Common.LogError(ex, false, false, PluginDatabase.PluginName);
                 }
-            });
+            }, cancellationToken);
         }
 
-        private Task SetStats()
+        private Task SetStats(CancellationToken cancellationToken = default)
         {
             return Task.Run(() =>
             {
+                if (cancellationToken.IsCancellationRequested) return;
                 if (PluginDatabase.Database.UserHltbData?.TitlesList == null)
                 {
                     return;
@@ -354,50 +455,74 @@ namespace HowLongToBeat.Views
                 {
                     List<TitleList> titleLists = PluginDatabase.Database.UserHltbData.TitlesList;
 
-                    UserViewDataContext.CompletionsCount = titleLists.Where(x => x.GameStatuses.Where(y => y.Status == StatusType.Completed).Count() > 0).Count().ToString();
+                    if (cancellationToken.IsCancellationRequested) return;
+                    var completionsCount = titleLists.Count(x => x.GameStatuses.Any(y => y.Status == StatusType.Completed)).ToString();
 
-                    long TimeSinglePlayer = 0;
-                    long TimeCoOp = 0;
-                    long TimeVs = 0;
+                    long timeSinglePlayer = 0;
+                    long timeCoOp = 0;
+                    long timeVs = 0;
 
-                    foreach (TitleList titleList in titleLists)
+                    foreach (var titleList in titleLists)
                     {
+                        if (cancellationToken.IsCancellationRequested) return;
                         if (titleList.HltbUserData.Completionist != 0)
                         {
-                            TimeSinglePlayer += titleList.HltbUserData.Completionist;
+                            timeSinglePlayer += titleList.HltbUserData.Completionist;
                         }
                         else if (titleList.HltbUserData.MainExtra != 0)
                         {
-                            TimeSinglePlayer += titleList.HltbUserData.MainExtra;
+                            timeSinglePlayer += titleList.HltbUserData.MainExtra;
                         }
                         else if (titleList.HltbUserData.MainStory != 0)
                         {
-                            TimeSinglePlayer += titleList.HltbUserData.MainStory;
+                            timeSinglePlayer += titleList.HltbUserData.MainStory;
                         }
 
-                        TimeCoOp += titleList.HltbUserData.CoOp;
-                        TimeCoOp += titleList.HltbUserData.Vs;
+                        timeCoOp += titleList.HltbUserData.CoOp;
+                        timeVs += titleList.HltbUserData.Vs;
                     }
 
                     PlayTimeToStringConverterWithZero converter = new PlayTimeToStringConverterWithZero();
 
-                    UserViewDataContext.TimeSinglePlayer = (string)converter.Convert(TimeSinglePlayer, null, null, CultureInfo.CurrentCulture);
-                    UserViewDataContext.TimeCoOp = (string)converter.Convert(TimeCoOp, null, null, CultureInfo.CurrentCulture);
-                    UserViewDataContext.TimeVs = (string)converter.Convert(TimeVs, null, null, CultureInfo.CurrentCulture);
+                    var timeSinglePlayerStr = (string)converter.Convert(timeSinglePlayer, null, null, CultureInfo.CurrentCulture);
+                    var timeCoOpStr = (string)converter.Convert(timeCoOp, null, null, CultureInfo.CurrentCulture);
+                    var timeVsStr = (string)converter.Convert(timeVs, null, null, CultureInfo.CurrentCulture);
 
+                    var countBefore = HowLongToBeatStats.GetCountGameBeatenBeforeTime().ToString();
+                    var countAfter = HowLongToBeatStats.GetCountGameBeatenAfterTime().ToString();
+                    var avgGameByMonth = string.Format("{0:0.0}", HowLongToBeatStats.GetAvgGameByMonth()).ToString();
+                    var avgTimeByGame = (string)converter.Convert(HowLongToBeatStats.GetAvgTimeByGame(), null, null, CultureInfo.CurrentCulture);
+                    var countReplays = HowLongToBeatStats.GetCountGameBeatenReplays().ToString();
+                    var countRetired = HowLongToBeatStats.GetCountGameRetired().ToString();
 
-                    UserViewDataContext.CountGameBeatenBeforeTime = HowLongToBeatStats.GetCountGameBeatenBeforeTime().ToString();
-                    UserViewDataContext.CountGameBeatenAfterTime = HowLongToBeatStats.GetCountGameBeatenAfterTime().ToString();
-                    UserViewDataContext.AvgGameByMonth = string.Format("{0:0.0}", HowLongToBeatStats.GetAvgGameByMonth()).ToString();
-                    UserViewDataContext.AvgTimeByGame = (string)converter.Convert(HowLongToBeatStats.GetAvgTimeByGame(), null, null, CultureInfo.CurrentCulture);
-                    UserViewDataContext.CountGameBeatenReplays = HowLongToBeatStats.GetCountGameBeatenReplays().ToString();
-                    UserViewDataContext.CountGameRetired = HowLongToBeatStats.GetCountGameRetired().ToString();
+                    Application.Current.Dispatcher?.Invoke(() =>
+                    {
+                        if (cancellationToken.IsCancellationRequested) return;
+                        try
+                        {
+                            UserViewDataContext.CompletionsCount = completionsCount;
+                            UserViewDataContext.TimeSinglePlayer = timeSinglePlayerStr;
+                            UserViewDataContext.TimeCoOp = timeCoOpStr;
+                            UserViewDataContext.TimeVs = timeVsStr;
+
+                            UserViewDataContext.CountGameBeatenBeforeTime = countBefore;
+                            UserViewDataContext.CountGameBeatenAfterTime = countAfter;
+                            UserViewDataContext.AvgGameByMonth = avgGameByMonth;
+                            UserViewDataContext.AvgTimeByGame = avgTimeByGame;
+                            UserViewDataContext.CountGameBeatenReplays = countReplays;
+                            UserViewDataContext.CountGameRetired = countRetired;
+                        }
+                        catch (Exception ex)
+                        {
+                            Common.LogError(ex, false, false, PluginDatabase.PluginName);
+                        }
+                    });
                 }
                 catch (Exception ex)
                 {
                     Common.LogError(ex, false, false, PluginDatabase.PluginName);
                 }
-            });
+            }, cancellationToken);
         }
 
         private void SetPlayniteData()
@@ -594,7 +719,7 @@ namespace HowLongToBeat.Views
 
             if (!Name.IsNullOrEmpty())
             {
-                UserViewDataContext.ItemsSource = UserViewDataContext.ItemsSource.Where(x => x.GameName.Contains(Name, StringComparison.InvariantCultureIgnoreCase))                    .ToObservable();
+                UserViewDataContext.ItemsSource = UserViewDataContext.ItemsSource.Where(x => x.GameName.Contains(Name, StringComparison.InvariantCultureIgnoreCase)).ToObservable();
             }
 
             if ((bool)PART_Replays.IsChecked)
@@ -689,6 +814,14 @@ namespace HowLongToBeat.Views
             {
                 Part_Found.Visibility = PART_TabControl.SelectedIndex == 0 ? Visibility.Visible : Visibility.Collapsed;
             }
+        }
+
+        private void DisposeCts()
+        {
+            try { _loadCts?.Cancel(); } catch { }
+            try { _loadCts?.Dispose(); } catch { }
+            _loadCts = null;
+            _loadTask = null;
         }
     }
 

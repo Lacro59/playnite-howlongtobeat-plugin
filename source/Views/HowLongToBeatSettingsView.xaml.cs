@@ -14,6 +14,7 @@ using System.IO;
 using System.Collections.Generic;
 using Playnite.SDK.Models;
 using HowLongToBeat.Models.Enumerations;
+using Playnite.SDK.Data;
 
 namespace HowLongToBeat.Views
 {
@@ -24,6 +25,7 @@ namespace HowLongToBeat.Views
         private static HowLongToBeatDatabase PluginDatabase => HowLongToBeat.PluginDatabase;
 
         private TextBlock tbControl;
+        private HowLongToBeatSettings _settingsRef;
 
         public static SolidColorBrush ThumbSolidColorBrush;
         public static ThemeLinearGradient ThumbLinearGradient;
@@ -44,12 +46,33 @@ namespace HowLongToBeat.Views
 
         public HowLongToBeatSettingsView(HowLongToBeatSettings settings)
         {
-            PluginDatabase.HowLongToBeatApi.PropertyChanged += OnPropertyChanged;
+            _settingsRef = settings;
+            try
+            {
+                if (PluginDatabase?.HowLongToBeatApi != null)
+                {
+                    PluginDatabase.HowLongToBeatApi.PropertyChanged += OnPropertyChanged;
+                }
+            }
+            catch { }
 
             InitializeComponent();
 
-            CheckAuthenticate();
+            // Run authentication check in fire-and-forget to avoid async void from constructor.
+            try
+            {
+                TaskHelpers.FireAndForget(CheckAuthenticateAsync(), "SettingsView-CheckAuthenticate", Logger);
+            }
+            catch { }
             SetPlatforms(settings);
+
+            try
+            {
+                API.Instance.Database.Platforms.ItemCollectionChanged += Platforms_ItemCollectionChanged;
+                API.Instance.Database.Platforms.ItemUpdated += Platforms_ItemUpdated;
+                this.Unloaded += HowLongToBeatSettingsView_Unloaded;
+            }
+            catch { }
 
             PART_SelectorColorPicker.OnlySimpleColor = false;
 
@@ -106,6 +129,206 @@ namespace HowLongToBeat.Views
         private void ButtonRemoveTag_Click(object sender, RoutedEventArgs e)
         {
             HowLongToBeat.PluginDatabase.RemoveTagAllGame();
+        }
+        #endregion
+
+        #region Export
+        private void ButtonBrowseExportFolder_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var selected = API.Instance.Dialogs.SelectFolder();
+                if (!selected.IsNullOrEmpty())
+                {
+                    PART_ExportFolder.Text = selected;
+                }
+            }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, false, true, PluginDatabase.PluginName);
+            }
+        }
+
+        private void ButtonExportCsvComma_Click(object sender, RoutedEventArgs e)
+        {
+            ExportCsv(',');
+        }
+
+        private void ButtonExportCsvSemicolon_Click(object sender, RoutedEventArgs e)
+        {
+            ExportCsv(';');
+        }
+
+        private void ExportCsv(char delimiter)
+        {
+            try
+            {
+                var folder = PART_ExportFolder.Text?.Trim();
+                if (folder.IsNullOrEmpty())
+                {
+                    API.Instance.Dialogs.ShowMessage(ResourceProvider.GetString("LOCExportSelectFolderFirst"));
+                    return;
+                }
+                if (!Directory.Exists(folder))
+                {
+                    API.Instance.Dialogs.ShowMessage(ResourceProvider.GetString("LOCExportFolderNotExist"));
+                    return;
+                }
+                var path = Path.Combine(folder, $"HLTB_Export_{DateTime.UtcNow:yyyyMMdd_HHmmss}.csv");
+                var lines = new List<string>
+                {
+                    string.Join(delimiter.ToString(), new[] {
+                    "GameId","Name","Platform","Type",
+                    "Main (formatted)","Main+Extra (formatted)","Completionist (formatted)",
+                    "Solo (formatted)","Co-Op (formatted)","Vs (formatted)",
+                    "Developers","Publishers","Date added","Last activity"
+                })
+                };
+                int exportedCount = 0;
+                int failedCount = 0;
+                foreach (var game in API.Instance.Database.Games)
+                {
+                    try
+                    {
+                        var entry = PluginDatabase.Get(game.Id, true);
+                        var data = entry?.GetData()?.GameHltbData;
+                        if (entry != null && data != null)
+                        {
+                            var name = entry.GetData()?.Name ?? game.Name;
+                            var platform = entry.GetData()?.Platform ?? string.Empty;
+                            var type = data.GameType.ToString();
+                            var developers = game.Developers?.Select(d => d.Name)?.ToList() ?? new List<string>();
+                            var publishers = game.Publishers?.Select(p => p.Name)?.ToList() ?? new List<string>();
+
+                            string csvLine = string.Join(delimiter.ToString(),
+                                new string[]
+                                {
+                                    game.Id.ToString(),
+                                    EscapeCsvWithDelimiter(name, delimiter),
+                                    EscapeCsvWithDelimiter(platform, delimiter),
+                                    EscapeCsvWithDelimiter(type, delimiter),
+                                    EscapeCsvWithDelimiter(data.MainStoryFormat, delimiter),
+                                    EscapeCsvWithDelimiter(data.MainExtraFormat, delimiter),
+                                    EscapeCsvWithDelimiter(data.CompletionistFormat, delimiter),
+                                    EscapeCsvWithDelimiter(data.SoloFormat, delimiter),
+                                    EscapeCsvWithDelimiter(data.CoOpFormat, delimiter),
+                                    EscapeCsvWithDelimiter(data.VsFormat, delimiter),
+                                    EscapeCsvWithDelimiter(string.Join(", ", developers), delimiter),
+                                    EscapeCsvWithDelimiter(string.Join(", ", publishers), delimiter),
+                                    EscapeCsvWithDelimiter(game.Added?.ToString("yyyy-MM-ddTHH:mm:ss"), delimiter),
+                                    EscapeCsvWithDelimiter(game.LastActivity?.ToString("yyyy-MM-ddTHH:mm:ss"), delimiter)
+                                });
+                            lines.Add(csvLine);
+                            exportedCount++;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        failedCount++;
+                        Common.LogError(ex, false, false, PluginDatabase.PluginName);
+                    }
+                }
+                var utf8Bom = new System.Text.UTF8Encoding(true);
+                File.WriteAllLines(path, lines, utf8Bom);
+                var msg = string.Format(ResourceProvider.GetString("LOCExportedCsvMessage"), exportedCount, path, delimiter);
+                if (failedCount > 0)
+                {
+                    msg += "\n" + string.Format(ResourceProvider.GetString("LOCExportFailedCount"), failedCount);
+                }
+                API.Instance.Dialogs.ShowMessage(msg);
+            }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, false, true, PluginDatabase.PluginName);
+            }
+        }
+
+        private void ButtonExportJson_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var folder = PART_ExportFolder.Text?.Trim();
+                if (folder.IsNullOrEmpty())
+                {
+                    API.Instance.Dialogs.ShowMessage(ResourceProvider.GetString("LOCExportSelectFolderFirst"));
+                    return;
+                }
+                if (!Directory.Exists(folder))
+                {
+                    API.Instance.Dialogs.ShowMessage(ResourceProvider.GetString("LOCExportFolderNotExist"));
+                    return;
+                }
+                var path = Path.Combine(folder, $"HLTB_Export_{DateTime.UtcNow:yyyyMMdd_HHmmss}.json");
+                var items = new List<object>();
+                int exportedCount = 0;
+                int failedCount = 0;
+                foreach (var game in API.Instance.Database.Games)
+                {
+                    try
+                    {
+                        var entry = PluginDatabase.Get(game.Id, true);
+                        var data = entry?.GetData()?.GameHltbData;
+                        if (entry != null && data != null)
+                        {
+                            var developers = game.Developers?.Select(d => d.Name)?.ToList() ?? new List<string>();
+                            var publishers = game.Publishers?.Select(p => p.Name)?.ToList() ?? new List<string>();
+
+                            items.Add(new
+                            {
+                                GameId = game.Id,
+                                Name = entry.GetData()?.Name ?? game.Name,
+                                Platform = entry.GetData()?.Platform ?? string.Empty,
+                                Type = data.GameType.ToString(),
+
+                                Main = data.MainStoryClassic,
+                                MainExtra = data.MainExtraClassic,
+                                Completionist = data.CompletionistClassic,
+                                Solo = data.SoloClassic,
+                                CoOp = data.CoOpClassic,
+                                Vs = data.VsClassic,
+
+                                MainFormatted = data.MainStoryFormat,
+                                MainExtraFormatted = data.MainExtraFormat,
+                                CompletionistFormatted = data.CompletionistFormat,
+                                SoloFormatted = data.SoloFormat,
+                                CoOpFormatted = data.CoOpFormat,
+                                VsFormatted = data.VsFormat,
+
+                                Developers = developers,
+                                Publishers = publishers,
+                                DateAdded = game.Added,
+                                LastActivity = game.LastActivity
+                            });
+                            exportedCount++;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        failedCount++;
+                        Common.LogError(ex, false, false, PluginDatabase.PluginName);
+                    }
+                }
+                var json = Serialization.ToJson(items, true);
+                File.WriteAllText(path, json);
+                var msgJson = string.Format(ResourceProvider.GetString("LOCExportedJsonMessage"), exportedCount, path);
+                if (failedCount > 0)
+                {
+                    msgJson += "\n" + string.Format(ResourceProvider.GetString("LOCExportFailedCount"), failedCount);
+                }
+                API.Instance.Dialogs.ShowMessage(msgJson);
+            }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, false, true, PluginDatabase.PluginName);
+            }
+        }
+
+        private static string EscapeCsvWithDelimiter(string input, char delimiter)
+        {
+            if (string.IsNullOrEmpty(input)) return string.Empty;
+            bool needsQuotes = input.Contains(delimiter.ToString()) || input.Contains("\"") || input.Contains("\n") || input.Contains("\r");
+            string escaped = input.Replace("\"", "\"\"");
+            return needsQuotes ? $"\"{escaped}\"" : escaped;
         }
         #endregion
 
@@ -226,7 +449,7 @@ namespace HowLongToBeat.Views
 
         private void PART_TM_ColorOK_Click(object sender, RoutedEventArgs e)
         {
-            Color color = default(Color);
+            Color color = default;
 
             if (tbControl != null)
             {
@@ -340,51 +563,149 @@ namespace HowLongToBeat.Views
 
 
         #region Authenticate
-        private void CheckAuthenticate()
+        private async Task CheckAuthenticateAsync()
         {
             PART_LbUserLogin.Visibility = Visibility.Collapsed;
             PART_LbAuthenticate.Content = ResourceProvider.GetString("LOCCommonLoginChecking");
 
-            var task = Task.Run(() => PluginDatabase.HowLongToBeatApi.GetIsUserLoggedIn());
+            try { Logger.Info("HLTB Auth UI: CheckAuthenticate start"); } catch { }
+
+            bool isLoggedIn = false;
+            try
+            {
+                var api = PluginDatabase?.HowLongToBeatApi;
+                if (api != null)
+                {
+                    isLoggedIn = await api.GetIsUserLoggedInAsync().ConfigureAwait(false);
+                }
+            }
+            catch (Exception ex)
+            {
+                try { Logger.Warn(ex, "HLTB Auth UI: CheckAuthenticate failed"); } catch { }
+                isLoggedIn = false;
+            }
+
+            try
+            {
+                await Dispatcher.InvokeAsync(() => UpdateAuthUi(isLoggedIn));
+            }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, false, true, PluginDatabase.PluginName);
+            }
+        }
+
+        private void UpdateAuthUi(bool isLoggedIn)
+        {
+            try
+            {
+                var api = PluginDatabase?.HowLongToBeatApi;
+
+                // Ensure UI is updated even if the API state was already set before we subscribed.
+                if (isLoggedIn || (api != null && (bool?)(api.IsConnected) == true))
+                {
+                    PART_LbAuthenticate.Content = ResourceProvider.GetString("LOCCommonLoggedIn");
+                    PART_LbUserLogin.Visibility = Visibility.Visible;
+
+                    string userLogin = api?.UserLogin;
+                    if (userLogin.IsNullOrEmpty())
+                    {
+                        userLogin = PluginDatabase?.Database?.UserHltbData?.Login ?? string.Empty;
+                    }
+
+                    PART_LbUserLogin.Content = ResourceProvider.GetString("LOCCommonAccountName") + " " + userLogin;
+                }
+                else
+                {
+                    PART_LbAuthenticate.Content = ResourceProvider.GetString("LOCCommonNotLoggedIn");
+                    PART_LbUserLogin.Visibility = Visibility.Collapsed;
+                }
+
+                try { Logger.Info($"HLTB Auth UI: CheckAuthenticate done isLoggedIn={isLoggedIn} api.IsConnected={(api?.IsConnected?.ToString() ?? "<null>")}"); } catch { }
+            }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, false, true, PluginDatabase.PluginName);
+            }
         }
 
         private void PART_BtAuthenticate_Click(object sender, RoutedEventArgs e)
         {
             PART_LbUserLogin.Visibility = Visibility.Collapsed;
-            var task = Task.Run(() => {
+
+            try { Logger.Info("HLTB Auth UI: Login button clicked"); } catch { }
+            try
+            {
                 PluginDatabase.HowLongToBeatApi.Login();
-            });
+            }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, false, true, PluginDatabase.PluginName);
+            }
         }
 
 
         protected void OnPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            this.Dispatcher.Invoke(new Action(() => 
+            try
             {
-                if ((bool)PluginDatabase.HowLongToBeatApi.IsConnected)
+                this.Dispatcher.Invoke(new Action(() =>
                 {
-                    PART_LbAuthenticate.Content = ResourceProvider.GetString("LOCCommonLoggedIn");
-                    PART_LbUserLogin.Visibility = Visibility.Visible;
-
-                    string UserLogin = PluginDatabase.HowLongToBeatApi.UserLogin;
-                    if (UserLogin.IsNullOrEmpty())
-                    {
-                        UserLogin = PluginDatabase.Database.UserHltbData.Login;
-                    }
-
-                    PART_LbUserLogin.Content = ResourceProvider.GetString("LOCCommonAccountName") + " " + UserLogin;
-                }
-                else
-                {
-                    PART_LbAuthenticate.Content = ResourceProvider.GetString("LOCCommonNotLoggedIn");
-                }
-            }));
+                    var api = PluginDatabase?.HowLongToBeatApi;
+                    bool isLoggedIn = api != null && (bool?)(api.IsConnected) == true;
+                    UpdateAuthUi(isLoggedIn);
+                }));
+            }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, false, true, PluginDatabase.PluginName);
+            }
         }
         #endregion
 
-        // TODO: Probably better to react to library metadata edits
-        // Although this method might not be invoked so many times as to make a difference in performance
-        private void SetPlatforms(HowLongToBeatSettings settings) {
+        private void HowLongToBeatSettingsView_Unloaded(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                API.Instance.Database.Platforms.ItemCollectionChanged -= Platforms_ItemCollectionChanged;
+            }
+            catch { }
+            try
+            {
+                API.Instance.Database.Platforms.ItemUpdated -= Platforms_ItemUpdated;
+            }
+            catch { }
+            try
+            {
+                if (PluginDatabase?.HowLongToBeatApi != null)
+                {
+                    PluginDatabase.HowLongToBeatApi.PropertyChanged -= OnPropertyChanged;
+                }
+            }
+            catch { }
+            try { this.Unloaded -= HowLongToBeatSettingsView_Unloaded; } catch { }
+        }
+
+        private void Platforms_ItemUpdated(object sender, ItemUpdatedEventArgs<Platform> e)
+        {
+            try
+            {
+                Application.Current?.Dispatcher?.BeginInvoke(new Action(() => SetPlatforms(_settingsRef)));
+            }
+            catch { }
+        }
+
+        private void Platforms_ItemCollectionChanged(object sender, ItemCollectionChangedEventArgs<Platform> e)
+        {
+            try
+            {
+                Application.Current?.Dispatcher?.BeginInvoke(new Action(() => SetPlatforms(_settingsRef)));
+            }
+            catch { }
+        }
+
+        private void SetPlatforms(HowLongToBeatSettings settings)
+        {
             List<Platform> platforms = API.Instance.Database
                     .Platforms.Distinct().OrderBy(x => x.Name).ToList();
 
@@ -401,10 +722,61 @@ namespace HowLongToBeat.Views
             PART_GridPlatformsList.ItemsSource = settings.Platforms;
         }
 
+        private void HltB_IntegrationProgressBarShowTime_Checked(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                PluginDatabase.PluginSettings.Settings.ProgressBarShowTime = true;
+            }
+            catch { }
+        }
+
+        private void HltB_IntegrationProgressBarShowTime_Unchecked(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                PluginDatabase.PluginSettings.Settings.ProgressBarShowTime = false;
+            }
+            catch { }
+        }
+
+        private void HltB_ProgressBarTimeAbove_Checked(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                PluginDatabase.PluginSettings.Settings.ProgressBarShowTimeAbove = true;
+                PluginDatabase.PluginSettings.Settings.ProgressBarShowTimeInterior = false;
+                PluginDatabase.PluginSettings.Settings.ProgressBarShowTimeBelow = false;
+            }
+            catch { }
+        }
+
+        private void HltB_ProgressBarTimeInterior_Checked(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                PluginDatabase.PluginSettings.Settings.ProgressBarShowTimeAbove = false;
+                PluginDatabase.PluginSettings.Settings.ProgressBarShowTimeInterior = true;
+                PluginDatabase.PluginSettings.Settings.ProgressBarShowTimeBelow = false;
+            }
+            catch { }
+        }
+
+        private void HltB_ProgressBarTimeBelow_Checked(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                PluginDatabase.PluginSettings.Settings.ProgressBarShowTimeAbove = false;
+                PluginDatabase.PluginSettings.Settings.ProgressBarShowTimeInterior = false;
+                PluginDatabase.PluginSettings.Settings.ProgressBarShowTimeBelow = true;
+            }
+            catch { }
+        }
+
         private void CbDefaultSorting_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             string index = ((ComboBoxItem)cbDefaultSorting.SelectedItem).Tag.ToString();
-            switch(index)
+            switch (index)
             {
                 case "0":
                     PluginDatabase.PluginSettings.Settings.TitleListSort = TitleListSort.GameName;

@@ -12,6 +12,19 @@
     <sys:String x:Key="LOCHowLongToBeatAddTagDescription">Додати тег до ігор з інформацією про час завершення Основного сюжету</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoTag">Автоматична обробка тегів</sys:String>
     <sys:String x:Key="LOCHowLongToBeatShowHltbImage">Використовувати у вікні оригінальну обкладинку гри з HowLongToBeat</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatEnableVerboseLogging">Увімкнути докладне журналювання HLTB (додаткові логи в extensions.log)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExport">Експортувати дані HowLongToBeat</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportCsvComma">Експорт CSV (кома)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportCsvSemicolon">Експорт CSV (крапка з комою)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportJson">Експорт JSON</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportFolderTooltip">Тека для експорту</sys:String>
+    <sys:String x:Key="LOCBrowseLabel">Переглянути...</sys:String>
+
+    <sys:String x:Key="LOCExportSelectFolderFirst">Будь ласка, спочатку виберіть папку для експорту.</sys:String>
+    <sys:String x:Key="LOCExportFolderNotExist">Вибрана папка не існує.</sys:String>
+    <sys:String x:Key="LOCExportedCsvMessage">{0} ігор експортовано в CSV: {1} (роздільник '{2}')</sys:String>
+    <sys:String x:Key="LOCExportedJsonMessage">{0} ігор експортовано в JSON: {1}</sys:String>
+    <sys:String x:Key="LOCExportFailedCount">Не вдалося експортувати {0} ігор (див. журнали).</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatColorSelection">Вибір кольору:</sys:String>
 
@@ -30,9 +43,6 @@
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarOptions">Параметри смуги прогресу</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">Показувати спливаючі підказки з часом на смузі прогресу</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTime">Показувати час на смузі прогресу</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeAbove">Над смугою прогресу</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeInterior">Всередині смуги прогресу</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeBelow">Під смугою прогресу</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeUser">Показувати користувацький час HowLongToBeat</sys:String>
 
     <sys:String x:Key="LOCHltbUsedStartDateFromGameActivity">Використовується перший сеанс гри з плагіну GameActivity для початкової дати</sys:String>
@@ -72,6 +82,8 @@
     <sys:String x:Key="LOCHowLongToBeatVs">Vs</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatPlaying">Граю</sys:String>
+    <sys:String x:Key="LOCRefresh">Оновити</sys:String>
+    <sys:String x:Key="LOCDelete">Видалити</sys:String>
 
     <!-- HowLongToBeat -->
 
