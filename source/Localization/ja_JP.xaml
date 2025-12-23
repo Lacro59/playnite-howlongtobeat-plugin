@@ -178,4 +178,26 @@ Here is the list of commands:</sys:String>
     -stores={n}	Filter by store name (ex:-stores=steam / -stores=steam,epic)
     -status={n}	Filter by status name (ex:-status=played / -status=played,playing)</sys:String>
 
+    <!-- Aliases -->
+    <sys:String x:Key="LOCHowLongToBeatAliases">エイリアス</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesDescription" xml:space="preserve">複数のゲームタイトルを単一の HowLongToBeat 検索タイトルにマップします。
+例:
+  ソース: Pokemon Red Version
+  ターゲット: Pokemon Red and Blue</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesSource">ソースタイトル</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesTarget">ターゲット (HLTB タイトル)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesReset">リセット</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesResetConfirm">現在のエイリアスをデフォルトの Pokémon 二重リリースエイリアスで置き換えますか？</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImport">インポート</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesExport">エクスポート</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesOpenFile">aliases.json を開く</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesFilePathUnavailable">プラグインのユーザーデータパスが利用できません。</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportNotFound">エイリアスファイルが見つかりません: {0}</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportFailed">エイリアスファイルのインポートに失敗しました: {0} (ログを確認してください)。</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportConfirm" xml:space="preserve">次からエイリアスをインポートします:\n{0}\n\nこれにより現在のエイリアスが置き換えられます。続行しますか？</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportOk">エイリアスをインポートしました: {0}</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesExportFailed">エイリアスファイルのエクスポートに失敗しました: {0} (ログを確認してください)。</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesExportOk">エイリアスをエクスポートしました: {0}</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesCellToolTip">セルをクリック (または F2 を押す) して編集します。Enter を押して確定します。</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesTip">ヒント: セルをダブルクリックして編集します。保存をクリックするとエイリアスが保存されます。</sys:String>
 </ResourceDictionary>

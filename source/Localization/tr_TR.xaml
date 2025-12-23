@@ -178,4 +178,26 @@ Komutlar şunlardır:</sys:String>
     -stores={n}	Mağaza adıyla filtrele (örn:-stores=steam / -stores=steam,epic)
     -status={n}	Durum adıyla filtrele (örn:-status=played / -status=played,playing)</sys:String>
 
+    <!-- Aliases -->
+    <sys:String x:Key="LOCHowLongToBeatAliases">Takma adlar</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesDescription" xml:space="preserve">Birden çok oyun başlığını tek bir HowLongToBeat arama başlığına eşleyin.
+Örnek:
+  Kaynak: Pokemon Red Version
+  Hedef: Pokemon Red and Blue</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesSource">Kaynak başlık</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesTarget">Hedef (HLTB başlığı)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesReset">Sıfırla</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesResetConfirm">Mevcut takma adlarınızı varsayılan Pokémon çift sürüm takma adlarıyla değiştirmek ister misiniz?</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImport">İçe aktar</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesExport">Dışa aktar</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesOpenFile">aliases.json dosyasını aç</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesFilePathUnavailable">Eklenti kullanıcı veri yolu kullanılamıyor.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportNotFound">Alias dosyası bulunamadı: {0}</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportFailed">Alias dosyası içe aktarılamadı: {0} (kayıtları inceleyin).</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportConfirm" xml:space="preserve">Alias'ları şuradan içe aktar:\n{0}\n\nBu mevcut alias'larınızı değiştirecek. Devam edilsin mi?</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportOk">Alias içe aktarıldı: {0}</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesExportFailed">Alias dosyası dışa aktarılamadı: {0} (kayıtları inceleyin).</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesExportOk">Alias dışa aktarıldı: {0}</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesCellToolTip">Düzenlemek için bir hücreye tıklayın (veya F2'ye basın). Onaylamak için Enter'a basın.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesTip">İpucu: düzenlemek için bir hücreye çift tıklayın. Kaydet'e tıkladığınızda alias'lar kaydedilir.</sys:String>
 </ResourceDictionary>

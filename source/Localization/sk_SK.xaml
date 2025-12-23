@@ -178,4 +178,26 @@ Here is the list of commands:</sys:String>
     -stores={n}	Filter by store name (ex:-stores=steam / -stores=steam,epic)
     -status={n}	Filter by status name (ex:-status=played / -status=played,playing)</sys:String>
 
+    <!-- Aliases -->
+    <sys:String x:Key="LOCHowLongToBeatAliases">Aliasy</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesDescription" xml:space="preserve">Mapujte viacero názvov hier na jeden názov vyhľadávania HowLongToBeat.
+Príklad:
+  Zdroj: Pokemon Red Version
+  Cieľ: Pokemon Red and Blue</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesSource">Zdrojový názov</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesTarget">Cieľ (názov HLTB)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesReset">Resetovať</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesResetConfirm">Nahradiť vaše súčasné aliasy predvolenými aliasmi Pokémon pri dvojitom vydaní?</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImport">Importovať</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesExport">Exportovať</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesOpenFile">Otvoriť aliases.json</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesFilePathUnavailable">Cesta údajov používateľa pluginu nie je k dispozícii.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportNotFound">Alias súbor nenájdený: {0}</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportFailed">Import alias súboru zlyhal: {0} (pozrite si záznamy).</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportConfirm" xml:space="preserve">Importovať aliasy z:\n{0}\n\nTýmto nahradíte svoje aktuálne aliasy. Pokračovať?</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportOk">Alias importovaný z: {0}</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesExportFailed">Export alias súboru zlyhal: {0} (pozrite si záznamy).</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesExportOk">Alias exportované do: {0}</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesCellToolTip">Kliknite na bunku (alebo stlačte F2) pre úpravu. Stlačte Enter pre potvrdenie.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesTip">Tip: dvojitým kliknutím na bunku upravíte. Alias sa uložia po kliknutí na Uložiť.</sys:String>
 </ResourceDictionary>

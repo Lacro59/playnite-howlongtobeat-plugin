@@ -178,4 +178,26 @@ Here is the list of commands:</sys:String>
     -stores={n}	Filter by store name (ex:-stores=steam / -stores=steam,epic)
     -status={n}	Filter by status name (ex:-status=played / -status=played,playing)</sys:String>
 
+    <!-- Aliases -->
+    <sys:String x:Key="LOCHowLongToBeatAliases">Aliasnamen</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesDescription" xml:space="preserve">Map meerdere speltitels naar één HowLongToBeat-zoektitel.
+Voorbeeld:
+  Bron: Pokemon Red Version
+  Doel: Pokemon Red and Blue</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesSource">Bron titel</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesTarget">Doel (HLTB titel)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesReset">Herstellen</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesResetConfirm">Uw huidige aliassen vervangen door de standaard Pokémon dubbel-release aliassen?</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImport">Importeren</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesExport">Exporteren</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesOpenFile">Open aliases.json</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesFilePathUnavailable">Plugin gebruikersgegevens pad is niet beschikbaar.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportNotFound">Geen aliasbestand gevonden: {0}</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportFailed">Importeren van aliasbestand mislukt: {0} (zie logbestanden).</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportConfirm" xml:space="preserve">Aliassen importeren van:\n{0}\n\nDit vervangt uw huidige aliassen. Doorgaan?</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportOk">Aliassen geïmporteerd van: {0}</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesExportFailed">Exporteren van aliasbestand mislukt: {0} (zie logbestanden).</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesExportOk">Aliassen geëxporteerd naar: {0}</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesCellToolTip">Klik op een cel (of druk op F2) om te bewerken. Druk op Enter om te bevestigen.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesTip">Tip: dubbelklik een cel om te bewerken. Aliassen worden opgeslagen wanneer u op Opslaan klikt.</sys:String>
 </ResourceDictionary>

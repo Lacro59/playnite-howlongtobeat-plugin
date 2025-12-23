@@ -178,4 +178,26 @@ Aquí está la lista de comandos:</sys:String>
     -stores={n}	Filtrar por nombre de tienda (ej:-stores=steam / -stores=steam,epic)
     -status={n}	Filtrar por nombre de estado (ej:-status=played / -status=played,playing)</sys:String>
 
+    <!-- Aliases -->
+    <sys:String x:Key="LOCHowLongToBeatAliases">Alias</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesDescription" xml:space="preserve">Mapear múltiples títulos de juegos a un único título de búsqueda de HowLongToBeat.
+Ejemplo:
+  Origen: Pokemon Red Version
+  Destino: Pokemon Red and Blue</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesSource">Título de origen</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesTarget">Destino (título HLTB)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesReset">Restablecer</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesResetConfirm">¿Reemplazar sus alias actuales con los alias predeterminados de lanzamientos dobles de Pokémon?</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImport">Importar</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesExport">Exportar</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesOpenFile">Abrir aliases.json</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesFilePathUnavailable">La ruta de datos de usuario del plugin no está disponible.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportNotFound">No se encontró archivo de alias: {0}</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportFailed">Error al importar el archivo de alias: {0} (ver registros).</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportConfirm" xml:space="preserve">Importar alias desde:\n{0}\n\nEsto reemplazará sus alias actuales. ¿Continuar?</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportOk">Alias importados desde: {0}</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesExportFailed">Error al exportar el archivo de alias: {0} (ver registros).</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesExportOk">Alias exportados a: {0}</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesCellToolTip">Haga clic en una celda (o presione F2) para editar. Presione Enter para guardar.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesTip">Consejo: haga doble clic en una celda para editar. Los alias se guardan al hacer clic en Guardar.</sys:String>
 </ResourceDictionary>

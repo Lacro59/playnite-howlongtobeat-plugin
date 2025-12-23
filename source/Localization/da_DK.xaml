@@ -181,20 +181,26 @@ Here is the list of commands:</sys:String>
 
     <!-- Aliases Tab -->
 
-    <sys:String x:Key="LOCHowLongToBeatAliases">Aliases</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesDescription">Map flere spiltitler til én HowLongToBeat-titel.</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesSource">Kildetitel</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesTarget">Mål (HLTB-titel)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliases">Alias</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesDescription" xml:space="preserve">Kortlæg flere spiltitler til en enkelt HowLongToBeat-søgetitel.
+Eksempel:
+  Kilde: Pokemon Red Version
+  Mål: Pokemon Red and Blue</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesSource">Kilde titel</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesTarget">Mål (HLTB titel)</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAliasesReset">Nulstil</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesResetConfirm">Erstat dine nuværende aliases med standard Pokémon dual-release aliases?</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesResetConfirm">Erstat dine nuværende alias med standard Pokémon-dobbeltudgivelsesalias?</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAliasesImport">Importer</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAliasesExport">Eksporter</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesFilePathUnavailable">Pluginens brugerdata-sti er ikke tilgængelig.</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportNotFound">Ingen aliasfil fundet: {0}</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportFailed">Kunne ikke importere aliasfil: {0} (se log).</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportConfirm">Importer alias fra:\n{0}\n\nDette erstatter dine nuværende aliases. Fortsæt?</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportOk">Importerede aliases fra: {0}</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesExportFailed">Kunne ikke eksportere aliasfil: {0} (se log).</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesExportOk">Eksporterede aliases til: {0}</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesOpenFile">Åbn aliases.json</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesFilePathUnavailable">Plugin brugerdatesti er ikke tilgængeligt.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportNotFound">Ingen alias-fil fundet: {0}</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportFailed">Kunne ikke importere alias-fil: {0} (se logs).</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportConfirm" xml:space="preserve">Importer alias fra:\n{0}\n\nDette vil erstatte dine nuværende alias. Fortsæt?</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportOk">Alias importeret fra: {0}</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesExportFailed">Kunne ikke eksportere alias-fil: {0} (se logs).</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesExportOk">Alias eksporteret til: {0}</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesCellToolTip">Klik på en celle (eller tryk F2) for at redigere. Tryk Enter for at bekræfte.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesTip">Tip: dobbeltklik på en celle for at redigere. Alias gemmes, når du klikker Gem.</sys:String>
 
 </ResourceDictionary>

@@ -179,4 +179,26 @@ Hier ist die Liste von Befehlen:</sys:String>
     -stores={n}	Filter nach Store Name (z.B.:-stores=steam / -stores=steam,epic)
     -status={n}	Filter nach Status Name (z.B.:-status=played / -status=played,playing)</sys:String>
 
+    <!-- Aliases -->
+    <sys:String x:Key="LOCHowLongToBeatAliases">Aliasse</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesDescription" xml:space="preserve">Mehrere Spieltitel auf einen einzigen HowLongToBeat-Suchtitel abbilden.
+Beispiel:
+  Quelle: Pokemon Red Version
+  Ziel: Pokemon Red and Blue</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesSource">Quelltitel</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesTarget">Ziel (HLTB-Titel)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesReset">Zurücksetzen</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesResetConfirm">Ihre aktuellen Aliasse mit den Standard-Pokémon-Doppel-Veröffentlichungs-Aliassen ersetzen?</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImport">Importieren</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesExport">Exportieren</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesOpenFile">aliases.json öffnen</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesFilePathUnavailable">Plugin-Benutzerdatenpfad ist nicht verfügbar.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportNotFound">Keine Alias-Datei gefunden: {0}</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportFailed">Import der Alias-Datei fehlgeschlagen: {0} (siehe Protokolle).</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportConfirm" xml:space="preserve">Aliasse importieren von:\n{0}\n\nDies ersetzt Ihre aktuellen Aliasse. Fortfahren?</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportOk">Aliasse importiert von: {0}</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesExportFailed">Export der Alias-Datei fehlgeschlagen: {0} (siehe Protokolle).</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesExportOk">Aliasse exportiert nach: {0}</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesCellToolTip">Klicken Sie eine Zelle an (oder drücken Sie F2) zum Bearbeiten. Drücken Sie Enter zum Bestätigen.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesTip">Tipp: Doppelklicken Sie eine Zelle zum Bearbeiten. Aliasse werden beim Klicken auf Speichern gespeichert.</sys:String>
 </ResourceDictionary>

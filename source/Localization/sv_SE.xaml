@@ -178,4 +178,26 @@ Here is the list of commands:</sys:String>
     -stores={n}	Filter by store name (ex:-stores=steam / -stores=steam,epic)
     -status={n}	Filter by status name (ex:-status=played / -status=played,playing)</sys:String>
 
+    <!-- Aliases -->
+    <sys:String x:Key="LOCHowLongToBeatAliases">Alias</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesDescription" xml:space="preserve">Karta flera speltitlar till en enda HowLongToBeat-söktitel.
+Exempel:
+  Källa: Pokemon Red Version
+  Mål: Pokemon Red and Blue</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesSource">Källtitel</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesTarget">Mål (HLTB-titel)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesReset">Återställ</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesResetConfirm">Ersätta dina nuvarande alias med standard Pokémon-dual-release alias?</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImport">Importera</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesExport">Exportera</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesOpenFile">Öppna aliases.json</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesFilePathUnavailable">Plugin-användardatapath är inte tillgänglig.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportNotFound">Inget aliasfil hittades: {0}</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportFailed">Misslyckades med att importera aliasfil: {0} (se loggar).</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportConfirm" xml:space="preserve">Importera alias från:\n{0}\n\nDetta kommer att ersätta dina nuvarande alias. Fortsätt?</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportOk">Alias importerade från: {0}</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesExportFailed">Misslyckades med att exportera aliasfil: {0} (se loggar).</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesExportOk">Alias exporterades till: {0}</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesCellToolTip">Klicka på en cell (eller tryck F2) för att redigera. Tryck Enter för att spara.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesTip">Tips: dubbelklicka på en cell för att redigera. Alias sparas när du klickar på Spara.</sys:String>
 </ResourceDictionary>

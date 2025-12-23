@@ -16,7 +16,7 @@
     <sys:String x:Key="LOCHowLongToBeatExport">Exporta dades de HowLongToBeat</sys:String>
     <sys:String x:Key="LOCHowLongToBeatExportCsvComma">Exporta CSV (coma)</sys:String>
     <sys:String x:Key="LOCHowLongToBeatExportCsvSemicolon">Exporta CSV (punt i coma)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExportJson">Exporta JSON</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportJson">Exporta JSON</sys:string>
     <sys:String x:Key="LOCHowLongToBeatExportFolderTooltip">Carpeta de destinació per a l'exportació</sys:String>
     <sys:String x:Key="LOCBrowseLabel">Navega...</sys:String>
 
@@ -182,22 +182,25 @@ Here is the list of commands:</sys:String>
     <!-- Aliases Tab -->
 
     <sys:String x:Key="LOCHowLongToBeatAliases">Àlies</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesDescription">Assigna diversos títols de joc a un sol títol de cerca a HowLongToBeat.</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesSource">Títol d’origen</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesDescription" xml:space="preserve">Mapeja diversos títols de jocs a un sol títol de cerca de HowLongToBeat.
+Exemple:
+  Origen: Pokemon Red Version
+  Destí: Pokemon Red and Blue</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesSource">Títol d'origen</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAliasesTarget">Destí (títol HLTB)</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAliasesReset">Restableix</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesResetConfirm">Vols substituir els àlies actuals pels àlies predeterminats de llançaments dobles de Pokémon?</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesResetConfirm">Reemplaçar els vostres àlies actuals amb els àlies predeterminats de llançament dual de Pokémon?</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAliasesImport">Importa</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAliasesExport">Exporta</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAliasesOpenFile">Obre aliases.json</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesFilePathUnavailable">La ruta de dades d’usuari del connector no està disponible.</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportNotFound">No s’ha trobat cap fitxer d’àlies: {0}</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportFailed">No s’ha pogut importar el fitxer d’àlies: {0} (vegeu els registres).</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportConfirm">Vols importar els àlies de:\n{0}\n\nAixò substituirà els àlies actuals. Vols continuar?</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportOk">S’han importat els àlies de: {0}</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesExportFailed">No s’ha pogut exportar el fitxer d’àlies: {0} (vegeu els registres).</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesExportOk">S’han exportat els àlies a: {0}</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesCellToolTip">Fes clic a una cel·la (o prem F2) per editar. Prem Enter per guardar.</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesTip">Consell: fes doble clic a una cel·la per editar. Els àlies es guarden quan facis clic a Desa.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesFilePathUnavailable">La ruta de dades d'usuari del connector no està disponible.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportNotFound">No s'ha trobat cap fitxer d'àlies: {0}</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportFailed">Error en importar el fitxer d'àlies: {0} (vegeu els registres).</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportConfirm" xml:space="preserve">Importar àlies des de:\n{0}\n\nAixò substituirà els vostres àlies actuals. Continuar?</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportOk">Àlies importats des de: {0}</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesExportFailed">Error en exportar el fitxer d'àlies: {0} (vegeu els registres).</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesExportOk">Àlies exportats a: {0}</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesCellToolTip">Feu clic a una cel·la (o premeu F2) per editar. Premeu Retorn per confirmar.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesTip">Consell: feu doble clic a una cel·la per editar. Els àlies es desaran quan feu clic a Desa.</sys:String>
 
 </ResourceDictionary>

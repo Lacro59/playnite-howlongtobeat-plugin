@@ -179,4 +179,27 @@ Here is the list of commands:</sys:String>
     -stores={n}	Filter by store name (ex:-stores=steam / -stores=steam,epic)
     -status={n}	Filter by status name (ex:-status=played / -status=played,playing)</sys:String>
 
+    <!-- Aliases -->
+    <sys:String x:Key="LOCHowLongToBeatAliases">Alias</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesDescription" xml:space="preserve">Peta beberapa judul game ke satu judul pencarian HowLongToBeat.
+Contoh:
+  Sumber: Pokemon Red Version
+  Target: Pokemon Red and Blue</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesSource">Judul sumber</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesTarget">Target (judul HLTB)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesReset">Reset</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesResetConfirm">Ganti alias Anda saat ini dengan alias rilis ganda Pokémon default?</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImport">Impor</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesExport">Ekspor</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesOpenFile">Buka aliases.json</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesFilePathUnavailable">Jalur data pengguna plugin tidak tersedia.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportNotFound">File alias tidak ditemukan: {0}</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportFailed">Gagal mengimpor file alias: {0} (lihat log).</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportConfirm" xml:space="preserve">Impor alias dari:\n{0}\n\nIni akan menggantikan alias Anda saat ini. Lanjutkan?</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportOk">Alias diimpor dari: {0}</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesExportFailed">Gagal mengekspor file alias: {0} (lihat log).</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesExportOk">Alias diekspor ke: {0}</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesCellToolTip">Klik sel (atau tekan F2) untuk mengedit. Tekan Enter untuk menyimpan.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesTip">Tip: klik dua kali sel untuk mengedit. Alias disimpan ketika Anda mengklik Simpan.</sys:String>
+
 </ResourceDictionary>

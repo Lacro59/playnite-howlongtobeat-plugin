@@ -178,4 +178,27 @@ Here is the list of commands:</sys:String>
     -stores={n}	Filter by store name (ex:-stores=steam / -stores=steam,epic)
     -status={n}	Filter by status name (ex:-status=played / -status=played,playing)</sys:String>
 
+    <!-- Aliases -->
+    <sys:String x:Key="LOCHowLongToBeatAliases">نام مستعار</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesDescription" xml:space="preserve">نگاشت چند عنوان بازی به یک عنوان جستجوی HowLongToBeat.
+
+Example:
+  Source: Pokemon Red Version
+  Target: Pokemon Red and Blue</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesSource">عنوان منبع</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesTarget">هدف (عنوان HLTB)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesReset">بازنشانی</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesResetConfirm">جایگزینی نام‌های مستعار فعلی با نام‌های مستعار پیش‌فرض Pokémon برای انتشار دوگانه؟</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImport">وارد کردن</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesExport">صادر کردن</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesOpenFile">باز کردن aliases.json</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesFilePathUnavailable">مسیر داده‌های کاربر پلاگین در دسترس نیست.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportNotFound">فایل نام مستعار پیدا نشد: {0}</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportFailed">وارد کردن فایل نام مستعار با خطا مواجه شد: {0} (به لاگ‌ها مراجعه کنید).</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportConfirm">وارد کردن نام‌های مستعار از:\n{0}\n\nاین کار نام‌های مستعار فعلی شما را جایگزین می‌کند. ادامه می‌دهید؟</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportOk">نام‌های مستعار از: {0} وارد شدند</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesExportFailed">صادر کردن فایل نام مستعار با خطا مواجه شد: {0} (به لاگ‌ها مراجعه کنید).</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesExportOk">نام‌های مستعار صادر شدند به: {0}</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesCellToolTip">برای ویرایش روی یک سلول کلیک کنید (یا F2 را فشار دهید). برای تایید Enter را بزنید.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesTip">راهنما: برای ویرایش روی یک سلول دوبار کلیک کنید. نام‌های مستعار هنگام کلیک روی ذخیره ذخیره می‌شوند.</sys:String>
 </ResourceDictionary>

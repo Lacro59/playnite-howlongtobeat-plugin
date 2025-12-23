@@ -179,4 +179,26 @@ Here is the list of commands:</sys:String>
     -stores={n}	Filter by store name (ex:-stores=steam / -stores=steam,epic)
     -status={n}	Filter by status name (ex:-status=played / -status=played,playing)</sys:String>
 
+    <!-- Aliases -->
+    <sys:String x:Key="LOCHowLongToBeatAliases">Alias</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesDescription" xml:space="preserve">Mapirajte više naslova igara na jedan HowLongToBeat naslov za pretraživanje.
+Primjer:
+  Izvor: Pokemon Red Version
+  Cilj: Pokemon Red and Blue</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesSource">Izvorni naslov</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesTarget">Cilj (HLTB naslov)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesReset">Resetiraj</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesResetConfirm">Zamijeniti vaše trenutne alias-e zadanim Pokémon dvojno-izdanje alias-ima?</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImport">Uvezi</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesExport">Izvezi</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesOpenFile">Otvori aliases.json</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesFilePathUnavailable">Put korisničkih podataka dodatka nije dostupan.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportNotFound">Datoteka alias-a nije pronađena: {0}</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportFailed">Uvoz datoteke alias-a nije uspio: {0} (pogledajte zapise).</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportConfirm" xml:space="preserve">Uvezi alias-e iz:\n{0}\n\nOvo će zamijeniti vaše trenutne alias-e. Nastaviti?</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportOk">Uvezeni alias-i iz: {0}</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesExportFailed">Izvoz datoteke alias-a nije uspio: {0} (pogledajte zapise).</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesExportOk">Alias-i izvezeni u: {0}</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesCellToolTip">Kliknite ćeliju (ili pritisnite F2) za uređivanje. Pritisnite Enter za spremanje.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesTip">Savjet: dvokliknite ćeliju za uređivanje. Alias-i se spremaju kada kliknete Spremi.</sys:String>
 </ResourceDictionary>

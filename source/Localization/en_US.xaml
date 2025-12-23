@@ -197,7 +197,7 @@ Example:
     <sys:String x:Key="LOCHowLongToBeatAliasesFilePathUnavailable">Plugin user data path is not available.</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAliasesImportNotFound">No alias file found: {0}</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAliasesImportFailed">Failed to import alias file: {0} (see logs).</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportConfirm">Import aliases from:\n{0}\n\nThis will replace your current aliases. Continue?</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportConfirm" xml:space="preserve">Import aliases from:\n{0}\n\nThis will replace your current aliases. Continue?</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAliasesImportOk">Imported aliases from: {0}</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAliasesExportFailed">Failed to export alias file: {0} (see logs).</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAliasesExportOk">Exported aliases to: {0}</sys:String>

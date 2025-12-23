@@ -178,4 +178,26 @@
     -stores={n}        Фільтрувати за назвою магазину (наприклад:-stores=steam / -stores=steam,epic)
     -status={n}	Фільтрувати за статусом завершення (наприклад:-status=played / -status=played,playing)</sys:String>
 
+    <!-- Aliases -->
+    <sys:String x:Key="LOCHowLongToBeatAliases">Псевдоніми</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesDescription" xml:space="preserve">Відображення кількох назв ігор на одну назву пошуку HowLongToBeat.
+Приклад:
+  Джерело: Pokemon Red Version
+  Ціль: Pokemon Red and Blue</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesSource">Оригінальна назва</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesTarget">Ціль (назва HLTB)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesReset">Скинути</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesResetConfirm">Замінити ваші поточні псевдоніми на стандартні псевдоніми Pokémon для подвійного релізу?</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImport">Імпорт</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesExport">Експорт</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesOpenFile">Відкрити aliases.json</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesFilePathUnavailable">Шлях до даних користувача плагіна недоступний.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportNotFound">Файл псевдонімів не знайдено: {0}</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportFailed">Не вдалося імпортувати файл псевдонімів: {0} (див. журнали).</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportConfirm" xml:space="preserve">Імпортувати псевдоніми з:\n{0}\n\nЦе замінить ваші поточні псевдоніми. Продовжити?</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportOk">Псевдоніми імпортовано з: {0}</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesExportFailed">Не вдалося експортувати файл псевдонімів: {0} (див. журнали).</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesExportOk">Псевдоніми експортовано до: {0}</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesCellToolTip">Клацніть по осередку (або натисніть F2), щоб редагувати. Натисніть Enter, щоб підтвердити.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesTip">Підказка: двічі клацніть осередок, щоб редагувати. Псевдоніми зберігаються при натисканні "Зберегти".</sys:String>
 </ResourceDictionary>

@@ -178,4 +178,26 @@ Here is the list of commands:</sys:String>
     -stores={n}	Filter by store name (ex:-stores=steam / -stores=steam,epic)
     -status={n}	Filter by status name (ex:-status=played / -status=played,playing)</sys:String>
 
+    <!-- Aliases -->
+    <sys:String x:Key="LOCHowLongToBeatAliases">Alias</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesDescription" xml:space="preserve">Kartlegg flere spilltitler til en enkelt HowLongToBeat-søk tittel.
+Eksempel:
+  Kilde: Pokemon Red Version
+  Mål: Pokemon Red and Blue</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesSource">Kildetittel</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesTarget">Mål (HLTB-tittel)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesReset">Tilbakestill</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesResetConfirm">Erstatte dine nåværende alias med standard Pokémon dobbeltutgivelses alias?</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImport">Importer</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesExport">Eksporter</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesOpenFile">Åpne aliases.json</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesFilePathUnavailable">Plugin brukerdata banen er ikke tilgjengelig.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportNotFound">Ingen alias-fil funnet: {0}</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportFailed">Klarte ikke å importere alias-fil: {0} (se logger).</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportConfirm" xml:space="preserve">Importer alias fra:\n{0}\n\nDette vil erstatte dine nåværende alias. Fortsette?</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportOk">Alias importert fra: {0}</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesExportFailed">Klarte ikke å eksportere alias-fil: {0} (se logger).</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesExportOk">Alias eksportert til: {0}</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesCellToolTip">Klikk en celle (eller trykk F2) for å redigere. Trykk Enter for å bekrefte.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesTip">Tips: dobbeltklikk en celle for å redigere. Alias lagres når du klikker Lagre.</sys:String>
 </ResourceDictionary>

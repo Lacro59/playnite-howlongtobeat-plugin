@@ -181,26 +181,25 @@ Here is the list of commands:</sys:String>
     -status={n}	Filter by status name (ex:-status=played / -status=played,playing)</sys:String>
 
     <!-- Aliases -->
-    <sys:String x:Key="LOCHowLongToBeatAliases">Aliases</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesDescription" xml:space="preserve">Map multiple game titles to a single HowLongToBeat search title.
-
-Example:
-  Source: Pokemon Red Version
-  Target: Pokemon Red and Blue</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesSource">Source title</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesTarget">Target (HLTB title)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesReset">Reset</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesResetConfirm">Replace your current aliases with the default Pokémon dual-release aliases?</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImport">Import</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesExport">Export</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesOpenFile">Open aliases.json</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesFilePathUnavailable">Plugin user data path is not available.</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportNotFound">No alias file found: {0}</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportFailed">Failed to import alias file: {0} (see logs).</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportConfirm">Import aliases from:\n{0}\n\nThis will replace your current aliases. Continue?</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportOk">Imported aliases from: {0}</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesExportFailed">Failed to export alias file: {0} (see logs).</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesExportOk">Exported aliases to: {0}</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesCellToolTip">Click a cell (or press F2) to edit. Press Enter to commit.</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesTip">Tip: double-click a cell to edit. Aliases are saved when you click Save.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliases">الأسماء المستعارة</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesDescription" xml:space="preserve">ربط عناوين ألعاب متعددة بعنوان بحث واحد في HowLongToBeat.
+مثال:
+  المصدر: Pokemon Red Version
+  الهدف: Pokemon Red and Blue</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesSource">عنوان المصدر</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesTarget">الهدف (عنوان HLTB)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesReset">إعادة تعيين</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesResetConfirm">هل استبدال الأسماء المستعارة الحالية بالأسماء الافتراضية لإصدارات Pokémon الثنائية؟</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImport">استيراد</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesExport">تصدير</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesOpenFile">فتح aliases.json</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesFilePathUnavailable">مسار بيانات مستخدم الإضافة غير متاح.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportNotFound">لم يتم العثور على ملف ألقاب: {0}</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportFailed">فشل استيراد ملف الألقاب: {0} (راجع السجلات).</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportConfirm" xml:space="preserve">استيراد الأسماء المستعارة من:\n{0}\n\nسيؤدي هذا إلى استبدال الأسماء المستعارة الحالية. متابعة؟</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportOk">تم استيراد الأسماء المستعارة من: {0}</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesExportFailed">فشل تصدير ملف الألقاب: {0} (راجع السجلات).</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesExportOk">تم تصدير الأسماء المستعارة إلى: {0}</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesCellToolTip">انقر على خلية (أو اضغط F2) للتحرير. اضغط Enter للحفظ.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesTip">نصيحة: انقر نقراً مزدوجاً على خلية للتحرير. يتم حفظ الأسماء المستعارة عند النقر على حفظ.</sys:String>
 </ResourceDictionary>
