@@ -2224,8 +2224,19 @@ namespace HowLongToBeat.Services
                         };
 
                         IsConnected = false;
-                        webView.Navigate(UrlLogOut);
-                        _ = webView.OpenDialog();
+                        // Clear cookies for HowLongToBeat domains to avoid stale sessions before login
+                        try
+                        {
+                            webView.DeleteDomainCookiesRegex("howlongtobeat\\.com$");
+                        }
+                        catch
+                        {
+                            try { webView.DeleteDomainCookies(".howlongtobeat.com"); } catch { }
+                            try { webView.DeleteDomainCookies("howlongtobeat.com"); } catch { }
+                            try { webView.DeleteDomainCookies("www.howlongtobeat.com"); } catch { }
+                        }
+                         webView.Navigate(UrlLogOut);
+                         _ = webView.OpenDialog();
                     }
                 });
             }
