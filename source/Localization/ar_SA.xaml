@@ -180,4 +180,26 @@ Here is the list of commands:</sys:String>
     -stores={n}	Filter by store name (ex:-stores=steam / -stores=steam,epic)
     -status={n}	Filter by status name (ex:-status=played / -status=played,playing)</sys:String>
 
+    <!-- Aliases -->
+    <sys:String x:Key="LOCHowLongToBeatAliases">الأسماء المستعارة</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesDescription" xml:space="preserve">ربط عناوين ألعاب متعددة بعنوان بحث واحد في HowLongToBeat.
+مثال:
+  المصدر: Pokemon Red Version
+  الهدف: Pokemon Red and Blue</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesSource">عنوان المصدر</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesTarget">الهدف (عنوان HLTB)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesReset">إعادة تعيين</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesResetConfirm">هل استبدال الأسماء المستعارة الحالية بالأسماء الافتراضية لإصدارات Pokémon الثنائية؟</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImport">استيراد</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesExport">تصدير</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesOpenFile">فتح aliases.json</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesFilePathUnavailable">مسار بيانات مستخدم الإضافة غير متاح.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportNotFound">لم يتم العثور على ملف ألقاب: {0}</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportFailed">فشل استيراد ملف الألقاب: {0} (راجع السجلات).</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportConfirm" xml:space="preserve">استيراد الأسماء المستعارة من:\n{0}\n\nسيؤدي هذا إلى استبدال الأسماء المستعارة الحالية. متابعة؟</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportOk">تم استيراد الأسماء المستعارة من: {0}</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesExportFailed">فشل تصدير ملف الألقاب: {0} (راجع السجلات).</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesExportOk">تم تصدير الأسماء المستعارة إلى: {0}</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesCellToolTip">انقر على خلية (أو اضغط F2) للتحرير. اضغط Enter للحفظ.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesTip">نصيحة: انقر نقراً مزدوجاً على خلية للتحرير. يتم حفظ الأسماء المستعارة عند النقر على حفظ.</sys:String>
 </ResourceDictionary>

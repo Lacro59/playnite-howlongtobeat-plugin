@@ -177,4 +177,27 @@
     -stores={n} 	  Φίλτρο με όνομα καταστήματος (πχ:-stores=steam / -stores=steres=steam, pic)
     -status={n} 	  Φίλτρο με κατάστασης παιχνιδιού (πχ: -status=έπαιξε / -status=played,playing)</sys:String>
 
+    <!-- Aliases -->
+    <sys:String x:Key="LOCHowLongToBeatAliases">Ψευδώνυμα</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesDescription" xml:space="preserve">Χαρτογραφήστε πολλαπλούς τίτλους παιχνιδιών σε έναν τίτλο αναζήτησης HowLongToBeat.
+
+Example:
+  Source: Pokemon Red Version
+  Target: Pokemon Red and Blue</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesSource">Πρωτότυπος τίτλος</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesTarget">Στόχος (τίτλος HLTB)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesReset">Επαναφορά</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesResetConfirm">Να αντικατασταθούν τα τρέχοντα ψευδώνυμα με τα προεπιλεγμένα Pokémon διπλού κυκλοφορήματος;</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImport">Εισαγωγή</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesExport">Εξαγωγή</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesOpenFile">Άνοιγμα aliases.json</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesFilePathUnavailable">Η διαδρομή δεδομένων χρήστη του plugin δεν είναι διαθέσιμη.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportNotFound">Δεν βρέθηκε αρχείο ψευδωνύμων: {0}</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportFailed">Αποτυχία εισαγωγής αρχείου ψευδωνύμων: {0} (δείτε τα αρχεία καταγραφής).</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportConfirm">Εισαγωγή ψευδωνύμων από:\n{0}\n\nΑυτό θα αντικαταστήσει τα τρέχοντα ψευδώνυμα. Συνεχίζετε;</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportOk">Εισήχθησαν ψευδώνυμα από: {0}</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesExportFailed">Αποτυχία εξαγωγής αρχείου ψευδωνύμων: {0} (δείτε τα αρχεία καταγραφής).</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesExportOk">Εξήχθησαν ψευδώνυμα σε: {0}</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesCellToolTip">Κλικ σε κελί (ή πατήστε F2) για επεξεργασία. Πατήστε Enter για επιβεβαίωση.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesTip">Συμβουλή: διπλό κλικ σε κελί για επεξεργασία. Τα ψευδώνυμα αποθηκεύονται όταν κάνετε κλικ στο Αποθήκευση.</sys:String>
 </ResourceDictionary>

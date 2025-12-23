@@ -179,4 +179,26 @@ Here is the list of commands:</sys:String>
     -stores={n}	Filter by store name (ex:-stores=steam / -stores=steam,epic)
     -status={n}	Filter by status name (ex:-status=played / -status=played,playing)</sys:String>
 
+    <!-- Aliases -->
+    <sys:String x:Key="LOCHowLongToBeatAliases">Псевдоними</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesDescription" xml:space="preserve">Картографиране на множество заглавия на игри към едно заглавие за търсене в HowLongToBeat.
+Пример:
+  Източник: Pokemon Red Version
+  Цел: Pokemon Red and Blue</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesSource">Източник заглавие</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesTarget">Цел (HLTB заглавие)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesReset">Нулиране</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesResetConfirm">Да заместите текущите псевдоними с подразбиращите се Pokémon двойни издания?</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImport">Импортиране</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesExport">Експорт</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesOpenFile">Отваряне на aliases.json</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesFilePathUnavailable">Пътят до потребителските данни на плъгина не е наличен.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportNotFound">Не е намерен файл с псевдоними: {0}</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportFailed">Грешка при импортиране на файл с псевдоними: {0} (виж логовете).</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportConfirm" xml:space="preserve">Импортиране на псевдоними от:\n{0}\n\n Това ще замени текущите ви псевдоними. Продължавате ли?</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportOk">Псевдоними импортирани от: {0}</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesExportFailed">Грешка при експортиране на файл с псевдоними: {0} (виж логовете).</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesExportOk">Псевдоними експортирани в: {0}</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesCellToolTip">Кликнете клетка (или натиснете F2) за редакция. Натиснете Enter за запис.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesTip">Съвет: двойно кликване върху клетка за редакция. Псевдонимите се запазват при натискане на Запази.</sys:String>
 </ResourceDictionary>

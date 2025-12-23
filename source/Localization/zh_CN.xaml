@@ -177,4 +177,26 @@
     -stores={n}	按商店名称筛选 (ex:-stores=steam / -stores=steam,epic)
     -status={n}	按状态名称筛选 (ex:-status=played / -status=played,playing)</sys:String>
 
+    <!-- Aliases -->
+    <sys:String x:Key="LOCHowLongToBeatAliases">别名</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesDescription" xml:space="preserve">将多个游戏标题映射到单个 HowLongToBeat 搜索标题。
+示例:
+  来源: Pokemon Red Version
+  目标: Pokemon Red and Blue</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesSource">来源标题</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesTarget">目标 (HLTB 标题)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesReset">重置</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesResetConfirm">将当前别名替换为默认的宝可梦双版本别名？</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImport">导入</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesExport">导出</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesOpenFile">打开 aliases.json</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesFilePathUnavailable">插件用户数据路径不可用。</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportNotFound">未找到别名文件: {0}</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportFailed">导入别名文件失败: {0} (查看日志)。</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportConfirm" xml:space="preserve">从以下位置导入别名:\n{0}\n\n这将替换您当前的别名。继续？</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportOk">已从导入别名: {0}</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesExportFailed">导出别名文件失败: {0} (查看日志)。</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesExportOk">别名已导出到: {0}</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesCellToolTip">单击单元格（或按 F2）以编辑。按回车提交。</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesTip">提示：双击单元格以编辑。单击“保存”时将保存别名。</sys:String>
 </ResourceDictionary>

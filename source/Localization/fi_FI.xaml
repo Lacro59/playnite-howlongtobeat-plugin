@@ -178,4 +178,26 @@ Here is the list of commands:</sys:String>
     -stores={n}	Filter by store name (ex:-stores=steam / -stores=steam,epic)
     -status={n}	Filter by status name (ex:-status=played / -status=played,playing)</sys:String>
 
+    <!-- Aliases -->
+    <sys:String x:Key="LOCHowLongToBeatAliases">Aliakset</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesDescription" xml:space="preserve">Kartta useita pelinimiteitä yhden HowLongToBeat-hakupäätteen alle.
+Esimerkki:
+  Lähde: Pokemon Red Version
+  Kohde: Pokemon Red and Blue</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesSource">Lähden nimi</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesTarget">Kohde (HLTB nimi)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesReset">Nollaa</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesResetConfirm">Korvataanko nykyiset aliakset oletus Pokémon-kaksoisjulkaisun aliaksilla?</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImport">Tuo</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesExport">Vie</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesOpenFile">Avaa aliases.json</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesFilePathUnavailable">Liitännän käyttäjätiedostopolku ei ole käytettävissä.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportNotFound">Alias-tiedostoa ei löydy: {0}</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportFailed">Alias-tiedoston tuonti epäonnistui: {0} (katso lokit).</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportConfirm" xml:space="preserve">Tuo aliasit kohteesta:\n{0}\n\nTämä korvaa nykyiset aliasit. Jatketaanko?</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportOk">Aliasit tuotu kohteesta: {0}</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesExportFailed">Alias-tiedoston vienti epäonnistui: {0} (katso lokit).</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesExportOk">Aliasit viety kohteeseen: {0}</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesCellToolTip">Napsauta solua (tai paina F2) muokataksesi. Paina Enter tallentaaksesi.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesTip">Vihje: kaksoisnapsauta solua muokataksesi. Alias tallennetaan, kun napsautat Tallenna.</sys:String>
 </ResourceDictionary>

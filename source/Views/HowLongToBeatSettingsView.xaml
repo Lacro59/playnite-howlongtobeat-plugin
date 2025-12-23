@@ -18,8 +18,6 @@
 
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
-        <converters:ValueOperationConverter x:Key="ValueOperationConverter"/>
-        <converters1:ObjectToStringConverter x:Key="ObjectToStringConverter"/>
     </UserControl.Resources>
 
     <TabControl Margin="20"
@@ -511,6 +509,210 @@
                                     VerticalAlignment="Center "/>
                         </Grid>
                     </Grid>
+                </StackPanel>
+            </ScrollViewer>
+        </TabItem>
+
+        <TabItem Header="{DynamicResource LOCHowLongToBeatAliases}">
+            <ScrollViewer Margin="0,10,0,0"
+                          VerticalScrollBarVisibility="Auto"
+                          PanningMode="VerticalOnly">
+                <StackPanel>
+                    <Label Content="{DynamicResource LOCHowLongToBeatAliasesDescription}"/>
+
+                    <Grid Margin="0,10,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="10"/>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="10"/>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="10"/>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="10"/>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="10"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Button Grid.Column="0"
+                                Content="{DynamicResource LOCAddTitle}"
+                                MinHeight="26"
+                                Click="ButtonAliasAdd_Click"/>
+                        <Button Grid.Column="2"
+                                Content="{DynamicResource LOCRemoveTitle}"
+                                MinHeight="26"
+                                Click="ButtonAliasRemove_Click"/>
+
+                        <Button Grid.Column="4"
+                                Content="{DynamicResource LOCHowLongToBeatAliasesImport}"
+                                MinHeight="26"
+                                Click="ButtonAliasImport_Click"/>
+                        <Button Grid.Column="6"
+                                Content="{DynamicResource LOCHowLongToBeatAliasesExport}"
+                                MinHeight="26"
+                                Click="ButtonAliasExport_Click"/>
+
+                        <Button Grid.Column="8"
+                                Content="{DynamicResource LOCHowLongToBeatAliasesReset}"
+                                MinHeight="26"
+                                Click="ButtonAliasReset_Click"/>
+
+                        <Button Grid.Column="10"
+                                Content="{DynamicResource LOCHowLongToBeatAliasesOpenFile}"
+                                MinHeight="26"
+                                HorizontalAlignment="Left"
+                                Click="ButtonAliasOpenFile_Click"/>
+                    </Grid>
+
+                    <DataGrid Margin="0,10,0,0"
+                              x:Name="PART_AliasesGrid"
+                              ItemsSource="{Binding Settings.GameNameAliasesList}"
+                              AutoGenerateColumns="False"
+                              CanUserAddRows="False"
+                              CanUserDeleteRows="False"
+                              IsReadOnly="False"
+                              HeadersVisibility="Column"
+                              SelectionMode="Extended"
+                              SelectionUnit="FullRow"
+                              MinHeight="250"
+                              GridLinesVisibility="None"
+                              RowHeight="32"
+                              Background="{DynamicResource ControlBackgroundBrush}"
+                              AlternationCount="0"
+                              ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                              ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                              ColumnWidth="*">
+                        <DataGrid.Resources>
+                            <SolidColorBrush x:Key="AliasesRowNormalBrush" Color="#00000000"/>
+                            <SolidColorBrush x:Key="AliasesRowHoverBrush" Color="#22FFFFFF"/>
+                            <SolidColorBrush x:Key="AliasesRowSelectedBrush" Color="#44FFFFFF"/>
+                            <SolidColorBrush x:Key="AliasesCellNormalForeground" Color="#BFC7CF"/>
+                            <SolidColorBrush x:Key="AliasesCellEditingForeground" Color="#FFFFFFFF"/>
+                            <!-- Use a subtle lighter background for editable/empty cells so they're visible on dark theme -->
+                            <SolidColorBrush x:Key="AliasesCellEditingBackground" Color="#3B4145"/>
+                            <SolidColorBrush x:Key="AliasesCellNormalBackground" Color="#2B2F33"/>
+
+                            <Style x:Key="AliasesCellTextBlockStyle" TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
+                                <Setter Property="VerticalAlignment" Value="Center"/>
+                                <Setter Property="Padding" Value="6,0"/>
+                                <Setter Property="Foreground" Value="{StaticResource AliasesCellNormalForeground}"/>
+                            </Style>
+                            <Style x:Key="AliasesCellTextBoxStyle" TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
+                                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                                <Setter Property="Padding" Value="6,0"/>
+                                <Setter Property="MinWidth" Value="200"/>
+                                <Setter Property="Background" Value="{StaticResource AliasesCellEditingBackground}"/>
+                                <Setter Property="Foreground" Value="{StaticResource AliasesCellEditingForeground}"/>
+                                <Setter Property="BorderBrush" Value="#AAA"/>
+                                <Setter Property="BorderThickness" Value="1"/>
+                            </Style>
+
+                            <!-- Make cell show a background rectangle so editable area is visible even when not editing -->
+                            <Style TargetType="DataGridCell" BasedOn="{StaticResource {x:Type DataGridCell}}">
+                                <Setter Property="Padding" Value="0"/>
+                                <Setter Property="BorderThickness" Value="0"/>
+                                <Setter Property="Background" Value="{StaticResource AliasesCellNormalBackground}"/>
+                                <Setter Property="Foreground" Value="{StaticResource AliasesCellNormalForeground}"/>
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="DataGridCell">
+                                            <Border x:Name="Bd"
+                                                    Background="{TemplateBinding Background}"
+                                                    SnapsToDevicePixels="True"
+                                                    Padding="4,2"
+                                                    HorizontalAlignment="Stretch">
+                                                <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Stretch"/>
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter TargetName="Bd" Property="Background" Value="{StaticResource AliasesRowHoverBrush}"/>
+                                                </Trigger>
+                                                <Trigger Property="IsSelected" Value="True">
+                                                    <Setter TargetName="Bd" Property="Background" Value="{StaticResource AliasesRowSelectedBrush}"/>
+                                                    <Setter Property="Foreground" Value="{StaticResource AliasesCellEditingForeground}"/>
+                                                </Trigger>
+                                                <Trigger Property="IsEditing" Value="True">
+                                                    <Setter TargetName="Bd" Property="Background" Value="{StaticResource AliasesCellEditingBackground}"/>
+                                                    <Setter Property="Foreground" Value="{StaticResource AliasesCellEditingForeground}"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </DataGrid.Resources>
+
+                        <DataGrid.RowStyle>
+                            <Style TargetType="DataGridRow" BasedOn="{StaticResource {x:Type DataGridRow}}">
+                                <Setter Property="Background" Value="{StaticResource AliasesRowNormalBrush}"/>
+                                <Setter Property="ToolTip" Value="{DynamicResource LOCHowLongToBeatAliasesCellToolTip}"/>
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="{StaticResource AliasesRowHoverBrush}"/>
+                                    </Trigger>
+                                    <Trigger Property="IsSelected" Value="True">
+                                        <Setter Property="Background" Value="{StaticResource AliasesRowSelectedBrush}"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </DataGrid.RowStyle>
+                        <DataGrid.Columns>
+                            <!-- Source column as template column so we can show a border around the displayed text when empty -->
+                            <DataGridTemplateColumn Header="{DynamicResource LOCHowLongToBeatAliasesSource}" Width="2*">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Border x:Name="bdSrc" Background="{StaticResource AliasesCellNormalBackground}" Padding="4,2" BorderBrush="Transparent" BorderThickness="0">
+                                            <TextBlock Text="{Binding Source}" VerticalAlignment="Center" Padding="6,0" Foreground="{StaticResource AliasesCellNormalForeground}"/>
+                                        </Border>
+                                        <DataTemplate.Triggers>
+                                            <DataTrigger Binding="{Binding Source}" Value="">
+                                                <Setter TargetName="bdSrc" Property="BorderBrush" Value="#555"/>
+                                                <Setter TargetName="bdSrc" Property="BorderThickness" Value="1"/>
+                                                <Setter TargetName="bdSrc" Property="Background" Value="{StaticResource AliasesCellEditingBackground}"/>
+                                            </DataTrigger>
+                                        </DataTemplate.Triggers>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                                <DataGridTemplateColumn.CellEditingTemplate>
+                                    <DataTemplate>
+                                        <Border BorderBrush="#AAAAAA" BorderThickness="1" Background="{StaticResource AliasesCellEditingBackground}" Padding="2">
+                                            <TextBox Text="{Binding Source, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center" Padding="6,0" Background="{StaticResource AliasesCellEditingBackground}" Foreground="{StaticResource AliasesCellEditingForeground}"/>
+                                        </Border>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellEditingTemplate>
+                            </DataGridTemplateColumn>
+
+                            <!-- Target column as template column -->
+                            <DataGridTemplateColumn Header="{DynamicResource LOCHowLongToBeatAliasesTarget}" Width="2*">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Border x:Name="bdTgt" Background="{StaticResource AliasesCellNormalBackground}" Padding="4,2" BorderBrush="Transparent" BorderThickness="0">
+                                            <TextBlock Text="{Binding Target}" VerticalAlignment="Center" Padding="6,0" Foreground="{StaticResource AliasesCellNormalForeground}"/>
+                                        </Border>
+                                        <DataTemplate.Triggers>
+                                            <DataTrigger Binding="{Binding Target}" Value="">
+                                                <Setter TargetName="bdTgt" Property="BorderBrush" Value="#555"/>
+                                                <Setter TargetName="bdTgt" Property="BorderThickness" Value="1"/>
+                                                <Setter TargetName="bdTgt" Property="Background" Value="{StaticResource AliasesCellEditingBackground}"/>
+                                            </DataTrigger>
+                                        </DataTemplate.Triggers>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                                <DataGridTemplateColumn.CellEditingTemplate>
+                                    <DataTemplate>
+                                        <Border BorderBrush="#AAAAAA" BorderThickness="1" Background="{StaticResource AliasesCellEditingBackground}" Padding="2">
+                                            <TextBox Text="{Binding Target, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center" Padding="6,0" Background="{StaticResource AliasesCellEditingBackground}" Foreground="{StaticResource AliasesCellEditingForeground}"/>
+                                        </Border>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellEditingTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                    <TextBlock Margin="0,8,0,0"
+                               Opacity="0.8"
+                               Text="{DynamicResource LOCHowLongToBeatAliasesTip}"/>
                 </StackPanel>
             </ScrollViewer>
         </TabItem>

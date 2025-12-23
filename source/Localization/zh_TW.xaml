@@ -177,5 +177,28 @@ Here is the list of commands:</sys:String>
     -fav		The game must be a favorite
     -stores={n}	Filter by store name (ex:-stores=steam / -stores=steam,epic)
     -status={n}	Filter by status name (ex:-status=played / -status=played,playing)</sys:String>
+    
+    <!-- Aliases -->
+    <sys:String x:Key="LOCHowLongToBeatAliases">別名</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesDescription" xml:space="preserve">將多個遊戲標題映射到單一 HowLongToBeat 搜尋標題。
+範例:
+  來源: Pokemon Red Version
+  目標: Pokemon Red and Blue</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesSource">來源標題</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesTarget">目標（HLTB 標題）</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesReset">重設</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesResetConfirm">是否以預設的 Pokémon 雙版別名取代您目前的別名？</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImport">匯入</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesExport">匯出</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesOpenFile">開啟 aliases.json</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesFilePathUnavailable">外掛使用者資料路徑不可用。</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportNotFound">找不到別名檔案：{0}</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportFailed">匯入別名檔案失敗：{0}（請查看日誌）。</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportConfirm" xml:space="preserve">從以下位置匯入別名：\n{0}\n\n這將取代您目前的別名。要繼續嗎？</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportOk">已匯入別名自：{0}</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesExportFailed">匯出別名檔案失敗：{0}（請查看日誌）。</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesExportOk">已將別名匯出至：{0}</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesCellToolTip">點擊儲存格（或按 F2）以編輯。按 Enter 提交。</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesTip">小提示：雙擊儲存格以編輯。按下「儲存」後會儲存別名。</sys:String>
 
 </ResourceDictionary>

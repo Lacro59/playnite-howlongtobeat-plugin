@@ -6,8 +6,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using HowLongToBeat.Services;
-using CommonPluginsShared;
 using HowLongToBeat.Models;
+using CommonPluginsShared;
 using CommonPluginsShared.Models;
 using System.Drawing.Imaging;
 using System.IO;
@@ -57,6 +57,13 @@ namespace HowLongToBeat.Views
             catch { }
 
             InitializeComponent();
+
+            // Forward mouse wheel from aliases grid to parent ScrollViewer so the settings page scrolls when hovering the grid
+            try
+            {
+                PART_AliasesGrid.PreviewMouseWheel += PART_AliasesGrid_PreviewMouseWheel;
+            }
+            catch { }
 
             // Run authentication check in fire-and-forget to avoid async void from constructor.
             try
@@ -117,6 +124,21 @@ namespace HowLongToBeat.Views
             PART_GameStatusPlaying.ItemsSource = gameStatus;
             PART_GameStatusCompleted.ItemsSource = gameStatus;
             PART_GameStatusCompletionist.ItemsSource = gameStatus;
+
+            // Ensure aliases list is hydrated for the UI.
+            try
+            {
+                if (_settingsRef != null)
+                {
+                    if ((_settingsRef.GameNameAliases == null || _settingsRef.GameNameAliases.Count == 0) && (_settingsRef.GameNameAliasesList == null || _settingsRef.GameNameAliasesList.Count == 0))
+                    {
+                        _settingsRef.GameNameAliases = GameNameAliases.GetDefaultPokemonAliases() ?? new Dictionary<string, string>();
+                    }
+
+                    _settingsRef.SyncAliasesListFromDictionary();
+                }
+            }
+            catch { }
         }
 
 
@@ -801,6 +823,223 @@ namespace HowLongToBeat.Views
                 default:
                     break;
             }
+        }
+
+        private void ButtonAliasAdd_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (_settingsRef == null)
+                {
+                    return;
+                }
+
+                _settingsRef.GameNameAliasesList.Add(new GameNameAliasEntry(string.Empty, string.Empty));
+                try
+                {
+                    PART_AliasesGrid?.ScrollIntoView(_settingsRef.GameNameAliasesList.LastOrDefault());
+                    PART_AliasesGrid?.Focus();
+                }
+                catch { }
+            }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, false, true, PluginDatabase.PluginName);
+            }
+        }
+
+        private void ButtonAliasRemove_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (_settingsRef == null)
+                {
+                    return;
+                }
+
+                var selected = PART_AliasesGrid?.SelectedItems;
+                if (selected == null || selected.Count == 0)
+                {
+                    return;
+                }
+
+                // Copy to avoid modifying collection while iterating WPF SelectedItems
+                var toRemove = selected.Cast<object>()
+                    .Select(o => o as GameNameAliasEntry)
+                    .Where(a => a != null)
+                    .ToList();
+
+                foreach (var a in toRemove)
+                {
+                    _settingsRef.GameNameAliasesList.Remove(a);
+                }
+            }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, false, true, PluginDatabase.PluginName);
+            }
+        }
+
+        private void ButtonAliasReset_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (_settingsRef == null)
+                {
+                    return;
+                }
+
+                var confirm = API.Instance.Dialogs.ShowMessage(
+                    ResourceProvider.GetString("LOCHowLongToBeatAliasesResetConfirm"),
+                    PluginDatabase.PluginName,
+                    MessageBoxButton.YesNo);
+
+                if (confirm != MessageBoxResult.Yes)
+                {
+                    return;
+                }
+
+                var defaults = GameNameAliases.GetDefaultPokemonAliases();
+                _settingsRef.GameNameAliases = defaults ?? new Dictionary<string, string>();
+                _settingsRef.SyncAliasesListFromDictionary();
+            }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, false, true, PluginDatabase.PluginName);
+            }
+        }
+
+        private void ButtonAliasImport_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (_settingsRef == null)
+                {
+                    return;
+                }
+
+                var userDataPath = PluginDatabase?.Paths?.PluginUserDataPath;
+                if (string.IsNullOrEmpty(userDataPath))
+                {
+                    API.Instance.Dialogs.ShowMessage(ResourceProvider.GetString("LOCHowLongToBeatAliasesFilePathUnavailable"));
+                    return;
+                }
+
+                if (!GameNameAliases.TryImportAliasesFromFile(userDataPath, out var aliases, out var filePath, out var error))
+                {
+                    if (error != null)
+                    {
+                        Common.LogError(error, false, true, PluginDatabase.PluginName);
+                        API.Instance.Dialogs.ShowMessage(string.Format(ResourceProvider.GetString("LOCHowLongToBeatAliasesImportFailed"), filePath ?? GameNameAliases.AliasFileName));
+                    }
+                    else
+                    {
+                        API.Instance.Dialogs.ShowMessage(string.Format(ResourceProvider.GetString("LOCHowLongToBeatAliasesImportNotFound"), filePath ?? GameNameAliases.AliasFileName));
+                    }
+                    return;
+                }
+
+                var confirm = API.Instance.Dialogs.ShowMessage(
+                    string.Format(ResourceProvider.GetString("LOCHowLongToBeatAliasesImportConfirm"), filePath),
+                    PluginDatabase.PluginName,
+                    MessageBoxButton.YesNo);
+
+                if (confirm != MessageBoxResult.Yes)
+                {
+                    return;
+                }
+
+                _settingsRef.GameNameAliases = aliases ?? new Dictionary<string, string>();
+                _settingsRef.SyncAliasesListFromDictionary();
+
+                API.Instance.Dialogs.ShowMessage(string.Format(ResourceProvider.GetString("LOCHowLongToBeatAliasesImportOk"), filePath));
+            }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, false, true, PluginDatabase.PluginName);
+            }
+        }
+
+        private void ButtonAliasExport_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (_settingsRef == null)
+                {
+                    return;
+                }
+
+                var userDataPath = PluginDatabase?.Paths?.PluginUserDataPath;
+                if (string.IsNullOrEmpty(userDataPath))
+                {
+                    API.Instance.Dialogs.ShowMessage(ResourceProvider.GetString("LOCHowLongToBeatAliasesFilePathUnavailable"));
+                    return;
+                }
+
+                // Ensure latest edits are captured
+                try { _settingsRef.SyncAliasesDictionaryFromList(); } catch { }
+
+                if (!GameNameAliases.TryExportAliasesToFile(userDataPath, _settingsRef.GameNameAliases, out var filePath, out var error))
+                {
+                    if (error != null)
+                    {
+                        Common.LogError(error, false, true, PluginDatabase.PluginName);
+                    }
+                    API.Instance.Dialogs.ShowMessage(string.Format(ResourceProvider.GetString("LOCHowLongToBeatAliasesExportFailed"), filePath ?? GameNameAliases.AliasFileName));
+                    return;
+                }
+
+                API.Instance.Dialogs.ShowMessage(string.Format(ResourceProvider.GetString("LOCHowLongToBeatAliasesExportOk"), filePath));
+            }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, false, true, PluginDatabase.PluginName);
+            }
+        }
+
+        private void ButtonAliasOpenFile_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var userDataPath = PluginDatabase?.Paths?.PluginUserDataPath;
+                var file = Services.GameNameAliases.GetAliasFilePath(userDataPath);
+                if (string.IsNullOrEmpty(file) || !File.Exists(file))
+                {
+                    API.Instance.Dialogs.ShowMessage(ResourceProvider.GetString("LOCHowLongToBeatAliasesFilePathUnavailable"));
+                    return;
+                }
+
+                var psi = new System.Diagnostics.ProcessStartInfo(file) { UseShellExecute = true };
+                System.Diagnostics.Process.Start(psi);
+            }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, false, true, PluginDatabase.PluginName);
+            }
+        }
+
+        private void PART_AliasesGrid_PreviewMouseWheel(object sender, System.Windows.Input.MouseWheelEventArgs e)
+        {
+            try
+            {
+                // Find nearest ancestor ScrollViewer
+                DependencyObject dep = (DependencyObject)sender;
+                while (dep != null && !(dep is ScrollViewer))
+                {
+                    dep = VisualTreeHelper.GetParent(dep);
+                }
+
+                var sv = dep as ScrollViewer;
+                if (sv != null)
+                {
+                    // Adjust scroll amount. Use a divisor so wheel feels natural.
+                    double newOffset = sv.VerticalOffset - (e.Delta / 3.0);
+                    newOffset = Math.Max(0, Math.Min(newOffset, sv.ScrollableHeight));
+                    sv.ScrollToVerticalOffset(newOffset);
+                    e.Handled = true;
+                }
+            }
+            catch { }
         }
     }
 

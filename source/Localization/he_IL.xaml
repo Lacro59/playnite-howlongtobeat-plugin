@@ -179,4 +179,32 @@ Here is the list of commands:</sys:String>
     -stores={n}	Filter by store name (ex:-stores=steam / -stores=steam,epic)
     -status={n}	Filter by status name (ex:-status=played / -status=played,playing)</sys:String>
 
+    <!-- Aliases -->
+
+    <sys:String x:Key="LOCHowLongToBeatAliases">כינויים</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesDescription" xml:space="preserve">מיפוי מספר כותרות משחק לשם חיפוש יחיד ב‑HowLongToBeat.
+
+Example:
+  מקור: Pokemon Red Version
+  יעד: Pokemon Red and Blue</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesSource">כותרת מקור</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesTarget">יעד (כותרת HLTB)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesReset">איפוס</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesResetConfirm">האם להחליף את הכינויים הנוכחיים בכינויי ברירת המחדל של Pokémon עבור שחרור כפול?</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImport">ייבא</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesExport">ייצא</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesOpenFile">פתח aliases.json</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesFilePathUnavailable">נתיב נתוני משתמש של התוסף אינו זמין.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportNotFound">קובץ כינויים לא נמצא: {0}</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportFailed">נכשל בייבוא קובץ כינויים: {0} (עיין ביומנים).</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportConfirm" xml:space="preserve">ייבא כינויים מ:
+{0}
+
+פעולה זו תחליף את הכינויים הנוכחיים שלך. האם להמשיך?</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportOk">יובא כינויים מ: {0}</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesExportFailed">נכשל ביצוא קובץ כינויים: {0} (עיין ביומנים).</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesExportOk">יצא כינויים אל: {0}</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesCellToolTip">לחץ על תא (או לחץ F2) כדי לערוך. לחץ Enter לאישור.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesTip">טיפ: לחץ פעמיים על תא כדי לערוך. הכינויים נשמרים כאשר לוחצים על שמירה.</sys:String>
+    
 </ResourceDictionary>

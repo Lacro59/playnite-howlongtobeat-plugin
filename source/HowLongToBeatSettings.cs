@@ -14,6 +14,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
+using System.Collections.ObjectModel;
 
 namespace HowLongToBeat
 {
@@ -50,6 +51,55 @@ namespace HowLongToBeat
         public bool EnableVerboseLogging { get; set; } = false;
 
         public bool EnableProgressBarInDataView { get; set; } = true;
+
+        public Dictionary<string, string> GameNameAliases { get; set; } = new Dictionary<string, string>();
+
+        [DontSerialize]
+        public ObservableCollection<GameNameAliasEntry> GameNameAliasesList { get; set; } = new ObservableCollection<GameNameAliasEntry>();
+
+        public void SyncAliasesListFromDictionary()
+        {
+            try
+            {
+                GameNameAliasesList.Clear();
+
+                if (GameNameAliases == null)
+                {
+                    GameNameAliases = new Dictionary<string, string>();
+                }
+
+                foreach (var kv in GameNameAliases.OrderBy(a => a.Key, StringComparer.OrdinalIgnoreCase))
+                {
+                    GameNameAliasesList.Add(new GameNameAliasEntry(kv.Key, kv.Value));
+                }
+            }
+            catch
+            {
+            }
+        }
+
+        public void SyncAliasesDictionaryFromList()
+        {
+            try
+            {
+                var dict = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+                foreach (var entry in GameNameAliasesList ?? new ObservableCollection<GameNameAliasEntry>())
+                {
+                    if (entry == null) continue;
+                    var src = (entry.Source ?? string.Empty).Trim();
+                    var dst = (entry.Target ?? string.Empty).Trim();
+                    if (string.IsNullOrEmpty(src) || string.IsNullOrEmpty(dst)) continue;
+                    if (!dict.ContainsKey(src))
+                    {
+                        dict[src] = dst;
+                    }
+                }
+                GameNameAliases = dict;
+            }
+            catch
+            {
+            }
+        }
 
         private bool _enableIntegrationViewItem = true;
         public bool EnableIntegrationViewItem { get => _enableIntegrationViewItem; set => SetValue(ref _enableIntegrationViewItem, value); }
@@ -568,12 +618,16 @@ namespace HowLongToBeat
         public void CancelEdit()
         {
             Settings = EditingClone;
+            try { Settings.SyncAliasesListFromDictionary(); } catch { }
         }
 
         // Code executed when user decides to confirm changes made since BeginEdit was called.
         // This method should save settings made to Option1 and Option2.
         public void EndEdit()
         {
+            // Persist aliases edits from UI list back into the dictionary.
+            try { Settings.SyncAliasesDictionaryFromList(); } catch { }
+
             Settings.ThumbSolidColorBrush = HowLongToBeatSettingsView.ThumbSolidColorBrush;
             Settings.ThumbLinearGradient = HowLongToBeatSettingsView.ThumbLinearGradient;
 

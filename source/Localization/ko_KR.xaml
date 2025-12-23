@@ -178,4 +178,27 @@ Here is the list of commands:</sys:String>
     -stores={n}	Filter by store name (ex:-stores=steam / -stores=steam,epic)
     -status={n}	Filter by status name (ex:-status=played / -status=played,playing)</sys:String>
 
+    <!-- Aliases -->
+    <sys:String x:Key="LOCHowLongToBeatAliases">별칭</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesDescription" xml:space="preserve">여러 게임 제목을 단일 HowLongToBeat 검색 제목에 매핑합니다.
+
+예시:
+  소스: Pokemon Red Version
+  대상: Pokemon Red and Blue</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesSource">원본 제목</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesTarget">대상 (HLTB 제목)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesReset">재설정</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesResetConfirm">현재 별칭을 기본 Pokémon 이중 출시 별칭으로 바꾸시겠습니까?</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImport">가져오기</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesExport">내보내기</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesOpenFile">aliases.json 열기</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesFilePathUnavailable">플러그인 사용자 데이터 경로를 사용할 수 없습니다.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportNotFound">별칭 파일을 찾을 수 없음: {0}</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportFailed">별칭 파일 가져오기에 실패했습니다: {0} (로그 참조).</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportConfirm">다음에서 별칭 가져오기:\n{0}\n\n이 작업은 현재 별칭을 대체합니다. 계속하시겠습니까?</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportOk">다음에서 별칭을 가져왔습니다: {0}</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesExportFailed">별칭 파일 내보내기에 실패했습니다: {0} (로그 참조).</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesExportOk">별칭을 내보냈습니다: {0}</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesCellToolTip">셀을 클릭(또는 F2)하여 편집합니다. Enter를 눌러 커밋합니다.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesTip">팁: 셀을 더블클릭하여 편집하세요. 별칭은 저장을 클릭하면 저장됩니다.</sys:String>
 </ResourceDictionary>

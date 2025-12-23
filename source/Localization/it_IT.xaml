@@ -1,5 +1,4 @@
-﻿<?xml version="1.0"?>
-<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:sys="clr-namespace:System;assembly=mscorlib">
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:sys="clr-namespace:System;assembly=mscorlib">
 
     <sys:String x:Key="LOCHowLongToBeatTimeToBeat">Tempo di finire</sys:String>
 
@@ -179,4 +178,26 @@ Ecco l'elenco dei comandi:</sys:String>
     -stores={n}	&lt;unk&gt; Filtra per nome negozio (ex:-stores=vapore / -stores=steam, epic)
     -status={n}	&lt;unk&gt; Filtra per nome di stato (ex:-status=played / -status=played,playing)</sys:String>
 
+    <!-- Aliases -->
+    <sys:String x:Key="LOCHowLongToBeatAliases">Alias</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesDescription" xml:space="preserve">Mappa più titoli di giochi su un singolo titolo di ricerca di HowLongToBeat.
+Esempio:
+  Sorgente: Pokemon Red Version
+  Destinazione: Pokemon Red and Blue</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesSource">Titolo sorgente</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesTarget">Destinazione (titolo HLTB)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesReset">Ripristina</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesResetConfirm">Sostituire i tuoi alias correnti con gli alias predefiniti Pokémon per le doppie uscite?</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImport">Importa</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesExport">Esporta</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesOpenFile">Apri aliases.json</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesFilePathUnavailable">Il percorso dei dati utente del plugin non è disponibile.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportNotFound">Nessun file alias trovato: {0}</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportFailed">Impossibile importare il file alias: {0} (vedi log).</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportConfirm" xml:space="preserve">Importa alias da:\n{0}\n\nQuesto sostituirà i tuoi alias correnti. Continuare?</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportOk">Alias importati da: {0}</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesExportFailed">Esportazione del file alias non riuscita: {0} (vedi log).</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesExportOk">Alias esportati in: {0}</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesCellToolTip">Fare clic su una cella (o premere F2) per modificare. Premere Invio per confermare.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesTip">Suggerimento: fare doppio clic su una cella per modificare. Gli alias vengono salvati quando si fa clic su Salva.</sys:String>
 </ResourceDictionary>
