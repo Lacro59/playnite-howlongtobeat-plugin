@@ -12,20 +12,6 @@
     <sys:String x:Key="LOCHowLongToBeatAddTagDescription">إضافة علامة إلى الألعاب مع معلومات وقت إكمال القصة الرئيسي</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoTag">معالجة تلقائية للوسو</sys:String>
     <sys:String x:Key="LOCHowLongToBeatShowHltbImage">استعمل صورة غلاف اللعبة الأصلي من HowLongToBeat في النافذ</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatEnableVerboseLogging">تمكين التسجيل التفصيلي لتصحيح أخطاء HLTB (سجلات إضافية في extensions.log)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExport">تصدير بيانات HowLongToBeat</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExportCsvComma">تصدير CSV (فاصلة)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExportCsvSemicolon">تصدير CSV (فاصلة منقوطة)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExportJson">تصدير JSON</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExportFolderTooltip">مجلد الوجهة للتصدير</sys:String>
-    <sys:String x:Key="LOCBrowseLabel">تصفح...</sys:String>
-
-    <!-- Export dialog messages for settings -->
-    <sys:String x:Key="LOCExportSelectFolderFirst">الرجاء اختيار مجلد التصدير أولاً.</sys:String>
-    <sys:String x:Key="LOCExportFolderNotExist">المجلد المحدد غير موجود.</sys:String>
-    <sys:String x:Key="LOCExportedCsvMessage">تم تصدير {0} لعبة إلى CSV: {1} (الفاصل '{2}')</sys:String>
-    <sys:String x:Key="LOCExportedJsonMessage">تم تصدير {0} لعبة إلى JSON: {1}</sys:String>
-    <sys:String x:Key="LOCExportFailedCount">فشل تصدير {0} لعبة (راجع السجلات).</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatColorSelection">اختيار اللون:</sys:String>
 
@@ -44,6 +30,9 @@
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarOptions">خيارات شريط التق</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">إظهار تلميح الوقت في شريط التق</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTime">إظهار التسميات الزمنية في شريط التق</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeAbove">فوق شريط التق</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeInterior">داخل شريط التق</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeBelow">تحت شريط التق</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeUser">أظهر للمستخدم وقت HowLongToBeat</sys:String>
 
     <sys:String x:Key="LOCHltbUsedStartDateFromGameActivity">Used first game session from GameActivity plugin for start date</sys:String>
@@ -83,9 +72,6 @@ If none has this status, it takes the most recent.</sys:String>
     <sys:String x:Key="LOCHowLongToBeatVs">تواجه</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatPlaying">Playing</sys:String>
-
-    <sys:String x:Key="LOCRefresh">تحديث</sys:String>
-    <sys:String x:Key="LOCDelete">حذف</sys:String>
 
     <!-- HowLongToBeat -->
 
@@ -180,26 +166,4 @@ Here is the list of commands:</sys:String>
     -stores={n}	Filter by store name (ex:-stores=steam / -stores=steam,epic)
     -status={n}	Filter by status name (ex:-status=played / -status=played,playing)</sys:String>
 
-    <!-- Aliases -->
-    <sys:String x:Key="LOCHowLongToBeatAliases">الأسماء المستعارة</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesDescription" xml:space="preserve">ربط عناوين ألعاب متعددة بعنوان بحث واحد في HowLongToBeat.
-مثال:
-  المصدر: Pokemon Red Version
-  الهدف: Pokemon Red and Blue</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesSource">عنوان المصدر</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesTarget">الهدف (عنوان HLTB)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesReset">إعادة تعيين</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesResetConfirm">هل استبدال الأسماء المستعارة الحالية بالأسماء الافتراضية لإصدارات Pokémon الثنائية؟</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImport">استيراد</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesExport">تصدير</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesOpenFile">فتح aliases.json</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesFilePathUnavailable">مسار بيانات مستخدم الإضافة غير متاح.</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportNotFound">لم يتم العثور على ملف ألقاب: {0}</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportFailed">فشل استيراد ملف الألقاب: {0} (راجع السجلات).</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportConfirm" xml:space="preserve">استيراد الأسماء المستعارة من:\n{0}\n\nسيؤدي هذا إلى استبدال الأسماء المستعارة الحالية. متابعة؟</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportOk">تم استيراد الأسماء المستعارة من: {0}</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesExportFailed">فشل تصدير ملف الألقاب: {0} (راجع السجلات).</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesExportOk">تم تصدير الأسماء المستعارة إلى: {0}</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesCellToolTip">انقر على خلية (أو اضغط F2) للتحرير. اضغط Enter للحفظ.</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesTip">نصيحة: انقر نقراً مزدوجاً على خلية للتحرير. يتم حفظ الأسماء المستعارة عند النقر على حفظ.</sys:String>
 </ResourceDictionary>
