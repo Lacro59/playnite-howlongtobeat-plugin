@@ -12,19 +12,6 @@
     <sys:String x:Key="LOCHowLongToBeatAddTagDescription">Add a tag to games with Main story completion time information</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoTag">Automatic tags processing</sys:String>
     <sys:String x:Key="LOCHowLongToBeatShowHltbImage">Use HowLongToBeat original game cover image in window</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatEnableVerboseLogging">Activar o rexistro detallado de depuración de HLTB (rexistros adicionais en extensions.log)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExport">Exportar datos de HowLongToBeat</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExportCsvComma">Exportar CSV (coma)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExportCsvSemicolon">Exportar CSV (punto e coma)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExportJson">Exportar JSON</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExportFolderTooltip">Cartafol de exportación</sys:String>
-    <sys:String x:Key="LOCBrowseLabel">Explorar...</sys:String>
-
-    <sys:String x:Key="LOCExportSelectFolderFirst">Seleccione primeiro un cartafol de exportación.</sys:String>
-    <sys:String x:Key="LOCExportFolderNotExist">O cartafol seleccionado non existe.</sys:String>
-    <sys:String x:Key="LOCExportedCsvMessage">{0} xogos exportados a CSV: {1} (separador '{2}')</sys:String>
-    <sys:String x:Key="LOCExportedJsonMessage">{0} xogos exportados a JSON: {1}</sys:String>
-    <sys:String x:Key="LOCExportFailedCount">Erro ao exportar {0} xogos (ver rexistros).</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatColorSelection">Color selection:</sys:String>
 
@@ -43,6 +30,9 @@
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarOptions">Progress bar options</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">Show time tooltip in progress bar</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTime">Show time labels in progress bar</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeAbove">Above progress bar</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeInterior">Inside progress bar</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeBelow">Below progress bars</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeUser">Show user HowLongToBeat time</sys:String>
 
     <sys:String x:Key="LOCHltbUsedStartDateFromGameActivity">Used first game session from GameActivity plugin for start date</sys:String>
@@ -82,14 +72,11 @@ If none has this status, it takes the most recent.</sys:String>
     <sys:String x:Key="LOCHowLongToBeatVs">Vs</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatPlaying">Playing</sys:String>
-    <sys:String x:Key="LOCRefresh">Actualizar</sys:String>
-    <sys:String x:Key="LOCDelete">Eliminar</sys:String>
 
     <!-- HowLongToBeat -->
 
     <sys:String x:Key="LOCHowLongToBeatProgression">Progression</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatCompleted">Completed</sys:String>
     <!-- HowLongToBeatUserView -->
 
     <sys:String x:Key="LOCHowLongToBeatCompletationStore">Games completed by storefront</sys:String>
@@ -97,6 +84,7 @@ If none has this status, it takes the most recent.</sys:String>
     
     <sys:String x:Key="LOCHowLongToBeatUserData">User data</sys:String>
     <sys:String x:Key="LocHowLongToBeatPlayniteData">Playnite data</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatCompleted">Completed</sys:String>
 
     <sys:String x:Key="LOCHltbOnlyReplays">Only replays</sys:String>
     <sys:String x:Key="LOCHltbOnlyNotPlayed">Only not played</sys:String>
@@ -178,27 +166,4 @@ Here is the list of commands:</sys:String>
     -stores={n}	Filter by store name (ex:-stores=steam / -stores=steam,epic)
     -status={n}	Filter by status name (ex:-status=played / -status=played,playing)</sys:String>
 
-    <!-- Aliases -->
-    <sys:String x:Key="LOCHowLongToBeatAliases">Alias</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesDescription" xml:space="preserve">Mapear múltiples títulos de xogo a un único título de busca de HowLongToBeat.
-
-Example:
-  Source: Pokemon Red Version
-  Target: Pokemon Red and Blue</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesSource">Título de orixe</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesTarget">Obxectivo (título HLTB)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesReset">Restablecer</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesResetConfirm">Substituír os teus alias actuais polos alias predeterminados de lanzamento duplo de Pokémon?</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImport">Importar</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesExport">Exportar</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesOpenFile">Abrir aliases.json</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesFilePathUnavailable">A ruta de datos do usuario do complemento non está dispoñible.</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportNotFound">Non se atopou arquivo de alias: {0}</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportFailed">Erro ao importar o arquivo de alias: {0} (ver rexistros).</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportConfirm">Importar alias desde:\n{0}\n\nIsto substituíra os teus alias actuais. Continuar?</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportOk">Alias importados desde: {0}</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesExportFailed">Erro ao exportar o arquivo de alias: {0} (ver rexistros).</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesExportOk">Alias exportados a: {0}</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesCellToolTip">Fai clic nunha cela (ou preme F2) para editar. Preme Enter para confirmar.</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesTip">Consello: fai dobre clic nunha cela para editar. Os alias gárdanse cando fas clic en Gardar.</sys:String>
 </ResourceDictionary>

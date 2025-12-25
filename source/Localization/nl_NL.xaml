@@ -12,19 +12,6 @@
     <sys:String x:Key="LOCHowLongToBeatAddTagDescription">Add a tag to games with Main story completion time information</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoTag">Automatic tags processing</sys:String>
     <sys:String x:Key="LOCHowLongToBeatShowHltbImage">Use HowLongToBeat original game cover image in window</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatEnableVerboseLogging">Schakel uitgebreide HLTB-logboekregistratie in (extra logs in extensions.log)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExport">HowLongToBeat-gegevens exporteren</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExportCsvComma">CSV exporteren (komma)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExportCsvSemicolon">CSV exporteren (puntkomma)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExportJson">JSON exporteren</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExportFolderTooltip">Doelmap voor export</sys:String>
-    <sys:String x:Key="LOCBrowseLabel">Bladeren...</sys:String>
-
-    <sys:String x:Key="LOCExportSelectFolderFirst">Selecteer eerst een exportmap.</sys:String>
-    <sys:String x:Key="LOCExportFolderNotExist">De geselecteerde map bestaat niet.</sys:String>
-    <sys:String x:Key="LOCExportedCsvMessage">{0} games geëxporteerd naar CSV: {1} (scheidingsteken '{2}')</sys:String>
-    <sys:String x:Key="LOCExportedJsonMessage">{0} games geëxporteerd naar JSON: {1}</sys:String>
-    <sys:String x:Key="LOCExportFailedCount">Exporteren mislukt voor {0} games (zie logs).</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatColorSelection">Color selection:</sys:String>
 
@@ -43,6 +30,9 @@
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarOptions">Progress bar options</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">Show time tooltip in progress bar</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTime">Show time labels in progress bar</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeAbove">Above progress bar</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeInterior">Inside progress bar</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeBelow">Below progress bars</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeUser">Show user HowLongToBeat time</sys:String>
 
     <sys:String x:Key="LOCHltbUsedStartDateFromGameActivity">Used first game session from GameActivity plugin for start date</sys:String>
@@ -82,8 +72,6 @@ If none has this status, it takes the most recent.</sys:String>
     <sys:String x:Key="LOCHowLongToBeatVs">Vs</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatPlaying">Playing</sys:String>
-    <sys:String x:Key="LOCRefresh">Vernieuwen</sys:String>
-    <sys:String x:Key="LOCDelete">Verwijderen</sys:String>
 
     <!-- HowLongToBeat -->
 
@@ -178,26 +166,4 @@ Here is the list of commands:</sys:String>
     -stores={n}	Filter by store name (ex:-stores=steam / -stores=steam,epic)
     -status={n}	Filter by status name (ex:-status=played / -status=played,playing)</sys:String>
 
-    <!-- Aliases -->
-    <sys:String x:Key="LOCHowLongToBeatAliases">Aliasnamen</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesDescription" xml:space="preserve">Map meerdere speltitels naar één HowLongToBeat-zoektitel.
-Voorbeeld:
-  Bron: Pokemon Red Version
-  Doel: Pokemon Red and Blue</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesSource">Bron titel</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesTarget">Doel (HLTB titel)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesReset">Herstellen</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesResetConfirm">Uw huidige aliassen vervangen door de standaard Pokémon dubbel-release aliassen?</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImport">Importeren</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesExport">Exporteren</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesOpenFile">Open aliases.json</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesFilePathUnavailable">Plugin gebruikersgegevens pad is niet beschikbaar.</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportNotFound">Geen aliasbestand gevonden: {0}</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportFailed">Importeren van aliasbestand mislukt: {0} (zie logbestanden).</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportConfirm" xml:space="preserve">Aliassen importeren van:\n{0}\n\nDit vervangt uw huidige aliassen. Doorgaan?</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportOk">Aliassen geïmporteerd van: {0}</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesExportFailed">Exporteren van aliasbestand mislukt: {0} (zie logbestanden).</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesExportOk">Aliassen geëxporteerd naar: {0}</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesCellToolTip">Klik op een cel (of druk op F2) om te bewerken. Druk op Enter om te bevestigen.</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesTip">Tip: dubbelklik een cel om te bewerken. Aliassen worden opgeslagen wanneer u op Opslaan klikt.</sys:String>
 </ResourceDictionary>

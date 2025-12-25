@@ -1,70 +1,59 @@
 ﻿<?xml version="1.0"?>
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:sys="clr-namespace:System;assembly=mscorlib">
 
-    <sys:String x:Key="LOCHowLongToBeatTimeToBeat">Befejezési idő</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatTimeToBeat">Time to beat</sys:String>
 
     <sys:String x:Key="LOCPlayedHoursOnly">{0}h</sys:String>
 
     <!-- HowLongToBeatSettingsView -->
 
-    <sys:String x:Key="LOCHowLongToBeatProgressBar">Hozzáadva {0} - Már hozzáadva {1} - Nincs hozzáadva {2}</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatProgressBar">Added {0} - Already added {1} - Not added {2}</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatAddTagDescription">Címke hozzáadása a játékokhoz a Fő történet befejezési idejével kapcsolatos információkkal</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAutoTag">Automatikus címkézés</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatShowHltbImage">Használja a HowLongToBeat eredeti játékborítóját az ablakban</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoTag">Automatic tags processing</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatShowHltbImage">Use HowLongToBeat original game cover image in window</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatEnableVerboseLogging">Részletes HLTB hibakeresési naplózás engedélyezése (további naplók az extensions.log fájlban)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExport">HowLongToBeat adatok exportálása</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExportCsvComma">CSV export (vessző)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExportCsvSemicolon">CSV export (pontosvessző)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExportJson">JSON exportálás</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExportFolderTooltip">Export mappa</sys:String>
-    <sys:String x:Key="LOCBrowseLabel">Tallózás...</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatColorSelection">Color selection:</sys:String>
 
-    <sys:String x:Key="LOCExportSelectFolderFirst">Kérjük válasszon ki egy export mappát először.</sys:String>
-    <sys:String x:Key="LOCExportFolderNotExist">A kiválasztott mappa nem létezik.</sys:String>
-    <sys:String x:Key="LOCExportedCsvMessage">{0} játék exportálva CSV-be: {1} (elválasztó '{2}')</sys:String>
-    <sys:String x:Key="LOCExportedJsonMessage">{0} játék exportálva JSON-ba: {1}</sys:String>
-    <sys:String x:Key="LOCExportFailedCount">{0} játék exportja sikertelen volt (lásd a naplókat).</sys:String>
+    <sys:String x:Key="LOCHltbEnableProgressBarInDataView">View progress bar in Playnite data view</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatColorSelection">Szín kiválasztása:</sys:String>
+    <sys:String x:Key="LOCHltbSelectDataType">Select the data type:</sys:String>
+    <sys:String x:Key="LOCHltbSelectDataTypeClassic">Classic</sys:String>
+    <sys:String x:Key="LOCHltbSelectDataTypeAverage">Average</sys:String>
+    <sys:String x:Key="LOCHltbSelectDataTypeMedian">Median</sys:String>
+    <sys:String x:Key="LOCHltbSelectDataTypeRushed">Rushed</sys:String>
+    <sys:String x:Key="LOCHltbSelectDataTypeLeisure">Leisure</sys:String>
 
-    <sys:String x:Key="LOCHltbEnableProgressBarInDataView">Haladás sáv megjelenítése a Playnite adatok nézetében</sys:String>
+    <sys:String x:Key="LOCHltbPreferredTimeToBeat">Preferred for time to beat</sys:String>
+    <sys:String x:Key="LOCHltbVisibleData">Select the time data visible</sys:String>
 
-    <sys:String x:Key="LOCHltbSelectDataType">Válassza ki az adattípust:</sys:String>
-    <sys:String x:Key="LOCHltbSelectDataTypeClassic">Klasszikus</sys:String>
-    <sys:String x:Key="LOCHltbSelectDataTypeAverage">Átlag</sys:String>
-    <sys:String x:Key="LOCHltbSelectDataTypeMedian">Medián</sys:String>
-    <sys:String x:Key="LOCHltbSelectDataTypeRushed">Roham</sys:String>
-    <sys:String x:Key="LOCHltbSelectDataTypeLeisure">Szabadidő</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarOptions">Progress bar options</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">Show time tooltip in progress bar</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTime">Show time labels in progress bar</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeAbove">Above progress bar</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeInterior">Inside progress bar</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeBelow">Below progress bars</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeUser">Show user HowLongToBeat time</sys:String>
 
-    <sys:String x:Key="LOCHltbPreferredTimeToBeat">Előnyben részesített időtípus a befejezési időhöz</sys:String>
-    <sys:String x:Key="LOCHltbVisibleData">Válassza ki, mely időadatok legyenek láthatóak</sys:String>
-
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarOptions">Haladás sáv beállításai</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">Idő buborék megjelenítése a haladás sávon</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTime">Idő címkék megjelenítése a haladás sávon</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeUser">Felhasználó HLTB idejének megjelenítése</sys:String>
-
-    <sys:String x:Key="LOCHltbUsedStartDateFromGameActivity">A kezdő dátumhoz az első játékmenet használata a GameActivity bővítményből</sys:String>
+    <sys:String x:Key="LOCHltbUsedStartDateFromGameActivity">Used first game session from GameActivity plugin for start date</sys:String>
     
-    <sys:String x:Key="LOCHowLongToBeatAutoSetCurrentPlayTime">A jelenlegi játékidő automatikus frissítése HowLongToBeat-en játékmenet után</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatWithoutConfirmation">Megerősítés nélkül</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatEnableSuccessNotification">Siker értesítés engedélyezése</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoSetCurrentPlayTime">Automatically update current playtime on HowLongToBeat after game session</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatWithoutConfirmation">Without confirmation message</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatEnableSuccessNotification">Enable success notification</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatus">Játék állapot automatikus frissítése a HowLongToBeat állapota alapján felhasználói adatok importálásakor</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltb">Játék állapot automatikus frissítése HowLongToBeat-en, amikor a Playnite-ban változik</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatus">Automatically update game status with HowLongToBeat game status when importing user data</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltb">Automatically update game status on HowLongToBeat game status when changing on Playnite</sys:String>
     
-    <sys:String x:Key="LOCHowLongToBeatAutoData">Játékadatok letöltése</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAutoAccept">Játék automatikus kiválasztása, ha csak egy találat van</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatShowWhenMismatch">Játék kiválasztási lista megjelenítése, ha több találat van</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatUseMatchValue">Találati százalék használata</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoData">Game data download</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoAccept">Automatically select game when only one game is found during search</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatShowWhenMismatch">Show game selection list when more than one game is found during search</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatUseMatchValue">Use a percent match</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatTimeOnlyHour">Csak óra formátum</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatTimeOnlyHour">Time format with only hour</sys:String>
     
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBar">Haladás jelző megjelenítése</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBar">Display progress indicator</sys:String>
     
-    <sys:String x:Key="LOCHowLongToBeatCurrentPlayTimeSetted">A(z) {0} jelenlegi játékideje beállítva.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatCurrentPlayTimeSetted">The current playtime for {0} is setted.</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatInfoSetPlaytime" xml:space="preserve">If there are several times defined on HowLongToBeat, the plugin will take the most recent one with the status &quot;Playing&quot;.
 If none has this status, it takes the most recent.</sys:String>
@@ -83,8 +72,6 @@ If none has this status, it takes the most recent.</sys:String>
     <sys:String x:Key="LOCHowLongToBeatVs">Vs</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatPlaying">Playing</sys:String>
-    <sys:String x:Key="LOCRefresh">Frissít</sys:String>
-    <sys:String x:Key="LOCDelete">Törlés</sys:String>
 
     <!-- HowLongToBeat -->
 
@@ -92,26 +79,26 @@ If none has this status, it takes the most recent.</sys:String>
 
     <!-- HowLongToBeatUserView -->
 
-    <sys:String x:Key="LOCHowLongToBeatCompletationStore">Játékok befejezve áruházanként</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatCompletationProgress">Játékok befejezése időben</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatCompletationStore">Games completed by storefront</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatCompletationProgress">Games completed over time</sys:String>
     
     <sys:String x:Key="LOCHowLongToBeatUserData">Felhasználói adat</sys:String>
-    <sys:String x:Key="LocHowLongToBeatPlayniteData">Playnite adatok</sys:String>
+    <sys:String x:Key="LocHowLongToBeatPlayniteData">Playnite data</sys:String>
     <sys:String x:Key="LOCHowLongToBeatCompleted">Befejezett</sys:String>
 
-    <sys:String x:Key="LOCHltbOnlyReplays">Csak újrajátszások</sys:String>
+    <sys:String x:Key="LOCHltbOnlyReplays">Only replays</sys:String>
     <sys:String x:Key="LOCHltbOnlyNotPlayed">Csak nem játszott</sys:String>
 
     <sys:String x:Key="LOCHltbRemainingTime">Hátralévő idő</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatPluginGetUserView">Felhasználói adatok lekérése</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatPluginGetUserView">Getting user datas</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatCompletions">Befejezések</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatTimeSinglePlayer">Egyszemélyes játékidő</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatTimeCoOp">Kooperatív játékidő</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatTimeVs">Versus többjátékos idő</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatCompletions">Completions</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatTimeSinglePlayer">Single-Player time</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatTimeCoOp">Co-Op time</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatTimeVs">Vs Multi-Player time</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatStorefront">Áruház</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatStorefront">Storefront</sys:String>
     
     <sys:String x:Key="LOCHltbAvgTimeByGame">Átlagos idő játékonként</sys:String>
     <sys:String x:Key="LOCHltbAvgGameByMonth">Átlagos játék havonta</sys:String>
@@ -179,26 +166,4 @@ Here is the list of commands:</sys:String>
     -stores={n}	Filter by store name (ex:-stores=steam / -stores=steam,epic)
     -status={n}	Filter by status name (ex:-status=played / -status=played,playing)</sys:String>
 
-    <!-- Aliases -->
-    <sys:String x:Key="LOCHowLongToBeatAliases">Álnév</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesDescription" xml:space="preserve">Térképezzen több játékcímet egyetlen HowLongToBeat keresési címre.
-Példa:
-  Forrás: Pokemon Red Version
-  Cél: Pokemon Red and Blue</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesSource">Forrás cím</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesTarget">Cél (HLTB cím)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesReset">Visszaállítás</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesResetConfirm">Cserélje le jelenlegi aliasait az alapértelmezett Pokémon dupla kiadás aliasaira?</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImport">Importálás</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesExport">Exportálás</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesOpenFile">aliases.json megnyitása</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesFilePathUnavailable">A bővítmény felhasználói adat útvonala nem elérhető.</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportNotFound">Alias fájl nem található: {0}</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportFailed">Nem sikerült importálni az alias fájlt: {0} (lásd a naplókat).</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportConfirm" xml:space="preserve">Aliasok importálása innen:\n{0}\n\nEz lecseréli a jelenlegi aliasokat. Folytatja?</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportOk">Aliasok importálva innen: {0}</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesExportFailed">Nem sikerült exportálni az alias fájlt: {0} (lásd a naplókat).</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesExportOk">Aliasok exportálva ide: {0}</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesCellToolTip">Kattintson egy cellára (vagy nyomja meg az F2-t) a szerkesztéshez. Nyomja meg az Entert a megerősítéshez.</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesTip">Tipp: dupla kattintás egy cellára a szerkesztéshez. Az aliasok mentésre kerülnek, amikor a Mentés gombra kattint.</sys:String>
 </ResourceDictionary>

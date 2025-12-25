@@ -12,19 +12,6 @@
     <sys:String x:Key="LOCHowLongToBeatAddTagDescription">为游戏添加一个主线完成时间信息的标签</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoTag">自动标签</sys:String>
     <sys:String x:Key="LOCHowLongToBeatShowHltbImage">在窗口中使用攻关历时原始游戏封面图像</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatEnableVerboseLogging">启用详细的 HLTB 调试日志（在 extensions.log 中有额外日志）</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExport">导出 HowLongToBeat 数据</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExportCsvComma">导出 CSV（逗号）</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExportCsvSemicolon">导出 CSV（分号）</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExportJson">导出 JSON</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExportFolderTooltip">导出目标文件夹</sys:String>
-    <sys:String x:Key="LOCBrowseLabel">浏览...</sys:String>
-
-    <sys:String x:Key="LOCExportSelectFolderFirst">请先选择一个导出文件夹。</sys:String>
-    <sys:String x:Key="LOCExportFolderNotExist">所选文件夹不存在。</sys:String>
-    <sys:String x:Key="LOCExportedCsvMessage">已将 {0} 个游戏导出为 CSV：{1}（分隔符 '{2}'）</sys:String>
-    <sys:String x:Key="LOCExportedJsonMessage">已将 {0} 个游戏导出为 JSON：{1}</sys:String>
-    <sys:String x:Key="LOCExportFailedCount">导出 {0} 个游戏失败（查看日志）。</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatColorSelection">色彩管理：</sys:String>
 
@@ -43,6 +30,9 @@
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarOptions">进度条选项</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">在进度条中显示时间提示框</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTime">在进度条中显示时间标记</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeAbove">进度条上方</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeInterior">进度条</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeBelow">进度条下方</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeUser">显示用户的攻关历时（HowLongToBeat）时间</sys:String>
 
     <sys:String x:Key="LOCHltbUsedStartDateFromGameActivity">开始日期使用 GameActivity 插件中的首次游戏会话</sys:String>
@@ -81,8 +71,6 @@
     <sys:String x:Key="LOCHowLongToBeatVs">对战</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatPlaying">正在游玩</sys:String>
-    <sys:String x:Key="LOCRefresh">刷新</sys:String>
-    <sys:String x:Key="LOCDelete">删除</sys:String>
 
     <!-- HowLongToBeat -->
 
@@ -177,26 +165,4 @@
     -stores={n}	按商店名称筛选 (ex:-stores=steam / -stores=steam,epic)
     -status={n}	按状态名称筛选 (ex:-status=played / -status=played,playing)</sys:String>
 
-    <!-- Aliases -->
-    <sys:String x:Key="LOCHowLongToBeatAliases">别名</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesDescription" xml:space="preserve">将多个游戏标题映射到单个 HowLongToBeat 搜索标题。
-示例:
-  来源: Pokemon Red Version
-  目标: Pokemon Red and Blue</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesSource">来源标题</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesTarget">目标 (HLTB 标题)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesReset">重置</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesResetConfirm">将当前别名替换为默认的宝可梦双版本别名？</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImport">导入</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesExport">导出</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesOpenFile">打开 aliases.json</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesFilePathUnavailable">插件用户数据路径不可用。</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportNotFound">未找到别名文件: {0}</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportFailed">导入别名文件失败: {0} (查看日志)。</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportConfirm" xml:space="preserve">从以下位置导入别名:\n{0}\n\n这将替换您当前的别名。继续？</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportOk">已从导入别名: {0}</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesExportFailed">导出别名文件失败: {0} (查看日志)。</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesExportOk">别名已导出到: {0}</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesCellToolTip">单击单元格（或按 F2）以编辑。按回车提交。</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesTip">提示：双击单元格以编辑。单击“保存”时将保存别名。</sys:String>
 </ResourceDictionary>
