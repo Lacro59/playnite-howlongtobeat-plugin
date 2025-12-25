@@ -12,19 +12,6 @@
     <sys:String x:Key="LOCHowLongToBeatAddTagDescription">Додати тег до ігор з інформацією про час завершення Основного сюжету</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoTag">Автоматична обробка тегів</sys:String>
     <sys:String x:Key="LOCHowLongToBeatShowHltbImage">Використовувати у вікні оригінальну обкладинку гри з HowLongToBeat</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatEnableVerboseLogging">Увімкнути докладне журналювання HLTB (додаткові логи в extensions.log)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExport">Експортувати дані HowLongToBeat</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExportCsvComma">Експорт CSV (кома)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExportCsvSemicolon">Експорт CSV (крапка з комою)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExportJson">Експорт JSON</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExportFolderTooltip">Тека для експорту</sys:String>
-    <sys:String x:Key="LOCBrowseLabel">Переглянути...</sys:String>
-
-    <sys:String x:Key="LOCExportSelectFolderFirst">Будь ласка, спочатку виберіть папку для експорту.</sys:String>
-    <sys:String x:Key="LOCExportFolderNotExist">Вибрана папка не існує.</sys:String>
-    <sys:String x:Key="LOCExportedCsvMessage">{0} ігор експортовано в CSV: {1} (роздільник '{2}')</sys:String>
-    <sys:String x:Key="LOCExportedJsonMessage">{0} ігор експортовано в JSON: {1}</sys:String>
-    <sys:String x:Key="LOCExportFailedCount">Не вдалося експортувати {0} ігор (див. журнали).</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatColorSelection">Вибір кольору:</sys:String>
 
@@ -43,6 +30,9 @@
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarOptions">Параметри смуги прогресу</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">Показувати спливаючі підказки з часом на смузі прогресу</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTime">Показувати час на смузі прогресу</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeAbove">Над смугою прогресу</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeInterior">Всередині смуги прогресу</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeBelow">Під смугою прогресу</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeUser">Показувати користувацький час HowLongToBeat</sys:String>
 
     <sys:String x:Key="LOCHltbUsedStartDateFromGameActivity">Використовується перший сеанс гри з плагіну GameActivity для початкової дати</sys:String>
@@ -82,8 +72,6 @@
     <sys:String x:Key="LOCHowLongToBeatVs">Vs</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatPlaying">Граю</sys:String>
-    <sys:String x:Key="LOCRefresh">Оновити</sys:String>
-    <sys:String x:Key="LOCDelete">Видалити</sys:String>
 
     <!-- HowLongToBeat -->
 
@@ -178,26 +166,4 @@
     -stores={n}        Фільтрувати за назвою магазину (наприклад:-stores=steam / -stores=steam,epic)
     -status={n}	Фільтрувати за статусом завершення (наприклад:-status=played / -status=played,playing)</sys:String>
 
-    <!-- Aliases -->
-    <sys:String x:Key="LOCHowLongToBeatAliases">Псевдоніми</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesDescription" xml:space="preserve">Відображення кількох назв ігор на одну назву пошуку HowLongToBeat.
-Приклад:
-  Джерело: Pokemon Red Version
-  Ціль: Pokemon Red and Blue</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesSource">Оригінальна назва</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesTarget">Ціль (назва HLTB)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesReset">Скинути</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesResetConfirm">Замінити ваші поточні псевдоніми на стандартні псевдоніми Pokémon для подвійного релізу?</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImport">Імпорт</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesExport">Експорт</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesOpenFile">Відкрити aliases.json</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesFilePathUnavailable">Шлях до даних користувача плагіна недоступний.</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportNotFound">Файл псевдонімів не знайдено: {0}</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportFailed">Не вдалося імпортувати файл псевдонімів: {0} (див. журнали).</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportConfirm" xml:space="preserve">Імпортувати псевдоніми з:\n{0}\n\nЦе замінить ваші поточні псевдоніми. Продовжити?</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportOk">Псевдоніми імпортовано з: {0}</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesExportFailed">Не вдалося експортувати файл псевдонімів: {0} (див. журнали).</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesExportOk">Псевдоніми експортовано до: {0}</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesCellToolTip">Клацніть по осередку (або натисніть F2), щоб редагувати. Натисніть Enter, щоб підтвердити.</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesTip">Підказка: двічі клацніть осередок, щоб редагувати. Псевдоніми зберігаються при натисканні "Зберегти".</sys:String>
 </ResourceDictionary>
