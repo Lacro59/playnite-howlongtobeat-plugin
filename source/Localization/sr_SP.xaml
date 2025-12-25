@@ -12,19 +12,6 @@
     <sys:String x:Key="LOCHowLongToBeatAddTagDescription">Add a tag to games with Main story completion time information</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoTag">Automatic tags processing</sys:String>
     <sys:String x:Key="LOCHowLongToBeatShowHltbImage">Use HowLongToBeat original game cover image in window</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatEnableVerboseLogging">Омогући детаљно HLTB логовање (додатни логови у extensions.log)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExport">Извези HowLongToBeat податке</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExportCsvComma">Извези CSV (запета)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExportCsvSemicolon">Извези CSV (тачка-запета)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExportJson">Извези JSON</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExportFolderTooltip">Фолдер за извоз</sys:String>
-    <sys:String x:Key="LOCBrowseLabel">Прегледај...</sys:String>
-
-    <sys:String x:Key="LOCExportSelectFolderFirst">Молимо изаберите фолдер за извоз прво.</sys:String>
-    <sys:String x:Key="LOCExportFolderNotExist">Изабрани фолдер не постоји.</sys:String>
-    <sys:String x:Key="LOCExportedCsvMessage">{0} игара је извршено у CSV: {1} (одвајач '{2}')</sys:String>
-    <sys:String x:Key="LOCExportedJsonMessage">{0} игара је извршено у JSON: {1}</sys:String>
-    <sys:String x:Key="LOCExportFailedCount">Извоз није успео за {0} игара (погледајте логове).</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatColorSelection">Color selection:</sys:String>
 
@@ -43,6 +30,9 @@
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarOptions">Progress bar options</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">Show time tooltip in progress bar</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTime">Show time labels in progress bar</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeAbove">Above progress bar</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeInterior">Inside progress bar</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeBelow">Below progress bars</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeUser">Show user HowLongToBeat time</sys:String>
 
     <sys:String x:Key="LOCHltbUsedStartDateFromGameActivity">Used first game session from GameActivity plugin for start date</sys:String>
@@ -82,8 +72,6 @@ If none has this status, it takes the most recent.</sys:String>
     <sys:String x:Key="LOCHowLongToBeatVs">Vs</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatPlaying">Playing</sys:String>
-    <sys:String x:Key="LOCRefresh">Osveži</sys:String>
-    <sys:String x:Key="LOCDelete">Obriši</sys:String>
 
     <!-- HowLongToBeat -->
 
@@ -178,27 +166,4 @@ Here is the list of commands:</sys:String>
     -stores={n}	Filter by store name (ex:-stores=steam / -stores=steam,epic)
     -status={n}	Filter by status name (ex:-status=played / -status=played,playing)</sys:String>
 
-    <!-- Aliases -->
-    <sys:String x:Key="LOCHowLongToBeatAliases">Алијаси</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesDescription" xml:space="preserve">Повежите више назива игара са једним називом за претрагу на HowLongToBeat.
-
-Пример:
-  Извор: Pokemon Red Version
-  Циљ: Pokemon Red and Blue</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesSource">Изворни назив</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesTarget">Циљ (HLTB назив)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesReset">Ресетуј</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesResetConfirm">Заменити тренутне алијасе подразумеваним Pokémon алијасима за двоструко издање?</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImport">Увези</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesExport">Извези</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesOpenFile">Отвори aliases.json</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesFilePathUnavailable">Путања до корисничких података додатка није доступна.</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportNotFound">Фајл алијаса није пронађен: {0}</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportFailed">Неуспешан увоз фајла алијаса: {0} (погледајте логове).</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportConfirm">Увезите алијасе из:\n{0}\n\nОво ће заменити ваше тренутне алијасе. Наставити?</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportOk">Увезени алијаси из: {0}</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesExportFailed">Неуспешан извоз фајла алијаса: {0} (погледајте логове).</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesExportOk">Извезени алијаси у: {0}</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesCellToolTip">Кликните ћелију (или притисните F2) за уређивање. Притисните Enter за потврду.</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesTip">Савет: двокликните ћелију да бисте је уредили. Алијаси се чувају када кликнете Сачувај.</sys:String>
 </ResourceDictionary>
