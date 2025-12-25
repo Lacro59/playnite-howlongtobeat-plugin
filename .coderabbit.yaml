@@ -12,3 +12,6 @@ reviews:
     auto_review: true
 ignore:
   - "source/Localization/**"
+issues:
+  enabled: true
+  auto_review: false
