@@ -12,19 +12,6 @@
     <sys:String x:Key="LOCHowLongToBeatAddTagDescription">Add a tag to games with Main story completion time information</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoTag">Automatic tags processing</sys:String>
     <sys:String x:Key="LOCHowLongToBeatShowHltbImage">Use HowLongToBeat original game cover image in window</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatEnableVerboseLogging">Активирайте подробното регистриране за отстраняване на грешки в HLTB (допълнителни записи в extensions.log)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExport">Експортиране на данни от HowLongToBeat</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExportCsvComma">Експорт CSV (запетая)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExportCsvSemicolon">Експорт CSV (точка и запетая)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExportJson">Експорт JSON</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExportFolderTooltip">Целева папка за експорт</sys:String>
-    <sys:String x:Key="LOCBrowseLabel">Преглед...</sys:String>
-
-    <sys:String x:Key="LOCExportSelectFolderFirst">Моля, изберете папка за експортиране първо.</sys:String>
-    <sys:String x:Key="LOCExportFolderNotExist">Избраната папка не съществува.</sys:String>
-    <sys:String x:Key="LOCExportedCsvMessage">{0} игри експортирани в CSV: {1} (разделител '{2}')</sys:String>
-    <sys:String x:Key="LOCExportedJsonMessage">{0} игри експортирани в JSON: {1}</sys:String>
-    <sys:String x:Key="LOCExportFailedCount">{0} игри не бяха експортирани (вижте логовете).</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatColorSelection">Color selection:</sys:String>
 
@@ -43,6 +30,9 @@
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarOptions">Progress bar options</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">Show time tooltip in progress bar</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTime">Show time labels in progress bar</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeAbove">Above progress bar</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeInterior">Inside progress bar</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeBelow">Below progress bars</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeUser">Show user HowLongToBeat time</sys:String>
 
     <sys:String x:Key="LOCHltbUsedStartDateFromGameActivity">Used first game session from GameActivity plugin for start date</sys:String>
@@ -82,9 +72,6 @@ If none has this status, it takes the most recent.</sys:String>
     <sys:String x:Key="LOCHowLongToBeatVs">Vs</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatPlaying">Playing</sys:String>
-
-    <sys:String x:Key="LOCRefresh">Обнови</sys:String>
-    <sys:String x:Key="LOCDelete">Изтрий</sys:String>
 
     <!-- HowLongToBeat -->
 
@@ -179,26 +166,4 @@ Here is the list of commands:</sys:String>
     -stores={n}	Filter by store name (ex:-stores=steam / -stores=steam,epic)
     -status={n}	Filter by status name (ex:-status=played / -status=played,playing)</sys:String>
 
-    <!-- Aliases -->
-    <sys:String x:Key="LOCHowLongToBeatAliases">Псевдоними</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesDescription" xml:space="preserve">Картографиране на множество заглавия на игри към едно заглавие за търсене в HowLongToBeat.
-Пример:
-  Източник: Pokemon Red Version
-  Цел: Pokemon Red and Blue</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesSource">Източник заглавие</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesTarget">Цел (HLTB заглавие)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesReset">Нулиране</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesResetConfirm">Да заместите текущите псевдоними с подразбиращите се Pokémon двойни издания?</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImport">Импортиране</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesExport">Експорт</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesOpenFile">Отваряне на aliases.json</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesFilePathUnavailable">Пътят до потребителските данни на плъгина не е наличен.</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportNotFound">Не е намерен файл с псевдоними: {0}</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportFailed">Грешка при импортиране на файл с псевдоними: {0} (виж логовете).</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportConfirm" xml:space="preserve">Импортиране на псевдоними от:\n{0}\n\n Това ще замени текущите ви псевдоними. Продължавате ли?</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportOk">Псевдоними импортирани от: {0}</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesExportFailed">Грешка при експортиране на файл с псевдоними: {0} (виж логовете).</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesExportOk">Псевдоними експортирани в: {0}</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesCellToolTip">Кликнете клетка (или натиснете F2) за редакция. Натиснете Enter за запис.</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesTip">Съвет: двойно кликване върху клетка за редакция. Псевдонимите се запазват при натискане на Запази.</sys:String>
 </ResourceDictionary>

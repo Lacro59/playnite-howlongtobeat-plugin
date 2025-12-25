@@ -1,4 +1,5 @@
-﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:sys="clr-namespace:System;assembly=mscorlib">
+﻿<?xml version="1.0"?>
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:sys="clr-namespace:System;assembly=mscorlib">
 
     <sys:String x:Key="LOCHowLongToBeatTimeToBeat">Czas do przejścia</sys:String>
 
@@ -11,19 +12,6 @@
     <sys:String x:Key="LOCHowLongToBeatAddTagDescription">Dodaj tag do gier z informacjami o czasie ukończenia głównej historii</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoTag">Automatyczne przetwarzanie tagów</sys:String>
     <sys:String x:Key="LOCHowLongToBeatShowHltbImage">Używaj oryginalnej okładki gry z HowLongToBeat w oknie</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatEnableVerboseLogging">Włącz szczegółowe logowanie debugowania HLTB (dodatkowe logi w extensions.log)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExport">Eksport danych HowLongToBeat</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExportCsvComma">Eksport CSV (przecinek)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExportCsvSemicolon">Eksport CSV (średnik)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExportJson">Eksport JSON</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExportFolderTooltip">Folder docelowy dla eksportu</sys:String>
-    <sys:String x:Key="LOCBrowseLabel">Przeglądaj...</sys:String>
-
-    <sys:String x:Key="LOCExportSelectFolderFirst">Proszę najpierw wybrać folder eksportu.</sys:String>
-    <sys:String x:Key="LOCExportFolderNotExist">Wybrany folder nie istnieje.</sys:String>
-    <sys:String x:Key="LOCExportedCsvMessage">{0} gier wyeksportowano do CSV: {1} (separator '{2}')</sys:String>
-    <sys:String x:Key="LOCExportedJsonMessage">{0} gier wyeksportowano do JSON: {1}</sys:String>
-    <sys:String x:Key="LOCExportFailedCount">Eksport nie powiódł się dla {0} gier (zobacz logi).</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatColorSelection">Wybór kolorów:</sys:String>
 
@@ -42,6 +30,9 @@
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarOptions">Opcje paska postępu</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">Wyświetlaj dymek z czasem na pasku postępu</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTime">Wyświetlaj etykiety z czasem na pasku postępu</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeAbove">Ponad</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeInterior">Wewnątrz</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeBelow">Pod</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeUser">Pokaż czas HowLongToBeat użytkownika</sys:String>
 
     <sys:String x:Key="LOCHltbUsedStartDateFromGameActivity">Użyto pierwszej sesji gry z wtyczki GameActivity dla daty rozpoczęcia</sys:String>
@@ -81,8 +72,6 @@ Jeżeli żaden z nich nie ma takiego statusu, to pobierze najnowszy.</sys:String
     <sys:String x:Key="LOCHowLongToBeatVs">Vs</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatPlaying">W toku</sys:String>
-    <sys:String x:Key="LOCRefresh">Odśwież</sys:String>
-    <sys:String x:Key="LOCDelete">Usuń</sys:String>
 
     <!-- HowLongToBeat -->
 
@@ -177,26 +166,4 @@ Oto lista poleceń:</sys:String>
     -stores={n}	Filtruj wg nazwy sklepu (np:-stores=steam / -stores=steam,epic)
     -status={n}	Filttruj wg nazwy statusu (np:-status=played / -status=played,playing)</sys:String>
 
-    <!-- Aliases -->
-    <sys:String x:Key="LOCHowLongToBeatAliases">Aliasy</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesDescription" xml:space="preserve">Mapuj wiele tytułów gier na pojedynczy tytuł wyszukiwania HowLongToBeat.
-Przykład:
-  Źródło: Pokemon Red Version
-  Cel: Pokemon Red and Blue</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesSource">Tytuł źródłowy</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesTarget">Cel (tytuł HLTB)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesReset">Resetuj</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesResetConfirm">Zastąpić bieżące aliasy domyślnymi aliasami Pokemon dla podwójnych wydań?</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImport">Importuj</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesExport">Eksportuj</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesOpenFile">Otwórz aliases.json</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesFilePathUnavailable">Ścieżka danych użytkownika wtyczki nie jest dostępna.</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportNotFound">Nie znaleziono pliku aliasów: {0}</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportFailed">Nie udało się zaimportować pliku aliasów: {0} (zobacz logi).</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportConfirm" xml:space="preserve">Importuj aliasy z:\n{0}\n\nTo zastąpi Twoje bieżące aliasy. Kontynuować?</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportOk">Aliasy zaimportowane z: {0}</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesExportFailed">Nie udało się wyeksportować pliku aliasów: {0} (zobacz logi).</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesExportOk">Aliasy wyeksportowano do: {0}</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesCellToolTip">Kliknij komórkę (lub naciśnij F2), aby edytować. Naciśnij Enter, aby zatwierdzić.</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesTip">Wskazówka: dwukrotnie kliknij komórkę, aby edytować. Aliasy są zapisywane po kliknięciu Zapisz.</sys:String>
 </ResourceDictionary>

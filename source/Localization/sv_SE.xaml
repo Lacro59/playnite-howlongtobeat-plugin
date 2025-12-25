@@ -12,19 +12,6 @@
     <sys:String x:Key="LOCHowLongToBeatAddTagDescription">Add a tag to games with Main story completion time information</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoTag">Automatic tags processing</sys:String>
     <sys:String x:Key="LOCHowLongToBeatShowHltbImage">Use HowLongToBeat original game cover image in window</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatEnableVerboseLogging">Aktivera detaljerad HLTB-felsökning (extra loggar i extensions.log)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExport">Exportera HowLongToBeat-data</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExportCsvComma">Exportera CSV (komma)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExportCsvSemicolon">Exportera CSV (semikolon)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExportJson">Exportera JSON</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExportFolderTooltip">Mapp för export</sys:String>
-    <sys:String x:Key="LOCBrowseLabel">Bläddra...</sys:String>
-
-    <sys:String x:Key="LOCExportSelectFolderFirst">Vänligen välj en exportmapp först.</sys:String>
-    <sys:String x:Key="LOCExportFolderNotExist">Den valda mappen finns inte.</sys:String>
-    <sys:String x:Key="LOCExportedCsvMessage">{0} spel exporterades till CSV: {1} (avgränsare '{2}')</sys:String>
-    <sys:String x:Key="LOCExportedJsonMessage">{0} spel exporterades till JSON: {1}</sys:String>
-    <sys:String x:Key="LOCExportFailedCount">Exporten misslyckades för {0} spel (se loggar).</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatColorSelection">Color selection:</sys:String>
 
@@ -43,6 +30,9 @@
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarOptions">Progress bar options</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">Show time tooltip in progress bar</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTime">Show time labels in progress bar</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeAbove">Above progress bar</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeInterior">Inside progress bar</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeBelow">Below progress bars</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeUser">Show user HowLongToBeat time</sys:String>
 
     <sys:String x:Key="LOCHltbUsedStartDateFromGameActivity">Used first game session from GameActivity plugin for start date</sys:String>
@@ -82,8 +72,6 @@ If none has this status, it takes the most recent.</sys:String>
     <sys:String x:Key="LOCHowLongToBeatVs">Vs</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatPlaying">Playing</sys:String>
-    <sys:String x:Key="LOCRefresh">Uppdatera</sys:String>
-    <sys:String x:Key="LOCDelete">Ta bort</sys:String>
 
     <!-- HowLongToBeat -->
 
@@ -178,26 +166,4 @@ Here is the list of commands:</sys:String>
     -stores={n}	Filter by store name (ex:-stores=steam / -stores=steam,epic)
     -status={n}	Filter by status name (ex:-status=played / -status=played,playing)</sys:String>
 
-    <!-- Aliases -->
-    <sys:String x:Key="LOCHowLongToBeatAliases">Alias</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesDescription" xml:space="preserve">Karta flera speltitlar till en enda HowLongToBeat-söktitel.
-Exempel:
-  Källa: Pokemon Red Version
-  Mål: Pokemon Red and Blue</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesSource">Källtitel</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesTarget">Mål (HLTB-titel)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesReset">Återställ</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesResetConfirm">Ersätta dina nuvarande alias med standard Pokémon-dual-release alias?</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImport">Importera</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesExport">Exportera</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesOpenFile">Öppna aliases.json</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesFilePathUnavailable">Plugin-användardatapath är inte tillgänglig.</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportNotFound">Inget aliasfil hittades: {0}</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportFailed">Misslyckades med att importera aliasfil: {0} (se loggar).</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportConfirm" xml:space="preserve">Importera alias från:\n{0}\n\nDetta kommer att ersätta dina nuvarande alias. Fortsätt?</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportOk">Alias importerade från: {0}</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesExportFailed">Misslyckades med att exportera aliasfil: {0} (se loggar).</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesExportOk">Alias exporterades till: {0}</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesCellToolTip">Klicka på en cell (eller tryck F2) för att redigera. Tryck Enter för att spara.</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesTip">Tips: dubbelklicka på en cell för att redigera. Alias sparas när du klickar på Spara.</sys:String>
 </ResourceDictionary>

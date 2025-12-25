@@ -12,19 +12,6 @@
     <sys:String x:Key="LOCHowLongToBeatAddTagDescription">メインストーリークリアまでの推定時間があるゲームにタグを追加</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoTag">Automatic tags processing</sys:String>
     <sys:String x:Key="LOCHowLongToBeatShowHltbImage">Use HowLongToBeat original game cover image in window</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatEnableVerboseLogging">詳細な HLTB デバッグログを有効化（extensions.log に追加ログ）</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExport">HowLongToBeat のデータをエクスポート</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExportCsvComma">CSV をエクスポート（カンマ）</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExportCsvSemicolon">CSV をエクスポート（セミコロン）</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExportJson">JSON をエクスポート</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExportFolderTooltip">エクスポート先フォルダー</sys:String>
-    <sys:String x:Key="LOCBrowseLabel">参照...</sys:String>
-
-    <sys:String x:Key="LOCExportSelectFolderFirst">まずエクスポートフォルダを選択してください。</sys:String>
-    <sys:String x:Key="LOCExportFolderNotExist">選択したフォルダは存在しません。</sys:String>
-    <sys:String x:Key="LOCExportedCsvMessage">{0} 件のゲームを CSV にエクスポートしました: {1} (区切り文字 '{2}')</sys:String>
-    <sys:String x:Key="LOCExportedJsonMessage">{0} 件のゲームを JSON にエクスポートしました: {1}</sys:String>
-    <sys:String x:Key="LOCExportFailedCount">{0} 件のゲームのエクスポートに失敗しました（ログを参照）。</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatColorSelection">色を選択:</sys:String>
 
@@ -43,6 +30,9 @@
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarOptions">プログレスバーのオプション</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">プログレスバーでツールチップを表示</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTime">プログレスバーに時間ラベルを表示</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeAbove">プログレスバーの上</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeInterior">プログレスバーの内部</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeBelow">プログレスバーの下</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeUser">Show user HowLongToBeat time</sys:String>
 
     <sys:String x:Key="LOCHltbUsedStartDateFromGameActivity">Used first game session from GameActivity plugin for start date</sys:String>
@@ -82,8 +72,6 @@ If none has this status, it takes the most recent.</sys:String>
     <sys:String x:Key="LOCHowLongToBeatVs">Vs</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatPlaying">Playing</sys:String>
-    <sys:String x:Key="LOCRefresh">更新</sys:String>
-    <sys:String x:Key="LOCDelete">削除</sys:String>
 
     <!-- HowLongToBeat -->
 
@@ -178,26 +166,4 @@ Here is the list of commands:</sys:String>
     -stores={n}	Filter by store name (ex:-stores=steam / -stores=steam,epic)
     -status={n}	Filter by status name (ex:-status=played / -status=played,playing)</sys:String>
 
-    <!-- Aliases -->
-    <sys:String x:Key="LOCHowLongToBeatAliases">エイリアス</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesDescription" xml:space="preserve">複数のゲームタイトルを単一の HowLongToBeat 検索タイトルにマップします。
-例:
-  ソース: Pokemon Red Version
-  ターゲット: Pokemon Red and Blue</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesSource">ソースタイトル</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesTarget">ターゲット (HLTB タイトル)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesReset">リセット</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesResetConfirm">現在のエイリアスをデフォルトの Pokémon 二重リリースエイリアスで置き換えますか？</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImport">インポート</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesExport">エクスポート</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesOpenFile">aliases.json を開く</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesFilePathUnavailable">プラグインのユーザーデータパスが利用できません。</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportNotFound">エイリアスファイルが見つかりません: {0}</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportFailed">エイリアスファイルのインポートに失敗しました: {0} (ログを確認してください)。</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportConfirm" xml:space="preserve">次からエイリアスをインポートします:\n{0}\n\nこれにより現在のエイリアスが置き換えられます。続行しますか？</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportOk">エイリアスをインポートしました: {0}</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesExportFailed">エイリアスファイルのエクスポートに失敗しました: {0} (ログを確認してください)。</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesExportOk">エイリアスをエクスポートしました: {0}</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesCellToolTip">セルをクリック (または F2 を押す) して編集します。Enter を押して確定します。</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesTip">ヒント: セルをダブルクリックして編集します。保存をクリックするとエイリアスが保存されます。</sys:String>
 </ResourceDictionary>
