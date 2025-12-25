@@ -12,19 +12,6 @@
     <sys:String x:Key="LOCHowLongToBeatAddTagDescription">Προσθήκη ετικέτας σε παιχνίδια με πληροφορίες χρόνου ολοκλήρωσης της Κύριας ιστορίας</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoTag">Αυτόματη επεξεργασία ετικετών</sys:String>
     <sys:String x:Key="LOCHowLongToBeatShowHltbImage">Χρήση της αρχικής εικόνας εξωφύλλου παιχνιδιού HowLongToBeat στο παράθυρο</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatEnableVerboseLogging">Ενεργοποίηση λεπτομερούς καταγραφής αποσφαλμάτωσης HLTB (επιπλέον καταγραφές στο extensions.log)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExport">Εξαγωγή δεδομένων HowLongToBeat</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExportCsvComma">Εξαγωγή CSV (,)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExportCsvSemicolon">Εξαγωγή CSV (;)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExportJson">Εξαγωγή JSON</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExportFolderTooltip">Φάκελος προορισμού για εξαγωγή</sys:String>
-    <sys:String x:Key="LOCBrowseLabel">Αναζήτηση...</sys:String>
- 
-    <sys:String x:Key="LOCExportSelectFolderFirst">Παρακαλώ επιλέξτε πρώτα έναν φάκελο εξαγωγής.</sys:String>
-    <sys:String x:Key="LOCExportFolderNotExist">Ο επιλεγμένος φάκελος δεν υπάρχει.</sys:String>
-    <sys:String x:Key="LOCExportedCsvMessage">{0} παιχνίδια εξήχθησαν σε CSV: {1} (διαχωριστικό '{2}')</sys:String>
-    <sys:String x:Key="LOCExportedJsonMessage">{0} παιχνίδια εξήχθησαν σε JSON: {1}</sys:String>
-    <sys:String x:Key="LOCExportFailedCount">Η εξαγωγή απέτυχε για {0} παιχνίδια (δείτε τα αρχεία καταγραφής).</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatColorSelection">Επιλογή χρώματος:</sys:String>
 
@@ -43,6 +30,9 @@
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarOptions">Ρυθμίσεις γραμμής προόδου</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">Εμφάνιση υποδείξεων χρόνου στη γραμμή προόδου</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTime">Εμφάνιση ετικετών χρόνου στη γραμμή προόδου</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeAbove">Πάνω από τη γραμμή προόδου</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeInterior">Μέσα στη μπάρα προόδου</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeBelow">Κάτω από τις γραμμές προόδου</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeUser">Εμφάνιση χρόνου χρήστη HowLongTobeat</sys:String>
 
     <sys:String x:Key="LOCHltbUsedStartDateFromGameActivity">Χρήση της πρώτης συνεδρίας από το πρόσθετο του Game Activity</sys:String>
@@ -82,8 +72,6 @@
     <sys:String x:Key="LOCHowLongToBeatVs">Εναντίον</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatPlaying">Παίζεται τώρα</sys:String>
-    <sys:String x:Key="LOCRefresh">Ανανέωση</sys:String>
-    <sys:String x:Key="LOCDelete">Διαγραφή</sys:String>
 
     <!-- HowLongToBeat -->
 
@@ -174,30 +162,7 @@
     -time             Χρόνος Ολοκλήρωσης (πχ:-time=5h / -time=&lt;50min / -time=&gt;50s / -time=10min&lt;&gt;5h)
     -np                Δεν παίξατε το παιχνίδι
     -fav               Το παιχνίδι πρέπει να είναι στα αγαπημένα
-    -stores={n} 	  Φίλτρο με όνομα καταστήματος (πχ:-stores=steam / -stores=steres=steam, pic)
-    -status={n} 	  Φίλτρο με κατάστασης παιχνιδιού (πχ: -status=έπαιξε / -status=played,playing)</sys:String>
+    -stores={n}	  Φίλτρο με όνομα καταστήματος (πχ:-stores=steam / -stores=steres=steam, pic)
+    -status={n}	  Φίλτρο με κατάστασης παιχνιδιού (πχ: -status=έπαιξε / -status=played,playing)</sys:String>
 
-    <!-- Aliases -->
-    <sys:String x:Key="LOCHowLongToBeatAliases">Ψευδώνυμα</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesDescription" xml:space="preserve">Χαρτογραφήστε πολλαπλούς τίτλους παιχνιδιών σε έναν τίτλο αναζήτησης HowLongToBeat.
-
-Example:
-  Source: Pokemon Red Version
-  Target: Pokemon Red and Blue</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesSource">Πρωτότυπος τίτλος</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesTarget">Στόχος (τίτλος HLTB)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesReset">Επαναφορά</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesResetConfirm">Να αντικατασταθούν τα τρέχοντα ψευδώνυμα με τα προεπιλεγμένα Pokémon διπλού κυκλοφορήματος;</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImport">Εισαγωγή</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesExport">Εξαγωγή</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesOpenFile">Άνοιγμα aliases.json</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesFilePathUnavailable">Η διαδρομή δεδομένων χρήστη του plugin δεν είναι διαθέσιμη.</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportNotFound">Δεν βρέθηκε αρχείο ψευδωνύμων: {0}</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportFailed">Αποτυχία εισαγωγής αρχείου ψευδωνύμων: {0} (δείτε τα αρχεία καταγραφής).</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportConfirm">Εισαγωγή ψευδωνύμων από:\n{0}\n\nΑυτό θα αντικαταστήσει τα τρέχοντα ψευδώνυμα. Συνεχίζετε;</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportOk">Εισήχθησαν ψευδώνυμα από: {0}</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesExportFailed">Αποτυχία εξαγωγής αρχείου ψευδωνύμων: {0} (δείτε τα αρχεία καταγραφής).</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesExportOk">Εξήχθησαν ψευδώνυμα σε: {0}</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesCellToolTip">Κλικ σε κελί (ή πατήστε F2) για επεξεργασία. Πατήστε Enter για επιβεβαίωση.</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesTip">Συμβουλή: διπλό κλικ σε κελί για επεξεργασία. Τα ψευδώνυμα αποθηκεύονται όταν κάνετε κλικ στο Αποθήκευση.</sys:String>
 </ResourceDictionary>
