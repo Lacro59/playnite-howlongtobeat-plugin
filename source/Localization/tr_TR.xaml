@@ -12,19 +12,6 @@
     <sys:String x:Key="LOCHowLongToBeatAddTagDescription">Ana hikaye tamamlanma bilgisi sunan oyunlara bir etiket ekle</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoTag">Otomatik etiketler işleniyor</sys:String>
     <sys:String x:Key="LOCHowLongToBeatShowHltbImage">Pencerede HowLongToBeat özgün kapak görselini kullan</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatEnableVerboseLogging">Ayrıntılı HLTB hata ayıklama günlüklerini etkinleştir (extensions.log'da ek kayıtlar)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExport">HowLongToBeat verilerini dışa aktar</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExportCsvComma">CSV olarak dışa aktar (virgül)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExportCsvSemicolon">CSV olarak dışa aktar (noktalı virgül)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExportJson">JSON olarak dışa aktar</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExportFolderTooltip">Dışa aktarma klasörü</sys:String>
-    <sys:String x:Key="LOCBrowseLabel">Gözat...</sys:String>
-
-    <sys:String x:Key="LOCExportSelectFolderFirst">Lütfen önce bir dışa aktarma klasörü seçin.</sys:String>
-    <sys:String x:Key="LOCExportFolderNotExist">Seçilen klasör mevcut değil.</sys:String>
-    <sys:String x:Key="LOCExportedCsvMessage">{0} oyun CSV olarak dışa aktarıldı: {1} (ayırıcı '{2}')</sys:String>
-    <sys:String x:Key="LOCExportedJsonMessage">{0} oyun JSON olarak dışa aktarıldı: {1}</sys:String>
-    <sys:String x:Key="LOCExportFailedCount">{0} oyun dışa aktarılamadı (loglara bakın).</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatColorSelection">Renk seçimi:</sys:String>
 
@@ -43,6 +30,9 @@
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarOptions">İlerleme çubuğu seçenekleri</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">İlerleme çubuğunda süre ipucunu göster</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTime">İlerleme çubuğunda süre etiketlerini göster</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeAbove">İlerleme çubuğu üzerinde</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeInterior">İlerleme çubuğu içinde</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeBelow">İlerleme çubukları altında</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeUser">Kullanıcının HowLongToBeat süresini göster</sys:String>
 
     <sys:String x:Key="LOCHltbUsedStartDateFromGameActivity">Başlangıç ​​tarihi için GameActivity eklentisinden ilk oyun oturumu kullanıldı</sys:String>
@@ -82,8 +72,6 @@ Hiç biri bu durumda değilse, en son süre alınır.</sys:String>
     <sys:String x:Key="LOCHowLongToBeatVs">Karşı</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatPlaying">Oynanıyor</sys:String>
-    <sys:String x:Key="LOCRefresh">Yenile</sys:String>
-    <sys:String x:Key="LOCDelete">Sil</sys:String>
 
     <!-- HowLongToBeat -->
 
@@ -178,26 +166,4 @@ Komutlar şunlardır:</sys:String>
     -stores={n}	Mağaza adıyla filtrele (örn:-stores=steam / -stores=steam,epic)
     -status={n}	Durum adıyla filtrele (örn:-status=played / -status=played,playing)</sys:String>
 
-    <!-- Aliases -->
-    <sys:String x:Key="LOCHowLongToBeatAliases">Takma adlar</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesDescription" xml:space="preserve">Birden çok oyun başlığını tek bir HowLongToBeat arama başlığına eşleyin.
-Örnek:
-  Kaynak: Pokemon Red Version
-  Hedef: Pokemon Red and Blue</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesSource">Kaynak başlık</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesTarget">Hedef (HLTB başlığı)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesReset">Sıfırla</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesResetConfirm">Mevcut takma adlarınızı varsayılan Pokémon çift sürüm takma adlarıyla değiştirmek ister misiniz?</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImport">İçe aktar</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesExport">Dışa aktar</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesOpenFile">aliases.json dosyasını aç</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesFilePathUnavailable">Eklenti kullanıcı veri yolu kullanılamıyor.</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportNotFound">Alias dosyası bulunamadı: {0}</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportFailed">Alias dosyası içe aktarılamadı: {0} (kayıtları inceleyin).</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportConfirm" xml:space="preserve">Alias'ları şuradan içe aktar:\n{0}\n\nBu mevcut alias'larınızı değiştirecek. Devam edilsin mi?</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportOk">Alias içe aktarıldı: {0}</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesExportFailed">Alias dosyası dışa aktarılamadı: {0} (kayıtları inceleyin).</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesExportOk">Alias dışa aktarıldı: {0}</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesCellToolTip">Düzenlemek için bir hücreye tıklayın (veya F2'ye basın). Onaylamak için Enter'a basın.</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesTip">İpucu: düzenlemek için bir hücreye çift tıklayın. Kaydet'e tıkladığınızda alias'lar kaydedilir.</sys:String>
 </ResourceDictionary>
