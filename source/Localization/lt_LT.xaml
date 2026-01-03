@@ -12,19 +12,6 @@
     <sys:String x:Key="LOCHowLongToBeatAddTagDescription">Add a tag to games with Main story completion time information</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoTag">Automatic tags processing</sys:String>
     <sys:String x:Key="LOCHowLongToBeatShowHltbImage">Use HowLongToBeat original game cover image in window</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatEnableVerboseLogging">Enable verbose HLTB debug logging (extra logs in extensions.log)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExport">Eksportuoti HowLongToBeat duomenis</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExportCsvComma">Eksportuoti CSV (kablelis)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExportCsvSemicolon">Eksportuoti CSV (kabliataškis)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExportJson">Eksportuoti JSON</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExportFolderTooltip">Eksporto aplankas</sys:String>
-    <sys:String x:Key="LOCBrowseLabel">Naršyti...</sys:String>
-
-    <sys:String x:Key="LOCExportSelectFolderFirst">Prašome pirmiausia pasirinkti eksportavimo aplanką.</sys:String>
-    <sys:String x:Key="LOCExportFolderNotExist">Pasirinktas aplankas neegzistuoja.</sys:String>
-    <sys:String x:Key="LOCExportedCsvMessage">{0} žaidimai eksportuoti į CSV: {1} (skirtukas '{2}')</sys:String>
-    <sys:String x:Key="LOCExportedJsonMessage">{0} žaidimai eksportuoti į JSON: {1}</sys:String>
-    <sys:String x:Key="LOCExportFailedCount">Nepavyko eksportuoti {0} žaidimų (žiūrėkite žurnalus).</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatColorSelection">Color selection:</sys:String>
 
@@ -43,6 +30,9 @@
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarOptions">Progress bar options</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">Show time tooltip in progress bar</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTime">Show time labels in progress bar</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeAbove">Above progress bar</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeInterior">Inside progress bar</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeBelow">Below progress bars</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeUser">Show user HowLongToBeat time</sys:String>
 
     <sys:String x:Key="LOCHltbUsedStartDateFromGameActivity">Used first game session from GameActivity plugin for start date</sys:String>
@@ -82,8 +72,6 @@ If none has this status, it takes the most recent.</sys:String>
     <sys:String x:Key="LOCHowLongToBeatVs">Vs</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatPlaying">Playing</sys:String>
-    <sys:String x:Key="LOCRefresh">Atnaujinti</sys:String>
-    <sys:String x:Key="LOCDelete">Ištrinti</sys:String>
 
     <!-- HowLongToBeat -->
 
@@ -178,27 +166,4 @@ Here is the list of commands:</sys:String>
     -stores={n}	Filter by store name (ex:-stores=steam / -stores=steam,epic)
     -status={n}	Filter by status name (ex:-status=played / -status=played,playing)</sys:String>
 
-    <!-- Aliases -->
-    <sys:String x:Key="LOCHowLongToBeatAliases">Pseudonimai</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesDescription" xml:space="preserve">Susiekite kelis žaidimų pavadinimus su vienu HowLongToBeat paieškos pavadinimu.
-
-Pavyzdys:
-  Šaltinis: Pokemon Red Version
-  Tikslas: Pokemon Red and Blue</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesSource">Šaltinio pavadinimas</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesTarget">Tikslinis (HLTB pavadinimas)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesReset">Atstatyti</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesResetConfirm">Ar pakeisti dabartinius pseudonimus numatytaisiais Pokémon dvigubo leidimo pseudonimais?</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImport">Importuoti</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesExport">Eksportuoti</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesOpenFile">Atidaryti aliases.json</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesFilePathUnavailable">Priedo naudotojo duomenų kelias nėra prieinamas.</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportNotFound">Nerastas pseudonimų failas: {0}</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportFailed">Nepavyko importuoti pseudonimų failo: {0} (žiūrėkite žurnalus).</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportConfirm" xml:space="preserve">Importuoti pseudonimus iš:\n{0}\n\nTai pakeis jūsų esamus pseudonimus. Tęsti?</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportOk">Pseudonimai importuoti iš: {0}</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesExportFailed">Nepavyko eksportuoti pseudonimų failo: {0} (žiūrėkite žurnalus).</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesExportOk">Pseudonimai eksportuoti į: {0}</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesCellToolTip">Spustelėkite ląstelę (arba paspauskite F2) norėdami redaguoti. Paspauskite Enter, kad patvirtintumėte.</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesTip">Patarimas: dukart spustelėkite ląstelę, kad redaguotumėte. Pseudonimai bus išsaugoti paspaudus Išsaugoti.</sys:String>
 </ResourceDictionary>

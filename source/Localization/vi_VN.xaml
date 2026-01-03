@@ -12,19 +12,6 @@
     <sys:String x:Key="LOCHowLongToBeatAddTagDescription">Add a tag to games with Main story completion time information</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoTag">Automatic tags processing</sys:String>
     <sys:String x:Key="LOCHowLongToBeatShowHltbImage">Use HowLongToBeat original game cover image in window</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatEnableVerboseLogging">Bật ghi nhật ký gỡ lỗi chi tiết HLTB (nhật ký bổ sung trong extensions.log)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExport">Xuất dữ liệu HowLongToBeat</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExportCsvComma">Xuất CSV (dấu phẩy)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExportCsvSemicolon">Xuất CSV (dấu chấm phẩy)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExportJson">Xuất JSON</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExportFolderTooltip">Thư mục xuất</sys:String>
-    <sys:String x:Key="LOCBrowseLabel">Duyệt...</sys:String>
-
-    <sys:String x:Key="LOCExportSelectFolderFirst">Vui lòng chọn thư mục xuất trước.</sys:String>
-    <sys:String x:Key="LOCExportFolderNotExist">Thư mục đã chọn không tồn tại.</sys:String>
-    <sys:String x:Key="LOCExportedCsvMessage">Đã xuất {0} trò chơi sang CSV: {1} (kí tự phân cách '{2}')</sys:String>
-    <sys:String x:Key="LOCExportedJsonMessage">Đã xuất {0} trò chơi sang JSON: {1}</sys:String>
-    <sys:String x:Key="LOCExportFailedCount">Không thể xuất {0} trò chơi (xem nhật kí).</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatColorSelection">Color selection:</sys:String>
 
@@ -43,6 +30,9 @@
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarOptions">Progress bar options</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">Show time tooltip in progress bar</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTime">Show time labels in progress bar</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeAbove">Above progress bar</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeInterior">Inside progress bar</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeBelow">Below progress bars</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeUser">Show user HowLongToBeat time</sys:String>
 
     <sys:String x:Key="LOCHltbUsedStartDateFromGameActivity">Used first game session from GameActivity plugin for start date</sys:String>
@@ -82,8 +72,6 @@ If none has this status, it takes the most recent.</sys:String>
     <sys:String x:Key="LOCHowLongToBeatVs">Vs</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatPlaying">Playing</sys:String>
-    <sys:String x:Key="LOCRefresh">Làm mới</sys:String>
-    <sys:String x:Key="LOCDelete">Xóa</sys:String>
 
     <!-- HowLongToBeat -->
 
@@ -178,26 +166,4 @@ Here is the list of commands:</sys:String>
     -stores={n}	Filter by store name (ex:-stores=steam / -stores=steam,epic)
     -status={n}	Filter by status name (ex:-status=played / -status=played,playing)</sys:String>
 
-    <!-- Aliases -->
-    <sys:String x:Key="LOCHowLongToBeatAliases">Bí danh</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesDescription" xml:space="preserve">Đánh chiếu nhiều tiêu đề trò chơi vào một tiêu đề tìm kiếm HowLongToBeat duy nhất.
-Ví dụ:
-  Nguồn: Pokemon Red Version
-  Đích: Pokemon Red and Blue</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesSource">Tiêu đề nguồn</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesTarget">Đích (tiêu đề HLTB)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesReset">Đặt lại</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesResetConfirm">Thay thế bí danh hiện tại của bạn bằng bí danh mặc định của Pokémon cho phát hành kép?</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImport">Nhập</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesExport">Xuất</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesOpenFile">Mở aliases.json</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesFilePathUnavailable">Đường dẫn dữ liệu người dùng plugin không khả dụng.</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportNotFound">Không tìm thấy tệp bí danh: {0}</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportFailed">Không thể nhập tệp bí danh: {0} (xem nhật ký).</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportConfirm" xml:space="preserve">Nhập bí danh từ:\n{0}\n\nĐiều này sẽ thay thế bí danh hiện tại của bạn. Tiếp tục?</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportOk">Đã nhập bí danh từ: {0}</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesExportFailed">Không thể xuất tệp bí danh: {0} (xem nhật ký).</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesExportOk">Bí danh đã được xuất đến: {0}</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesCellToolTip">Nhấp vào ô (hoặc nhấn F2) để chỉnh sửa. Nhấn Enter để lưu.</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesTip">Mẹo: nhấp đúp vào ô để chỉnh sửa. Bí danh được lưu khi bạn nhấp Lưu.</sys:String>
 </ResourceDictionary>

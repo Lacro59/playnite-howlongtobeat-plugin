@@ -12,19 +12,6 @@
     <sys:String x:Key="LOCHowLongToBeatAddTagDescription">Adicionar uma tag aos jogos com informações sobre o tempo de conclusão da história principal</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoTag">Processamento automático de etiquetas</sys:String>
     <sys:String x:Key="LOCHowLongToBeatShowHltbImage">Usar a imagem original da capa do jogo &quot;HowLongToBeat&quot; na janela</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatEnableVerboseLogging">Ativar registro detalhado de depuração do HLTB (logs extras em extensions.log)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExport">Exportar dados do HowLongToBeat</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExportCsvComma">Exportar CSV (vírgula)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExportCsvSemicolon">Exportar CSV (ponto e vírgula)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExportJson">Exportar JSON</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExportFolderTooltip">Pasta de destino para exportação</sys:String>
-    <sys:String x:Key="LOCBrowseLabel">Procurar...</sys:String>
-
-    <sys:String x:Key="LOCExportSelectFolderFirst">Por favor, selecione uma pasta de exportação primeiro.</sys:String>
-    <sys:String x:Key="LOCExportFolderNotExist">A pasta selecionada não existe.</sys:String>
-    <sys:String x:Key="LOCExportedCsvMessage">{0} jogos exportados para CSV: {1} (delimitador '{2}')</sys:String>
-    <sys:String x:Key="LOCExportedJsonMessage">{0} jogos exportados para JSON: {1}</sys:String>
-    <sys:String x:Key="LOCExportFailedCount">Falha ao exportar {0} jogos (ver logs).</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatColorSelection">Seleção de cor:</sys:String>
 
@@ -43,6 +30,9 @@
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarOptions">Opções da barra de progresso</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">Mostrar dica de tempo na barra de progresso</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTime">Mostrar rótulos de tempo na barra de progresso</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeAbove">Acima da barra de progresso</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeInterior">Dentro da barra de progresso</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeBelow">Abaixo da barra de progresso</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeUser">Mostar o tempo do usuário do HowLongToBeat</sys:String>
 
     <sys:String x:Key="LOCHltbUsedStartDateFromGameActivity">Usado a primeira sessão do jogo do plugin GameActivity para a data de início</sys:String>
@@ -82,8 +72,6 @@ Se nenhum tiver este status, pegará o mais recente.</sys:String>
     <sys:String x:Key="LOCHowLongToBeatVs">Vs</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatPlaying">Jogando</sys:String>
-    <sys:String x:Key="LOCRefresh">Atualizar</sys:String>
-    <sys:String x:Key="LOCDelete">Excluir</sys:String>
 
     <!-- HowLongToBeat -->
 
@@ -177,28 +165,5 @@ Aqui está a lista de comandos:</sys:String>
     -fav		O jogo deve ser um favorito
     -stores={n}	Filtrar pelo nome de loja (ex:-stores=steam / -stores=steam,epic)
     -status={n}	Filtrar pelo nome de estado (ex:-status=played / -status=played,playing)</sys:String>
-
-    <!-- Aliases -->
-    <sys:String x:Key="LOCHowLongToBeatAliases">Aliases</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesDescription" xml:space="preserve">Mapear vários títulos de jogos para um único título de busca no HowLongToBeat.
-Exemplo:
-  Origem: Pokemon Red Version
-  Alvo: Pokemon Red and Blue</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesSource">Título de origem</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesTarget">Alvo (título HLTB)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesReset">Redefinir</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesResetConfirm">Substituir seus aliases atuais pelos aliases padrão de lançamentos duplos do Pokémon?</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImport">Importar</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesExport">Exportar</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesOpenFile">Abrir aliases.json</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesFilePathUnavailable">Caminho dos dados do plugin não está disponível.</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportNotFound">Nenhum arquivo de aliases encontrado: {0}</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportFailed">Falha ao importar arquivo de aliases: {0} (veja os logs).</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportConfirm" xml:space="preserve">Importar aliases de:\n{0}\n\nIsso substituirá seus aliases atuais. Continuar?</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportOk">Aliases importados de: {0}</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesExportFailed">Falha ao exportar arquivo de aliases: {0} (veja os logs).</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesExportOk">Aliases exportados para: {0}</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesCellToolTip">Clique em uma célula (ou pressione F2) para editar. Pressione Enter para confirmar.</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesTip">Dica: clique duas vezes em uma célula para editar. Os aliases são salvos quando você clica em Salvar.</sys:String>
 
 </ResourceDictionary>
