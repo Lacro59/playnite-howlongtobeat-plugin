@@ -12,19 +12,6 @@
     <sys:String x:Key="LOCHowLongToBeatAddTagDescription">Add a tag to games with Main story completion time information</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoTag">Automatic tags processing</sys:String>
     <sys:String x:Key="LOCHowLongToBeatShowHltbImage">Use HowLongToBeat original game cover image in window</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatEnableVerboseLogging">Activează jurnalizarea detaliată HLTB (jurnale suplimentare în extensions.log)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExport">Exportă datele HowLongToBeat</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExportCsvComma">Exportă CSV (virgulă)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExportCsvSemicolon">Exportă CSV (punct și virgulă)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExportJson">Exportă JSON</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExportFolderTooltip">Dosar de export</sys:String>
-    <sys:String x:Key="LOCBrowseLabel">Răsfoiește...</sys:String>
-
-    <sys:String x:Key="LOCExportSelectFolderFirst">Vă rugăm selectați mai întâi un folder de export.</sys:String>
-    <sys:String x:Key="LOCExportFolderNotExist">Folderul selectat nu există.</sys:String>
-    <sys:String x:Key="LOCExportedCsvMessage">{0} jocuri exportate în CSV: {1} (separator '{2}')</sys:String>
-    <sys:String x:Key="LOCExportedJsonMessage">{0} jocuri exportate în JSON: {1}</sys:String>
-    <sys:String x:Key="LOCExportFailedCount">Exportul a eșuat pentru {0} jocuri (vedeți jurnalele).</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatColorSelection">Color selection:</sys:String>
 
@@ -43,6 +30,9 @@
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarOptions">Progress bar options</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">Show time tooltip in progress bar</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTime">Show time labels in progress bar</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeAbove">Above progress bar</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeInterior">Inside progress bar</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeBelow">Below progress bars</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeUser">Show user HowLongToBeat time</sys:String>
 
     <sys:String x:Key="LOCHltbUsedStartDateFromGameActivity">Used first game session from GameActivity plugin for start date</sys:String>
@@ -82,8 +72,6 @@ If none has this status, it takes the most recent.</sys:String>
     <sys:String x:Key="LOCHowLongToBeatVs">Vs</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatPlaying">Playing</sys:String>
-    <sys:String x:Key="LOCRefresh">Actualizează</sys:String>
-    <sys:String x:Key="LOCDelete">Șterge</sys:String>
 
     <!-- HowLongToBeat -->
 
@@ -135,7 +123,7 @@ If none has this status, it takes the most recent.</sys:String>
     <sys:String x:Key="LOCHowLongToBeatSetCurrentTimeManualAll">Set your current playtime for all games</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatSetCurrentCompletedTimeManualOn">Set your current completed playtime on</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatSetCurrentMultiTimeManualOn">Set your current muti playtime on</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatSetCurrentMultiTimeManualOn">Set your current muli playtime on</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatSetCurrentTime">Want you send your current playtime?</sys:String>
 
@@ -178,26 +166,4 @@ Here is the list of commands:</sys:String>
     -stores={n}	Filter by store name (ex:-stores=steam / -stores=steam,epic)
     -status={n}	Filter by status name (ex:-status=played / -status=played,playing)</sys:String>
 
-    <!-- Aliases -->
-    <sys:String x:Key="LOCHowLongToBeatAliases">Aliasuri</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesDescription" xml:space="preserve">Asociați mai multe titluri de joc la un singur titlu de căutare HowLongToBeat.
-Exemplu:
-  Sursa: Pokemon Red Version
-  Ținta: Pokemon Red and Blue</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesSource">Titlu sursă</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesTarget">Țintă (titlu HLTB)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesReset">Resetare</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesResetConfirm">Înlocuiți aliasurile curente cu aliasurile implicite Pokémon pentru lansări duale?</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImport">Import</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesExport">Export</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesOpenFile">Deschide aliases.json</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesFilePathUnavailable">Calea către datele utilizatorului plugin nu este disponibilă.</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportNotFound">Fișierul de alias nu a fost găsit: {0}</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportFailed">Importul fișierului de alias a eșuat: {0} (vedeți jurnalele).</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportConfirm" xml:space="preserve">Importați aliasuri din:\n{0}\n\nAceasta va înlocui aliasurile dvs. curente. Continuați?</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportOk">Aliasuri importate din: {0}</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesExportFailed">Exportul fișierului de alias a eșuat: {0} (vedeți jurnalele).</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesExportOk">Aliasuri exportate la: {0}</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesCellToolTip">Faceți clic pe o celulă (sau apăsați F2) pentru a edita. Apăsați Enter pentru a confirma.</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesTip">Sfat: faceți dublu clic pe o celulă pentru a edita. Aliasurile sunt salvate când faceți clic pe Salvează.</sys:String>
 </ResourceDictionary>

@@ -12,19 +12,6 @@
     <sys:String x:Key="LOCHowLongToBeatAddTagDescription">Add a tag to games with Main story completion time information</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoTag">Automatic tags processing</sys:String>
     <sys:String x:Key="LOCHowLongToBeatShowHltbImage">Use HowLongToBeat original game cover image in window</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatEnableVerboseLogging">Povoliť podrobné ladenie HLTB (extra logy v extensions.log)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExport">Exportovať údaje HowLongToBeat</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExportCsvComma">Exportovať CSV (čiarka)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExportCsvSemicolon">Exportovať CSV (stredník)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExportJson">Exportovať JSON</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExportFolderTooltip">Priečinok exportu</sys:String>
-    <sys:String x:Key="LOCBrowseLabel">Prehľadávať...</sys:String>
-
-    <sys:String x:Key="LOCExportSelectFolderFirst">Vyberte najprv priečinok pre export.</sys:String>
-    <sys:String x:Key="LOCExportFolderNotExist">Vybraný priečinok neexistuje.</sys:String>
-    <sys:String x:Key="LOCExportedCsvMessage">{0} hier bolo exportovaných do CSV: {1} (oddeľovač '{2}')</sys:String>
-    <sys:String x:Key="LOCExportedJsonMessage">{0} hier bolo exportovaných do JSON: {1}</sys:String>
-    <sys:String x:Key="LOCExportFailedCount">Export zlyhal pre {0} hier (pozrite si logy).</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatColorSelection">Color selection:</sys:String>
 
@@ -43,6 +30,9 @@
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarOptions">Progress bar options</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">Show time tooltip in progress bar</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTime">Show time labels in progress bar</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeAbove">Above progress bar</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeInterior">Inside progress bar</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeBelow">Below progress bars</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeUser">Show user HowLongToBeat time</sys:String>
 
     <sys:String x:Key="LOCHltbUsedStartDateFromGameActivity">Used first game session from GameActivity plugin for start date</sys:String>
@@ -82,8 +72,6 @@ If none has this status, it takes the most recent.</sys:String>
     <sys:String x:Key="LOCHowLongToBeatVs">Vs</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatPlaying">Playing</sys:String>
-    <sys:String x:Key="LOCRefresh">Obnoviť</sys:String>
-    <sys:String x:Key="LOCDelete">Vymazať</sys:String>
 
     <!-- HowLongToBeat -->
 
@@ -178,26 +166,4 @@ Here is the list of commands:</sys:String>
     -stores={n}	Filter by store name (ex:-stores=steam / -stores=steam,epic)
     -status={n}	Filter by status name (ex:-status=played / -status=played,playing)</sys:String>
 
-    <!-- Aliases -->
-    <sys:String x:Key="LOCHowLongToBeatAliases">Aliasy</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesDescription" xml:space="preserve">Mapujte viacero názvov hier na jeden názov vyhľadávania HowLongToBeat.
-Príklad:
-  Zdroj: Pokemon Red Version
-  Cieľ: Pokemon Red and Blue</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesSource">Zdrojový názov</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesTarget">Cieľ (názov HLTB)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesReset">Resetovať</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesResetConfirm">Nahradiť vaše súčasné aliasy predvolenými aliasmi Pokémon pri dvojitom vydaní?</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImport">Importovať</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesExport">Exportovať</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesOpenFile">Otvoriť aliases.json</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesFilePathUnavailable">Cesta údajov používateľa pluginu nie je k dispozícii.</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportNotFound">Alias súbor nenájdený: {0}</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportFailed">Import alias súboru zlyhal: {0} (pozrite si záznamy).</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportConfirm" xml:space="preserve">Importovať aliasy z:\n{0}\n\nTýmto nahradíte svoje aktuálne aliasy. Pokračovať?</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportOk">Alias importovaný z: {0}</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesExportFailed">Export alias súboru zlyhal: {0} (pozrite si záznamy).</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesExportOk">Alias exportované do: {0}</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesCellToolTip">Kliknite na bunku (alebo stlačte F2) pre úpravu. Stlačte Enter pre potvrdenie.</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesTip">Tip: dvojitým kliknutím na bunku upravíte. Alias sa uložia po kliknutí na Uložiť.</sys:String>
 </ResourceDictionary>

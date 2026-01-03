@@ -12,19 +12,6 @@
     <sys:String x:Key="LOCHowLongToBeatAddTagDescription">Add a tag to games with Main story completion time information</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoTag">Automatic tags processing</sys:String>
     <sys:String x:Key="LOCHowLongToBeatShowHltbImage">Use HowLongToBeat original game cover image in window</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatEnableVerboseLogging">فعال‌سازی ثبت گزارش اشکال‌زدایی دقیق HLTB (گزارش‌های اضافی در extensions.log)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExport">صدور داده‌های HowLongToBeat</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExportCsvComma">صدور CSV (ویرگول)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExportCsvSemicolon">صدور CSV (نقطه ویرگول)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExportJson">صدور JSON</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExportFolderTooltip">پوشه مقصد برای صدور</sys:String>
-    <sys:String x:Key="LOCBrowseLabel">مرور...</sys:String>
-
-    <sys:String x:Key="LOCExportSelectFolderFirst">لطفاً ابتدا یک پوشه خروجی انتخاب کنید.</sys:String>
-    <sys:String x:Key="LOCExportFolderNotExist">پوشه انتخاب شده وجود ندارد.</sys:String>
-    <sys:String x:Key="LOCExportedCsvMessage">{0} بازی به CSV صادر شد: {1} (جداساز '{2}')</sys:String>
-    <sys:String x:Key="LOCExportedJsonMessage">{0} بازی به JSON صادر شد: {1}</sys:String>
-    <sys:String x:Key="LOCExportFailedCount">صدور {0} بازی با خطا مواجه شد (به لاگ‌ها مراجعه کنید).</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatColorSelection">Color selection:</sys:String>
 
@@ -43,6 +30,9 @@
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarOptions">Progress bar options</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">Show time tooltip in progress bar</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTime">Show time labels in progress bar</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeAbove">Above progress bar</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeInterior">Inside progress bar</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeBelow">Below progress bars</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeUser">Show user HowLongToBeat time</sys:String>
 
     <sys:String x:Key="LOCHltbUsedStartDateFromGameActivity">Used first game session from GameActivity plugin for start date</sys:String>
@@ -82,8 +72,6 @@ If none has this status, it takes the most recent.</sys:String>
     <sys:String x:Key="LOCHowLongToBeatVs">Vs</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatPlaying">Playing</sys:String>
-    <sys:String x:Key="LOCRefresh">بازنشانی</sys:String>
-    <sys:String x:Key="LOCDelete">حذف</sys:String>
 
     <!-- HowLongToBeat -->
 
@@ -178,27 +166,4 @@ Here is the list of commands:</sys:String>
     -stores={n}	Filter by store name (ex:-stores=steam / -stores=steam,epic)
     -status={n}	Filter by status name (ex:-status=played / -status=played,playing)</sys:String>
 
-    <!-- Aliases -->
-    <sys:String x:Key="LOCHowLongToBeatAliases">نام مستعار</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesDescription" xml:space="preserve">نگاشت چند عنوان بازی به یک عنوان جستجوی HowLongToBeat.
-
-Example:
-  Source: Pokemon Red Version
-  Target: Pokemon Red and Blue</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesSource">عنوان منبع</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesTarget">هدف (عنوان HLTB)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesReset">بازنشانی</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesResetConfirm">جایگزینی نام‌های مستعار فعلی با نام‌های مستعار پیش‌فرض Pokémon برای انتشار دوگانه؟</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImport">وارد کردن</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesExport">صادر کردن</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesOpenFile">باز کردن aliases.json</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesFilePathUnavailable">مسیر داده‌های کاربر پلاگین در دسترس نیست.</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportNotFound">فایل نام مستعار پیدا نشد: {0}</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportFailed">وارد کردن فایل نام مستعار با خطا مواجه شد: {0} (به لاگ‌ها مراجعه کنید).</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportConfirm">وارد کردن نام‌های مستعار از:\n{0}\n\nاین کار نام‌های مستعار فعلی شما را جایگزین می‌کند. ادامه می‌دهید؟</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportOk">نام‌های مستعار از: {0} وارد شدند</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesExportFailed">صادر کردن فایل نام مستعار با خطا مواجه شد: {0} (به لاگ‌ها مراجعه کنید).</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesExportOk">نام‌های مستعار صادر شدند به: {0}</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesCellToolTip">برای ویرایش روی یک سلول کلیک کنید (یا F2 را فشار دهید). برای تایید Enter را بزنید.</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesTip">راهنما: برای ویرایش روی یک سلول دوبار کلیک کنید. نام‌های مستعار هنگام کلیک روی ذخیره ذخیره می‌شوند.</sys:String>
 </ResourceDictionary>
