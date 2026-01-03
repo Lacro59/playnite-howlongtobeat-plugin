@@ -788,7 +788,7 @@ namespace HowLongToBeat.Services
 
                             Application.Current.Dispatcher?.BeginInvoke(new Action(() =>
                             {
-                                Database.OnCollectionChanged(null, null);
+                                Database.OnCollectionChanged(new List<GameHowLongToBeat>(), new List<GameHowLongToBeat>());
                             }));
                         }
                         else
@@ -866,7 +866,7 @@ namespace HowLongToBeat.Services
 
                         Application.Current.Dispatcher?.Invoke(() =>
                         {
-                            Database.OnCollectionChanged(null, null);
+                            Database.OnCollectionChanged(new List<GameHowLongToBeat>(), new List<GameHowLongToBeat>());
                         });
 
                         FileSystem.WriteStringToFileSafe(Path.Combine(Paths.PluginUserDataPath, "HltbUserStats.json"), Serialization.ToJson(Database.UserHltbData));
