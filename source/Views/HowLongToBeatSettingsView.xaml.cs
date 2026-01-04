@@ -159,7 +159,13 @@ namespace HowLongToBeat.Views
         {
             try
             {
-                var selected = API.Instance.Dialogs.SelectFolder();
+                var initial = PART_ExportFolder.Text?.Trim();
+                if (string.IsNullOrEmpty(initial))
+                {
+                    initial = PluginDatabase?.Paths?.PluginUserDataPath;
+                }
+
+                var selected = API.Instance.Dialogs.SelectFolder(initial);
                 if (!selected.IsNullOrEmpty())
                 {
                     PART_ExportFolder.Text = selected;
