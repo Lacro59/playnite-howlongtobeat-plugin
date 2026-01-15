@@ -25,7 +25,7 @@
     <sys:String x:Key="LOCHltbSelectDataTypeLeisure">Ocio</sys:String>
 
     <sys:String x:Key="LOCHltbPreferredTimeToBeat">Tiempo preferido para superar</sys:String>
-    <sys:String x:Key="LOCHltbVisibleData"></sys:String>
+    <sys:String x:Key="LOCHltbVisibleData">Seleccionar datos de tiempo visibles</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarOptions">Opciones de la barra de progreso</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">Mostrar descripción de tiempo en la barra de progreso</sys:String>
@@ -42,14 +42,14 @@
     <sys:String x:Key="LOCHowLongToBeatEnableSuccessNotification">Habilitar notificación de éxito</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatus">Actualizar automáticamente el estado del juego con el estado del juego de HowLongToBeat al importar datos del usuario</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltb">Automatically update game status on HowLongToBeat game status when changing on Playnite</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltb">Actualizar automáticamente el estado del juego en howLongToBeat al cambiar el estado del juego en Playnite</sys:String>
     
     <sys:String x:Key="LOCHowLongToBeatAutoData">Descarga de datos del juego</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAutoAccept">Seleccionar automáticamente el juego cuando sólo se encuentre un juego durante la búsqueda</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoAccept">Seleccionar automáticamente el juego cuando solo</sys:String>
     <sys:String x:Key="LOCHowLongToBeatShowWhenMismatch">Mostrar lista de selección de juegos cuando se encuentre más de un juego durante la búsqueda</sys:String>
     <sys:String x:Key="LOCHowLongToBeatUseMatchValue">Usar un porcentaje de coincidencia</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatTimeOnlyHour">Formato de hora con sólo hora</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatTimeOnlyHour">Formato de hora con solo</sys:String>
     
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBar">Mostrar indicador de progreso</sys:String>
     
@@ -69,7 +69,7 @@ Si ninguno tiene este estado, tomara el más reciente.</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatSolo">Un jugador</sys:String>
     <sys:String x:Key="LOCHowLongToBeatCoOp">Cooperativo</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatVs">Vs</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatVs">Vs.</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatPlaying">Jugado</sys:String>
 
@@ -86,7 +86,7 @@ Si ninguno tiene este estado, tomara el más reciente.</sys:String>
     <sys:String x:Key="LocHowLongToBeatPlayniteData">Datos de Playnite</sys:String>
     <sys:String x:Key="LOCHowLongToBeatCompleted">Completado</sys:String>
 
-    <sys:String x:Key="LOCHltbOnlyReplays">Solo rejugados</sys:String>
+    <sys:String x:Key="LOCHltbOnlyReplays">Solo re-jugados</sys:String>
     <sys:String x:Key="LOCHltbOnlyNotPlayed">Solo juegos no jugados</sys:String>
 
     <sys:String x:Key="LOCHltbRemainingTime">Tiempo restante</sys:String>
@@ -104,11 +104,11 @@ Si ninguno tiene este estado, tomara el más reciente.</sys:String>
     <sys:String x:Key="LOCHltbAvgGameByMonth">Media del juego por mes</sys:String>
     <sys:String x:Key="LOCHltbCountGameBeatenBeforeTime">Número de juegos finalizados antes de tiempo</sys:String>
     <sys:String x:Key="LOCHltbCountGameBeatenAfterTime">Número de juegos finalizados después de tiempo</sys:String>
-    <sys:String x:Key="LOCHltbCountGameBeatenReplays">Número de juegos finalizados (rejugados)</sys:String>
+    <sys:String x:Key="LOCHltbCountGameBeatenReplays">Número de juegos finalizados (re-jugados)</sys:String>
     <sys:String x:Key="LOCHltbCountGameRetired">Número de juegos retirados</sys:String>
 
     <sys:String x:Key="LOCHltbUsedFilteredGames">Juegos filtrados usados actualmente</sys:String>
-    <sys:String x:Key="LOCHltbOnlyNotPlayedGames">Sólo juegos no jugados</sys:String>
+    <sys:String x:Key="LOCHltbOnlyNotPlayedGames">Solo juegos no jugados</sys:String>
 
     <!-- MainView -->
 
@@ -123,7 +123,7 @@ Si ninguno tiene este estado, tomara el más reciente.</sys:String>
     <sys:String x:Key="LOCHowLongToBeatSetCurrentTimeManualAll">Establecer tu tiempo de juego actual para todos los juegos</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatSetCurrentCompletedTimeManualOn">Establece tu tiempo de juego actual completado</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatSetCurrentMultiTimeManualOn">Set your current muli playtime on</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatSetCurrentMultiTimeManualOn">Establecer el tiempo de juego actual</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatSetCurrentTime">¿Quieres enviar tu tiempo de juego actual?</sys:String>
 
