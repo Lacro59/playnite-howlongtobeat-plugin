@@ -401,7 +401,7 @@ namespace HowLongToBeat.Services
             }
         }
 
-        public override void RefreshNoLoader(Guid id)
+        public void RefreshNoLoader(Guid id)
         {
             Game game = API.Instance.Database.Games.Get(id);
             if (IsVerboseLoggingEnabled)

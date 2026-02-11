@@ -975,7 +975,7 @@ namespace HowLongToBeat.Services
                             if (!httpResp.IsSuccessStatusCode)
                             {
                                 try { Logger.Warn($"HTTP {(int)httpResp.StatusCode} downloading {url}"); } catch { }
-                                return "/api/search";
+                                return "/api/s";
                             }
 
                             response = await httpResp.Content.ReadAsStringAsync().ConfigureAwait(false);
@@ -984,12 +984,12 @@ namespace HowLongToBeat.Services
                     catch (TaskCanceledException)
                     {
                         try { Logger.Warn($"Timeout {ScriptDownloadTimeoutMs}ms downloading {url}"); } catch { }
-                        return "/api/search";
+                        return "/api/s";
                     }
                     catch (Exception ex)
                     {
                         Common.LogError(ex, false, true, PluginDatabase.PluginName);
-                        return "/api/search";
+                        return "/api/s";
                     }
                 }
 
@@ -1071,7 +1071,7 @@ namespace HowLongToBeat.Services
                 Common.LogError(ex, false, true, PluginDatabase.PluginName);
             }
 
-            return "/api/search";
+            return "/api/s";
         }
 
         /// <summary>
@@ -1103,7 +1103,7 @@ namespace HowLongToBeat.Services
                 {
                     new HttpHeader { Key = "Referer", Value = UrlBase }
                 };
-                string url = UrlBase + "/api/search/init?t=" + DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+                string url = UrlBase + "/api/finder/init?t=" + DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
                 string response = null;
                 try
                 {
