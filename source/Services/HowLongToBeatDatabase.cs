@@ -1046,8 +1046,24 @@ namespace HowLongToBeat.Services
                     if (gameHowLongToBeat != null && (!gameHowLongToBeat.GetData()?.IsVndb ?? false))
                     {
                         TimeSpan time = TimeSpan.FromSeconds(game.Playtime);
-                        string platformName = HltbPlatform.PC.GetDescription();
+                        HltbDataUser hltbDataUser = gameHowLongToBeat.GetData();
+						string platformName = HltbPlatform.PC.GetDescription();
                         string storefrontName = string.Empty;
+
+						#region Validate Id
+
+						if(string.IsNullOrWhiteSpace(hltbDataUser.Id))
+						{
+							Logger.Warn($"Cannot submit data for a game without HLTB ID ({game.Name})");
+							API.Instance.Notifications.Add(new NotificationMessage(
+								$"{PluginName}-NoHltbId-Error-{new Guid()}",
+								PluginName + Environment.NewLine + string.Format(ResourceProvider.GetString("LOCHowLongToBeatErrorNoHltbId"), game.Name),
+								NotificationType.Error
+							));
+							return false;
+						}
+
+						#endregion
 
                         #region Search platform
 
@@ -1098,7 +1114,6 @@ namespace HowLongToBeat.Services
 
                         #region Get current data from HowLongToBeat
 
-                        HltbDataUser hltbDataUser = gameHowLongToBeat.GetData();
                         TitleList HltbData = GetUserHltbDataCurrent(hltbDataUser.Id, gameHowLongToBeat.UserGameId);
                         EditData editData = new EditData();
                         string submissionId = "0";
