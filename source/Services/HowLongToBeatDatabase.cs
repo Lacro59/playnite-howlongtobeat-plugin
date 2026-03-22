@@ -1056,7 +1056,7 @@ namespace HowLongToBeat.Services
 						{
 							Logger.Warn($"Cannot submit data for a game without HLTB ID ({game.Name})");
 							API.Instance.Notifications.Add(new NotificationMessage(
-								$"{PluginName}-NoHltbId-Error-{new Guid()}",
+								$"{PluginName}-NoHltbId-Error-{Guid.NewGuid()}",
 								PluginName + Environment.NewLine + string.Format(ResourceProvider.GetString("LOCHowLongToBeatErrorNoHltbId"), game.Name),
 								NotificationType.Error
 							));
@@ -1072,7 +1072,7 @@ namespace HowLongToBeat.Services
                         {
                             Logger.Warn($"Cannot submit data for a game without platform ({game.Name})");
                             API.Instance.Notifications.Add(new NotificationMessage(
-                               $"{PluginName}-NoPlatform-Error-{new Guid()}",
+                               $"{PluginName}-NoPlatform-Error-{Guid.NewGuid()}",
                                PluginName + Environment.NewLine + string.Format(ResourceProvider.GetString("LOCHowLongToBeatErrorNoPlatform"), game.Name),
                                NotificationType.Error,
                                () => Plugin.OpenSettingsView()
@@ -1089,7 +1089,7 @@ namespace HowLongToBeat.Services
                         {
                             Logger.Warn($"No platform find for {game.Name} - Default \"PC\" used");
                             API.Instance.Notifications.Add(new NotificationMessage(
-                               $"{PluginName}-NoPlatformDefined-Error-{new Guid()}",
+                               $"{PluginName}-NoPlatformDefined-Error-{Guid.NewGuid()}",
                                PluginName + Environment.NewLine + string.Format(ResourceProvider.GetString("LOCHowLongToBeatErrorNoPlatformDefaultUsed"), platform.Name, game.Name),
                                NotificationType.Error,
                                () => Plugin.OpenSettingsView()
