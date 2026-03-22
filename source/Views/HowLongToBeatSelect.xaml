@@ -132,6 +132,72 @@
                         </Style.Triggers>
                 </Style>
 
+                <!-- Tab active / inactive styles -->
+                <Style x:Key="TabActiveStyle"
+                       TargetType="Button">
+                        <Setter Property="Background"
+                                Value="{DynamicResource PrimaryButtonBackgroundBrush}"/>
+                        <Setter Property="Foreground"
+                                Value="{DynamicResource PrimaryButtonForegroundBrush}"/>
+                        <Setter Property="FontWeight"
+                                Value="Bold"/>
+                        <Setter Property="Padding"
+                                Value="18,8"/>
+                        <Setter Property="Margin"
+                                Value="0"/>
+                        <Setter Property="BorderThickness"
+                                Value="0"/>
+                        <Setter Property="Template">
+                                <Setter.Value>
+                                        <ControlTemplate TargetType="Button">
+                                                <Border Background="{TemplateBinding Background}"
+                                                        BorderThickness="0,0,0,3"
+                                                        BorderBrush="{DynamicResource PrimaryButtonForegroundBrush}"
+                                                        Padding="{TemplateBinding Padding}">
+                                                        <ContentPresenter HorizontalAlignment="Center"
+                                                                          VerticalAlignment="Center"/>
+                                                </Border>
+                                        </ControlTemplate>
+                                </Setter.Value>
+                        </Setter>
+                </Style>
+
+                <Style x:Key="TabInactiveStyle"
+                       TargetType="Button">
+                        <Setter Property="Background"
+                                Value="Transparent"/>
+                        <Setter Property="Foreground"
+                                Value="{DynamicResource CardForegroundBrush}"/>
+                        <Setter Property="FontWeight"
+                                Value="Normal"/>
+                        <Setter Property="Padding"
+                                Value="18,8"/>
+                        <Setter Property="Margin"
+                                Value="0"/>
+                        <Setter Property="Opacity"
+                                Value="0.55"/>
+                        <Setter Property="BorderThickness"
+                                Value="0"/>
+                        <Setter Property="Template">
+                                <Setter.Value>
+                                        <ControlTemplate TargetType="Button">
+                                                <Border Background="{TemplateBinding Background}"
+                                                        BorderThickness="0,0,0,2"
+                                                        BorderBrush="{DynamicResource CardBorderBrush}"
+                                                        Padding="{TemplateBinding Padding}">
+                                                        <ContentPresenter HorizontalAlignment="Center"
+                                                                          VerticalAlignment="Center"/>
+                                                </Border>
+                                                <ControlTemplate.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                                <Setter Property="Opacity" Value="0.85"/>
+                                                        </Trigger>
+                                                </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                </Setter.Value>
+                        </Setter>
+                </Style>
+
                 <!-- Button look -->
                 <Style x:Key="PrimaryButtonStyle"
                        TargetType="Button">
@@ -288,6 +354,13 @@
                                 VerticalAlignment="Center"
                                 Click="ButtonSelect_Click"
                                 Style="{StaticResource PrimaryButtonStyle}"/>
+                        <Button Name="ButtonConfirmManual"
+                                Visibility="Collapsed"
+                                Grid.Column="1"
+                                Content="{DynamicResource LOCHltbManualEntryConfirm}"
+                                VerticalAlignment="Center"
+                                Click="ButtonAddManual_Click"
+                                Style="{StaticResource PrimaryButtonStyle}"/>
                         <Button Grid.Column="3"
                                 Content="{DynamicResource LOCCancelLabel}"
                                 VerticalAlignment="Center"
@@ -295,63 +368,88 @@
                                 Style="{StaticResource PrimaryButtonStyle}"/>
                 </Grid>
 
-                <!-- Top controls: search + platform -->
-                <Grid Margin="0,0,0,10"
-                      DockPanel.Dock="Top">
-                        <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="6"/>
-                                <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
+                <!-- Mode tab bar -->
+                <Border DockPanel.Dock="Top"
+                        BorderBrush="{DynamicResource CardBorderBrush}"
+                        BorderThickness="0,0,0,1"
+                        Margin="0,0,0,10">
+                        <StackPanel Orientation="Horizontal">
+                                <Button x:Name="PART_TabSearch"
+                                        Content="{DynamicResource LOCHltbTabSearch}"
+                                        Click="TabSearch_Click"
+                                        Style="{StaticResource TabActiveStyle}"/>
+                                <Button x:Name="PART_TabManual"
+                                        Content="{DynamicResource LOCHltbTabManual}"
+                                        Click="TabManual_Click"
+                                        Style="{StaticResource TabInactiveStyle}"/>
+                        </StackPanel>
+                </Border>
 
-                        <Grid Grid.Column="0">
+                <!-- Search pane -->
+                <Grid x:Name="PART_SearchPane"
+                      DockPanel.Dock="Top">
+                        <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- Search controls: search box + platform -->
+                        <Grid Grid.Row="0" Margin="0,0,0,10">
                                 <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="6"/>
                                         <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
 
-                                <playnitecontrols:SearchBox x:Name="SearchElement"
-                                                            KeyUp="SearchElement_KeyUp"
-                                                            Grid.Column="0"
-                                                            HorizontalAlignment="Stretch"
-                                                            MinWidth="200"
-                                                            MaxWidth="420"/>
+                                <Grid Grid.Column="0">
+                                        <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
 
-                                <Button Name="PART_BtSearch"
-                                        Grid.Column="1"
-                                        Content="{DynamicResource LOCSearchLabel}"
-                                        Click="ButtonSearch_Click"
-                                        Margin="6,0,0,0"
-                                        IsEnabled="{Binding ElementName=SearchElement, Path=Text, Converter={StaticResource StringNullOrEmptyToBoolConverter}}"
-                                        Style="{StaticResource PrimaryButtonStyle}"/>
+                                        <playnitecontrols:SearchBox x:Name="SearchElement"
+                                                                    KeyUp="SearchElement_KeyUp"
+                                                                    Grid.Column="0"
+                                                                    HorizontalAlignment="Stretch"
+                                                                    MinWidth="200"
+                                                                    MaxWidth="420"/>
+
+                                        <Button Name="PART_BtSearch"
+                                                Grid.Column="1"
+                                                Content="{DynamicResource LOCSearchLabel}"
+                                                Click="ButtonSearch_Click"
+                                                Margin="6,0,0,0"
+                                                IsEnabled="{Binding ElementName=SearchElement, Path=Text, Converter={StaticResource StringNullOrEmptyToBoolConverter}}"
+                                                Style="{StaticResource PrimaryButtonStyle}"/>
+                                </Grid>
+
+                                <StackPanel Orientation="Horizontal"
+                                            Grid.Column="2"
+                                            HorizontalAlignment="Right"
+                                            Margin="6,0,0,0">
+                                        <controls:ComboBoxRemovable x:Name="PART_SelectPlatform"
+                                                                    VerticalAlignment="Center"
+                                                                    IsEditable="True"
+                                                                    TextSearch.TextPath="DisplayText"
+                                                                    IsEnabled="{Binding ElementName=PART_Vndb, Path=IsChecked, Converter={StaticResource InvertedBoolenConverter}}"
+                                                                    IsTextSearchCaseSensitive="False"
+                                                                    StaysOpenOnEdit="True"
+                                                                    hltb:SelectorBehaviors.EnumSource="{x:Type hlte:HltbPlatform}"
+                                                                    Width="160"/>
+                                        <CheckBox Content="{DynamicResource LOCHltbUsedVndb}"
+                                                  Name="PART_Vndb"
+                                                  VerticalAlignment="Center"
+                                                  Margin="6,0,0,0"/>
+                                </StackPanel>
                         </Grid>
 
-                        <StackPanel Orientation="Horizontal"
-                                    Grid.Column="2"
-                                    HorizontalAlignment="Right"
-                                    Margin="6,0,0,0">
-                                <controls:ComboBoxRemovable x:Name="PART_SelectPlatform"
-                                                            VerticalAlignment="Center"
-                                                            IsEditable="True"
-                                                            TextSearch.TextPath="DisplayText"
-                                                            IsEnabled="{Binding ElementName=PART_Vndb, Path=IsChecked, Converter={StaticResource InvertedBoolenConverter}}"
-                                                            IsTextSearchCaseSensitive="False"
-                                                            StaysOpenOnEdit="True"
-                                                            hltb:SelectorBehaviors.EnumSource="{x:Type hlte:HltbPlatform}"
-                                                            Width="160"/>
-                                <CheckBox Content="{DynamicResource LOCHltbUsedVndb}"
-                                          Name="PART_Vndb"
-                                          VerticalAlignment="Center"
-                                          Margin="6,0,0,0"/>
-                        </StackPanel>
-                </Grid>
-
-                <ListBox x:Name="lbSelectable"
-                         Height="465"
-                         SelectionChanged="LbSelectable_SelectionChanged"
-                         ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                         ScrollViewer.VerticalScrollBarVisibility="Auto"
-                         ItemContainerStyle="{StaticResource ListBoxItemContainerStyle}">
+                        <ListBox x:Name="lbSelectable"
+                                 Grid.Row="1"
+                                 Height="465"
+                                 SelectionChanged="LbSelectable_SelectionChanged"
+                                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                 ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                 ItemContainerStyle="{StaticResource ListBoxItemContainerStyle}">
                         <ListBox.ItemTemplate>
                                 <DataTemplate>
                                         <DataTemplate.Resources>
@@ -774,6 +872,110 @@
                                         </Border>
                                 </DataTemplate>
                         </ListBox.ItemTemplate>
-                </ListBox>
+                        </ListBox>
+                </Grid>
+
+                <!-- Manual entry pane (hidden by default) -->
+                <Grid x:Name="PART_ManualPane"
+                      Visibility="Collapsed"
+                      DockPanel.Dock="Top">
+                        <Border BorderBrush="{DynamicResource CardBorderBrush}"
+                                BorderThickness="1"
+                                CornerRadius="6"
+                                Padding="16,12"
+                                Background="{DynamicResource CardBackgroundBrush}">
+                                <Grid>
+                                        <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+
+                                        <!-- Time fields -->
+                    <Grid Grid.Row="0" Margin="0,0,0,16">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="160"/>
+                            <ColumnDefinition Width="70"/>
+                            <ColumnDefinition Width="36"/>
+                            <ColumnDefinition Width="70"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="8"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="8"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- Column headers -->
+                        <TextBlock Grid.Column="1" Grid.Row="0"
+                                                           HorizontalAlignment="Center"
+                                                           Margin="0,0,0,6"
+                                                           FontWeight="SemiBold"
+                                                           Text="{DynamicResource LOCHltbManualEntryHours}"
+                                                           Foreground="{DynamicResource CardForegroundBrush}"/>
+                        <TextBlock Grid.Column="3" Grid.Row="0"
+                                                           HorizontalAlignment="Center"
+                                                           Margin="0,0,0,6"
+                                                           FontWeight="SemiBold"
+                                                           Text="{DynamicResource LOCHltbManualEntryMinutes}"
+                                                           Foreground="{DynamicResource CardForegroundBrush}"/>
+
+                        <!-- Single-player rows -->
+                        <TextBlock Grid.Column="0" Grid.Row="2" VerticalAlignment="Center" Margin="0,3"
+                                                           Text="{DynamicResource LOCHowLongToBeatMainStory}"
+                                                           Foreground="{DynamicResource CardForegroundBrush}"/>
+                        <TextBox x:Name="PART_ManualMainStoryH" Grid.Column="1" Grid.Row="2" Margin="0,3,6,3" Text="0"/>
+                        <TextBox x:Name="PART_ManualMainStoryM" Grid.Column="3" Grid.Row="2" Margin="0,3,0,3" Text="0"/>
+
+                        <TextBlock Grid.Column="0" Grid.Row="3" VerticalAlignment="Center" Margin="0,3"
+                                                           Text="{DynamicResource LOCHowLongToBeatMainExtra}"
+                                                           Foreground="{DynamicResource CardForegroundBrush}"/>
+                        <TextBox x:Name="PART_ManualMainExtraH" Grid.Column="1" Grid.Row="3" Margin="0,3,6,3" Text="0"/>
+                        <TextBox x:Name="PART_ManualMainExtraM" Grid.Column="3" Grid.Row="3" Margin="0,3,0,3" Text="0"/>
+
+                        <TextBlock Grid.Column="0" Grid.Row="4" VerticalAlignment="Center" Margin="0,3"
+                                                           Text="{DynamicResource LOCHowLongToBeatCompletionist}"
+                                                           Foreground="{DynamicResource CardForegroundBrush}"/>
+                        <TextBox x:Name="PART_ManualCompletionistH" Grid.Column="1" Grid.Row="4" Margin="0,3,6,3" Text="0"/>
+                        <TextBox x:Name="PART_ManualCompletionistM" Grid.Column="3" Grid.Row="4" Margin="0,3,0,3" Text="0"/>
+
+                        <!-- Separator label for multiplayer -->
+                        <TextBlock Grid.Column="0" Grid.Row="6"
+                                                           Grid.ColumnSpan="5"
+                                                           Margin="0,0,0,4"
+                                                           FontStyle="Italic"
+                                                           Opacity="0.7"
+                                                           Text="{DynamicResource LOCHowLongToBeatTimeSinglePlayer}"
+                                                           Foreground="{DynamicResource CardForegroundBrush}"
+                                                           Visibility="Collapsed"/>
+
+                        <!-- Multiplayer rows -->
+                        <TextBlock Grid.Column="0" Grid.Row="6" VerticalAlignment="Center" Margin="0,3"
+                                                           Text="{DynamicResource LOCHowLongToBeatSolo}"
+                                                           Foreground="{DynamicResource CardForegroundBrush}"/>
+                        <TextBox x:Name="PART_ManualSoloH" Grid.Column="1" Grid.Row="6" Margin="0,3,6,3" Text="0"/>
+                        <TextBox x:Name="PART_ManualSoloM" Grid.Column="3" Grid.Row="6" Margin="0,3,0,3" Text="0"/>
+
+                        <TextBlock Grid.Column="0" Grid.Row="7" VerticalAlignment="Center" Margin="0,3"
+                                                           Text="{DynamicResource LOCHowLongToBeatCoOp}"
+                                                           Foreground="{DynamicResource CardForegroundBrush}"/>
+                        <TextBox x:Name="PART_ManualCoOpH" Grid.Column="1" Grid.Row="7" Margin="0,3,6,3" Text="0"/>
+                        <TextBox x:Name="PART_ManualCoOpM" Grid.Column="3" Grid.Row="7" Margin="0,3,0,3" Text="0"/>
+                    </Grid>
+
+                    <!-- Open website -->
+                    <Button x:Name="PART_BtOpenWebsite"
+                            Grid.Row="1"
+                            Content="{DynamicResource LOCHltbOpenOnWebsite}"
+                            Click="ButtonOpenOnWebsite_Click"
+                            Margin="8,0,0,0"
+                            Style="{StaticResource PrimaryButtonStyle}"/>
+                </Grid>
+                        </Border>
+                </Grid>
         </DockPanel>
 </UserControl >

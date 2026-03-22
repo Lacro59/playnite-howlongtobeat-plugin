@@ -330,11 +330,14 @@ namespace HowLongToBeat.Views
 
             if (gameData == null || gameData.Name.IsNullOrEmpty())
             {
+                ((HowLongToBeatViewData)DataContext).HasHltbId = false;
                 return;
             }
 
             if (gameData != null)
             {
+                ((HowLongToBeatViewData)DataContext).HasHltbId = !gameData.Id.IsNullOrEmpty();
+
                 ((HowLongToBeatViewData)DataContext).CoverImage = gameData.UrlImg;
 
                 if (!PluginDatabase.PluginSettings.Settings.ShowHltbImg)
@@ -883,5 +886,8 @@ namespace HowLongToBeat.Views
 
         private string _completionistHoursFormat = string.Empty;
         public string CompletionistHoursFormat { get => _completionistHoursFormat; set => SetValue(ref _completionistHoursFormat, value); }
+
+        private bool _hasHltbId = false;
+        public bool HasHltbId { get => _hasHltbId; set => SetValue(ref _hasHltbId, value); }
     }
 }
