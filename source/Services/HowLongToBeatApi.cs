@@ -975,7 +975,7 @@ namespace HowLongToBeat.Services
                             if (!httpResp.IsSuccessStatusCode)
                             {
                                 try { Logger.Warn($"HTTP {(int)httpResp.StatusCode} downloading {url}"); } catch { }
-                                return "/api/search";
+                                return "/api/s";
                             }
 
                             response = await httpResp.Content.ReadAsStringAsync().ConfigureAwait(false);
@@ -984,12 +984,12 @@ namespace HowLongToBeat.Services
                     catch (TaskCanceledException)
                     {
                         try { Logger.Warn($"Timeout {ScriptDownloadTimeoutMs}ms downloading {url}"); } catch { }
-                        return "/api/search";
+                        return "/api/s";
                     }
                     catch (Exception ex)
                     {
                         Common.LogError(ex, false, true, PluginDatabase.PluginName);
-                        return "/api/search";
+                        return "/api/s";
                     }
                 }
 
@@ -1071,14 +1071,15 @@ namespace HowLongToBeat.Services
                 Common.LogError(ex, false, true, PluginDatabase.PluginName);
             }
 
-            return "/api/search";
+            return "/api/s";
         }
 
-        /// <summary>
-        /// Retrieves the authentication token.
-        /// </summary>
-        /// <returns>The auth token.</returns>
-        private async Task<string> GetAuthToken()
+		/// <summary>
+		/// Retrieves the authentication token.
+		/// </summary>
+		/// <param name="apiEndpoint">API Endpoint for search</param>
+		/// <returns>The auth token.</returns>
+		private async Task<string> GetAuthToken(string apiEndpoint)
         {
             try
             {
@@ -1103,7 +1104,7 @@ namespace HowLongToBeat.Services
                 {
                     new HttpHeader { Key = "Referer", Value = UrlBase }
                 };
-                string url = UrlBase + "/api/search/init?t=" + DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+                string url = $"{UrlBase}{apiEndpoint}/init?t={DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()}";
                 string response = null;
                 try
                 {
@@ -1507,7 +1508,7 @@ namespace HowLongToBeat.Services
                 string serializedBody = Serialization.ToJson(searchParam);
                 string searchUrl = await GetSearchUrl();
                 bool tokenReused = !string.IsNullOrEmpty(CachedAuthToken) && DateTime.UtcNow < CachedAuthTokenExpiry;
-                string token = await GetAuthToken();
+                string token = await GetAuthToken(searchUrl);
                 if (!token.IsNullOrEmpty())
                 {
                     httpHeaders.Add(new HttpHeader { Key = "x-auth-token", Value = token });
