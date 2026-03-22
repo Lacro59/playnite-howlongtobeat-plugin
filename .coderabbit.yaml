@@ -8,7 +8,12 @@ reviews:
       - "l10n"
       - "localization"
       - "translation"
-  from_fork:
-    auto_review: true
-ignore:
-  - "source/Localization/**"
+      - "Crowdin"
+    ignore_branches:
+      - "l10n_*"
+    ignore_authors:
+      - "crowdin-bot"
+  path_filters:
+    - "!source/Localization/**"
+  from_forks:
+    enabled: true
