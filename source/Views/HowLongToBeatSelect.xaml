@@ -908,6 +908,7 @@
                             <RowDefinition Height="8"/>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
 
                         <!-- Column headers -->
@@ -965,6 +966,15 @@
                                                            Foreground="{DynamicResource CardForegroundBrush}"/>
                         <TextBox x:Name="PART_ManualCoOpH" Grid.Column="1" Grid.Row="7" Margin="0,3,6,3" Text="0"/>
                         <TextBox x:Name="PART_ManualCoOpM" Grid.Column="3" Grid.Row="7" Margin="0,3,0,3" Text="0"/>
+
+                        <!-- Optional HLTB ID -->
+                        <TextBlock Grid.Column="0" Grid.Row="8" VerticalAlignment="Center" Margin="0,6,0,0"
+                                   Text="{DynamicResource LOCHltbManualEntryHltbId}"
+                                   Foreground="{DynamicResource CardForegroundBrush}"/>
+                        <TextBox x:Name="PART_ManualHltbId"
+                                 Grid.Column="1" Grid.Row="8" Grid.ColumnSpan="3"
+                                 Margin="0,6,0,0"
+                                 ToolTip="{DynamicResource LOCHltbManualEntryHltbId}"/>
                     </Grid>
 
                     <!-- Open website -->

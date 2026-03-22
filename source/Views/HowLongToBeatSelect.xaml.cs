@@ -310,7 +310,7 @@ namespace HowLongToBeat.Views
             var manualEntry = new HltbDataUser
             {
                 Name = GameContext.Name,
-                Id = null,
+                Id = string.IsNullOrWhiteSpace(PART_ManualHltbId.Text) ? null : PART_ManualHltbId.Text,
                 GameType = resolvedType,
                 GameHltbData = new HltbData
                 {

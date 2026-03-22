@@ -68,6 +68,7 @@ If none has this status, it takes the most recent.</sys:String>
     <sys:String x:Key="LOCHltbOpenOnWebsite">Search on HowLongToBeat</sys:String>
     <sys:String x:Key="LOCHltbManualEntryHours">h</sys:String>
     <sys:String x:Key="LOCHltbManualEntryMinutes">min</sys:String>
+    <sys:String x:Key="LOCHltbManualEntryHltbId">HLTB ID (optional)</sys:String>
     <sys:String x:Key="LOCHltbManualEntryConfirm">Use manual entry</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatMainStory">Main story</sys:String>
