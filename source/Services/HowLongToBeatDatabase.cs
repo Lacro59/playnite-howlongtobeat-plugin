@@ -401,8 +401,13 @@ namespace HowLongToBeat.Services
             }
         }
 
-        public override void RefreshNoLoader(Guid id)
+        public override void RefreshNoLoader(Guid id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
+            if (cancellationToken.IsCancellationRequested)
+            {
+                return;
+            }
+
             Game game = API.Instance.Database.Games.Get(id);
             if (IsVerboseLoggingEnabled)
             {
