@@ -956,7 +956,8 @@ namespace HowLongToBeat.Services
         /// <returns>The search endpoint URL.</returns>
         private async Task<string> GetSearchUrl()
         {
-            if (!SearchUrl.IsNullOrEmpty())
+            return "/api/find";
+            if (!SearchUrl.IsNullOrEmpty() && !SearchUrl.Contains("error"))
             {
                 return SearchUrl;
             }
@@ -1074,12 +1075,11 @@ namespace HowLongToBeat.Services
             return "/api/s";
         }
 
-		/// <summary>
-		/// Retrieves the authentication token.
-		/// </summary>
-		/// <param name="apiEndpoint">API Endpoint for search</param>
-		/// <returns>The auth token.</returns>
-		private async Task<string> GetAuthToken(string apiEndpoint)
+        /// <summary>
+        /// Retrieves the authentication token.
+        /// </summary>
+        /// <returns>The auth token.</returns>
+        private async Task<Dictionary<string, string>> GetAuthToken(string apiEndpoint)
         {
             try
             {
@@ -1088,7 +1088,7 @@ namespace HowLongToBeat.Services
                 var snapshotExpiry = CachedAuthTokenExpiry;
                 if (!string.IsNullOrEmpty(snapshotToken) && DateTime.UtcNow < snapshotExpiry)
                 {
-                    return snapshotToken;
+                    //return snapshotToken;
                 }
 
                 // Re-check under lock to avoid race with a concurrent writer
@@ -1096,7 +1096,7 @@ namespace HowLongToBeat.Services
                 {
                     if (!string.IsNullOrEmpty(CachedAuthToken) && DateTime.UtcNow < CachedAuthTokenExpiry)
                     {
-                        return CachedAuthToken;
+                        //return CachedAuthToken;
                     }
                 }
 
@@ -1144,12 +1144,25 @@ namespace HowLongToBeat.Services
                         // Final re-check before writing to shared fields
                         if (!string.IsNullOrEmpty(CachedAuthToken) && DateTime.UtcNow < CachedAuthTokenExpiry)
                         {
-                            return CachedAuthToken;
+                            //return CachedAuthToken;
                         }
                         CachedAuthToken = token;
                         CachedAuthTokenExpiry = DateTime.UtcNow.AddSeconds(90);
                     }
-                    return token;
+                    if (data.TryGetValue("hpKey", out string hpKey) && data.TryGetValue("hpVal", out string hpVal))
+                    {
+                        var headerParts = new Dictionary<string, string>
+                        {
+                            { "Token", token },
+                            { "Hpkey", hpKey },
+                            { "Hpval", hpVal }
+                        };
+
+                        return headerParts;
+                    }
+                    
+
+                    //return token;
                 }
             }
             catch (Exception ex)
@@ -1505,14 +1518,27 @@ namespace HowLongToBeat.Services
                 };
 
                 SearchResult searchResult = null;
-                string serializedBody = Serialization.ToJson(searchParam);
+                string baseJson = Serialization.ToJson(searchParam);
+                var dict = Serialization.FromJson<Dictionary<string, object>>(baseJson);
                 string searchUrl = await GetSearchUrl();
                 bool tokenReused = !string.IsNullOrEmpty(CachedAuthToken) && DateTime.UtcNow < CachedAuthTokenExpiry;
-                string token = await GetAuthToken(searchUrl);
+                Dictionary<string, string> headerParts = await GetAuthToken(searchUrl);
+                string token = headerParts["Token"];
+                string hpKey = headerParts["Hpkey"];
+                string hpVal = headerParts["Hpval"];
                 if (!token.IsNullOrEmpty())
                 {
                     httpHeaders.Add(new HttpHeader { Key = "x-auth-token", Value = token });
                 }
+
+                if (!hpKey.IsNullOrEmpty() && !hpVal.IsNullOrEmpty())
+                {
+                    httpHeaders.Add(new HttpHeader { Key = "x-hp-key", Value = hpKey });
+                    httpHeaders.Add(new HttpHeader { Key = "x-hp-val", Value = hpVal });
+                    dict[hpKey] = hpVal;
+                }
+
+                string serializedBody = Serialization.ToJson(dict);
 
                 bool acquired = false;
                 try

@@ -39,7 +39,7 @@ namespace HowLongToBeat
         private bool PreventLibraryUpdatedOnStart { get; set; } = true;
 
 
-        public HowLongToBeat(IPlayniteAPI playniteAPI) : base(playniteAPI)
+        public HowLongToBeat(IPlayniteAPI playniteAPI) : base(playniteAPI, "HowLongToBeat")
         {
 
             // Custom theme button
