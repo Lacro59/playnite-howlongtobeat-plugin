@@ -24,12 +24,9 @@ namespace HowLongToBeat.Views
         public GameHowLongToBeat GameHowLongToBeat { get; set; }
         private Game GameContext { get; set; }
 
-
         public HowLongToBeatSelect(Game game, List<HltbDataUser> data)
         {
             InitializeComponent();
-
-            ApplyThemeResources();
 
             GameContext = game;
             SearchElement.Text = GameContext.Name;
@@ -245,27 +242,71 @@ namespace HowLongToBeat.Views
             e.Handled = false;
         }
 
-        private void ApplyThemeResources()
+        private void PART_Tabs_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (e.Source != PART_Tabs) return;
+            bool manual = PART_Tabs.SelectedItem == PART_TabManual;
+            ButtonSelect.Visibility = manual ? Visibility.Collapsed : Visibility.Visible;
+            ButtonConfirmManual.Visibility = manual ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+        private void ButtonOpenOnWebsite_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                // Try to get common theme brushes from the host via ResourceProvider
-                var normal = ResourceProvider.GetResource("NormalBrush") as Brush;
-                var controlBg = ResourceProvider.GetResource("ControlBackgroundBrush") as Brush ?? normal;
-                var controlFg = ResourceProvider.GetResource("ControlForegroundBrush") as Brush ?? Brushes.White;
-                var controlBorder = ResourceProvider.GetResource("ControlBorderBrush") as Brush ?? Brushes.Gray;
-                var accent = ResourceProvider.GetResource("AccentColorBrush") as Brush ?? normal;
-
-                // Override the local resource keys defined in XAML so DynamicResource bindings pick them
-                this.Resources["CardBackgroundBrush"] = controlBg ?? new SolidColorBrush(Color.FromRgb(0x2E, 0x2F, 0x33));
-                this.Resources["CardForegroundBrush"] = controlFg ?? Brushes.White;
-                this.Resources["CardBorderBrush"] = controlBorder ?? new SolidColorBrush(Color.FromRgb(0x44, 0x44, 0x44));
-
-                this.Resources["PrimaryButtonBackgroundBrush"] = accent ?? new SolidColorBrush(Color.FromRgb(0x5A, 0x9B, 0xD5));
-                this.Resources["PrimaryButtonHoverBrush"] = accent ?? new SolidColorBrush(Color.FromRgb(0x4B, 0x89, 0xC6));
-                this.Resources["PrimaryButtonForegroundBrush"] = controlFg ?? Brushes.White;
+                var query = Uri.EscapeDataString(GameContext.Name ?? string.Empty);
+                var url = "https://howlongtobeat.com/?q=" + query;
+                var psi = new System.Diagnostics.ProcessStartInfo(url) { UseShellExecute = true };
+                System.Diagnostics.Process.Start(psi);
             }
-            catch { }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, false, true, PluginDatabase.PluginName);
+            }
+        }
+
+        private static long ParseHoursMinutesToSeconds(string hours, string minutes)
+        {
+            double.TryParse(hours?.Trim(), System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var h);
+            double.TryParse(minutes?.Trim(), System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var m);
+            var total = (long)(h * 3600 + m * 60);
+            return total < 0 ? 0 : total;
+        }
+
+        private void ButtonAddManual_Click(object sender, RoutedEventArgs e)
+        {
+            var mainStory = ParseHoursMinutesToSeconds(PART_ManualMainStoryH.Text, PART_ManualMainStoryM.Text);
+            var mainExtra = ParseHoursMinutesToSeconds(PART_ManualMainExtraH.Text, PART_ManualMainExtraM.Text);
+            var completionist = ParseHoursMinutesToSeconds(PART_ManualCompletionistH.Text, PART_ManualCompletionistM.Text);
+            var solo = ParseHoursMinutesToSeconds(PART_ManualSoloH.Text, PART_ManualSoloM.Text);
+            var coOp = ParseHoursMinutesToSeconds(PART_ManualCoOpH.Text, PART_ManualCoOpM.Text);
+
+            var hasMulti = solo > 0 || coOp > 0;
+
+            var resolvedType = hasMulti && mainStory == 0 && mainExtra == 0 && completionist == 0
+                ? GameType.Multi
+                : GameType.Game;
+
+            var manualEntry = new HltbDataUser
+            {
+                Name = GameContext.Name,
+                Id = PART_ManualHltbId.Text.Trim(),
+                GameType = resolvedType,
+                GameHltbData = new HltbData
+                {
+                    GameType = resolvedType,
+                    MainStoryClassic = mainStory,
+                    MainExtraClassic = mainExtra,
+                    CompletionistClassic = completionist,
+                    SoloClassic = solo,
+                    CoOpClassic = coOp
+                }
+            };
+
+            GameHowLongToBeat = HowLongToBeat.PluginDatabase.GetDefault(GameContext);
+            GameHowLongToBeat.Items = new List<HltbDataUser> { manualEntry };
+
+            ((Window)Parent).Close();
         }
     }
 }

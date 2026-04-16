@@ -1051,8 +1051,24 @@ namespace HowLongToBeat.Services
                     if (gameHowLongToBeat != null && (!gameHowLongToBeat.GetData()?.IsVndb ?? false))
                     {
                         TimeSpan time = TimeSpan.FromSeconds(game.Playtime);
-                        string platformName = HltbPlatform.PC.GetDescription();
+                        HltbDataUser hltbDataUser = gameHowLongToBeat.GetData();
+						string platformName = HltbPlatform.PC.GetDescription();
                         string storefrontName = string.Empty;
+
+						#region Validate Id
+
+						if(string.IsNullOrWhiteSpace(hltbDataUser.Id))
+						{
+							Logger.Warn($"Cannot submit data for a game without HLTB ID ({game.Name})");
+							API.Instance.Notifications.Add(new NotificationMessage(
+								$"{PluginName}-NoHltbId-Error-{Guid.NewGuid()}",
+								PluginName + Environment.NewLine + string.Format(ResourceProvider.GetString("LOCHowLongToBeatErrorNoHltbId"), game.Name),
+								NotificationType.Error
+							));
+							return false;
+						}
+
+						#endregion
 
                         #region Search platform
 
@@ -1061,7 +1077,7 @@ namespace HowLongToBeat.Services
                         {
                             Logger.Warn($"Cannot submit data for a game without platform ({game.Name})");
                             API.Instance.Notifications.Add(new NotificationMessage(
-                               $"{PluginName}-NoPlatform-Error-{new Guid()}",
+                               $"{PluginName}-NoPlatform-Error-{Guid.NewGuid()}",
                                PluginName + Environment.NewLine + string.Format(ResourceProvider.GetString("LOCHowLongToBeatErrorNoPlatform"), game.Name),
                                NotificationType.Error,
                                () => Plugin.OpenSettingsView()
@@ -1078,7 +1094,7 @@ namespace HowLongToBeat.Services
                         {
                             Logger.Warn($"No platform find for {game.Name} - Default \"PC\" used");
                             API.Instance.Notifications.Add(new NotificationMessage(
-                               $"{PluginName}-NoPlatformDefined-Error-{new Guid()}",
+                               $"{PluginName}-NoPlatformDefined-Error-{Guid.NewGuid()}",
                                PluginName + Environment.NewLine + string.Format(ResourceProvider.GetString("LOCHowLongToBeatErrorNoPlatformDefaultUsed"), platform.Name, game.Name),
                                NotificationType.Error,
                                () => Plugin.OpenSettingsView()
@@ -1103,7 +1119,6 @@ namespace HowLongToBeat.Services
 
                         #region Get current data from HowLongToBeat
 
-                        HltbDataUser hltbDataUser = gameHowLongToBeat.GetData();
                         TitleList HltbData = GetUserHltbDataCurrent(hltbDataUser.Id, gameHowLongToBeat.UserGameId);
                         EditData editData = new EditData();
                         string submissionId = "0";

@@ -63,6 +63,14 @@ If none has this status, it takes the most recent.</sys:String>
     <sys:String x:Key="LOCSelection">HowLongToBeat selection</sys:String>
     <sys:String x:Key="LOCHltbUsedVndb">Used Vndb</sys:String>
 
+    <sys:String x:Key="LOCHltbTabSearch">Search</sys:String>
+    <sys:String x:Key="LOCHltbTabManual">Enter manually</sys:String>
+    <sys:String x:Key="LOCHltbOpenOnWebsite">Search on HowLongToBeat</sys:String>
+    <sys:String x:Key="LOCHltbManualEntryHours">h</sys:String>
+    <sys:String x:Key="LOCHltbManualEntryMinutes">min</sys:String>
+    <sys:String x:Key="LOCHltbManualEntryHltbId">HLTB ID</sys:String>
+    <sys:String x:Key="LOCHltbManualEntryConfirm">Use manual entry</sys:String>
+
     <sys:String x:Key="LOCHowLongToBeatMainStory">Main story</sys:String>
     <sys:String x:Key="LOCHowLongToBeatMainExtra">Main + extra</sys:String>
     <sys:String x:Key="LOCHowLongToBeatCompletionist">Completionist</sys:String>
@@ -127,6 +135,7 @@ If none has this status, it takes the most recent.</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatSetCurrentTime">Want you send your current playtime?</sys:String>
 
+    <sys:String x:Key="LOCHowLongToBeatErrorNoHltbId">Cannot submit data for a game without HLTB ID ({0})</sys:String>
     <sys:String x:Key="LOCHowLongToBeatErrorNoPlatform">Cannot submit data for a game without platform ({0})</sys:String>
     <sys:String x:Key="LOCHowLongToBeatErrorNoPlatformDefaultUsed" xml:space="preserve">Game ({1}) without platform ({0}) defined in plugin settings.
 Please configure one.
