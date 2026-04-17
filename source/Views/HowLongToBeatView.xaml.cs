@@ -340,7 +340,7 @@ namespace HowLongToBeat.Views
 
                 ((HowLongToBeatViewData)DataContext).CoverImage = gameData.UrlImg;
 
-                if (!PluginDatabase.PluginSettings.Settings.ShowHltbImg)
+                if (!PluginDatabase.PluginSettings.ShowHltbImg)
                 {
                     if (!gameHowLongToBeat.CoverImage.IsNullOrEmpty())
                     {
@@ -456,21 +456,21 @@ namespace HowLongToBeat.Views
                         {
                             ElIndicator += 1;
                             SetDataInView(ElIndicator, ResourceProvider.GetString("LOCHowLongToBeatMainStory"), gameData.GameHltbData.MainStoryFormat, (titleList != null) ? titleList.HltbUserData.MainStoryFormat : string.Empty, idx);
-                            SetColor(ElIndicator, PluginDatabase.PluginSettings.Settings.ColorFirst.Color);
+                            SetColor(ElIndicator, PluginDatabase.PluginSettings.ColorFirst.Color);
 
                             ElIndicator += 1;
                             SetDataInView(ElIndicator, ResourceProvider.GetString("LOCHowLongToBeatMainExtra"), gameData.GameHltbData.MainExtraFormat, (titleList != null) ? titleList.HltbUserData.MainExtraFormat : string.Empty, idx);
-                            SetColor(ElIndicator, PluginDatabase.PluginSettings.Settings.ColorSecond.Color);
+                            SetColor(ElIndicator, PluginDatabase.PluginSettings.ColorSecond.Color);
 
                             ElIndicator += 1;
                             SetDataInView(ElIndicator, ResourceProvider.GetString("LOCHowLongToBeatCompletionist"), gameData.GameHltbData.CompletionistFormat, (titleList != null) ? titleList.HltbUserData.CompletionistFormat : string.Empty, idx);
-                            SetColor(ElIndicator, PluginDatabase.PluginSettings.Settings.ColorThird.Color);
+                            SetColor(ElIndicator, PluginDatabase.PluginSettings.ColorThird.Color);
                         }
                         else
                         {
                             ElIndicator += 1;
                             SetDataInView(ElIndicator, ResourceProvider.GetString("LOCHowLongToBeatSolo"), gameData.GameHltbData.SoloFormat, (titleList != null) ? titleList.HltbUserData.SoloFormat : string.Empty, idx);
-                            SetColor(ElIndicator, PluginDatabase.PluginSettings.Settings.ColorFirstMulti.Color);
+                            SetColor(ElIndicator, PluginDatabase.PluginSettings.ColorFirstMulti.Color);
 
                             ElIndicator += 1;
                             SetDataInView(ElIndicator, ResourceProvider.GetString("LOCHowLongToBeatCoOp"), gameData.GameHltbData.CoOpFormat, (titleList != null) ? titleList.HltbUserData.CoOpFormat : string.Empty, idx);
@@ -489,21 +489,21 @@ namespace HowLongToBeat.Views
                     {
                         ElIndicator += 1;
                         SetDataInView(ElIndicator, ResourceProvider.GetString("LOCHowLongToBeatMainStory"), gameData.GameHltbData.MainStoryFormat, (titleList != null) ? titleList.HltbUserData.MainStoryFormat : string.Empty, 0);
-                        SetColor(ElIndicator, PluginDatabase.PluginSettings.Settings.ColorFirst.Color);
+                        SetColor(ElIndicator, PluginDatabase.PluginSettings.ColorFirst.Color);
 
                         ElIndicator += 1;
                         SetDataInView(ElIndicator, ResourceProvider.GetString("LOCHowLongToBeatMainExtra"), gameData.GameHltbData.MainExtraFormat, (titleList != null) ? titleList.HltbUserData.MainExtraFormat : string.Empty, 0);
-                        SetColor(ElIndicator, PluginDatabase.PluginSettings.Settings.ColorSecond.Color);
+                        SetColor(ElIndicator, PluginDatabase.PluginSettings.ColorSecond.Color);
 
                         ElIndicator += 1;
                         SetDataInView(ElIndicator, ResourceProvider.GetString("LOCHowLongToBeatCompletionist"), gameData.GameHltbData.CompletionistFormat, (titleList != null) ? titleList.HltbUserData.CompletionistFormat : string.Empty, 0);
-                        SetColor(ElIndicator, PluginDatabase.PluginSettings.Settings.ColorThird.Color);
+                        SetColor(ElIndicator, PluginDatabase.PluginSettings.ColorThird.Color);
                     }
                     else
                     {
                         ElIndicator += 1;
                         SetDataInView(ElIndicator, ResourceProvider.GetString("LOCHowLongToBeatSolo"), gameData.GameHltbData.SoloFormat, (titleList != null) ? titleList.HltbUserData.SoloFormat : string.Empty, 0);
-                        SetColor(ElIndicator, PluginDatabase.PluginSettings.Settings.ColorFirstMulti.Color);
+                        SetColor(ElIndicator, PluginDatabase.PluginSettings.ColorFirstMulti.Color);
 
                         ElIndicator += 1;
                         SetDataInView(ElIndicator, ResourceProvider.GetString("LOCHowLongToBeatCoOp"), gameData.GameHltbData.CoOpFormat, (titleList != null) ? titleList.HltbUserData.CoOpFormat : string.Empty, 0);

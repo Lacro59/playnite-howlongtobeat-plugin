@@ -21,6 +21,7 @@ using CommonPluginsShared;
 using System.Windows.Data;
 using HowLongToBeat.Models.Enumerations;
 using System.Windows.Media;
+using CommonPluginsShared.Commands;
 
 namespace HowLongToBeat.Views
 {
@@ -81,21 +82,21 @@ namespace HowLongToBeat.Views
                 DisposeCts();
             };
 
-            if (!PluginDatabase.PluginSettings.Settings.EnableProgressBarInDataView)
+            if (!PluginDatabase.PluginSettings.EnableProgressBarInDataView)
             {
                 GridView lvView = (GridView)ListViewDataGames.View;
                 lvView.Columns.RemoveAt(lvView.Columns.Count - 1);
                 lvView.Columns.RemoveAt(lvView.Columns.Count - 1);
             }
 
-            if (PluginDatabase.Database.UserHltbData?.TitlesList?.Count != 0)
+            if (PluginDatabase.UserHltbData?.TitlesList?.Count != 0)
             {
-                if (PluginDatabase.Database.UserHltbData?.TitlesList != null)
+                if (PluginDatabase.UserHltbData?.TitlesList != null)
                 {
-                    UserViewDataContext.ItemsSource = PluginDatabase.Database.UserHltbData.TitlesList.ToObservable();
+                    UserViewDataContext.ItemsSource = PluginDatabase.UserHltbData.TitlesList.ToObservable();
 
                     string SortingDefaultDataName = string.Empty;
-                    switch (PluginDatabase.PluginSettings.Settings.TitleListSort)
+                    switch (PluginDatabase.PluginSettings.TitleListSort)
                     {
                         case TitleListSort.GameName:
                             SortingDefaultDataName = "GameName";
@@ -116,7 +117,7 @@ namespace HowLongToBeat.Views
                             break;
                     }
                     ListViewGames.SortingDefaultDataName = SortingDefaultDataName;
-                    ListViewGames.SortingSortDirection = PluginDatabase.PluginSettings.Settings.IsAsc ? ListSortDirection.Ascending : ListSortDirection.Descending;
+                    ListViewGames.SortingSortDirection = PluginDatabase.PluginSettings.IsAsc ? ListSortDirection.Ascending : ListSortDirection.Descending;
                     ListViewGames.Sorting();
 
                     SetFilter();
@@ -144,7 +145,7 @@ namespace HowLongToBeat.Views
 
             PART_CbYear.SelectedIndex = 0;
 
-            UserViewDataContext.ItemsSource = PluginDatabase.Database.UserHltbData.TitlesList.ToObservable();
+            UserViewDataContext.ItemsSource = PluginDatabase.UserHltbData.TitlesList.ToObservable();
             ListViewGames.Sorting();
 
             SetFilter();
@@ -209,7 +210,7 @@ namespace HowLongToBeat.Views
             return Task.Run(() =>
             {
                 if (cancellationToken.IsCancellationRequested) return;
-                if (PluginDatabase.Database.UserHltbData?.TitlesList == null)
+                if (PluginDatabase.UserHltbData?.TitlesList == null)
                 {
                     return;
                 }
@@ -231,7 +232,7 @@ namespace HowLongToBeat.Views
                         });
                     }
 
-                    var titles = PluginDatabase.Database.UserHltbData.TitlesList;
+                    var titles = PluginDatabase.UserHltbData.TitlesList;
                     for (int t = 0; t < titles.Count; t++)
                     {
                         if (cancellationToken.IsCancellationRequested) return;
@@ -292,14 +293,14 @@ namespace HowLongToBeat.Views
             return Task.Run(() =>
             {
                 if (cancellationToken.IsCancellationRequested) return;
-                if (PluginDatabase.Database.UserHltbData?.TitlesList == null)
+                if (PluginDatabase.UserHltbData?.TitlesList == null)
                 {
                     return;
                 }
 
                 try
                 {
-                    var dataLabel = PluginDatabase.Database.UserHltbData.TitlesList
+                    var dataLabel = PluginDatabase.UserHltbData.TitlesList
                         .Where(x => x.GameStatuses.Where(y => y.Status == StatusType.Completed).Count() > 0)
                         .GroupBy(x => x.Storefront)
                         .Select(x => new { Storefront = x.Key.IsNullOrEmpty() ? "Playnite" : x.Key, Count = x.Count() })
@@ -363,7 +364,7 @@ namespace HowLongToBeat.Views
             return Task.Run(() =>
             {
                 if (cancellationToken.IsCancellationRequested) return;
-                if (PluginDatabase.Database.UserHltbData?.TitlesList == null)
+                if (PluginDatabase.UserHltbData?.TitlesList == null)
                 {
                     return;
                 }
@@ -387,7 +388,7 @@ namespace HowLongToBeat.Views
                         });
                     }
 
-                    var titles = PluginDatabase.Database.UserHltbData.TitlesList;
+                    var titles = PluginDatabase.UserHltbData.TitlesList;
                     for (int t = 0; t < titles.Count; t++)
                     {
                         if (cancellationToken.IsCancellationRequested) return;
@@ -446,14 +447,14 @@ namespace HowLongToBeat.Views
             return Task.Run(() =>
             {
                 if (cancellationToken.IsCancellationRequested) return;
-                if (PluginDatabase.Database.UserHltbData?.TitlesList == null)
+                if (PluginDatabase.UserHltbData?.TitlesList == null)
                 {
                     return;
                 }
 
                 try
                 {
-                    List<TitleList> titleLists = PluginDatabase.Database.UserHltbData.TitlesList;
+                    List<TitleList> titleLists = PluginDatabase.UserHltbData.TitlesList;
 
                     if (cancellationToken.IsCancellationRequested) return;
                     var completionsCount = titleLists.Count(x => x.GameStatuses.Any(y => y.Status == StatusType.Completed)).ToString();
@@ -534,11 +535,11 @@ namespace HowLongToBeat.Views
 
                 if (ListViewDataGames.ItemsSource == null)
                 {
-                    ListViewDataGames.ItemsSource = PluginDatabase.Database.Where(x => !x.HasDataEmpty && !x.Hidden)
+                    ListViewDataGames.ItemsSource = PluginDatabase.GetAllCache().Where(x => !x.HasDataEmpty && !x.Hidden)
                           .Select(x => new PlayniteData
                           {
                               GameContext = API.Instance.Database.Games.Get(x.Id),
-                              ViewProgressBar = PluginDatabase.PluginSettings.Settings.EnableProgressBarInDataView
+                              ViewProgressBar = PluginDatabase.PluginSettings.EnableProgressBarInDataView
                           }).ToObservable();
                 }
 
@@ -562,8 +563,8 @@ namespace HowLongToBeat.Views
         {
             if (((FrameworkElement)sender).Visibility == Visibility.Visible && DisplayFirst)
             {
-                PART_FilteredGames.IsChecked = PluginDatabase.PluginSettings.Settings.filterSettings.UsedFilteredGames;
-                PART_HidePlayedGames.IsChecked = PluginDatabase.PluginSettings.Settings.filterSettings.OnlyNotPlayedGames;
+                PART_FilteredGames.IsChecked = PluginDatabase.PluginSettings.filterSettings.UsedFilteredGames;
+                PART_HidePlayedGames.IsChecked = PluginDatabase.PluginSettings.filterSettings.OnlyNotPlayedGames;
 
                 SetPlayniteData();
                 DisplayFirst = false;
@@ -575,19 +576,19 @@ namespace HowLongToBeat.Views
         private void SetFilter()
         {
             // Filter
-            List<string> listYear = PluginDatabase.Database.UserHltbData.TitlesList.Select(x => x.Completion?.ToString("yyyy") ?? "----").Distinct().OrderBy(x => x).ToList();
+            List<string> listYear = PluginDatabase.UserHltbData.TitlesList.Select(x => x.Completion?.ToString("yyyy") ?? "----").Distinct().OrderBy(x => x).ToList();
             PART_CbYear.ItemsSource = null;
             PART_CbYear.ItemsSource = listYear;
             PART_CbYear.SelectedIndex = 0;
 
-            List<string> listStoreFront = PluginDatabase.Database.UserHltbData.TitlesList.Where(x => !x.Storefront.IsNullOrEmpty()).Select(y => y.Storefront).Distinct().ToList();
+            List<string> listStoreFront = PluginDatabase.UserHltbData.TitlesList.Where(x => !x.Storefront.IsNullOrEmpty()).Select(y => y.Storefront).Distinct().ToList();
             listStoreFront.AddMissing("----");
             listStoreFront = listStoreFront.OrderBy(x => x).ToList();
             PART_CbStorefront.ItemsSource = null;
             PART_CbStorefront.ItemsSource = listStoreFront;
             PART_CbStorefront.SelectedIndex = 0;
 
-            List<string> listPlatform = PluginDatabase.Database.UserHltbData.TitlesList.Where(x => !x.Platform.IsNullOrEmpty()).Select(y => y.Platform).Distinct().ToList();
+            List<string> listPlatform = PluginDatabase.UserHltbData.TitlesList.Where(x => !x.Platform.IsNullOrEmpty()).Select(y => y.Platform).Distinct().ToList();
             listPlatform.AddMissing("----");
             listPlatform = listPlatform.OrderBy(x => x).ToList();
             PART_CbPlatform.ItemsSource = null;
@@ -595,17 +596,17 @@ namespace HowLongToBeat.Views
             PART_CbPlatform.SelectedIndex = 0;
 
             // Saved settings
-            int index = listYear.FindIndex(x => x == PluginDatabase.PluginSettings.Settings.filterSettings.Year);
+            int index = listYear.FindIndex(x => x == PluginDatabase.PluginSettings.filterSettings.Year);
             PART_CbYear.SelectedIndex = index == -1 ? 0 : index;
 
-            index = listStoreFront.FindIndex(x => x == PluginDatabase.PluginSettings.Settings.filterSettings.Storefront);
+            index = listStoreFront.FindIndex(x => x == PluginDatabase.PluginSettings.filterSettings.Storefront);
             PART_CbStorefront.SelectedIndex = index == -1 ? 0 : index;
 
-            index = listPlatform.FindIndex(x => x == PluginDatabase.PluginSettings.Settings.filterSettings.Platform);
+            index = listPlatform.FindIndex(x => x == PluginDatabase.PluginSettings.filterSettings.Platform);
             PART_CbPlatform.SelectedIndex = index == -1 ? 0 : index;
 
-            PART_Replays.IsChecked = PluginDatabase.PluginSettings.Settings.filterSettings.OnlyReplays;
-            PART_OnlyNotPlayed.IsChecked = PluginDatabase.PluginSettings.Settings.filterSettings.OnlyNotPlayed;
+            PART_Replays.IsChecked = PluginDatabase.PluginSettings.filterSettings.OnlyReplays;
+            PART_OnlyNotPlayed.IsChecked = PluginDatabase.PluginSettings.filterSettings.OnlyNotPlayed;
         }
 
 
@@ -672,47 +673,47 @@ namespace HowLongToBeat.Views
             // nothing
             if ((Year.IsNullOrEmpty() || Year.IsEqual("----")) && (StoreFront.IsNullOrEmpty() || StoreFront.IsEqual("----")) && (Platform.IsNullOrEmpty() || Platform.IsEqual("----")))
             {
-                UserViewDataContext.ItemsSource = PluginDatabase.Database.UserHltbData.TitlesList.ToObservable();
+                UserViewDataContext.ItemsSource = PluginDatabase.UserHltbData.TitlesList.ToObservable();
             }
             // StoreFront only
             else if ((Year.IsNullOrEmpty() || Year.IsEqual("----")) && (Platform.IsNullOrEmpty() || Platform.IsEqual("----")))
             {
-                UserViewDataContext.ItemsSource = PluginDatabase.Database.UserHltbData.TitlesList
+                UserViewDataContext.ItemsSource = PluginDatabase.UserHltbData.TitlesList
                     .Where(x => x.Storefront != null && x.Storefront.IsEqual(StoreFront)).ToObservable();
             }
             // Year only
             else if ((StoreFront.IsNullOrEmpty() || StoreFront.IsEqual("----")) && (Platform.IsNullOrEmpty() || Platform.IsEqual("----")))
             {
-                UserViewDataContext.ItemsSource = PluginDatabase.Database.UserHltbData.TitlesList
+                UserViewDataContext.ItemsSource = PluginDatabase.UserHltbData.TitlesList
                     .Where(x => x.Completion != null && ((DateTime)x.Completion).ToString("yyyy").IsEqual(Year)).ToObservable();
             }
             // Platform only
             else if ((Year.IsNullOrEmpty() || Year.IsEqual("----")) && (StoreFront.IsNullOrEmpty() || StoreFront.IsEqual("----")))
             {
-                UserViewDataContext.ItemsSource = PluginDatabase.Database.UserHltbData.TitlesList
+                UserViewDataContext.ItemsSource = PluginDatabase.UserHltbData.TitlesList
                     .Where(x => x.Platform != null && x.Platform.IsEqual(Platform)).ToObservable();
             }
             // StoreFront missing
             else if (StoreFront.IsNullOrEmpty() || StoreFront.IsEqual("----"))
             {
-                UserViewDataContext.ItemsSource = PluginDatabase.Database.UserHltbData.TitlesList
+                UserViewDataContext.ItemsSource = PluginDatabase.UserHltbData.TitlesList
                     .Where(x => x.Completion != null && ((DateTime)x.Completion).ToString("yyyy").IsEqual(Year) && x.Platform != null && x.Platform.IsEqual(Platform)).ToObservable();
             }
             // Year missing
             else if (Year.IsNullOrEmpty() || Year.IsEqual("----"))
             {
-                UserViewDataContext.ItemsSource = PluginDatabase.Database.UserHltbData.TitlesList
+                UserViewDataContext.ItemsSource = PluginDatabase.UserHltbData.TitlesList
                     .Where(x => x.Storefront != null && x.Storefront.IsEqual(StoreFront) && x.Platform != null && x.Platform.IsEqual(Platform)).ToObservable();
             }
             // Platform missing
             else if (Platform.IsNullOrEmpty() || Platform.IsEqual("----"))
             {
-                UserViewDataContext.ItemsSource = PluginDatabase.Database.UserHltbData.TitlesList
+                UserViewDataContext.ItemsSource = PluginDatabase.UserHltbData.TitlesList
                     .Where(x => x.Completion != null && ((DateTime)x.Completion).ToString("yyyy").IsEqual(Year) && x.Storefront != null && x.Storefront.IsEqual(StoreFront)).ToObservable();
             }
             else
             {
-                UserViewDataContext.ItemsSource = PluginDatabase.Database.UserHltbData.TitlesList
+                UserViewDataContext.ItemsSource = PluginDatabase.UserHltbData.TitlesList
                     .Where(x => x.Completion != null && ((DateTime)x.Completion).ToString("yyyy").IsEqual(Year) && x.Storefront != null && x.Storefront.IsEqual(StoreFront) && x.Platform != null && x.Platform.IsEqual(Platform))
                     .ToObservable();
             }
@@ -790,21 +791,21 @@ namespace HowLongToBeat.Views
         }
         private void SavedFilter1_Click(object sender, RoutedEventArgs e)
         {
-            PluginDatabase.PluginSettings.Settings.filterSettings.Year = PART_CbYear.SelectedItem.ToString();
-            PluginDatabase.PluginSettings.Settings.filterSettings.Storefront = PART_CbStorefront.SelectedItem.ToString();
-            PluginDatabase.PluginSettings.Settings.filterSettings.Platform = PART_CbPlatform.SelectedItem.ToString();
-            PluginDatabase.PluginSettings.Settings.filterSettings.OnlyReplays = (bool)PART_Replays.IsChecked;
-            PluginDatabase.PluginSettings.Settings.filterSettings.OnlyNotPlayed = (bool)PART_OnlyNotPlayed.IsChecked;
+            PluginDatabase.PluginSettings.filterSettings.Year = PART_CbYear.SelectedItem.ToString();
+            PluginDatabase.PluginSettings.filterSettings.Storefront = PART_CbStorefront.SelectedItem.ToString();
+            PluginDatabase.PluginSettings.filterSettings.Platform = PART_CbPlatform.SelectedItem.ToString();
+            PluginDatabase.PluginSettings.filterSettings.OnlyReplays = (bool)PART_Replays.IsChecked;
+            PluginDatabase.PluginSettings.filterSettings.OnlyNotPlayed = (bool)PART_OnlyNotPlayed.IsChecked;
 
-            Plugin.SavePluginSettings(PluginDatabase.PluginSettings.Settings);
+            Plugin.SavePluginSettings(PluginDatabase.PluginSettings);
         }
 
         private void SavedFilter2_Click(object sender, RoutedEventArgs e)
         {
-            PluginDatabase.PluginSettings.Settings.filterSettings.UsedFilteredGames = (bool)PART_FilteredGames.IsChecked;
-            PluginDatabase.PluginSettings.Settings.filterSettings.OnlyNotPlayedGames = (bool)PART_HidePlayedGames.IsChecked;
+            PluginDatabase.PluginSettings.filterSettings.UsedFilteredGames = (bool)PART_FilteredGames.IsChecked;
+            PluginDatabase.PluginSettings.filterSettings.OnlyNotPlayedGames = (bool)PART_HidePlayedGames.IsChecked;
 
-            Plugin.SavePluginSettings(PluginDatabase.PluginSettings.Settings);
+            Plugin.SavePluginSettings(PluginDatabase.PluginSettings);
         }
 
 
@@ -845,7 +846,7 @@ namespace HowLongToBeat.Views
         public long RemainingTime => (PluginDatabase.Get(GameId, true)?.GetData()?.GameHltbData?.TimeToBeat ?? 0) - (long)Playtime > 0 ? PluginDatabase.Get(GameId, true).GetData().GameHltbData.TimeToBeat - (long)Playtime : 0;
         public string RemainingTimeFormat => RemainingTime > 0 ? (string)PlayTimeToStringConverterWithZero.Convert(RemainingTime, null, null, CultureInfo.CurrentCulture) : string.Empty;
 
-        public RelayCommand<Guid> GoToGame => Commands.GoToGame;
+        public RelayCommand<Guid> GoToGame => CommandsNavigation.GoToGame;
 
         public bool GameExist => API.Instance.Database.Games.Get(GameId) != null;
     }

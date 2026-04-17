@@ -40,7 +40,7 @@ namespace HowLongToBeat.Services
                 windowExtension.ResizeMode = ResizeMode.CanResize;
                 _ = windowExtension.ShowDialog();
             };
-            Visible = plugin.PluginSettings.Settings.EnableIntegrationButtonHeader;
+            Visible = plugin.PluginSettingsViewModel.Settings.EnableIntegrationButtonHeader;
         }
     }
 }

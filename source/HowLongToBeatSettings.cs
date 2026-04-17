@@ -1,4 +1,6 @@
-﻿using CommonPluginsShared.Models;
+﻿using CommonPluginsShared;
+using CommonPluginsShared.Interfaces;
+using CommonPluginsShared.Models;
 using CommonPluginsShared.Plugins;
 using FuzzySharp;
 using HowLongToBeat.Models;
@@ -7,14 +9,13 @@ using HowLongToBeat.Models.StartPage;
 using HowLongToBeat.Views;
 using Playnite.SDK;
 using Playnite.SDK.Data;
-using CommonPluginsShared;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
-using System.Collections.ObjectModel;
 
 namespace HowLongToBeat
 {
@@ -275,16 +276,16 @@ namespace HowLongToBeat
     }
 
 
-    public class HowLongToBeatSettingsViewModel : ObservableObject, ISettings
-    {
+    public class HowLongToBeatSettingsViewModel : PluginSettingsViewModel, IPluginSettingsViewModel
+	{
         private readonly HowLongToBeat Plugin;
         private HowLongToBeatSettings EditingClone { get; set; }
 
         private HowLongToBeatSettings _settings;
         public HowLongToBeatSettings Settings { get => _settings; set => SetValue(ref _settings, value); }
+		IPluginSettings IPluginSettingsViewModel.Settings => Settings;
 
-
-        public HowLongToBeatSettingsViewModel(HowLongToBeat plugin)
+		public HowLongToBeatSettingsViewModel(HowLongToBeat plugin)
         {
             // Injecting your plugin instance is required for Save/Load method because Playnite saves data to a location based on what plugin requested the operation.
             Plugin = plugin;
@@ -656,7 +657,7 @@ namespace HowLongToBeat
             }
 
             Plugin.SavePluginSettings(Settings);
-            HowLongToBeat.PluginDatabase.PluginSettings = this;
+            HowLongToBeat.PluginDatabase.PluginSettings = this.Settings;
 
             if (API.Instance.ApplicationInfo.Mode == ApplicationMode.Desktop)
             {

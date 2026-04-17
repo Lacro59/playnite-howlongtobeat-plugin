@@ -147,7 +147,6 @@
     <Compile Include="Models\HltbData_old.cs" />
     <Compile Include="Models\HltbPlatform.cs" />
     <Compile Include="Models\GameHowLongToBeat.cs" />
-    <Compile Include="Models\GameHowLongToBeatCollection.cs" />
     <Compile Include="Models\HltbDataUser.cs" />
     <Compile Include="Models\HltbSearch.cs" />
     <Compile Include="Models\HltbStorefront.cs" />
@@ -171,8 +170,20 @@
     <Compile Include="playnite-plugincommon\CommonPluginsControls\Controls\TextBlockWithIcon.xaml.cs">
       <DependentUpon>TextBlockWithIcon.xaml</DependentUpon>
     </Compile>
+    <Compile Include="playnite-plugincommon\CommonPluginsControls\PlayniteControls\DdItemListSelectionBox.xaml.cs">
+      <DependentUpon>DdItemListSelectionBox.xaml</DependentUpon>
+    </Compile>
     <Compile Include="playnite-plugincommon\CommonPluginsControls\PlayniteControls\NumericBox.xaml.cs">
       <DependentUpon>NumericBox.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="playnite-plugincommon\CommonPluginsControls\ViewsModels\DatabaseMaintenanceViewModel.cs" />
+    <Compile Include="playnite-plugincommon\CommonPluginsControls\ViewsModels\ExportCsvViewModel.cs" />
+    <Compile Include="playnite-plugincommon\CommonPluginsControls\ViewsModels\TransfertDataViewModel.cs" />
+    <Compile Include="playnite-plugincommon\CommonPluginsControls\Views\DatabaseMaintenanceView.xaml.cs">
+      <DependentUpon>DatabaseMaintenanceView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="playnite-plugincommon\CommonPluginsControls\Views\ExportCsvView.xaml.cs">
+      <DependentUpon>ExportCsvView.xaml</DependentUpon>
     </Compile>
     <Compile Include="playnite-plugincommon\CommonPluginsControls\Views\ListWithNoData.xaml.cs">
       <DependentUpon>ListWithNoData.xaml</DependentUpon>
@@ -200,8 +211,12 @@
     <Compile Include="playnite-plugincommon\CommonPluginsControls\PlayniteControls\SearchBox.xaml.cs">
       <DependentUpon>SearchBox.xaml</DependentUpon>
     </Compile>
+    <Compile Include="playnite-plugincommon\CommonPluginsControls\Views\TransfertData.xaml.cs">
+      <DependentUpon>TransfertData.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Services\GameNameAliases.cs" />
     <Compile Include="Services\HowLongToBeatDatabase.cs" />
+    <Compile Include="Services\HowLongToBeatExport.cs" />
     <Compile Include="Services\HowLongToBeatSearch.cs" />
     <Compile Include="Services\LruCache.cs" />
     <Compile Include="Services\PageCache.cs" />
@@ -209,6 +224,8 @@
     <Compile Include="Services\HowLongToBeatStats.cs" />
     <Compile Include="Services\HowLongToBeatTopPanelItem.cs" />
     <Compile Include="Services\HowLongToBeatViewSidebar.cs" />
+    <Compile Include="Services\HowLongToBeatMenus.cs" />
+    <Compile Include="Services\HowLongToBeatWindows.cs" />
     <Compile Include="Services\TaskHelpers.cs" />
     <Compile Include="Services\VndbApi.cs" />
     <Compile Include="Views\HowLongToBeatSelect.xaml.cs">
@@ -465,7 +482,19 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="playnite-plugincommon\CommonPluginsControls\PlayniteControls\DdItemListSelectionBox.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="playnite-plugincommon\CommonPluginsControls\PlayniteControls\NumericBox.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="playnite-plugincommon\CommonPluginsControls\Views\DatabaseMaintenanceView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="playnite-plugincommon\CommonPluginsControls\Views\ExportCsvView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -498,6 +527,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="playnite-plugincommon\CommonPluginsControls\PlayniteControls\SearchBox.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="playnite-plugincommon\CommonPluginsControls\Views\TransfertData.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -567,6 +600,6 @@
   <Import Project="playnite-plugincommon\CommonPluginsShared\CommonPluginsShared.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>pwsh -ExecutionPolicy Unrestricted $(SolutionDir)..\build\build.ps1 -ConfigurationName $(ConfigurationName) -OutDir $(SolutionDir)$(OutDir) -SolutionDir $(SolutionDir)</PostBuildEvent>
+    <PostBuildEvent>powershell -ExecutionPolicy Unrestricted $(SolutionDir)..\build\build.ps1 -ConfigurationName $(ConfigurationName) -OutDir $(SolutionDir)$(OutDir) -SolutionDir $(SolutionDir)</PostBuildEvent>
   </PropertyGroup>
 </Project>

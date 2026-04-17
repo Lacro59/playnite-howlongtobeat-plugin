@@ -1,20 +1,22 @@
-﻿using Playnite.SDK;
+﻿using CommonPluginsShared;
+using CommonPluginsShared.Commands;
+using CommonPluginsShared.Models;
+using HowLongToBeat.Models;
+using HowLongToBeat.Models.Enumerations;
+using HowLongToBeat.Services;
+using Playnite.SDK;
+using Playnite.SDK.Data;
+using Playnite.SDK.Models;
 using System;
+using System.Collections.Generic;
+using System.Drawing.Imaging;
+using System.IO;
+using System.IO.Abstractions;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using HowLongToBeat.Services;
-using HowLongToBeat.Models;
-using CommonPluginsShared;
-using CommonPluginsShared.Models;
-using System.Drawing.Imaging;
-using System.IO;
-using System.Collections.Generic;
-using Playnite.SDK.Models;
-using HowLongToBeat.Models.Enumerations;
-using Playnite.SDK.Data;
 
 namespace HowLongToBeat.Views
 {
@@ -143,15 +145,19 @@ namespace HowLongToBeat.Views
 
 
         #region Tag
+
         private void ButtonAddTag_Click(object sender, RoutedEventArgs e)
         {
-            HowLongToBeat.PluginDatabase.AddTagAllGame();
-        }
+			var commandsPlugin = new CommandsPlugin(PluginDatabase.PluginName, PluginDatabase);
+            commandsPlugin.CmdAddTag.Execute(null);
+		}
 
         private void ButtonRemoveTag_Click(object sender, RoutedEventArgs e)
         {
-            HowLongToBeat.PluginDatabase.RemoveTagAllGame();
-        }
+			var commandsPlugin = new CommandsPlugin(PluginDatabase.PluginName, PluginDatabase);
+			commandsPlugin.CmdRemoveTag.Execute(null);
+		}
+
         #endregion
 
         #region Export
@@ -632,7 +638,7 @@ namespace HowLongToBeat.Views
                     string userLogin = api?.UserLogin;
                     if (userLogin.IsNullOrEmpty())
                     {
-                        userLogin = PluginDatabase?.Database?.UserHltbData?.Login ?? string.Empty;
+                        userLogin = PluginDatabase?.UserHltbData?.Login ?? string.Empty;
                     }
 
                     PART_LbUserLogin.Content = ResourceProvider.GetString("LOCCommonAccountName") + " " + userLogin;
@@ -748,7 +754,7 @@ namespace HowLongToBeat.Views
         {
             try
             {
-                PluginDatabase.PluginSettings.Settings.ProgressBarShowTime = true;
+                PluginDatabase.PluginSettings.ProgressBarShowTime = true;
             }
             catch { }
         }
@@ -757,7 +763,7 @@ namespace HowLongToBeat.Views
         {
             try
             {
-                PluginDatabase.PluginSettings.Settings.ProgressBarShowTime = false;
+                PluginDatabase.PluginSettings.ProgressBarShowTime = false;
             }
             catch { }
         }
@@ -766,9 +772,9 @@ namespace HowLongToBeat.Views
         {
             try
             {
-                PluginDatabase.PluginSettings.Settings.ProgressBarShowTimeAbove = true;
-                PluginDatabase.PluginSettings.Settings.ProgressBarShowTimeInterior = false;
-                PluginDatabase.PluginSettings.Settings.ProgressBarShowTimeBelow = false;
+                PluginDatabase.PluginSettings.ProgressBarShowTimeAbove = true;
+                PluginDatabase.PluginSettings.ProgressBarShowTimeInterior = false;
+                PluginDatabase.PluginSettings.ProgressBarShowTimeBelow = false;
             }
             catch { }
         }
@@ -777,9 +783,9 @@ namespace HowLongToBeat.Views
         {
             try
             {
-                PluginDatabase.PluginSettings.Settings.ProgressBarShowTimeAbove = false;
-                PluginDatabase.PluginSettings.Settings.ProgressBarShowTimeInterior = true;
-                PluginDatabase.PluginSettings.Settings.ProgressBarShowTimeBelow = false;
+                PluginDatabase.PluginSettings.ProgressBarShowTimeAbove = false;
+                PluginDatabase.PluginSettings.ProgressBarShowTimeInterior = true;
+                PluginDatabase.PluginSettings.ProgressBarShowTimeBelow = false;
             }
             catch { }
         }
@@ -788,9 +794,9 @@ namespace HowLongToBeat.Views
         {
             try
             {
-                PluginDatabase.PluginSettings.Settings.ProgressBarShowTimeAbove = false;
-                PluginDatabase.PluginSettings.Settings.ProgressBarShowTimeInterior = false;
-                PluginDatabase.PluginSettings.Settings.ProgressBarShowTimeBelow = true;
+                PluginDatabase.PluginSettings.ProgressBarShowTimeAbove = false;
+                PluginDatabase.PluginSettings.ProgressBarShowTimeInterior = false;
+                PluginDatabase.PluginSettings.ProgressBarShowTimeBelow = true;
             }
             catch { }
         }
@@ -801,23 +807,23 @@ namespace HowLongToBeat.Views
             switch (index)
             {
                 case "0":
-                    PluginDatabase.PluginSettings.Settings.TitleListSort = TitleListSort.GameName;
+                    PluginDatabase.PluginSettings.TitleListSort = TitleListSort.GameName;
                     break;
 
                 case "1":
-                    PluginDatabase.PluginSettings.Settings.TitleListSort = TitleListSort.Platform;
+                    PluginDatabase.PluginSettings.TitleListSort = TitleListSort.Platform;
                     break;
 
                 case "2":
-                    PluginDatabase.PluginSettings.Settings.TitleListSort = TitleListSort.Completion;
+                    PluginDatabase.PluginSettings.TitleListSort = TitleListSort.Completion;
                     break;
 
                 case "3":
-                    PluginDatabase.PluginSettings.Settings.TitleListSort = TitleListSort.CurrentTime;
+                    PluginDatabase.PluginSettings.TitleListSort = TitleListSort.CurrentTime;
                     break;
 
                 case "4":
-                    PluginDatabase.PluginSettings.Settings.TitleListSort = TitleListSort.LastUpdate;
+                    PluginDatabase.PluginSettings.TitleListSort = TitleListSort.LastUpdate;
                     break;
 
                 default:

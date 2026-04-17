@@ -31,23 +31,23 @@ namespace HowLongToBeat.Views
             GameContext = game;
             SearchElement.Text = GameContext.Name;
 
-            if (PluginDatabase.PluginSettings.Settings.UseHtltbClassic)
+            if (PluginDatabase.PluginSettings.UseHtltbClassic)
             {
                 lbSelectable.Tag = DataType.Classic;
             }
-            if (PluginDatabase.PluginSettings.Settings.UseHtltbAverage)
+            if (PluginDatabase.PluginSettings.UseHtltbAverage)
             {
                 lbSelectable.Tag = DataType.Average;
             }
-            if (PluginDatabase.PluginSettings.Settings.UseHtltbMedian)
+            if (PluginDatabase.PluginSettings.UseHtltbMedian)
             {
                 lbSelectable.Tag = DataType.Median;
             }
-            if (PluginDatabase.PluginSettings.Settings.UseHtltbRushed)
+            if (PluginDatabase.PluginSettings.UseHtltbRushed)
             {
                 lbSelectable.Tag = DataType.Rushed;
             }
-            if (PluginDatabase.PluginSettings.Settings.UseHtltbLeisure)
+            if (PluginDatabase.PluginSettings.UseHtltbLeisure)
             {
                 lbSelectable.Tag = DataType.Leisure;
             }

@@ -1,5 +1,6 @@
 ﻿using CommonPluginsShared;
 using CommonPluginsShared.Extensions;
+using CommonPluginsShared.Utilities;
 using HowLongToBeat.Models;
 using Playnite.SDK;
 using Playnite.SDK.Plugins;
@@ -83,7 +84,7 @@ namespace HowLongToBeat.Services
 
 
                 // Search
-                PluginDatabase.Database.Where(x => x.Name.Contains(SearchTerm, StringComparison.InvariantCultureIgnoreCase)
+                PluginDatabase.GetAllCache().Where(x => x.Name.Contains(SearchTerm, StringComparison.InvariantCultureIgnoreCase)
                                 && !x.IsDeleted
                                 && (args.GameFilterSettings.Uninstalled || x.IsInstalled)
                                 && (args.GameFilterSettings.Hidden || !x.Hidden)
@@ -125,8 +126,8 @@ namespace HowLongToBeat.Services
                 string[] data = query.Replace("<>", "#").Split('#');
                 if (data.Length == 2)
                 {
-                    double timeMin = Tools.GetElapsedSeconde(data[0]);
-                    double timeMax = Tools.GetElapsedSeconde(data[1]);
+                    double timeMin = UtilityTools.GetElapsedSeconds(data[0]);
+                    double timeMax = UtilityTools.GetElapsedSeconds(data[1]);
 
                     if (timeMin > -1 && timeMax > -1)
                     {
@@ -136,7 +137,7 @@ namespace HowLongToBeat.Services
             }
             else if (query.Contains('<'))
             {
-                double time = Tools.GetElapsedSeconde(query.Replace("<", string.Empty));
+                double time = UtilityTools.GetElapsedSeconds(query.Replace("<", string.Empty));
 
                 if (time > -1)
                 {
@@ -145,7 +146,7 @@ namespace HowLongToBeat.Services
             }
             else if (query.Contains('>'))
             {
-                double time = Tools.GetElapsedSeconde(query.Replace(">", string.Empty));
+                double time = UtilityTools.GetElapsedSeconds(query.Replace(">", string.Empty));
 
                 if (time > -1)
                 {
@@ -154,7 +155,7 @@ namespace HowLongToBeat.Services
             }
             else
             {
-                double time = Tools.GetElapsedSeconde(query);
+                double time = UtilityTools.GetElapsedSeconds(query);
 
                 if (time > -1)
                 {
