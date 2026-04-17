@@ -42,7 +42,16 @@ namespace HowLongToBeat.Controls
 
         public PluginProgressBar()
         {
+#if DEBUG
+			var timer = new DebugTimer("PluginProgressBar.ctor");
+#endif
+
             InitializeComponent();
+
+#if DEBUG
+			timer.Step("InitializeComponent done");
+#endif
+
             DataContext = ControlDataContext;
 
             SliderPlaytime.Loaded += (_, __) =>
@@ -62,18 +71,39 @@ namespace HowLongToBeat.Controls
             Loaded += (_, __) => UpdateLiveRefreshTimerState();
             Unloaded += (_, __) => liveRefreshTimer.Stop();
             IsVisibleChanged += (_, __) => UpdateLiveRefreshTimerState();
+            
+#if DEBUG
+			timer.Stop();
+#endif
         }
 
-        protected override void AttachStaticEvents()
-        {
-            base.AttachStaticEvents();
-            AttachPluginEvents(PluginDatabase.PluginName, () =>
-            {
-                PluginDatabase.PluginSettings.PropertyChanged += CreatePluginSettingsHandler();
-                PluginDatabase.DatabaseItemUpdated += CreateDatabaseItemUpdatedHandler<GameHowLongToBeat>();
-                PluginDatabase.DatabaseItemCollectionChanged += CreateDatabaseCollectionChangedHandler<GameHowLongToBeat>();
-            });
-        }
+		protected override void AttachStaticEvents()
+		{
+#if DEBUG
+			var timer = new DebugTimer("PluginProgressBar.AttachStaticEvents");
+#endif
+
+			base.AttachStaticEvents();
+
+#if DEBUG
+			timer.Step("base done");
+#endif
+
+			AttachPluginEvents(PluginDatabase.PluginName, () =>
+			{
+#if DEBUG
+				timer.Step("registering plugin-specific handlers");
+#endif
+
+				PluginDatabase.PluginSettings.PropertyChanged += CreatePluginSettingsHandler(); 
+				PluginDatabase.DatabaseItemUpdated += CreateDatabaseItemUpdatedHandler<GameHowLongToBeat>();
+				PluginDatabase.DatabaseItemCollectionChanged += CreateDatabaseCollectionChangedHandler<GameHowLongToBeat>();
+			});
+
+#if DEBUG
+			timer.Stop();
+#endif
+		}
 
 
         private void UpdatePlaytimeThumbTransform()
@@ -218,6 +248,10 @@ namespace HowLongToBeat.Controls
 
         public override void SetDefaultDataContext()
         {
+#if DEBUG
+            var timer = new DebugTimer("PluginProgressBar.SetDefaultDataContext");
+#endif
+
             liveRefreshTimer?.Stop();
 
             ShowUserData = PluginDatabase.PluginSettings.ProgressBarShowTimeUser;
@@ -272,11 +306,19 @@ namespace HowLongToBeat.Controls
             ControlDataContext.ThumbColor = PluginDatabase.PluginSettings.ThumbSolidColorBrush == null
                 ? (dynamic)PluginDatabase.PluginSettings.ThumbLinearGradient.ToLinearGradientBrush
                 : (dynamic)PluginDatabase.PluginSettings.ThumbSolidColorBrush;
+
+#if DEBUG
+            timer.Stop(string.Format("IsActivated={0}, ShowUserData={1}", ControlDataContext.IsActivated, ShowUserData));
+#endif
         }
 
 
         public override void SetData(Game newContext, PluginGameEntry PluginGameData)
         {
+#if DEBUG
+            var timer = new DebugTimer(string.Format("PluginProgressBar.SetData(game='{0}')", newContext?.Name ?? "null"));
+#endif
+
             GameHowLongToBeat gameHowLongToBeat = (GameHowLongToBeat)PluginGameData;
             LoadData(gameHowLongToBeat);
 
@@ -341,11 +383,19 @@ namespace HowLongToBeat.Controls
             PartSliderThird.Maximum = ControlDataContext.MaxValue;
 
             UpdateLiveRefreshTimerState();
+
+#if DEBUG
+            timer.Stop(string.Format("MaxValue={0}, PlaytimeValue={1}", ControlDataContext.MaxValue, ControlDataContext.PlaytimeValue));
+#endif
         }
 
 
         private void LoadData(GameHowLongToBeat gameHowLongToBeat)
         {
+#if DEBUG
+            var timer = new DebugTimer("PluginProgressBar.LoadData");
+#endif
+
             try
             {
                 // Definied data value in different component.
@@ -555,9 +605,16 @@ namespace HowLongToBeat.Controls
 
                 ControlDataContext.MaxValue = maxValue;
                 ControlDataContext.PlaytimeValue = playtime;
+
+#if DEBUG
+                timer.Stop(string.Format("HasData={0}, MaxValue={1}, Playtime={2}", gameHowLongToBeat?.HasData ?? false, maxValue, playtime));
+#endif
             }
             catch (Exception ex)
             {
+#if DEBUG
+                timer.Stop("exception");
+#endif
                 Common.LogError(ex, false, true, PluginDatabase.PluginName);
             }
         }

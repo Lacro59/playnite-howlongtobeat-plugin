@@ -2,10 +2,8 @@
 using HowLongToBeat.Views;
 using Playnite.SDK;
 using Playnite.SDK.Events;
-using Playnite.SDK.Models;
 using Playnite.SDK.Plugins;
 using System;
-using System.Linq;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,15 +14,12 @@ using CommonPluginsShared;
 using CommonPluginsShared.PlayniteExtended;
 using CommonPluginsShared.Controls;
 using HowLongToBeat.Controls;
-using CommonPluginsControls.Views;
 using System.IO;
 using QuickSearch.SearchItems;
 using StartPage.SDK;
 using LiveCharts.Configurations;
 using CommonPluginsControls.LiveChartsCommon;
 using LiveCharts;
-using Playnite.SDK.Data;
-using HowLongToBeat.Models.Enumerations;
 
 namespace HowLongToBeat
 {
