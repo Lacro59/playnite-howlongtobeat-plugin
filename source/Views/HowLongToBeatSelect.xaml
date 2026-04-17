@@ -139,7 +139,6 @@
                     </Grid>
 
                     <ListBox x:Name="lbSelectable"
-                             Height="465"
                              SelectionChanged="LbSelectable_SelectionChanged"
                              ItemContainerStyle="{StaticResource ResultItemContainerStyle}"
                              Background="Transparent"
