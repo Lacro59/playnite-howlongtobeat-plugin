@@ -1255,10 +1255,6 @@ namespace HowLongToBeat.Services
                         {
                             editData.Lists.Playing = true;
                         }
-                        else if (!editData.Lists.Backlog && !editData.Lists.Completed && !editData.Lists.Custom && !editData.Lists.Playing && !editData.Lists.Replay && !editData.Lists.Retired)
-                        {
-                            editData.Lists.Playing = true;
-                        }
 
                         if (isCompleted)
                         {
@@ -1302,6 +1298,13 @@ namespace HowLongToBeat.Services
                                     editData.General.CompletionDate.Year = ((DateTime)game.LastActivity).Year.ToString();
                                 }
                             }
+                        }
+
+                        // Apply the default only after all explicit status flags are set.
+                        // This prevents sending both Playing and Completed when auto-syncing a completed game.
+                        if (!editData.Lists.Backlog && !editData.Lists.Completed && !editData.Lists.Custom && !editData.Lists.Playing && !editData.Lists.Replay && !editData.Lists.Retired)
+                        {
+                            editData.Lists.Playing = true;
                         }
 
                         if (isCoOp)
