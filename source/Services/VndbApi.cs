@@ -1,6 +1,7 @@
 ﻿using CommonPluginsShared;
 using FuzzySharp;
 using HowLongToBeat.Models;
+using HowLongToBeat.Models.Enumerations;
 using HowLongToBeat.Models.Vndb;
 using Playnite.SDK;
 using Playnite.SDK.Data;
@@ -10,6 +11,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Net.Http;
+using System.Text.RegularExpressions;
+using System.Globalization;
+using System.Threading;
 
 namespace HowLongToBeat.Services
 {
@@ -23,6 +27,9 @@ namespace HowLongToBeat.Services
         private static string UrlSearch => UrlApi + "/vn";
 
         private static readonly HttpClient httpClient;
+        private static readonly Regex SpeedRowRegex = new Regex(
+            "<tr><td>(Slow|Normal|Fast|Total)</td><td>(.*?)</td><td>(.*?)</td><td>(.*?)</td><td>(\\d+)</td></tr>",
+            RegexOptions.IgnoreCase | RegexOptions.Compiled | RegexOptions.CultureInvariant);
 
         static VndbApi()
         {
@@ -83,6 +90,8 @@ namespace HowLongToBeat.Services
                         }
                     });
                 });
+
+                await EnrichWithLengthVotesAsync(hltbDataUsers).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
@@ -90,6 +99,206 @@ namespace HowLongToBeat.Services
             }
 
             return hltbDataUsers;
+        }
+
+        private static async Task EnrichWithLengthVotesAsync(List<HltbDataUser> items)
+        {
+            if (items == null || items.Count == 0)
+            {
+                return;
+            }
+
+            // Keep VNDB requests bounded to avoid slow search UI.
+            using (var throttler = new SemaphoreSlim(4))
+            {
+                var tasks = items.Select(async item =>
+                {
+                    if (item == null || string.IsNullOrEmpty(item.Id))
+                    {
+                        return;
+                    }
+
+                    await throttler.WaitAsync().ConfigureAwait(false);
+                    try
+                    {
+                        await FillLengthVotesAsync(item).ConfigureAwait(false);
+                    }
+                    catch (Exception ex)
+                    {
+                        Common.LogError(ex, false, $"Unable to read VNDB length votes for {item.Id}");
+                    }
+                    finally
+                    {
+                        throttler.Release();
+                    }
+                });
+
+                await Task.WhenAll(tasks).ConfigureAwait(false);
+            }
+        }
+
+        private static async Task FillLengthVotesAsync(HltbDataUser item)
+        {
+            string data = await GetString($"{Url}/{item.Id}/lengthvotes").ConfigureAwait(false);
+            if (data.IsNullOrEmpty())
+            {
+                return;
+            }
+
+            long slow = 0;
+            long normal = 0;
+            long fast = 0;
+            long total = 0;
+            int found = 0;
+
+            foreach (Match row in SpeedRowRegex.Matches(data))
+            {
+                if (!row.Success)
+                {
+                    continue;
+                }
+
+                string speed = StripTags(row.Groups[1].Value).Trim();
+                string median = StripTags(row.Groups[2].Value).Trim();
+                string average = StripTags(row.Groups[3].Value).Trim();
+                string stddev = StripTags(row.Groups[4].Value).Trim();
+                int votes = 0;
+                int.TryParse(StripTags(row.Groups[5].Value).Trim(), out votes);
+                long seconds = ParseDurationToSeconds(median);
+                if (seconds <= 0)
+                {
+                    continue;
+                }
+
+                switch (speed.ToLowerInvariant())
+                {
+                    case "slow":
+                        slow = seconds;
+                        item.VndbSlowMedian = FormatVndbDuration(median);
+                        item.VndbSlowAverage = FormatVndbDuration(average);
+                        item.VndbSlowStddev = FormatVndbDuration(stddev);
+                        item.VndbSlowVotes = votes;
+                        found++;
+                        break;
+                    case "normal":
+                        normal = seconds;
+                        item.VndbNormalMedian = FormatVndbDuration(median);
+                        item.VndbNormalAverage = FormatVndbDuration(average);
+                        item.VndbNormalStddev = FormatVndbDuration(stddev);
+                        item.VndbNormalVotes = votes;
+                        found++;
+                        break;
+                    case "fast":
+                        fast = seconds;
+                        item.VndbFastMedian = FormatVndbDuration(median);
+                        item.VndbFastAverage = FormatVndbDuration(average);
+                        item.VndbFastStddev = FormatVndbDuration(stddev);
+                        item.VndbFastVotes = votes;
+                        found++;
+                        break;
+                    case "total":
+                        total = seconds;
+                        item.VndbTotalMedian = FormatVndbDuration(median);
+                        item.VndbTotalAverage = FormatVndbDuration(average);
+                        item.VndbTotalStddev = FormatVndbDuration(stddev);
+                        item.VndbTotalVotes = votes;
+                        found++;
+                        break;
+                }
+            }
+
+            if (found == 0)
+            {
+                return;
+            }
+
+            var hltbData = item.GameHltbData ?? new HltbData();
+            hltbData.GameType = GameType.Game;
+
+            // Map VNDB speed rows to existing 4 HLTB data columns for display + selection.
+            hltbData.MainStoryClassic = slow;
+            hltbData.MainStoryAverage = normal;
+            hltbData.MainStoryMedian = fast;
+            hltbData.MainStoryRushed = total;
+
+            // Keep a fallback for old behavior if one of the values is missing.
+            if (hltbData.MainStoryClassic == 0)
+            {
+                hltbData.MainStoryClassic = hltbData.MainStoryAverage != 0
+                    ? hltbData.MainStoryAverage
+                    : (item.GameHltbData?.MainStoryClassic ?? 0);
+            }
+
+            item.GameHltbData = hltbData;
+        }
+
+        private static async Task<string> GetString(string url)
+        {
+            try
+            {
+                using (var resp = await httpClient.GetAsync(url).ConfigureAwait(false))
+                {
+                    if (!resp.IsSuccessStatusCode)
+                    {
+                        return string.Empty;
+                    }
+
+                    return await resp.Content.ReadAsStringAsync().ConfigureAwait(false);
+                }
+            }
+            catch
+            {
+                return string.Empty;
+            }
+        }
+
+        private static string StripTags(string value)
+        {
+            if (string.IsNullOrEmpty(value))
+            {
+                return string.Empty;
+            }
+
+            return Regex.Replace(value, "<.*?>", string.Empty);
+        }
+
+        private static long ParseDurationToSeconds(string value)
+        {
+            if (string.IsNullOrEmpty(value))
+            {
+                return 0;
+            }
+
+            // Examples: "36h23m", "21h", "53m"
+            var clean = value.Replace(" ", string.Empty).ToLowerInvariant();
+            double hours = 0;
+            double minutes = 0;
+
+            int hPos = clean.IndexOf('h');
+            if (hPos > -1 && double.TryParse(clean.Substring(0, hPos), NumberStyles.Any, CultureInfo.InvariantCulture, out double h))
+            {
+                hours = h;
+                clean = clean.Substring(hPos + 1);
+            }
+
+            int mPos = clean.IndexOf('m');
+            if (mPos > -1 && double.TryParse(clean.Substring(0, mPos), NumberStyles.Any, CultureInfo.InvariantCulture, out double m))
+            {
+                minutes = m;
+            }
+
+            var seconds = (long)(hours * 3600 + minutes * 60);
+            return seconds < 0 ? 0 : seconds;
+        }
+
+        private static string FormatVndbDuration(string value)
+        {
+            if (string.IsNullOrEmpty(value))
+            {
+                return "--";
+            }
+
+            return value.Replace(" ", string.Empty).Trim();
         }
 
 

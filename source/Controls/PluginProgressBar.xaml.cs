@@ -9,7 +9,6 @@ using Playnite.SDK;
 using Playnite.SDK.Models;
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
@@ -30,7 +29,7 @@ namespace HowLongToBeat.Controls
         protected override IDataContext controlDataContext
         {
             get => ControlDataContext;
-            set => ControlDataContext = (PluginProgressBarDataContext)controlDataContext;
+            set => ControlDataContext = (PluginProgressBarDataContext)value;
         }
 
         private bool ShowUserData = true;
@@ -43,7 +42,16 @@ namespace HowLongToBeat.Controls
 
         public PluginProgressBar()
         {
+#if DEBUG
+			var timer = new DebugTimer("PluginProgressBar.ctor");
+#endif
+
             InitializeComponent();
+
+#if DEBUG
+			timer.Step("InitializeComponent done");
+#endif
+
             DataContext = ControlDataContext;
 
             SliderPlaytime.Loaded += (_, __) =>
@@ -59,27 +67,43 @@ namespace HowLongToBeat.Controls
             };
             liveRefreshTimer.Tick += LiveRefreshTimer_Tick;
 
+            Loaded += OnLoaded;
             Loaded += (_, __) => UpdateLiveRefreshTimerState();
             Unloaded += (_, __) => liveRefreshTimer.Stop();
             IsVisibleChanged += (_, __) => UpdateLiveRefreshTimerState();
-
-            _ = Task.Run(() =>
-            {
-                // Wait extension database are loaded
-                _ = System.Threading.SpinWait.SpinUntil(() => PluginDatabase.IsLoaded, -1);
-
-                _ = Dispatcher.BeginInvoke((Action)delegate
-                {
-                    PluginDatabase.PluginSettings.PropertyChanged += PluginSettings_PropertyChanged;
-                    PluginDatabase.Database.ItemUpdated += Database_ItemUpdated;
-                    PluginDatabase.Database.ItemCollectionChanged += Database_ItemCollectionChanged;
-                    API.Instance.Database.Games.ItemUpdated += Games_ItemUpdated;
-
-                    // Apply settings
-                    PluginSettings_PropertyChanged(null, null);
-                });
-            });
+            
+#if DEBUG
+			timer.Stop();
+#endif
         }
+
+		protected override void AttachStaticEvents()
+		{
+#if DEBUG
+			var timer = new DebugTimer("PluginProgressBar.AttachStaticEvents");
+#endif
+
+			base.AttachStaticEvents();
+
+#if DEBUG
+			timer.Step("base done");
+#endif
+
+			AttachPluginEvents(PluginDatabase.PluginName, () =>
+			{
+#if DEBUG
+				timer.Step("registering plugin-specific handlers");
+#endif
+
+				PluginDatabase.PluginSettings.PropertyChanged += CreatePluginSettingsHandler(); 
+				PluginDatabase.DatabaseItemUpdated += CreateDatabaseItemUpdatedHandler<GameHowLongToBeat>();
+				PluginDatabase.DatabaseItemCollectionChanged += CreateDatabaseCollectionChangedHandler<GameHowLongToBeat>();
+			});
+
+#if DEBUG
+			timer.Stop();
+#endif
+		}
 
 
         private void UpdatePlaytimeThumbTransform()
@@ -224,14 +248,18 @@ namespace HowLongToBeat.Controls
 
         public override void SetDefaultDataContext()
         {
+#if DEBUG
+            var timer = new DebugTimer("PluginProgressBar.SetDefaultDataContext");
+#endif
+
             liveRefreshTimer?.Stop();
 
-            ShowUserData = PluginDatabase.PluginSettings.Settings.ProgressBarShowTimeUser;
+            ShowUserData = PluginDatabase.PluginSettings.ProgressBarShowTimeUser;
 
-            bool isActivated = PluginDatabase.PluginSettings.Settings.EnableIntegrationProgressBar;
-            bool textAboveVisibility = PluginDatabase.PluginSettings.Settings.ProgressBarShowTime ? PluginDatabase.PluginSettings.Settings.ProgressBarShowTimeAbove : false;
-            bool textInsideVisibility = PluginDatabase.PluginSettings.Settings.ProgressBarShowTime ? PluginDatabase.PluginSettings.Settings.ProgressBarShowTimeInterior : false;
-            bool textBelowVisibility = PluginDatabase.PluginSettings.Settings.ProgressBarShowTime ? PluginDatabase.PluginSettings.Settings.ProgressBarShowTimeBelow : false;
+            bool isActivated = PluginDatabase.PluginSettings.EnableIntegrationProgressBar;
+            bool textAboveVisibility = PluginDatabase.PluginSettings.ProgressBarShowTime ? PluginDatabase.PluginSettings.ProgressBarShowTimeAbove : false;
+            bool textInsideVisibility = PluginDatabase.PluginSettings.ProgressBarShowTime ? PluginDatabase.PluginSettings.ProgressBarShowTimeInterior : false;
+            bool textBelowVisibility = PluginDatabase.PluginSettings.ProgressBarShowTime ? PluginDatabase.PluginSettings.ProgressBarShowTimeBelow : false;
             if (IgnoreSettings)
             {
                 isActivated = true;
@@ -242,7 +270,7 @@ namespace HowLongToBeat.Controls
             }
 
             ControlDataContext.IsActivated = isActivated;
-            ControlDataContext.ShowToolTip = PluginDatabase.PluginSettings.Settings.ProgressBarShowToolTip;
+            ControlDataContext.ShowToolTip = PluginDatabase.PluginSettings.ProgressBarShowToolTip;
 
             ControlDataContext.TextAboveVisibility = textAboveVisibility;
             ControlDataContext.TextInsideVisibility = textInsideVisibility;
@@ -275,14 +303,22 @@ namespace HowLongToBeat.Controls
             ControlDataContext.SliderThirdVisibility = Visibility.Collapsed;
             ControlDataContext.ThumbThird = null;
 
-            ControlDataContext.ThumbColor = PluginDatabase.PluginSettings.Settings.ThumbSolidColorBrush == null
-                ? (dynamic)PluginDatabase.PluginSettings.Settings.ThumbLinearGradient.ToLinearGradientBrush
-                : (dynamic)PluginDatabase.PluginSettings.Settings.ThumbSolidColorBrush;
+            ControlDataContext.ThumbColor = PluginDatabase.PluginSettings.ThumbSolidColorBrush == null
+                ? (dynamic)PluginDatabase.PluginSettings.ThumbLinearGradient.ToLinearGradientBrush
+                : (dynamic)PluginDatabase.PluginSettings.ThumbSolidColorBrush;
+
+#if DEBUG
+            timer.Stop(string.Format("IsActivated={0}, ShowUserData={1}", ControlDataContext.IsActivated, ShowUserData));
+#endif
         }
 
 
-        public override void SetData(Game newContext, PluginDataBaseGameBase PluginGameData)
+        public override void SetData(Game newContext, PluginGameEntry PluginGameData)
         {
+#if DEBUG
+            var timer = new DebugTimer(string.Format("PluginProgressBar.SetData(game='{0}')", newContext?.Name ?? "null"));
+#endif
+
             GameHowLongToBeat gameHowLongToBeat = (GameHowLongToBeat)PluginGameData;
             LoadData(gameHowLongToBeat);
 
@@ -347,11 +383,19 @@ namespace HowLongToBeat.Controls
             PartSliderThird.Maximum = ControlDataContext.MaxValue;
 
             UpdateLiveRefreshTimerState();
+
+#if DEBUG
+            timer.Stop(string.Format("MaxValue={0}, PlaytimeValue={1}", ControlDataContext.MaxValue, ControlDataContext.PlaytimeValue));
+#endif
         }
 
 
         private void LoadData(GameHowLongToBeat gameHowLongToBeat)
         {
+#if DEBUG
+            var timer = new DebugTimer("PluginProgressBar.LoadData");
+#endif
+
             try
             {
                 // Definied data value in different component.
@@ -370,11 +414,11 @@ namespace HowLongToBeat.Controls
 
                     if (HltbData.GameType != GameType.Multi)
                     {
-                        color = PluginDatabase.PluginSettings.Settings.FirstLinearGradient != null
-                            ? (dynamic)PluginDatabase.PluginSettings.Settings.FirstLinearGradient.ToLinearGradientBrush
-                            : (dynamic)PluginDatabase.PluginSettings.Settings.FirstColorBrush;
+                        color = PluginDatabase.PluginSettings.FirstLinearGradient != null
+                            ? (dynamic)PluginDatabase.PluginSettings.FirstLinearGradient.ToLinearGradientBrush
+                            : (dynamic)PluginDatabase.PluginSettings.FirstColorBrush;
 
-                        if ((IgnoreSettings || PluginDatabase.PluginSettings.Settings.ShowMainTime) && HltbData?.GameHltbData?.MainStory != null && HltbData.GameHltbData.MainStory > 0)
+                        if ((IgnoreSettings || PluginDatabase.PluginSettings.ShowMainTime) && HltbData?.GameHltbData?.MainStory != null && HltbData.GameHltbData.MainStory > 0)
                         {
                             elIndicator += 1;
 
@@ -394,15 +438,15 @@ namespace HowLongToBeat.Controls
                         {
                             elIndicatorUser += 1;
                             SetColorUser(elIndicatorUser, color);
-                            SetUserData(elIndicatorUser, titleList.HltbUserData.MainStory, PluginDatabase.PluginSettings.Settings.ColorFirst.Color);
+                            SetUserData(elIndicatorUser, titleList.HltbUserData.MainStory, PluginDatabase.PluginSettings.ColorFirst.Color);
                         }
 
 
-                        color = PluginDatabase.PluginSettings.Settings.SecondLinearGradient != null
-                            ? (dynamic)PluginDatabase.PluginSettings.Settings.SecondLinearGradient.ToLinearGradientBrush
-                            : (dynamic)PluginDatabase.PluginSettings.Settings.SecondColorBrush;
+                        color = PluginDatabase.PluginSettings.SecondLinearGradient != null
+                            ? (dynamic)PluginDatabase.PluginSettings.SecondLinearGradient.ToLinearGradientBrush
+                            : (dynamic)PluginDatabase.PluginSettings.SecondColorBrush;
 
-                        if ((IgnoreSettings || PluginDatabase.PluginSettings.Settings.ShowExtraTime) && HltbData?.GameHltbData?.MainExtra != null && HltbData.GameHltbData.MainExtra > 0)
+                        if ((IgnoreSettings || PluginDatabase.PluginSettings.ShowExtraTime) && HltbData?.GameHltbData?.MainExtra != null && HltbData.GameHltbData.MainExtra > 0)
                         {
                             elIndicator += 1;
 
@@ -422,15 +466,15 @@ namespace HowLongToBeat.Controls
                         {
                             elIndicatorUser += 1;
                             SetColorUser(elIndicatorUser, color);
-                            SetUserData(elIndicatorUser, titleList.HltbUserData.MainExtra, PluginDatabase.PluginSettings.Settings.ColorSecond.Color);
+                            SetUserData(elIndicatorUser, titleList.HltbUserData.MainExtra, PluginDatabase.PluginSettings.ColorSecond.Color);
                         }
 
 
-                        color = PluginDatabase.PluginSettings.Settings.ThirdLinearGradient != null
-                            ? (dynamic)PluginDatabase.PluginSettings.Settings.ThirdLinearGradient.ToLinearGradientBrush
-                            : (dynamic)PluginDatabase.PluginSettings.Settings.ThirdColorBrush;
+                        color = PluginDatabase.PluginSettings.ThirdLinearGradient != null
+                            ? (dynamic)PluginDatabase.PluginSettings.ThirdLinearGradient.ToLinearGradientBrush
+                            : (dynamic)PluginDatabase.PluginSettings.ThirdColorBrush;
 
-                        if ((IgnoreSettings || PluginDatabase.PluginSettings.Settings.ShowCompletionistTime) && HltbData?.GameHltbData?.Completionist != null && HltbData.GameHltbData.Completionist != 0)
+                        if ((IgnoreSettings || PluginDatabase.PluginSettings.ShowCompletionistTime) && HltbData?.GameHltbData?.Completionist != null && HltbData.GameHltbData.Completionist != 0)
                         {
                             elIndicator += 1;
 
@@ -450,16 +494,16 @@ namespace HowLongToBeat.Controls
                         {
                             elIndicatorUser += 1;
                             SetColorUser(elIndicatorUser, color);
-                            SetUserData(elIndicatorUser, titleList.HltbUserData.Completionist, PluginDatabase.PluginSettings.Settings.ColorThird.Color);
+                            SetUserData(elIndicatorUser, titleList.HltbUserData.Completionist, PluginDatabase.PluginSettings.ColorThird.Color);
                         }
                     }
                     else
                     {
-                        color = PluginDatabase.PluginSettings.Settings.FirstMultiLinearGradient != null
-                            ? (dynamic)PluginDatabase.PluginSettings.Settings.FirstMultiLinearGradient.ToLinearGradientBrush
-                            : (dynamic)PluginDatabase.PluginSettings.Settings.FirstMultiColorBrush;
+                        color = PluginDatabase.PluginSettings.FirstMultiLinearGradient != null
+                            ? (dynamic)PluginDatabase.PluginSettings.FirstMultiLinearGradient.ToLinearGradientBrush
+                            : (dynamic)PluginDatabase.PluginSettings.FirstMultiColorBrush;
 
-                        if ((IgnoreSettings || PluginDatabase.PluginSettings.Settings.ShowSoloTime) && HltbData?.GameHltbData?.Solo != null && HltbData.GameHltbData.Solo != 0)
+                        if ((IgnoreSettings || PluginDatabase.PluginSettings.ShowSoloTime) && HltbData?.GameHltbData?.Solo != null && HltbData.GameHltbData.Solo != 0)
                         {
                             elIndicator += 1;
 
@@ -479,15 +523,15 @@ namespace HowLongToBeat.Controls
                         {
                             elIndicatorUser += 1;
                             SetColorUser(elIndicatorUser, color);
-                            SetUserData(elIndicatorUser, titleList.HltbUserData.Solo, PluginDatabase.PluginSettings.Settings.ColorFirstMulti.Color);
+                            SetUserData(elIndicatorUser, titleList.HltbUserData.Solo, PluginDatabase.PluginSettings.ColorFirstMulti.Color);
                         }
 
 
-                        color = PluginDatabase.PluginSettings.Settings.SecondMultiLinearGradient != null
-                            ? (dynamic)PluginDatabase.PluginSettings.Settings.SecondMultiLinearGradient.ToLinearGradientBrush
-                            : (dynamic)PluginDatabase.PluginSettings.Settings.SecondMultiColorBrush;
+                        color = PluginDatabase.PluginSettings.SecondMultiLinearGradient != null
+                            ? (dynamic)PluginDatabase.PluginSettings.SecondMultiLinearGradient.ToLinearGradientBrush
+                            : (dynamic)PluginDatabase.PluginSettings.SecondMultiColorBrush;
 
-                        if ((IgnoreSettings || PluginDatabase.PluginSettings.Settings.ShowCoOpTime) && HltbData?.GameHltbData?.CoOp != null && HltbData.GameHltbData.CoOp != 0)
+                        if ((IgnoreSettings || PluginDatabase.PluginSettings.ShowCoOpTime) && HltbData?.GameHltbData?.CoOp != null && HltbData.GameHltbData.CoOp != 0)
                         {
                             elIndicator += 1;
 
@@ -507,15 +551,15 @@ namespace HowLongToBeat.Controls
                         {
                             elIndicatorUser += 1;
                             SetColorUser(elIndicatorUser, color);
-                            SetUserData(elIndicatorUser, titleList.HltbUserData.CoOp, PluginDatabase.PluginSettings.Settings.ColorSecondMulti.Color);
+                            SetUserData(elIndicatorUser, titleList.HltbUserData.CoOp, PluginDatabase.PluginSettings.ColorSecondMulti.Color);
                         }
 
 
-                        color = PluginDatabase.PluginSettings.Settings.ThirdMultiLinearGradient != null
-                            ? (dynamic)PluginDatabase.PluginSettings.Settings.ThirdMultiLinearGradient.ToLinearGradientBrush
-                            : (dynamic)PluginDatabase.PluginSettings.Settings.ThirdMultiColorBrush;
+                        color = PluginDatabase.PluginSettings.ThirdMultiLinearGradient != null
+                            ? (dynamic)PluginDatabase.PluginSettings.ThirdMultiLinearGradient.ToLinearGradientBrush
+                            : (dynamic)PluginDatabase.PluginSettings.ThirdMultiColorBrush;
 
-                        if ((IgnoreSettings || PluginDatabase.PluginSettings.Settings.ShowVsTime) && HltbData?.GameHltbData?.Vs != null && HltbData.GameHltbData.Vs != 0)
+                        if ((IgnoreSettings || PluginDatabase.PluginSettings.ShowVsTime) && HltbData?.GameHltbData?.Vs != null && HltbData.GameHltbData.Vs != 0)
                         {
                             elIndicator += 1;
 
@@ -535,7 +579,7 @@ namespace HowLongToBeat.Controls
                         {
                             elIndicatorUser += 1;
                             SetColorUser(elIndicatorUser, color);
-                            SetUserData(elIndicatorUser, titleList.HltbUserData.Vs, PluginDatabase.PluginSettings.Settings.ColorThirdMulti.Color);
+                            SetUserData(elIndicatorUser, titleList.HltbUserData.Vs, PluginDatabase.PluginSettings.ColorThirdMulti.Color);
                         }
                     }
                 }
@@ -561,9 +605,16 @@ namespace HowLongToBeat.Controls
 
                 ControlDataContext.MaxValue = maxValue;
                 ControlDataContext.PlaytimeValue = playtime;
+
+#if DEBUG
+                timer.Stop(string.Format("HasData={0}, MaxValue={1}, Playtime={2}", gameHowLongToBeat?.HasData ?? false, maxValue, playtime));
+#endif
             }
             catch (Exception ex)
             {
+#if DEBUG
+                timer.Stop("exception");
+#endif
                 Common.LogError(ex, false, true, PluginDatabase.PluginName);
             }
         }

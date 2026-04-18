@@ -113,7 +113,7 @@ Si aucun n'a ce statut, il prend le plus récent.</sys:String>
     <!-- MainView -->
 
     <sys:String x:Key="LOCHowLongToBeat">HowLongToBeat</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatTitle">HowLongToBeat</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatTitle">How long to beat</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatPluginView">Voir les données HowLongToBeat</sys:String>
     <sys:String x:Key="LOCHowLongToBeatPluginUserView">Voir les données utilisateur HowLongToBeat</sys:String>

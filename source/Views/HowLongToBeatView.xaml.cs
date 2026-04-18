@@ -1,5 +1,4 @@
-﻿using CommonPlayniteShared.Converters;
-using CommonPluginsShared;
+﻿using CommonPluginsShared;
 using CommonPluginsShared.Converters;
 using CommonPluginsShared.Extensions;
 using CommonPluginsShared.Models;
@@ -340,7 +339,7 @@ namespace HowLongToBeat.Views
 
                 ((HowLongToBeatViewData)DataContext).CoverImage = gameData.UrlImg;
 
-                if (!PluginDatabase.PluginSettings.Settings.ShowHltbImg)
+                if (!PluginDatabase.PluginSettings.ShowHltbImg)
                 {
                     if (!gameHowLongToBeat.CoverImage.IsNullOrEmpty())
                     {
@@ -456,21 +455,21 @@ namespace HowLongToBeat.Views
                         {
                             ElIndicator += 1;
                             SetDataInView(ElIndicator, ResourceProvider.GetString("LOCHowLongToBeatMainStory"), gameData.GameHltbData.MainStoryFormat, (titleList != null) ? titleList.HltbUserData.MainStoryFormat : string.Empty, idx);
-                            SetColor(ElIndicator, PluginDatabase.PluginSettings.Settings.ColorFirst.Color);
+                            SetColor(ElIndicator, PluginDatabase.PluginSettings.ColorFirst.Color);
 
                             ElIndicator += 1;
                             SetDataInView(ElIndicator, ResourceProvider.GetString("LOCHowLongToBeatMainExtra"), gameData.GameHltbData.MainExtraFormat, (titleList != null) ? titleList.HltbUserData.MainExtraFormat : string.Empty, idx);
-                            SetColor(ElIndicator, PluginDatabase.PluginSettings.Settings.ColorSecond.Color);
+                            SetColor(ElIndicator, PluginDatabase.PluginSettings.ColorSecond.Color);
 
                             ElIndicator += 1;
                             SetDataInView(ElIndicator, ResourceProvider.GetString("LOCHowLongToBeatCompletionist"), gameData.GameHltbData.CompletionistFormat, (titleList != null) ? titleList.HltbUserData.CompletionistFormat : string.Empty, idx);
-                            SetColor(ElIndicator, PluginDatabase.PluginSettings.Settings.ColorThird.Color);
+                            SetColor(ElIndicator, PluginDatabase.PluginSettings.ColorThird.Color);
                         }
                         else
                         {
                             ElIndicator += 1;
                             SetDataInView(ElIndicator, ResourceProvider.GetString("LOCHowLongToBeatSolo"), gameData.GameHltbData.SoloFormat, (titleList != null) ? titleList.HltbUserData.SoloFormat : string.Empty, idx);
-                            SetColor(ElIndicator, PluginDatabase.PluginSettings.Settings.ColorFirstMulti.Color);
+                            SetColor(ElIndicator, PluginDatabase.PluginSettings.ColorFirstMulti.Color);
 
                             ElIndicator += 1;
                             SetDataInView(ElIndicator, ResourceProvider.GetString("LOCHowLongToBeatCoOp"), gameData.GameHltbData.CoOpFormat, (titleList != null) ? titleList.HltbUserData.CoOpFormat : string.Empty, idx);
@@ -489,21 +488,21 @@ namespace HowLongToBeat.Views
                     {
                         ElIndicator += 1;
                         SetDataInView(ElIndicator, ResourceProvider.GetString("LOCHowLongToBeatMainStory"), gameData.GameHltbData.MainStoryFormat, (titleList != null) ? titleList.HltbUserData.MainStoryFormat : string.Empty, 0);
-                        SetColor(ElIndicator, PluginDatabase.PluginSettings.Settings.ColorFirst.Color);
+                        SetColor(ElIndicator, PluginDatabase.PluginSettings.ColorFirst.Color);
 
                         ElIndicator += 1;
                         SetDataInView(ElIndicator, ResourceProvider.GetString("LOCHowLongToBeatMainExtra"), gameData.GameHltbData.MainExtraFormat, (titleList != null) ? titleList.HltbUserData.MainExtraFormat : string.Empty, 0);
-                        SetColor(ElIndicator, PluginDatabase.PluginSettings.Settings.ColorSecond.Color);
+                        SetColor(ElIndicator, PluginDatabase.PluginSettings.ColorSecond.Color);
 
                         ElIndicator += 1;
                         SetDataInView(ElIndicator, ResourceProvider.GetString("LOCHowLongToBeatCompletionist"), gameData.GameHltbData.CompletionistFormat, (titleList != null) ? titleList.HltbUserData.CompletionistFormat : string.Empty, 0);
-                        SetColor(ElIndicator, PluginDatabase.PluginSettings.Settings.ColorThird.Color);
+                        SetColor(ElIndicator, PluginDatabase.PluginSettings.ColorThird.Color);
                     }
                     else
                     {
                         ElIndicator += 1;
                         SetDataInView(ElIndicator, ResourceProvider.GetString("LOCHowLongToBeatSolo"), gameData.GameHltbData.SoloFormat, (titleList != null) ? titleList.HltbUserData.SoloFormat : string.Empty, 0);
-                        SetColor(ElIndicator, PluginDatabase.PluginSettings.Settings.ColorFirstMulti.Color);
+                        SetColor(ElIndicator, PluginDatabase.PluginSettings.ColorFirstMulti.Color);
 
                         ElIndicator += 1;
                         SetDataInView(ElIndicator, ResourceProvider.GetString("LOCHowLongToBeatCoOp"), gameData.GameHltbData.CoOpFormat, (titleList != null) ? titleList.HltbUserData.CoOpFormat : string.Empty, 0);
@@ -517,29 +516,60 @@ namespace HowLongToBeat.Views
                 PlayTimeToStringConverterWithZero playTimeToStringConverterWithZero = new PlayTimeToStringConverterWithZero();
                 TbRemainingTime.Text = rt > 0 ? (string)playTimeToStringConverterWithZero.Convert(rt, null, null, CultureInfo.CurrentCulture) : string.Empty;
 
-                // Type data
+                // Type data (HLTB) or VNDB reading speed (reuses DataType: Classic=Slow, Average=Normal, Median=Fast, Rushed=Total)
                 if (!gameHowLongToBeat?.HasDataEmpty ?? false)
                 {
-                    switch (gameHowLongToBeat.GetData().GameHltbData.DataType)
+                    var dataUser = gameHowLongToBeat.GetData();
+                    var hltbData = dataUser?.GameHltbData;
+                    if (hltbData == null)
                     {
-                        case DataType.Classic:
-                            Hltb_DataType.Text = ResourceProvider.GetString("LOCHltbSelectDataTypeClassic");
-                            break;
-                        case DataType.Average:
-                            Hltb_DataType.Text = ResourceProvider.GetString("LOCHltbSelectDataTypeAverage");
-                            break;
-                        case DataType.Median:
-                            Hltb_DataType.Text = ResourceProvider.GetString("LOCHltbSelectDataTypeMedian");
-                            break;
-                        case DataType.Rushed:
-                            Hltb_DataType.Text = ResourceProvider.GetString("LOCHltbSelectDataTypeRushed");
-                            break;
-                        case DataType.Leisure:
-                            Hltb_DataType.Text = ResourceProvider.GetString("LOCHltbSelectDataTypeLeisure");
-                            break;
-                        default:
-                            Hltb_DataType.Text = ResourceProvider.GetString("LOCHltbSelectDataTypeLeisure");
-                            break;
+                        Hltb_DataType.Text = string.Empty;
+                    }
+                    else if (dataUser.IsVndb)
+                    {
+                        var vndbSpeed = dataUser.VndbSpeedDataType ?? DataType.Average;
+                        switch (vndbSpeed)
+                        {
+                            case DataType.Classic:
+                                Hltb_DataType.Text = ResourceProvider.GetString("LOCHltbVndbSpeedSlow");
+                                break;
+                            case DataType.Average:
+                                Hltb_DataType.Text = ResourceProvider.GetString("LOCHltbVndbSpeedNormal");
+                                break;
+                            case DataType.Median:
+                                Hltb_DataType.Text = ResourceProvider.GetString("LOCHltbVndbSpeedFast");
+                                break;
+                            case DataType.Rushed:
+                                Hltb_DataType.Text = ResourceProvider.GetString("LOCHltbVndbSpeedTotal");
+                                break;
+                            default:
+                                Hltb_DataType.Text = ResourceProvider.GetString("LOCHltbVndbSpeedNormal");
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        switch (hltbData.DataType)
+                        {
+                            case DataType.Classic:
+                                Hltb_DataType.Text = ResourceProvider.GetString("LOCHltbSelectDataTypeClassic");
+                                break;
+                            case DataType.Average:
+                                Hltb_DataType.Text = ResourceProvider.GetString("LOCHltbSelectDataTypeAverage");
+                                break;
+                            case DataType.Median:
+                                Hltb_DataType.Text = ResourceProvider.GetString("LOCHltbSelectDataTypeMedian");
+                                break;
+                            case DataType.Rushed:
+                                Hltb_DataType.Text = ResourceProvider.GetString("LOCHltbSelectDataTypeRushed");
+                                break;
+                            case DataType.Leisure:
+                                Hltb_DataType.Text = ResourceProvider.GetString("LOCHltbSelectDataTypeLeisure");
+                                break;
+                            default:
+                                Hltb_DataType.Text = ResourceProvider.GetString("LOCHltbSelectDataTypeLeisure");
+                                break;
+                        }
                     }
                 }
             }

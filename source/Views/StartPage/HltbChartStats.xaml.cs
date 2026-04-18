@@ -36,7 +36,7 @@ namespace HowLongToBeat.Views.StartPage
 
         public HltbChartStats()
         {
-            PluginDatabase.PluginSettings.Settings.PropertyChanged += Settings_PropertyChanged;
+            PluginDatabase.PluginSettings.PropertyChanged += Settings_PropertyChanged;
             PluginDatabase.PluginSettings.PropertyChanged += SettingsViewModel_PropertyChanged;
 
             InitializeComponent();
@@ -81,21 +81,21 @@ namespace HowLongToBeat.Views.StartPage
                 return;
             }
 
-            ControlDataContext.Margin = PluginDatabase.PluginSettings.Settings.HltbChartStatsOptions.Margin;
-            ControlDataContext.ChartTitle = PluginDatabase.PluginSettings.Settings.HltbChartStatsOptions.ChartTitle;
-            ControlDataContext.ChartLabels = PluginDatabase.PluginSettings.Settings.HltbChartStatsOptions.ChartLabels;
-            ControlDataContext.ChartLabelsOrdinates = PluginDatabase.PluginSettings.Settings.HltbChartStatsOptions.ChartLabelsOrdinates;
+            ControlDataContext.Margin = PluginDatabase.PluginSettings.HltbChartStatsOptions.Margin;
+            ControlDataContext.ChartTitle = PluginDatabase.PluginSettings.HltbChartStatsOptions.ChartTitle;
+            ControlDataContext.ChartLabels = PluginDatabase.PluginSettings.HltbChartStatsOptions.ChartLabels;
+            ControlDataContext.ChartLabelsOrdinates = PluginDatabase.PluginSettings.HltbChartStatsOptions.ChartLabelsOrdinates;
 
             _ = Application.Current.Dispatcher?.BeginInvoke(DispatcherPriority.Render, (Action)delegate
             {
-                switch (PluginDatabase.PluginSettings.Settings.HltbChartStatsOptions.StatsType)
+                switch (PluginDatabase.PluginSettings.HltbChartStatsOptions.StatsType)
                 {
                     case ChartStatsType.year:
-                        SetChartDataYear(Math.Max(1, Convert.ToInt32(PluginDatabase.PluginSettings.Settings.HltbChartStatsOptions.DataNumber)));
+                        SetChartDataYear(Math.Max(1, Convert.ToInt32(PluginDatabase.PluginSettings.HltbChartStatsOptions.DataNumber)));
                         break;
 
                     case ChartStatsType.month:
-                        SetChartDataMonth(Math.Max(0, Convert.ToInt32(PluginDatabase.PluginSettings.Settings.HltbChartStatsOptions.DataNumber)));
+                        SetChartDataMonth(Math.Max(0, Convert.ToInt32(PluginDatabase.PluginSettings.HltbChartStatsOptions.DataNumber)));
                         break;
 
                     default:
@@ -107,7 +107,7 @@ namespace HowLongToBeat.Views.StartPage
 
         private void SetChartDataMonth(int axis = 15)
         {
-            if (PluginDatabase.Database?.UserHltbData?.TitlesList != null)
+            if (PluginDatabase?.UserHltbData?.TitlesList != null)
             {
                 LocalDateYMConverter localDateYMConverter = new LocalDateYMConverter();
 
@@ -129,9 +129,9 @@ namespace HowLongToBeat.Views.StartPage
 
 
                 // Set data
-                if (PluginDatabase.Database.UserHltbData?.TitlesList != null)
+                if (PluginDatabase.UserHltbData?.TitlesList != null)
                 {
-                    foreach (TitleList titleList in PluginDatabase.Database.UserHltbData.TitlesList)
+                    foreach (TitleList titleList in PluginDatabase.UserHltbData.TitlesList)
                     {
                         if (titleList?.Completion != null)
                         {
@@ -162,7 +162,7 @@ namespace HowLongToBeat.Views.StartPage
 
         private void SetChartDataYear(int axis = 4)
         {
-            if (PluginDatabase.Database.UserHltbData?.TitlesList != null)
+            if (PluginDatabase.UserHltbData?.TitlesList != null)
             {
                 // Default data
                 string[] ChartDataLabels = new string[axis];
@@ -180,7 +180,7 @@ namespace HowLongToBeat.Views.StartPage
 
 
                 // Set data
-                foreach (TitleList titleList in PluginDatabase.Database.UserHltbData.TitlesList)
+                foreach (TitleList titleList in PluginDatabase.UserHltbData.TitlesList)
                 {
                     if (titleList?.Completion != null)
                     {

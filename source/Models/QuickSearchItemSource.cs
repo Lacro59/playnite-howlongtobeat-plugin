@@ -5,7 +5,6 @@ using HowLongToBeat.Services;
 using Playnite.SDK;
 using QuickSearch.SearchItems;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -125,9 +124,12 @@ namespace HowLongToBeat.Models
             }
         }
 
-        private List<KeyValuePair<Guid, GameHowLongToBeat>> GetDb(ConcurrentDictionary<Guid, GameHowLongToBeat> db)
+        private List<KeyValuePair<Guid, GameHowLongToBeat>> GetDb()
         {
-            return db.Where(x => API.Instance.Database.Games.Get(x.Key) != null && !x.Value.HasDataEmpty).ToList();
+            return PluginDatabase.GetAllCache()
+                .Where(x => x != null && API.Instance.Database.Games.Get(x.Id) != null && !x.HasDataEmpty)
+                .Select(x => new KeyValuePair<Guid, GameHowLongToBeat>(x.Id, x))
+                .ToList();
         }
 
 
@@ -137,7 +139,7 @@ namespace HowLongToBeat.Models
             query = query.Replace("-np", string.Empty).Trim();
 
             List<string> parameters = GetParameters(query);
-            List<KeyValuePair<Guid, GameHowLongToBeat>> db = GetDb(PluginDatabase.Database.Items).Where(x => x.Value.Items[0].GameHltbData.TimeToBeat != 0).ToList();
+            List<KeyValuePair<Guid, GameHowLongToBeat>> db = GetDb().Where(x => x.Value.Items[0].GameHltbData.TimeToBeat != 0).ToList();
 
             if (OnlyNp)
             {

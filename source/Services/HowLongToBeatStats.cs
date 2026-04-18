@@ -19,7 +19,7 @@ namespace HowLongToBeat.Services
             double result = 0;
 
             Dictionary<string, int> DataByMonth = new Dictionary<string, int>();
-            foreach (TitleList titleList in PluginDatabase.Database.UserHltbData.TitlesList)
+            foreach (TitleList titleList in PluginDatabase.UserHltbData.TitlesList)
             {
                 string Month = titleList.Completion?.ToString("yyyy-MM");
                 if (!Month.IsNullOrEmpty())
@@ -52,7 +52,7 @@ namespace HowLongToBeat.Services
             long result = 0;
             double count = 0;
 
-            foreach (TitleList titleList in PluginDatabase.Database.UserHltbData.TitlesList)
+            foreach (TitleList titleList in PluginDatabase.UserHltbData.TitlesList)
             {
                 if (titleList.Completion != null && titleList.HltbUserData.TimeToBeat != 0)
                 {
@@ -71,26 +71,26 @@ namespace HowLongToBeat.Services
 
         public static int GetCountGameBeatenBeforeTime()
         {
-            return PluginDatabase.Database.UserHltbData.TitlesList
+            return PluginDatabase.UserHltbData.TitlesList
                 .Where(x => x.HltbUserData.TimeToBeat != 0 && x.Completion != null
                             && PluginDatabase.Get(x.GameId, true)?.GetData()?.GameHltbData?.TimeToBeat > x.HltbUserData?.TimeToBeat).Count();
         }
 
         public static int GetCountGameBeatenAfterTime()
         {
-            return PluginDatabase.Database.UserHltbData.TitlesList
+            return PluginDatabase.UserHltbData.TitlesList
                 .Where(x => x.HltbUserData.TimeToBeat != 0 && x.Completion != null
                         && PluginDatabase.Get(x.GameId, true)?.GetData()?.GameHltbData?.TimeToBeat <= x.HltbUserData?.TimeToBeat).Count();
         }
 
         public static int GetCountGameBeatenReplays()
         {
-            return PluginDatabase.Database.UserHltbData.TitlesList.Where(x => x.IsReplay).Count();
+            return PluginDatabase.UserHltbData.TitlesList.Where(x => x.IsReplay).Count();
         }
 
         public static int GetCountGameRetired()
         {
-            return PluginDatabase.Database.UserHltbData.TitlesList.Where(x => x.IsRetired).Count();
+            return PluginDatabase.UserHltbData.TitlesList.Where(x => x.IsRetired).Count();
         }
     }
 }

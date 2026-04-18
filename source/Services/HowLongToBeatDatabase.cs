@@ -22,21 +22,24 @@ using System.Windows;
 
 namespace HowLongToBeat.Services
 {
-    public class HowLongToBeatDatabase : PluginDatabaseObject<HowLongToBeatSettingsViewModel, GameHowLongToBeatCollection, GameHowLongToBeat, HltbDataUser>
+    public class HowLongToBeatDatabase : PluginDatabaseObject<HowLongToBeatSettings, GameHowLongToBeat, HltbDataUser>
     {
         public HowLongToBeat Plugin { get; set; }
         public HowLongToBeatApi HowLongToBeatApi { get; set; }
+        public HltbUserStats UserHltbData { get; set; } = new HltbUserStats();
 
         private static bool DontSetToHtlb { get; set; } = false;
 
 
-        public HowLongToBeatDatabase(HowLongToBeatSettingsViewModel pluginSettings, string pluginUserDataPath) : base(pluginSettings, "HowLongToBeat", pluginUserDataPath)
+        public HowLongToBeatDatabase(HowLongToBeatSettings pluginSettings, string pluginUserDataPath) : base(pluginSettings, "HowLongToBeat", pluginUserDataPath)
         {
             TagBefore = "[HLTB]";
+            PluginWindows = new HowLongToBeatWindows(PluginName, this);
+            PluginExportCsv = new HowLongToBeatExport();
         }
 
         // Change visibility to allow other classes to use the centralized verbose check
-        public bool IsVerboseLoggingEnabled => PluginSettings?.Settings is HowLongToBeatSettings settings && settings.EnableVerboseLogging;
+        public bool IsVerboseLoggingEnabled => PluginSettings is HowLongToBeatSettings settings && settings.EnableVerboseLogging;
 
         private void FireAndForget(Task task, string context)
         {
@@ -105,13 +108,8 @@ namespace HowLongToBeat.Services
                                     {
                                         try
                                         {
-                                            if (Database == null)
-                                            {
-                                                return;
-                                            }
-
-                                            Database.UserHltbData = data;
-                                            Database.OnCollectionChanged(null, null);
+                                            UserHltbData = data;
+                                            _database?.OnCollectionChanged(null, null);
                                         }
                                         catch (Exception innerEx)
                                         {
@@ -148,11 +146,11 @@ namespace HowLongToBeat.Services
                     {
                         Logger.Debug("HowLongToBeatApi not initialized yet during LoadMoreData(); using empty UserHltbData placeholder");
                     }
-                    Database.UserHltbData = new HltbUserStats();
+                    UserHltbData = new HltbUserStats();
                     return;
                 }
 
-                Database.UserHltbData = new HltbUserStats();
+                UserHltbData = new HltbUserStats();
                 FireAndForget(Task.Run(() =>
                 {
                     try
@@ -170,13 +168,8 @@ namespace HowLongToBeat.Services
                                     {
                                         try
                                         {
-                                            if (Database == null)
-                                            {
-                                                return;
-                                            }
-
-                                            Database.UserHltbData = data;
-                                            Database.OnCollectionChanged(null, null);
+                                            UserHltbData = data;
+                                            _database?.OnCollectionChanged(null, null);
                                         }
                                         catch (Exception innerEx)
                                         {
@@ -200,7 +193,7 @@ namespace HowLongToBeat.Services
             catch (Exception ex)
             {
                 Common.LogError(ex, false, true, PluginName);
-                Database.UserHltbData = new HltbUserStats();
+                UserHltbData = new HltbUserStats();
             }
         }
 
@@ -256,7 +249,7 @@ namespace HowLongToBeat.Services
                     return string.Empty;
                 }
 
-                var match = PluginSettings?.Settings?.Platforms?.FirstOrDefault(p => p?.Platform != null && p.Platform.Equals(platform))?.HltbPlatform;
+                var match = PluginSettings?.Platforms?.FirstOrDefault(p => p?.Platform != null && p.Platform.Equals(platform))?.HltbPlatform;
                 if (match != null)
                 {
                     return match.GetDescription();
@@ -307,7 +300,7 @@ namespace HowLongToBeat.Services
                         return true;
                     }
 
-                    if (PluginSettings?.Settings?.UseMatchValue == true)
+                    if (PluginSettings?.UseMatchValue == true)
                     {
                         var results = TaskHelpers.RunSyncWithTimeout(() => HowLongToBeatApi.SearchTwoMethod(game.Name, platformFilter), 15000);
                         if (results != null && results.Count == 1 && results[0]?.Data != null)
@@ -347,7 +340,7 @@ namespace HowLongToBeat.Services
                     }
 
                     List<HltbSearch> data = TaskHelpers.RunSyncWithTimeout(() => HowLongToBeatApi.SearchTwoMethod(game.Name, platformFilter), 15000) ?? new List<HltbSearch>();
-                    if (data.Count == 1 && PluginSettings.Settings.AutoAccept)
+                    if (data.Count == 1 && PluginSettings.AutoAccept)
                     {
                         gameHowLongToBeat.Items = new List<HltbDataUser>() { data.First().Data };
                         gameHowLongToBeat.DateLastRefresh = DateTime.Now;
@@ -355,9 +348,9 @@ namespace HowLongToBeat.Services
                         return true;
                     }
 
-                    if (data.Count > 0 && PluginSettings.Settings.UseMatchValue)
+                    if (data.Count > 0 && PluginSettings.UseMatchValue)
                     {
-                        if (data.First().MatchPercent >= PluginSettings.Settings.MatchValue)
+                        if (data.First().MatchPercent >= PluginSettings.MatchValue)
                         {
                             gameHowLongToBeat.Items = new List<HltbDataUser>() { data.First().Data };
                             gameHowLongToBeat.DateLastRefresh = DateTime.Now;
@@ -366,7 +359,7 @@ namespace HowLongToBeat.Services
                         }
                     }
 
-                    if (data.Count > 0 && PluginSettings.Settings.ShowWhenMismatch)
+                    if (data.Count > 0 && PluginSettings.ShowWhenMismatch)
                     {
                         var picked = HowLongToBeatApi.SearchData(game, data.Select(x => x.Data).ToList());
                         if (picked != null)
@@ -439,6 +432,8 @@ namespace HowLongToBeat.Services
                     HltbDataUser webDataSearch = dataSearch.Find(x => x.Id == loadedItem.GetData().Id);
                     if (webDataSearch != null)
                     {
+                        var previousVndb = loadedItem.GetData();
+                        webDataSearch.ApplyVndbSpeedSelection(HltbDataUser.InferVndbSpeedAfterRefresh(previousVndb, webDataSearch));
                         loadedItem.Items = new List<HltbDataUser> { webDataSearch };
                         loadedItem.DateLastRefresh = DateTime.Now;
                         Update(loadedItem);
@@ -471,130 +466,167 @@ namespace HowLongToBeat.Services
             ActionAfterRefresh(loadedItem);
         }
 
+        public Guid ResolveGameIdFromUserTitle(string hltbId, string userGameId = "")
+        {
+            try
+            {
+                if (hltbId.IsNullOrEmpty())
+                {
+                    return default;
+                }
+
+                return GetAllCache()
+                    .Where(x => x?.Game != null
+                        && !x.Game.Hidden
+                        && x.GetData()?.Id == hltbId
+                        && (x.UserGameId.IsNullOrEmpty() || x.UserGameId.IsEqual(userGameId)))
+                    .Select(x => x.Id)
+                    .FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, false, true, PluginName);
+                return default;
+            }
+        }
+
+        public List<Guid> ResolveGameIdsFromUserTitle(string hltbId, string userGameId = "")
+        {
+            try
+            {
+                if (hltbId.IsNullOrEmpty())
+                {
+                    return new List<Guid>();
+                }
+
+                return GetAllCache()
+                    .Where(x => x != null
+                        && x.GetData()?.Id == hltbId
+                        && (x.UserGameId.IsNullOrEmpty() || x.UserGameId.IsEqual(userGameId)))
+                    .Select(x => x.Id)
+                    .ToList();
+            }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, false, true, PluginName);
+                return new List<Guid>();
+            }
+        }
+
 
         #region Tag
 
-        public override void AddTag(Game game)
+        protected override bool AppendPluginTag(Game game)
         {
             GameHowLongToBeat item = Get(game, true);
+
             if (item.HasData)
             {
                 try
                 {
                     HltbDataUser hltbDataUser = item.GetData();
-                    Guid? tagId = FindGoodPluginTags(hltbDataUser);
+                    Guid? tagId = ResolvePlaytimeTag(hltbDataUser);
                     if (tagId != null)
                     {
-                        if (game.TagIds != null)
-                        {
-                            game.TagIds.Add((Guid)tagId);
-                        }
-                        else
-                        {
-                            game.TagIds = new List<Guid> { (Guid)tagId };
-                        }
+                        AppendTagId(game, tagId.Value);
+                        return true;
                     }
                 }
                 catch (Exception ex)
                 {
-                    Common.LogError(ex, false, $"Tag insert error with {game.Name}", true, PluginName, string.Format(ResourceProvider.GetString("LOCCommonNotificationTagError"), game.Name));
-                    return;
+                    Common.LogError(ex, false, $"Tag insert error {game.Name}", true, PluginName,
+                        string.Format(ResourceProvider.GetString("LOCCommonNotificationTagError"), game.Name));
                 }
+                return false;
             }
-            else if (TagMissing)
+
+            if (TagMissing)
             {
-                if (game.TagIds != null)
+                Guid? noDataTagId = AddNoDataTag();
+                if (noDataTagId != null)
                 {
-                    game.TagIds.Add((Guid)AddNoDataTag());
-                }
-                else
-                {
-                    game.TagIds = new List<Guid> { (Guid)AddNoDataTag() };
+                    AppendTagId(game, noDataTagId.Value);
+                    return true;
                 }
             }
 
-            API.Instance.MainView.UIDispatcher?.Invoke(() =>
-            {
-                API.Instance.Database.Games.Update(game);
-                game.OnPropertyChanged();
-            });
+            return false;
         }
 
-        private Guid? FindGoodPluginTags(HltbDataUser hltbDataUser)
+        private Guid? ResolvePlaytimeTag(HltbDataUser hltbDataUser)
         {
-            long hltbTime = hltbDataUser.GameHltbData.TimeToBeat;
-
-            // Add tag
-            if (hltbTime != 0)
+            long hltbTime = hltbDataUser?.GameHltbData?.TimeToBeat ?? 0;
+            if (hltbTime <= 0)
             {
-                if (hltbTime < 3600)
-                {
-                    return CheckTagExist($"{ResourceProvider.GetString("LOCCommon0to1")}");
-                }
-                if (hltbTime < 18000)
-                {
-                    return CheckTagExist($"{ResourceProvider.GetString("LOCCommon1to5")}");
-                }
-                if (hltbTime < 36000)
-                {
-                    return CheckTagExist($"{ResourceProvider.GetString("LOCCommon5to10")}");
-                }
-                if (hltbTime < 72000)
-                {
-                    return CheckTagExist($"{ResourceProvider.GetString("LOCCommon10to20")}");
-                }
-                if (hltbTime < 108000)
-                {
-                    return CheckTagExist($"{ResourceProvider.GetString("LOCCommon20to30")}");
-                }
-                if (hltbTime < 144000)
-                {
-                    return CheckTagExist($"{ResourceProvider.GetString("LOCCommon30to40")}");
-                }
-                if (hltbTime < 180000)
-                {
-                    return CheckTagExist($"{ResourceProvider.GetString("LOCCommon40to50")}");
-                }
-                if (hltbTime < 216000)
-                {
-                    return CheckTagExist($"{ResourceProvider.GetString("LOCCommon50to60")}");
-                }
-                if (hltbTime < 252000)
-                {
-                    return CheckTagExist($"{ResourceProvider.GetString("LOCCommon60to70")}");
-                }
-                if (hltbTime < 288000)
-                {
-                    return CheckTagExist($"{ResourceProvider.GetString("LOCCommon70to80")}");
-                }
-                if (hltbTime < 324000)
-                {
-                    return CheckTagExist($"{ResourceProvider.GetString("LOCCommon80to90")}");
-                }
-                if (hltbTime < 360000)
-                {
-                    return CheckTagExist($"{ResourceProvider.GetString("LOCCommon90to100")}");
-                }
-                if (hltbTime >= 360000)
-                {
-                    return CheckTagExist($"{ResourceProvider.GetString("LOCCommon100plus")}");
-                }
+                return null;
             }
 
-            return null;
+            if (hltbTime < 3600)
+            {
+                return CheckTagExist(ResourceProvider.GetString("LOCCommon0to1"));
+            }
+            if (hltbTime < 18000)
+            {
+                return CheckTagExist(ResourceProvider.GetString("LOCCommon1to5"));
+            }
+            if (hltbTime < 36000)
+            {
+                return CheckTagExist(ResourceProvider.GetString("LOCCommon5to10"));
+            }
+            if (hltbTime < 72000)
+            {
+                return CheckTagExist(ResourceProvider.GetString("LOCCommon10to20"));
+            }
+            if (hltbTime < 108000)
+            {
+                return CheckTagExist(ResourceProvider.GetString("LOCCommon20to30"));
+            }
+            if (hltbTime < 144000)
+            {
+                return CheckTagExist(ResourceProvider.GetString("LOCCommon30to40"));
+            }
+            if (hltbTime < 180000)
+            {
+                return CheckTagExist(ResourceProvider.GetString("LOCCommon40to50"));
+            }
+            if (hltbTime < 216000)
+            {
+                return CheckTagExist(ResourceProvider.GetString("LOCCommon50to60"));
+            }
+            if (hltbTime < 252000)
+            {
+                return CheckTagExist(ResourceProvider.GetString("LOCCommon60to70"));
+            }
+            if (hltbTime < 288000)
+            {
+                return CheckTagExist(ResourceProvider.GetString("LOCCommon70to80"));
+            }
+            if (hltbTime < 324000)
+            {
+                return CheckTagExist(ResourceProvider.GetString("LOCCommon80to90"));
+            }
+            if (hltbTime < 360000)
+            {
+                return CheckTagExist(ResourceProvider.GetString("LOCCommon90to100"));
+            }
+
+            return CheckTagExist(ResourceProvider.GetString("LOCCommon100plus"));
         }
 
         #endregion
 
         #region User data
-
         public TitleList GetUserHltbData(string hltbId)
         {
             try
             {
-                return Database.UserHltbData.TitlesList == null || Database.UserHltbData.TitlesList.Count == 0
+                if (UserHltbData?.TitlesList == null || UserHltbData.TitlesList.Count == 0)
+                {
+                    return null;
+                }
+                return UserHltbData.TitlesList == null || UserHltbData.TitlesList.Count == 0
                     ? null
-                    : Database.UserHltbData.TitlesList.Find(x => x.Id == hltbId);
+                    : UserHltbData.TitlesList.Find(x => x.Id == hltbId);
             }
             catch (Exception ex)
             {
@@ -626,9 +658,13 @@ namespace HowLongToBeat.Services
         {
             try
             {
-                return Database.UserHltbData?.TitlesList == null || Database.UserHltbData.TitlesList.Count == 0
+                if (UserHltbData?.TitlesList == null || UserHltbData.TitlesList.Count == 0)
+                {
+                    return null;
+                }
+                return UserHltbData?.TitlesList == null || UserHltbData.TitlesList.Count == 0
                     ? null
-                    : Database.UserHltbData.TitlesList.FindAll(x => x.Id == hltbId).ToList();
+                    : UserHltbData.TitlesList.FindAll(x => x.Id == hltbId).ToList();
             }
             catch (Exception ex)
             {
@@ -644,7 +680,12 @@ namespace HowLongToBeat.Services
             {
                 DontSetToHtlb = true;
                 //API.Instance.Database.Games.BeginBufferUpdate();
-                Database.UserHltbData.TitlesList.ForEach(x =>
+                if (UserHltbData?.TitlesList == null)
+                {
+                    return;
+                }
+
+                UserHltbData.TitlesList.ForEach(x =>
                 {
                     if (x.GameExist)
                     {
@@ -654,17 +695,17 @@ namespace HowLongToBeat.Services
 
                         Game game = API.Instance.Database.Games.Get(x.GameId);
 
-                        if (isCompletionist && PluginSettings.Settings.GameStatusCompletionist != default && API.Instance.Database.CompletionStatuses.Get(PluginSettings.Settings.GameStatusCompletionist) != null)
+                        if (isCompletionist && PluginSettings.GameStatusCompletionist != default && API.Instance.Database.CompletionStatuses.Get(PluginSettings.GameStatusCompletionist) != null)
                         {
-                            game.CompletionStatusId = PluginSettings.Settings.GameStatusCompletionist;
+                            game.CompletionStatusId = PluginSettings.GameStatusCompletionist;
                         }
-                        else if (isCompleted && PluginSettings.Settings.GameStatusCompleted != default && API.Instance.Database.CompletionStatuses.Get(PluginSettings.Settings.GameStatusCompleted) != null)
+                        else if (isCompleted && PluginSettings.GameStatusCompleted != default && API.Instance.Database.CompletionStatuses.Get(PluginSettings.GameStatusCompleted) != null)
                         {
-                            game.CompletionStatusId = PluginSettings.Settings.GameStatusCompleted;
+                            game.CompletionStatusId = PluginSettings.GameStatusCompleted;
                         }
-                        else if (isPlaying && PluginSettings.Settings.GameStatusPlaying != default && API.Instance.Database.CompletionStatuses.Get(PluginSettings.Settings.GameStatusPlaying) != null)
+                        else if (isPlaying && PluginSettings.GameStatusPlaying != default && API.Instance.Database.CompletionStatuses.Get(PluginSettings.GameStatusPlaying) != null)
                         {
-                            game.CompletionStatusId = PluginSettings.Settings.GameStatusPlaying;
+                            game.CompletionStatusId = PluginSettings.GameStatusPlaying;
                         }
 
                         API.Instance.Database.Games.Update(game);
@@ -691,19 +732,19 @@ namespace HowLongToBeat.Services
 
             try
             {
-                bool isCompletionist = game.CompletionStatusId == PluginSettings.Settings.GameStatusCompletionist;
-                bool isCompleted = game.CompletionStatusId == PluginSettings.Settings.GameStatusCompleted;
-                bool isPlaying = game.CompletionStatusId == PluginSettings.Settings.GameStatusPlaying;
+                bool isCompletionist = game.CompletionStatusId == PluginSettings.GameStatusCompletionist;
+                bool isCompleted = game.CompletionStatusId == PluginSettings.GameStatusCompleted;
+                bool isPlaying = game.CompletionStatusId == PluginSettings.GameStatusPlaying;
 
-                if (isCompletionist && PluginSettings.Settings.GameStatusCompletionist != default && API.Instance.Database.CompletionStatuses.Get(PluginSettings.Settings.GameStatusCompletionist) != null)
+                if (isCompletionist && PluginSettings.GameStatusCompletionist != default && API.Instance.Database.CompletionStatuses.Get(PluginSettings.GameStatusCompletionist) != null)
                 {
                     _ = SetCurrentPlayTime(game, true, false, false, false, true);
                 }
-                else if (isCompleted && PluginSettings.Settings.GameStatusCompleted != default && API.Instance.Database.CompletionStatuses.Get(PluginSettings.Settings.GameStatusCompleted) != null)
+                else if (isCompleted && PluginSettings.GameStatusCompleted != default && API.Instance.Database.CompletionStatuses.Get(PluginSettings.GameStatusCompleted) != null)
                 {
                     _ = SetCurrentPlayTime(game, true, true);
                 }
-                else if (isPlaying && PluginSettings.Settings.GameStatusPlaying != default && API.Instance.Database.CompletionStatuses.Get(PluginSettings.Settings.GameStatusPlaying) != null)
+                else if (isPlaying && PluginSettings.GameStatusPlaying != default && API.Instance.Database.CompletionStatuses.Get(PluginSettings.GameStatusPlaying) != null)
                 {
                     _ = SetCurrentPlayTime(game, false);
                 }
@@ -748,7 +789,7 @@ namespace HowLongToBeat.Services
                             return;
                         }
 
-                        HltbUserStats UserHltbData = null;
+                        HltbUserStats userHltbData = null;
                         try
                         {
                             // Start the async operation and wait for completion or cancellation
@@ -756,7 +797,7 @@ namespace HowLongToBeat.Services
                             var completed = await Task.WhenAny(userTask, Task.Delay(Timeout.Infinite, ct)).ConfigureAwait(false);
                             if (completed == userTask)
                             {
-                                UserHltbData = await userTask.ConfigureAwait(false);
+                                userHltbData = await userTask.ConfigureAwait(false);
                             }
                             else
                             {
@@ -777,23 +818,23 @@ namespace HowLongToBeat.Services
                             throw;
                         }
 
-                        if (UserHltbData != null)
+                        if (userHltbData != null)
                         {
                             if (IsVerboseLoggingEnabled)
                             {
-                                Logger.Debug($"Find {UserHltbData.TitlesList?.Count ?? 0} games");
+                                Logger.Debug($"Find {userHltbData.TitlesList?.Count ?? 0} games");
                             }
-                            FileSystem.WriteStringToFileSafe(Path.Combine(Paths.PluginUserDataPath, "HltbUserStats.json"), Serialization.ToJson(UserHltbData));
-                            Database.UserHltbData = UserHltbData;
+                            FileSystem.WriteStringToFileSafe(Path.Combine(Paths.PluginUserDataPath, "HltbUserStats.json"), Serialization.ToJson(userHltbData));
+                            UserHltbData = userHltbData;
 
-                            if (PluginSettings.Settings.AutoSetGameStatus)
+                            if (PluginSettings.AutoSetGameStatus)
                             {
                                 SetGameStatusFromHltb();
                             }
 
                             Application.Current.Dispatcher?.BeginInvoke(new Action(() =>
                             {
-                                Database.OnCollectionChanged(null, null);
+                                _database?.OnCollectionChanged(null, null);
                             }));
                         }
                         else
@@ -859,22 +900,27 @@ namespace HowLongToBeat.Services
                     TitleList titleList = HowLongToBeatApi.GetUserData(gameId);
                     if (titleList != null)
                     {
-                        int index = Database.UserHltbData.TitlesList.FindIndex(x => x.Id == gameId);
+                        if (UserHltbData?.TitlesList == null)
+                        {
+                            return;
+                        }
+
+                        int index = UserHltbData.TitlesList.FindIndex(x => x.Id == gameId);
                         if (index > -1)
                         {
-                            Database.UserHltbData.TitlesList[index] = titleList;
+                            UserHltbData.TitlesList[index] = titleList;
                         }
                         else
                         {
-                            Database.UserHltbData.TitlesList.Add(titleList);
+                            UserHltbData.TitlesList.Add(titleList);
                         }
 
                         Application.Current.Dispatcher?.Invoke(() =>
                         {
-                            Database.OnCollectionChanged(null, null);
+                            _database?.OnCollectionChanged(null, null);
                         });
 
-                        FileSystem.WriteStringToFileSafe(Path.Combine(Paths.PluginUserDataPath, "HltbUserStats.json"), Serialization.ToJson(Database.UserHltbData));
+                        FileSystem.WriteStringToFileSafe(Path.Combine(Paths.PluginUserDataPath, "HltbUserStats.json"), Serialization.ToJson(UserHltbData));
                     }
                 }
                 catch (Exception ex)
@@ -1047,7 +1093,14 @@ namespace HowLongToBeat.Services
 
                 if (HowLongToBeatApi.GetIsUserLoggedIn())
                 {
-                    GameHowLongToBeat gameHowLongToBeat = Database.Get(game.Id);
+                    var db = _database;
+                    if (db == null)
+                    {
+                        Common.LogDebug(true, "Database is not loaded, cannot set current playtime.");
+                        return false;
+                    }
+
+                    GameHowLongToBeat gameHowLongToBeat = db.Get(game.Id);
                     if (gameHowLongToBeat != null && (!gameHowLongToBeat.GetData()?.IsVndb ?? false))
                     {
                         TimeSpan time = TimeSpan.FromSeconds(game.Playtime);
@@ -1085,7 +1138,7 @@ namespace HowLongToBeat.Services
                             return false;
                         }
 
-                        HltbPlatform? match = PluginSettings.Settings.Platforms.FirstOrDefault(p => p.Platform.Equals(platform))?.HltbPlatform;
+                        HltbPlatform? match = PluginSettings.Platforms.FirstOrDefault(p => p.Platform.Equals(platform))?.HltbPlatform;
                         if (match != null)
                         {
                             platformName = match.GetDescription();
@@ -1105,7 +1158,7 @@ namespace HowLongToBeat.Services
 
                         #region Search storefront
 
-                        Storefront storefront = PluginSettings.Settings.StorefrontElements.FirstOrDefault(x => x.SourceId != default && x.SourceId == game.SourceId);
+                        Storefront storefront = PluginSettings.StorefrontElements.FirstOrDefault(x => x.SourceId != default && x.SourceId == game.SourceId);
                         if (storefront != null)
                         {
                             storefrontName = storefront.HltbStorefrontName;
@@ -1159,20 +1212,20 @@ namespace HowLongToBeat.Services
 
                         #region Data
 
-                        if (Database.UserHltbData == null)
+                        if (UserHltbData == null)
                         {
                             Common.LogDebug(true, $"User HLTB data is null, cannot submit data for {game.Name}");
                             return false;
                         }
 
-                        editData.UserId = Database.UserHltbData.UserId;
+                        editData.UserId = UserHltbData.UserId;
                         editData.SubmissionId = int.Parse(submissionId);
                         editData.GameId = int.Parse(hltbDataUser.Id);
                         editData.Title = editData.Title.IsNullOrEmpty() ? hltbDataUser.Name : editData.Title;
                         editData.Platform = platformName;
                         editData.Storefront = editData.Storefront.IsNullOrEmpty() ? storefrontName : editData.Storefront;
 
-                        if (PluginSettings.Settings.UsedStartDateFromGameActivity)
+                        if (PluginSettings.UsedStartDateFromGameActivity)
                         {
                             string pathGameActivityData = Path.Combine(Paths.PluginUserDataPath, "..", PlayniteTools.GetPluginId(PlayniteTools.ExternalPlugin.GameActivity).ToString(), "GameActivity", game.Id.ToString() + ".json");
                             if (File.Exists(pathGameActivityData))
@@ -1201,10 +1254,6 @@ namespace HowLongToBeat.Services
 
                         editData.Lists.Playing = false;
                         if (!noPlaying)
-                        {
-                            editData.Lists.Playing = true;
-                        }
-                        else if (!editData.Lists.Backlog && !editData.Lists.Completed && !editData.Lists.Custom && !editData.Lists.Playing && !editData.Lists.Replay && !editData.Lists.Retired)
                         {
                             editData.Lists.Playing = true;
                         }
@@ -1251,6 +1300,13 @@ namespace HowLongToBeat.Services
                                     editData.General.CompletionDate.Year = ((DateTime)game.LastActivity).Year.ToString();
                                 }
                             }
+                        }
+
+                        // Apply the default only after all explicit status flags are set.
+                        // This prevents sending both Playing and Completed when auto-syncing a completed game.
+                        if (!editData.Lists.Backlog && !editData.Lists.Completed && !editData.Lists.Custom && !editData.Lists.Playing && !editData.Lists.Replay && !editData.Lists.Retired)
+                        {
+                            editData.Lists.Playing = true;
                         }
 
                         if (isCoOp)
@@ -1304,51 +1360,51 @@ namespace HowLongToBeat.Services
 
             if (gameHowLongToBeat == null || !gameHowLongToBeat.HasData)
             {
-                PluginSettings.Settings.HasData = false;
-                PluginSettings.Settings.HasDataEmpty = true;
-                PluginSettings.Settings.MainStory = 0;
-                PluginSettings.Settings.MainStoryFormat = "--";
-                PluginSettings.Settings.MainExtra = 0;
-                PluginSettings.Settings.MainExtraFormat = "--";
-                PluginSettings.Settings.Completionist = 0;
-                PluginSettings.Settings.CompletionistFormat = "--";
-                PluginSettings.Settings.Solo = 0;
-                PluginSettings.Settings.SoloFormat = "--";
-                PluginSettings.Settings.CoOp = 0;
-                PluginSettings.Settings.CoOpFormat = "--";
-                PluginSettings.Settings.Vs = 0;
-                PluginSettings.Settings.VsFormat = "--";
+                PluginSettings.HasData = false;
+                PluginSettings.HasDataEmpty = true;
+                PluginSettings.MainStory = 0;
+                PluginSettings.MainStoryFormat = "--";
+                PluginSettings.MainExtra = 0;
+                PluginSettings.MainExtraFormat = "--";
+                PluginSettings.Completionist = 0;
+                PluginSettings.CompletionistFormat = "--";
+                PluginSettings.Solo = 0;
+                PluginSettings.SoloFormat = "--";
+                PluginSettings.CoOp = 0;
+                PluginSettings.CoOpFormat = "--";
+                PluginSettings.Vs = 0;
+                PluginSettings.VsFormat = "--";
 
-                PluginSettings.Settings.TimeToBeat = 0;
-                PluginSettings.Settings.TimeToBeatFormat = "--";
+                PluginSettings.TimeToBeat = 0;
+                PluginSettings.TimeToBeatFormat = "--";
 
                 return;
             }
 
-            PluginSettings.Settings.HasData = gameHowLongToBeat.HasData;
-            PluginSettings.Settings.HasDataEmpty = gameHowLongToBeat.HasDataEmpty;
-            PluginSettings.Settings.MainStory = gameHowLongToBeat.GetData().GameHltbData.MainStory;
-            PluginSettings.Settings.MainStoryFormat = gameHowLongToBeat.GetData().GameHltbData.MainStoryFormat;
-            PluginSettings.Settings.MainExtra = gameHowLongToBeat.GetData().GameHltbData.MainExtra;
-            PluginSettings.Settings.MainExtraFormat = gameHowLongToBeat.GetData().GameHltbData.MainExtraFormat;
-            PluginSettings.Settings.Completionist = gameHowLongToBeat.GetData().GameHltbData.Completionist;
-            PluginSettings.Settings.CompletionistFormat = gameHowLongToBeat.GetData().GameHltbData.CompletionistFormat;
-            PluginSettings.Settings.Solo = gameHowLongToBeat.GetData().GameHltbData.Solo;
-            PluginSettings.Settings.SoloFormat = gameHowLongToBeat.GetData().GameHltbData.SoloFormat;
-            PluginSettings.Settings.CoOp = gameHowLongToBeat.GetData().GameHltbData.CoOp;
-            PluginSettings.Settings.CoOpFormat = gameHowLongToBeat.GetData().GameHltbData.CoOpFormat;
-            PluginSettings.Settings.Vs = gameHowLongToBeat.GetData().GameHltbData.Vs;
-            PluginSettings.Settings.VsFormat = gameHowLongToBeat.GetData().GameHltbData.VsFormat;
+            PluginSettings.HasData = gameHowLongToBeat.HasData;
+            PluginSettings.HasDataEmpty = gameHowLongToBeat.HasDataEmpty;
+            PluginSettings.MainStory = gameHowLongToBeat.GetData().GameHltbData.MainStory;
+            PluginSettings.MainStoryFormat = gameHowLongToBeat.GetData().GameHltbData.MainStoryFormat;
+            PluginSettings.MainExtra = gameHowLongToBeat.GetData().GameHltbData.MainExtra;
+            PluginSettings.MainExtraFormat = gameHowLongToBeat.GetData().GameHltbData.MainExtraFormat;
+            PluginSettings.Completionist = gameHowLongToBeat.GetData().GameHltbData.Completionist;
+            PluginSettings.CompletionistFormat = gameHowLongToBeat.GetData().GameHltbData.CompletionistFormat;
+            PluginSettings.Solo = gameHowLongToBeat.GetData().GameHltbData.Solo;
+            PluginSettings.SoloFormat = gameHowLongToBeat.GetData().GameHltbData.SoloFormat;
+            PluginSettings.CoOp = gameHowLongToBeat.GetData().GameHltbData.CoOp;
+            PluginSettings.CoOpFormat = gameHowLongToBeat.GetData().GameHltbData.CoOpFormat;
+            PluginSettings.Vs = gameHowLongToBeat.GetData().GameHltbData.Vs;
+            PluginSettings.VsFormat = gameHowLongToBeat.GetData().GameHltbData.VsFormat;
 
-            PluginSettings.Settings.TimeToBeat = gameHowLongToBeat.GetData().GameHltbData.TimeToBeat;
-            PluginSettings.Settings.TimeToBeatFormat = gameHowLongToBeat.GetData().GameHltbData.TimeToBeatFormat;
+            PluginSettings.TimeToBeat = gameHowLongToBeat.GetData().GameHltbData.TimeToBeat;
+            PluginSettings.TimeToBeatFormat = gameHowLongToBeat.GetData().GameHltbData.TimeToBeatFormat;
         }
 
         public override void ActionAfterGames_ItemUpdated(Game gameOld, Game gameNew)
         {
             _ = Task.Run(() =>
             {
-                if (PluginSettings.Settings.AutoSetGameStatusToHltb && gameOld.CompletionStatusId != gameNew.CompletionStatusId)
+                if (PluginSettings.AutoSetGameStatusToHltb && gameOld.CompletionStatusId != gameNew.CompletionStatusId)
                 {
                     SetGameStatusToHltb(gameNew);
                 }

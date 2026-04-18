@@ -22,6 +22,7 @@ using System.Threading;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows;
+using CommonPluginsShared.Utilities;
 
 namespace HowLongToBeat.Services
 {
@@ -32,7 +33,7 @@ namespace HowLongToBeat.Services
         private static HowLongToBeatDatabase PluginDatabase => HowLongToBeat.PluginDatabase;
 
         // Helper to centralize verbose logging checks
-        private static bool IsVerboseLoggingEnabled => PluginDatabase?.PluginSettings?.Settings is HowLongToBeatSettings _vs && _vs.EnableVerboseLogging;
+        private static bool IsVerboseLoggingEnabled => PluginDatabase?.PluginSettings is HowLongToBeatSettings _vs && _vs.EnableVerboseLogging;
 
         private void LogDebugVerbose(string message)
         {
@@ -403,7 +404,7 @@ namespace HowLongToBeat.Services
             HapDocType = hapType;
             HapAvailable = HapDocType != null;
 
-            UserLogin = PluginDatabase.PluginSettings.Settings.UserLogin;
+            UserLogin = PluginDatabase.PluginSettings.UserLogin;
 
             CookiesDomains = new List<string>
             {
@@ -803,7 +804,7 @@ namespace HowLongToBeat.Services
 
                             if (!response.IsNullOrEmpty())
                             {
-                                string maybeJson = Tools.GetJsonInString(response, @"<script[ ]?id=""__NEXT_DATA__""[ ]?type=""application/json"">");
+                                string maybeJson = UtilityTools.GetJsonInString(response, @"<script[ ]?id=""__NEXT_DATA__""[ ]?type=""application/json"">");
                                 if (!maybeJson.IsNullOrEmpty())
                                 {
                                     GamePageCache.TryAdd(id, response);
@@ -1336,7 +1337,7 @@ namespace HowLongToBeat.Services
             // Apply manual aliases (exact normalized match) to support paired releases (e.g. Pokemon versions).
             try
             {
-                var settings = PluginDatabase?.PluginSettings?.Settings;
+                var settings = PluginDatabase?.PluginSettings;
                 var userDataPath = PluginDatabase?.Plugin?.GetPluginUserDataPath();
                 var aliased = GameNameAliases.ApplyAlias(name, settings, userDataPath);
                 if (!string.IsNullOrEmpty(aliased) && !aliased.IsEqual(name))
@@ -1798,7 +1799,7 @@ namespace HowLongToBeat.Services
                 // Apply manual aliases (exact normalized match) early so all subsequent matching uses the aliased title.
                 try
                 {
-                    var settings = PluginDatabase?.PluginSettings?.Settings;
+                    var settings = PluginDatabase?.PluginSettings;
                     var userDataPath = PluginDatabase?.Plugin?.GetPluginUserDataPath();
                     var aliased = GameNameAliases.ApplyAlias(gameName, settings, userDataPath);
                     if (!string.IsNullOrEmpty(aliased) && !aliased.IsEqual(gameName))
@@ -1811,7 +1812,7 @@ namespace HowLongToBeat.Services
 
                 traceId = Guid.NewGuid().ToString("N").Substring(0, 8);
 
-                var hltbSettings = PluginDatabase?.PluginSettings?.Settings;
+                var hltbSettings = PluginDatabase?.PluginSettings;
 
                 if (IsVerboseLoggingEnabled)
                 {
@@ -2275,9 +2276,9 @@ namespace HowLongToBeat.Services
                                 {
                                     try
                                     {
-                                        PluginDatabase.PluginSettings.Settings.UserLogin = UserLogin;
+                                        PluginDatabase.PluginSettings.UserLogin = UserLogin;
 
-                                        PluginDatabase.Plugin.SavePluginSettings(PluginDatabase.PluginSettings.Settings);
+                                        PluginDatabase.Plugin.SavePluginSettings(PluginDatabase.PluginSettings);
 
                                         FireAndForget(Task.Run(async () =>
                                         {
@@ -2460,7 +2461,7 @@ namespace HowLongToBeat.Services
                     return null;
                 }
 
-                string jsonData = Tools.GetJsonInString(response, @"<script[ ]?id=""__NEXT_DATA__""[ ]?type=""application/json"">");
+                string jsonData = UtilityTools.GetJsonInString(response, @"<script[ ]?id=""__NEXT_DATA__""[ ]?type=""application/json"">");
                 _ = Serialization.TryFromJson(jsonData, out NEXT_DATA next_data, out Exception parseEx);
                 if (parseEx != null)
                 {
@@ -2524,8 +2525,8 @@ namespace HowLongToBeat.Services
             {
                 HltbUserStats hltbUserStats = new HltbUserStats
                 {
-                    Login = UserLogin.IsNullOrEmpty() ? PluginDatabase.Database.UserHltbData.Login : UserLogin,
-                    UserId = (UserId == 0) ? PluginDatabase.Database.UserHltbData.UserId : UserId,
+                    Login = UserLogin.IsNullOrEmpty() ? PluginDatabase.UserHltbData.Login : UserLogin,
+                    UserId = (UserId == 0) ? PluginDatabase.UserHltbData.UserId : UserId,
                     TitlesList = new List<TitleList>()
                 };
 
@@ -2807,7 +2808,7 @@ namespace HowLongToBeat.Services
                         {
                             try
                             {
-                                if (PluginDatabase.Database.UserHltbData?.UserId != null && PluginDatabase.Database.UserHltbData.UserId != 0)
+								if (PluginDatabase.UserHltbData?.UserId != null && PluginDatabase.UserHltbData.UserId != 0)
                                 {
                                     Logger.Info($"Refresh HowLongToBeat user cookies");
                                     List<HttpCookie> cookies = CookiesTools.GetNewWebCookies(new List<string> { UrlBase, UrlUser }, true);

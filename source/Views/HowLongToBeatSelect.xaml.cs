@@ -31,25 +31,32 @@ namespace HowLongToBeat.Views
             GameContext = game;
             SearchElement.Text = GameContext.Name;
 
-            if (PluginDatabase.PluginSettings.Settings.UseHtltbClassic)
+            if (PluginDatabase.PluginSettings.UseHtltbClassic)
             {
                 lbSelectable.Tag = DataType.Classic;
             }
-            if (PluginDatabase.PluginSettings.Settings.UseHtltbAverage)
+            if (PluginDatabase.PluginSettings.UseHtltbAverage)
             {
                 lbSelectable.Tag = DataType.Average;
             }
-            if (PluginDatabase.PluginSettings.Settings.UseHtltbMedian)
+            if (PluginDatabase.PluginSettings.UseHtltbMedian)
             {
                 lbSelectable.Tag = DataType.Median;
             }
-            if (PluginDatabase.PluginSettings.Settings.UseHtltbRushed)
+            if (PluginDatabase.PluginSettings.UseHtltbRushed)
             {
                 lbSelectable.Tag = DataType.Rushed;
             }
-            if (PluginDatabase.PluginSettings.Settings.UseHtltbLeisure)
+            if (PluginDatabase.PluginSettings.UseHtltbLeisure)
             {
                 lbSelectable.Tag = DataType.Leisure;
+            }
+
+            if (PART_VndbSpeedType.Items.Count > 0)
+            {
+                // Default VNDB speed corresponds to the current global data type selection.
+                var initialType = lbSelectable.Tag is DataType dt ? dt : DataType.Average;
+                SelectVndbSpeedByDataType(initialType);
             }
 
             if (data == null)
@@ -86,6 +93,12 @@ namespace HowLongToBeat.Views
         private void ButtonSelect_Click(object sender, RoutedEventArgs e)
         {
             HltbDataUser Item = (HltbDataUser)lbSelectable.SelectedItem;
+            bool isVndb = (bool)PART_Vndb.IsChecked;
+
+            if (isVndb && Item != null)
+            {
+                Item.ApplyVndbSpeedSelection(GetSelectedVndbDataType());
+            }
 
             GameHowLongToBeat = HowLongToBeat.PluginDatabase.GetDefault(GameContext);
             GameHowLongToBeat.Items = new List<HltbDataUser>() { Item };
@@ -123,6 +136,7 @@ namespace HowLongToBeat.Views
                   : ((HltbPlatform)PART_SelectPlatform.SelectedValue).GetDescription();
 
             bool isVndb = (bool)PART_Vndb.IsChecked;
+            lbSelectable.Tag = isVndb ? GetSelectedVndbDataType() : lbSelectable.Tag;
 
             GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions($"{ResourceProvider.GetString("LOCDownloadingLabel")}")
             {
@@ -158,6 +172,47 @@ namespace HowLongToBeat.Views
                     lbSelectable.UpdateLayout();
                 }));
             }, globalProgressOptions);
+        }
+
+        private DataType GetSelectedVndbDataType()
+        {
+            if (PART_VndbSpeedType?.SelectedItem is ComboBoxItem cbi && cbi.Tag is DataType dataType)
+            {
+                return dataType;
+            }
+
+            return DataType.Average;
+        }
+
+        private void SelectVndbSpeedByDataType(DataType dataType)
+        {
+            foreach (var item in PART_VndbSpeedType.Items)
+            {
+                if (item is ComboBoxItem cbi && cbi.Tag is DataType tag && tag == dataType)
+                {
+                    PART_VndbSpeedType.SelectedItem = cbi;
+                    return;
+                }
+            }
+
+            PART_VndbSpeedType.SelectedIndex = 1; // Normal
+        }
+
+        private void PART_Vndb_Checked(object sender, RoutedEventArgs e)
+        {
+            bool isVndb = (bool)PART_Vndb.IsChecked;
+            if (isVndb)
+            {
+                lbSelectable.Tag = GetSelectedVndbDataType();
+            }
+        }
+
+        private void PART_VndbSpeedType_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if ((bool)PART_Vndb.IsChecked)
+            {
+                lbSelectable.Tag = GetSelectedVndbDataType();
+            }
         }
 
         /// <summary>

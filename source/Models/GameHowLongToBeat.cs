@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace HowLongToBeat.Models
 {
-    public class GameHowLongToBeat : PluginDataBaseGame<HltbDataUser>
+    public class GameHowLongToBeat : PluginGameCollection<HltbDataUser>
     {
         [DontSerialize]
         public override bool HasData => Items?.Count > 0 && Items?.First() != null;

@@ -2,10 +2,8 @@
 using HowLongToBeat.Views;
 using Playnite.SDK;
 using Playnite.SDK.Events;
-using Playnite.SDK.Models;
 using Playnite.SDK.Plugins;
 using System;
-using System.Linq;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,15 +14,12 @@ using CommonPluginsShared;
 using CommonPluginsShared.PlayniteExtended;
 using CommonPluginsShared.Controls;
 using HowLongToBeat.Controls;
-using CommonPluginsControls.Views;
 using System.IO;
 using QuickSearch.SearchItems;
 using StartPage.SDK;
 using LiveCharts.Configurations;
 using CommonPluginsControls.LiveChartsCommon;
 using LiveCharts;
-using Playnite.SDK.Data;
-using HowLongToBeat.Models.Enumerations;
 
 namespace HowLongToBeat
 {
@@ -41,6 +36,7 @@ namespace HowLongToBeat
 
         public HowLongToBeat(IPlayniteAPI playniteAPI) : base(playniteAPI, "HowLongToBeat")
         {
+            _menus = new HowLongToBeatMenus(PluginSettingsViewModel.Settings, PluginDatabase, this);
 
             // Custom theme button
             EventManager.RegisterClassHandler(typeof(Button), Button.ClickEvent, new RoutedEventHandler(OnCustomThemeButtonClick));
@@ -56,7 +52,7 @@ namespace HowLongToBeat
             AddSettingsSupport(new AddSettingsSupportArgs
             {
                 SourceName = "HowLongToBeat",
-                SettingsRoot = $"{nameof(PluginSettings)}.{nameof(PluginSettings.Settings)}"
+                SettingsRoot = $"{nameof(PluginSettingsViewModel)}.{nameof(PluginSettingsViewModel.Settings)}"
             });
 
             // Initialize top & side bar
@@ -92,20 +88,7 @@ namespace HowLongToBeat
                 if (ButtonName == "PART_CustomHowLongToBeatButton")
                 {
                     Common.LogDebug(true, $"OnCustomThemeButtonClick()");
-
-                    WindowOptions windowOptions = new WindowOptions
-                    {
-                        ShowMinimizeButton = false,
-                        ShowMaximizeButton = true,
-                        ShowCloseButton = true,
-                        Width = 1280,
-                        Height = 740
-                    };
-
-                    HowLongToBeatUserView ViewExtension = new HowLongToBeatUserView(this);
-                    Window windowExtension = PlayniteUiHelper.CreateExtensionWindow(PluginDatabase.PluginName, ViewExtension, windowOptions);
-                    windowExtension.ResizeMode = ResizeMode.CanResize;
-                    _ = windowExtension.ShowDialog();
+                    PluginDatabase.PluginWindows.ShowPluginGameDataWindow(this);
                 }
             }
             catch (Exception ex)
@@ -201,364 +184,13 @@ namespace HowLongToBeat
         // To add new game menu items override GetGameMenuItems
         public override IEnumerable<GameMenuItem> GetGameMenuItems(GetGameMenuItemsArgs args)
         {
-            Game gameMenu = args.Games.First();
-            List<Guid> ids = args.Games.Select(x => x.Id).ToList();
-            GameHowLongToBeat gameHowLongToBeat = PluginDatabase.Get(gameMenu, true);
-
-            List<GameMenuItem> gameMenuItems = new List<GameMenuItem>
-            {
-                new GameMenuItem {
-                    MenuSection = ResourceProvider.GetString("LOCHowLongToBeat"),
-                    Description = ResourceProvider.GetString("LOCHowLongToBeatPluginView"),
-                    Action = (gameMenuItem) =>
-                    {
-                        try
-                        {
-                            gameHowLongToBeat = PluginDatabase.Get(gameMenu);
-                            if (gameHowLongToBeat.HasData)
-                            {
-                                HowLongToBeatView ViewExtension = new HowLongToBeatView(gameHowLongToBeat);
-                                Window windowExtension = PlayniteUiHelper.CreateExtensionWindow(PluginDatabase.PluginName, ViewExtension);
-                                windowExtension.ShowDialog();
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            Common.LogError(ex, false, $"Error to load game data for {args.Games.First().Name}");
-                            PlayniteApi.Dialogs.ShowErrorMessage(ResourceProvider.GetString("LOCDatabaseErroTitle"), PluginDatabase.PluginName);
-                        }
-                    }
-                }
-            };
-
-            if (gameHowLongToBeat.HasData)
-            {
-                HltbDataUser gameData = gameHowLongToBeat?.Items?.FirstOrDefault();
-
-                gameMenuItems.Add(new GameMenuItem
-                {
-                    MenuSection = ResourceProvider.GetString("LOCHowLongToBeat"),
-                    Description = "-"
-                });
-
-                // Set current time manually
-                if (!gameHowLongToBeat?.GetData()?.IsVndb ?? false)
-                {
-                    gameMenuItems.Add(new GameMenuItem
-                    {
-                        MenuSection = ResourceProvider.GetString("LOCHowLongToBeat"),
-                        Description = ResourceProvider.GetString("LOCHowLongToBeatSetCurrentTimeManual"),
-                        Action = (mainMenuItem) =>
-                        {
-                            PluginDatabase.SetCurrentPlaytime(ids, true);
-                        }
-                    });
-
-                    // Set current time manually in Complet
-                    if (gameData != null && gameMenu.Playtime > 0)
-                    {
-                        if (gameData.GameType != GameType.Multi && gameMenu.LastActivity != null)
-                        {
-                            gameMenuItems.Add(new GameMenuItem
-                            {
-                                MenuSection = ResourceProvider.GetString("LOCHowLongToBeat") + "|" + ResourceProvider.GetString("LOCHowLongToBeatSetCurrentCompletedTimeManualOn"),
-                                Description = ResourceProvider.GetString("LOCHowLongToBeatMainStory"),
-                                Action = (mainMenuItem) =>
-                                {
-                                    PluginDatabase.SetCurrentPlaytime(ids, true, true, true);
-                                }
-                            });
-
-                            gameMenuItems.Add(new GameMenuItem
-                            {
-                                MenuSection = ResourceProvider.GetString("LOCHowLongToBeat") + "|" + ResourceProvider.GetString("LOCHowLongToBeatSetCurrentCompletedTimeManualOn"),
-                                Description = ResourceProvider.GetString("LOCHowLongToBeatMainExtra"),
-                                Action = (mainMenuItem) =>
-                                {
-                                    PluginDatabase.SetCurrentPlaytime(ids, true, true, false, true);
-                                }
-                            });
-
-                            gameMenuItems.Add(new GameMenuItem
-                            {
-                                MenuSection = ResourceProvider.GetString("LOCHowLongToBeat") + "|" + ResourceProvider.GetString("LOCHowLongToBeatSetCurrentCompletedTimeManualOn"),
-                                Description = ResourceProvider.GetString("LOCHowLongToBeatCompletionist"),
-                                Action = (mainMenuItem) =>
-                                {
-                                    PluginDatabase.SetCurrentPlaytime(ids, true, true, false, false, true);
-                                }
-                            });
-                        }
-                        else
-                        {
-                            gameMenuItems.Add(new GameMenuItem
-                            {
-                                MenuSection = ResourceProvider.GetString("LOCHowLongToBeat") + "|" + ResourceProvider.GetString("LOCHowLongToBeatSetCurrentMultiTimeManualOn"),
-                                Description = ResourceProvider.GetString("LOCHowLongToBeatCoOp"),
-                                Action = (mainMenuItem) =>
-                                {
-                                    PluginDatabase.SetCurrentPlaytime(ids, true, false, false, false, false, false, true);
-                                }
-                            });
-
-                            gameMenuItems.Add(new GameMenuItem
-                            {
-                                MenuSection = ResourceProvider.GetString("LOCHowLongToBeat") + "|" + ResourceProvider.GetString("LOCHowLongToBeatSetCurrentMultiTimeManualOn"),
-                                Description = ResourceProvider.GetString("LOCHowLongToBeatVs"),
-                                Action = (mainMenuItem) =>
-                                {
-                                    PluginDatabase.SetCurrentPlaytime(ids, true, false, false, false, false, false, false, true);
-                                }
-                            });
-                        }
-                    }
-                }
-
-                // Refresh plugin data for the selected game
-                gameMenuItems.Add(new GameMenuItem
-                {
-                    MenuSection = ResourceProvider.GetString("LOCHowLongToBeat"),
-                    Description = ResourceProvider.GetString("LOCCommonRefreshGameData"),
-                    Action = (gameMenuItem) =>
-                    {
-                        if (ids.Count == 1)
-                        {
-                            PluginDatabase.Refresh(gameMenu.Id);
-                        }
-                        else
-                        {
-                            PluginDatabase.Refresh(ids);
-                        }
-                    }
-                });
-
-                gameMenuItems.Add(new GameMenuItem
-                {
-                    MenuSection = ResourceProvider.GetString("LOCHowLongToBeat"),
-                    Description = "-"
-                });
-
-                gameMenuItems.Add(new GameMenuItem
-                {
-                    MenuSection = ResourceProvider.GetString("LOCHowLongToBeat"),
-                    Description = ResourceProvider.GetString("LOCCommonDeleteGameData"),
-                    Action = (gameMenuItem) =>
-                    {
-                        if (ids.Count == 1)
-                        {
-                            PluginDatabase.Remove(gameMenu.Id);
-                        }
-                        else
-                        {
-                            PluginDatabase.Remove(ids);
-                        }
-                    }
-                });
-            }
-
-#if DEBUG
-            gameMenuItems.Add(new GameMenuItem
-            {
-                MenuSection = ResourceProvider.GetString("LOCHowLongToBeat"),
-                Description = "-"
-            });
-            gameMenuItems.Add(new GameMenuItem
-            {
-                MenuSection = ResourceProvider.GetString("LOCHowLongToBeat"),
-                Description = "Test",
-                Action = (gameMenuItem) =>
-                {
-
-                }
-            });
-#endif
-
-            return gameMenuItems;
+            return _menus.GetGameMenuItems(args);
         }
 
         // To add new main menu items override GetMainMenuItems
         public override IEnumerable<MainMenuItem> GetMainMenuItems(GetMainMenuItemsArgs args)
         {
-            string MenuInExtensions = string.Empty;
-            if (PluginSettings.Settings.MenuInExtensions)
-            {
-                MenuInExtensions = "@";
-            }
-
-            List<MainMenuItem> mainMenuItems = new List<MainMenuItem>
-            {
-                new MainMenuItem
-                {
-                    MenuSection = MenuInExtensions + ResourceProvider.GetString("LOCHowLongToBeat"),
-                    Description = ResourceProvider.GetString("LOCHowLongToBeatPluginUserView"),
-                    Action = (mainMenuItem) =>
-                    {
-                        WindowOptions windowOptions = new WindowOptions
-                        {
-                            Height = 660,
-                            Width = 1200,
-                            CanBeResizable = true
-                        };
-                        HowLongToBeatUserView ViewExtension = new HowLongToBeatUserView(this);
-                        Window windowExtension = PlayniteUiHelper.CreateExtensionWindow(PluginDatabase.PluginName, ViewExtension, windowOptions);
-                        windowExtension.ShowDialog();
-                    }
-                },
-
-                new MainMenuItem
-                {
-                    MenuSection = MenuInExtensions + ResourceProvider.GetString("LOCHowLongToBeat"),
-                    Description = "-",
-                },
-
-                new MainMenuItem
-                {
-                    MenuSection = MenuInExtensions + ResourceProvider.GetString("LOCHowLongToBeat"),
-                    Description = ResourceProvider.GetString("LOCCommonDownloadPluginData"),
-                    Action = (mainMenuItem) =>
-                    {
-                        PluginDatabase.GetSelectData();
-                    }
-                },
-                new MainMenuItem
-                {
-                    MenuSection = MenuInExtensions + ResourceProvider.GetString("LOCHowLongToBeat"),
-                    Description = ResourceProvider.GetString("LOCCommonClearAllDatas"),
-                    Action = (mainMenuItem) =>
-                    {
-                        if (PluginDatabase.ClearDatabase())
-                        {
-                            PlayniteApi.Dialogs.ShowMessage(ResourceProvider.GetString("LOCCommonDataRemove"), PluginDatabase.PluginName);
-                        }
-                        else
-                        {
-                            PlayniteApi.Dialogs.ShowErrorMessage(ResourceProvider.GetString("LOCCommonDataErrorRemove"), PluginDatabase.PluginName);
-                        }
-                    }
-                },
-
-                new MainMenuItem
-                {
-                    MenuSection = MenuInExtensions + ResourceProvider.GetString("LOCHowLongToBeat"),
-                    Description = "-",
-                },
-
-                new MainMenuItem
-                {
-                    MenuSection = MenuInExtensions + ResourceProvider.GetString("LOCHowLongToBeat"),
-                    Description = ResourceProvider.GetString("LOCHowLongToBeatSetCurrentTimeManualAll"),
-                    Action = (mainMenuItem) =>
-                    {
-                        IEnumerable<Game> db = PlayniteApi.Database.Games.Where(x => !x.Hidden && x.Playtime > 0);
-                        PluginDatabase.SetCurrentPlaytime(db.Select(x => x.Id), true);
-                    }
-                },
-
-                new MainMenuItem
-                {
-                    MenuSection = MenuInExtensions + ResourceProvider.GetString("LOCHowLongToBeat"),
-                    Description = ResourceProvider.GetString("LOCHowLongToBeatActualiseUserData"),
-                    Action = (mainMenuItem) =>
-                    {
-                        PluginDatabase.RefreshUserData();
-                    }
-                },
-
-                new MainMenuItem
-                {
-                    MenuSection = MenuInExtensions + ResourceProvider.GetString("LOCHowLongToBeat"),
-                    Description = ResourceProvider.GetString("LOCCommonRefreshAllData"),
-                    Action = (mainMenuItem) =>
-                    {
-                        PluginDatabase.RefreshAll();
-                    }
-                }
-            };
-
-
-            if (PluginDatabase.PluginSettings.Settings.EnableTag)
-            {
-                mainMenuItems.Add(new MainMenuItem
-                {
-                    MenuSection = MenuInExtensions + ResourceProvider.GetString("LOCHowLongToBeat"),
-                    Description = "-"
-                });
-
-                // Add tag for selected game in database if data exists
-                mainMenuItems.Add(new MainMenuItem
-                {
-                    MenuSection = MenuInExtensions + ResourceProvider.GetString("LOCHowLongToBeat"),
-                    Description = ResourceProvider.GetString("LOCCommonAddTPlugin"),
-                    Action = (mainMenuItem) =>
-                    {
-                        PluginDatabase.AddTagSelectData();
-                    }
-                });
-                // Add tag for all games
-                mainMenuItems.Add(new MainMenuItem
-                {
-                    MenuSection = MenuInExtensions + ResourceProvider.GetString("LOCHowLongToBeat"),
-                    Description = ResourceProvider.GetString("LOCCommonAddAllTags"),
-                    Action = (mainMenuItem) =>
-                    {
-                        PluginDatabase.AddTagAllGame();
-                    }
-                });
-                // Remove tag for all game in database
-                mainMenuItems.Add(new MainMenuItem
-                {
-                    MenuSection = MenuInExtensions + ResourceProvider.GetString("LOCHowLongToBeat"),
-                    Description = ResourceProvider.GetString("LOCCommonRemoveAllTags"),
-                    Action = (mainMenuItem) =>
-                    {
-                        PluginDatabase.RemoveTagAllGame();
-                    }
-                });
-            }
-
-
-            mainMenuItems.Add(new MainMenuItem
-            {
-                MenuSection = MenuInExtensions + ResourceProvider.GetString("LOCHowLongToBeat"),
-                Description = "-"
-            });
-            mainMenuItems.Add(new MainMenuItem
-            {
-                MenuSection = MenuInExtensions + ResourceProvider.GetString("LOCHowLongToBeat"),
-                Description = ResourceProvider.GetString("LOCCommonViewNoData"),
-                Action = (mainMenuItem) =>
-                {
-                    WindowOptions windowOptions = new WindowOptions
-                    {
-                        ShowMinimizeButton = false,
-                        ShowMaximizeButton = false,
-                        ShowCloseButton = true
-                    };
-
-                    ListWithNoData ViewExtension = new ListWithNoData(PluginDatabase);
-                    Window windowExtension = PlayniteUiHelper.CreateExtensionWindow(PluginDatabase.PluginName, ViewExtension, windowOptions);
-                    windowExtension.Show();
-                }
-            });
-
-#if DEBUG
-            mainMenuItems.Add(new MainMenuItem
-            {
-                MenuSection = MenuInExtensions + ResourceProvider.GetString("LOCHowLongToBeat"),
-                Description = "-"
-            });
-            mainMenuItems.Add(new MainMenuItem
-            {
-                MenuSection = MenuInExtensions + ResourceProvider.GetString("LOCHowLongToBeat"),
-                Description = "Test",
-                Action = (mainMenuItem) =>
-                {
-
-                }
-            });
-#endif
-
-            return mainMenuItems;
+            return _menus.GetMainMenuItems(args);
         }
 
         #endregion
@@ -624,12 +256,12 @@ namespace HowLongToBeat
             }
 
             // AutoSetCurrentPlayTime
-            if (PluginSettings.Settings.AutoSetCurrentPlayTime)
+            if (PluginDatabase.PluginSettings.AutoSetCurrentPlayTime)
             {
                 try
                 {
                     MessageBoxResult result = MessageBoxResult.Yes;
-                    if (!PluginSettings.Settings.AutoSetCurrentPlayTimeWithoutConfirmation)
+                    if (!PluginDatabase.PluginSettings.AutoSetCurrentPlayTimeWithoutConfirmation)
                     {
                         result = PlayniteApi.Dialogs.ShowMessage(ResourceProvider.GetString("LOCHowLongToBeatSetCurrentTime"), PluginDatabase.PluginName, MessageBoxButton.YesNo);
                     }
@@ -641,7 +273,7 @@ namespace HowLongToBeat
                             Thread.Sleep(2000);
                             if (PluginDatabase.SetCurrentPlayTime(args.Game))
                             {
-                                if (PluginDatabase.PluginSettings.Settings.EnableSucessNotification)
+                                if (PluginDatabase.PluginSettings.EnableSucessNotification)
                                 {
                                     PlayniteApi.Notifications.Add(new NotificationMessage(
                                         $"{PluginDatabase.PluginName}-SetCurrentPlayTime",
@@ -662,7 +294,6 @@ namespace HowLongToBeat
         }
 
         #endregion
-
 
         #region Application event
 
@@ -734,113 +365,12 @@ namespace HowLongToBeat
              {
                  try
                  {
-                     if (PluginDatabase?.PluginSettings?.Settings is HowLongToBeatSettings s && s.EnableVerboseLogging)
+                     if (PluginDatabase?.PluginSettings is HowLongToBeatSettings s && s.EnableVerboseLogging)
                      {
                          Common.LogError(ex, false, true, PluginDatabase.PluginName);
                      }
                  }
                  catch { }
-             }
-
-
-            // TEMP Database convert
-            if (!PluginDatabase.PluginSettings.Settings.IsConvertedDb)
-            {
-                Logger.Info("Convert database");
-
-                GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions(
-                    $"{PluginDatabase.PluginName} - {ResourceProvider.GetString("LOCCommonConverting")}",
-                    false
-                );
-                globalProgressOptions.IsIndeterminate = true;
-
-                _ = API.Instance.Dialogs.ActivateGlobalProgress((activateGlobalProgress) =>
-                {
-                    var ct = activateGlobalProgress?.CancelToken ?? CancellationToken.None;
-                    _ = Task.Run(async () =>
-                    {
-                        try
-                        {
-                            while (!PluginDatabase.IsLoaded)
-                            {
-                                if (ct.IsCancellationRequested) return;
-                                try { await Task.Delay(100, ct).ConfigureAwait(false); } catch (OperationCanceledException) { return; }
-                            }
-
-                            bool conversionSucceeded = false;
-                            try
-                            {
-                                PluginDatabase.Database.BeginBufferUpdate();
-                                foreach (var x in PluginDatabase.Database)
-                                {
-                                    if (ct.IsCancellationRequested)
-                                    {
-                                        conversionSucceeded = false;
-                                        break;
-                                    }
-
-                                    try
-                                    {
-                                        if (Serialization.TryFromJsonFile(Path.Combine(PluginDatabase.Paths.PluginDatabasePath, x.Game.Id.ToString() + ".json"), out dynamic data))
-                                        {
-                                            dynamic items = data.Items[0].GameHltbData;
-                                            string s = Serialization.ToJson(items);
-                                            if (Serialization.TryFromJson(s, out HltbData_old hltbData_old))
-                                            {
-                                                x.Items[0].GameHltbData.MainStoryClassic = hltbData_old.MainStory;
-                                                x.Items[0].GameHltbData.MainExtraClassic = hltbData_old.MainExtra;
-                                                x.Items[0].GameHltbData.CompletionistClassic = hltbData_old.Completionist;
-                                                x.Items[0].GameHltbData.SoloClassic = hltbData_old.Solo;
-                                                x.Items[0].GameHltbData.CoOpClassic = hltbData_old.CoOp;
-                                                x.Items[0].GameHltbData.VsClassic = hltbData_old.Vs;
-
-                                                PluginDatabase.Database.Update(x);
-                                            }
-                                        }
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        Common.LogError(ex, true, true, PluginDatabase.PluginName);
-                                    }
-                                }
-
-                                if (!ct.IsCancellationRequested)
-                                {
-                                    conversionSucceeded = true;
-                                }
-                            }
-                            catch (Exception ex)
-                            {
-                                // Log outer exceptions but always ensure EndBufferUpdate runs in finally
-                                Common.LogError(ex, true, true, PluginDatabase.PluginName);
-                            }
-                            finally
-                            {
-                                try
-                                {
-                                    PluginDatabase.Database.EndBufferUpdate();
-                                }
-                                catch (Exception ex)
-                                {
-                                    Common.LogError(ex, true, true, PluginDatabase.PluginName);
-                                }
-                            }
-
-                            if (conversionSucceeded)
-                            {
-                                _ = Application.Current.Dispatcher?.BeginInvoke((Action)delegate
-                                {
-                                    PluginSettings.Settings.IsConvertedDb = true;
-                                    SavePluginSettings(PluginSettings.Settings);
-                                });
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            Common.LogError(ex, true, true, PluginDatabase.PluginName);
-                        }
-                    }, ct);
-                }, globalProgressOptions);
              }
          }
 
@@ -855,11 +385,11 @@ namespace HowLongToBeat
         // Add code to be executed when library is updated.
         public override void OnLibraryUpdated(OnLibraryUpdatedEventArgs args)
         {
-            if (PluginSettings.Settings.AutoImport && !PreventLibraryUpdatedOnStart)
+            if (PluginDatabase.PluginSettings.AutoImport && !PreventLibraryUpdatedOnStart)
             {
                 PluginDatabase.RefreshRecent();
-                PluginSettings.Settings.LastAutoLibUpdateAssetsDownload = DateTime.Now;
-                SavePluginSettings(PluginSettings.Settings);
+                PluginDatabase.PluginSettings.LastAutoLibUpdateAssetsDownload = DateTime.Now;
+                SavePluginSettings(PluginDatabase.PluginSettings);
             }
         }
 
@@ -867,12 +397,12 @@ namespace HowLongToBeat
 
         public override ISettings GetSettings(bool firstRunSettings)
         {
-            return PluginSettings;
+            return PluginSettingsViewModel;
         }
 
         public override UserControl GetSettingsView(bool firstRunSettings)
         {
-            return new HowLongToBeatSettingsView(PluginSettings.Settings);
+            return new HowLongToBeatSettingsView(PluginSettingsViewModel.Settings);
         }
 
         #endregion

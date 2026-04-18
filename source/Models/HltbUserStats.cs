@@ -9,6 +9,7 @@ using System.Globalization;
 using CommonPluginsShared.Extensions;
 using CommonPluginsShared;
 using HowLongToBeat.Models.Enumerations;
+using CommonPluginsShared.Commands;
 
 namespace HowLongToBeat.Models
 {
@@ -56,39 +57,14 @@ namespace HowLongToBeat.Models
         public HltbData HltbUserData { get; set; }
 
         [DontSerialize]
-        public Guid GameId
-        {
-            get
-            {
-                Guid? result = PluginDatabase.Database.Items
-                    .Where(x => !x.Value.Game.Hidden && x.Value.GetData()?.Id == Id && (x.Value.UserGameId.IsNullOrEmpty() || x.Value.UserGameId.IsEqual(UserGameId)))
-                    ?.FirstOrDefault().Key;
-
-                return result == null ? default : (Guid)result;
-            }
-        }
+        public Guid GameId => PluginDatabase?.ResolveGameIdFromUserTitle(Id, UserGameId) ?? default;
 
         // TODO
         [DontSerialize]
-        public List<Guid> GameIds
-        {
-            get
-            {
-                Guid? result = PluginDatabase.Database.Items
-                    .Where(x => x.Value.GetData()?.Id == Id && (x.Value.UserGameId.IsNullOrEmpty() || x.Value.UserGameId.IsEqual(UserGameId)))
-                    ?.FirstOrDefault().Key;
-
-                List<Guid> results = PluginDatabase.Database.Items
-                    .Where(x => x.Value.GetData()?.Id == Id && (x.Value.UserGameId.IsNullOrEmpty() || x.Value.UserGameId.IsEqual(UserGameId)))
-                    ?.Select(x => x.Key)
-                    ?.ToList() ?? new List<Guid>();
-
-                return results;
-            }
-        }
+        public List<Guid> GameIds => PluginDatabase?.ResolveGameIdsFromUserTitle(Id, UserGameId) ?? new List<Guid>();
 
         [DontSerialize]
-        public RelayCommand<Guid> GoToGame => Commands.GoToGame;
+        public RelayCommand<Guid> GoToGame => CommandsNavigation.GoToGame;
 
         [DontSerialize]
         public bool GameExist => API.Instance.Database.Games.Get(GameId) != null;

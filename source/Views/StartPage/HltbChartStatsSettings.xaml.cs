@@ -41,7 +41,7 @@ namespace HowLongToBeat.Views.StartPage
 
         private void Grid_Unloaded(object sender, RoutedEventArgs e)
         {
-            plugin.SavePluginSettings(PluginDatabase.PluginSettings.Settings);
+            plugin.SavePluginSettings(PluginDatabase.PluginSettings);
             PluginDatabase.PluginSettings.OnPropertyChanged();
         }
     }
