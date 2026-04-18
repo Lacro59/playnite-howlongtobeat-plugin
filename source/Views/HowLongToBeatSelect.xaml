@@ -17,6 +17,7 @@
              MinHeight="620">
 
     <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
         <convertersshared:VisibilityZeroConverter x:Key="VisibilityZeroConverter"/>
         <converters:InvertedBoolenConverter x:Key="InvertedBoolenConverter"/>
         <converters:StringNullOrEmptyToBoolConverter x:Key="StringNullOrEmptyToBoolConverter"/>
@@ -135,7 +136,34 @@
                                                             IsEnabled="{Binding ElementName=PART_Vndb, Path=IsChecked, Converter={StaticResource InvertedBoolenConverter}}"
                                                             IsTextSearchCaseSensitive="False" StaysOpenOnEdit="True"
                                                             hltb:SelectorBehaviors.EnumSource="{x:Type hlte:HltbPlatform}"/>
-                        <CheckBox Grid.Column="4" Content="{DynamicResource LOCHltbUsedVndb}" Name="PART_Vndb"/>
+                        <CheckBox Grid.Column="4"
+                                  Content="{DynamicResource LOCHltbUsedVndb}"
+                                  Name="PART_Vndb"
+                                  Checked="PART_Vndb_Checked"
+                                  Unchecked="PART_Vndb_Checked"/>
+                    </Grid>
+
+                    <Grid Margin="0,0,0,10"
+                          DockPanel.Dock="Top"
+                          Visibility="{Binding ElementName=PART_Vndb, Path=IsChecked, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="8"/>
+                            <ColumnDefinition Width="220"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Grid.Column="0"
+                                   Text="{DynamicResource LOCHltbVndbSpeedLabel}"
+                                   Style="{DynamicResource BaseTextBlockStyle}"
+                                   VerticalAlignment="Center"/>
+                        <ComboBox Grid.Column="2"
+                                  Name="PART_VndbSpeedType"
+                                  SelectionChanged="PART_VndbSpeedType_SelectionChanged">
+                            <ComboBoxItem Content="{DynamicResource LOCHltbVndbSpeedSlow}" Tag="{x:Static hlte:DataType.Classic}"/>
+                            <ComboBoxItem Content="{DynamicResource LOCHltbVndbSpeedNormal}" Tag="{x:Static hlte:DataType.Average}"/>
+                            <ComboBoxItem Content="{DynamicResource LOCHltbVndbSpeedFast}" Tag="{x:Static hlte:DataType.Median}"/>
+                            <ComboBoxItem Content="{DynamicResource LOCHltbVndbSpeedTotal}" Tag="{x:Static hlte:DataType.Rushed}"/>
+                        </ComboBox>
                     </Grid>
 
                     <ListBox x:Name="lbSelectable"
@@ -188,6 +216,17 @@
                                         </Grid>
 
                                         <Grid Grid.Row="1" Margin="0,10,0,0">
+                                            <Grid>
+                                            <Grid.Style>
+                                                <Style TargetType="Grid">
+                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding IsVndb}" Value="True">
+                                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Grid.Style>
                                             <Grid.Resources>
                                                 <Style TargetType="TextBlock" BasedOn="{StaticResource BaseTextBlockStyle}"/>
                                             </Grid.Resources>
@@ -552,6 +591,62 @@
                                                     <ToolTip Content="{Binding Platform}"/>
                                                 </TextBlock.ToolTip>
                                             </TextBlock>
+                                            </Grid>
+
+                                            <Grid Visibility="{Binding IsVndb, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="auto"/>
+                                                    <RowDefinition Height="auto"/>
+                                                    <RowDefinition Height="auto"/>
+                                                    <RowDefinition Height="auto"/>
+                                                    <RowDefinition Height="auto"/>
+                                                    <RowDefinition Height="auto"/>
+                                                </Grid.RowDefinitions>
+
+                                                    <TextBlock Style="{DynamicResource BaseTextBlockStyle}" Grid.Row="0" Grid.Column="0" FontWeight="Bold" HorizontalAlignment="Center" Text="{DynamicResource LOCHltbVndbLengthColumnSpeed}"/>
+                                                    <TextBlock Style="{DynamicResource BaseTextBlockStyle}" Grid.Row="0" Grid.Column="1" FontWeight="Bold" HorizontalAlignment="Center" Text="{DynamicResource LOCHltbVndbLengthColumnMedian}"/>
+                                                    <TextBlock Style="{DynamicResource BaseTextBlockStyle}" Grid.Row="0" Grid.Column="2" FontWeight="Bold" HorizontalAlignment="Center" Text="{DynamicResource LOCHltbVndbLengthColumnAverage}"/>
+                                                    <TextBlock Style="{DynamicResource BaseTextBlockStyle}" Grid.Row="0" Grid.Column="3" FontWeight="Bold" HorizontalAlignment="Center" Text="{DynamicResource LOCHltbVndbLengthColumnStddev}"/>
+                                                    <TextBlock Style="{DynamicResource BaseTextBlockStyle}" Grid.Row="0" Grid.Column="4" FontWeight="Bold" HorizontalAlignment="Center" Text="{DynamicResource LOCHltbVndbLengthColumnVotes}"/>
+
+                                                    <TextBlock Style="{DynamicResource BaseTextBlockStyle}" Grid.Row="1" Grid.Column="0" Text="{DynamicResource LOCHltbVndbSpeedSlow}"/>
+                                                    <TextBlock Style="{DynamicResource BaseTextBlockStyle}" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center" Text="{Binding VndbSlowMedian}"/>
+                                                    <TextBlock Style="{DynamicResource BaseTextBlockStyle}" Grid.Row="1" Grid.Column="2" HorizontalAlignment="Center" Text="{Binding VndbSlowAverage}"/>
+                                                    <TextBlock Style="{DynamicResource BaseTextBlockStyle}" Grid.Row="1" Grid.Column="3" HorizontalAlignment="Center" Text="{Binding VndbSlowStddev}"/>
+                                                    <TextBlock Style="{DynamicResource BaseTextBlockStyle}" Grid.Row="1" Grid.Column="4" HorizontalAlignment="Center" Text="{Binding VndbSlowVotes}"/>
+
+                                                    <TextBlock Style="{DynamicResource BaseTextBlockStyle}" Grid.Row="2" Grid.Column="0" Text="{DynamicResource LOCHltbVndbSpeedNormal}"/>
+                                                    <TextBlock Style="{DynamicResource BaseTextBlockStyle}" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Center" Text="{Binding VndbNormalMedian}"/>
+                                                    <TextBlock Style="{DynamicResource BaseTextBlockStyle}" Grid.Row="2" Grid.Column="2" HorizontalAlignment="Center" Text="{Binding VndbNormalAverage}"/>
+                                                    <TextBlock Style="{DynamicResource BaseTextBlockStyle}" Grid.Row="2" Grid.Column="3" HorizontalAlignment="Center" Text="{Binding VndbNormalStddev}"/>
+                                                    <TextBlock Style="{DynamicResource BaseTextBlockStyle}" Grid.Row="2" Grid.Column="4" HorizontalAlignment="Center" Text="{Binding VndbNormalVotes}"/>
+
+                                                <TextBlock Style="{DynamicResource BaseTextBlockStyle}" Grid.Row="3" Grid.Column="0" Text="{DynamicResource LOCHltbVndbSpeedFast}"/>
+                                                <TextBlock Style="{DynamicResource BaseTextBlockStyle}" Grid.Row="3" Grid.Column="1" HorizontalAlignment="Center" Text="{Binding VndbFastMedian}"/>
+                                                <TextBlock Style="{DynamicResource BaseTextBlockStyle}" Grid.Row="3" Grid.Column="2" HorizontalAlignment="Center" Text="{Binding VndbFastAverage}"/>
+                                                <TextBlock Style="{DynamicResource BaseTextBlockStyle}" Grid.Row="3" Grid.Column="3" HorizontalAlignment="Center" Text="{Binding VndbFastStddev}"/>
+                                                <TextBlock Style="{DynamicResource BaseTextBlockStyle}" Grid.Row="3" Grid.Column="4" HorizontalAlignment="Center" Text="{Binding VndbFastVotes}"/>
+
+                                                <TextBlock Style="{DynamicResource BaseTextBlockStyle}" Grid.Row="4" Grid.Column="0" Text="{DynamicResource LOCHltbVndbSpeedTotal}"/>
+                                                <TextBlock Style="{DynamicResource BaseTextBlockStyle}" Grid.Row="4" Grid.Column="1" HorizontalAlignment="Center" Text="{Binding VndbTotalMedian}"/>
+                                                <TextBlock Style="{DynamicResource BaseTextBlockStyle}" Grid.Row="4" Grid.Column="2" HorizontalAlignment="Center" Text="{Binding VndbTotalAverage}"/>
+                                                <TextBlock Style="{DynamicResource BaseTextBlockStyle}" Grid.Row="4" Grid.Column="3" HorizontalAlignment="Center" Text="{Binding VndbTotalStddev}"/>
+                                                <TextBlock Style="{DynamicResource BaseTextBlockStyle}" Grid.Row="4" Grid.Column="4" HorizontalAlignment="Center" Text="{Binding VndbTotalVotes}"/>
+
+                                                    <TextBlock Style="{DynamicResource BaseTextBlockStyle}" Grid.Row="5" Grid.Column="0" Text="{DynamicResource LOCPlatformsTitle}" Visibility="{Binding Platform, Converter={StaticResource StringNullOrEmptyToVisibilityConverter}}"/>
+                                                    <TextBlock Style="{DynamicResource BaseTextBlockStyle}" Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="4" Text="{Binding Platform}" Visibility="{Binding Platform, Converter={StaticResource StringNullOrEmptyToVisibilityConverter}}" TextTrimming="CharacterEllipsis" MouseEnter="TextBlock_MouseEnter">
+                                                    <TextBlock.ToolTip>
+                                                        <ToolTip Content="{Binding Platform}"/>
+                                                    </TextBlock.ToolTip>
+                                                </TextBlock>
+                                            </Grid>
                                         </Grid>
                                     </Grid>
                                 </Grid>

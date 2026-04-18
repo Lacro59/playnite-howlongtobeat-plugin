@@ -1,5 +1,4 @@
-﻿using CommonPlayniteShared.Converters;
-using CommonPluginsShared;
+﻿using CommonPluginsShared;
 using CommonPluginsShared.Converters;
 using CommonPluginsShared.Extensions;
 using CommonPluginsShared.Models;
@@ -517,29 +516,60 @@ namespace HowLongToBeat.Views
                 PlayTimeToStringConverterWithZero playTimeToStringConverterWithZero = new PlayTimeToStringConverterWithZero();
                 TbRemainingTime.Text = rt > 0 ? (string)playTimeToStringConverterWithZero.Convert(rt, null, null, CultureInfo.CurrentCulture) : string.Empty;
 
-                // Type data
+                // Type data (HLTB) or VNDB reading speed (reuses DataType: Classic=Slow, Average=Normal, Median=Fast, Rushed=Total)
                 if (!gameHowLongToBeat?.HasDataEmpty ?? false)
                 {
-                    switch (gameHowLongToBeat.GetData().GameHltbData.DataType)
+                    var dataUser = gameHowLongToBeat.GetData();
+                    var hltbData = dataUser?.GameHltbData;
+                    if (hltbData == null)
                     {
-                        case DataType.Classic:
-                            Hltb_DataType.Text = ResourceProvider.GetString("LOCHltbSelectDataTypeClassic");
-                            break;
-                        case DataType.Average:
-                            Hltb_DataType.Text = ResourceProvider.GetString("LOCHltbSelectDataTypeAverage");
-                            break;
-                        case DataType.Median:
-                            Hltb_DataType.Text = ResourceProvider.GetString("LOCHltbSelectDataTypeMedian");
-                            break;
-                        case DataType.Rushed:
-                            Hltb_DataType.Text = ResourceProvider.GetString("LOCHltbSelectDataTypeRushed");
-                            break;
-                        case DataType.Leisure:
-                            Hltb_DataType.Text = ResourceProvider.GetString("LOCHltbSelectDataTypeLeisure");
-                            break;
-                        default:
-                            Hltb_DataType.Text = ResourceProvider.GetString("LOCHltbSelectDataTypeLeisure");
-                            break;
+                        Hltb_DataType.Text = string.Empty;
+                    }
+                    else if (dataUser.IsVndb)
+                    {
+                        var vndbSpeed = dataUser.VndbSpeedDataType ?? DataType.Average;
+                        switch (vndbSpeed)
+                        {
+                            case DataType.Classic:
+                                Hltb_DataType.Text = ResourceProvider.GetString("LOCHltbVndbSpeedSlow");
+                                break;
+                            case DataType.Average:
+                                Hltb_DataType.Text = ResourceProvider.GetString("LOCHltbVndbSpeedNormal");
+                                break;
+                            case DataType.Median:
+                                Hltb_DataType.Text = ResourceProvider.GetString("LOCHltbVndbSpeedFast");
+                                break;
+                            case DataType.Rushed:
+                                Hltb_DataType.Text = ResourceProvider.GetString("LOCHltbVndbSpeedTotal");
+                                break;
+                            default:
+                                Hltb_DataType.Text = ResourceProvider.GetString("LOCHltbVndbSpeedNormal");
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        switch (hltbData.DataType)
+                        {
+                            case DataType.Classic:
+                                Hltb_DataType.Text = ResourceProvider.GetString("LOCHltbSelectDataTypeClassic");
+                                break;
+                            case DataType.Average:
+                                Hltb_DataType.Text = ResourceProvider.GetString("LOCHltbSelectDataTypeAverage");
+                                break;
+                            case DataType.Median:
+                                Hltb_DataType.Text = ResourceProvider.GetString("LOCHltbSelectDataTypeMedian");
+                                break;
+                            case DataType.Rushed:
+                                Hltb_DataType.Text = ResourceProvider.GetString("LOCHltbSelectDataTypeRushed");
+                                break;
+                            case DataType.Leisure:
+                                Hltb_DataType.Text = ResourceProvider.GetString("LOCHltbSelectDataTypeLeisure");
+                                break;
+                            default:
+                                Hltb_DataType.Text = ResourceProvider.GetString("LOCHltbSelectDataTypeLeisure");
+                                break;
+                        }
                     }
                 }
             }

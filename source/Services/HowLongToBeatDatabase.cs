@@ -432,6 +432,8 @@ namespace HowLongToBeat.Services
                     HltbDataUser webDataSearch = dataSearch.Find(x => x.Id == loadedItem.GetData().Id);
                     if (webDataSearch != null)
                     {
+                        var previousVndb = loadedItem.GetData();
+                        webDataSearch.ApplyVndbSpeedSelection(HltbDataUser.InferVndbSpeedAfterRefresh(previousVndb, webDataSearch));
                         loadedItem.Items = new List<HltbDataUser> { webDataSearch };
                         loadedItem.DateLastRefresh = DateTime.Now;
                         Update(loadedItem);

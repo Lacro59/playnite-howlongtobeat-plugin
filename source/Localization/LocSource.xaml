@@ -75,6 +75,16 @@ If none has this status, it takes the most recent.</sys:String>
 
     <sys:String x:Key="LOCSelection">HowLongToBeat selection</sys:String>
     <sys:String x:Key="LOCHltbUsedVndb">Used Vndb</sys:String>
+    <sys:String x:Key="LOCHltbVndbSpeedLabel">VNDB speed</sys:String>
+    <sys:String x:Key="LOCHltbVndbLengthColumnSpeed">Speed</sys:String>
+    <sys:String x:Key="LOCHltbVndbLengthColumnMedian">Median</sys:String>
+    <sys:String x:Key="LOCHltbVndbLengthColumnAverage">Average</sys:String>
+    <sys:String x:Key="LOCHltbVndbLengthColumnStddev">Stddev</sys:String>
+    <sys:String x:Key="LOCHltbVndbLengthColumnVotes"># Votes</sys:String>
+    <sys:String x:Key="LOCHltbVndbSpeedSlow">Slow</sys:String>
+    <sys:String x:Key="LOCHltbVndbSpeedNormal">Normal</sys:String>
+    <sys:String x:Key="LOCHltbVndbSpeedFast">Fast</sys:String>
+    <sys:String x:Key="LOCHltbVndbSpeedTotal">Total</sys:String>
     <sys:String x:Key="LOCHltbTabSearch">Search</sys:String>
     <sys:String x:Key="LOCHltbTabManual">Enter manually</sys:String>
     <sys:String x:Key="LOCHltbOpenOnWebsite">Search on HowLongToBeat</sys:String>
