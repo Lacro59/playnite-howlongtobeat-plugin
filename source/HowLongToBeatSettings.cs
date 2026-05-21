@@ -9,6 +9,7 @@ using HowLongToBeat.Models.StartPage;
 using HowLongToBeat.Views;
 using Playnite.SDK;
 using Playnite.SDK.Data;
+using Playnite.SDK.Models;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -188,6 +189,98 @@ namespace HowLongToBeat
         public List<Storefront> Storefronts { get; set; } = new List<Storefront>();
         public List<HltbPlatformMatch> Platforms { get; set; } = new List<HltbPlatformMatch>();
 
+        /// <summary>
+        /// Copies storefront mappings from the legacy <see cref="Storefronts"/> list into <see cref="StorefrontElements"/>.
+        /// </summary>
+        /// <returns>True when at least one mapping was added or updated.</returns>
+        public bool SyncStorefrontElementsFromLegacy()
+        {
+            if (Storefronts == null || StorefrontElements == null)
+            {
+                return false;
+            }
+
+            bool changed = false;
+            foreach (Storefront legacy in Storefronts)
+            {
+                if (legacy == null || legacy.SourceId == default(Guid) || legacy.HltbStorefrontId == HltbStorefront.None)
+                {
+                    continue;
+                }
+
+                Storefront match = StorefrontElements.Find(x => x.SourceId == legacy.SourceId);
+                if (match == null)
+                {
+                    StorefrontElements.Add(new Storefront
+                    {
+                        SourceId = legacy.SourceId,
+                        HltbStorefrontId = legacy.HltbStorefrontId
+                    });
+                    changed = true;
+                }
+                else if (match.HltbStorefrontId == HltbStorefront.None)
+                {
+                    match.HltbStorefrontId = legacy.HltbStorefrontId;
+                    changed = true;
+                }
+            }
+
+            return changed;
+        }
+
+        /// <summary>
+        /// Ensures every Playnite library source has an entry in <see cref="StorefrontElements"/>.
+        /// </summary>
+        /// <returns>True when at least one source entry was added.</returns>
+        public bool EnsureStorefrontElementsForSources(IEnumerable<GameSource> sources)
+        {
+            if (sources == null || StorefrontElements == null)
+            {
+                return false;
+            }
+
+            bool changed = false;
+            foreach (GameSource source in sources)
+            {
+                if (source == null || source.Id == default(Guid))
+                {
+                    continue;
+                }
+
+                if (StorefrontElements.Find(x => x.SourceId == source.Id) == null)
+                {
+                    StorefrontElements.Add(new Storefront { SourceId = source.Id });
+                    changed = true;
+                }
+            }
+
+            return changed;
+        }
+
+        /// <summary>
+        /// Resolves the HLTB storefront display name for a Playnite library source.
+        /// </summary>
+        public string GetHltbStorefrontNameForSource(Guid sourceId)
+        {
+            if (sourceId == default(Guid))
+            {
+                return null;
+            }
+
+            Storefront configured = StorefrontElements?.Find(x => x.SourceId == sourceId);
+            if (configured != null && configured.HltbStorefrontId != HltbStorefront.None)
+            {
+                return configured.HltbStorefrontName;
+            }
+
+            Storefront legacy = Storefronts?.Find(x => x.SourceId == sourceId && x.HltbStorefrontId != HltbStorefront.None);
+            if (legacy != null)
+            {
+                return legacy.HltbStorefrontName;
+            }
+
+            return null;
+        }
 
         public FilterSettings filterSettings { get; set; } = new FilterSettings();
 
@@ -295,6 +388,11 @@ namespace HowLongToBeat
 
             // LoadPluginSettings returns null if not saved data is available.
             Settings = savedSettings ?? new HowLongToBeatSettings();
+
+            if (Settings.SyncStorefrontElementsFromLegacy())
+            {
+                plugin.SavePluginSettings(Settings);
+            }
 
             if (Settings.Storefronts.Count == 0)
             {
@@ -408,6 +506,7 @@ namespace HowLongToBeat
                         }
                     }
 
+                    bool storefrontChanged = false;
                     if (Settings.StorefrontElements.Count == 0)
                     {
                         var localElements = new List<Storefront>();
@@ -416,60 +515,13 @@ namespace HowLongToBeat
                             localElements.Add(new Storefront { SourceId = x.Id });
                         });
 
-                        if (!Settings.IsConverted)
-                        {
-                            try
-                            {
-                                foreach (var s in Settings.Storefronts)
-                                {
-                                    if (s.HltbStorefrontId != HltbStorefront.None)
-                                    {
-                                        var match = localElements.Find(y => y.SourceId == s.SourceId);
-                                        if (match != null)
-                                        {
-                                            match.HltbStorefrontId = s.HltbStorefrontId;
-                                        }
-                                    }
-                                }
-
-                                Application.Current.Dispatcher?.Invoke(() =>
-                                {
-                                    try
-                                    {
-                                        Settings.StorefrontElements = localElements.Where(x => !x.SourceName.IsNullOrEmpty()).OrderBy(x => x.SourceName).ToList();
-                                        Settings.IsConverted = true;
-                                        Plugin.SavePluginSettings(Settings);
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        Common.LogError(ex, false);
-                                    }
-                                });
-                            }
-                            catch (Exception ex)
-                            {
-                                Common.LogError(ex, false);
-                                Application.Current.Dispatcher?.Invoke(() =>
-                                {
-                                    Settings.StorefrontElements = localElements.Where(x => !x.SourceName.IsNullOrEmpty()).OrderBy(x => x.SourceName).ToList();
-                                });
-                            }
-                        }
-                        else
-                        {
-                            Application.Current.Dispatcher?.Invoke(() =>
-                            {
-                                try
-                                {
-                                    Settings.StorefrontElements = localElements.Where(x => !x.SourceName.IsNullOrEmpty()).OrderBy(x => x.SourceName).ToList();
-                                }
-                                catch (Exception ex)
-                                {
-                                    Common.LogError(ex, false);
-                                }
-                            });
-                        }
+                        Settings.StorefrontElements = localElements;
+                        storefrontChanged = true;
+                        Settings.IsConverted = true;
                     }
+
+                    storefrontChanged |= Settings.EnsureStorefrontElementsForSources(API.Instance.Database.Sources);
+                    storefrontChanged |= Settings.SyncStorefrontElementsFromLegacy();
 
                     try
                     {
@@ -484,6 +536,18 @@ namespace HowLongToBeat
                     catch (Exception)
                     {
                         Settings.StorefrontElements = Settings.StorefrontElements.Where(x => !x.SourceName.IsNullOrEmpty()).OrderBy(x => x.SourceName).ToList();
+                    }
+
+                    if (storefrontChanged)
+                    {
+                        try
+                        {
+                            Application.Current.Dispatcher?.Invoke(() => Plugin.SavePluginSettings(Settings));
+                        }
+                        catch (Exception ex)
+                        {
+                            Common.LogError(ex, false);
+                        }
                     }
                 }
                 catch (Exception ex)

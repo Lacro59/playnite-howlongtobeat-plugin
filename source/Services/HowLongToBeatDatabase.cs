@@ -1158,10 +1158,10 @@ namespace HowLongToBeat.Services
 
                         #region Search storefront
 
-                        Storefront storefront = PluginSettings.StorefrontElements.FirstOrDefault(x => x.SourceId != default && x.SourceId == game.SourceId);
-                        if (storefront != null)
+                        string resolvedStorefrontName = PluginSettings.GetHltbStorefrontNameForSource(game.SourceId);
+                        if (!resolvedStorefrontName.IsNullOrEmpty())
                         {
-                            storefrontName = storefront.HltbStorefrontName;
+                            storefrontName = resolvedStorefrontName;
                         }
                         else
                         {
