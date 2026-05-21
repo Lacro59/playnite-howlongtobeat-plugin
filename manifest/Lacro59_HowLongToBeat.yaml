@@ -399,7 +399,7 @@ Packages:
   - Version: 3.10.6
     RequiredApiVersion: 6.16.0
     ReleaseDate: 2026-04-19
-    PackageUrl: https://github.com/Lacro59/playnite-howlongtobeat-plugin/releases/download/v3.10.5/playnite-howlongtobeat-plugin_3_10_5.pext
+    PackageUrl: https://github.com/Lacro59/playnite-howlongtobeat-plugin/releases/download/v3.10.6/playnite-howlongtobeat-plugin_3_10_6.pext
     Changelog:
       - 'Added: Manual HLTB entry creation (thanks to SparrowBrain)'
       - 'Added: VNDB speed selection is now persisted'

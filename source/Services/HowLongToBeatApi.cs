@@ -957,7 +957,6 @@ namespace HowLongToBeat.Services
         /// <returns>The search endpoint URL.</returns>
         private async Task<string> GetSearchUrl()
         {
-            return "/api/find";
             if (!SearchUrl.IsNullOrEmpty() && !SearchUrl.Contains("error"))
             {
                 return SearchUrl;
