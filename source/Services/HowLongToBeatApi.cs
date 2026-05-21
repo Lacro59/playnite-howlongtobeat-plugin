@@ -325,7 +325,7 @@ namespace HowLongToBeat.Services
         private static string UrlPostData => UrlBase + "/api/submit";
         private static string UrlPostDataEdit => UrlBase + "/submit/edit/{0}";
 
-        private static string SearchEndPoint => "/api/locate";
+        private static string SearchEndPoint => "/api/bleed";
         private static string UrlSearch => UrlBase + SearchEndPoint;
 
         private static string UrlGameImg => UrlBase + "/games/{0}";
