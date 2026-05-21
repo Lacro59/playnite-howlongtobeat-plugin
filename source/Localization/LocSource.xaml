@@ -232,4 +232,17 @@ Example:
     <sys:String x:Key="LOCHowLongToBeatAliasesCellToolTip">Click a cell (or press F2) to edit. Press Enter to commit.</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAliasesTip">Tip: double-click a cell to edit. Aliases are saved when you click Save.</sys:String>
 
+    <!-- Platform and storefront mapping -->
+
+    <sys:String x:Key="LOCHowLongToBeatPlatformsMappingDescription" xml:space="preserve">Each row links a Playnite platform (from your library database) to the platform name sent to HowLongToBeat when you submit playtime.
+If the HLTB value is not set (----), the plugin uses PC as the default on submit.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatStorefrontMappingDescription" xml:space="preserve">Each row links a Playnite library source (Steam, Epic, GOG, etc.) to the storefront sent to HowLongToBeat when you submit playtime.
+The left column is the Playnite source; the right column is the value stored in your plugin settings (StorefrontElements).</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatMappingColumnPlayniteOrigin">Playnite (source)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatMappingColumnHltbTarget">HowLongToBeat (submission)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatMappingPlatformDefaultHint">Not set — PC is used when submitting data</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatMappingStorefrontNotSetHint">Not set — storefront will be empty on submit</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatMappingPlayniteSourceIdToolTip">Playnite library source Id</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatMappingPlaynitePlatformIdToolTip">Playnite platform Id</sys:String>
+
 </ResourceDictionary>
