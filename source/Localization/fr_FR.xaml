@@ -132,6 +132,13 @@ Si aucun n'a ce statut, il prend le plus récent.</sys:String>
 Veuillez en configurer une.
 Plateforme par défaut utilisée (PC)</sys:String>
 
+    <sys:String x:Key="LOCHowLongToBeatErrorSubmitFailed">Impossible de mettre à jour votre profil HowLongToBeat pour {0}.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatErrorSubmitUnauthorized">HowLongToBeat a refusé la mise à jour (session expirée ou non autorisée). Ouvrez les paramètres du plugin et reconnectez-vous.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatErrorSubmitHttpStatus">HowLongToBeat a renvoyé l'erreur HTTP {0}.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatErrorSubmitNoResponse">Aucune réponse de HowLongToBeat. Vérifiez votre connexion et réessayez.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatErrorSubmitSessionCookies">Les cookies de session HowLongToBeat sont absents. Ouvrez les paramètres du plugin et reconnectez-vous.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatRefreshSessionCookies">Actualisation de la session HowLongToBeat…</sys:String>
+
 
     <!-- QuickSearch -->
 

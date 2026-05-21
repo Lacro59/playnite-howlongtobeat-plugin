@@ -33,19 +33,11 @@ namespace HowLongToBeat.Services
         private static HowLongToBeatDatabase PluginDatabase => HowLongToBeat.PluginDatabase;
 
         // Helper to centralize verbose logging checks
-        private static bool IsVerboseLoggingEnabled => PluginDatabase?.PluginSettings is HowLongToBeatSettings _vs && _vs.EnableVerboseLogging;
-
-        private void LogDebugVerbose(string message)
-        {
-            try
-            {
-                if (IsVerboseLoggingEnabled)
-                {
-                    Logger.Debug(message);
-                }
-            }
-            catch { }
-        }
+#if DEBUG
+        private static bool IsVerboseLoggingEnabled => true;
+#else
+        private static bool IsVerboseLoggingEnabled => false;
+#endif
 
         private string SafeStr(string s)
         {
@@ -68,6 +60,13 @@ namespace HowLongToBeat.Services
         private DateTime lastLoginCheckUtc = DateTime.MinValue;
         private bool? lastLoginCheckResult = null;
 
+        #region Submit session cookies
+
+        /// <summary>
+        /// Logs cookie diagnostics when verbose logging is enabled (counts, domains, session cookies, names).
+        /// </summary>
+        /// <param name="context">Caller context label used in log messages.</param>
+        /// <param name="cookies">Cookie list to summarize.</param>
         private void LogCookieSummary(string context, List<HttpCookie> cookies)
         {
             try
@@ -97,10 +96,167 @@ namespace HowLongToBeat.Services
                     }
                 }
 
-                Logger.Debug($"HLTB Auth: {context} cookies={cookies.Count} expired={expiredCount} domains=[{string.Join(",", domains)}] minExp={(minExpiry?.ToString("o") ?? "<none>")} maxExp={(maxExpiry?.ToString("o") ?? "<none>")}");
+                Common.LogDebug(false, $"HLTB Auth: {context} cookies={cookies.Count} expired={expiredCount} domains=[{string.Join(",", domains)}] minExp={(minExpiry?.ToString("o") ?? "<none>")} maxExp={(maxExpiry?.ToString("o") ?? "<none>")}");
+
+                string[] sessionCookieNames = { "hltb_alive", "hltb_online", "hltb_view_list" };
+                var sessionStates = new List<string>();
+                foreach (string cookieName in sessionCookieNames)
+                {
+                    HttpCookie sessionCookie = cookies.FirstOrDefault(c => string.Equals(c?.Name, cookieName, StringComparison.OrdinalIgnoreCase));
+                    if (sessionCookie == null)
+                    {
+                        sessionStates.Add(cookieName + "=missing");
+                    }
+                    else if (sessionCookie.Expires is DateTime expiry && expiry <= DateTime.Now)
+                    {
+                        sessionStates.Add(cookieName + "=expired");
+                    }
+                    else
+                    {
+                        sessionStates.Add(cookieName + "=present");
+                    }
+                }
+
+                Common.LogDebug(false, $"HLTB Auth: {context} sessionCookies=[{string.Join(", ", sessionStates)}]");
+
+                string cookieNames = string.Join(", ", cookies.Select(c => c?.Name ?? string.Empty).Where(n => !string.IsNullOrEmpty(n)).OrderBy(n => n, StringComparer.OrdinalIgnoreCase));
+                Common.LogDebug(false, $"HLTB Auth: {context} cookieNames=[{cookieNames}]");
             }
             catch { }
         }
+
+        /// <summary>
+        /// Returns whether the cookie list contains the HowLongToBeat session cookie required for profile updates.
+        /// </summary>
+        /// <param name="cookies">Cookie list to inspect.</param>
+        /// <returns><c>true</c> when the <c>hltb_alive</c> cookie is present.</returns>
+        private static bool HasHltbSessionCookies(List<HttpCookie> cookies)
+        {
+            return cookies != null && cookies.Any(c => string.Equals(c?.Name, "hltb_alive", StringComparison.OrdinalIgnoreCase));
+        }
+
+        /// <summary>
+        /// Post-navigation delay used when refreshing HowLongToBeat session cookies before submit.
+        /// </summary>
+        private const int SubmitSessionCookieRefreshWaitMs = 400;
+
+        /// <summary>
+        /// Builds the minimal list of HowLongToBeat URLs to visit before reading session cookies.
+        /// </summary>
+        /// <param name="submissionId">User submission id. When greater than zero, the edit page is visited first.</param>
+        /// <returns>Ordered URLs to load in the WebView.</returns>
+        private List<string> GetSessionCookieRefreshUrls(int submissionId)
+        {
+            List<string> urls = new List<string>();
+
+            if (submissionId > 0)
+            {
+                urls.Add(string.Format(UrlPostDataEdit, submissionId));
+            }
+
+            string userLogin = UserLogin;
+            if (userLogin.IsNullOrEmpty() && PluginDatabase?.PluginSettings != null)
+            {
+                userLogin = PluginDatabase.PluginSettings.UserLogin;
+            }
+
+            if (!userLogin.IsNullOrEmpty())
+            {
+                urls.Add(UrlBase + "/user/" + userLogin);
+            }
+
+            if (urls.Count == 0)
+            {
+                urls.Add(UrlBase);
+            }
+
+            return urls;
+        }
+
+        /// <summary>
+        /// Visits HowLongToBeat pages in a WebView to refresh session cookies (<c>hltb_alive</c>, <c>hltb_online</c>).
+        /// Persisted cookies are updated when extraction succeeds.
+        /// Must run on the UI thread.
+        /// </summary>
+        /// <param name="submissionId">User submission id passed to <see cref="GetSessionCookieRefreshUrls"/>.</param>
+        /// <returns>Refreshed cookies ready for API calls.</returns>
+        private List<HttpCookie> RefreshSubmitSessionCookies(int submissionId)
+        {
+            List<string> urls = GetSessionCookieRefreshUrls(submissionId);
+            Common.LogDebug(!IsVerboseLoggingEnabled, $"RefreshSubmitSessionCookies: urls=[{string.Join(", ", urls)}]");
+
+            List<HttpCookie> cookies = CookiesTools.GetNewWebCookies(urls, false, null, SubmitSessionCookieRefreshWaitMs);
+            if (cookies != null && cookies.Count > 0)
+            {
+                CookiesTools.SetStoredCookies(cookies);
+                LogCookieSummary("RefreshSubmitSessionCookies", cookies);
+                return cookies;
+            }
+
+            cookies = CookiesTools.GetStoredCookies();
+            LogCookieSummary("RefreshSubmitSessionCookies fallback", cookies);
+            return cookies ?? new List<HttpCookie>();
+        }
+
+        /// <summary>
+        /// Returns cookies for profile submission, refreshing the session only when <c>hltb_alive</c> is missing.
+        /// When a refresh is required, a global progress dialog is shown while the WebView runs on the UI thread.
+        /// </summary>
+        /// <param name="submissionId">User submission id used to build refresh URLs.</param>
+        /// <returns>Cookie list to send with the submit request.</returns>
+        private async Task<List<HttpCookie>> GetCookiesForSubmitAsync(int submissionId)
+        {
+            List<HttpCookie> stored = CookiesTools.GetStoredCookies();
+            if (HasHltbSessionCookies(stored))
+            {
+                Common.LogDebug(!IsVerboseLoggingEnabled, "GetCookiesForSubmit: using stored session cookies");
+                return stored;
+            }
+
+            TaskCompletionSource<List<HttpCookie>> refreshCompleted = new TaskCompletionSource<List<HttpCookie>>();
+
+            try
+            {
+                GlobalProgressOptions progressOptions = new GlobalProgressOptions(
+                    PluginDatabase.PluginName + " - " + ResourceProvider.GetString("LOCHowLongToBeatRefreshSessionCookies"))
+                {
+                    Cancelable = false,
+                    IsIndeterminate = true
+                };
+
+                _ = API.Instance.Dialogs.ActivateGlobalProgress(async (GlobalProgressActionArgs args) =>
+                {
+                    try
+                    {
+                        args.Text = ResourceProvider.GetString("LOCHowLongToBeatRefreshSessionCookies");
+                        List<HttpCookie> cookies = await Task.Run(() =>
+                        {
+                            if (Application.Current?.Dispatcher != null)
+                            {
+                                return Application.Current.Dispatcher.Invoke(() => RefreshSubmitSessionCookies(submissionId));
+                            }
+
+                            return RefreshSubmitSessionCookies(submissionId);
+                        }).ConfigureAwait(false);
+
+                        refreshCompleted.TrySetResult(cookies);
+                    }
+                    catch (Exception ex)
+                    {
+                        refreshCompleted.TrySetException(ex);
+                    }
+                }, progressOptions);
+
+                return await refreshCompleted.Task.ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, false, false, PluginDatabase.PluginName);
+                return CookiesTools.GetStoredCookies();
+            }
+        }
+
+        #endregion
 
         private void FireAndForget(Task task, string context)
         {
@@ -643,7 +799,7 @@ namespace HowLongToBeat.Services
                                         p90 = ordered[Math.Max(0, (int)Math.Floor(ordered.Length * 0.9) - 1)];
                                     }
 
-                                    LogDebugVerbose($"HLTB Summary: searchTarget={searchTarget} searchInFlight={searchInFlight} gameTarget={gameTarget} gameInFlight={gameInFlight} avgSearchMs={Math.Round(avg, 1)} medianSearchMs={Math.Round(median, 1)} p90SearchMs={Math.Round(p90, 1)} persistentCacheHits={PersistentCacheHits} inMemoryCacheHits={InMemoryCacheHits} pageFetches={PageFetches} forced={searchForced}");
+                                    Common.LogDebug(!IsVerboseLoggingEnabled, $"HLTB Summary: searchTarget={searchTarget} searchInFlight={searchInFlight} gameTarget={gameTarget} gameInFlight={gameInFlight} avgSearchMs={Math.Round(avg, 1)} medianSearchMs={Math.Round(median, 1)} p90SearchMs={Math.Round(p90, 1)} persistentCacheHits={PersistentCacheHits} inMemoryCacheHits={InMemoryCacheHits} pageFetches={PageFetches} forced={searchForced}");
                                 }
                                 catch (Exception ex)
                                 {
@@ -740,7 +896,7 @@ namespace HowLongToBeat.Services
             }
             catch { }
             DateTime startTime = DateTime.UtcNow;
-            LogDebugVerbose($"GetGameData START id={id} task={Task.CurrentId} thread={Thread.CurrentThread.ManagedThreadId} time={startTime:HH:mm:ss.fff}");
+            Common.LogDebug(!IsVerboseLoggingEnabled, $"GetGameData START id={id} task={Task.CurrentId} thread={Thread.CurrentThread.ManagedThreadId} time={startTime:HH:mm:ss.fff}");
 
             try
             {
@@ -751,7 +907,7 @@ namespace HowLongToBeat.Services
                     {
                         jsonData = cachedJson;
                         try { System.Threading.Interlocked.Increment(ref PersistentCacheHits); } catch { }
-                        LogDebugVerbose($"GetGameData id={id} - persistent cache hit");
+                        Common.LogDebug(!IsVerboseLoggingEnabled, $"GetGameData id={id} - persistent cache hit");
                     }
                 }
                 catch (Exception ex)
@@ -776,7 +932,7 @@ namespace HowLongToBeat.Services
                             {
                                 response = cached;
                                 try { System.Threading.Interlocked.Increment(ref InMemoryCacheHits); } catch { }
-                                LogDebugVerbose($"GetGameData id={id} - in-memory cache hit");
+                                Common.LogDebug(!IsVerboseLoggingEnabled, $"GetGameData id={id} - in-memory cache hit");
                             }
                             else
                             {
@@ -787,7 +943,7 @@ namespace HowLongToBeat.Services
                                         if (!httpResp.IsSuccessStatusCode)
                                         {
                                             var code = (int)httpResp.StatusCode;
-                                            LogDebugVerbose($"GetGameData id={id} - HTTP {code} fetching page");
+                                            Common.LogDebug(!IsVerboseLoggingEnabled, $"GetGameData id={id} - HTTP {code} fetching page");
                                             response = string.Empty;
                                         }
                                         else
@@ -837,7 +993,7 @@ namespace HowLongToBeat.Services
                         {
                             var jitter = rnd.Next(0, 200);
                             var delay = baseDelayMs * attempts + jitter;
-                            LogDebugVerbose($"GetGameData id={id} - retry {attempts} after {delay}ms");
+                            Common.LogDebug(!IsVerboseLoggingEnabled, $"GetGameData id={id} - retry {attempts} after {delay}ms");
                             try { await Task.Delay(delay, cancellationToken); } catch (OperationCanceledException) { throw; }
                         }
                     }
@@ -848,7 +1004,7 @@ namespace HowLongToBeat.Services
                     Logger.Warn($"No GameData find with {id}");
                     double elapsed = (DateTime.UtcNow - startTime).TotalMilliseconds;
                     try { ConcurrencyController?.ReportSample(elapsed, false); } catch { }
-                    LogDebugVerbose($"GetGameData DONE id={id} task={Task.CurrentId} thread={Thread.CurrentThread.ManagedThreadId} elapsed={elapsed}ms");
+                    Common.LogDebug(!IsVerboseLoggingEnabled, $"GetGameData DONE id={id} task={Task.CurrentId} thread={Thread.CurrentThread.ManagedThreadId} elapsed={elapsed}ms");
                     return null;
                 }
 
@@ -904,7 +1060,7 @@ namespace HowLongToBeat.Services
 
                     double elapsed = (DateTime.UtcNow - startTime).TotalMilliseconds;
                     try { ConcurrencyController?.ReportSample(elapsed, true); } catch { }
-                    LogDebugVerbose($"GetGameData DONE id={id} task={Task.CurrentId} thread={Thread.CurrentThread.ManagedThreadId} elapsed={elapsed}ms");
+                    Common.LogDebug(!IsVerboseLoggingEnabled, $"GetGameData DONE id={id} task={Task.CurrentId} thread={Thread.CurrentThread.ManagedThreadId} elapsed={elapsed}ms");
                     return hltbData;
                 }
                 else
@@ -912,7 +1068,7 @@ namespace HowLongToBeat.Services
                     Logger.Warn($"No GameData find with {id}");
                     double elapsed = (DateTime.UtcNow - startTime).TotalMilliseconds;
                     try { ConcurrencyController?.ReportSample(elapsed, false); } catch { }
-                    LogDebugVerbose($"GetGameData DONE id={id} task={Task.CurrentId} thread={Thread.CurrentThread.ManagedThreadId} elapsed={elapsed}ms");
+                    Common.LogDebug(!IsVerboseLoggingEnabled, $"GetGameData DONE id={id} task={Task.CurrentId} thread={Thread.CurrentThread.ManagedThreadId} elapsed={elapsed}ms");
                     return null;
                 }
             }
@@ -981,7 +1137,7 @@ namespace HowLongToBeat.Services
             if (!forceRediscover && !SearchUrl.IsNullOrEmpty() && !SearchUrl.Contains("error"))
             {
                 try { Logger.Info($"HLTB search: using cached discovered endpoint '{SearchUrl}'"); } catch { }
-                LogDebugVerbose($"GetSearchUrl: cache hit endpoint='{SearchUrl}'");
+                Common.LogDebug(!IsVerboseLoggingEnabled, $"GetSearchUrl: cache hit endpoint='{SearchUrl}'");
                 return SearchUrl;
             }
 
@@ -990,7 +1146,7 @@ namespace HowLongToBeat.Services
             {
                 if (!forceRediscover && !SearchUrl.IsNullOrEmpty() && !SearchUrl.Contains("error"))
                 {
-                    LogDebugVerbose($"GetSearchUrl: cache hit after discovery wait endpoint='{SearchUrl}'");
+                    Common.LogDebug(!IsVerboseLoggingEnabled, $"GetSearchUrl: cache hit after discovery wait endpoint='{SearchUrl}'");
                     return SearchUrl;
                 }
 
@@ -1121,11 +1277,11 @@ namespace HowLongToBeat.Services
                                 try { Logger.Info($"HLTB search: discovered endpoint '{SearchUrl}' from script '{scriptUrl}'"); } catch { }
                             }
 
-                            LogDebugVerbose($"GetSearchUrl: discovered suffix='{suffix}' endpoint='{SearchUrl}' newlyCached={newlyCached}");
+                            Common.LogDebug(!IsVerboseLoggingEnabled, $"GetSearchUrl: discovered suffix='{suffix}' endpoint='{SearchUrl}' newlyCached={newlyCached}");
                             return SearchUrl;
                         }
 
-                        LogDebugVerbose($"GetSearchUrl: ignoring legacy endpoint suffix 'find' in '{scriptUrl}'");
+                        Common.LogDebug(!IsVerboseLoggingEnabled, $"GetSearchUrl: ignoring legacy endpoint suffix 'find' in '{scriptUrl}'");
                     }
                 }
             }
@@ -1152,7 +1308,7 @@ namespace HowLongToBeat.Services
             Dictionary<string, string> headerParts = await GetAuthToken(searchUrl).ConfigureAwait(false);
             if (headerParts != null)
             {
-                LogDebugVerbose($"ResolveSearchAuthHeaders: auth ok endpoint='{searchUrl}' game='{gameName}'");
+                Common.LogDebug(!IsVerboseLoggingEnabled, $"ResolveSearchAuthHeaders: auth ok endpoint='{searchUrl}' game='{gameName}'");
                 return Tuple.Create(headerParts, searchUrl);
             }
 
@@ -1351,7 +1507,7 @@ namespace HowLongToBeat.Services
                                     int targetGameLog = ConcurrencyController?.TargetConcurrency ?? MaxParallelGameDataDownloads;
                                     int availableGameLog = DynamicSemaphore?.CurrentCount ?? 0;
                                     int inFlightGameLog = Math.Max(0, targetGameLog - availableGameLog);
-                                    LogDebugVerbose($"Search: waiting semaphore for id={x.Id} target={targetGameLog} currentLimit={CurrentSemaphoreLimit} available={availableGameLog} inFlight={inFlightGameLog}");
+                                    Common.LogDebug(!IsVerboseLoggingEnabled, $"Search: waiting semaphore for id={x.Id} target={targetGameLog} currentLimit={CurrentSemaphoreLimit} available={availableGameLog} inFlight={inFlightGameLog}");
                                 }
                                 catch { }
                                 var acquired = await DynamicSemaphore.WaitAsync(TimeSpan.FromSeconds(10));
@@ -1366,7 +1522,7 @@ namespace HowLongToBeat.Services
                                     int targetGameLog = ConcurrencyController?.TargetConcurrency ?? MaxParallelGameDataDownloads;
                                     int availableGameLog = DynamicSemaphore?.CurrentCount ?? 0;
                                     int inFlightGameLog = Math.Max(0, targetGameLog - availableGameLog);
-                                    LogDebugVerbose($"Search: acquired semaphore for id={x.Id} target={targetGameLog} currentLimit={CurrentSemaphoreLimit} available={availableGameLog} inFlight={inFlightGameLog}");
+                                    Common.LogDebug(!IsVerboseLoggingEnabled, $"Search: acquired semaphore for id={x.Id} target={targetGameLog} currentLimit={CurrentSemaphoreLimit} available={availableGameLog} inFlight={inFlightGameLog}");
                                 }
                                 catch { }
                             }
@@ -1386,7 +1542,7 @@ namespace HowLongToBeat.Services
 
                                     if (hasCoreTimes)
                                     {
-                                        LogDebugVerbose($"Search: skipping GetGameData for id={x.Id} (search result has times)");
+                                        Common.LogDebug(!IsVerboseLoggingEnabled, $"Search: skipping GetGameData for id={x.Id} (search result has times)");
                                         x.NeedsDetails = false;
                                     }
                                     else
@@ -1422,7 +1578,7 @@ namespace HowLongToBeat.Services
                                     }
                                     catch { }
                                 }
-                                LogDebugVerbose($"Search: released semaphore for id={x.Id}");
+                                Common.LogDebug(!IsVerboseLoggingEnabled, $"Search: released semaphore for id={x.Id}");
                             }
                         }
                         catch (Exception ex)
@@ -1434,7 +1590,7 @@ namespace HowLongToBeat.Services
                     await Task.WhenAll(tasks);
                     try
                     {
-                        LogDebugVerbose($"Search summary: persistentCacheHits={PersistentCacheHits}, inMemoryHits={InMemoryCacheHits}, pageFetches={PageFetches}");
+                        Common.LogDebug(!IsVerboseLoggingEnabled, $"Search summary: persistentCacheHits={PersistentCacheHits}, inMemoryHits={InMemoryCacheHits}, pageFetches={PageFetches}");
                     }
                     catch { }
                 }
@@ -1463,7 +1619,7 @@ namespace HowLongToBeat.Services
                 var aliased = GameNameAliases.ApplyAlias(name, settings, userDataPath);
                 if (!string.IsNullOrEmpty(aliased) && !aliased.IsEqual(name))
                 {
-                    LogDebugVerbose($"HLTB aliases: '{SafeStr(name)}' -> '{SafeStr(aliased)}'");
+                    Common.LogDebug(!IsVerboseLoggingEnabled, $"HLTB aliases: '{SafeStr(name)}' -> '{SafeStr(aliased)}'");
                     name = aliased;
                 }
             }
@@ -1622,7 +1778,7 @@ namespace HowLongToBeat.Services
                 string cacheKey = (name ?? string.Empty) + "|" + (platform ?? string.Empty);
                 if (SearchCache.TryGetValue(cacheKey, out SearchResult cachedResult))
                 {
-                    try { LogDebugVerbose($"ApiSearch cache hit for '{name}' platform='" + platform + "'"); } catch { }
+                    try { Common.LogDebug(!IsVerboseLoggingEnabled, $"ApiSearch cache hit for '{name}' platform='" + platform + "'"); } catch { }
                     return cachedResult;
                 }
 
@@ -1651,7 +1807,7 @@ namespace HowLongToBeat.Services
 
                 Dictionary<string, string> headerParts = authResolution.Item1;
                 string searchUrl = authResolution.Item2;
-                LogDebugVerbose($"ApiSearch: POST endpoint='{searchUrl}' game='{name}' platform='{platform}'");
+                Common.LogDebug(!IsVerboseLoggingEnabled, $"ApiSearch: POST endpoint='{searchUrl}' game='{name}' platform='{platform}'");
                 string token = headerParts.TryGetValue("Token", out string tokenValue) ? tokenValue : null;
                 string hpKey = headerParts.TryGetValue("Hpkey", out string hpKeyValue) ? hpKeyValue : null;
                 string hpVal = headerParts.TryGetValue("Hpval", out string hpValValue) ? hpValValue : null;
@@ -1686,7 +1842,7 @@ namespace HowLongToBeat.Services
                             int targetLog = GetSearchTarget();
                             int availableLog = SearchSemaphore?.CurrentCount ?? 0;
                             int inFlightLog = Math.Max(0, targetLog - availableLog);
-                            LogDebugVerbose($"ApiSearch: waiting search semaphore for '{name}' target={targetLog} currentLimit={CurrentSearchLimit} available={availableLog} inFlight={inFlightLog}");
+                            Common.LogDebug(!IsVerboseLoggingEnabled, $"ApiSearch: waiting search semaphore for '{name}' target={targetLog} currentLimit={CurrentSearchLimit} available={availableLog} inFlight={inFlightLog}");
                         }
                         catch { }
                         bool waitOk = true;
@@ -1705,7 +1861,7 @@ namespace HowLongToBeat.Services
                             int targetLog = GetSearchTarget();
                             int availableLog = SearchSemaphore?.CurrentCount ?? 0;
                             int inFlightLog = Math.Max(0, targetLog - availableLog);
-                            LogDebugVerbose($"ApiSearch: acquired search semaphore for '{name}' target={targetLog} currentLimit={CurrentSearchLimit} available={availableLog} inFlight={inFlightLog}");
+                            Common.LogDebug(!IsVerboseLoggingEnabled, $"ApiSearch: acquired search semaphore for '{name}' target={targetLog} currentLimit={CurrentSearchLimit} available={availableLog} inFlight={inFlightLog}");
                         }
                         catch { }
                     }
@@ -1771,7 +1927,7 @@ namespace HowLongToBeat.Services
                         }
                         catch { }
 
-                        LogDebugVerbose($"ApiSearch elapsed={sw.ElapsedMilliseconds}ms tokenReused={tokenReused} status={statusCode}");
+                        Common.LogDebug(!IsVerboseLoggingEnabled, $"ApiSearch elapsed={sw.ElapsedMilliseconds}ms tokenReused={tokenReused} status={statusCode}");
                     }
                     catch { }
 
@@ -1874,7 +2030,7 @@ namespace HowLongToBeat.Services
                         try
                         {
                             SearchSemaphore.Release();
-                            LogDebugVerbose($"ApiSearch: released search semaphore for '{name}'");
+                            Common.LogDebug(!IsVerboseLoggingEnabled, $"ApiSearch: released search semaphore for '{name}'");
                         }
                         catch { }
                     }
@@ -1932,7 +2088,7 @@ namespace HowLongToBeat.Services
                     var aliased = GameNameAliases.ApplyAlias(gameName, settings, userDataPath);
                     if (!string.IsNullOrEmpty(aliased) && !aliased.IsEqual(gameName))
                     {
-                        LogDebugVerbose($"HLTB aliases: '{SafeStr(gameName)}' -> '{SafeStr(aliased)}'");
+                        Common.LogDebug(!IsVerboseLoggingEnabled, $"HLTB aliases: '{SafeStr(gameName)}' -> '{SafeStr(aliased)}'");
                         gameName = aliased;
                     }
                 }
@@ -2340,7 +2496,14 @@ namespace HowLongToBeat.Services
                                             {
                                                 try
                                                 {
-                                                    List<HttpCookie> cookies = CookiesTools.GetWebCookies(deleteCookies: false, webView: webView);
+                                                    string userUrl = webView.GetCurrentAddress();
+                                                    List<string> loginUrls = new List<string> { UrlBase };
+                                                    if (!userUrl.IsNullOrEmpty())
+                                                    {
+                                                        loginUrls.Add(userUrl);
+                                                    }
+
+                                                    List<HttpCookie> cookies = CookiesTools.GetNewWebCookies(loginUrls, false, webView);
                                                     bool saved = CookiesTools.SetStoredCookies(cookies);
                                                     Logger.Info($"HLTB Auth: captured cookies from login webview count={cookies?.Count ?? 0} saved={saved}");
                                                     LogCookieSummary("login captured", cookies);
@@ -2474,7 +2637,7 @@ namespace HowLongToBeat.Services
                 UserGamesListParam userGamesListParam = new UserGamesListParam { UserId = UserId };
                 string payload = Serialization.ToJson(userGamesListParam);
 
-                string json = await PostJson(string.Format(UrlUserGamesList, UserId), payload, cookies);
+                (string json, _) = await PostJson(string.Format(UrlUserGamesList, UserId), payload, cookies);
                 _ = Serialization.TryFromJson(json, out UserGamesList userGamesList);
 
                 return userGamesList;
@@ -2799,32 +2962,148 @@ namespace HowLongToBeat.Services
 
 
         /// <summary>
+        /// Builds a localized detail message for a failed profile submission.
+        /// </summary>
+        /// <param name="statusCode">HTTP status code returned by the submit endpoint (0 when unavailable).</param>
+        /// <param name="response">Raw response body, used to extract server-side error messages.</param>
+        /// <returns>Localized detail text shown in the user notification.</returns>
+        private string BuildSubmitFailureDetail(int statusCode, string response)
+        {
+            if (statusCode == 401 || statusCode == 403)
+            {
+                return ResourceProvider.GetString("LOCHowLongToBeatErrorSubmitUnauthorized");
+            }
+
+            string serverMessage = GetSubmitResponseErrorMessage(response);
+            if (!serverMessage.IsNullOrEmpty())
+            {
+                return serverMessage;
+            }
+
+            if (statusCode > 0)
+            {
+                return string.Format(ResourceProvider.GetString("LOCHowLongToBeatErrorSubmitHttpStatus"), statusCode);
+            }
+
+            return ResourceProvider.GetString("LOCHowLongToBeatErrorSubmitNoResponse");
+        }
+
+        /// <summary>
+        /// Extracts an error message from a HowLongToBeat submit API JSON response, when present.
+        /// </summary>
+        /// <param name="response">Raw JSON response body.</param>
+        /// <returns>Server error text, or <c>null</c> when none could be parsed.</returns>
+        private static string GetSubmitResponseErrorMessage(string response)
+        {
+            if (response.IsNullOrEmpty())
+            {
+                return null;
+            }
+
+            try
+            {
+                if (Serialization.TryFromJson(response, out dynamic respObj) && respObj != null)
+                {
+                    if (respObj.error != null)
+                    {
+                        try
+                        {
+                            return respObj.error[0]?.ToString() ?? respObj.error.ToString();
+                        }
+                        catch
+                        {
+                            return respObj.error.ToString();
+                        }
+                    }
+
+                    if (respObj.errors != null)
+                    {
+                        return respObj.errors.ToString();
+                    }
+                }
+            }
+            catch { }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Shows a user-facing notification when a HowLongToBeat profile submission fails.
+        /// </summary>
+        /// <param name="game">Playnite game associated with the failed submission.</param>
+        /// <param name="detailMessage">Localized detail shown below the summary line.</param>
+        /// <param name="openSettings">When <c>true</c>, clicking the notification opens plugin settings.</param>
+        private void NotifySubmitError(Game game, string detailMessage, bool openSettings = false)
+        {
+            string summary = string.Format(ResourceProvider.GetString("LOCHowLongToBeatErrorSubmitFailed"), game.Name);
+            string message = PluginDatabase.PluginName + Environment.NewLine + summary;
+            if (!detailMessage.IsNullOrEmpty())
+            {
+                message += Environment.NewLine + detailMessage;
+            }
+
+            Action openSettingsAction = null;
+            if (openSettings)
+            {
+                openSettingsAction = () => PluginDatabase.Plugin.OpenSettingsView();
+            }
+
+            API.Instance.Notifications.Add(new NotificationMessage(
+                $"{PluginDatabase.PluginName}-{game.Id}-SubmitError-{Guid.NewGuid()}",
+                message,
+                NotificationType.Error,
+                openSettingsAction
+            ));
+        }
+
+        /// <summary>
         /// Submits the current game data to the HowLongToBeat website.
+        /// Ensures session cookies (<c>hltb_alive</c>) are present, sends <c>Origin</c>/<c>Referer</c> headers,
+        /// and surfaces localized errors for HTTP failures or missing session state.
         /// </summary>
         /// <param name="game">The Playnite game object.</param>
         /// <param name="editData">The data to submit.</param>
-        /// <returns>True if submission is successful, otherwise false.</returns>
+        /// <returns><c>true</c> when submission succeeds; otherwise <c>false</c>.</returns>
         public async Task<bool> ApiSubmitData(Game game, EditData editData)
         {
             if (GetIsUserLoggedIn() && editData.UserId != 0 && editData.GameId != 0)
             {
                 try
                 {
-                    List<HttpCookie> cookies = CookiesTools.GetStoredCookies();
-                    string payload = Serialization.ToJson(editData);
-                    List<KeyValuePair<string, string>> moreHeaders = new List<KeyValuePair<string, string>>
+                    List<HttpCookie> cookies = await GetCookiesForSubmitAsync(editData.SubmissionId).ConfigureAwait(false);
+                    if (!HasHltbSessionCookies(cookies))
                     {
-                        new KeyValuePair<string, string>("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36")
+                        Logger.Warn("ApiSubmitData: hltb_alive cookie missing after session refresh");
+                        NotifySubmitError(game, ResourceProvider.GetString("LOCHowLongToBeatErrorSubmitSessionCookies"), openSettings: true);
+                        return false;
+                    }
+
+                    string payload = Serialization.ToJson(editData);
+                    string referer = editData.SubmissionId > 0
+                        ? string.Format(UrlPostDataEdit, editData.SubmissionId)
+                        : UrlBase + "/submit";
+                    List<KeyValuePair<string, string>> submitHeaders = new List<KeyValuePair<string, string>>
+                    {
+                        new KeyValuePair<string, string>("Origin", UrlBase),
+                        new KeyValuePair<string, string>("Referer", referer)
                     };
-                    string response = await PostJson(UrlPostData, payload, cookies);
+
+                    Common.LogDebug(!IsVerboseLoggingEnabled, $"ApiSubmitData: POST {UrlPostData} submissionId={editData.SubmissionId} referer={referer}");
+
+                    (string response, int statusCode) = await PostJson(UrlPostData, payload, cookies, submitHeaders);
+
+                    if (statusCode < 200 || statusCode >= 300)
+                    {
+                        bool openSettings = statusCode == 401 || statusCode == 403;
+                        NotifySubmitError(game, BuildSubmitFailureDetail(statusCode, response), openSettings);
+                        Logger.Warn($"ApiSubmitData failed for game {game.Id}: HTTP {statusCode}");
+                        return false;
+                    }
+
 
                     if (string.IsNullOrEmpty(response))
                     {
-                        API.Instance.Notifications.Add(new NotificationMessage(
-                            $"{PluginDatabase.PluginName}-{game.Id}-Error",
-                            PluginDatabase.PluginName + Environment.NewLine + game.Name,
-                            NotificationType.Error
-                        ));
+                        NotifySubmitError(game, BuildSubmitFailureDetail(statusCode, response));
                         Logger.Warn($"ApiSubmitData: empty response when posting data for game {game.Id}");
                         return false;
                     }
@@ -2837,26 +3116,11 @@ namespace HowLongToBeat.Services
                         {
                             try
                             {
-                                if (respObj.error != null)
+                                string msg = GetSubmitResponseErrorMessage(response);
+                                if (!msg.IsNullOrEmpty())
                                 {
-                                    string msg = string.Empty;
-                                    try { msg = respObj.error[0]?.ToString() ?? respObj.error.ToString(); } catch { msg = respObj.error.ToString(); }
-                                    API.Instance.Notifications.Add(new NotificationMessage(
-                                        $"{PluginDatabase.PluginName}-{game.Id}-Error",
-                                        PluginDatabase.PluginName + Environment.NewLine + game.Name + (msg.IsNullOrEmpty() ? string.Empty : Environment.NewLine + msg),
-                                        NotificationType.Error
-                                    ));
+                                    NotifySubmitError(game, msg);
                                     Logger.Warn($"ApiSubmitData error for game {game.Id}: {msg}");
-                                }
-                                else if (respObj.errors != null)
-                                {
-                                    string msg = respObj.errors.ToString();
-                                    API.Instance.Notifications.Add(new NotificationMessage(
-                                        $"{PluginDatabase.PluginName}-{game.Id}-Error",
-                                        PluginDatabase.PluginName + Environment.NewLine + game.Name + Environment.NewLine + msg,
-                                        NotificationType.Error
-                                    ));
-                                    Logger.Warn($"ApiSubmitData errors for game {game.Id}: {msg}");
                                 }
                                 else
                                 {
@@ -2909,7 +3173,8 @@ namespace HowLongToBeat.Services
         }
 
         /// <summary>
-        /// Updates the stored cookies for the current user session.
+        /// Refreshes and persists HowLongToBeat session cookies for the logged-in user.
+        /// Runs asynchronously after the plugin database is loaded.
         /// </summary>
         public void UpdatedCookies()
         {
@@ -2939,7 +3204,7 @@ namespace HowLongToBeat.Services
 								if (PluginDatabase.UserHltbData?.UserId != null && PluginDatabase.UserHltbData.UserId != 0)
                                 {
                                     Logger.Info($"Refresh HowLongToBeat user cookies");
-                                    List<HttpCookie> cookies = CookiesTools.GetNewWebCookies(new List<string> { UrlBase, UrlUser }, true);
+                                    List<HttpCookie> cookies = RefreshSubmitSessionCookies(0);
                                     _ = CookiesTools.SetStoredCookies(cookies);
                                 }
                             }
@@ -3016,9 +3281,23 @@ namespace HowLongToBeat.Services
         }
 
         /// <summary>
-        /// Posts JSON payload to URL, optionally with cookies, and returns response string.
+        /// Posts a JSON payload to the specified URL, optionally with cookies and extra request headers.
         /// </summary>
-        private async Task<string> PostJson(string url, string payload, List<HttpCookie> cookies = null, CancellationToken cancellationToken = default)
+        /// <param name="url">Target URL.</param>
+        /// <param name="payload">JSON request body.</param>
+        /// <param name="cookies">Optional cookies attached to the request.</param>
+        /// <param name="requestHeaders">Optional extra headers (for example <c>Origin</c> and <c>Referer</c>).</param>
+        /// <param name="cancellationToken">Cancellation token for the HTTP request.</param>
+        /// <returns>
+        /// A tuple containing the response body and HTTP status code.
+        /// Status code is <c>0</c> when the request could not be sent.
+        /// </returns>
+        private async Task<(string body, int statusCode)> PostJson(
+            string url,
+            string payload,
+            List<HttpCookie> cookies = null,
+            IEnumerable<KeyValuePair<string, string>> requestHeaders = null,
+            CancellationToken cancellationToken = default)
         {
             try
             {
@@ -3056,22 +3335,41 @@ namespace HowLongToBeat.Services
                         disposeClient = false;
                     }
 
-                    if (handler != null)
+                    using (var request = new HttpRequestMessage(HttpMethod.Post, url))
                     {
-                        try { client.DefaultRequestHeaders.TryAddWithoutValidation("User-Agent", Web.UserAgent); } catch { }
-                        try { client.DefaultRequestHeaders.TryAddWithoutValidation("accept", "application/json, text/javascript, */*; q=0.01"); } catch { }
-                    }
+                        request.Content = new StringContent(payload ?? string.Empty, Encoding.UTF8, "application/json");
 
-                    var content = new StringContent(payload ?? string.Empty, Encoding.UTF8, "application/json");
-                    using (var resp = await client.PostAsync(url, content, cancellationToken).ConfigureAwait(false))
-                    {
-                        if (!resp.IsSuccessStatusCode)
+                        if (handler != null)
                         {
-                            try { Logger.Warn($"HTTP {(int)resp.StatusCode} posting to {url}"); } catch { }
-                            return string.Empty;
+                            try { request.Headers.TryAddWithoutValidation("User-Agent", Web.UserAgent); } catch { }
+                            try { request.Headers.TryAddWithoutValidation("Accept", "application/json, text/javascript, */*; q=0.01"); } catch { }
                         }
 
-                        return await resp.Content.ReadAsStringAsync().ConfigureAwait(false);
+                        if (requestHeaders != null)
+                        {
+                            foreach (KeyValuePair<string, string> header in requestHeaders)
+                            {
+                                if (string.IsNullOrWhiteSpace(header.Key) || header.Value == null)
+                                {
+                                    continue;
+                                }
+
+                                try { request.Headers.TryAddWithoutValidation(header.Key, header.Value); } catch { }
+                            }
+                        }
+
+                        using (var resp = await client.SendAsync(request, cancellationToken).ConfigureAwait(false))
+                        {
+                            int statusCode = (int)resp.StatusCode;
+                            string body = await resp.Content.ReadAsStringAsync().ConfigureAwait(false) ?? string.Empty;
+
+                            if (!resp.IsSuccessStatusCode)
+                            {
+                                try { Logger.Warn($"HTTP {statusCode} posting to {url}"); } catch { }
+                            }
+
+                            return (body, statusCode);
+                        }
                     }
                 }
                 finally
@@ -3085,7 +3383,7 @@ namespace HowLongToBeat.Services
             catch (Exception ex)
             {
                 Common.LogError(ex, false, $"Error posting to {url}");
-                return string.Empty;
+                return (string.Empty, 0);
             }
         }
 
