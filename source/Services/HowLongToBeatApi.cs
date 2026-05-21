@@ -258,6 +258,7 @@ namespace HowLongToBeat.Services
 
         private static string SearchUrl { get; set; } = null;
         private static readonly object SearchUrlLock = new object();
+        private static readonly SemaphoreSlim SearchUrlDiscoverySync = new SemaphoreSlim(1, 1);
         private const int ScriptDownloadTimeoutMs = 5000;
 
         private const int MaxParallelGameDataDownloads = 32;
@@ -952,16 +953,66 @@ namespace HowLongToBeat.Services
         #region Search
 
         /// <summary>
-        /// Retrieves the search URL from the website scripts.
+        /// Clears the in-session discovered search endpoint so the next lookup can re-scrape or use <see cref="SearchEndPoint"/>.
         /// </summary>
-        /// <returns>The search endpoint URL.</returns>
-        private async Task<string> GetSearchUrl()
+        /// <param name="reason">Short explanation for logs.</param>
+        private void ClearDiscoveredSearchUrl(string reason)
         {
-            if (!SearchUrl.IsNullOrEmpty() && !SearchUrl.Contains("error"))
+            lock (SearchUrlLock)
             {
+                if (SearchUrl.IsNullOrEmpty())
+                {
+                    return;
+                }
+
+                try { Logger.Warn($"HLTB search: clearing discovered endpoint '{SearchUrl}' ({reason})"); } catch { }
+                SearchUrl = null;
+            }
+        }
+
+        /// <summary>
+        /// Retrieves the search URL from the website scripts, or falls back to <see cref="SearchEndPoint"/>.
+        /// Concurrent callers share a single in-flight discovery (single-flight).
+        /// </summary>
+        /// <param name="forceRediscover">When true, ignores the cached discovered endpoint and re-scrapes the site.</param>
+        /// <returns>The search API path (for example <c>/api/bleed</c>).</returns>
+        private async Task<string> GetSearchUrl(bool forceRediscover = false)
+        {
+            if (!forceRediscover && !SearchUrl.IsNullOrEmpty() && !SearchUrl.Contains("error"))
+            {
+                try { Logger.Info($"HLTB search: using cached discovered endpoint '{SearchUrl}'"); } catch { }
+                LogDebugVerbose($"GetSearchUrl: cache hit endpoint='{SearchUrl}'");
                 return SearchUrl;
             }
 
+            await SearchUrlDiscoverySync.WaitAsync().ConfigureAwait(false);
+            try
+            {
+                if (!forceRediscover && !SearchUrl.IsNullOrEmpty() && !SearchUrl.Contains("error"))
+                {
+                    LogDebugVerbose($"GetSearchUrl: cache hit after discovery wait endpoint='{SearchUrl}'");
+                    return SearchUrl;
+                }
+
+                if (forceRediscover)
+                {
+                    SearchUrl = null;
+                    try { Logger.Info("HLTB search: re-discovering search endpoint (forced)"); } catch { }
+                }
+
+                return await DiscoverSearchUrlAsync().ConfigureAwait(false);
+            }
+            finally
+            {
+                try { SearchUrlDiscoverySync.Release(); } catch { }
+            }
+        }
+
+        /// <summary>
+        /// Scrapes HLTB scripts for the search API path. Must run under <see cref="SearchUrlDiscoverySync"/>.
+        /// </summary>
+        private async Task<string> DiscoverSearchUrlAsync()
+        {
             try
             {
                 string url = UrlBase;
@@ -975,8 +1026,8 @@ namespace HowLongToBeat.Services
                         {
                             if (!httpResp.IsSuccessStatusCode)
                             {
-                                try { Logger.Warn($"HTTP {(int)httpResp.StatusCode} downloading {url}"); } catch { }
-                                return "/api/s";
+                                try { Logger.Warn($"HLTB search: homepage HTTP {(int)httpResp.StatusCode}; using SearchEndPoint '{SearchEndPoint}'"); } catch { }
+                                return SearchEndPoint;
                             }
 
                             response = await httpResp.Content.ReadAsStringAsync().ConfigureAwait(false);
@@ -984,21 +1035,20 @@ namespace HowLongToBeat.Services
                     }
                     catch (TaskCanceledException)
                     {
-                        try { Logger.Warn($"Timeout {ScriptDownloadTimeoutMs}ms downloading {url}"); } catch { }
-                        return "/api/s";
+                        try { Logger.Warn($"HLTB search: homepage timeout ({ScriptDownloadTimeoutMs}ms); using SearchEndPoint '{SearchEndPoint}'"); } catch { }
+                        return SearchEndPoint;
                     }
                     catch (Exception ex)
                     {
                         Common.LogError(ex, false, true, PluginDatabase.PluginName);
-                        return "/api/s";
+                        try { Logger.Warn($"HLTB search: homepage download error; using SearchEndPoint '{SearchEndPoint}'"); } catch { }
+                        return SearchEndPoint;
                     }
                 }
 
-                // Try to extract script URLs via optional HtmlAgilityPack helper (reflection). Fall back to regex if unavailable.
                 List<string> scriptUrls = ExtractScriptUrlsWithHap(response) ?? new List<string>();
                 if (scriptUrls.Count == 0)
                 {
-
                     var matches = MyRegex().Matches(response);
                     foreach (Match match in matches)
                     {
@@ -1055,15 +1105,27 @@ namespace HowLongToBeat.Services
 
                         if (suffix != "find")
                         {
+                            string discovered = "/api/" + suffix;
+                            bool newlyCached = false;
                             lock (SearchUrlLock)
                             {
                                 if (SearchUrl.IsNullOrEmpty())
                                 {
-                                    SearchUrl = "/api/" + suffix;
+                                    SearchUrl = discovered;
+                                    newlyCached = true;
                                 }
                             }
+
+                            if (newlyCached)
+                            {
+                                try { Logger.Info($"HLTB search: discovered endpoint '{SearchUrl}' from script '{scriptUrl}'"); } catch { }
+                            }
+
+                            LogDebugVerbose($"GetSearchUrl: discovered suffix='{suffix}' endpoint='{SearchUrl}' newlyCached={newlyCached}");
                             return SearchUrl;
                         }
+
+                        LogDebugVerbose($"GetSearchUrl: ignoring legacy endpoint suffix 'find' in '{scriptUrl}'");
                     }
                 }
             }
@@ -1072,7 +1134,64 @@ namespace HowLongToBeat.Services
                 Common.LogError(ex, false, true, PluginDatabase.PluginName);
             }
 
+            try { Logger.Info($"HLTB search: no endpoint discovered from scripts; using SearchEndPoint '{SearchEndPoint}'"); } catch { }
             return SearchEndPoint;
+        }
+
+        /// <summary>
+        /// Resolves auth headers for an API search, with cache invalidation and <see cref="SearchEndPoint"/> fallback.
+        /// </summary>
+        /// <param name="gameName">Game name used for diagnostic logs.</param>
+        /// <returns>
+        /// Item1: header dictionary; Item2: API path used for the search POST.
+        /// Returns null when auth cannot be obtained.
+        /// </returns>
+        private async Task<Tuple<Dictionary<string, string>, string>> ResolveSearchAuthHeadersAsync(string gameName)
+        {
+            string searchUrl = await GetSearchUrl().ConfigureAwait(false);
+            Dictionary<string, string> headerParts = await GetAuthToken(searchUrl).ConfigureAwait(false);
+            if (headerParts != null)
+            {
+                LogDebugVerbose($"ResolveSearchAuthHeaders: auth ok endpoint='{searchUrl}' game='{gameName}'");
+                return Tuple.Create(headerParts, searchUrl);
+            }
+
+            try { Logger.Warn($"HLTB search: auth init failed for endpoint='{searchUrl}' game='{gameName}'"); } catch { }
+
+            if (string.Equals(searchUrl, SearchEndPoint, StringComparison.OrdinalIgnoreCase))
+            {
+                try { Logger.Warn($"HLTB search: auth unavailable on SearchEndPoint '{SearchEndPoint}'; search aborted for '{gameName}'"); } catch { }
+                return null;
+            }
+
+            ClearDiscoveredSearchUrl("auth init failed for discovered endpoint");
+            string rediscoveredUrl = await GetSearchUrl(forceRediscover: true).ConfigureAwait(false);
+            if (!string.Equals(rediscoveredUrl, searchUrl, StringComparison.OrdinalIgnoreCase))
+            {
+                headerParts = await GetAuthToken(rediscoveredUrl).ConfigureAwait(false);
+                if (headerParts != null)
+                {
+                    try { Logger.Info($"HLTB search: auth ok after re-discover endpoint='{rediscoveredUrl}' game='{gameName}'"); } catch { }
+                    return Tuple.Create(headerParts, rediscoveredUrl);
+                }
+
+                try { Logger.Warn($"HLTB search: auth init failed after re-discover endpoint='{rediscoveredUrl}' game='{gameName}'"); } catch { }
+            }
+
+            if (!string.Equals(rediscoveredUrl, SearchEndPoint, StringComparison.OrdinalIgnoreCase))
+            {
+                try { Logger.Warn($"HLTB search: retrying auth with SearchEndPoint '{SearchEndPoint}' game='{gameName}'"); } catch { }
+                headerParts = await GetAuthToken(SearchEndPoint).ConfigureAwait(false);
+                if (headerParts != null)
+                {
+                    try { Logger.Info($"HLTB search: auth ok using SearchEndPoint '{SearchEndPoint}' game='{gameName}'"); } catch { }
+                    return Tuple.Create(headerParts, SearchEndPoint);
+                }
+
+                try { Logger.Warn($"HLTB search: auth init failed on SearchEndPoint '{SearchEndPoint}' game='{gameName}'"); } catch { }
+            }
+
+            return null;
         }
 
         /// <summary>
@@ -1117,7 +1236,7 @@ namespace HowLongToBeat.Services
                         {
                             if (!resp.IsSuccessStatusCode)
                             {
-                                try { Logger.Warn($"HTTP {(int)resp.StatusCode} downloading auth init {url}"); } catch { }
+                                try { Logger.Warn($"HLTB search: auth init HTTP {(int)resp.StatusCode} for endpoint='{apiEndpoint}' url={url}"); } catch { }
                                 return null;
                             }
 
@@ -1127,7 +1246,7 @@ namespace HowLongToBeat.Services
                 }
                 catch (TaskCanceledException)
                 {
-                    try { Logger.Warn($"Timeout {ScriptDownloadTimeoutMs}ms downloading auth init {url}"); } catch { }
+                    try { Logger.Warn($"HLTB search: auth init timeout ({ScriptDownloadTimeoutMs}ms) for endpoint='{apiEndpoint}' url={url}"); } catch { }
                     return null;
                 }
                 catch (Exception ex)
@@ -1160,9 +1279,12 @@ namespace HowLongToBeat.Services
 
                         return headerParts;
                     }
-                    
 
-                    //return token;
+                    try { Logger.Warn($"HLTB search: auth init missing hpKey/hpVal for endpoint='{apiEndpoint}'"); } catch { }
+                }
+                else
+                {
+                    try { Logger.Warn($"HLTB search: auth init response missing token for endpoint='{apiEndpoint}'"); } catch { }
                 }
             }
             catch (Exception ex)
@@ -1520,12 +1642,19 @@ namespace HowLongToBeat.Services
                 SearchResult searchResult = null;
                 string baseJson = Serialization.ToJson(searchParam);
                 var dict = Serialization.FromJson<Dictionary<string, object>>(baseJson);
-                string searchUrl = await GetSearchUrl();
                 bool tokenReused = !string.IsNullOrEmpty(CachedAuthToken) && DateTime.UtcNow < CachedAuthTokenExpiry;
-                Dictionary<string, string> headerParts = await GetAuthToken(searchUrl);
-                string token = headerParts["Token"];
-                string hpKey = headerParts["Hpkey"];
-                string hpVal = headerParts["Hpval"];
+                Tuple<Dictionary<string, string>, string> authResolution = await ResolveSearchAuthHeadersAsync(name).ConfigureAwait(false);
+                if (authResolution == null)
+                {
+                    return null;
+                }
+
+                Dictionary<string, string> headerParts = authResolution.Item1;
+                string searchUrl = authResolution.Item2;
+                LogDebugVerbose($"ApiSearch: POST endpoint='{searchUrl}' game='{name}' platform='{platform}'");
+                string token = headerParts.TryGetValue("Token", out string tokenValue) ? tokenValue : null;
+                string hpKey = headerParts.TryGetValue("Hpkey", out string hpKeyValue) ? hpKeyValue : null;
+                string hpVal = headerParts.TryGetValue("Hpval", out string hpValValue) ? hpValValue : null;
                 if (!token.IsNullOrEmpty())
                 {
                     httpHeaders.Add(new HttpHeader { Key = "x-auth-token", Value = token });
