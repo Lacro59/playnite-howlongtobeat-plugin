@@ -1072,7 +1072,7 @@ namespace HowLongToBeat.Services
                 Common.LogError(ex, false, true, PluginDatabase.PluginName);
             }
 
-            return "/api/s";
+            return SearchEndPoint;
         }
 
         /// <summary>
