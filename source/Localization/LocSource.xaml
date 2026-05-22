@@ -91,6 +91,15 @@ If none has this status, it takes the most recent.</sys:String>
     <sys:String x:Key="LOCHltbManualEntryHours">h</sys:String>
     <sys:String x:Key="LOCHltbManualEntryMinutes">min</sys:String>
     <sys:String x:Key="LOCHltbManualEntryHltbId">HLTB ID</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatId">HLTB ID</sys:String>
+    <sys:String x:Key="LOCCommonLastRefresh">Last data refresh</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatCsvUserTimeToBeat">Time to beat (user profile)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatCsvUserMainStory">Main story (user reported)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatCsvUserMainExtra">Main + extra (user reported)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatCsvUserCompletionist">Completionist (user reported)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatCsvUserSolo">Solo (user reported)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatCsvUserCoOp">Co-Op (user reported)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatCsvUserVs">Vs (user reported)</sys:String>
     <sys:String x:Key="LOCHltbManualEntryConfirm">Use manual entry</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatMainStory">Main story</sys:String>
