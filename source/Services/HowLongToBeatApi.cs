@@ -591,23 +591,7 @@ namespace HowLongToBeat.Services
                 Logger.Info($"HLTB Auth: cookie file='{FileCookies}' exists={exists} size={size}");
                 if (exists)
                 {
-                    var stored = CookiesTools.GetStoredCookies();
-                    LogCookieSummary("startup stored", stored);
-
-                    // Non-critical: validate cookies on startup to help diagnose "logged out after restart".
-                    FireAndForget(Task.Run(async () =>
-                    {
-                        try
-                        {
-                            await Task.Delay(2000).ConfigureAwait(false);
-                            bool ok = await GetIsUserLoggedInAsync().ConfigureAwait(false);
-                            Logger.Info($"HLTB Auth: startup cookie check ok={ok} userId={UserId}");
-                        }
-                        catch (Exception ex)
-                        {
-                            try { Common.LogError(ex, false, true, PluginDatabase.PluginName); } catch { }
-                        }
-                    }), "startup cookie check");
+                    LogCookieSummary("startup stored", CookiesTools.GetStoredCookies());
                 }
             }
             catch { }
@@ -2743,11 +2727,17 @@ namespace HowLongToBeat.Services
                 if (cookies == null || cookies.Count == 0)
                 {
                     try { Logger.Info("HLTB Auth: no stored cookies available"); } catch { }
+                    return 0;
                 }
-                string response = await Web.DownloadPageText(UrlUser, cookies);
-                dynamic t = Serialization.FromJson<dynamic>(response);
 
-                int userId = response == "{}" ? 0 : t?.data[0]?.user_id ?? 0;
+                string response = await Web.DownloadStringData(UrlUser, cookies).ConfigureAwait(false);
+                if (string.IsNullOrWhiteSpace(response) || response == "{}")
+                {
+                    return 0;
+                }
+
+                dynamic t = Serialization.FromJson<dynamic>(response);
+                int userId = t?.data[0]?.user_id ?? 0;
                 if (IsVerboseLoggingEnabled)
                 {
                     Logger.Debug($"HLTB Auth: GetUserId responseLen={response?.Length ?? 0} userId={userId}");
@@ -3307,60 +3297,6 @@ namespace HowLongToBeat.Services
                     () => PluginDatabase.Plugin.OpenSettingsView()
                 ));
                 return false;
-            }
-        }
-
-        /// <summary>
-        /// Refreshes and persists HowLongToBeat session cookies for the logged-in user.
-        /// Runs asynchronously after the plugin database is loaded.
-        /// </summary>
-        public void UpdatedCookies()
-        {
-            try
-            {
-                // Run wait off the UI thread, then invoke UI work when ready
-                FireAndForget(Task.Run(async () =>
-                {
-                    var sw = System.Diagnostics.Stopwatch.StartNew();
-                    const int maxWaitMs = 60000; // 60s max wait for database load
-                    while (!PluginDatabase.IsLoaded)
-                    {
-                        await Task.Delay(100).ConfigureAwait(false);
-                        if (sw.ElapsedMilliseconds > maxWaitMs)
-                        {
-                            try { if (IsVerboseLoggingEnabled) Logger.Warn("Timeout waiting for PluginDatabase.IsLoaded in UpdatedCookies"); } catch { }
-                            break;
-                        }
-                    }
-
-                    try
-                    {
-                        await Application.Current.Dispatcher.InvokeAsync(() =>
-                        {
-                            try
-                            {
-								if (PluginDatabase.UserHltbData?.UserId != null && PluginDatabase.UserHltbData.UserId != 0)
-                                {
-                                    Logger.Info($"Refresh HowLongToBeat user cookies");
-                                    List<HttpCookie> cookies = RefreshSubmitSessionCookies(0);
-                                    _ = CookiesTools.SetStoredCookies(cookies);
-                                }
-                            }
-                            catch (Exception ex)
-                            {
-                                Common.LogError(ex, false, true, PluginDatabase.PluginName);
-                            }
-                        });
-                    }
-                    catch (Exception ex)
-                    {
-                        Common.LogError(ex, false, true, PluginDatabase.PluginName);
-                    }
-                }), "UpdatedCookies");
-            }
-            catch (Exception ex)
-            {
-                Common.LogError(ex, false, true, PluginDatabase.PluginName);
             }
         }
 

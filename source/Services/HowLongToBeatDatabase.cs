@@ -76,22 +76,9 @@ namespace HowLongToBeat.Services
                         HowLongToBeatApi = null;
                     }
 
-                    // Run optional/expensive warm-up work in background so initialization doesn't block.
+                    // Session cookies are refreshed on demand before profile submit (GetCookiesForSubmitAsync).
                     if (HowLongToBeatApi != null)
                     {
-                        FireAndForget(Task.Run(() =>
-                        {
-                            try
-                            {
-                                // Perform non-critical background warm-up (e.g. refresh cookies or cache).
-                                HowLongToBeatApi.UpdatedCookies();
-                            }
-                            catch (Exception ex)
-                            {
-                                Common.LogError(ex, false, true, PluginName);
-                            }
-                        }), "UpdatedCookies warmup");
-
                         // Load cached user stats as soon as the API exists.
                         // LoadMoreData can run before InitializeClient and will then set an empty placeholder.
                         FireAndForget(Task.Run(() =>
