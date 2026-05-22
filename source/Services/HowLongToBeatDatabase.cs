@@ -39,7 +39,11 @@ namespace HowLongToBeat.Services
         }
 
         // Change visibility to allow other classes to use the centralized verbose check
-        public bool IsVerboseLoggingEnabled => PluginSettings is HowLongToBeatSettings settings && settings.EnableVerboseLogging;
+#if DEBUG
+        public bool IsVerboseLoggingEnabled => true;
+#else
+        public bool IsVerboseLoggingEnabled => false;
+#endif
 
         private void FireAndForget(Task task, string context)
         {
