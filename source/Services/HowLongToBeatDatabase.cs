@@ -441,6 +441,14 @@ namespace HowLongToBeat.Services
                 }
                 else
                 {
+                    string hltbId = loadedItem.GetData()?.Id ?? string.Empty;
+                    Logger.Info(string.Format(
+                        "HLTB RefreshNoLoader path=HltbPageFetch: playniteGame='{0}' hltbId='{1}' urlBefore='{2}' urlImgBefore='{3}'",
+                        game?.Name ?? string.Empty,
+                        hltbId,
+                        loadedItem.GetData()?.Url ?? string.Empty,
+                        loadedItem.GetData()?.UrlImg ?? string.Empty));
+
                     if (HowLongToBeatApi != null)
                     {
                         HltbDataUser updated = TaskHelpers.RunSyncWithTimeout(() => HowLongToBeatApi.UpdateGameData(loadedItem.Items.First()), 15000);
@@ -453,6 +461,15 @@ namespace HowLongToBeat.Services
                     }
                     loadedItem.DateLastRefresh = DateTime.Now;
                     Update(loadedItem);
+
+                    var after = loadedItem.GetData();
+                    Logger.Info(string.Format(
+                        "HLTB RefreshNoLoader path=HltbPageFetch DONE: playniteGame='{0}' hltbId='{1}' url='{2}' urlImg='{3}' main={4}s",
+                        game?.Name ?? string.Empty,
+                        after?.Id ?? string.Empty,
+                        after?.Url ?? string.Empty,
+                        after?.UrlImg ?? string.Empty,
+                        after?.GameHltbData?.MainStoryClassic ?? 0));
 
                     // Refresh User data
                     List<TitleList> titleLists = GetUserHltbDataAll(loadedItem.GetData().Id);

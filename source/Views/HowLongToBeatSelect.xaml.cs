@@ -19,6 +19,8 @@ namespace HowLongToBeat.Views
 {
     public partial class HowLongToBeatSelect : UserControl
     {
+        private static readonly ILogger Logger = LogManager.GetLogger();
+
         private static HowLongToBeatDatabase PluginDatabase => HowLongToBeat.PluginDatabase;
 
         public GameHowLongToBeat GameHowLongToBeat { get; set; }
@@ -102,6 +104,21 @@ namespace HowLongToBeat.Views
 
             GameHowLongToBeat = HowLongToBeat.PluginDatabase.GetDefault(GameContext);
             GameHowLongToBeat.Items = new List<HltbDataUser>() { Item };
+
+            string selectionPath = isVndb ? "ClassicSearch-VNDB" : "ClassicSearch-HLTB";
+            Logger.Info(string.Format(
+                "HLTB selection path={0}: playniteGame='{1}' hltbId='{2}' title='{3}' url='{4}' urlImg='{5}'",
+                selectionPath,
+                GameContext?.Name ?? string.Empty,
+                Item?.Id ?? string.Empty,
+                Item?.Name ?? string.Empty,
+                Item?.Url ?? string.Empty,
+                Item?.UrlImg ?? string.Empty));
+            Common.LogDebug(true, string.Format(
+                "HLTB selection ({0}): platform='{1}' needsDetails={2}",
+                selectionPath,
+                Item?.Platform ?? string.Empty,
+                Item?.NeedsDetails));
 
             ((Window)this.Parent).Close();
         }
@@ -360,6 +377,58 @@ namespace HowLongToBeat.Views
 
             GameHowLongToBeat = HowLongToBeat.PluginDatabase.GetDefault(GameContext);
             GameHowLongToBeat.Items = new List<HltbDataUser> { manualEntry };
+
+            bool hasHltbId = !manualEntry.Id.IsNullOrEmpty();
+            string selectionPath = hasHltbId ? "ManualWithHltbId+Refresh" : "ManualFormOnly-NoHltbId";
+
+            Logger.Info(string.Format(
+                "HLTB selection path={0}: playniteGame='{1}' hltbId='{2}' formTimes main={3}s extra={4}s comp={5}s",
+                selectionPath,
+                GameContext?.Name ?? string.Empty,
+                manualEntry.Id ?? string.Empty,
+                mainStory,
+                mainExtra,
+                completionist));
+            Common.LogDebug(true, string.Format(
+                "HLTB selection ({0}): solo={1}s coop={2}s gameType={3} urlBefore='{4}' urlImgBefore='{5}'",
+                selectionPath,
+                solo,
+                coOp,
+                resolvedType,
+                manualEntry.Url ?? string.Empty,
+                manualEntry.UrlImg ?? string.Empty));
+
+            Logger.Info(string.Format(
+                "HLTB selection path={0}: AddOrUpdate playniteGameId={1} hltbId='{2}'",
+                selectionPath,
+                GameHowLongToBeat?.Id,
+                manualEntry.Id ?? string.Empty));
+            HowLongToBeat.PluginDatabase.AddOrUpdate(GameHowLongToBeat);
+
+            if (hasHltbId)
+            {
+                Logger.Info(string.Format(
+                    "HLTB selection path=ManualWithHltbId+Refresh: starting Refresh for playniteGame='{0}' hltbId='{1}'",
+                    GameContext?.Name ?? string.Empty,
+                    manualEntry.Id));
+                HowLongToBeat.PluginDatabase.Refresh(GameContext);
+                GameHowLongToBeat = HowLongToBeat.PluginDatabase.Get(GameContext, onlyCache: true) ?? GameHowLongToBeat;
+                var refreshed = GameHowLongToBeat?.Items?.FirstOrDefault();
+                Logger.Info(string.Format(
+                    "HLTB selection path=ManualWithHltbId+Refresh: done playniteGame='{0}' hltbId='{1}' url='{2}' urlImg='{3}' main={4}s timeToBeat={5}s",
+                    GameContext?.Name ?? string.Empty,
+                    refreshed?.Id ?? string.Empty,
+                    refreshed?.Url ?? string.Empty,
+                    refreshed?.UrlImg ?? string.Empty,
+                    refreshed?.GameHltbData?.MainStoryClassic ?? 0,
+                    refreshed?.GameHltbData?.TimeToBeat ?? 0));
+            }
+            else
+            {
+                Logger.Info(string.Format(
+                    "HLTB selection path=ManualFormOnly-NoHltbId: saved form times only for playniteGame='{0}'",
+                    GameContext?.Name ?? string.Empty));
+            }
 
             ((Window)Parent).Close();
         }

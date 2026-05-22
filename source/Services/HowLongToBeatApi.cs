@@ -96,7 +96,7 @@ namespace HowLongToBeat.Services
                     }
                 }
 
-                Common.LogDebug(false, $"HLTB Auth: {context} cookies={cookies.Count} expired={expiredCount} domains=[{string.Join(",", domains)}] minExp={(minExpiry?.ToString("o") ?? "<none>")} maxExp={(maxExpiry?.ToString("o") ?? "<none>")}");
+                Common.LogDebug(true, $"HLTB Auth: {context} cookies={cookies.Count} expired={expiredCount} domains=[{string.Join(",", domains)}] minExp={(minExpiry?.ToString("o") ?? "<none>")} maxExp={(maxExpiry?.ToString("o") ?? "<none>")}");
 
                 string[] sessionCookieNames = { "hltb_alive", "hltb_online", "hltb_view_list" };
                 var sessionStates = new List<string>();
@@ -117,10 +117,10 @@ namespace HowLongToBeat.Services
                     }
                 }
 
-                Common.LogDebug(false, $"HLTB Auth: {context} sessionCookies=[{string.Join(", ", sessionStates)}]");
+                Common.LogDebug(true, $"HLTB Auth: {context} sessionCookies=[{string.Join(", ", sessionStates)}]");
 
                 string cookieNames = string.Join(", ", cookies.Select(c => c?.Name ?? string.Empty).Where(n => !string.IsNullOrEmpty(n)).OrderBy(n => n, StringComparer.OrdinalIgnoreCase));
-                Common.LogDebug(false, $"HLTB Auth: {context} cookieNames=[{cookieNames}]");
+                Common.LogDebug(true, $"HLTB Auth: {context} cookieNames=[{cookieNames}]");
             }
             catch { }
         }
@@ -877,12 +877,131 @@ namespace HowLongToBeat.Services
         }
 
 
+        private static HltbData MapGameDataToHltbData(GameData gameData)
+        {
+            if (gameData == null)
+            {
+                return null;
+            }
+
+            return new HltbData
+            {
+                MainStoryClassic = gameData.CompMain,
+                MainExtraClassic = gameData.CompPlus,
+                CompletionistClassic = gameData.Comp100,
+                SoloClassic = gameData.CompAll,
+                CoOpClassic = gameData.InvestedCo,
+                VsClassic = gameData.InvestedMp,
+
+                MainStoryMedian = gameData.CompMainMed,
+                MainExtraMedian = gameData.CompPlusMed,
+                CompletionistMedian = gameData.Comp100Med,
+                SoloMedian = gameData.CompAllMed,
+                CoOpMedian = gameData.InvestedCoMed,
+                VsMedian = gameData.InvestedMpMed,
+
+                MainStoryAverage = gameData.CompMainAvg,
+                MainExtraAverage = gameData.CompPlusAvg,
+                CompletionistAverage = gameData.Comp100Avg,
+                SoloAverage = gameData.CompAllAvg,
+                CoOpAverage = gameData.InvestedCoAvg,
+                VsAverage = gameData.InvestedMpAvg,
+
+                MainStoryRushed = gameData.CompMainL,
+                MainExtraRushed = gameData.CompPlusL,
+                CompletionistRushed = gameData.Comp100L,
+                SoloRushed = gameData.CompAllL,
+                CoOpRushed = gameData.InvestedCoL,
+                VsRushed = gameData.InvestedMpL,
+
+                MainStoryLeisure = gameData.CompMainH,
+                MainExtraLeisure = gameData.CompPlusH,
+                CompletionistLeisure = gameData.Comp100H,
+                SoloLeisure = gameData.CompAllH,
+                CoOpLeisure = gameData.InvestedCoH,
+                VsLeisure = gameData.InvestedMpH
+            };
+        }
+
+        /// <summary>
+        /// Fills source URL and cover image URL on <paramref name="entry"/> when they are still empty.
+        /// </summary>
+        private void ApplyPageMetadataIfMissing(HltbDataUser entry, GameData gameData)
+        {
+            if (entry == null || gameData == null)
+            {
+                return;
+            }
+
+            bool setUrl = false;
+            bool setUrlImg = false;
+            bool setName = false;
+            bool setPlatform = false;
+
+            string id = entry.Id?.Trim();
+            if (!id.IsNullOrEmpty() && entry.Url.IsNullOrEmpty())
+            {
+                entry.Url = string.Format(UrlGame, id);
+                setUrl = true;
+            }
+
+            if (entry.UrlImg.IsNullOrEmpty() && !gameData.GameImage.IsNullOrEmpty())
+            {
+                entry.UrlImg = string.Format(UrlGameImg, gameData.GameImage);
+                setUrlImg = true;
+            }
+
+            if (entry.Name.IsNullOrEmpty() && !gameData.GameName.IsNullOrEmpty())
+            {
+                entry.Name = gameData.GameName;
+                setName = true;
+            }
+
+            if (entry.Platform.IsNullOrEmpty() && !gameData.ProfilePlatform.IsNullOrEmpty())
+            {
+                entry.Platform = gameData.ProfilePlatform;
+                setPlatform = true;
+            }
+
+            if (setUrl || setUrlImg || setName || setPlatform)
+            {
+                Logger.Info(string.Format(
+                    "HLTB ApplyPageMetadataIfMissing id={0}: setUrl={1} setUrlImg={2} setName={3} setPlatform={4} url='{5}' urlImg='{6}'",
+                    id ?? string.Empty,
+                    setUrl,
+                    setUrlImg,
+                    setName,
+                    setPlatform,
+                    entry.Url ?? string.Empty,
+                    entry.UrlImg ?? string.Empty));
+            }
+            else
+            {
+                Common.LogDebug(true, string.Format(
+                    "HLTB ApplyPageMetadataIfMissing id={0}: nothing to fill (already present)",
+                    id ?? string.Empty));
+            }
+        }
+
         /// <summary>
         /// Retrieves game data from HowLongToBeat by game ID.
         /// </summary>
         /// <param name="id">The game ID.</param>
         /// <returns>Returns <see cref="HltbData"/> with game times, or null if not found.</returns>
         private async Task<HltbData> GetGameData(string id, CancellationToken cancellationToken = default)
+        {
+            Common.LogDebug(true, string.Format("HLTB GetGameData: mapping page data to HltbData for id={0}", id));
+            GameData gameData = await GetGamePageDataAsync(id, cancellationToken).ConfigureAwait(false);
+            return gameData == null ? null : MapGameDataToHltbData(gameData);
+        }
+
+        /// <summary>
+        /// Fetches and parses the HLTB game page for a game ID.
+        /// </summary>
+        /// <param name="id">The HLTB game ID.</param>
+        /// <param name="cancellationToken">Cancellation token.</param>
+        /// <returns>Parsed page <see cref="GameData"/>, or null when not found.</returns>
+        private async Task<GameData> GetGamePageDataAsync(string id, CancellationToken cancellationToken = default)
         {
             try { EnsureMonitoringStarted(); } catch { }
             cancellationToken.ThrowIfCancellationRequested();
@@ -896,7 +1015,12 @@ namespace HowLongToBeat.Services
             }
             catch { }
             DateTime startTime = DateTime.UtcNow;
-            Common.LogDebug(!IsVerboseLoggingEnabled, $"GetGameData START id={id} task={Task.CurrentId} thread={Thread.CurrentThread.ManagedThreadId} time={startTime:HH:mm:ss.fff}");
+            Logger.Info(string.Format("HLTB GetGamePageData START id={0}", id));
+            Common.LogDebug(true, string.Format(
+                "HLTB GetGamePageData START id={0} task={1} thread={2}",
+                id,
+                Task.CurrentId,
+                Thread.CurrentThread.ManagedThreadId));
 
             try
             {
@@ -907,7 +1031,7 @@ namespace HowLongToBeat.Services
                     {
                         jsonData = cachedJson;
                         try { System.Threading.Interlocked.Increment(ref PersistentCacheHits); } catch { }
-                        Common.LogDebug(!IsVerboseLoggingEnabled, $"GetGameData id={id} - persistent cache hit");
+                        Common.LogDebug(true, string.Format("HLTB GetGamePageData id={0} - persistent cache hit (jsonLength={1})", id, cachedJson?.Length ?? 0));
                     }
                 }
                 catch (Exception ex)
@@ -932,7 +1056,7 @@ namespace HowLongToBeat.Services
                             {
                                 response = cached;
                                 try { System.Threading.Interlocked.Increment(ref InMemoryCacheHits); } catch { }
-                                Common.LogDebug(!IsVerboseLoggingEnabled, $"GetGameData id={id} - in-memory cache hit");
+                                Common.LogDebug(true, string.Format("HLTB GetGamePageData id={0} - in-memory HTML cache hit (htmlLength={1})", id, cached?.Length ?? 0));
                             }
                             else
                             {
@@ -943,7 +1067,8 @@ namespace HowLongToBeat.Services
                                         if (!httpResp.IsSuccessStatusCode)
                                         {
                                             var code = (int)httpResp.StatusCode;
-                                            Common.LogDebug(!IsVerboseLoggingEnabled, $"GetGameData id={id} - HTTP {code} fetching page");
+                                            Logger.Warn(string.Format("HLTB GetGamePageData id={0} - HTTP {1}", id, code));
+                                            Common.LogDebug(true, string.Format("HLTB GetGamePageData id={0} - HTTP {1} fetching page", id, code));
                                             response = string.Empty;
                                         }
                                         else
@@ -979,7 +1104,7 @@ namespace HowLongToBeat.Services
                                 }
                                 else
                                 {
-                                    Common.LogDebug(true, $"GetGameData id={id} - extracted JSON was empty or incomplete (attempt={attempts})");
+                                    Common.LogDebug(true, string.Format("HLTB GetGamePageData id={0} - extracted JSON empty or incomplete (attempt={1})", id, attempts));
                                     response = string.Empty;
                                 }
                             }
@@ -993,18 +1118,18 @@ namespace HowLongToBeat.Services
                         {
                             var jitter = rnd.Next(0, 200);
                             var delay = baseDelayMs * attempts + jitter;
-                            Common.LogDebug(!IsVerboseLoggingEnabled, $"GetGameData id={id} - retry {attempts} after {delay}ms");
+                            Common.LogDebug(true, string.Format("HLTB GetGamePageData id={0} - retry {1} after {2}ms", id, attempts, delay));
                             try { await Task.Delay(delay, cancellationToken); } catch (OperationCanceledException) { throw; }
                         }
                     }
                 }
                 if (string.IsNullOrEmpty(jsonData))
                 {
-                    Common.LogDebug(true, $"GetGameData id={id} - no JSON extracted after {attempts} attempts");
-                    Logger.Warn($"No GameData find with {id}");
+                    Common.LogDebug(true, string.Format("HLTB GetGamePageData id={0} - no __NEXT_DATA__ JSON after {1} attempt(s)", id, attempts));
+                    Logger.Warn(string.Format("HLTB GetGamePageData: no JSON for id={0}", id));
                     double elapsed = (DateTime.UtcNow - startTime).TotalMilliseconds;
                     try { ConcurrencyController?.ReportSample(elapsed, false); } catch { }
-                    Common.LogDebug(!IsVerboseLoggingEnabled, $"GetGameData DONE id={id} task={Task.CurrentId} thread={Thread.CurrentThread.ManagedThreadId} elapsed={elapsed}ms");
+                    Logger.Info(string.Format("HLTB GetGamePageData DONE id={0} ok=false elapsed={1:F0}ms", id, elapsed));
                     return null;
                 }
 
@@ -1020,55 +1145,23 @@ namespace HowLongToBeat.Services
 
                 if (gameData != null)
                 {
-                    HltbData hltbData = new HltbData
-                    {
-                        MainStoryClassic = gameData.CompMain,
-                        MainExtraClassic = gameData.CompPlus,
-                        CompletionistClassic = gameData.Comp100,
-                        SoloClassic = gameData.CompAll,
-                        CoOpClassic = gameData.InvestedCo,
-                        VsClassic = gameData.InvestedMp,
-
-                        MainStoryMedian = gameData.CompMainMed,
-                        MainExtraMedian = gameData.CompPlusMed,
-                        CompletionistMedian = gameData.Comp100Med,
-                        SoloMedian = gameData.CompAllMed,
-                        CoOpMedian = gameData.InvestedCoMed,
-                        VsMedian = gameData.InvestedMpMed,
-
-                        MainStoryAverage = gameData.CompMainAvg,
-                        MainExtraAverage = gameData.CompPlusAvg,
-                        CompletionistAverage = gameData.Comp100Avg,
-                        SoloAverage = gameData.CompAllAvg,
-                        CoOpAverage = gameData.InvestedCoAvg,
-                        VsAverage = gameData.InvestedMpAvg,
-
-                        MainStoryRushed = gameData.CompMainL,
-                        MainExtraRushed = gameData.CompPlusL,
-                        CompletionistRushed = gameData.Comp100L,
-                        SoloRushed = gameData.CompAllL,
-                        CoOpRushed = gameData.InvestedCoL,
-                        VsRushed = gameData.InvestedMpL,
-
-                        MainStoryLeisure = gameData.CompMainH,
-                        MainExtraLeisure = gameData.CompPlusH,
-                        CompletionistLeisure = gameData.Comp100H,
-                        SoloLeisure = gameData.CompAllH,
-                        CoOpLeisure = gameData.InvestedCoH,
-                        VsLeisure = gameData.InvestedMpH
-                    };
-
                     double elapsed = (DateTime.UtcNow - startTime).TotalMilliseconds;
                     try { ConcurrencyController?.ReportSample(elapsed, true); } catch { }
-                    Common.LogDebug(!IsVerboseLoggingEnabled, $"GetGameData DONE id={id} task={Task.CurrentId} thread={Thread.CurrentThread.ManagedThreadId} elapsed={elapsed}ms");
-                    return hltbData;
+                    Logger.Info(string.Format(
+                        "HLTB GetGamePageData DONE id={0} ok=true elapsed={1:F0}ms name='{2}' compMain={3}s",
+                        id,
+                        elapsed,
+                        gameData.GameName ?? string.Empty,
+                        gameData.CompMain));
+                    Common.LogDebug(true, string.Format("HLTB GetGamePageData id={0} - parsed gameImage='{1}'", id, gameData.GameImage ?? string.Empty));
+                    return gameData;
                 }
                 else
                 {
-                    Logger.Warn($"No GameData find with {id}");
+                    Logger.Warn(string.Format("HLTB GetGamePageData: __NEXT_DATA__ parsed but no game entry for id={0}", id));
                     double elapsed = (DateTime.UtcNow - startTime).TotalMilliseconds;
                     try { ConcurrencyController?.ReportSample(elapsed, false); } catch { }
-                    Common.LogDebug(!IsVerboseLoggingEnabled, $"GetGameData DONE id={id} task={Task.CurrentId} thread={Thread.CurrentThread.ManagedThreadId} elapsed={elapsed}ms");
+                    Logger.Info(string.Format("HLTB GetGamePageData DONE id={0} ok=false elapsed={1:F0}ms", id, elapsed));
                     return null;
                 }
             }
@@ -1079,7 +1172,7 @@ namespace HowLongToBeat.Services
             catch (Exception ex)
             {
                 Common.LogError(ex, false, true, PluginDatabase.PluginName);
-                Logger.Info($"GetGameData ERROR id={id} task={Task.CurrentId} thread={Thread.CurrentThread.ManagedThreadId} elapsed={(DateTime.UtcNow - startTime).TotalMilliseconds}ms");
+                Logger.Info(string.Format("HLTB GetGamePageData ERROR id={0} elapsed={1:F0}ms", id, (DateTime.UtcNow - startTime).TotalMilliseconds));
             }
 
             return null;
@@ -1092,15 +1185,45 @@ namespace HowLongToBeat.Services
         /// <returns>Returns the updated <see cref="HltbDataUser"/>.</returns>
         public async Task<HltbDataUser> UpdateGameData(HltbDataUser hltbDataUser)
         {
+            if (hltbDataUser == null || hltbDataUser.Id.IsNullOrEmpty())
+            {
+                return hltbDataUser;
+            }
+
+            Logger.Info(string.Format(
+                "HLTB UpdateGameData START: hltbId='{0}' name='{1}' urlBefore='{2}' urlImgBefore='{3}'",
+                hltbDataUser.Id,
+                hltbDataUser.Name ?? string.Empty,
+                hltbDataUser.Url ?? string.Empty,
+                hltbDataUser.UrlImg ?? string.Empty));
+
             try
             {
-                HltbData hltbData = await GetGameData(hltbDataUser.Id);
+                GameData gameData = await GetGamePageDataAsync(hltbDataUser.Id).ConfigureAwait(false);
+                if (gameData == null)
+                {
+                    Logger.Warn(string.Format("HLTB UpdateGameData: no page data for hltbId='{0}'", hltbDataUser.Id));
+                    return hltbDataUser;
+                }
+
+                HltbData hltbData = MapGameDataToHltbData(gameData);
                 hltbDataUser.GameHltbData = hltbData ?? hltbDataUser.GameHltbData;
+                ApplyPageMetadataIfMissing(hltbDataUser, gameData);
+
+                Logger.Info(string.Format(
+                    "HLTB UpdateGameData DONE: hltbId='{0}' main={1}s timeToBeat={2}s url='{3}' urlImg='{4}'",
+                    hltbDataUser.Id,
+                    hltbDataUser.GameHltbData?.MainStoryClassic ?? 0,
+                    hltbDataUser.GameHltbData?.TimeToBeat ?? 0,
+                    hltbDataUser.Url ?? string.Empty,
+                    hltbDataUser.UrlImg ?? string.Empty));
+
                 return hltbDataUser;
             }
             catch (Exception ex)
             {
                 Common.LogError(ex, false, true, PluginDatabase.PluginName);
+                Logger.Warn(string.Format("HLTB UpdateGameData FAILED hltbId='{0}': {1}", hltbDataUser.Id, ex.Message));
                 return null;
             }
         }
@@ -1542,7 +1665,7 @@ namespace HowLongToBeat.Services
 
                                     if (hasCoreTimes)
                                     {
-                                        Common.LogDebug(!IsVerboseLoggingEnabled, $"Search: skipping GetGameData for id={x.Id} (search result has times)");
+                                        Common.LogDebug(true, string.Format("HLTB Search: skipping GetGamePageData for id={0} (search result already has times)", x.Id));
                                         x.NeedsDetails = false;
                                     }
                                     else
@@ -2051,7 +2174,10 @@ namespace HowLongToBeat.Services
         /// <returns>Returns a <see cref="GameHowLongToBeat"/> object if a selection is made, otherwise null.</returns>
         public GameHowLongToBeat SearchData(Game game, List<HltbDataUser> data = null)
         {
-            Common.LogDebug(true, $"Search data for {game.Name}");
+            string openMode = data == null ? "SearchDialog-AutoSearch" : string.Format("SearchDialog-PreloadedResults({0})", data.Count);
+            Logger.Info(string.Format("HLTB SearchData OPEN: playniteGame='{0}' mode={1}", game?.Name ?? string.Empty, openMode));
+            Common.LogDebug(true, string.Format("HLTB SearchData OPEN: gameId={0} mode={1}", game?.Id, openMode));
+
             if (API.Instance.ApplicationInfo.Mode == ApplicationMode.Desktop)
             {
                 HowLongToBeatSelect ViewExtension = null;
@@ -2062,11 +2188,23 @@ namespace HowLongToBeat.Services
                     _ = windowExtension.ShowDialog();
                 }).Wait();
 
-                if (ViewExtension.GameHowLongToBeat?.Items.Count > 0)
+                if (ViewExtension?.GameHowLongToBeat?.Items.Count > 0)
                 {
+                    var picked = ViewExtension.GameHowLongToBeat.Items.FirstOrDefault();
+                    Logger.Info(string.Format(
+                        "HLTB SearchData RESULT: playniteGame='{0}' hltbId='{1}' title='{2}' url='{3}' urlImg='{4}' main={5}s",
+                        game?.Name ?? string.Empty,
+                        picked?.Id ?? string.Empty,
+                        picked?.Name ?? string.Empty,
+                        picked?.Url ?? string.Empty,
+                        picked?.UrlImg ?? string.Empty,
+                        picked?.GameHltbData?.MainStoryClassic ?? 0));
                     return ViewExtension.GameHowLongToBeat;
                 }
+
+                Logger.Info(string.Format("HLTB SearchData RESULT: playniteGame='{0}' cancelled or empty", game?.Name ?? string.Empty));
             }
+
             return null;
         }
 
