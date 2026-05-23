@@ -12,19 +12,19 @@
     <sys:String x:Key="LOCHowLongToBeatAddTagDescription">Add a tag to games with Main story completion time information</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoTag">Automatic tags processing</sys:String>
     <sys:String x:Key="LOCHowLongToBeatShowHltbImage">Use HowLongToBeat original game cover image in window</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatEnableVerboseLogging">Enable verbose HLTB debug logging (extra logs in extensions.log)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExport">Export HowLongToBeat data</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExportCsvComma">Export CSV (comma)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExportCsvSemicolon">Export CSV (semicolon)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExportJson">Export JSON</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExportFolderTooltip">Destination folder for export</sys:String>
-    <sys:String x:Key="LOCBrowseLabel">Browse...</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatEnableVerboseLogging">Abilita la registrazione dettagliata del debug HLTB (log extra in extensions.log)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExport">Esporta dati HowLongToBeat</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportCsvComma">Esporta CSV (virgola)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportCsvSemicolon">Esporta CSV (punto e virgola)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportJson">Esporta JSON</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportFolderTooltip">Cartella di destinazione da esportare</sys:String>
+    <sys:String x:Key="LOCBrowseLabel">Sfoglia...</sys:String>
 
-    <sys:String x:Key="LOCExportSelectFolderFirst">Please select an export folder first.</sys:String>
-    <sys:String x:Key="LOCExportFolderNotExist">Selected folder does not exist.</sys:String>
-    <sys:String x:Key="LOCExportedCsvMessage">{0} games exported to CSV: {1} (delimiter '{2}')</sys:String>
-    <sys:String x:Key="LOCExportedJsonMessage">{0} games exported to JSON: {1}</sys:String>
-    <sys:String x:Key="LOCExportFailedCount">{0} games failed to export (see logs).</sys:String>
+    <sys:String x:Key="LOCExportSelectFolderFirst">Seleziona prima una cartella di esportazione.</sys:String>
+    <sys:String x:Key="LOCExportFolderNotExist">La cartella selezionata non esiste.</sys:String>
+    <sys:String x:Key="LOCExportedCsvMessage">{0} giochi esportati in CSV: {1} (delimitatore '{2}')</sys:String>
+    <sys:String x:Key="LOCExportedJsonMessage">{0} giochi esportati in JSON: {1}</sys:String>
+    <sys:String x:Key="LOCExportFailedCount">I giochi {0} non sono stati esportati con successo (vedi i log).</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatColorSelection">Color selection:</sys:String>
 
@@ -75,23 +75,23 @@ If none has this status, it takes the most recent.</sys:String>
 
     <sys:String x:Key="LOCSelection">HowLongToBeat selection</sys:String>
     <sys:String x:Key="LOCHltbUsedVndb">Used Vndb</sys:String>
-    <sys:String x:Key="LOCHltbVndbSpeedLabel">VNDB speed</sys:String>
-    <sys:String x:Key="LOCHltbVndbLengthColumnSpeed">Speed</sys:String>
-    <sys:String x:Key="LOCHltbVndbLengthColumnMedian">Median</sys:String>
-    <sys:String x:Key="LOCHltbVndbLengthColumnAverage">Average</sys:String>
+    <sys:String x:Key="LOCHltbVndbSpeedLabel">Velocità VNDB</sys:String>
+    <sys:String x:Key="LOCHltbVndbLengthColumnSpeed">Velocità</sys:String>
+    <sys:String x:Key="LOCHltbVndbLengthColumnMedian">Mediana</sys:String>
+    <sys:String x:Key="LOCHltbVndbLengthColumnAverage">Media</sys:String>
     <sys:String x:Key="LOCHltbVndbLengthColumnStddev">Stddev</sys:String>
-    <sys:String x:Key="LOCHltbVndbLengthColumnVotes"># Votes</sys:String>
-    <sys:String x:Key="LOCHltbVndbSpeedSlow">Slow</sys:String>
-    <sys:String x:Key="LOCHltbVndbSpeedNormal">Normal</sys:String>
-    <sys:String x:Key="LOCHltbVndbSpeedFast">Fast</sys:String>
-    <sys:String x:Key="LOCHltbVndbSpeedTotal">Total</sys:String>
-    <sys:String x:Key="LOCHltbTabSearch">Search</sys:String>
-    <sys:String x:Key="LOCHltbTabManual">Enter manually</sys:String>
-    <sys:String x:Key="LOCHltbOpenOnWebsite">Search on HowLongToBeat</sys:String>
-    <sys:String x:Key="LOCHltbManualEntryHours">h</sys:String>
+    <sys:String x:Key="LOCHltbVndbLengthColumnVotes"># Voti</sys:String>
+    <sys:String x:Key="LOCHltbVndbSpeedSlow">Lento</sys:String>
+    <sys:String x:Key="LOCHltbVndbSpeedNormal">Normale</sys:String>
+    <sys:String x:Key="LOCHltbVndbSpeedFast">Veloce</sys:String>
+    <sys:String x:Key="LOCHltbVndbSpeedTotal">Totale</sys:String>
+    <sys:String x:Key="LOCHltbTabSearch">Cerca</sys:String>
+    <sys:String x:Key="LOCHltbTabManual">Inserisci manualmente</sys:String>
+    <sys:String x:Key="LOCHltbOpenOnWebsite">Cerca su HowLongToBeat</sys:String>
+    <sys:String x:Key="LOCHltbManualEntryHours">o</sys:String>
     <sys:String x:Key="LOCHltbManualEntryMinutes">min</sys:String>
-    <sys:String x:Key="LOCHltbManualEntryHltbId">HLTB ID</sys:String>
-    <sys:String x:Key="LOCHltbManualEntryConfirm">Use manual entry</sys:String>
+    <sys:String x:Key="LOCHltbManualEntryHltbId">ID HLTB</sys:String>
+    <sys:String x:Key="LOCHltbManualEntryConfirm">Usa voce manuale</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatMainStory">Main story</sys:String>
     <sys:String x:Key="LOCHowLongToBeatMainExtra">Main + extra</sys:String>
@@ -103,8 +103,8 @@ If none has this status, it takes the most recent.</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatPlaying">Playing</sys:String>
 
-    <sys:String x:Key="LOCRefresh">Refresh</sys:String>
-    <sys:String x:Key="LOCDelete">Delete</sys:String>
+    <sys:String x:Key="LOCRefresh">Aggiorna</sys:String>
+    <sys:String x:Key="LOCDelete">Elimina</sys:String>
 
     <!-- HowLongToBeat -->
 
@@ -160,18 +160,18 @@ If none has this status, it takes the most recent.</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatSetCurrentTime">Want you send your current playtime?</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatErrorNoHltbId">Cannot submit data for a game without HLTB ID ({0})</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatErrorNoHltbId">Impossibile inviare dati per un gioco senza ID HLTB ({0})</sys:String>
     <sys:String x:Key="LOCHowLongToBeatErrorNoPlatform">Cannot submit data for a game without platform ({0})</sys:String>
     <sys:String x:Key="LOCHowLongToBeatErrorNoPlatformDefaultUsed" xml:space="preserve">Game ({1}) without platform ({0}) defined in plugin settings.
 Please configure one.
 Default used (PC)</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatErrorSubmitFailed">Could not update your HowLongToBeat profile for {0}.</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatErrorSubmitUnauthorized">HowLongToBeat rejected the update (session expired or not authorized). Open the plugin settings and log in again.</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatErrorSubmitHttpStatus">HowLongToBeat returned HTTP error {0}.</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatErrorSubmitNoResponse">No response was received from HowLongToBeat. Check your connection and try again.</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatErrorSubmitSessionCookies">HowLongToBeat session cookies are missing. Open the plugin settings and log in again.</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatRefreshSessionCookies">Refreshing HowLongToBeat session…</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatErrorSubmitFailed">Impossibile aggiornare il tuo profilo HowLongToBeat per {0}.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatErrorSubmitUnauthorized">HowLongToBeat ha rifiutato l'aggiornamento (sessione scaduta o non autorizzata). Apri nuovamente le impostazioni del plugin e accedi nuovamente.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatErrorSubmitHttpStatus">HowLongToBeat ha restituito l'errore HTTP {0}.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatErrorSubmitNoResponse">Non è stata ricevuta alcuna risposta da HowLongToBeat. Controlla la tua connessione e riprova.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatErrorSubmitSessionCookies">Mancano i cookie di sessione di HowLongToBeat. Apri le impostazioni del plugin e accedi nuovamente.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatRefreshSessionCookies">Aggiornamento sessione HowLongToBeat…</sys:String>
 
 
     <!-- QuickSearch -->
@@ -209,40 +209,40 @@ Here is the list of commands:</sys:String>
 
     <!-- Aliases -->
 
-    <sys:String x:Key="LOCHowLongToBeatAliases">Aliases</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesDescription" xml:space="preserve">Map multiple game titles to a single HowLongToBeat search title.
+    <sys:String x:Key="LOCHowLongToBeatAliases">Alias</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesDescription" xml:space="preserve">Mappa più titoli di gioco in un singolo titolo di ricerca HowLongToBeat.
 
-Example:
-  Source: Pokemon Red Version
-  Target: Pokemon Red and Blue</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesSource">Source title</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesTarget">Target (HLTB title)</sys:String>
+Esempio:
+  Fonte: Pokemon Rosso
+  Target: Pokemon Rosso e Blu</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesSource">Titolo sorgente</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesTarget">Destinazione (titolo HLTB)</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAliasesReset">Reset</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesResetConfirm">Replace your current aliases with the default Pokémon dual-release aliases?</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImport">Import</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesExport">Export</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesOpenFile">Open aliases.json</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesFilePathUnavailable">Plugin user data path is not available.</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportNotFound">No alias file found: {0}</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportFailed">Failed to import alias file: {0} (see logs).</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportConfirm" xml:space="preserve">Import aliases from:\n{0}\n\nThis will replace your current aliases. Continue?</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportOk">Imported aliases from: {0}</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesExportFailed">Failed to export alias file: {0} (see logs).</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesExportOk">Exported aliases to: {0}</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesCellToolTip">Click a cell (or press F2) to edit. Press Enter to commit.</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesTip">Tip: double-click a cell to edit. Aliases are saved when you click Save.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesResetConfirm">Sostituisci i tuoi alias attuali con gli alias a doppio rilascio di Pokémon predefiniti?</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImport">Importa</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesExport">Esporta</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesOpenFile">Apri aliases.json</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesFilePathUnavailable">Il percorso dei dati utente del plugin non è disponibile.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportNotFound">Nessun file alias trovato: {0}</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportFailed">Importazione del file alias non riuscita: {0} (vedi log).</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportConfirm" xml:space="preserve">Importa alias da:\n{0}\n\nQuesto sostituirà i tuoi alias correnti. Continuare?</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportOk">Alias importati da: {0}</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesExportFailed">Esportazione del file alias non riuscita: {0} (vedi log).</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesExportOk">Alias esportati in: {0}</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesCellToolTip">Fare clic su una cella (o premere F2) per modificare. Premere Invio per effettuare il commit.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesTip">Mancia: fare doppio clic su una cella per modificare. Gli alias vengono salvati quando si fa clic su Salva.</sys:String>
 
     <!-- Platform and storefront mapping -->
 
-    <sys:String x:Key="LOCHowLongToBeatPlatformsMappingDescription" xml:space="preserve">Each row links a Playnite platform (from your library database) to the platform name sent to HowLongToBeat when you submit playtime.
-If the HLTB value is not set (----), the plugin uses PC as the default on submit.</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatStorefrontMappingDescription" xml:space="preserve">Each row links a Playnite library source (Steam, Epic, GOG, etc.) to the storefront sent to HowLongToBeat when you submit playtime.
-The left column is the Playnite source; the right column is the value stored in your plugin settings (StorefrontElements).</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatMappingColumnPlayniteOrigin">Playnite (source)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatMappingColumnHltbTarget">HowLongToBeat (submission)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatMappingPlatformDefaultHint">Not set — PC is used when submitting data</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatMappingStorefrontNotSetHint">Not set — storefront will be empty on submit</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatMappingPlayniteSourceIdToolTip">Playnite library source Id</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatMappingPlaynitePlatformIdToolTip">Playnite platform Id</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatPlatformsMappingDescription" xml:space="preserve">Ogni riga collega una piattaforma Playnite (dal database della tua biblioteca) al nome della piattaforma inviata a HowLongToBeat quando invii il tempo di gioco.
+Se il valore HLTB non è impostato (----), il plugin usa il PC come predefinito per inviare.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatStorefrontMappingDescription" xml:space="preserve">Ogni riga collega una sorgente della libreria Playnite (Steam, Epic, GOG, ecc.) alla vetrina inviata a HowLongToBeat quando si invia il tempo di gioco.
+La colonna di sinistra è la sorgente Playnite; la colonna di destra è il valore memorizzato nelle impostazioni del plugin (StorefrontElements).</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatMappingColumnPlayniteOrigin">Playnite (sorgente)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatMappingColumnHltbTarget">HowLongToBeat (invio)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatMappingPlatformDefaultHint">Non impostato — il PC è usato per inviare i dati</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatMappingStorefrontNotSetHint">Non impostato — il negozio sarà vuoto nell'invio</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatMappingPlayniteSourceIdToolTip">ID sorgente libreria Playnite</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatMappingPlaynitePlatformIdToolTip">ID piattaforma Playnite</sys:String>
 
 </ResourceDictionary>
