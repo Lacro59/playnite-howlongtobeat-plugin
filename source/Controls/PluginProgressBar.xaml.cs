@@ -1,4 +1,5 @@
-﻿using CommonPluginsShared;
+﻿using CommonPluginsControls.Controls;
+using CommonPluginsShared;
 using CommonPluginsShared.Collections;
 using CommonPluginsShared.Controls;
 using CommonPluginsShared.Interfaces;
@@ -38,6 +39,10 @@ namespace HowLongToBeat.Controls
 
         private Thumb sliderPlaytimeThumb;
         private TranslateTransform sliderPlaytimeThumbTransform;
+
+        private double lastLayoutWidth1 = double.NaN;
+        private double lastLayoutWidth2 = double.NaN;
+        private double lastLayoutWidth3 = double.NaN;
 
 
         public PluginProgressBar()
@@ -172,6 +177,12 @@ namespace HowLongToBeat.Controls
                 return string.Empty;
             }
 
+            // Indicator width is updated on a later layout pass — keep the full label until measured.
+            if (availableWidthPx <= 0)
+            {
+                return label;
+            }
+
             // Heuristic thresholds tuned for typical Playnite font sizes.
             // If the segment is too narrow, we show a shorter label or hide it.
             if (availableWidthPx < 32)
@@ -187,6 +198,100 @@ namespace HowLongToBeat.Controls
             }
 
             return label;
+        }
+
+
+        private static double EstimateIndicatorWidth(ProgressBarExtend bar)
+        {
+            if (bar == null || bar.Maximum <= 0)
+            {
+                return 0;
+            }
+
+            double barWidth = bar.ActualWidth;
+            if (barWidth <= 0)
+            {
+                return 0;
+            }
+
+            return barWidth * (bar.Value / bar.Maximum);
+        }
+
+
+        private static double GetEffectiveIndicatorWidth(ProgressBarExtend bar)
+        {
+            if (bar == null)
+            {
+                return 0;
+            }
+
+            double width = bar.IndicatorWidth;
+            if (double.IsNaN(width) || width <= 0)
+            {
+                width = EstimateIndicatorWidth(bar);
+            }
+
+            return width;
+        }
+
+
+        private static bool LayoutWidthsChanged(double width1, double width2, double width3, double last1, double last2, double last3)
+        {
+            const double epsilon = 0.5;
+            return double.IsNaN(last1)
+                || Math.Abs(width1 - last1) > epsilon
+                || Math.Abs(width2 - last2) > epsilon
+                || Math.Abs(width3 - last3) > epsilon;
+        }
+
+
+        private void ApplyProgressBarLayoutFromIndicators(double width1, double width2, double width3)
+        {
+            PART_ProgressBarSecond.MarginLeft = width1;
+            PART_ProgressBarThird.MarginLeft = width2;
+
+            spHltb_El1.Width = width1;
+            spHltb_El2.Width = width2;
+            spHltb_El3.Width = width3;
+
+            double seg1 = Math.Max(0, width1);
+            double seg2 = Math.Max(0, width2 - width1);
+            double seg3 = Math.Max(0, width3 - width2);
+
+            if (ControlDataContext == null)
+            {
+                return;
+            }
+
+            PART_ProgressBarFirst.TextValue = FitTimeLabel(ControlDataContext.ToolTipFirst, seg1);
+            PART_ProgressBarSecond.TextValue = FitTimeLabel(ControlDataContext.ToolTipSecond, seg2);
+            PART_ProgressBarThird.TextValue = FitTimeLabel(ControlDataContext.ToolTipThird, seg3);
+        }
+
+
+        private void RefreshProgressBarLayout()
+        {
+            double width1 = GetEffectiveIndicatorWidth(PART_ProgressBarFirst);
+            double width2 = GetEffectiveIndicatorWidth(PART_ProgressBarSecond);
+            double width3 = GetEffectiveIndicatorWidth(PART_ProgressBarThird);
+
+            if (!LayoutWidthsChanged(width1, width2, width3, lastLayoutWidth1, lastLayoutWidth2, lastLayoutWidth3))
+            {
+                return;
+            }
+
+            lastLayoutWidth1 = width1;
+            lastLayoutWidth2 = width2;
+            lastLayoutWidth3 = width3;
+
+            try
+            {
+                ApplyProgressBarLayoutFromIndicators(width1, width2, width3);
+            }
+            catch
+            {
+                // Best-effort: never crash the UI.
+            }
         }
 
 
@@ -319,6 +424,10 @@ namespace HowLongToBeat.Controls
             var timer = new DebugTimer(string.Format("PluginProgressBar.SetData(game='{0}')", newContext?.Name ?? "null"));
 #endif
 
+            lastLayoutWidth1 = double.NaN;
+            lastLayoutWidth2 = double.NaN;
+            lastLayoutWidth3 = double.NaN;
+
             GameHowLongToBeat gameHowLongToBeat = (GameHowLongToBeat)PluginGameData;
             LoadData(gameHowLongToBeat);
 
@@ -383,6 +492,8 @@ namespace HowLongToBeat.Controls
             PartSliderThird.Maximum = ControlDataContext.MaxValue;
 
             UpdateLiveRefreshTimerState();
+
+            Dispatcher.BeginInvoke((Action)RefreshProgressBarLayout, DispatcherPriority.Loaded);
 
 #if DEBUG
             timer.Stop(string.Format("MaxValue={0}, PlaytimeValue={1}", ControlDataContext.MaxValue, ControlDataContext.PlaytimeValue));
@@ -733,33 +844,7 @@ namespace HowLongToBeat.Controls
         #region Events
         private void PART_ProgressBarFirst_LayoutUpdated(object sender, EventArgs e)
         {
-            double width1 = PART_ProgressBarFirst.IndicatorWidth;
-            double width2 = PART_ProgressBarSecond.IndicatorWidth;
-            double width3 = PART_ProgressBarThird.IndicatorWidth;
-
-            PART_ProgressBarSecond.MarginLeft = width1;
-            PART_ProgressBarThird.MarginLeft = width2;
-
-            spHltb_El1.Width = width1;
-            spHltb_El2.Width = width2;
-            spHltb_El3.Width = width3;
-
-            // Prevent label overlaps when the max range is huge (segments become tiny).
-            // We base available space on the *segment* width (delta between cumulative indicators).
-            double seg1 = Math.Max(0, width1);
-            double seg2 = Math.Max(0, width2 - width1);
-            double seg3 = Math.Max(0, width3 - width2);
-
-            try
-            {
-                if (ControlDataContext != null)
-                {
-                    PART_ProgressBarFirst.TextValue = FitTimeLabel(ControlDataContext.ToolTipFirst, seg1);
-                    PART_ProgressBarSecond.TextValue = FitTimeLabel(ControlDataContext.ToolTipSecond, seg2);
-                    PART_ProgressBarThird.TextValue = FitTimeLabel(ControlDataContext.ToolTipThird, seg3);
-                }
-            }
-            catch { }
+            RefreshProgressBarLayout();
         }
         #endregion
     }
