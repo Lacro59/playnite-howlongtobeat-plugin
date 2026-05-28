@@ -24,8 +24,10 @@ namespace HowLongToBeat.Controls
 
         public PluginButton()
         {
+            AlwaysShow = true;
+
 #if DEBUG
-			var timer = new DebugTimer("PluginButton.ctor");
+            var timer = new DebugTimer("PluginButton.ctor");
 #endif
 
 			InitializeComponent();
@@ -43,7 +45,7 @@ namespace HowLongToBeat.Controls
         }
 
         protected override void AttachStaticEvents()
-        {
+        {            
 #if DEBUG
 			var timer = new DebugTimer("PluginButton.AttachStaticEvents");
 #endif
