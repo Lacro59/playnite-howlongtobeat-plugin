@@ -85,19 +85,19 @@ If none has this status, it takes the most recent.</sys:String>
     <sys:String x:Key="LOCHltbVndbSpeedNormal">Normal</sys:String>
     <sys:String x:Key="LOCHltbVndbSpeedFast">Fast</sys:String>
     <sys:String x:Key="LOCHltbVndbSpeedTotal">Total</sys:String>
-    <sys:String x:Key="LOCHltbTabSearch">Search</sys:String>
+    <sys:String x:Key="LOCHltbTabSearch">検索</sys:String>
     <sys:String x:Key="LOCHltbTabManual">Enter manually</sys:String>
     <sys:String x:Key="LOCHltbOpenOnWebsite">Search on HowLongToBeat</sys:String>
-    <sys:String x:Key="LOCHltbManualEntryHours">h</sys:String>
-    <sys:String x:Key="LOCHltbManualEntryMinutes">min</sys:String>
+    <sys:String x:Key="LOCHltbManualEntryHours">時間</sys:String>
+    <sys:String x:Key="LOCHltbManualEntryMinutes">分</sys:String>
     <sys:String x:Key="LOCHltbManualEntryHltbId">HLTB ID</sys:String>
     <sys:String x:Key="LOCHltbManualEntryConfirm">Use manual entry</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatMainStory">Main story</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatMainExtra">Main + extra</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatCompletionist">Completionist</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatMainStory">メインストーリー</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatMainExtra">メイン + 追加</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatCompletionist">完全クリア</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatSolo">Solo</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatSolo">ソロ</sys:String>
     <sys:String x:Key="LOCHowLongToBeatCoOp">協力プレイ</sys:String>
     <sys:String x:Key="LOCHowLongToBeatVs">Vs</sys:String>
 
@@ -219,8 +219,8 @@ Example:
     <sys:String x:Key="LOCHowLongToBeatAliasesTarget">Target (HLTB title)</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAliasesReset">Reset</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAliasesResetConfirm">Replace your current aliases with the default Pokémon dual-release aliases?</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImport">Import</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesExport">Export</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImport">インポート</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesExport">エクスポート</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAliasesOpenFile">Open aliases.json</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAliasesFilePathUnavailable">Plugin user data path is not available.</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAliasesImportNotFound">No alias file found: {0}</sys:String>
