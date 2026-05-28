@@ -27,6 +27,7 @@ namespace HowLongToBeat.Services
         public HowLongToBeat Plugin { get; set; }
         public HowLongToBeatApi HowLongToBeatApi { get; set; }
         public HltbUserStats UserHltbData { get; set; } = new HltbUserStats();
+        private readonly object UserHltbDataSync = new object();
 
         private static bool DontSetToHtlb { get; set; } = false;
 
@@ -971,19 +972,26 @@ namespace HowLongToBeat.Services
                     TitleList titleList = HowLongToBeatApi.GetUserData(gameId);
                     if (titleList != null)
                     {
-                        if (UserHltbData?.TitlesList == null)
+                        string userDataJson = null;
+                        lock (UserHltbDataSync)
                         {
-                            return;
-                        }
+                            if (UserHltbData?.TitlesList == null)
+                            {
+                                return;
+                            }
 
-                        int index = UserHltbData.TitlesList.FindIndex(x => x.Id == gameId);
-                        if (index > -1)
-                        {
-                            UserHltbData.TitlesList[index] = titleList;
-                        }
-                        else
-                        {
-                            UserHltbData.TitlesList.Add(titleList);
+                            int index = UserHltbData.TitlesList.FindIndex(x => x.Id == gameId);
+                            if (index > -1)
+                            {
+                                UserHltbData.TitlesList[index] = titleList;
+                            }
+                            else
+                            {
+                                UserHltbData.TitlesList.Add(titleList);
+                            }
+
+                            // Serialize while protected from concurrent list mutations.
+                            userDataJson = Serialization.ToJson(UserHltbData);
                         }
 
                         Application.Current.Dispatcher?.Invoke(() =>
@@ -991,7 +999,7 @@ namespace HowLongToBeat.Services
                             _database?.OnCollectionChanged(null, null);
                         });
 
-                        FileSystem.WriteStringToFileSafe(Path.Combine(Paths.PluginUserDataPath, "HltbUserStats.json"), Serialization.ToJson(UserHltbData));
+                        FileSystem.WriteStringToFileSafe(Path.Combine(Paths.PluginUserDataPath, "HltbUserStats.json"), userDataJson ?? string.Empty);
                     }
                 }
                 catch (Exception ex)

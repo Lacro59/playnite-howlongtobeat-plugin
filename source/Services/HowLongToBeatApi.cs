@@ -417,10 +417,10 @@ namespace HowLongToBeat.Services
         private static readonly SemaphoreSlim SearchUrlDiscoverySync = new SemaphoreSlim(1, 1);
         private const int ScriptDownloadTimeoutMs = 5000;
 
-        private const int MaxParallelGameDataDownloads = 32;
+        private const int MaxParallelGameDataDownloads = 8;
         private const int GameDataDownloadTimeoutMs = 15000;
 
-        private const int MaxParallelSearches = 96;
+        private const int MaxParallelSearches = 24;
 
         // Replace unbounded dictionaries with bounded LRU caches to avoid unbounded memory growth
         private readonly LruCache<string, string> GamePageCache;
@@ -440,6 +440,7 @@ namespace HowLongToBeat.Services
         private const int SemaphoreUpperBound = 128;
 
         private readonly HttpClient httpClient;
+        private readonly AsyncTokenBucketRateLimiter httpRateLimiter;
         private Task PageCacheInitTask;
         // Thread-local Random to provide jitter without creating many Sequential Random instances
         private static readonly ThreadLocal<Random> _rnd = new ThreadLocal<Random>(() => new Random(Guid.NewGuid().GetHashCode()));
@@ -455,6 +456,8 @@ namespace HowLongToBeat.Services
         private readonly object BackoffSync = new object();
 
         private string CachedAuthToken = null;
+        private Dictionary<string, string> CachedAuthHeaderParts = null;
+        private string CachedAuthEndpoint = null;
         private DateTime CachedAuthTokenExpiry = DateTime.MinValue;
         private readonly object AuthTokenSync = new object();
 
@@ -462,6 +465,8 @@ namespace HowLongToBeat.Services
         private Task monitorTask;
         private readonly object monitorSync = new object();
         private bool _disposed = false;
+        private const double DefaultHttpRateTokensPerSecond = 2d;
+        private const int DefaultHttpRateBurstCapacity = 3;
 
 
         #region Urls
@@ -537,6 +542,15 @@ namespace HowLongToBeat.Services
                 httpClient.DefaultRequestHeaders.TryAddWithoutValidation("User-Agent", Web.UserAgent);
                 try { httpClient.DefaultRequestHeaders.TryAddWithoutValidation("Referer", UrlBase); } catch { }
                 try { httpClient.DefaultRequestHeaders.Add("accept", "application/json, text/javascript, */*; q=0.01"); } catch { }
+                httpRateLimiter = new AsyncTokenBucketRateLimiter(DefaultHttpRateTokensPerSecond, DefaultHttpRateBurstCapacity);
+                try
+                {
+                    Logger.Info($"HLTB rate limiter initialized: {DefaultHttpRateTokensPerSecond:0.##} req/s, burst={DefaultHttpRateBurstCapacity}");
+                    Common.LogDebug(true, $"HLTB RateLimiter init tokensPerSecond={DefaultHttpRateTokensPerSecond:0.##} burst={DefaultHttpRateBurstCapacity}");
+                    Logger.Info($"HLTB concurrency defaults: search={MaxParallelSearches}, gameData={MaxParallelGameDataDownloads}");
+                    Common.LogDebug(true, $"HLTB Concurrency init search={MaxParallelSearches} gameData={MaxParallelGameDataDownloads}");
+                }
+                catch { }
             }
             catch (Exception ex)
             {
@@ -697,6 +711,36 @@ namespace HowLongToBeat.Services
                 monitorTask = null;
             }
             catch { }
+        }
+
+        private async Task WaitForHttpRateLimitAsync(string operation, string url, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (httpRateLimiter == null)
+            {
+                return;
+            }
+
+            try
+            {
+                int waitedMs = await httpRateLimiter.WaitAsync(cancellationToken).ConfigureAwait(false);
+                if (waitedMs > 0)
+                {
+                    try { Logger.Info($"HLTB rate limiter: waited {waitedMs}ms before {operation} '{url}'"); } catch { }
+                    try { Common.LogDebug(true, $"HLTB RateLimiter wait operation={operation} waitedMs={waitedMs} url='{url}'"); } catch { }
+                }
+                else
+                {
+                    try { Common.LogDebug(true, $"HLTB RateLimiter pass operation={operation} waitedMs=0 url='{url}'"); } catch { }
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                try { Logger.Warn(ex, $"HLTB rate limiter check failed for {operation} '{url}'"); } catch { }
+            }
         }
 
         private void EnsureMonitoringStarted()
@@ -1046,7 +1090,9 @@ namespace HowLongToBeat.Services
                             {
                                 try
                                 {
-                                    using (var httpResp = await httpClient.GetAsync(string.Format(UrlGame, id), cancellationToken).ConfigureAwait(false))
+                                    string gameUrl = string.Format(UrlGame, id);
+                                    await WaitForHttpRateLimitAsync("GET game page", gameUrl, cancellationToken).ConfigureAwait(false);
+                                    using (var httpResp = await httpClient.GetAsync(gameUrl, cancellationToken).ConfigureAwait(false))
                                     {
                                         if (!httpResp.IsSuccessStatusCode)
                                         {
@@ -1285,6 +1331,7 @@ namespace HowLongToBeat.Services
                 {
                     try
                     {
+                        await WaitForHttpRateLimitAsync("GET homepage", url, cts.Token).ConfigureAwait(false);
                         using (var httpResp = await httpClient.GetAsync(url, cts.Token).ConfigureAwait(false))
                         {
                             if (!httpResp.IsSuccessStatusCode)
@@ -1333,6 +1380,7 @@ namespace HowLongToBeat.Services
                     {
                         try
                         {
+                            await WaitForHttpRateLimitAsync("GET script", scriptUrl, ctsScript.Token).ConfigureAwait(false);
                             using (var scriptResp = await httpClient.GetAsync(scriptUrl, ctsScript.Token).ConfigureAwait(false))
                             {
                                 if (!scriptResp.IsSuccessStatusCode)
@@ -1397,7 +1445,7 @@ namespace HowLongToBeat.Services
                 Common.LogError(ex, false, true, PluginDatabase.PluginName);
             }
 
-            try { Logger.Info($"HLTB search: no endpoint discovered from scripts; using SearchEndPoint '{SearchEndPoint}'"); } catch { }
+            try { Logger.Warn($"HLTB search: no endpoint discovered from scripts; using SearchEndPoint '{SearchEndPoint}'"); } catch { }
             return SearchEndPoint;
         }
 
@@ -1468,19 +1516,39 @@ namespace HowLongToBeat.Services
                 // Double-checked locking: quick snapshot first to avoid locking in common case
                 var snapshotToken = CachedAuthToken;
                 var snapshotExpiry = CachedAuthTokenExpiry;
-                if (!string.IsNullOrEmpty(snapshotToken) && DateTime.UtcNow < snapshotExpiry)
+                var snapshotHeaders = CachedAuthHeaderParts;
+                var snapshotEndpoint = CachedAuthEndpoint;
+                if (!string.IsNullOrEmpty(snapshotToken)
+                    && DateTime.UtcNow < snapshotExpiry
+                    && snapshotHeaders != null
+                    && string.Equals(snapshotEndpoint ?? string.Empty, apiEndpoint ?? string.Empty, StringComparison.OrdinalIgnoreCase))
                 {
-                    //return snapshotToken;
+                    try
+                    {
+                        Common.LogDebug(true, $"HLTB auth cache hit (snapshot) endpoint='{apiEndpoint}' ttlMs={(int)Math.Max(0, (snapshotExpiry - DateTime.UtcNow).TotalMilliseconds)}");
+                    }
+                    catch { }
+                    return new Dictionary<string, string>(snapshotHeaders, StringComparer.Ordinal);
                 }
 
                 // Re-check under lock to avoid race with a concurrent writer
                 lock (AuthTokenSync)
                 {
-                    if (!string.IsNullOrEmpty(CachedAuthToken) && DateTime.UtcNow < CachedAuthTokenExpiry)
+                    if (!string.IsNullOrEmpty(CachedAuthToken)
+                        && DateTime.UtcNow < CachedAuthTokenExpiry
+                        && CachedAuthHeaderParts != null
+                        && string.Equals(CachedAuthEndpoint ?? string.Empty, apiEndpoint ?? string.Empty, StringComparison.OrdinalIgnoreCase))
                     {
-                        //return CachedAuthToken;
+                        try
+                        {
+                            Common.LogDebug(true, $"HLTB auth cache hit (lock) endpoint='{apiEndpoint}' ttlMs={(int)Math.Max(0, (CachedAuthTokenExpiry - DateTime.UtcNow).TotalMilliseconds)}");
+                        }
+                        catch { }
+                        return new Dictionary<string, string>(CachedAuthHeaderParts, StringComparer.Ordinal);
                     }
                 }
+
+                try { Common.LogDebug(true, $"HLTB auth cache miss endpoint='{apiEndpoint}'"); } catch { }
 
                 List<HttpHeader> headers = new List<HttpHeader>
                 {
@@ -1495,6 +1563,7 @@ namespace HowLongToBeat.Services
                     {
                         try { request.Headers.Add("Referer", UrlBase); } catch { }
 
+                        await WaitForHttpRateLimitAsync("GET auth init", url, cts.Token).ConfigureAwait(false);
                         using (var resp = await httpClient.SendAsync(request, cts.Token).ConfigureAwait(false))
                         {
                             if (!resp.IsSuccessStatusCode)
@@ -1521,25 +1590,28 @@ namespace HowLongToBeat.Services
                 var data = Serialization.FromJson<Dictionary<string, string>>(response);
                 if (data != null && data.TryGetValue("token", out string token))
                 {
-                    lock (AuthTokenSync)
-                    {
-                        // Final re-check before writing to shared fields
-                        if (!string.IsNullOrEmpty(CachedAuthToken) && DateTime.UtcNow < CachedAuthTokenExpiry)
-                        {
-                            //return CachedAuthToken;
-                        }
-                        CachedAuthToken = token;
-                        CachedAuthTokenExpiry = DateTime.UtcNow.AddSeconds(90);
-                    }
+                    Dictionary<string, string> headerParts = null;
                     if (data.TryGetValue("hpKey", out string hpKey) && data.TryGetValue("hpVal", out string hpVal))
                     {
-                        var headerParts = new Dictionary<string, string>
+                        headerParts = new Dictionary<string, string>(StringComparer.Ordinal)
                         {
                             { "Token", token },
                             { "Hpkey", hpKey },
                             { "Hpval", hpVal }
                         };
+                    }
 
+                    lock (AuthTokenSync)
+                    {
+                        CachedAuthToken = token;
+                        CachedAuthTokenExpiry = DateTime.UtcNow.AddSeconds(90);
+                        CachedAuthEndpoint = apiEndpoint;
+                        CachedAuthHeaderParts = headerParts;
+                    }
+
+                    if (headerParts != null)
+                    {
+                        try { Common.LogDebug(true, $"HLTB auth cache store endpoint='{apiEndpoint}' ttlSec=90 hasHp=1"); } catch { }
                         return headerParts;
                     }
 
@@ -3442,6 +3514,7 @@ namespace HowLongToBeat.Services
                             }
                         }
 
+                        await WaitForHttpRateLimitAsync("POST json", url, cancellationToken).ConfigureAwait(false);
                         using (var resp = await client.SendAsync(request, cancellationToken).ConfigureAwait(false))
                         {
                             int statusCode = (int)resp.StatusCode;
@@ -3499,6 +3572,7 @@ namespace HowLongToBeat.Services
                         }
                     }
 
+                    await WaitForHttpRateLimitAsync("POST shared json", url, cancellationToken).ConfigureAwait(false);
                     using (var resp = await httpClient.SendAsync(request, cancellationToken).ConfigureAwait(false))
                     {
                         int status = (int)resp.StatusCode;
