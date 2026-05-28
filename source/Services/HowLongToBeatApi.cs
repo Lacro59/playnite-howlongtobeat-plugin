@@ -2167,8 +2167,18 @@ namespace HowLongToBeat.Services
                 HowLongToBeatSelect ViewExtension = null;
                 _ = Application.Current.Dispatcher.BeginInvoke((Action)delegate
                 {
+                    WindowOptions windowOptions = new WindowOptions
+                    {
+                        ShowMinimizeButton = false,
+                        ShowMaximizeButton = false,
+                        ShowCloseButton = true,
+                        CanBeResizable = false,
+                        Height = 600,
+                        Width = 700
+                    };
+
                     ViewExtension = new HowLongToBeatSelect(game, data);
-                    Window windowExtension = PlayniteUiHelper.CreateExtensionWindow(ResourceProvider.GetString("LOCSelection") + " - " + game.Name + " - " + (game.Source?.Name ?? "Playnite"), ViewExtension);
+                    Window windowExtension = PlayniteUiHelper.CreateExtensionWindow(ResourceProvider.GetString("LOCSelection") + " - " + game.Name + " - " + (game.Source?.Name ?? "Playnite"), ViewExtension, windowOptions);
                     _ = windowExtension.ShowDialog();
                 }).Wait();
 
