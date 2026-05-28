@@ -57,6 +57,20 @@
 
     <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatus">Automatically update game status in Playnite when importing user data from HowLongToBeat</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltb">Automatically update game status on HowLongToBeat when changing game status in Playnite</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltbOptionsTitle">When syncing Playnite status to HowLongToBeat</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltbOptionsHelp" xml:space="preserve">Data source:
+- Status/list is sent to HowLongToBeat.
+- Playtime comes from Playnite Playtime.
+- Completion date comes from Playnite Last activity.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltbCompletedPlaytime">Completed: send Playnite playtime to HowLongToBeat (Main story)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltbCompletedDate">Completed: set completion date from Playnite last activity</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltbCompletionistPlaytime">Completionist: send Playnite playtime to HowLongToBeat (100%)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltbCompletionistDate">Completionist: set completion date from Playnite last activity</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatSyncPlaytimeShort">Current playtime</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatSyncDateShort">Last activity date</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatHltbStatusColumnHeader">HowLongToBeat status (target)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatPlayniteDataColumnHeader">Playnite data sent</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltbNotification">HowLongToBeat sync for {0}: status sent, playtime {1}, completion date {2}.</sys:String>
     
     <sys:String x:Key="LOCHowLongToBeatAutoData">Game data download</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoAccept">Automatically select game when only one game is found during search</sys:String>

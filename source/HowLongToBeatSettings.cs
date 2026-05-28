@@ -290,6 +290,10 @@ namespace HowLongToBeat
         public Guid GameStatusPlaying { get; set; }
         public Guid GameStatusCompleted { get; set; }
         public Guid GameStatusCompletionist { get; set; }
+        public bool AutoSetToHltbCompletedSendPlaytime { get; set; } = true;
+        public bool AutoSetToHltbCompletedSendCompletionDate { get; set; } = true;
+        public bool AutoSetToHltbCompletionistSendPlaytime { get; set; } = true;
+        public bool AutoSetToHltbCompletionistSendCompletionDate { get; set; } = true;
 
         #endregion
 
