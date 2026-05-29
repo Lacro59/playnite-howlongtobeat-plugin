@@ -120,6 +120,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Behaviors\SelectorBehaviors.cs" />
+    <Compile Include="Controls\HltbPieChartTooltip.xaml.cs">
+      <DependentUpon>HltbPieChartTooltip.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\PluginButton.xaml.cs">
       <DependentUpon>PluginButton.xaml</DependentUpon>
     </Compile>
@@ -358,6 +361,10 @@
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <Page Include="Controls\HltbPieChartTooltip.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\PluginButton.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

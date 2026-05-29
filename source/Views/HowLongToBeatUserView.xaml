@@ -73,6 +73,8 @@
                                     <ColumnDefinition Width="auto"/>
                                     <ColumnDefinition Width="10"/>
                                     <ColumnDefinition Width="auto"/>
+                                    <ColumnDefinition Width="10"/>
+                                    <ColumnDefinition Width="auto"/>
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="auto"/>
                                 </Grid.ColumnDefinitions>
@@ -151,7 +153,22 @@
 
                                 <StackPanel Grid.Column="8"
                                             Orientation="Horizontal">
+                                    <Label Content="{DynamicResource LOCHltbFilterHltbListStatus}"
+                                           FontSize="16"
+                                           Margin="0,0,10,0"
+                                           VerticalAlignment="Center"
+                                           ToolTip="{DynamicResource LOCHltbFilterHltbListStatusTooltip}"/>
+
+                                    <ComboBox Width="155"
+                                              Name="PART_CbHltbListStatus"
+                                              ToolTip="{DynamicResource LOCHltbFilterHltbListStatusTooltip}"
+                                              SelectionChanged="PART_CbHltbListStatus_SelectionChanged"/>
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="10"
+                                            Orientation="Horizontal">
                                     <CheckBox Content="{DynamicResource LOCHltbOnlyReplays}"
+                                              ToolTip="{DynamicResource LOCHltbOnlyReplaysTooltip}"
                                               Checked="CheckBox_Checked"
                                               Unchecked="CheckBox_Checked"
                                               Name="PART_Replays"
@@ -166,7 +183,7 @@
                                 </StackPanel>
 
                                 <StackPanel Orientation="Horizontal"
-                                            Grid.Column="20">
+                                            Grid.Column="16">
                                     <Button Content="&#xEEBB;"
                                             FontFamily="{DynamicResource FontIcoFont}"
                                             ToolTip="{DynamicResource LOCCommonDefaultFilters}"
@@ -302,21 +319,10 @@
                                                 </GridViewColumn.CellTemplate>
                                             </GridViewColumn>
 
-                                            <GridViewColumn Width="120"
-                                                            DisplayMemberBinding="{Binding StartDate, Converter={StaticResource LocalDateConverter}}">
-                                                <GridViewColumnHeader Content="{DynamicResource LOCCommonStartDate}"/>
-                                            </GridViewColumn>
-
-                                            <GridViewColumn Width="0"
-                                                            DisplayMemberBinding="{Binding LastUpdate}">
-                                                <controlsShared:GridViewColumnHeaderExtend Style="{StaticResource {x:Type GridViewColumnHeader}}"
-                                                                                           IsHitTestVisible="False"
-                                                                                           RefIndex="4"/>
-                                            </GridViewColumn>
-                                            <GridViewColumn Width="120"
-                                                            DisplayMemberBinding="{Binding LastUpdate, Converter={StaticResource LocalDateConverter}}">
-                                                <GridViewColumnHeader Content="{DynamicResource LOCCommonLastUpdate}"
-                                                                      Tag="LastUpdate"/>
+                                            <GridViewColumn Width="auto"
+                                                            DisplayMemberBinding="{Binding HltbListsFormat}">
+                                                <GridViewColumnHeader Content="{DynamicResource LOCHltbColumnHltbLists}"
+                                                                      Tag="HltbListsFormat"/>
                                             </GridViewColumn>
 
                                             <GridViewColumn Width="100"
@@ -327,11 +333,6 @@
                                             <GridViewColumn Width="130"
                                                             DisplayMemberBinding="{Binding Storefront}">
                                                 <GridViewColumnHeader Content="{DynamicResource LOCHowLongToBeatStorefront}"/>
-                                            </GridViewColumn>
-
-                                            <GridViewColumn Width="120"
-                                                            DisplayMemberBinding="{Binding Completion, Converter={StaticResource LocalDateConverter}}">
-                                                <GridViewColumnHeader Content="{DynamicResource LOCHowLongToBeatCompleted}"/>
                                             </GridViewColumn>
 
                                             <GridViewColumn Width="0"
@@ -358,6 +359,52 @@
                                             </GridViewColumn>
 
                                             <GridViewColumn Width="0"
+                                                            DisplayMemberBinding="{Binding ProgressPercent}">
+                                                <controlsShared:GridViewColumnHeaderExtend Style="{StaticResource {x:Type GridViewColumnHeader}}"
+                                                                                           IsHitTestVisible="False"
+                                                                                           RefIndex="13"/>
+                                            </GridViewColumn>
+                                            <GridViewColumn Width="150">
+                                                <GridViewColumnHeader Content="{DynamicResource LOCHltbColumnProgress}"
+                                                                      Tag="ProgressPercent"/>
+                                                <GridViewColumn.CellTemplate>
+                                                    <DataTemplate>
+                                                        <Grid MinWidth="120"
+                                                              Height="22"
+                                                              Margin="4,2"
+                                                              VerticalAlignment="Center"
+                                                              HorizontalAlignment="Stretch"
+                                                              ToolTip="{Binding ProgressToolTip}">
+                                                            <Grid.Style>
+                                                                <Style TargetType="Grid">
+                                                                    <Setter Property="Visibility"
+                                                                            Value="Visible"/>
+                                                                    <Style.Triggers>
+                                                                        <DataTrigger Binding="{Binding TimeToBeat}"
+                                                                                     Value="0">
+                                                                            <Setter Property="Visibility"
+                                                                                    Value="Collapsed"/>
+                                                                        </DataTrigger>
+                                                                    </Style.Triggers>
+                                                                </Style>
+                                                            </Grid.Style>
+                                                            <ProgressBar Minimum="0"
+                                                                         Maximum="100"
+                                                                         Value="{Binding ProgressPercent, Mode=OneWay}"
+                                                                         Height="22"
+                                                                         HorizontalAlignment="Stretch"/>
+                                                            <TextBlock Text="{Binding ProgressPercentFormat}"
+                                                                       FontSize="13"
+                                                                       HorizontalAlignment="Center"
+                                                                       VerticalAlignment="Center"
+                                                                       IsHitTestVisible="False"
+                                                                       Style="{DynamicResource ListExtendStyleTextBlock}"/>
+                                                        </Grid>
+                                                    </DataTemplate>
+                                                </GridViewColumn.CellTemplate>
+                                            </GridViewColumn>
+
+                                            <GridViewColumn Width="0"
                                                             DisplayMemberBinding="{Binding RemainingTime}">
                                                 <controlsShared:GridViewColumnHeaderExtend Style="{StaticResource {x:Type GridViewColumnHeader}}"
                                                                                            IsHitTestVisible="False"
@@ -367,6 +414,29 @@
                                                             DisplayMemberBinding="{Binding RemainingTimeFormat}">
                                                 <GridViewColumnHeader Content="{DynamicResource LOCHltbRemainingTime}"
                                                                       Tag="RemainingTime"/>
+                                            </GridViewColumn>
+
+                                            <GridViewColumn Width="auto"
+                                                            DisplayMemberBinding="{Binding Completion, Converter={StaticResource LocalDateConverter}}">
+                                                <GridViewColumnHeader Content="{DynamicResource LOCHowLongToBeatCompleted}"/>
+                                            </GridViewColumn>
+
+                                            <GridViewColumn Width="auto"
+                                                            DisplayMemberBinding="{Binding StartDate, Converter={StaticResource LocalDateConverter}}">
+                                                <GridViewColumnHeader Content="{DynamicResource LOCCommonStartDate}"
+                                                                      Tag="StartDate"/>
+                                            </GridViewColumn>
+
+                                            <GridViewColumn Width="0"
+                                                            DisplayMemberBinding="{Binding LastUpdate}">
+                                                <controlsShared:GridViewColumnHeaderExtend Style="{StaticResource {x:Type GridViewColumnHeader}}"
+                                                                                           IsHitTestVisible="False"
+                                                                                           RefIndex="4"/>
+                                            </GridViewColumn>
+                                            <GridViewColumn Width="auto"
+                                                            DisplayMemberBinding="{Binding LastUpdate, Converter={StaticResource LocalDateConverter}}">
+                                                <GridViewColumnHeader Content="{DynamicResource LOCCommonLastUpdate}"
+                                                                      Tag="LastUpdate"/>
                                             </GridViewColumn>
 
                                             <GridViewColumn Width="0"
@@ -574,206 +644,244 @@
                             </Grid>
                         </Grid>
 
-                        <Grid Grid.Row="4">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="auto"/>
-                                <RowDefinition Height="10"/>
-                                <RowDefinition Height="auto"/>
-                            </Grid.RowDefinitions>
+                        <Expander Grid.Row="4"
+                                  Margin="10,0,10,0"
+                                  IsExpanded="True"
+                                  Foreground="{DynamicResource TextBrush}">
+                            <Expander.Header>
+                                <TextBlock Text="{DynamicResource LOCStatistics}"
+                                           Style="{DynamicResource BaseTextBlockStyle}"
+                                           FontSize="13"
+                                           FontWeight="SemiBold"/>
+                            </Expander.Header>
 
-                            <Label Grid.Row="0"
-                                   Grid.Column="0"
-                                   Grid.ColumnSpan="3"
-                                   Content="{DynamicResource LOCStatistics}"/>
-
-                            <Grid Grid.Row="2"
-                                  Grid.Column="1">
+                            <Grid MaxHeight="150"
+                                  TextElement.Foreground="{DynamicResource TextBrush}">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width=".8*"/>
-                                    <ColumnDefinition Width="100"/>
+                                    <ColumnDefinition Width="*" MinWidth="200"/>
+                                    <ColumnDefinition Width="12"/>
+                                    <ColumnDefinition Width="*" MinWidth="240"/>
                                     <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="auto"/>
                                 </Grid.ColumnDefinitions>
 
-                                <Grid Margin="30,0,0,0">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="30"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="auto"/>
-                                        <RowDefinition Height="10"/>
-                                        <RowDefinition Height="auto"/>
-                                    </Grid.RowDefinitions>
-
-                                    <Grid Grid.Column="0"
-                                          Grid.Row="0">
+                                <StackPanel Grid.Column="0"
+                                            HorizontalAlignment="Stretch"
+                                            TextElement.Foreground="{DynamicResource TextBrush}">
+                                    <TextBlock Text="{DynamicResource LOCHltbStatsPlayTimeTitle}"
+                                               Style="{DynamicResource BaseTextBlockStyle}"
+                                               Margin="0,0,0,4"/>
+                                    <Grid Margin="0,0,0,2">
                                         <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="auto"/>
                                             <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
-
-                                        <Label Content="{DynamicResource LOCHowLongToBeatCompletions}"
-                                               Grid.Column="0"/>
-                                        <Label Name="PART_CompletionsCount"
-                                               Content="{Binding CompletionsCount}"
-                                               Grid.Column="1"
-                                               HorizontalAlignment="Right"/>
+                                        <TextBlock Text="{DynamicResource LOCHowLongToBeatCompletions}"
+                                                   Style="{DynamicResource BaseTextBlockStyle}"
+                                                   FontSize="11"
+                                                   Opacity="0.9"
+                                                   TextTrimming="CharacterEllipsis"/>
+                                        <TextBlock Grid.Column="1"
+                                                   Text="{Binding CompletionsCount}"
+                                                   Style="{DynamicResource BaseTextBlockStyle}"
+                                                   FontSize="11"
+                                                   FontWeight="SemiBold"
+                                                   HorizontalAlignment="Right"
+                                                   Margin="8,0,0,0"/>
                                     </Grid>
-
-                                    <Grid Grid.Column="0"
-                                          Grid.Row="2">
+                                    <Grid Margin="0,0,0,2">
                                         <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="auto"/>
                                             <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
-
-                                        <Label Content="{DynamicResource LOCHowLongToBeatTimeSinglePlayer}"
-                                               Grid.Column="0"/>
-                                        <Label Name="PART_TimeSinglePlayer"
-                                               Content="{Binding TimeSinglePlayer}"
-                                               Grid.Column="1"
-                                               HorizontalAlignment="Right"/>
+                                        <TextBlock Text="{DynamicResource LOCHowLongToBeatTimeSinglePlayer}"
+                                                   Style="{DynamicResource BaseTextBlockStyle}"
+                                                   FontSize="11"
+                                                   Opacity="0.9"
+                                                   TextTrimming="CharacterEllipsis"/>
+                                        <TextBlock Grid.Column="1"
+                                                   Text="{Binding TimeSinglePlayer}"
+                                                   Style="{DynamicResource BaseTextBlockStyle}"
+                                                   FontSize="11"
+                                                   FontWeight="SemiBold"
+                                                   HorizontalAlignment="Right"
+                                                   Margin="8,0,0,0"/>
                                     </Grid>
-
-                                    <Grid Grid.Column="2"
-                                          Grid.Row="0">
+                                    <Grid Margin="0,0,0,2">
                                         <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="auto"/>
                                             <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
-
-                                        <Label Content="{DynamicResource LOCHowLongToBeatTimeCoOp}"
-                                               Grid.Column="0"/>
-                                        <Label Name="PART_TimeCoOp"
-                                               Content="{Binding TimeCoOp}"
-                                               Grid.Column="1"
-                                               HorizontalAlignment="Right"/>
+                                        <TextBlock Text="{DynamicResource LOCHowLongToBeatTimeCoOp}"
+                                                   Style="{DynamicResource BaseTextBlockStyle}"
+                                                   FontSize="11"
+                                                   Opacity="0.9"
+                                                   TextTrimming="CharacterEllipsis"/>
+                                        <TextBlock Grid.Column="1"
+                                                   Text="{Binding TimeCoOp}"
+                                                   Style="{DynamicResource BaseTextBlockStyle}"
+                                                   FontSize="11"
+                                                   FontWeight="SemiBold"
+                                                   HorizontalAlignment="Right"
+                                                   Margin="8,0,0,0"/>
                                     </Grid>
-
-                                    <Grid Grid.Column="2"
-                                          Grid.Row="2">
+                                    <Grid>
                                         <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="auto"/>
                                             <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
-
-                                        <Label Content="{DynamicResource LOCHowLongToBeatTimeVs}"
-                                               Grid.Column="0"/>
-                                        <Label Name="PART_TimeVs"
-                                               Content="{Binding TimeVs}"
-                                               Grid.Column="1"
-                                               HorizontalAlignment="Right"/>
+                                        <TextBlock Text="{DynamicResource LOCHowLongToBeatTimeVs}"
+                                                   Style="{DynamicResource BaseTextBlockStyle}"
+                                                   FontSize="11"
+                                                   Opacity="0.9"
+                                                   TextTrimming="CharacterEllipsis"/>
+                                        <TextBlock Grid.Column="1"
+                                                   Text="{Binding TimeVs}"
+                                                   Style="{DynamicResource BaseTextBlockStyle}"
+                                                   FontSize="11"
+                                                   FontWeight="SemiBold"
+                                                   HorizontalAlignment="Right"
+                                                   Margin="8,0,0,0"/>
                                     </Grid>
-                                </Grid>
+                                </StackPanel>
 
-                                <Grid Margin="30,0,0,0"
-                                      Grid.Column="2">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="30"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="auto"/>
-                                        <RowDefinition Height="10"/>
-                                        <RowDefinition Height="auto"/>
-                                        <RowDefinition Height="10"/>
-                                        <RowDefinition Height="auto"/>
-                                    </Grid.RowDefinitions>
-
-                                    <Grid Grid.Column="0"
-                                          Grid.Row="0">
+                                <StackPanel Grid.Column="2"
+                                            HorizontalAlignment="Stretch"
+                                            TextElement.Foreground="{DynamicResource TextBrush}">
+                                    <TextBlock Text="{DynamicResource LOCHltbStatsCompletionTitle}"
+                                               Style="{DynamicResource BaseTextBlockStyle}"
+                                               Margin="0,0,0,4"/>
+                                    <Grid Margin="0,0,0,2">
                                         <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="auto"/>
                                             <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
-
-                                        <Label Content="{DynamicResource LOCHltbCountGameBeatenBeforeTime}"
-                                               Grid.Column="0"/>
-                                        <Label Name="PART_CountGameBeatenBeforeTime"
-                                               Content="{Binding CountGameBeatenBeforeTime}"
-                                               Grid.Column="1"
-                                               HorizontalAlignment="Right"/>
+                                        <TextBlock Text="{DynamicResource LOCHltbCountGameBeatenBeforeTime}"
+                                                   Style="{DynamicResource BaseTextBlockStyle}"
+                                                   FontSize="11"
+                                                   Opacity="0.9"
+                                                   TextWrapping="Wrap"/>
+                                        <TextBlock Grid.Column="1"
+                                                   Text="{Binding CountGameBeatenBeforeTime}"
+                                                   Style="{DynamicResource BaseTextBlockStyle}"
+                                                   FontSize="11"
+                                                   FontWeight="SemiBold"
+                                                   HorizontalAlignment="Right"
+                                                   Margin="8,0,0,0"/>
                                     </Grid>
-
-                                    <Grid Grid.Column="0"
-                                          Grid.Row="2">
+                                    <Grid Margin="0,0,0,2">
                                         <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="auto"/>
                                             <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
-
-                                        <Label Content="{DynamicResource LOCHltbCountGameBeatenAfterTime}"
-                                               Grid.Column="0"/>
-                                        <Label Name="PART_CountGameBeatenAfterTime"
-                                               Content="{Binding CountGameBeatenAfterTime}"
-                                               Grid.Column="1"
-                                               HorizontalAlignment="Right"/>
+                                        <TextBlock Text="{DynamicResource LOCHltbCountGameBeatenAfterTime}"
+                                                   Style="{DynamicResource BaseTextBlockStyle}"
+                                                   FontSize="11"
+                                                   Opacity="0.9"
+                                                   TextWrapping="Wrap"/>
+                                        <TextBlock Grid.Column="1"
+                                                   Text="{Binding CountGameBeatenAfterTime}"
+                                                   Style="{DynamicResource BaseTextBlockStyle}"
+                                                   FontSize="11"
+                                                   FontWeight="SemiBold"
+                                                   HorizontalAlignment="Right"
+                                                   Margin="8,0,0,0"/>
                                     </Grid>
-
-                                    <Grid Grid.Column="0"
-                                          Grid.Row="4">
+                                    <Grid Margin="0,0,0,2"
+                                          ToolTip="{DynamicResource LOCHltbOnlyReplaysTooltip}">
                                         <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="auto"/>
                                             <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
-
-                                        <Label Content="{DynamicResource LOCHltbCountGameBeatenReplays}"
-                                               Grid.Column="0"/>
-                                        <Label Name="PART_CountGameBeatenReplays"
-                                               Content="{Binding CountGameBeatenReplays}"
-                                               Grid.Column="1"
-                                               HorizontalAlignment="Right"/>
+                                        <TextBlock Text="{DynamicResource LOCHltbCountGameBeatenReplays}"
+                                                   Style="{DynamicResource BaseTextBlockStyle}"
+                                                   FontSize="11"
+                                                   Opacity="0.9"
+                                                   TextWrapping="Wrap"/>
+                                        <TextBlock Grid.Column="1"
+                                                   Text="{Binding CountGameBeatenReplays}"
+                                                   Style="{DynamicResource BaseTextBlockStyle}"
+                                                   FontSize="11"
+                                                   FontWeight="SemiBold"
+                                                   HorizontalAlignment="Right"
+                                                   Margin="8,0,0,0"/>
                                     </Grid>
-
-                                    <Grid Grid.Column="2"
-                                          Grid.Row="0">
+                                    <Grid Margin="0,0,0,2">
                                         <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="auto"/>
                                             <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
-
-                                        <Label Content="{DynamicResource LOCHltbAvgGameByMonth}"
-                                               Grid.Column="0"/>
-                                        <Label Name="PART_AvgGameByMonth"
-                                               Content="{Binding AvgGameByMonth}"
-                                               Grid.Column="1"
-                                               HorizontalAlignment="Right"/>
+                                        <TextBlock Text="{DynamicResource LOCHltbAvgGameByMonth}"
+                                                   Style="{DynamicResource BaseTextBlockStyle}"
+                                                   FontSize="11"
+                                                   Opacity="0.9"
+                                                   TextTrimming="CharacterEllipsis"/>
+                                        <TextBlock Grid.Column="1"
+                                                   Text="{Binding AvgGameByMonth}"
+                                                   Style="{DynamicResource BaseTextBlockStyle}"
+                                                   FontSize="11"
+                                                   FontWeight="SemiBold"
+                                                   HorizontalAlignment="Right"
+                                                   Margin="8,0,0,0"/>
                                     </Grid>
-
-                                    <Grid Grid.Column="2"
-                                          Grid.Row="2">
+                                    <Grid Margin="0,0,0,2">
                                         <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="auto"/>
                                             <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
-
-                                        <Label Content="{DynamicResource LOCHltbAvgTimeByGame}"
-                                               Grid.Column="0"/>
-                                        <Label Name="PART_AvgTimeByGame"
-                                               Content="{Binding AvgTimeByGame}"
-                                               Grid.Column="1"
-                                               HorizontalAlignment="Right"/>
+                                        <TextBlock Text="{DynamicResource LOCHltbAvgTimeByGame}"
+                                                   Style="{DynamicResource BaseTextBlockStyle}"
+                                                   FontSize="11"
+                                                   Opacity="0.9"
+                                                   TextTrimming="CharacterEllipsis"/>
+                                        <TextBlock Grid.Column="1"
+                                                   Text="{Binding AvgTimeByGame}"
+                                                   Style="{DynamicResource BaseTextBlockStyle}"
+                                                   FontSize="11"
+                                                   FontWeight="SemiBold"
+                                                   HorizontalAlignment="Right"
+                                                   Margin="8,0,0,0"/>
                                     </Grid>
-
-                                    <Grid Grid.Column="2"
-                                          Grid.Row="4">
+                                    <Grid>
                                         <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="auto"/>
                                             <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
-
-                                        <Label Content="{DynamicResource LOCHltbCountGameRetired}"
-                                               Grid.Column="0"/>
-                                        <Label Name="PART_CountGameRetired"
-                                               Content="{Binding CountGameRetired}"
-                                               Grid.Column="1"
-                                               HorizontalAlignment="Right"/>
+                                        <TextBlock Text="{DynamicResource LOCHltbCountGameRetired}"
+                                                   Style="{DynamicResource BaseTextBlockStyle}"
+                                                   FontSize="11"
+                                                   Opacity="0.9"
+                                                   TextTrimming="CharacterEllipsis"/>
+                                        <TextBlock Grid.Column="1"
+                                                   Text="{Binding CountGameRetired}"
+                                                   Style="{DynamicResource BaseTextBlockStyle}"
+                                                   FontSize="11"
+                                                   FontWeight="SemiBold"
+                                                   HorizontalAlignment="Right"
+                                                   Margin="8,0,0,0"/>
                                     </Grid>
-                                </Grid>
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="4"
+                                            HorizontalAlignment="Left"
+                                            TextElement.Foreground="{DynamicResource TextBrush}">
+                                    <TextBlock Text="{DynamicResource LOCHltbStatsHltbListsChartTitle}"
+                                               Style="{DynamicResource BaseTextBlockStyle}"
+                                               Margin="0,0,0,2"
+                                               ToolTip="{DynamicResource LOCHltbFilterHltbListStatusTooltip}"/>
+                                    <lvc:PieChart Name="PART_ChartHltbLists"
+                                                  Height="125" Width="300"
+                                                  LegendLocation="Right"
+                                                  HoverPushOut="6"
+                                                  Foreground="{DynamicResource TextBrush}"
+                                                  Series="{Binding ChartHltbLists_Series}">
+                                        <lvc:PieChart.DataTooltip>
+                                            <controls:HltbPieChartTooltip/>
+                                        </lvc:PieChart.DataTooltip>
+                                    </lvc:PieChart>
+                                </StackPanel>
                             </Grid>
-                        </Grid>
+                        </Expander>
 
                         <DockPanel Grid.Row="6">
                             <Button Name="PART_BtRefreshUserData"

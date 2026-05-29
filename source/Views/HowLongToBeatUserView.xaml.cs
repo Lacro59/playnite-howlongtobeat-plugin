@@ -173,6 +173,7 @@ namespace HowLongToBeat.Views
                     SetChartDataStore(cancellationToken),
                     SetChartDataYear(4, cancellationToken),
                     SetChartData(cancellationToken: cancellationToken),
+                    SetChartDataHltbLists(cancellationToken),
                     SetStats(cancellationToken)
                 };
 
@@ -442,6 +443,103 @@ namespace HowLongToBeat.Views
             }, cancellationToken);
         }
 
+        private static SeriesCollection BuildHltbListsPieSeries(IEnumerable<CustomerForSingle> items)
+        {
+            SeriesCollection series = new SeriesCollection();
+
+            foreach (CustomerForSingle item in items)
+            {
+                if (item.Values <= 0)
+                {
+                    continue;
+                }
+
+                string sliceTitle = item.Name;
+                series.Add(new PieSeries
+                {
+                    Title = sliceTitle,
+                    Values = new ChartValues<double> { item.Values },
+                    DataLabels = false,
+                    LabelPoint = chartPoint => string.Format("{0}: {1}", sliceTitle, chartPoint.Y)
+                });
+            }
+
+            return series;
+        }
+
+        private Task SetChartDataHltbLists(CancellationToken cancellationToken = default)
+        {
+            return Task.Run(() =>
+            {
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    return;
+                }
+
+                if (PluginDatabase.UserHltbData?.TitlesList == null)
+                {
+                    return;
+                }
+
+                try
+                {
+                    int countBacklog = HowLongToBeatStats.GetCountByHltbListStatus(StatusType.Backlog);
+                    int countPlaying = HowLongToBeatStats.GetCountByHltbListStatus(StatusType.Playing);
+                    int countReplaysList = HowLongToBeatStats.GetCountByHltbListStatus(StatusType.Replays);
+                    int countCompleted = HowLongToBeatStats.GetCountByHltbListStatus(StatusType.Completed);
+                    int countRetired = HowLongToBeatStats.GetCountByHltbListStatus(StatusType.Retired);
+                    int countCustom = HowLongToBeatStats.GetCountByHltbListStatus(StatusType.CustomTab);
+                    int countMarkedReplay = HowLongToBeatStats.GetCountMarkedAsReplay();
+
+                    if (!cancellationToken.IsCancellationRequested)
+                    {
+                        Application.Current.Dispatcher?.Invoke(() =>
+                        {
+                            if (cancellationToken.IsCancellationRequested)
+                            {
+                                return;
+                            }
+
+                            try
+                            {
+                                string[] chartLabels = new string[]
+                                {
+                                    ResourceProvider.GetString("LOCHltbUserListBacklog"),
+                                    ResourceProvider.GetString("LOCHltbUserListPlaying"),
+                                    ResourceProvider.GetString("LOCHltbUserListReplays"),
+                                    ResourceProvider.GetString("LOCHltbUserListCompleted"),
+                                    ResourceProvider.GetString("LOCHltbUserListRetired"),
+                                    ResourceProvider.GetString("LOCHltbUserListCustom"),
+                                    ResourceProvider.GetString("LOCHltbStatsMarkedAsReplayShort")
+                                };
+
+                                CustomerForSingle[] chartItems = new CustomerForSingle[]
+                                {
+                                    new CustomerForSingle { Name = chartLabels[0], Values = countBacklog },
+                                    new CustomerForSingle { Name = chartLabels[1], Values = countPlaying },
+                                    new CustomerForSingle { Name = chartLabels[2], Values = countReplaysList },
+                                    new CustomerForSingle { Name = chartLabels[3], Values = countCompleted },
+                                    new CustomerForSingle { Name = chartLabels[4], Values = countRetired },
+                                    new CustomerForSingle { Name = chartLabels[5], Values = countCustom },
+                                    new CustomerForSingle { Name = chartLabels[6], Values = countMarkedReplay }
+                                };
+
+                                UserViewDataContext.ChartHltbLists_Series = BuildHltbListsPieSeries(chartItems);
+                            }
+                            catch (Exception ex)
+                            {
+                                Common.LogError(ex, false, false, PluginDatabase.PluginName);
+                            }
+                        });
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Common.LogError(ex, false, false, PluginDatabase.PluginName);
+                }
+            }, cancellationToken);
+        }
+
         private Task SetStats(CancellationToken cancellationToken = default)
         {
             return Task.Run(() =>
@@ -493,8 +591,15 @@ namespace HowLongToBeat.Views
                     var countAfter = HowLongToBeatStats.GetCountGameBeatenAfterTime().ToString();
                     var avgGameByMonth = string.Format("{0:0.0}", HowLongToBeatStats.GetAvgGameByMonth()).ToString();
                     var avgTimeByGame = (string)converter.Convert(HowLongToBeatStats.GetAvgTimeByGame(), null, null, CultureInfo.CurrentCulture);
-                    var countReplays = HowLongToBeatStats.GetCountGameBeatenReplays().ToString();
+                    var countReplays = HowLongToBeatStats.GetCountMarkedAsReplay().ToString();
                     var countRetired = HowLongToBeatStats.GetCountGameRetired().ToString();
+
+                    var countHltbListBacklog = HowLongToBeatStats.GetCountByHltbListStatus(StatusType.Backlog).ToString();
+                    var countHltbListPlaying = HowLongToBeatStats.GetCountByHltbListStatus(StatusType.Playing).ToString();
+                    var countHltbListReplays = HowLongToBeatStats.GetCountByHltbListStatus(StatusType.Replays).ToString();
+                    var countHltbListCompleted = HowLongToBeatStats.GetCountByHltbListStatus(StatusType.Completed).ToString();
+                    var countHltbListRetired = HowLongToBeatStats.GetCountByHltbListStatus(StatusType.Retired).ToString();
+                    var countHltbListCustom = HowLongToBeatStats.GetCountByHltbListStatus(StatusType.CustomTab).ToString();
 
                     Application.Current.Dispatcher?.Invoke(() =>
                     {
@@ -512,6 +617,13 @@ namespace HowLongToBeat.Views
                             UserViewDataContext.AvgTimeByGame = avgTimeByGame;
                             UserViewDataContext.CountGameBeatenReplays = countReplays;
                             UserViewDataContext.CountGameRetired = countRetired;
+
+                            UserViewDataContext.CountHltbListBacklog = countHltbListBacklog;
+                            UserViewDataContext.CountHltbListPlaying = countHltbListPlaying;
+                            UserViewDataContext.CountHltbListReplays = countHltbListReplays;
+                            UserViewDataContext.CountHltbListCompleted = countHltbListCompleted;
+                            UserViewDataContext.CountHltbListRetiredList = countHltbListRetired;
+                            UserViewDataContext.CountHltbListCustom = countHltbListCustom;
                         }
                         catch (Exception ex)
                         {
@@ -573,8 +685,84 @@ namespace HowLongToBeat.Views
 
 
         #region Filter
+
+        private void InitializeHltbListStatusCombo()
+        {
+            if (PART_CbHltbListStatus.Items.Count > 0)
+            {
+                return;
+            }
+
+            PART_CbHltbListStatus.Items.Add(CreateHltbListStatusFilterItem(FilterSettings.HltbListStatusAll, "LOCHltbFilterHltbListStatusAll"));
+            PART_CbHltbListStatus.Items.Add(CreateHltbListStatusFilterItem(StatusType.Backlog.ToString(), "LOCHltbUserListBacklog"));
+            PART_CbHltbListStatus.Items.Add(CreateHltbListStatusFilterItem(StatusType.Playing.ToString(), "LOCHltbUserListPlaying"));
+            PART_CbHltbListStatus.Items.Add(CreateHltbListStatusFilterItem(StatusType.Replays.ToString(), "LOCHltbUserListReplays", "LOCHltbUserListReplaysTooltip"));
+            PART_CbHltbListStatus.Items.Add(CreateHltbListStatusFilterItem(StatusType.Completed.ToString(), "LOCHltbUserListCompleted"));
+            PART_CbHltbListStatus.Items.Add(CreateHltbListStatusFilterItem(StatusType.Retired.ToString(), "LOCHltbUserListRetired"));
+            PART_CbHltbListStatus.Items.Add(CreateHltbListStatusFilterItem(StatusType.CustomTab.ToString(), "LOCHltbUserListCustom"));
+        }
+
+        private static ComboBoxItem CreateHltbListStatusFilterItem(string tag, string localizationKey, string tooltipLocalizationKey = null)
+        {
+            ComboBoxItem item = new ComboBoxItem
+            {
+                Content = ResourceProvider.GetString(localizationKey),
+                Tag = tag
+            };
+
+            if (!tooltipLocalizationKey.IsNullOrEmpty())
+            {
+                item.ToolTip = ResourceProvider.GetString(tooltipLocalizationKey);
+            }
+
+            return item;
+        }
+
+        private void SelectHltbListStatusFilter(string savedToken)
+        {
+            string token = savedToken.IsNullOrEmpty() ? FilterSettings.HltbListStatusAll : savedToken;
+            foreach (ComboBoxItem item in PART_CbHltbListStatus.Items)
+            {
+                if (item.Tag != null && item.Tag.ToString().IsEqual(token))
+                {
+                    PART_CbHltbListStatus.SelectedItem = item;
+                    return;
+                }
+            }
+
+            PART_CbHltbListStatus.SelectedIndex = 0;
+        }
+
+        private string GetSelectedHltbListStatusFilter()
+        {
+            if (PART_CbHltbListStatus.SelectedItem is ComboBoxItem item && item.Tag != null)
+            {
+                return item.Tag.ToString();
+            }
+
+            return FilterSettings.HltbListStatusAll;
+        }
+
+        private static bool MatchesHltbListStatusFilter(TitleList title, string listStatusFilter)
+        {
+            if (listStatusFilter.IsNullOrEmpty() || listStatusFilter.IsEqual(FilterSettings.HltbListStatusAll))
+            {
+                return true;
+            }
+
+            StatusType statusType;
+            if (!Enum.TryParse(listStatusFilter, out statusType))
+            {
+                return true;
+            }
+
+            return title.HasHltbListStatus(statusType);
+        }
+
         private void SetFilter()
         {
+            InitializeHltbListStatusCombo();
+
             // Filter
             List<string> listYear = PluginDatabase.UserHltbData.TitlesList.Select(x => x.Completion?.ToString("yyyy") ?? "----").Distinct().OrderBy(x => x).ToList();
             PART_CbYear.ItemsSource = null;
@@ -607,6 +795,8 @@ namespace HowLongToBeat.Views
 
             PART_Replays.IsChecked = PluginDatabase.PluginSettings.filterSettings.OnlyReplays;
             PART_OnlyNotPlayed.IsChecked = PluginDatabase.PluginSettings.filterSettings.OnlyNotPlayed;
+
+            SelectHltbListStatusFilter(PluginDatabase.PluginSettings.filterSettings.HltbListStatus);
         }
 
 
@@ -653,6 +843,18 @@ namespace HowLongToBeat.Views
                 {
                     string Platform = ((ComboBox)sender).SelectedValue.ToString();
                     FilterData(PART_NameSearch.Text, PART_CbYear.Text, PART_CbStorefront.Text, Platform);
+                }
+            }
+            catch { }
+        }
+
+        private void PART_CbHltbListStatus_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            try
+            {
+                if (PART_CbHltbListStatus.SelectedItem != null)
+                {
+                    FilterData(PART_NameSearch.Text, PART_CbYear.Text, PART_CbStorefront.Text, PART_CbPlatform.Text);
                 }
             }
             catch { }
@@ -733,6 +935,14 @@ namespace HowLongToBeat.Views
                 UserViewDataContext.ItemsSource = UserViewDataContext.ItemsSource.Where(x => x.CurrentTime == 0).ToObservable();
             }
 
+            string hltbListStatus = GetSelectedHltbListStatusFilter();
+            if (!hltbListStatus.IsEqual(FilterSettings.HltbListStatusAll))
+            {
+                UserViewDataContext.ItemsSource = UserViewDataContext.ItemsSource
+                    .Where(x => MatchesHltbListStatusFilter(x, hltbListStatus))
+                    .ToObservable();
+            }
+
             ListViewGames.Sorting();
         }
 
@@ -788,12 +998,14 @@ namespace HowLongToBeat.Views
             PART_CbPlatform.SelectedIndex = 0;
             PART_Replays.IsChecked = false;
             PART_OnlyNotPlayed.IsChecked = false;
+            PART_CbHltbListStatus.SelectedIndex = 0;
         }
         private void SavedFilter1_Click(object sender, RoutedEventArgs e)
         {
             PluginDatabase.PluginSettings.filterSettings.Year = PART_CbYear.SelectedItem.ToString();
             PluginDatabase.PluginSettings.filterSettings.Storefront = PART_CbStorefront.SelectedItem.ToString();
             PluginDatabase.PluginSettings.filterSettings.Platform = PART_CbPlatform.SelectedItem.ToString();
+            PluginDatabase.PluginSettings.filterSettings.HltbListStatus = GetSelectedHltbListStatusFilter();
             PluginDatabase.PluginSettings.filterSettings.OnlyReplays = (bool)PART_Replays.IsChecked;
             PluginDatabase.PluginSettings.filterSettings.OnlyNotPlayed = (bool)PART_OnlyNotPlayed.IsChecked;
 
@@ -879,6 +1091,13 @@ namespace HowLongToBeat.Views
         public string[] ChartUserDataLabelsX_Labels { get => chartUserDataLabelsX_Labels; set => SetValue(ref chartUserDataLabelsX_Labels, value); }
 
 
+        private SeriesCollection chartHltbLists_Series = new SeriesCollection();
+        public SeriesCollection ChartHltbLists_Series { get => chartHltbLists_Series; set => SetValue(ref chartHltbLists_Series, value); }
+
+        private string[] chartHltbListsLabelsX_Labels = new string[0];
+        public string[] ChartHltbListsLabelsX_Labels { get => chartHltbListsLabelsX_Labels; set => SetValue(ref chartHltbListsLabelsX_Labels, value); }
+
+
         private string completionsCount = "--";
         public string CompletionsCount { get => completionsCount; set => SetValue(ref completionsCount, value); }
 
@@ -910,5 +1129,23 @@ namespace HowLongToBeat.Views
 
         private string countGameRetired = "--";
         public string CountGameRetired { get => countGameRetired; set => SetValue(ref countGameRetired, value); }
+
+        private string countHltbListBacklog = "--";
+        public string CountHltbListBacklog { get => countHltbListBacklog; set => SetValue(ref countHltbListBacklog, value); }
+
+        private string countHltbListPlaying = "--";
+        public string CountHltbListPlaying { get => countHltbListPlaying; set => SetValue(ref countHltbListPlaying, value); }
+
+        private string countHltbListReplays = "--";
+        public string CountHltbListReplays { get => countHltbListReplays; set => SetValue(ref countHltbListReplays, value); }
+
+        private string countHltbListCompleted = "--";
+        public string CountHltbListCompleted { get => countHltbListCompleted; set => SetValue(ref countHltbListCompleted, value); }
+
+        private string countHltbListRetiredList = "--";
+        public string CountHltbListRetiredList { get => countHltbListRetiredList; set => SetValue(ref countHltbListRetiredList, value); }
+
+        private string countHltbListCustom = "--";
+        public string CountHltbListCustom { get => countHltbListCustom; set => SetValue(ref countHltbListCustom, value); }
     }
 }

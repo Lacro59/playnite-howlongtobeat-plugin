@@ -1,4 +1,5 @@
 ﻿using HowLongToBeat.Models;
+using HowLongToBeat.Models.Enumerations;
 using Playnite.SDK;
 using System;
 using System.Collections.Generic;
@@ -85,12 +86,38 @@ namespace HowLongToBeat.Services
 
         public static int GetCountGameBeatenReplays()
         {
-            return PluginDatabase.UserHltbData.TitlesList.Where(x => x.IsReplay).Count();
+            return GetCountMarkedAsReplay();
         }
 
         public static int GetCountGameRetired()
         {
             return PluginDatabase.UserHltbData.TitlesList.Where(x => x.IsRetired).Count();
+        }
+
+        /// <summary>
+        /// Returns how many user titles belong to the given HowLongToBeat profile list.
+        /// </summary>
+        public static int GetCountByHltbListStatus(StatusType statusType)
+        {
+            if (PluginDatabase.UserHltbData?.TitlesList == null)
+            {
+                return 0;
+            }
+
+            return PluginDatabase.UserHltbData.TitlesList.Count(x => x.HasHltbListStatus(statusType));
+        }
+
+        /// <summary>
+        /// Returns how many user titles have the "Mark as Replay" flag (played before).
+        /// </summary>
+        public static int GetCountMarkedAsReplay()
+        {
+            if (PluginDatabase.UserHltbData?.TitlesList == null)
+            {
+                return 0;
+            }
+
+            return PluginDatabase.UserHltbData.TitlesList.Count(x => x.IsReplay);
         }
     }
 }
