@@ -94,31 +94,7 @@ namespace HowLongToBeat.Views
                 if (PluginDatabase.UserHltbData?.TitlesList != null)
                 {
                     UserViewDataContext.ItemsSource = PluginDatabase.UserHltbData.TitlesList.ToObservable();
-
-                    string SortingDefaultDataName = string.Empty;
-                    switch (PluginDatabase.PluginSettings.TitleListSort)
-                    {
-                        case TitleListSort.GameName:
-                            SortingDefaultDataName = "GameName";
-                            break;
-                        case TitleListSort.Platform:
-                            SortingDefaultDataName = "Platform";
-                            break;
-                        case TitleListSort.Completion:
-                            SortingDefaultDataName = "Completion";
-                            break;
-                        case TitleListSort.LastUpdate:
-                            SortingDefaultDataName = "LastUpdate";
-                            break;
-                        case TitleListSort.CurrentTime:
-                            SortingDefaultDataName = "CurrentTime";
-                            break;
-                        default:
-                            break;
-                    }
-                    ListViewGames.SortingDefaultDataName = SortingDefaultDataName;
-                    ListViewGames.SortingSortDirection = PluginDatabase.PluginSettings.IsAsc ? ListSortDirection.Ascending : ListSortDirection.Descending;
-                    ListViewGames.Sorting();
+                    ApplyTitleListSortFromFilterSettings();
 
                     SetFilter();
                 }
@@ -783,20 +759,155 @@ namespace HowLongToBeat.Views
             PART_CbPlatform.ItemsSource = listPlatform;
             PART_CbPlatform.SelectedIndex = 0;
 
-            // Saved settings
-            int index = listYear.FindIndex(x => x == PluginDatabase.PluginSettings.filterSettings.Year);
-            PART_CbYear.SelectedIndex = index == -1 ? 0 : index;
+            ApplyFilterSettingsToUi(PluginDatabase.PluginSettings.filterSettings);
+        }
 
-            index = listStoreFront.FindIndex(x => x == PluginDatabase.PluginSettings.filterSettings.Storefront);
-            PART_CbStorefront.SelectedIndex = index == -1 ? 0 : index;
+        private void ApplyFilterSettingsToUi(FilterSettings filterSettings)
+        {
+            if (filterSettings == null)
+            {
+                return;
+            }
 
-            index = listPlatform.FindIndex(x => x == PluginDatabase.PluginSettings.filterSettings.Platform);
-            PART_CbPlatform.SelectedIndex = index == -1 ? 0 : index;
+            SelectComboBoxValue(PART_CbYear, filterSettings.Year);
+            SelectComboBoxValue(PART_CbStorefront, filterSettings.Storefront);
+            SelectComboBoxValue(PART_CbPlatform, filterSettings.Platform);
 
-            PART_Replays.IsChecked = PluginDatabase.PluginSettings.filterSettings.OnlyReplays;
-            PART_OnlyNotPlayed.IsChecked = PluginDatabase.PluginSettings.filterSettings.OnlyNotPlayed;
+            PART_NameSearch.Text = filterSettings.NameSearch ?? string.Empty;
+            PART_Replays.IsChecked = filterSettings.OnlyReplays;
+            PART_OnlyNotPlayed.IsChecked = filterSettings.OnlyNotPlayed;
+            SelectHltbListStatusFilter(filterSettings.HltbListStatus);
 
-            SelectHltbListStatusFilter(PluginDatabase.PluginSettings.filterSettings.HltbListStatus);
+            ApplyTitleListSort(filterSettings);
+            FilterData(PART_NameSearch.Text, PART_CbYear.Text, PART_CbStorefront.Text, PART_CbPlatform.Text);
+
+            ApplyPlayniteDataFiltersFromSettings(filterSettings);
+        }
+
+        private static void SelectComboBoxValue(ComboBox comboBox, string value)
+        {
+            if (comboBox?.ItemsSource == null)
+            {
+                return;
+            }
+
+            int index = 0;
+            foreach (object item in comboBox.ItemsSource)
+            {
+                if (item != null && item.ToString().IsEqual(value))
+                {
+                    comboBox.SelectedIndex = index;
+                    return;
+                }
+
+                index++;
+            }
+
+            comboBox.SelectedIndex = 0;
+        }
+
+        private void ApplyPlayniteDataFiltersFromSettings(FilterSettings filterSettings)
+        {
+            if (PART_FilteredGames == null || PART_HidePlayedGames == null)
+            {
+                return;
+            }
+
+            PART_FilteredGames.IsChecked = filterSettings.UsedFilteredGames;
+            PART_HidePlayedGames.IsChecked = filterSettings.OnlyNotPlayedGames;
+
+            if (ListViewDataGames?.ItemsSource == null)
+            {
+                return;
+            }
+
+            CollectionView view = (CollectionView)CollectionViewSource.GetDefaultView(ListViewDataGames.ItemsSource);
+            view?.Refresh();
+            ListViewDataGames.Sorting();
+        }
+
+        private static string GetSortingDataName(TitleListSort titleListSort)
+        {
+            switch (titleListSort)
+            {
+                case TitleListSort.GameName:
+                    return "GameName";
+                case TitleListSort.Platform:
+                    return "Platform";
+                case TitleListSort.Completion:
+                    return "Completion";
+                case TitleListSort.LastUpdate:
+                    return "LastUpdate";
+                case TitleListSort.CurrentTime:
+                    return "CurrentTime";
+                default:
+                    return "Completion";
+            }
+        }
+
+        private static TitleListSort GetTitleListSortFromSortingDataName(string sortingDataName)
+        {
+            if (sortingDataName.IsEqual("GameName"))
+            {
+                return TitleListSort.GameName;
+            }
+
+            if (sortingDataName.IsEqual("Platform"))
+            {
+                return TitleListSort.Platform;
+            }
+
+            if (sortingDataName.IsEqual("Completion"))
+            {
+                return TitleListSort.Completion;
+            }
+
+            if (sortingDataName.IsEqual("LastUpdate"))
+            {
+                return TitleListSort.LastUpdate;
+            }
+
+            if (sortingDataName.IsEqual("CurrentTime"))
+            {
+                return TitleListSort.CurrentTime;
+            }
+
+            return TitleListSort.Completion;
+        }
+
+        private void ApplyTitleListSortFromFilterSettings()
+        {
+            ApplyTitleListSort(PluginDatabase.PluginSettings.filterSettings);
+        }
+
+        private void ApplyTitleListSort(FilterSettings filterSettings)
+        {
+            if (filterSettings == null || ListViewGames == null)
+            {
+                return;
+            }
+
+            ListViewGames.SortingDefaultDataName = GetSortingDataName(filterSettings.TitleListSort);
+            ListViewGames.SortingSortDirection = filterSettings.IsAsc ? ListSortDirection.Ascending : ListSortDirection.Descending;
+            ListViewGames.ApplyConfiguredSort();
+        }
+
+        private void GetCurrentTitleListSort(out TitleListSort sort, out bool isAsc)
+        {
+            ICollectionView view = ListViewGames.ItemsSource != null
+                ? CollectionViewSource.GetDefaultView(ListViewGames.ItemsSource)
+                : null;
+
+            if (view != null && view.SortDescriptions.Count > 0)
+            {
+                SortDescription sortDescription = view.SortDescriptions[0];
+                sort = GetTitleListSortFromSortingDataName(sortDescription.PropertyName);
+                isAsc = sortDescription.Direction == ListSortDirection.Ascending;
+                return;
+            }
+
+            sort = GetTitleListSortFromSortingDataName(ListViewGames.SortingDefaultDataName);
+            isAsc = ListViewGames.SortingSortDirection == ListSortDirection.Ascending;
         }
 
 
@@ -992,30 +1103,36 @@ namespace HowLongToBeat.Views
 
         private void ClearFilter1_Click(object sender, RoutedEventArgs e)
         {
-            PART_NameSearch.Text = string.Empty;
-            PART_CbYear.SelectedIndex = 0;
-            PART_CbStorefront.SelectedIndex = 0;
-            PART_CbPlatform.SelectedIndex = 0;
-            PART_Replays.IsChecked = false;
-            PART_OnlyNotPlayed.IsChecked = false;
-            PART_CbHltbListStatus.SelectedIndex = 0;
+            FilterSettings filterSettings = PluginDatabase.PluginSettings.filterSettings;
+            filterSettings.ResetToDefaults();
+            ApplyFilterSettingsToUi(filterSettings);
         }
         private void SavedFilter1_Click(object sender, RoutedEventArgs e)
         {
-            PluginDatabase.PluginSettings.filterSettings.Year = PART_CbYear.SelectedItem.ToString();
-            PluginDatabase.PluginSettings.filterSettings.Storefront = PART_CbStorefront.SelectedItem.ToString();
-            PluginDatabase.PluginSettings.filterSettings.Platform = PART_CbPlatform.SelectedItem.ToString();
-            PluginDatabase.PluginSettings.filterSettings.HltbListStatus = GetSelectedHltbListStatusFilter();
-            PluginDatabase.PluginSettings.filterSettings.OnlyReplays = (bool)PART_Replays.IsChecked;
-            PluginDatabase.PluginSettings.filterSettings.OnlyNotPlayed = (bool)PART_OnlyNotPlayed.IsChecked;
-
-            Plugin.SavePluginSettings(PluginDatabase.PluginSettings);
+            SaveFilterSettings();
         }
 
-        private void SavedFilter2_Click(object sender, RoutedEventArgs e)
+        private void SaveFilterSettings()
         {
-            PluginDatabase.PluginSettings.filterSettings.UsedFilteredGames = (bool)PART_FilteredGames.IsChecked;
-            PluginDatabase.PluginSettings.filterSettings.OnlyNotPlayedGames = (bool)PART_HidePlayedGames.IsChecked;
+            FilterSettings filterSettings = PluginDatabase.PluginSettings.filterSettings;
+
+            filterSettings.NameSearch = PART_NameSearch.Text ?? string.Empty;
+            filterSettings.Year = PART_CbYear.SelectedItem?.ToString() ?? "----";
+            filterSettings.Storefront = PART_CbStorefront.SelectedItem?.ToString() ?? "----";
+            filterSettings.Platform = PART_CbPlatform.SelectedItem?.ToString() ?? "----";
+            filterSettings.HltbListStatus = GetSelectedHltbListStatusFilter();
+            filterSettings.OnlyReplays = PART_Replays.IsChecked == true;
+            filterSettings.OnlyNotPlayed = PART_OnlyNotPlayed.IsChecked == true;
+
+            TitleListSort sort;
+            bool isAsc;
+            GetCurrentTitleListSort(out sort, out isAsc);
+            filterSettings.TitleListSort = sort;
+            filterSettings.IsAsc = isAsc;
+
+            filterSettings.UsedFilteredGames = PART_FilteredGames.IsChecked == true;
+            filterSettings.OnlyNotPlayedGames = PART_HidePlayedGames.IsChecked == true;
+            filterSettings.LegacySortMigrated = true;
 
             Plugin.SavePluginSettings(PluginDatabase.PluginSettings);
         }

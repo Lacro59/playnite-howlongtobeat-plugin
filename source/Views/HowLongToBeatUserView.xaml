@@ -10,9 +10,7 @@
              xmlns:convertersshared="clr-namespace:CommonPluginsShared.Converters"
              xmlns:controls="clr-namespace:HowLongToBeat.Controls"
              xmlns:views="clr-namespace:HowLongToBeat.Views"
-             mc:Ignorable="d"
-             d:DesignHeight="740"
-             d:DesignWidth="1280"
+             mc:Ignorable="d" d:DesignHeight="740" d:DesignWidth="1280"
              d:DataContext="{d:DesignInstance Type=views:UserViewDataContext, IsDesignTimeCreatable=True}">
 
     <UserControl.Resources>
@@ -431,7 +429,7 @@
                                                             DisplayMemberBinding="{Binding LastUpdate}">
                                                 <controlsShared:GridViewColumnHeaderExtend Style="{StaticResource {x:Type GridViewColumnHeader}}"
                                                                                            IsHitTestVisible="False"
-                                                                                           RefIndex="4"/>
+                                                                                           RefIndex="16"/>
                                             </GridViewColumn>
                                             <GridViewColumn Width="auto"
                                                             DisplayMemberBinding="{Binding LastUpdate, Converter={StaticResource LocalDateConverter}}">
@@ -947,7 +945,7 @@
                             <Button Grid.Column="4"
                                     Content="&#xEF05;"
                                     FontFamily="{DynamicResource FontIcoFont}"
-                                    Click="SavedFilter2_Click"
+                                    Click="SavedFilter1_Click"
                                     ToolTip="{DynamicResource LOCCommonSaveFilters}"/>
 
                             <StackPanel Grid.Column="50"

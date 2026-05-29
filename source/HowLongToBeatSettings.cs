@@ -178,6 +178,7 @@ namespace HowLongToBeat
         public SolidColorBrush ColorThirdMulti { get => _colorThirdMulti; set => SetValue(ref _colorThirdMulti, value); }
 
 
+        // Legacy — deserialized for one-time migration into filterSettings only.
         public TitleListSort TitleListSort { get; set; } = TitleListSort.Completion;
         public bool IsAsc { get; set; } = false;
 
@@ -284,6 +285,27 @@ namespace HowLongToBeat
 
         public FilterSettings filterSettings { get; set; } = new FilterSettings();
 
+        /// <summary>
+        /// Copies legacy root-level list sort settings into <see cref="filterSettings"/> once.
+        /// </summary>
+        /// <returns>True when migration was applied.</returns>
+        public bool MigrateLegacyFilterSortSettings()
+        {
+            if (filterSettings == null)
+            {
+                filterSettings = new FilterSettings();
+            }
+
+            if (filterSettings.LegacySortMigrated)
+            {
+                return false;
+            }
+
+            filterSettings.TitleListSort = TitleListSort;
+            filterSettings.IsAsc = IsAsc;
+            filterSettings.LegacySortMigrated = true;
+            return true;
+        }
 
         public bool AutoSetGameStatus { get; set; } = false;
         public bool AutoSetGameStatusToHltb { get; set; } = false;
@@ -393,7 +415,7 @@ namespace HowLongToBeat
             // LoadPluginSettings returns null if not saved data is available.
             Settings = savedSettings ?? new HowLongToBeatSettings();
 
-            if (Settings.SyncStorefrontElementsFromLegacy())
+            if (Settings.MigrateLegacyFilterSortSettings() || Settings.SyncStorefrontElementsFromLegacy())
             {
                 plugin.SavePluginSettings(Settings);
             }
