@@ -255,10 +255,15 @@
                             <ColumnDefinition Width=".5*"/>
                             <ColumnDefinition Width="10"/>
                             <ColumnDefinition Width="1.5*"/>
-                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="20"/>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="20"/>
+                            <ColumnDefinition Width="auto"/>
                         </Grid.ColumnDefinitions>
 
                         <Grid.RowDefinitions>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="6"/>
                             <RowDefinition Height="auto"/>
                             <RowDefinition Height="10"/>
                             <RowDefinition Height="auto"/>
@@ -268,33 +273,102 @@
 
                         <Label Grid.Column="0"
                                Grid.Row="0"
+                               Grid.ColumnSpan="3"
+                               Content="{DynamicResource LOCHowLongToBeatHltbStatusColumnHeader}"
+                               FontSize="11"
+                               Opacity="0.8"/>
+                        <Label Grid.Column="4"
+                               Grid.Row="0"
+                               Grid.ColumnSpan="3"
+                               Content="{DynamicResource LOCHowLongToBeatPlayniteDataColumnHeader}"
+                               FontSize="11"
+                               Opacity="0.8"/>
+
+                        <Label Grid.Column="0"
+                               Grid.Row="2"
                                Content="{DynamicResource LOCHowLongToBeatPlaying}"/>
                         <ComboBox Grid.Column="2"
-                                  Grid.Row="0"
+                                  Grid.Row="2"
                                   x:Name="PART_GameStatusPlaying"
                                   SelectedValuePath="Id"
                                   DisplayMemberPath="Name"
                                   SelectedValue="{Binding Settings.GameStatusPlaying}"/>
 
                         <Label Grid.Column="0"
-                               Grid.Row="2"
+                               Grid.Row="4"
                                Content="{DynamicResource LOCHowLongToBeatCompleted}"/>
                         <ComboBox Grid.Column="2"
-                                  Grid.Row="2"
+                                  Grid.Row="4"
                                   x:Name="PART_GameStatusCompleted"
                                   SelectedValuePath="Id"
                                   DisplayMemberPath="Name"
                                   SelectedValue="{Binding Settings.GameStatusCompleted}"/>
+                        <CheckBox Grid.Column="4"
+                                  Grid.Row="4"
+                                  IsEnabled="{Binding ElementName=PART_AutoSetGameStatusToHltb, Path=IsChecked}"
+                                  IsChecked="{Binding Settings.AutoSetToHltbCompletedSendPlaytime}"
+                                  Content="{DynamicResource LOCHowLongToBeatSyncPlaytimeShort}"
+                                  ToolTip="{DynamicResource LOCHowLongToBeatAutoSetGameStatusToHltbCompletedPlaytime}"/>
+                        <CheckBox Grid.Column="6"
+                                  Grid.Row="4"
+                                  IsEnabled="{Binding ElementName=PART_AutoSetGameStatusToHltb, Path=IsChecked}"
+                                  IsChecked="{Binding Settings.AutoSetToHltbCompletedSendCompletionDate}"
+                                  Content="{DynamicResource LOCHowLongToBeatSyncDateShort}"
+                                  ToolTip="{DynamicResource LOCHowLongToBeatAutoSetGameStatusToHltbCompletedDate}">
+                            <CheckBox.Style>
+                                <Style TargetType="CheckBox" BasedOn="{StaticResource {x:Type CheckBox}}">
+                                    <Setter Property="IsEnabled"
+                                            Value="False"/>
+                                    <Style.Triggers>
+                                        <MultiDataTrigger>
+                                            <MultiDataTrigger.Conditions>
+                                                <Condition Binding="{Binding ElementName=PART_AutoSetGameStatusToHltb, Path=IsChecked}" Value="True"/>
+                                                <Condition Binding="{Binding Settings.AutoSetToHltbCompletedSendPlaytime}" Value="True"/>
+                                            </MultiDataTrigger.Conditions>
+                                            <Setter Property="IsEnabled" Value="True"/>
+                                        </MultiDataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </CheckBox.Style>
+                        </CheckBox>
 
                         <Label Grid.Column="0"
-                               Grid.Row="4"
+                               Grid.Row="6"
                                Content="{DynamicResource LOCHowLongToBeatCompletionist}"/>
                         <ComboBox Grid.Column="2"
-                                  Grid.Row="4"
+                                  Grid.Row="6"
                                   x:Name="PART_GameStatusCompletionist"
                                   SelectedValuePath="Id"
                                   DisplayMemberPath="Name"
                                   SelectedValue="{Binding Settings.GameStatusCompletionist}"/>
+                        <CheckBox Grid.Column="4"
+                                  Grid.Row="6"
+                                  IsEnabled="{Binding ElementName=PART_AutoSetGameStatusToHltb, Path=IsChecked}"
+                                  IsChecked="{Binding Settings.AutoSetToHltbCompletionistSendPlaytime}"
+                                  Content="{DynamicResource LOCHowLongToBeatSyncPlaytimeShort}"
+                                  ToolTip="{DynamicResource LOCHowLongToBeatAutoSetGameStatusToHltbCompletionistPlaytime}"/>
+                        <CheckBox Grid.Column="6"
+                                  Grid.Row="6"
+                                  IsEnabled="{Binding ElementName=PART_AutoSetGameStatusToHltb, Path=IsChecked}"
+                                  IsChecked="{Binding Settings.AutoSetToHltbCompletionistSendCompletionDate}"
+                                  Content="{DynamicResource LOCHowLongToBeatSyncDateShort}"
+                                  ToolTip="{DynamicResource LOCHowLongToBeatAutoSetGameStatusToHltbCompletionistDate}">
+                            <CheckBox.Style>
+                                <Style TargetType="CheckBox" BasedOn="{StaticResource {x:Type CheckBox}}">
+                                    <Setter Property="IsEnabled"
+                                            Value="False"/>
+                                    <Style.Triggers>
+                                        <MultiDataTrigger>
+                                            <MultiDataTrigger.Conditions>
+                                                <Condition Binding="{Binding ElementName=PART_AutoSetGameStatusToHltb, Path=IsChecked}" Value="True"/>
+                                                <Condition Binding="{Binding Settings.AutoSetToHltbCompletionistSendPlaytime}" Value="True"/>
+                                            </MultiDataTrigger.Conditions>
+                                            <Setter Property="IsEnabled" Value="True"/>
+                                        </MultiDataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </CheckBox.Style>
+                        </CheckBox>
                     </Grid>
 
 
@@ -303,107 +377,6 @@
                                FontSize="18"/>
                         <Separator Margin="0,0,0,10"/>
 
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="8"/>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="8"/>
-                                <ColumnDefinition Width="100"/>
-                            </Grid.ColumnDefinitions>
-
-                            <Label Grid.Column="0"
-                                   Grid.Row="0"
-                                   Content="{DynamicResource LOCCommonDefaultSorting}"/>
-                            <ComboBox Name="cbDefaultSorting"
-                                      Grid.Column="2"
-                                      Grid.Row="0"
-                                      Height="30"
-                                      IsEditable="True"
-                                      IsReadOnly="True"
-                                      SelectionChanged="CbDefaultSorting_SelectionChanged">
-                                <ComboBoxItem Content="{DynamicResource LOCGameNameTitle}"
-                                              Tag="0">
-                                    <ComboBoxItem.Style>
-                                        <Style TargetType="{x:Type ComboBoxItem}"
-                                               BasedOn="{StaticResource {x:Type ComboBoxItem}}">
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding Settings.TitleListSort}"
-                                                             Value="0">
-                                                    <Setter Property="IsSelected"
-                                                            Value="True"/>
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </ComboBoxItem.Style>
-                                </ComboBoxItem>
-                                <ComboBoxItem Content="{DynamicResource LOCPlatformTitle}"
-                                              Tag="1">
-                                    <ComboBoxItem.Style>
-                                        <Style TargetType="{x:Type ComboBoxItem}"
-                                               BasedOn="{StaticResource {x:Type ComboBoxItem}}">
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding Settings.TitleListSort}"
-                                                             Value="1">
-                                                    <Setter Property="IsSelected"
-                                                            Value="True"/>
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </ComboBoxItem.Style>
-                                </ComboBoxItem>
-                                <ComboBoxItem Content="{DynamicResource LOCHowLongToBeatCompleted}"
-                                              Tag="2">
-                                    <ComboBoxItem.Style>
-                                        <Style TargetType="{x:Type ComboBoxItem}"
-                                               BasedOn="{StaticResource {x:Type ComboBoxItem}}">
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding Settings.TitleListSort}"
-                                                             Value="2">
-                                                    <Setter Property="IsSelected"
-                                                            Value="True"/>
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </ComboBoxItem.Style>
-                                </ComboBoxItem>
-                                <ComboBoxItem Content="{DynamicResource LOCTimePlayed}"
-                                              Tag="3">
-                                    <ComboBoxItem.Style>
-                                        <Style TargetType="{x:Type ComboBoxItem}"
-                                               BasedOn="{StaticResource {x:Type ComboBoxItem}}">
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding Settings.TitleListSort}"
-                                                             Value="3">
-                                                    <Setter Property="IsSelected"
-                                                            Value="True"/>
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </ComboBoxItem.Style>
-                                </ComboBoxItem>
-                                <ComboBoxItem Content="{DynamicResource LOCCommonLastUpdate}"
-                                              Tag="4">
-                                    <ComboBoxItem.Style>
-                                        <Style TargetType="{x:Type ComboBoxItem}"
-                                               BasedOn="{StaticResource {x:Type ComboBoxItem}}">
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding Settings.TitleListSort}"
-                                                             Value="4">
-                                                    <Setter Property="IsSelected"
-                                                            Value="True"/>
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </ComboBoxItem.Style>
-                                </ComboBoxItem>
-                            </ComboBox>
-                            <ToggleButton Content="{DynamicResource LOCMenuSortAscending}"
-                                          IsChecked="{Binding Settings.IsAsc}"
-                                          Grid.Column="4"
-                                          Grid.Row="0"
-                                          Height="30"/>
-                        </Grid>
                     </StackPanel>
 
                     <CheckBox Margin="0,10,0,0"
@@ -889,19 +862,19 @@
                                                       Content="{DynamicResource LOCHowLongToBeatIntegrationProgressBarShowTimeUser}"/>
 
                                             <StackPanel Margin="0,0,0,10">
-                                                <Label Content="Time labels placement:"/>
+                                                <Label Content="{DynamicResource LOCHowLongToBeatIntegrationProgressBarTimePlacement}"/>
                                                 <StackPanel Orientation="Horizontal" Margin="50,5,0,0">
                                                     <RadioButton GroupName="ProgressBarTimePlacement"
-                                                                 Content="Above"
+                                                                 Content="{DynamicResource LOCHowLongToBeatIntegrationProgressBarShowTimeAbove}"
                                                                  IsChecked="{Binding Settings.ProgressBarShowTimeAbove}"
                                                                  Checked="HltB_ProgressBarTimeAbove_Checked"/>
                                                     <RadioButton GroupName="ProgressBarTimePlacement"
-                                                                 Content="Inside"
+                                                                 Content="{DynamicResource LOCHowLongToBeatIntegrationProgressBarShowTimeInterior}"
                                                                  Margin="20,0,0,0"
                                                                  IsChecked="{Binding Settings.ProgressBarShowTimeInterior}"
                                                                  Checked="HltB_ProgressBarTimeInterior_Checked"/>
                                                     <RadioButton GroupName="ProgressBarTimePlacement"
-                                                                 Content="Below"
+                                                                 Content="{DynamicResource LOCHowLongToBeatIntegrationProgressBarShowTimeBelow}"
                                                                  Margin="20,0,0,0"
                                                                  IsChecked="{Binding Settings.ProgressBarShowTimeBelow}"
                                                                  Checked="HltB_ProgressBarTimeBelow_Checked"/>
@@ -1179,79 +1152,208 @@
 
         <TabItem Header="{DynamicResource LOCPlatformsTitle}"
                  IsEnabled="True">
-            <DockPanel LastChildFill="True"
-                       Margin="0,10,0,0">
-                <ListBox Name="PART_GridPlatformsList"
-                         Grid.ColumnSpan="2"
-                         MinHeight="100">
-                    <ListBox.ItemContainerStyle>
-                        <Style TargetType="{x:Type ListBoxItem}"
-                               BasedOn="{StaticResource {x:Type ListBoxItem}}">
+            <DockPanel Margin="0,10,0,0"
+                       LastChildFill="True">
+                <Label DockPanel.Dock="Top"
+                       Content="{DynamicResource LOCHowLongToBeatPlatformsMappingDescription}"/>
+
+                <ListView Name="PART_GridPlatformsList"
+                          Margin="0,10,0,0"
+                          MinHeight="100"
+                          ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="{x:Type ListViewItem}"
+                               BasedOn="{StaticResource {x:Type ListViewItem}}">
                             <Setter Property="Focusable"
                                     Value="False"/>
+                            <Setter Property="HorizontalContentAlignment"
+                                    Value="Stretch"/>
                         </Style>
-                    </ListBox.ItemContainerStyle>
+                    </ListView.ItemContainerStyle>
 
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <Grid Margin="0,2">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="250"/>
-                                    <ColumnDefinition Width="10"/>
-                                    <ColumnDefinition Width="*"/>
-                                </Grid.ColumnDefinitions>
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn Width="380">
+                                <GridViewColumn.Header>
+                                    <TextBlock Text="{DynamicResource LOCHowLongToBeatMappingColumnPlayniteOrigin}"
+                                               FontWeight="SemiBold"/>
+                                </GridViewColumn.Header>
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Margin="0,4">
+                                            <TextBlock Text="{Binding Platform.Name}"
+                                                       FontWeight="SemiBold">
+                                                <TextBlock.ToolTip>
+                                                    <ToolTip>
+                                                        <StackPanel>
+                                                            <TextBlock Text="{DynamicResource LOCHowLongToBeatMappingPlaynitePlatformIdToolTip}"
+                                                                       FontWeight="SemiBold"/>
+                                                            <TextBlock Text="{Binding PlaynitePlatformId}"
+                                                                       TextWrapping="Wrap"
+                                                                       MaxWidth="360"/>
+                                                        </StackPanel>
+                                                    </ToolTip>
+                                                </TextBlock.ToolTip>
+                                            </TextBlock>
 
-                                <TextBlock Grid.Column="0"
-                                           Text="{Binding Platform}"/>
+                                            <StackPanel Orientation="Horizontal"
+                                                        Opacity="0.75"
+                                                        Margin="0,2,0,0">
+                                                <TextBlock Text="{Binding PlayniteSpecificationId}"
+                                                           FontSize="11"
+                                                           Visibility="{Binding HasPlayniteSpecificationId, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                                <TextBlock Text=" · "
+                                                           FontSize="11"
+                                                           Visibility="{Binding HasPlayniteSpecificationId, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                                <TextBlock Text="{Binding PlaynitePlatformId}"
+                                                           FontSize="11"
+                                                           TextTrimming="CharacterEllipsis"/>
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
 
-                                <ComboBox Grid.Column="2"
-                                          hltb:SelectorBehaviors.EnumSource="{x:Type hlte:HltbPlatform}"
-                                          SelectedValue="{Binding HltbPlatform}"/>
-                            </Grid>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
+                            <GridViewColumn Width="280">
+                                <GridViewColumn.Header>
+                                    <TextBlock Text="{DynamicResource LOCHowLongToBeatMappingColumnHltbTarget}"
+                                               FontWeight="SemiBold"/>
+                                </GridViewColumn.Header>
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Margin="0,4">
+                                            <ComboBox hltb:SelectorBehaviors.EnumSource="{x:Type hlte:HltbPlatform}"
+                                                      SelectedValue="{Binding HltbPlatform}"
+                                                      ToolTip="{Binding HltbPlatformDisplay}"/>
+
+                                            <TextBlock Margin="0,4,0,0"
+                                                       FontSize="11"
+                                                       Opacity="0.75"
+                                                       FontStyle="Italic"
+                                                       Text="{DynamicResource LOCHowLongToBeatMappingPlatformDefaultHint}">
+                                                <TextBlock.Style>
+                                                    <Style TargetType="{x:Type TextBlock}">
+                                                        <Setter Property="Visibility"
+                                                                Value="Collapsed"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding IsHltbPlatformConfigured}"
+                                                                         Value="False">
+                                                                <Setter Property="Visibility"
+                                                                        Value="Visible"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
+                                            </TextBlock>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
             </DockPanel>
         </TabItem>
 
         <TabItem Header="{DynamicResource LOCHowLongToBeatStorefront}">
-            <DockPanel LastChildFill="True"
-                       Margin="0,10,0,0">
-                <ListBox ItemsSource="{Binding Settings.StorefrontElements}"
-                         MinHeight="100">
-                    <ListBox.ItemContainerStyle>
-                        <Style TargetType="{x:Type ListBoxItem}"
-                               BasedOn="{StaticResource {x:Type ListBoxItem}}">
+            <DockPanel Margin="0,10,0,0"
+                       LastChildFill="True">
+                <Label DockPanel.Dock="Top"
+                       Content="{DynamicResource LOCHowLongToBeatStorefrontMappingDescription}"/>
+
+                <ListView ItemsSource="{Binding Settings.StorefrontElements}"
+                          Margin="0,10,0,0"
+                          MinHeight="100"
+                          ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="{x:Type ListViewItem}"
+                               BasedOn="{StaticResource {x:Type ListViewItem}}">
                             <Setter Property="Focusable"
                                     Value="False"/>
+                            <Setter Property="HorizontalContentAlignment"
+                                    Value="Stretch"/>
                         </Style>
-                    </ListBox.ItemContainerStyle>
+                    </ListView.ItemContainerStyle>
 
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <Grid Margin="0,2">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="200"/>
-                                    <ColumnDefinition Width="10"/>
-                                    <ColumnDefinition Width="*"/>
-                                </Grid.ColumnDefinitions>
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn Width="380">
+                                <GridViewColumn.Header>
+                                    <TextBlock Text="{DynamicResource LOCHowLongToBeatMappingColumnPlayniteOrigin}"
+                                               FontWeight="SemiBold"/>
+                                </GridViewColumn.Header>
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Margin="0,4">
+                                            <TextBlock Text="{Binding SourceName}"
+                                                       FontWeight="SemiBold">
+                                                <TextBlock.ToolTip>
+                                                    <ToolTip>
+                                                        <StackPanel>
+                                                            <TextBlock Text="{DynamicResource LOCHowLongToBeatMappingPlayniteSourceIdToolTip}"
+                                                                       FontWeight="SemiBold"/>
+                                                            <TextBlock Text="{Binding PlayniteSourceId}"
+                                                                       TextWrapping="Wrap"
+                                                                       MaxWidth="360"/>
+                                                        </StackPanel>
+                                                    </ToolTip>
+                                                </TextBlock.ToolTip>
+                                            </TextBlock>
 
-                                <TextBlock Grid.Column="0"
-                                           Text="{Binding SourceName}"/>
+                                            <TextBlock Text="{Binding PlayniteSourceId}"
+                                                       Opacity="0.75"
+                                                       FontSize="11"
+                                                       Margin="0,2,0,0"
+                                                       TextTrimming="CharacterEllipsis"/>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
 
-                                <ComboBox Grid.Column="2"
-                                          ItemsSource="{Binding StoreFrontElements}"
-                                          SelectedValuePath="HltbStorefrontId"
-                                          DisplayMemberPath="HltbStorefrontName"
-                                          SelectedValue="{Binding HltbStorefrontId}"/>
-                            </Grid>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
+                            <GridViewColumn Width="280">
+                                <GridViewColumn.Header>
+                                    <TextBlock Text="{DynamicResource LOCHowLongToBeatMappingColumnHltbTarget}"
+                                               FontWeight="SemiBold"/>
+                                </GridViewColumn.Header>
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Margin="0,4">
+                                            <ComboBox ItemsSource="{Binding StoreFrontElements}"
+                                                      SelectedValuePath="HltbStorefrontId"
+                                                      DisplayMemberPath="HltbStorefrontName"
+                                                      SelectedValue="{Binding HltbStorefrontId}"
+                                                      ToolTip="{Binding HltbStorefrontName}"/>
+
+                                            <TextBlock Margin="0,4,0,0"
+                                                       FontSize="11"
+                                                       Opacity="0.75"
+                                                       FontStyle="Italic"
+                                                       Text="{DynamicResource LOCHowLongToBeatMappingStorefrontNotSetHint}">
+                                                <TextBlock.Style>
+                                                    <Style TargetType="{x:Type TextBlock}">
+                                                        <Setter Property="Visibility"
+                                                                Value="Collapsed"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding IsStorefrontConfigured}"
+                                                                         Value="False">
+                                                                <Setter Property="Visibility"
+                                                                        Value="Visible"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
+                                            </TextBlock>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
             </DockPanel>
         </TabItem>
 
-        <TabItem Header="QuickSearch">
+        <TabItem Header="{DynamicResource LOCHltbQuickSearchTab}">
             <ScrollViewer Margin="0,10,0,0">
                 <Grid>
                     <Grid.RowDefinitions>

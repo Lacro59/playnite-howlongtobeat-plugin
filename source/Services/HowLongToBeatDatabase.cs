@@ -27,6 +27,7 @@ namespace HowLongToBeat.Services
         public HowLongToBeat Plugin { get; set; }
         public HowLongToBeatApi HowLongToBeatApi { get; set; }
         public HltbUserStats UserHltbData { get; set; } = new HltbUserStats();
+        private readonly object UserHltbDataSync = new object();
 
         private static bool DontSetToHtlb { get; set; } = false;
 
@@ -39,7 +40,11 @@ namespace HowLongToBeat.Services
         }
 
         // Change visibility to allow other classes to use the centralized verbose check
-        public bool IsVerboseLoggingEnabled => PluginSettings is HowLongToBeatSettings settings && settings.EnableVerboseLogging;
+#if DEBUG
+        public bool IsVerboseLoggingEnabled => true;
+#else
+        public bool IsVerboseLoggingEnabled => false;
+#endif
 
         private void FireAndForget(Task task, string context)
         {
@@ -72,22 +77,9 @@ namespace HowLongToBeat.Services
                         HowLongToBeatApi = null;
                     }
 
-                    // Run optional/expensive warm-up work in background so initialization doesn't block.
+                    // Session cookies are refreshed on demand before profile submit (GetCookiesForSubmitAsync).
                     if (HowLongToBeatApi != null)
                     {
-                        FireAndForget(Task.Run(() =>
-                        {
-                            try
-                            {
-                                // Perform non-critical background warm-up (e.g. refresh cookies or cache).
-                                HowLongToBeatApi.UpdatedCookies();
-                            }
-                            catch (Exception ex)
-                            {
-                                Common.LogError(ex, false, true, PluginName);
-                            }
-                        }), "UpdatedCookies warmup");
-
                         // Load cached user stats as soon as the API exists.
                         // LoadMoreData can run before InitializeClient and will then set an empty placeholder.
                         FireAndForget(Task.Run(() =>
@@ -441,6 +433,14 @@ namespace HowLongToBeat.Services
                 }
                 else
                 {
+                    string hltbId = loadedItem.GetData()?.Id ?? string.Empty;
+                    Logger.Info(string.Format(
+                        "HLTB RefreshNoLoader path=HltbPageFetch: playniteGame='{0}' hltbId='{1}' urlBefore='{2}' urlImgBefore='{3}'",
+                        game?.Name ?? string.Empty,
+                        hltbId,
+                        loadedItem.GetData()?.Url ?? string.Empty,
+                        loadedItem.GetData()?.UrlImg ?? string.Empty));
+
                     if (HowLongToBeatApi != null)
                     {
                         HltbDataUser updated = TaskHelpers.RunSyncWithTimeout(() => HowLongToBeatApi.UpdateGameData(loadedItem.Items.First()), 15000);
@@ -453,6 +453,15 @@ namespace HowLongToBeat.Services
                     }
                     loadedItem.DateLastRefresh = DateTime.Now;
                     Update(loadedItem);
+
+                    var after = loadedItem.GetData();
+                    Logger.Info(string.Format(
+                        "HLTB RefreshNoLoader path=HltbPageFetch DONE: playniteGame='{0}' hltbId='{1}' url='{2}' urlImg='{3}' main={4}s",
+                        game?.Name ?? string.Empty,
+                        after?.Id ?? string.Empty,
+                        after?.Url ?? string.Empty,
+                        after?.UrlImg ?? string.Empty,
+                        after?.GameHltbData?.MainStoryClassic ?? 0));
 
                     // Refresh User data
                     List<TitleList> titleLists = GetUserHltbDataAll(loadedItem.GetData().Id);
@@ -732,21 +741,84 @@ namespace HowLongToBeat.Services
 
             try
             {
+                Action<bool, bool> notifySync = (playtimeSent, dateSent) =>
+                {
+                    if (!PluginSettings.EnableSucessNotification)
+                    {
+                        return;
+                    }
+
+                    API.Instance.Notifications.Add(new NotificationMessage(
+                        $"{PluginName}-AutoSetGameStatusToHltb-{game.Id}-{Guid.NewGuid()}",
+                        PluginName + Environment.NewLine + string.Format(
+                            ResourceProvider.GetString("LOCHowLongToBeatAutoSetGameStatusToHltbNotification"),
+                            game.Name,
+                            playtimeSent ? "sent" : "kept on HLTB",
+                            dateSent ? "sent" : "kept on HLTB"),
+                        NotificationType.Info));
+                };
+
                 bool isCompletionist = game.CompletionStatusId == PluginSettings.GameStatusCompletionist;
                 bool isCompleted = game.CompletionStatusId == PluginSettings.GameStatusCompleted;
                 bool isPlaying = game.CompletionStatusId == PluginSettings.GameStatusPlaying;
 
                 if (isCompletionist && PluginSettings.GameStatusCompletionist != default && API.Instance.Database.CompletionStatuses.Get(PluginSettings.GameStatusCompletionist) != null)
                 {
-                    _ = SetCurrentPlayTime(game, true, false, false, false, true);
+                    bool sendPlaytime = PluginSettings.AutoSetToHltbCompletionistSendPlaytime;
+                    bool sendCompletionDate = sendPlaytime && PluginSettings.AutoSetToHltbCompletionistSendCompletionDate;
+                    bool isUpdated = SetCurrentPlayTime(
+                        game,
+                        true,
+                        true,
+                        false,
+                        false,
+                        sendPlaytime,
+                        false,
+                        false,
+                        false,
+                        sendPlaytime,
+                        sendCompletionDate);
+
+                    Logger.Info($"Auto sync to HLTB (Completionist) for {game?.Name}: success={isUpdated}, sendPlaytime={sendPlaytime}, sendCompletionDate={sendCompletionDate}");
+
+                    if (isUpdated)
+                    {
+                        notifySync(sendPlaytime, sendCompletionDate);
+                    }
                 }
                 else if (isCompleted && PluginSettings.GameStatusCompleted != default && API.Instance.Database.CompletionStatuses.Get(PluginSettings.GameStatusCompleted) != null)
                 {
-                    _ = SetCurrentPlayTime(game, true, true);
+                    bool sendPlaytime = PluginSettings.AutoSetToHltbCompletedSendPlaytime;
+                    bool sendCompletionDate = sendPlaytime && PluginSettings.AutoSetToHltbCompletedSendCompletionDate;
+                    bool isUpdated = SetCurrentPlayTime(
+                        game,
+                        true,
+                        true,
+                        sendPlaytime,
+                        false,
+                        false,
+                        false,
+                        false,
+                        false,
+                        sendPlaytime,
+                        sendCompletionDate);
+
+                    Logger.Info($"Auto sync to HLTB (Completed) for {game?.Name}: success={isUpdated}, sendPlaytime={sendPlaytime}, sendCompletionDate={sendCompletionDate}");
+
+                    if (isUpdated)
+                    {
+                        notifySync(sendPlaytime, sendCompletionDate);
+                    }
                 }
                 else if (isPlaying && PluginSettings.GameStatusPlaying != default && API.Instance.Database.CompletionStatuses.Get(PluginSettings.GameStatusPlaying) != null)
                 {
-                    _ = SetCurrentPlayTime(game, false);
+                    bool isUpdated = SetCurrentPlayTime(game, false);
+                    Logger.Info($"Auto sync to HLTB (Playing) for {game?.Name}: success={isUpdated}");
+
+                    if (isUpdated)
+                    {
+                        notifySync(true, false);
+                    }
                 }
             }
             catch (Exception ex)
@@ -900,19 +972,26 @@ namespace HowLongToBeat.Services
                     TitleList titleList = HowLongToBeatApi.GetUserData(gameId);
                     if (titleList != null)
                     {
-                        if (UserHltbData?.TitlesList == null)
+                        string userDataJson = null;
+                        lock (UserHltbDataSync)
                         {
-                            return;
-                        }
+                            if (UserHltbData?.TitlesList == null)
+                            {
+                                return;
+                            }
 
-                        int index = UserHltbData.TitlesList.FindIndex(x => x.Id == gameId);
-                        if (index > -1)
-                        {
-                            UserHltbData.TitlesList[index] = titleList;
-                        }
-                        else
-                        {
-                            UserHltbData.TitlesList.Add(titleList);
+                            int index = UserHltbData.TitlesList.FindIndex(x => x.Id == gameId);
+                            if (index > -1)
+                            {
+                                UserHltbData.TitlesList[index] = titleList;
+                            }
+                            else
+                            {
+                                UserHltbData.TitlesList.Add(titleList);
+                            }
+
+                            // Serialize while protected from concurrent list mutations.
+                            userDataJson = Serialization.ToJson(UserHltbData);
                         }
 
                         Application.Current.Dispatcher?.Invoke(() =>
@@ -920,7 +999,7 @@ namespace HowLongToBeat.Services
                             _database?.OnCollectionChanged(null, null);
                         });
 
-                        FileSystem.WriteStringToFileSafe(Path.Combine(Paths.PluginUserDataPath, "HltbUserStats.json"), Serialization.ToJson(UserHltbData));
+                        FileSystem.WriteStringToFileSafe(Path.Combine(Paths.PluginUserDataPath, "HltbUserStats.json"), userDataJson ?? string.Empty);
                     }
                 }
                 catch (Exception ex)
@@ -1075,7 +1154,18 @@ namespace HowLongToBeat.Services
             }, globalProgressOptions);
         }
 
-        public bool SetCurrentPlayTime(Game game, bool noPlaying = false, bool isCompleted = false, bool isMain = false, bool isMainSide = false, bool is100 = false, bool isSolo = false, bool isCoOp = false, bool isVs = false)
+        public bool SetCurrentPlayTime(
+            Game game,
+            bool noPlaying = false,
+            bool isCompleted = false,
+            bool isMain = false,
+            bool isMainSide = false,
+            bool is100 = false,
+            bool isSolo = false,
+            bool isCoOp = false,
+            bool isVs = false,
+            bool sendCompletedPlaytime = true,
+            bool sendCompletionDateFromLastActivity = true)
         {
             try
             {
@@ -1105,23 +1195,23 @@ namespace HowLongToBeat.Services
                     {
                         TimeSpan time = TimeSpan.FromSeconds(game.Playtime);
                         HltbDataUser hltbDataUser = gameHowLongToBeat.GetData();
-						string platformName = HltbPlatform.PC.GetDescription();
+                        string platformName = HltbPlatform.PC.GetDescription();
                         string storefrontName = string.Empty;
 
-						#region Validate Id
+                        #region Validate Id
 
-						if(string.IsNullOrWhiteSpace(hltbDataUser.Id))
-						{
-							Logger.Warn($"Cannot submit data for a game without HLTB ID ({game.Name})");
-							API.Instance.Notifications.Add(new NotificationMessage(
-								$"{PluginName}-NoHltbId-Error-{Guid.NewGuid()}",
-								PluginName + Environment.NewLine + string.Format(ResourceProvider.GetString("LOCHowLongToBeatErrorNoHltbId"), game.Name),
-								NotificationType.Error
-							));
-							return false;
-						}
+                        if (string.IsNullOrWhiteSpace(hltbDataUser.Id))
+                        {
+                            Logger.Warn($"Cannot submit data for a game without HLTB ID ({game.Name})");
+                            API.Instance.Notifications.Add(new NotificationMessage(
+                                $"{PluginName}-NoHltbId-Error-{Guid.NewGuid()}",
+                                PluginName + Environment.NewLine + string.Format(ResourceProvider.GetString("LOCHowLongToBeatErrorNoHltbId"), game.Name),
+                                NotificationType.Error
+                            ));
+                            return false;
+                        }
 
-						#endregion
+                        #endregion
 
                         #region Search platform
 
@@ -1158,10 +1248,10 @@ namespace HowLongToBeat.Services
 
                         #region Search storefront
 
-                        Storefront storefront = PluginSettings.StorefrontElements.FirstOrDefault(x => x.SourceId != default && x.SourceId == game.SourceId);
-                        if (storefront != null)
+                        string resolvedStorefrontName = PluginSettings.GetHltbStorefrontNameForSource(game.SourceId);
+                        if (!resolvedStorefrontName.IsNullOrEmpty())
                         {
-                            storefrontName = storefront.HltbStorefrontName;
+                            storefrontName = resolvedStorefrontName;
                         }
                         else
                         {
@@ -1262,24 +1352,27 @@ namespace HowLongToBeat.Services
                         {
                             editData.Lists.Completed = true;
 
-                            if (isMain)
+                            if (isMain && sendCompletedPlaytime)
                             {
                                 editData.SinglePlayer.CompMain.Time.Hours = time.Hours + (24 * time.Days);
                                 editData.SinglePlayer.CompMain.Time.Minutes = time.Minutes;
                                 editData.SinglePlayer.CompMain.Time.Seconds = time.Seconds;
 
-                                editData.General.CompletionDate.Day = ((DateTime)game.LastActivity).Day.ToString();
-                                editData.General.CompletionDate.Month = ((DateTime)game.LastActivity).Month.ToString();
-                                editData.General.CompletionDate.Year = ((DateTime)game.LastActivity).Year.ToString();
+                                if (sendCompletionDateFromLastActivity && game.LastActivity != null)
+                                {
+                                    editData.General.CompletionDate.Day = ((DateTime)game.LastActivity).Day.ToString();
+                                    editData.General.CompletionDate.Month = ((DateTime)game.LastActivity).Month.ToString();
+                                    editData.General.CompletionDate.Year = ((DateTime)game.LastActivity).Year.ToString();
+                                }
                             }
 
-                            if (isMainSide)
+                            if (isMainSide && sendCompletedPlaytime)
                             {
                                 editData.SinglePlayer.CompPlus.Time.Hours = time.Hours + (24 * time.Days);
                                 editData.SinglePlayer.CompPlus.Time.Minutes = time.Minutes;
                                 editData.SinglePlayer.CompPlus.Time.Seconds = time.Seconds;
 
-                                if (editData.General.CompletionDate.Day.IsNullOrEmpty() || editData.General.CompletionDate.Day == "00")
+                                if (sendCompletionDateFromLastActivity && game.LastActivity != null && (editData.General.CompletionDate.Day.IsNullOrEmpty() || editData.General.CompletionDate.Day == "00"))
                                 {
                                     editData.General.CompletionDate.Day = ((DateTime)game.LastActivity).Day.ToString();
                                     editData.General.CompletionDate.Month = ((DateTime)game.LastActivity).Month.ToString();
@@ -1287,18 +1380,23 @@ namespace HowLongToBeat.Services
                                 }
                             }
 
-                            if (is100)
+                            if (is100 && sendCompletedPlaytime)
                             {
                                 editData.SinglePlayer.Comp100.Time.Hours = time.Hours + (24 * time.Days);
                                 editData.SinglePlayer.Comp100.Time.Minutes = time.Minutes;
                                 editData.SinglePlayer.Comp100.Time.Seconds = time.Seconds;
 
-                                if (editData.General.CompletionDate.Day.IsNullOrEmpty() || editData.General.CompletionDate.Day == "00")
+                                if (sendCompletionDateFromLastActivity && game.LastActivity != null && (editData.General.CompletionDate.Day.IsNullOrEmpty() || editData.General.CompletionDate.Day == "00"))
                                 {
                                     editData.General.CompletionDate.Day = ((DateTime)game.LastActivity).Day.ToString();
                                     editData.General.CompletionDate.Month = ((DateTime)game.LastActivity).Month.ToString();
                                     editData.General.CompletionDate.Year = ((DateTime)game.LastActivity).Year.ToString();
                                 }
+                            }
+
+                            if (isCompleted && sendCompletionDateFromLastActivity && game.LastActivity == null && IsVerboseLoggingEnabled)
+                            {
+                                Logger.Debug($"No LastActivity found for {game.Name}, completion date is not sent to HLTB.");
                             }
                         }
 

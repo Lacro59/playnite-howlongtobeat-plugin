@@ -13,8 +13,8 @@
              xmlns:hltb="clr-namespace:HowLongToBeat.Behaviors"
              xmlns:controls1="clr-namespace:CommonPluginsShared.Controls"
              mc:Ignorable="d"
-             Width="700"
-             MinHeight="620">
+             d:DesignWidth="700"
+             d:DesignHeight="600">
 
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>

@@ -104,6 +104,7 @@
       <HintPath>packages\System.ValueTuple.4.6.1\lib\net462\System.ValueTuple.dll</HintPath>
     </Reference>
     <Reference Include="System.Web" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -119,6 +120,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Behaviors\SelectorBehaviors.cs" />
+    <Compile Include="Controls\HltbPieChartTooltip.xaml.cs">
+      <DependentUpon>HltbPieChartTooltip.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\PluginButton.xaml.cs">
       <DependentUpon>PluginButton.xaml</DependentUpon>
     </Compile>
@@ -215,6 +219,7 @@
     <Compile Include="playnite-plugincommon\CommonPluginsControls\Views\TransfertData.xaml.cs">
       <DependentUpon>TransfertData.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Services\AsyncTokenBucketRateLimiter.cs" />
     <Compile Include="Services\GameNameAliases.cs" />
     <Compile Include="Services\HowLongToBeatDatabase.cs" />
     <Compile Include="Services\HowLongToBeatExport.cs" />
@@ -356,6 +361,10 @@
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <Page Include="Controls\HltbPieChartTooltip.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\PluginButton.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

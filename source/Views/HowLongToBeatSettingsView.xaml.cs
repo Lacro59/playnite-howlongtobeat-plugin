@@ -801,36 +801,6 @@ namespace HowLongToBeat.Views
             catch { }
         }
 
-        private void CbDefaultSorting_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            string index = ((ComboBoxItem)cbDefaultSorting.SelectedItem).Tag.ToString();
-            switch (index)
-            {
-                case "0":
-                    PluginDatabase.PluginSettings.TitleListSort = TitleListSort.GameName;
-                    break;
-
-                case "1":
-                    PluginDatabase.PluginSettings.TitleListSort = TitleListSort.Platform;
-                    break;
-
-                case "2":
-                    PluginDatabase.PluginSettings.TitleListSort = TitleListSort.Completion;
-                    break;
-
-                case "3":
-                    PluginDatabase.PluginSettings.TitleListSort = TitleListSort.CurrentTime;
-                    break;
-
-                case "4":
-                    PluginDatabase.PluginSettings.TitleListSort = TitleListSort.LastUpdate;
-                    break;
-
-                default:
-                    break;
-            }
-        }
-
         private void ButtonAliasAdd_Click(object sender, RoutedEventArgs e)
         {
             try

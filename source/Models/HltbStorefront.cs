@@ -39,6 +39,12 @@ namespace HowLongToBeat.Models
         public string SourceName => API.Instance.Database.Sources?.Get(SourceId)?.Name;
 
         [DontSerialize]
+        public string PlayniteSourceId => SourceId == default(Guid) ? string.Empty : SourceId.ToString();
+
+        [DontSerialize]
+        public bool IsStorefrontConfigured => HltbStorefrontId != HltbStorefront.None;
+
+        [DontSerialize]
         public List<StoreFrontElement> StoreFrontElements
         {
             get
