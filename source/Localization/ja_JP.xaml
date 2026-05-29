@@ -1,97 +1,97 @@
 ﻿<?xml version="1.0"?>
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:sys="clr-namespace:System;assembly=mscorlib">
 
-    <sys:String x:Key="LOCHowLongToBeatTimeToBeat">Time to beat</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatTimeToBeat">クリアまでの時間</sys:String>
 
-    <sys:String x:Key="LOCPlayedHoursOnly">{0}h</sys:String>
+    <sys:String x:Key="LOCPlayedHoursOnly">{0}時間</sys:String>
 
     <!-- HowLongToBeatSettingsView -->
 
-    <sys:String x:Key="LOCHowLongToBeatProgressBar">Added {0} - Already added {1} - Not added {2}</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatProgressBar">追加 {0} - 追加済み {1} - 未追加 {2}</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatAddTagDescription">Add a tag to games with Main story completion time information</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAutoTag">Automatic tags processing</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatShowHltbImage">Use HowLongToBeat original game cover image in window</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatEnableVerboseLogging">Enable verbose HLTB debug logging (extra logs in extensions.log)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExport">Export HowLongToBeat data</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExportCsvComma">Export CSV (comma)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExportCsvSemicolon">Export CSV (semicolon)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExportJson">Export JSON</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExportFolderTooltip">Destination folder for export</sys:String>
-    <sys:String x:Key="LOCBrowseLabel">Browse...</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAddTagDescription">メインストーリーのクリア時間情報があるゲームにタグを追加</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoTag">タグの自動処理</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatShowHltbImage">ウィンドウで HowLongToBeat の元のゲームカバー画像を使用</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatEnableVerboseLogging">詳細な HLTB デバッグログを有効にする（extensions.log に追加ログを記録）</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExport">HowLongToBeat データをエクスポート</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportCsvComma">CSV をエクスポート（カンマ区切り）</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportCsvSemicolon">CSV をエクスポート（セミコロン区切り）</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportJson">JSON をエクスポート</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportFolderTooltip">エクスポート先フォルダー</sys:String>
+    <sys:String x:Key="LOCBrowseLabel">参照…</sys:String>
 
-    <sys:String x:Key="LOCExportSelectFolderFirst">Please select an export folder first.</sys:String>
-    <sys:String x:Key="LOCExportFolderNotExist">Selected folder does not exist.</sys:String>
-    <sys:String x:Key="LOCExportedCsvMessage">{0} games exported to CSV: {1} (delimiter '{2}')</sys:String>
-    <sys:String x:Key="LOCExportedJsonMessage">{0} games exported to JSON: {1}</sys:String>
-    <sys:String x:Key="LOCExportFailedCount">{0} games failed to export (see logs).</sys:String>
+    <sys:String x:Key="LOCExportSelectFolderFirst">先にエクスポート先フォルダーを選択してください。</sys:String>
+    <sys:String x:Key="LOCExportFolderNotExist">選択したフォルダーは存在しません。</sys:String>
+    <sys:String x:Key="LOCExportedCsvMessage">{0} 件のゲームを CSV にエクスポートしました: {1}（区切り文字: {2}）</sys:String>
+    <sys:String x:Key="LOCExportedJsonMessage">{0} 件のゲームを JSON にエクスポートしました: {1}</sys:String>
+    <sys:String x:Key="LOCExportFailedCount">{0} 件のゲームのエクスポートに失敗しました（ログを確認してください）。</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatColorSelection">Color selection:</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatColorSelection">色の選択：</sys:String>
 
-    <sys:String x:Key="LOCHltbEnableProgressBarInDataView">View progress bar in Playnite data view</sys:String>
+    <sys:String x:Key="LOCHltbEnableProgressBarInDataView">Playnite データビューに進行状況バーを表示</sys:String>
 
-    <sys:String x:Key="LOCHltbSelectDataType">Select the data type:</sys:String>
-    <sys:String x:Key="LOCHltbSelectDataTypeClassic">Classic</sys:String>
-    <sys:String x:Key="LOCHltbSelectDataTypeAverage">Average</sys:String>
-    <sys:String x:Key="LOCHltbSelectDataTypeMedian">Median</sys:String>
-    <sys:String x:Key="LOCHltbSelectDataTypeRushed">Rushed</sys:String>
-    <sys:String x:Key="LOCHltbSelectDataTypeLeisure">Leisure</sys:String>
+    <sys:String x:Key="LOCHltbSelectDataType">データタイプを選択：</sys:String>
+    <sys:String x:Key="LOCHltbSelectDataTypeClassic">クラシック</sys:String>
+    <sys:String x:Key="LOCHltbSelectDataTypeAverage">平均</sys:String>
+    <sys:String x:Key="LOCHltbSelectDataTypeMedian">中央値</sys:String>
+    <sys:String x:Key="LOCHltbSelectDataTypeRushed">急ぎめ</sys:String>
+    <sys:String x:Key="LOCHltbSelectDataTypeLeisure">ゆっくり</sys:String>
 
-    <sys:String x:Key="LOCHltbPreferredTimeToBeat">Preferred for time to beat</sys:String>
-    <sys:String x:Key="LOCHltbVisibleData">Select the time data visible</sys:String>
+    <sys:String x:Key="LOCHltbPreferredTimeToBeat">クリア時間に優先使用</sys:String>
+    <sys:String x:Key="LOCHltbVisibleData">表示する時間データを選択</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarOptions">Progress bar options</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">Show time tooltip in progress bar</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTime">Show time labels in progress bar</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarOptions">進行状況バーのオプション</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">進行状況バーに時間のツールチップを表示</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTime">進行状況バーに時間ラベルを表示</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeAbove">プログレスバーの上</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeInterior">プログレスバーの中</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeBelow">プログレスバーの下</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeUser">Show user HowLongToBeat time</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeUser">ユーザーの HowLongToBeat 時間を表示</sys:String>
 
-    <sys:String x:Key="LOCHltbUsedStartDateFromGameActivity">Used first game session from GameActivity plugin for start date</sys:String>
+    <sys:String x:Key="LOCHltbUsedStartDateFromGameActivity">開始日に GameActivity プラグインの最初のゲームセッションを使用</sys:String>
     
-    <sys:String x:Key="LOCHowLongToBeatAutoSetCurrentPlayTime">Automatically update current playtime on HowLongToBeat after game session</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatWithoutConfirmation">Without confirmation message</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatEnableSuccessNotification">Enable success notification</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoSetCurrentPlayTime">ゲームセッション後に HowLongToBeat の現在のプレイ時間を自動更新</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatWithoutConfirmation">確認メッセージなし</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatEnableSuccessNotification">成功通知を有効にする</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatus">Automatically update game status in Playnite when importing user data from HowLongToBeat</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltb">Automatically update game status on HowLongToBeat when changing game status in Playnite</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatus">HowLongToBeat からユーザーデータをインポートするときに、Playnite のゲームステータスを自動更新</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltb">Playnite でゲームステータスを変更したときに、HowLongToBeat のゲームステータスを自動更新</sys:String>
     
-    <sys:String x:Key="LOCHowLongToBeatAutoData">Game data download</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAutoAccept">Automatically select game when only one game is found during search</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatShowWhenMismatch">Show game selection list when more than one game is found during search</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatUseMatchValue">Use a percent match</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoData">ゲームデータのダウンロード</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoAccept">検索中にゲームが 1 件だけ見つかった場合、自動的にそのゲームを選択</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatShowWhenMismatch">検索中に複数のゲームが見つかった場合、ゲーム選択リストを表示</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatUseMatchValue">一致率を使用</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatTimeOnlyHour">Time format with only hour</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatTimeOnlyHour">時間のみの形式</sys:String>
     
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBar">Display progress indicator</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBar">進行状況インジケーターを表示</sys:String>
     
-    <sys:String x:Key="LOCHowLongToBeatCurrentPlayTimeSetted">The current playtime for {0} is setted.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatCurrentPlayTimeSetted">{0} の現在のプレイ時間を設定しました。</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatInfoSetPlaytime" xml:space="preserve">If there are several times defined on HowLongToBeat, the plugin will take the most recent one with the status &quot;Playing&quot;.
-If none has this status, it takes the most recent.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatInfoSetPlaytime" xml:space="preserve">HowLongToBeat に複数の時間が定義されている場合、プラグインはステータスが &quot;Playing&quot; の最新のものを使用します。
+このステータスのものがない場合は、最新のものを使用します。</sys:String>
 
     <!-- HowLongToBeatSelect -->
 
-    <sys:String x:Key="LOCSelection">HowLongToBeat selection</sys:String>
-    <sys:String x:Key="LOCHltbUsedVndb">Used Vndb</sys:String>
-    <sys:String x:Key="LOCHltbVndbSpeedLabel">VNDB speed</sys:String>
-    <sys:String x:Key="LOCHltbVndbLengthColumnSpeed">Speed</sys:String>
-    <sys:String x:Key="LOCHltbVndbLengthColumnMedian">Median</sys:String>
-    <sys:String x:Key="LOCHltbVndbLengthColumnAverage">Average</sys:String>
-    <sys:String x:Key="LOCHltbVndbLengthColumnStddev">Stddev</sys:String>
-    <sys:String x:Key="LOCHltbVndbLengthColumnVotes"># Votes</sys:String>
-    <sys:String x:Key="LOCHltbVndbSpeedSlow">Slow</sys:String>
-    <sys:String x:Key="LOCHltbVndbSpeedNormal">Normal</sys:String>
-    <sys:String x:Key="LOCHltbVndbSpeedFast">Fast</sys:String>
-    <sys:String x:Key="LOCHltbVndbSpeedTotal">Total</sys:String>
+    <sys:String x:Key="LOCSelection">HowLongToBeat の選択</sys:String>
+    <sys:String x:Key="LOCHltbUsedVndb">Vndb を使用</sys:String>
+    <sys:String x:Key="LOCHltbVndbSpeedLabel">VNDB 速度</sys:String>
+    <sys:String x:Key="LOCHltbVndbLengthColumnSpeed">速度</sys:String>
+    <sys:String x:Key="LOCHltbVndbLengthColumnMedian">中央値</sys:String>
+    <sys:String x:Key="LOCHltbVndbLengthColumnAverage">平均</sys:String>
+    <sys:String x:Key="LOCHltbVndbLengthColumnStddev">標準偏差</sys:String>
+    <sys:String x:Key="LOCHltbVndbLengthColumnVotes">投票数</sys:String>
+    <sys:String x:Key="LOCHltbVndbSpeedSlow">遅い</sys:String>
+    <sys:String x:Key="LOCHltbVndbSpeedNormal">標準</sys:String>
+    <sys:String x:Key="LOCHltbVndbSpeedFast">速い</sys:String>
+    <sys:String x:Key="LOCHltbVndbSpeedTotal">合計</sys:String>
     <sys:String x:Key="LOCHltbTabSearch">検索</sys:String>
-    <sys:String x:Key="LOCHltbTabManual">Enter manually</sys:String>
-    <sys:String x:Key="LOCHltbOpenOnWebsite">Search on HowLongToBeat</sys:String>
+    <sys:String x:Key="LOCHltbTabManual">手動で入力</sys:String>
+    <sys:String x:Key="LOCHltbOpenOnWebsite">HowLongToBeat で検索</sys:String>
     <sys:String x:Key="LOCHltbManualEntryHours">時間</sys:String>
     <sys:String x:Key="LOCHltbManualEntryMinutes">分</sys:String>
     <sys:String x:Key="LOCHltbManualEntryHltbId">HLTB ID</sys:String>
-    <sys:String x:Key="LOCHltbManualEntryConfirm">Use manual entry</sys:String>
+    <sys:String x:Key="LOCHltbManualEntryConfirm">手動入力を使用</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatMainStory">メインストーリー</sys:String>
     <sys:String x:Key="LOCHowLongToBeatMainExtra">メイン + 追加</sys:String>
@@ -99,150 +99,150 @@ If none has this status, it takes the most recent.</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatSolo">ソロ</sys:String>
     <sys:String x:Key="LOCHowLongToBeatCoOp">協力プレイ</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatVs">Vs</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatVs">比較</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatPlaying">Playing</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatPlaying">プレイ中</sys:String>
 
-    <sys:String x:Key="LOCRefresh">Refresh</sys:String>
-    <sys:String x:Key="LOCDelete">Delete</sys:String>
+    <sys:String x:Key="LOCRefresh">更新</sys:String>
+    <sys:String x:Key="LOCDelete">削除</sys:String>
 
     <!-- HowLongToBeat -->
 
-    <sys:String x:Key="LOCHowLongToBeatProgression">Progression</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatProgression">進行状況</sys:String>
 
     <!-- HowLongToBeatUserView -->
 
-    <sys:String x:Key="LOCHowLongToBeatCompletationStore">Games completed by storefront</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatCompletationProgress">Games completed over time</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatCompletationStore">ストアフロント別の完了済みゲーム</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatCompletationProgress">期間別の完了済みゲーム</sys:String>
     
-    <sys:String x:Key="LOCHowLongToBeatUserData">User data</sys:String>
-    <sys:String x:Key="LocHowLongToBeatPlayniteData">Playnite data</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatCompleted">Completed</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatUserData">ユーザーデータ</sys:String>
+    <sys:String x:Key="LocHowLongToBeatPlayniteData">Playnite データ</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatCompleted">完了済み</sys:String>
 
-    <sys:String x:Key="LOCHltbOnlyReplays">Only replays</sys:String>
-    <sys:String x:Key="LOCHltbOnlyNotPlayed">Only not played</sys:String>
+    <sys:String x:Key="LOCHltbOnlyReplays">再プレイのみ</sys:String>
+    <sys:String x:Key="LOCHltbOnlyNotPlayed">未プレイのみ</sys:String>
 
-    <sys:String x:Key="LOCHltbRemainingTime">Remaining time</sys:String>
+    <sys:String x:Key="LOCHltbRemainingTime">残り時間</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatPluginGetUserView">Getting user datas</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatPluginGetUserView">ユーザーデータを取得中</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatCompletions">Completions</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatTimeSinglePlayer">Single-Player time</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatTimeCoOp">Co-Op time</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatTimeVs">Vs Multi-Player time</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatCompletions">完了数</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatTimeSinglePlayer">シングルプレイヤー時間</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatTimeCoOp">協力プレイ時間</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatTimeVs">対戦マルチプレイヤー時間</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatStorefront">Storefront</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatStorefront">ストアフロント</sys:String>
     
-    <sys:String x:Key="LOCHltbAvgTimeByGame">Avg time by game</sys:String>
-    <sys:String x:Key="LOCHltbAvgGameByMonth">Avg game by month</sys:String>
-    <sys:String x:Key="LOCHltbCountGameBeatenBeforeTime">Number of games beaten before time</sys:String>
-    <sys:String x:Key="LOCHltbCountGameBeatenAfterTime">Number of games beaten after time</sys:String>
-    <sys:String x:Key="LOCHltbCountGameBeatenReplays">Number of games beaten (replayed)</sys:String>
-    <sys:String x:Key="LOCHltbCountGameRetired">Number of games retired</sys:String>
+    <sys:String x:Key="LOCHltbAvgTimeByGame">ゲーム別の平均時間</sys:String>
+    <sys:String x:Key="LOCHltbAvgGameByMonth">月別の平均ゲーム数</sys:String>
+    <sys:String x:Key="LOCHltbCountGameBeatenBeforeTime">予定時間より前にクリアしたゲーム数</sys:String>
+    <sys:String x:Key="LOCHltbCountGameBeatenAfterTime">予定時間より後にクリアしたゲーム数</sys:String>
+    <sys:String x:Key="LOCHltbCountGameBeatenReplays">クリアしたゲーム数（再プレイ）</sys:String>
+    <sys:String x:Key="LOCHltbCountGameRetired">リタイアしたゲーム数</sys:String>
 
-    <sys:String x:Key="LOCHltbUsedFilteredGames">Currently filtered games used</sys:String>
-    <sys:String x:Key="LOCHltbOnlyNotPlayedGames">Only game not played</sys:String>
+    <sys:String x:Key="LOCHltbUsedFilteredGames">現在フィルターされているゲームを使用</sys:String>
+    <sys:String x:Key="LOCHltbOnlyNotPlayedGames">未プレイのゲームのみ</sys:String>
 
     <!-- MainView -->
 
     <sys:String x:Key="LOCHowLongToBeat">HowLongToBeat</sys:String>
     <sys:String x:Key="LOCHowLongToBeatTitle">HowLongToBeat</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatPluginView">View HowLongToBeat datas</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatPluginUserView">View HowLongToBeat user datas</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatActualiseUserData">Refresh HowLongToBeat user datas</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatPluginView">HowLongToBeat データを表示</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatPluginUserView">HowLongToBeat ユーザーデータを表示</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatActualiseUserData">HowLongToBeat ユーザーデータを更新</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatSetCurrentTimeManual">Set your current playtime</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatSetCurrentTimeManualAll">Set your current playtime for all games</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatSetCurrentTimeManual">現在のプレイ時間を設定</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatSetCurrentTimeManualAll">すべてのゲームの現在のプレイ時間を設定</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatSetCurrentCompletedTimeManualOn">Set your current completed playtime on</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatSetCurrentMultiTimeManualOn">Set your current muli playtime on</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatSetCurrentCompletedTimeManualOn">完了済みの現在のプレイ時間を設定</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatSetCurrentMultiTimeManualOn">現在のマルチプレイ時間を設定</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatSetCurrentTime">Want you send your current playtime?</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatSetCurrentTime">現在のプレイ時間を送信しますか？</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatErrorNoHltbId">Cannot submit data for a game without HLTB ID ({0})</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatErrorNoPlatform">Cannot submit data for a game without platform ({0})</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatErrorNoPlatformDefaultUsed" xml:space="preserve">Game ({1}) without platform ({0}) defined in plugin settings.
-Please configure one.
-Default used (PC)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatErrorNoHltbId">HLTB ID がないゲームのデータは送信できません（{0}）</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatErrorNoPlatform">プラットフォームがないゲームのデータは送信できません（{0}）</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatErrorNoPlatformDefaultUsed" xml:space="preserve">プラグイン設定で定義されたプラットフォーム（{0}）がないゲーム（{1}）です。
+設定してください。
+既定値を使用しました（PC）</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatErrorSubmitFailed">Could not update your HowLongToBeat profile for {0}.</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatErrorSubmitUnauthorized">HowLongToBeat rejected the update (session expired or not authorized). Open the plugin settings and log in again.</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatErrorSubmitHttpStatus">HowLongToBeat returned HTTP error {0}.</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatErrorSubmitNoResponse">No response was received from HowLongToBeat. Check your connection and try again.</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatErrorSubmitSessionCookies">HowLongToBeat session cookies are missing. Open the plugin settings and log in again.</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatRefreshSessionCookies">Refreshing HowLongToBeat session…</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatErrorSubmitFailed">{0} の HowLongToBeat プロフィールを更新できませんでした。</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatErrorSubmitUnauthorized">HowLongToBeat が更新を拒否しました（セッションの期限切れ、または認証されていません）。プラグイン設定を開いて、再度ログインしてください。</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatErrorSubmitHttpStatus">HowLongToBeat が HTTP エラー {0} を返しました。</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatErrorSubmitNoResponse">HowLongToBeat から応答がありませんでした。接続を確認して、もう一度お試しください。</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatErrorSubmitSessionCookies">HowLongToBeat のセッションクッキーがありません。プラグイン設定を開いて、再度ログインしてください。</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatRefreshSessionCookies">HowLongToBeat セッションを更新中…</sys:String>
 
 
     <!-- QuickSearch -->
 
-    <sys:String x:Key="LOCHltbQuickSearchDescription">Search games on HowLongToBeat data</sys:String>
-    <sys:String x:Key="LOCHltbQuickSearchByTTB">Find by Time To Beat</sys:String>
+    <sys:String x:Key="LOCHltbQuickSearchDescription">HowLongToBeat データでゲームを検索</sys:String>
+    <sys:String x:Key="LOCHltbQuickSearchByTTB">クリア時間で検索</sys:String>
 
-    <sys:String x:Key="LOCHltbQuickSearchInfo" xml:space="preserve">The plugin uses the functionality of the QuickSearch plugin.
-To use it, you must validate the &quot;howlongtobeat&quot; or &quot;hltb&quot; command.    
-        
-Here is the list of commands:</sys:String>
+    <sys:String x:Key="LOCHltbQuickSearchInfo" xml:space="preserve">このプラグインは QuickSearch プラグインの機能を使用します。
+使用するには、&quot;howlongtobeat&quot; または &quot;hltb&quot; コマンドを有効にする必要があります。
 
-    <sys:String x:Key="LOCHltbQuickSearchCmd1" xml:space="preserve">This command searches for a list of games with a specific time to beat.</sys:String>
+コマンド一覧：</sys:String>
+
+    <sys:String x:Key="LOCHltbQuickSearchCmd1" xml:space="preserve">指定したクリア時間のゲーム一覧を検索します。</sys:String>
 
 
     <!-- StartPage -->
 
-    <sys:String x:Key="LOCHtlbChartStats">Chart stats</sys:String>
-    <sys:String x:Key="LOCHtlbChartStatsChartTitle">Show title</sys:String>
-    <sys:String x:Key="LOCHtlbChartStatsChartLabels">Show labels on horizontal axis</sys:String>
-    <sys:String x:Key="LOCHtlbChartStatsChartLabelsOrdinates">Show labels on vertical axis</sys:String>
-    <sys:String x:Key="LOCHtlbChartStatsChartType">Chart type</sys:String>
-    <sys:String x:Key="LOCHtlbChartStatsChartDataNumber">Data number</sys:String>
+    <sys:String x:Key="LOCHtlbChartStats">チャート統計</sys:String>
+    <sys:String x:Key="LOCHtlbChartStatsChartTitle">タイトルを表示</sys:String>
+    <sys:String x:Key="LOCHtlbChartStatsChartLabels">横軸にラベルを表示</sys:String>
+    <sys:String x:Key="LOCHtlbChartStatsChartLabelsOrdinates">縦軸にラベルを表示</sys:String>
+    <sys:String x:Key="LOCHtlbChartStatsChartType">チャートタイプ</sys:String>
+    <sys:String x:Key="LOCHtlbChartStatsChartDataNumber">データ数</sys:String>
 
 
     <!-- HowLongToBeatSearch -->
 
-    <sys:String x:Key="LOCHowLongToBeatSearchDescription">Search on HowLongToBeat data</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatSearchHint" xml:space="preserve">Parameters:
-    -time		Time to beat (ex:-time=5h / -time=&lt;50min / -time=&gt;50s / -time=10min&lt;&gt;5h)
-    -np		You didn't play the game
-    -fav		The game must be a favorite
-    -stores={n}	Filter by store name (ex:-stores=steam / -stores=steam,epic)
-    -status={n}	Filter by status name (ex:-status=played / -status=played,playing)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatSearchDescription">HowLongToBeat データで検索</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatSearchHint" xml:space="preserve">パラメーター：
+    -time		クリア時間（例：-time=5h / -time=&lt;50min / -time=&gt;50s / -time=10min&lt;&gt;5h）
+    -np		そのゲームをプレイしていない
+    -fav		そのゲームがお気に入りである必要があります
+    -stores={n}	ストア名で絞り込み（例：-stores=steam / -stores=steam,epic）
+    -status={n}	ステータス名で絞り込み（例：-status=played / -status=played,playing）</sys:String>
 
     <!-- Aliases -->
 
-    <sys:String x:Key="LOCHowLongToBeatAliases">Aliases</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesDescription" xml:space="preserve">Map multiple game titles to a single HowLongToBeat search title.
+    <sys:String x:Key="LOCHowLongToBeatAliases">エイリアス</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesDescription" xml:space="preserve">複数のゲームタイトルを、1 つの HowLongToBeat 検索タイトルに対応付けます。
 
-Example:
-  Source: Pokemon Red Version
-  Target: Pokemon Red and Blue</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesSource">Source title</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesTarget">Target (HLTB title)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesReset">Reset</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesResetConfirm">Replace your current aliases with the default Pokémon dual-release aliases?</sys:String>
+例：
+  変換元：Pokemon Red Version
+  変換先：Pokemon Red and Blue</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesSource">変換元タイトル</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesTarget">変換先（HLTB タイトル）</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesReset">リセット</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesResetConfirm">現在のエイリアスを、既定の Pokémon 二重リリース用エイリアスに置き換えますか？</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAliasesImport">インポート</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAliasesExport">エクスポート</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesOpenFile">Open aliases.json</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesFilePathUnavailable">Plugin user data path is not available.</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportNotFound">No alias file found: {0}</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportFailed">Failed to import alias file: {0} (see logs).</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportConfirm" xml:space="preserve">Import aliases from:\n{0}\n\nThis will replace your current aliases. Continue?</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportOk">Imported aliases from: {0}</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesExportFailed">Failed to export alias file: {0} (see logs).</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesExportOk">Exported aliases to: {0}</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesCellToolTip">Click a cell (or press F2) to edit. Press Enter to commit.</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesTip">Tip: double-click a cell to edit. Aliases are saved when you click Save.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesOpenFile">aliases.json を開く</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesFilePathUnavailable">プラグインのユーザーデータパスを利用できません。</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportNotFound">エイリアスファイルが見つかりません：{0}</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportFailed">エイリアスファイルのインポートに失敗しました：{0}（ログを確認してください）。</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportConfirm" xml:space="preserve">次の場所からエイリアスをインポートします：\n{0}\n\n現在のエイリアスが置き換えられます。続行しますか？</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportOk">次の場所からエイリアスをインポートしました：{0}</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesExportFailed">エイリアスファイルのエクスポートに失敗しました：{0}（ログを確認してください）。</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesExportOk">エイリアスのエクスポート先：{0}</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesCellToolTip">セルをクリック（または F2 キーを押下）して編集します。Enter キーで確定します。</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesTip">ヒント：セルをダブルクリックすると編集できます。エイリアスは「保存」をクリックしたときに保存されます。</sys:String>
 
     <!-- Platform and storefront mapping -->
 
-    <sys:String x:Key="LOCHowLongToBeatPlatformsMappingDescription" xml:space="preserve">Each row links a Playnite platform (from your library database) to the platform name sent to HowLongToBeat when you submit playtime.
-If the HLTB value is not set (----), the plugin uses PC as the default on submit.</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatStorefrontMappingDescription" xml:space="preserve">Each row links a Playnite library source (Steam, Epic, GOG, etc.) to the storefront sent to HowLongToBeat when you submit playtime.
-The left column is the Playnite source; the right column is the value stored in your plugin settings (StorefrontElements).</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatMappingColumnPlayniteOrigin">Playnite (source)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatMappingColumnHltbTarget">HowLongToBeat (submission)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatMappingPlatformDefaultHint">Not set — PC is used when submitting data</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatMappingStorefrontNotSetHint">Not set — storefront will be empty on submit</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatMappingPlayniteSourceIdToolTip">Playnite library source Id</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatMappingPlaynitePlatformIdToolTip">Playnite platform Id</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatPlatformsMappingDescription" xml:space="preserve">各行では、Playnite プラットフォーム（ライブラリデータベース内）を、プレイ時間の送信時に HowLongToBeat へ送信されるプラットフォーム名に関連付けます。
+HLTB の値が設定されていない場合（——）、送信時にプラグインは既定値として PC を使用します。</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatStorefrontMappingDescription" xml:space="preserve">各行では、Playnite ライブラリソース（Steam、Epic、GOG など）を、プレイ時間の送信時に HowLongToBeat へ送信されるストアフロントに関連付けます。
+左の列は Playnite ソース、右の列はプラグイン設定（StorefrontElements）に保存される値です。</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatMappingColumnPlayniteOrigin">Playnite（ソース）</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatMappingColumnHltbTarget">HowLongToBeat（送信）</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatMappingPlatformDefaultHint">未設定 — データ送信時に PC が使用されます</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatMappingStorefrontNotSetHint">未設定 — 送信時にストアフロントは空になります</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatMappingPlayniteSourceIdToolTip">Playnite ライブラリソース Id</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatMappingPlaynitePlatformIdToolTip">Playnite プラットフォーム Id</sys:String>
 
 </ResourceDictionary>
