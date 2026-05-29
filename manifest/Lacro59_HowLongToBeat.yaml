@@ -407,3 +407,22 @@ Packages:
       - 'Improved: HowLongToBeat selection window layout and responsiveness'
       - 'Fixed: Completion status sync and UI/search button notification issues'
       - 'Updated: Localizations'
+  - Version: 3.11
+    RequiredApiVersion: 6.16.0
+    ReleaseDate: 2026-05-29
+    PackageUrl: https://github.com/Lacro59/playnite-howlongtobeat-plugin/releases/download/v3.11/playnite-howlongtobeat-plugin_3_11.pext
+    Changelog:
+      - 'Added: View your HLTB profile lists in the user data view'
+      - 'Added: More options to customize the game selection window'
+      - 'Improved: Export your HLTB user data to CSV'
+      - 'Improved: User view filters are now saved between sessions and can be reset'
+      - 'Improved: Clearer settings for platform and storefront mappings'
+      - 'Improved: More reliable connection to HowLongToBeat and fewer temporary blocks'
+      - 'Fixed: Game search works again after HowLongToBeat website changes'
+      - 'Fixed: Profile data sync when updating your HLTB account'
+      - 'Fixed: Completion status now syncs correctly with your playtime'
+      - 'Fixed: Manual entries keep their URL and cover image'
+      - 'Fixed: Plugin controls, time labels, and progress bar marker display'
+      - 'Fixed: Search button appears even when a game has no HLTB data yet'
+      - 'Fixed: Faster startup'
+      - 'Updated: Localizations'
