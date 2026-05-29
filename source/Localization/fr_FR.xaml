@@ -119,27 +119,10 @@ Si aucun n'a ce statut, il prend le plus récent.</sys:String>
     <sys:String x:Key="LocHowLongToBeatPlayniteData">Données de Playnite</sys:String>
     <sys:String x:Key="LOCHowLongToBeatCompleted">Terminé</sys:String>
 
-    <sys:String x:Key="LOCHltbFilterHltbListStatus">Liste HLTB</sys:String>
-    <sys:String x:Key="LOCHltbFilterHltbListStatusTooltip" xml:space="preserve">Filtrer par une liste de votre profil HowLongToBeat (Backlog, En cours, Replays, Terminés, etc.).
-Ce n'est pas la même chose que l'option par jeu « Mark as Replay — I have played this before. »</sys:String>
-    <sys:String x:Key="LOCHltbFilterHltbListStatusAll">Toutes les listes</sys:String>
-    <sys:String x:Key="LOCHltbUserListBacklog">Backlog</sys:String>
-    <sys:String x:Key="LOCHltbUserListPlaying">En cours</sys:String>
-    <sys:String x:Key="LOCHltbUserListReplays">Liste Replays</sys:String>
-    <sys:String x:Key="LOCHltbUserListReplaysTooltip" xml:space="preserve">Jeux placés dans la liste Replays de votre profil HowLongToBeat (onglet du profil).
-Un jeu peut y figurer sans être marqué « Mark as Replay — I have played this before. »</sys:String>
-    <sys:String x:Key="LOCHltbUserListCompleted">Terminés</sys:String>
-    <sys:String x:Key="LOCHltbUserListRetired">Abandonnés</sys:String>
-    <sys:String x:Key="LOCHltbUserListCustom">Personnalisé</sys:String>
-
-    <sys:String x:Key="LOCHltbOnlyReplays">Marqué « rejoué »</sys:String>
-    <sys:String x:Key="LOCHltbOnlyReplaysTooltip" xml:space="preserve">Uniquement les jeux avec l'option HowLongToBeat « Mark as Replay — I have played this before. »
-Ceci est distinct de la liste Replays du profil.</sys:String>
+    <sys:String x:Key="LOCHltbOnlyReplays">Seulement les rejoués</sys:String>
     <sys:String x:Key="LOCHltbOnlyNotPlayed">Non joué uniquement</sys:String>
 
     <sys:String x:Key="LOCHltbRemainingTime">Temps restant</sys:String>
-    <sys:String x:Key="LOCHltbColumnHltbLists">Listes HLTB</sys:String>
-    <sys:String x:Key="LOCHltbColumnProgress">Progression</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatPluginGetUserView">Récupération des données utilisateur</sys:String>
 
@@ -154,29 +137,13 @@ Ceci est distinct de la liste Replays du profil.</sys:String>
     <sys:String x:Key="LOCHltbAvgGameByMonth">Jeu moyen par mois</sys:String>
     <sys:String x:Key="LOCHltbCountGameBeatenBeforeTime">Nombre de jeux battus avant le temps</sys:String>
     <sys:String x:Key="LOCHltbCountGameBeatenAfterTime">Nombre de jeux battus après le temps</sys:String>
-    <sys:String x:Key="LOCHltbCountGameBeatenReplays">Nombre de jeux battus (marqués « rejoué »)</sys:String>
+    <sys:String x:Key="LOCHltbCountGameBeatenReplays">Nombre de jeux battus (rejoués)</sys:String>
     <sys:String x:Key="LOCHltbCountGameRetired">Nombre de jeux retirés</sys:String>
-
-    <sys:String x:Key="LOCHltbStatsPlayTimeTitle">Temps de jeu</sys:String>
-    <sys:String x:Key="LOCHltbStatsCompletionTitle">Analyse des complétions</sys:String>
-    <sys:String x:Key="LOCHltbStatsHltbListsTitle">Listes HLTB</sys:String>
-    <sys:String x:Key="LOCHltbStatsHltbListsChartTitle">Jeux par liste HLTB</sys:String>
-    <sys:String x:Key="LOCHltbStatsMarkedAsReplayShort">Marqué rejoué</sys:String>
 
     <sys:String x:Key="LOCHltbUsedFilteredGames">Jeux actuellement filtrés utilisés</sys:String>
     <sys:String x:Key="LOCHltbOnlyNotPlayedGames">Uniquement les jeux non joués</sys:String>
 
     <!-- MainView -->
-
-    <sys:String x:Key="LOCHowLongToBeatId">ID HLTB</sys:String>
-    <sys:String x:Key="LOCCommonLastRefresh">Dernière actualisation des données</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatCsvUserTimeToBeat">Temps à battre (profil utilisateur)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatCsvUserMainStory">Histoire principale (déclaré)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatCsvUserMainExtra">Principal + extra (déclaré)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatCsvUserCompletionist">Complétionniste (déclaré)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatCsvUserSolo">Solo (déclaré)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatCsvUserCoOp">Co-op (déclaré)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatCsvUserVs">Vs (déclaré)</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeat">HowLongToBeat</sys:String>
     <sys:String x:Key="LOCHowLongToBeatTitle">How long to beat</sys:String>
