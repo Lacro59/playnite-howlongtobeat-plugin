@@ -1,4 +1,4 @@
-﻿<controls:PluginUserControlExtend
+<controls:PluginUserControlExtend
     xmlns:controls="clr-namespace:CommonPluginsShared.Controls"
     x:Class="HowLongToBeat.Controls.PluginProgressBar"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -104,7 +104,7 @@
                                                                     <Grid>
                                                                         <Rectangle x:Name="HoverRectangle" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                                                                                    Width="Auto" Height="Auto" RadiusX="3" RadiusY="4"
-                                                                                   Stroke="{x:Null}" Margin="4.5,1,4.5,1"
+                                                                                   Stroke="{x:Null}" Margin="0,1,0,1"
                                                                                    Fill="{TemplateBinding Background}" />
                                                                     </Grid>
                                                                     <ControlTemplate.Triggers>

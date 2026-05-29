@@ -11,6 +11,7 @@ using Playnite.SDK.Models;
 using System;
 using System.Collections.Generic;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 using System.Windows.Threading;
@@ -37,13 +38,9 @@ namespace HowLongToBeat.Controls
 
         private readonly DispatcherTimer liveRefreshTimer;
 
-        private Thumb sliderPlaytimeThumb;
-        private TranslateTransform sliderPlaytimeThumbTransform;
-
         private double lastLayoutWidth1 = double.NaN;
         private double lastLayoutWidth2 = double.NaN;
         private double lastLayoutWidth3 = double.NaN;
-
 
         public PluginProgressBar()
         {
@@ -59,12 +56,10 @@ namespace HowLongToBeat.Controls
 
             DataContext = ControlDataContext;
 
-            SliderPlaytime.Loaded += (_, __) =>
-            {
-                // Ensure template parts exist before we try to adjust the thumb
-                Dispatcher.BeginInvoke((Action)UpdatePlaytimeThumbTransform, DispatcherPriority.Loaded);
-            };
-            SliderPlaytime.ValueChanged += (_, __) => UpdatePlaytimeThumbTransform();
+            RegisterSliderThumbTransformEvents(SliderPlaytime);
+            RegisterSliderThumbTransformEvents(PartSliderFirst);
+            RegisterSliderThumbTransformEvents(PartSliderSecond);
+            RegisterSliderThumbTransformEvents(PartSliderThird);
 
             liveRefreshTimer = new DispatcherTimer
             {
@@ -111,56 +106,75 @@ namespace HowLongToBeat.Controls
 		}
 
 
-        private void UpdatePlaytimeThumbTransform()
+        private void RegisterSliderThumbTransformEvents(Slider slider)
+        {
+            if (slider == null)
+            {
+                return;
+            }
+
+            slider.Loaded += (_, __) =>
+            {
+                Dispatcher.BeginInvoke((Action)UpdateAllSliderThumbTransforms, DispatcherPriority.Loaded);
+            };
+            slider.ValueChanged += (_, __) => UpdateAllSliderThumbTransforms();
+        }
+
+
+        private void UpdateAllSliderThumbTransforms()
+        {
+            ApplySliderThumbEdgeTransform(SliderPlaytime);
+            ApplySliderThumbEdgeTransform(PartSliderFirst);
+            ApplySliderThumbEdgeTransform(PartSliderSecond);
+            ApplySliderThumbEdgeTransform(PartSliderThird);
+        }
+
+
+        private static void ApplySliderThumbEdgeTransform(Slider slider)
         {
             try
             {
-                if (SliderPlaytime == null)
+                if (slider == null || slider.Visibility != Visibility.Visible)
                 {
                     return;
                 }
 
-                SliderPlaytime.ApplyTemplate();
+                slider.ApplyTemplate();
 
-                if (sliderPlaytimeThumb == null)
-                {
-                    sliderPlaytimeThumb = SliderPlaytime.Template?.FindName("SliderPlaytimeThumb", SliderPlaytime) as Thumb;
-                }
-
-                if (sliderPlaytimeThumb == null)
+                var thumb = slider.Template?.FindName("SliderPlaytimeThumb", slider) as Thumb;
+                if (thumb == null)
                 {
                     return;
                 }
 
-                if (sliderPlaytimeThumbTransform == null)
+                var transform = thumb.RenderTransform as TranslateTransform;
+                if (transform == null)
                 {
-                    sliderPlaytimeThumbTransform = new TranslateTransform();
-                    sliderPlaytimeThumb.RenderTransform = sliderPlaytimeThumbTransform;
+                    transform = new TranslateTransform();
+                    thumb.RenderTransform = transform;
                 }
 
-                double thumbWidth = sliderPlaytimeThumb.ActualWidth;
+                double thumbWidth = thumb.ActualWidth;
                 if (thumbWidth <= 0)
                 {
-                    thumbWidth = sliderPlaytimeThumb.Width;
+                    thumbWidth = thumb.Width;
                 }
 
-                double halfThumb = (thumbWidth > 0) ? thumbWidth / 2 : 10;
-                const double endInsetPx = 1.0;
+                double halfThumb = (thumbWidth > 0) ? thumbWidth / 2.0 : 10.0;
 
                 const double epsilon = 0.000001;
-                if (SliderPlaytime.Value <= SliderPlaytime.Minimum + epsilon)
+                if (slider.Value <= slider.Minimum + epsilon)
                 {
-                    // Shift right so the left edge aligns with the bar start
-                    sliderPlaytimeThumbTransform.X = halfThumb + endInsetPx;
+                    transform.X = 0;
                 }
-                else if (SliderPlaytime.Value >= SliderPlaytime.Maximum - epsilon)
+                else if (slider.Maximum > slider.Minimum
+                    && slider.Value >= slider.Maximum - epsilon)
                 {
-                    // Shift left so the right edge aligns with the bar end
-                    sliderPlaytimeThumbTransform.X = -halfThumb - endInsetPx;
+                    transform.X = -halfThumb;
                 }
                 else
                 {
-                    sliderPlaytimeThumbTransform.X = 0;
+                    transform.X = 0;
                 }
             }
             catch
@@ -493,7 +507,11 @@ namespace HowLongToBeat.Controls
 
             UpdateLiveRefreshTimerState();
 
-            Dispatcher.BeginInvoke((Action)RefreshProgressBarLayout, DispatcherPriority.Loaded);
+            Dispatcher.BeginInvoke((Action)(() =>
+            {
+                RefreshProgressBarLayout();
+                UpdateAllSliderThumbTransforms();
+            }), DispatcherPriority.Loaded);
 
 #if DEBUG
             timer.Stop(string.Format("MaxValue={0}, PlaytimeValue={1}", ControlDataContext.MaxValue, ControlDataContext.PlaytimeValue));
