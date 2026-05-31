@@ -13,18 +13,18 @@
     <sys:String x:Key="LOCHowLongToBeatAutoTag">Автоматическая обработка тегов</sys:String>
     <sys:String x:Key="LOCHowLongToBeatShowHltbImage">Использовать обложку игры HowLongToBeat в окне</sys:String>
     <sys:String x:Key="LOCHowLongToBeatEnableVerboseLogging">Enable verbose HLTB debug logging (extra logs in extensions.log)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExport">Export HowLongToBeat data</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExportCsvComma">Export CSV (comma)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExportCsvSemicolon">Export CSV (semicolon)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExportJson">Export JSON</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExportFolderTooltip">Destination folder for export</sys:String>
-    <sys:String x:Key="LOCBrowseLabel">Browse...</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExport">Экспорт данных HowLongToBeat</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportCsvComma">Экспорт CSV (запятая)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportCsvSemicolon">Экспорт CSV (точка с запятой)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportJson">Экспорт JSON</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportFolderTooltip">Целевая папка для экспорта</sys:String>
+    <sys:String x:Key="LOCBrowseLabel">Обзор...</sys:String>
 
-    <sys:String x:Key="LOCExportSelectFolderFirst">Please select an export folder first.</sys:String>
-    <sys:String x:Key="LOCExportFolderNotExist">Selected folder does not exist.</sys:String>
+    <sys:String x:Key="LOCExportSelectFolderFirst">Сначала выберите папку для экспорта.</sys:String>
+    <sys:String x:Key="LOCExportFolderNotExist">Выбранная папка не существует.</sys:String>
     <sys:String x:Key="LOCExportedCsvMessage">{0} games exported to CSV: {1} (delimiter '{2}')</sys:String>
-    <sys:String x:Key="LOCExportedJsonMessage">{0} games exported to JSON: {1}</sys:String>
-    <sys:String x:Key="LOCExportFailedCount">{0} games failed to export (see logs).</sys:String>
+    <sys:String x:Key="LOCExportedJsonMessage">{0} игр экспортировано в JSON: {1}</sys:String>
+    <sys:String x:Key="LOCExportFailedCount">{0} игр не удалось экспортировать (смотрите логи).</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatColorSelection">Выбор цвета:</sys:String>
 
@@ -75,23 +75,23 @@
 
     <sys:String x:Key="LOCSelection">Выбор HowLongToBeat</sys:String>
     <sys:String x:Key="LOCHltbUsedVndb">Использован Vndb</sys:String>
-    <sys:String x:Key="LOCHltbVndbSpeedLabel">VNDB speed</sys:String>
-    <sys:String x:Key="LOCHltbVndbLengthColumnSpeed">Speed</sys:String>
-    <sys:String x:Key="LOCHltbVndbLengthColumnMedian">Median</sys:String>
-    <sys:String x:Key="LOCHltbVndbLengthColumnAverage">Average</sys:String>
+    <sys:String x:Key="LOCHltbVndbSpeedLabel">Скорость VNDB</sys:String>
+    <sys:String x:Key="LOCHltbVndbLengthColumnSpeed">Скорость</sys:String>
+    <sys:String x:Key="LOCHltbVndbLengthColumnMedian">Медиана</sys:String>
+    <sys:String x:Key="LOCHltbVndbLengthColumnAverage">Cреднее</sys:String>
     <sys:String x:Key="LOCHltbVndbLengthColumnStddev">Stddev</sys:String>
-    <sys:String x:Key="LOCHltbVndbLengthColumnVotes"># Votes</sys:String>
-    <sys:String x:Key="LOCHltbVndbSpeedSlow">Slow</sys:String>
-    <sys:String x:Key="LOCHltbVndbSpeedNormal">Normal</sys:String>
-    <sys:String x:Key="LOCHltbVndbSpeedFast">Fast</sys:String>
-    <sys:String x:Key="LOCHltbVndbSpeedTotal">Total</sys:String>
-    <sys:String x:Key="LOCHltbTabSearch">Search</sys:String>
-    <sys:String x:Key="LOCHltbTabManual">Enter manually</sys:String>
-    <sys:String x:Key="LOCHltbOpenOnWebsite">Search on HowLongToBeat</sys:String>
-    <sys:String x:Key="LOCHltbManualEntryHours">h</sys:String>
-    <sys:String x:Key="LOCHltbManualEntryMinutes">min</sys:String>
+    <sys:String x:Key="LOCHltbVndbLengthColumnVotes"># Голосов</sys:String>
+    <sys:String x:Key="LOCHltbVndbSpeedSlow">Медленно</sys:String>
+    <sys:String x:Key="LOCHltbVndbSpeedNormal">Нормально</sys:String>
+    <sys:String x:Key="LOCHltbVndbSpeedFast">Быстро</sys:String>
+    <sys:String x:Key="LOCHltbVndbSpeedTotal">Всего</sys:String>
+    <sys:String x:Key="LOCHltbTabSearch">Поиск</sys:String>
+    <sys:String x:Key="LOCHltbTabManual">Ввести вручную</sys:String>
+    <sys:String x:Key="LOCHltbOpenOnWebsite">Поиск по HowLongToBeat</sys:String>
+    <sys:String x:Key="LOCHltbManualEntryHours">ч</sys:String>
+    <sys:String x:Key="LOCHltbManualEntryMinutes">мин</sys:String>
     <sys:String x:Key="LOCHltbManualEntryHltbId">HLTB ID</sys:String>
-    <sys:String x:Key="LOCHltbManualEntryConfirm">Use manual entry</sys:String>
+    <sys:String x:Key="LOCHltbManualEntryConfirm">Использовать ручную запись</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatMainStory">Основная история</sys:String>
     <sys:String x:Key="LOCHowLongToBeatMainExtra">Основная + экстра</sys:String>
@@ -103,8 +103,8 @@
 
     <sys:String x:Key="LOCHowLongToBeatPlaying">Играю</sys:String>
 
-    <sys:String x:Key="LOCRefresh">Refresh</sys:String>
-    <sys:String x:Key="LOCDelete">Delete</sys:String>
+    <sys:String x:Key="LOCRefresh">Обновить</sys:String>
+    <sys:String x:Key="LOCDelete">Удалить</sys:String>
 
     <!-- HowLongToBeat -->
 
@@ -209,19 +209,19 @@
 
     <!-- Aliases -->
 
-    <sys:String x:Key="LOCHowLongToBeatAliases">Aliases</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliases">Алиасы</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAliasesDescription" xml:space="preserve">Map multiple game titles to a single HowLongToBeat search title.
 
 Example:
   Source: Pokemon Red Version
   Target: Pokemon Red and Blue</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesSource">Source title</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesTarget">Target (HLTB title)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesReset">Reset</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesSource">Название источника</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesTarget">Цель (HLTB название)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesReset">Сброс</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAliasesResetConfirm">Replace your current aliases with the default Pokémon dual-release aliases?</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImport">Import</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesExport">Export</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesOpenFile">Open aliases.json</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImport">Импорт</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesExport">Экспорт</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesOpenFile">Открыть aliases.json</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAliasesFilePathUnavailable">Plugin user data path is not available.</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAliasesImportNotFound">No alias file found: {0}</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAliasesImportFailed">Failed to import alias file: {0} (see logs).</sys:String>
@@ -238,11 +238,11 @@ Example:
 If the HLTB value is not set (----), the plugin uses PC as the default on submit.</sys:String>
     <sys:String x:Key="LOCHowLongToBeatStorefrontMappingDescription" xml:space="preserve">Each row links a Playnite library source (Steam, Epic, GOG, etc.) to the storefront sent to HowLongToBeat when you submit playtime.
 The left column is the Playnite source; the right column is the value stored in your plugin settings (StorefrontElements).</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatMappingColumnPlayniteOrigin">Playnite (source)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatMappingColumnPlayniteOrigin">Playnite (источник)</sys:String>
     <sys:String x:Key="LOCHowLongToBeatMappingColumnHltbTarget">HowLongToBeat (submission)</sys:String>
     <sys:String x:Key="LOCHowLongToBeatMappingPlatformDefaultHint">Not set — PC is used when submitting data</sys:String>
     <sys:String x:Key="LOCHowLongToBeatMappingStorefrontNotSetHint">Not set — storefront will be empty on submit</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatMappingPlayniteSourceIdToolTip">Playnite library source Id</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatMappingPlaynitePlatformIdToolTip">Playnite platform Id</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatMappingPlayniteSourceIdToolTip">Идентификатор исходной библиотеки Playnite</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatMappingPlaynitePlatformIdToolTip">Идентификатор платформы Playnite</sys:String>
 
 </ResourceDictionary>

@@ -54,6 +54,7 @@ namespace HowLongToBeat.Views
                 if (PluginDatabase?.HowLongToBeatApi != null)
                 {
                     PluginDatabase.HowLongToBeatApi.PropertyChanged += OnPropertyChanged;
+                    PluginDatabase.HowLongToBeatApi.LoginCompleted += HowLongToBeatApi_LoginCompleted;
                 }
             }
             catch { }
@@ -657,6 +658,19 @@ namespace HowLongToBeat.Views
             }
         }
 
+        private void HowLongToBeatApi_LoginCompleted(object sender, EventArgs e)
+        {
+            try
+            {
+                Logger.Info("HLTB Auth UI: login dialog closed, refreshing auth state");
+                TaskHelpers.FireAndForget(CheckAuthenticateAsync(), "SettingsView-CheckAuthenticateAfterLogin", Logger);
+            }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, false, true, PluginDatabase.PluginName);
+            }
+        }
+
         private void PART_BtAuthenticate_Click(object sender, RoutedEventArgs e)
         {
             PART_LbUserLogin.Visibility = Visibility.Collapsed;
@@ -708,6 +722,7 @@ namespace HowLongToBeat.Views
                 if (PluginDatabase?.HowLongToBeatApi != null)
                 {
                     PluginDatabase.HowLongToBeatApi.PropertyChanged -= OnPropertyChanged;
+                    PluginDatabase.HowLongToBeatApi.LoginCompleted -= HowLongToBeatApi_LoginCompleted;
                 }
             }
             catch { }

@@ -8,6 +8,7 @@ using HowLongToBeat.Views;
 using HowLongToBeat;
 using Playnite.SDK;
 using Playnite.SDK.Data;
+using Playnite.SDK.Events;
 using Playnite.SDK.Models;
 using System;
 using System.Collections.Generic;
@@ -126,6 +127,27 @@ namespace HowLongToBeat.Services
         }
 
         /// <summary>
+        /// HowLongToBeat session cookie names injected into a WebView before navigation.
+        /// Tracking and consent cookies are excluded to avoid slow SetCookies calls.
+        /// </summary>
+        private static readonly string[] HltbSessionCookieNames = { "hltb_alive", "hltb_online", "hltb_view_list" };
+
+        /// <summary>
+        /// Returns session cookies suitable for WebView injection before navigation.
+        /// </summary>
+        private static List<HttpCookie> FilterSessionCookiesForInjection(List<HttpCookie> cookies)
+        {
+            if (cookies == null || cookies.Count == 0)
+            {
+                return new List<HttpCookie>();
+            }
+
+            return cookies
+                .Where(c => c != null && HltbSessionCookieNames.Any(n => string.Equals(c.Name, n, StringComparison.OrdinalIgnoreCase)))
+                .ToList();
+        }
+
+        /// <summary>
         /// Returns whether the cookie list contains the HowLongToBeat session cookie required for profile updates.
         /// </summary>
         /// <param name="cookies">Cookie list to inspect.</param>
@@ -183,9 +205,11 @@ namespace HowLongToBeat.Services
         private List<HttpCookie> RefreshSubmitSessionCookies(int submissionId)
         {
             List<string> urls = GetSessionCookieRefreshUrls(submissionId);
-            Common.LogDebug(!IsVerboseLoggingEnabled, $"RefreshSubmitSessionCookies: urls=[{string.Join(", ", urls)}]");
+            List<HttpCookie> sessionCookies = FilterSessionCookiesForInjection(CookiesTools.GetStoredCookies());
+            Logger.Info($"HLTB Auth: RefreshSubmitSessionCookies injecting {sessionCookies.Count} session cookie(s)");
+            Common.LogDebug(true, $"RefreshSubmitSessionCookies: urls=[{string.Join(", ", urls)}] injectCount={sessionCookies.Count}");
 
-            List<HttpCookie> cookies = CookiesTools.GetNewWebCookies(urls, false, null, SubmitSessionCookieRefreshWaitMs);
+            List<HttpCookie> cookies = CookiesTools.GetNewWebCookies(urls, false, null, SubmitSessionCookieRefreshWaitMs, sessionCookies);
             if (cookies != null && cookies.Count > 0)
             {
                 CookiesTools.SetStoredCookies(cookies);
@@ -209,7 +233,7 @@ namespace HowLongToBeat.Services
             List<HttpCookie> stored = CookiesTools.GetStoredCookies();
             if (HasHltbSessionCookies(stored))
             {
-                Common.LogDebug(!IsVerboseLoggingEnabled, "GetCookiesForSubmit: using stored session cookies");
+                Common.LogDebug(true, "GetCookiesForSubmit: using stored session cookies");
                 return stored;
             }
 
@@ -504,6 +528,11 @@ namespace HowLongToBeat.Services
         /// Indicates if the user is currently connected (logged in).
         /// </summary>
         public bool? IsConnected { get => _isConnected; set => SetValue(ref _isConnected, value); }
+
+        /// <summary>
+        /// Raised when the login WebView dialog closes (success or cancel).
+        /// </summary>
+        public event EventHandler LoginCompleted;
 
         /// <summary>
         /// The username of the currently logged-in user.
@@ -827,7 +856,7 @@ namespace HowLongToBeat.Services
                                         p90 = ordered[Math.Max(0, (int)Math.Floor(ordered.Length * 0.9) - 1)];
                                     }
 
-                                    Common.LogDebug(!IsVerboseLoggingEnabled, $"HLTB Summary: searchTarget={searchTarget} searchInFlight={searchInFlight} gameTarget={gameTarget} gameInFlight={gameInFlight} avgSearchMs={Math.Round(avg, 1)} medianSearchMs={Math.Round(median, 1)} p90SearchMs={Math.Round(p90, 1)} persistentCacheHits={PersistentCacheHits} inMemoryCacheHits={InMemoryCacheHits} pageFetches={PageFetches} forced={searchForced}");
+                                    Common.LogDebug(true, $"HLTB Summary: searchTarget={searchTarget} searchInFlight={searchInFlight} gameTarget={gameTarget} gameInFlight={gameInFlight} avgSearchMs={Math.Round(avg, 1)} medianSearchMs={Math.Round(median, 1)} p90SearchMs={Math.Round(p90, 1)} persistentCacheHits={PersistentCacheHits} inMemoryCacheHits={InMemoryCacheHits} pageFetches={PageFetches} forced={searchForced}");
                                 }
                                 catch (Exception ex)
                                 {
@@ -1290,7 +1319,7 @@ namespace HowLongToBeat.Services
             if (!forceRediscover && !SearchUrl.IsNullOrEmpty() && !SearchUrl.Contains("error"))
             {
                 try { Logger.Info($"HLTB search: using cached discovered endpoint '{SearchUrl}'"); } catch { }
-                Common.LogDebug(!IsVerboseLoggingEnabled, $"GetSearchUrl: cache hit endpoint='{SearchUrl}'");
+                Common.LogDebug(true, $"GetSearchUrl: cache hit endpoint='{SearchUrl}'");
                 return SearchUrl;
             }
 
@@ -1299,7 +1328,7 @@ namespace HowLongToBeat.Services
             {
                 if (!forceRediscover && !SearchUrl.IsNullOrEmpty() && !SearchUrl.Contains("error"))
                 {
-                    Common.LogDebug(!IsVerboseLoggingEnabled, $"GetSearchUrl: cache hit after discovery wait endpoint='{SearchUrl}'");
+                    Common.LogDebug(true, $"GetSearchUrl: cache hit after discovery wait endpoint='{SearchUrl}'");
                     return SearchUrl;
                 }
 
@@ -1432,11 +1461,11 @@ namespace HowLongToBeat.Services
                                 try { Logger.Info($"HLTB search: discovered endpoint '{SearchUrl}' from script '{scriptUrl}'"); } catch { }
                             }
 
-                            Common.LogDebug(!IsVerboseLoggingEnabled, $"GetSearchUrl: discovered suffix='{suffix}' endpoint='{SearchUrl}' newlyCached={newlyCached}");
+                            Common.LogDebug(true, $"GetSearchUrl: discovered suffix='{suffix}' endpoint='{SearchUrl}' newlyCached={newlyCached}");
                             return SearchUrl;
                         }
 
-                        Common.LogDebug(!IsVerboseLoggingEnabled, $"GetSearchUrl: ignoring legacy endpoint suffix 'find' in '{scriptUrl}'");
+                        Common.LogDebug(true, $"GetSearchUrl: ignoring legacy endpoint suffix 'find' in '{scriptUrl}'");
                     }
                 }
             }
@@ -1463,7 +1492,7 @@ namespace HowLongToBeat.Services
             Dictionary<string, string> headerParts = await GetAuthToken(searchUrl).ConfigureAwait(false);
             if (headerParts != null)
             {
-                Common.LogDebug(!IsVerboseLoggingEnabled, $"ResolveSearchAuthHeaders: auth ok endpoint='{searchUrl}' game='{gameName}'");
+                Common.LogDebug(true, $"ResolveSearchAuthHeaders: auth ok endpoint='{searchUrl}' game='{gameName}'");
                 return Tuple.Create(headerParts, searchUrl);
             }
 
@@ -1686,7 +1715,7 @@ namespace HowLongToBeat.Services
                                     int targetGameLog = ConcurrencyController?.TargetConcurrency ?? MaxParallelGameDataDownloads;
                                     int availableGameLog = DynamicSemaphore?.CurrentCount ?? 0;
                                     int inFlightGameLog = Math.Max(0, targetGameLog - availableGameLog);
-                                    Common.LogDebug(!IsVerboseLoggingEnabled, $"Search: waiting semaphore for id={x.Id} target={targetGameLog} currentLimit={CurrentSemaphoreLimit} available={availableGameLog} inFlight={inFlightGameLog}");
+                                    Common.LogDebug(true, $"Search: waiting semaphore for id={x.Id} target={targetGameLog} currentLimit={CurrentSemaphoreLimit} available={availableGameLog} inFlight={inFlightGameLog}");
                                 }
                                 catch { }
                                 var acquired = await DynamicSemaphore.WaitAsync(TimeSpan.FromSeconds(10));
@@ -1701,7 +1730,7 @@ namespace HowLongToBeat.Services
                                     int targetGameLog = ConcurrencyController?.TargetConcurrency ?? MaxParallelGameDataDownloads;
                                     int availableGameLog = DynamicSemaphore?.CurrentCount ?? 0;
                                     int inFlightGameLog = Math.Max(0, targetGameLog - availableGameLog);
-                                    Common.LogDebug(!IsVerboseLoggingEnabled, $"Search: acquired semaphore for id={x.Id} target={targetGameLog} currentLimit={CurrentSemaphoreLimit} available={availableGameLog} inFlight={inFlightGameLog}");
+                                    Common.LogDebug(true, $"Search: acquired semaphore for id={x.Id} target={targetGameLog} currentLimit={CurrentSemaphoreLimit} available={availableGameLog} inFlight={inFlightGameLog}");
                                 }
                                 catch { }
                             }
@@ -1757,7 +1786,7 @@ namespace HowLongToBeat.Services
                                     }
                                     catch { }
                                 }
-                                Common.LogDebug(!IsVerboseLoggingEnabled, $"Search: released semaphore for id={x.Id}");
+                                Common.LogDebug(true, $"Search: released semaphore for id={x.Id}");
                             }
                         }
                         catch (Exception ex)
@@ -1769,7 +1798,7 @@ namespace HowLongToBeat.Services
                     await Task.WhenAll(tasks);
                     try
                     {
-                        Common.LogDebug(!IsVerboseLoggingEnabled, $"Search summary: persistentCacheHits={PersistentCacheHits}, inMemoryHits={InMemoryCacheHits}, pageFetches={PageFetches}");
+                        Common.LogDebug(true, $"Search summary: persistentCacheHits={PersistentCacheHits}, inMemoryHits={InMemoryCacheHits}, pageFetches={PageFetches}");
                     }
                     catch { }
                 }
@@ -1798,7 +1827,7 @@ namespace HowLongToBeat.Services
                 var aliased = GameNameAliases.ApplyAlias(name, settings, userDataPath);
                 if (!string.IsNullOrEmpty(aliased) && !aliased.IsEqual(name))
                 {
-                    Common.LogDebug(!IsVerboseLoggingEnabled, $"HLTB aliases: '{SafeStr(name)}' -> '{SafeStr(aliased)}'");
+                    Common.LogDebug(true, $"HLTB aliases: '{SafeStr(name)}' -> '{SafeStr(aliased)}'");
                     name = aliased;
                 }
             }
@@ -1957,7 +1986,7 @@ namespace HowLongToBeat.Services
                 string cacheKey = (name ?? string.Empty) + "|" + (platform ?? string.Empty);
                 if (SearchCache.TryGetValue(cacheKey, out SearchResult cachedResult))
                 {
-                    try { Common.LogDebug(!IsVerboseLoggingEnabled, $"ApiSearch cache hit for '{name}' platform='" + platform + "'"); } catch { }
+                    try { Common.LogDebug(true, $"ApiSearch cache hit for '{name}' platform='" + platform + "'"); } catch { }
                     return cachedResult;
                 }
 
@@ -1986,7 +2015,7 @@ namespace HowLongToBeat.Services
 
                 Dictionary<string, string> headerParts = authResolution.Item1;
                 string searchUrl = authResolution.Item2;
-                Common.LogDebug(!IsVerboseLoggingEnabled, $"ApiSearch: POST endpoint='{searchUrl}' game='{name}' platform='{platform}'");
+                Common.LogDebug(true, $"ApiSearch: POST endpoint='{searchUrl}' game='{name}' platform='{platform}'");
                 string token = headerParts.TryGetValue("Token", out string tokenValue) ? tokenValue : null;
                 string hpKey = headerParts.TryGetValue("Hpkey", out string hpKeyValue) ? hpKeyValue : null;
                 string hpVal = headerParts.TryGetValue("Hpval", out string hpValValue) ? hpValValue : null;
@@ -2021,7 +2050,7 @@ namespace HowLongToBeat.Services
                             int targetLog = GetSearchTarget();
                             int availableLog = SearchSemaphore?.CurrentCount ?? 0;
                             int inFlightLog = Math.Max(0, targetLog - availableLog);
-                            Common.LogDebug(!IsVerboseLoggingEnabled, $"ApiSearch: waiting search semaphore for '{name}' target={targetLog} currentLimit={CurrentSearchLimit} available={availableLog} inFlight={inFlightLog}");
+                            Common.LogDebug(true, $"ApiSearch: waiting search semaphore for '{name}' target={targetLog} currentLimit={CurrentSearchLimit} available={availableLog} inFlight={inFlightLog}");
                         }
                         catch { }
                         bool waitOk = true;
@@ -2040,7 +2069,7 @@ namespace HowLongToBeat.Services
                             int targetLog = GetSearchTarget();
                             int availableLog = SearchSemaphore?.CurrentCount ?? 0;
                             int inFlightLog = Math.Max(0, targetLog - availableLog);
-                            Common.LogDebug(!IsVerboseLoggingEnabled, $"ApiSearch: acquired search semaphore for '{name}' target={targetLog} currentLimit={CurrentSearchLimit} available={availableLog} inFlight={inFlightLog}");
+                            Common.LogDebug(true, $"ApiSearch: acquired search semaphore for '{name}' target={targetLog} currentLimit={CurrentSearchLimit} available={availableLog} inFlight={inFlightLog}");
                         }
                         catch { }
                     }
@@ -2106,7 +2135,7 @@ namespace HowLongToBeat.Services
                         }
                         catch { }
 
-                        Common.LogDebug(!IsVerboseLoggingEnabled, $"ApiSearch elapsed={sw.ElapsedMilliseconds}ms tokenReused={tokenReused} status={statusCode}");
+                        Common.LogDebug(true, $"ApiSearch elapsed={sw.ElapsedMilliseconds}ms tokenReused={tokenReused} status={statusCode}");
                     }
                     catch { }
 
@@ -2209,7 +2238,7 @@ namespace HowLongToBeat.Services
                         try
                         {
                             SearchSemaphore.Release();
-                            Common.LogDebug(!IsVerboseLoggingEnabled, $"ApiSearch: released search semaphore for '{name}'");
+                            Common.LogDebug(true, $"ApiSearch: released search semaphore for '{name}'");
                         }
                         catch { }
                     }
@@ -2292,7 +2321,7 @@ namespace HowLongToBeat.Services
                     var aliased = GameNameAliases.ApplyAlias(gameName, settings, userDataPath);
                     if (!string.IsNullOrEmpty(aliased) && !aliased.IsEqual(gameName))
                     {
-                        Common.LogDebug(!IsVerboseLoggingEnabled, $"HLTB aliases: '{SafeStr(gameName)}' -> '{SafeStr(aliased)}'");
+                        Common.LogDebug(true, $"HLTB aliases: '{SafeStr(gameName)}' -> '{SafeStr(aliased)}'");
                         gameName = aliased;
                     }
                 }
@@ -2306,7 +2335,7 @@ namespace HowLongToBeat.Services
                 {
                     try
                     {
-                        Logger.Debug($"SearchDataAuto[{traceId}]: start name='{SafeStr(gameName)}' platform='{SafeStr(platform)}' UseMatchValue={hltbSettings?.UseMatchValue} MatchValue={hltbSettings?.MatchValue}");
+                        Common.LogDebug(true,$"SearchDataAuto[{traceId}]: start name='{SafeStr(gameName)}' platform='{SafeStr(platform)}' UseMatchValue={hltbSettings?.UseMatchValue} MatchValue={hltbSettings?.MatchValue}");
                     }
                     catch { }
                 }
@@ -2340,7 +2369,7 @@ namespace HowLongToBeat.Services
                 {
                     if (IsVerboseLoggingEnabled)
                     {
-                        try { Logger.Debug($"SearchDataAuto[{traceId}]: no results (timeout)"); } catch { }
+                        try { Common.LogDebug(true,$"SearchDataAuto[{traceId}]: no results (timeout)"); } catch { }
                     }
                     return null;
                 }
@@ -2349,7 +2378,7 @@ namespace HowLongToBeat.Services
                 {
                     if (IsVerboseLoggingEnabled)
                     {
-                        try { Logger.Debug($"SearchDataAuto[{traceId}]: no results"); } catch { }
+                        try { Common.LogDebug(true,$"SearchDataAuto[{traceId}]: no results"); } catch { }
                     }
                     return null;
                 }
@@ -2358,7 +2387,7 @@ namespace HowLongToBeat.Services
                 {
                     try
                     {
-                        Logger.Debug($"SearchDataAuto[{traceId}]: results count={results.Count}");
+                        Common.LogDebug(true,$"SearchDataAuto[{traceId}]: results count={results.Count}");
                         int take = Math.Min(8, results.Count);
                         for (int i = 0; i < take; i++)
                         {
@@ -2373,7 +2402,7 @@ namespace HowLongToBeat.Services
                             }
                             catch { }
 
-                            Logger.Debug($"SearchDataAuto[{traceId}]: candidate[{i}] score={r?.MatchPercent} id={SafeStr(d?.Id)} title='{SafeStr(d?.Name)}' platform='{SafeStr(d?.Platform)}' hasTime={hasAnyTime} ttb={ttb} needsDetails={d?.NeedsDetails}");
+                            Common.LogDebug(true,$"SearchDataAuto[{traceId}]: candidate[{i}] score={r?.MatchPercent} id={SafeStr(d?.Id)} title='{SafeStr(d?.Name)}' platform='{SafeStr(d?.Platform)}' hasTime={hasAnyTime} ttb={ttb} needsDetails={d?.NeedsDetails}");
                         }
                     }
                     catch { }
@@ -2397,14 +2426,14 @@ namespace HowLongToBeat.Services
                             {
                                 if (IsVerboseLoggingEnabled)
                                 {
-                                    try { Logger.Debug($"SearchDataAuto[{traceId}]: exact normalized match rejected by MatchValue score={exact.MatchPercent} threshold={hltbSettings.MatchValue}"); } catch { }
+                                    try { Common.LogDebug(true,$"SearchDataAuto[{traceId}]: exact normalized match rejected by MatchValue score={exact.MatchPercent} threshold={hltbSettings.MatchValue}"); } catch { }
                                 }
                                 return null;
                             }
 
                             if (IsVerboseLoggingEnabled)
                             {
-                                try { Logger.Debug($"SearchDataAuto[{traceId}]: selected exact normalized match id={SafeStr(exact.Data?.Id)} title='{SafeStr(exact.Data?.Name)}' score={exact.MatchPercent}"); } catch { }
+                                try { Common.LogDebug(true,$"SearchDataAuto[{traceId}]: selected exact normalized match id={SafeStr(exact.Data?.Id)} title='{SafeStr(exact.Data?.Name)}' score={exact.MatchPercent}"); } catch { }
                             }
 
                             return exact.Data;
@@ -2418,7 +2447,7 @@ namespace HowLongToBeat.Services
                 {
                     if (IsVerboseLoggingEnabled)
                     {
-                        try { Logger.Debug($"SearchDataAuto[{traceId}]: best result had null data"); } catch { }
+                        try { Common.LogDebug(true,$"SearchDataAuto[{traceId}]: best result had null data"); } catch { }
                     }
                     return null;
                 }
@@ -2431,14 +2460,14 @@ namespace HowLongToBeat.Services
                         {
                             if (IsVerboseLoggingEnabled)
                             {
-                                try { Logger.Debug($"SearchDataAuto[{traceId}]: best below MatchValue but accepted via near-perfect safety net score={best.MatchPercent} threshold={hltbSettings.MatchValue}"); } catch { }
+                                try { Common.LogDebug(true,$"SearchDataAuto[{traceId}]: best below MatchValue but accepted via near-perfect safety net score={best.MatchPercent} threshold={hltbSettings.MatchValue}"); } catch { }
                             }
                             return best.Data;
                         }
 
                         if (IsVerboseLoggingEnabled)
                         {
-                            try { Logger.Debug($"SearchDataAuto[{traceId}]: rejected by MatchValue bestScore={best.MatchPercent} threshold={hltbSettings.MatchValue}"); } catch { }
+                            try { Common.LogDebug(true,$"SearchDataAuto[{traceId}]: rejected by MatchValue bestScore={best.MatchPercent} threshold={hltbSettings.MatchValue}"); } catch { }
                         }
                         return null;
                     }
@@ -2461,7 +2490,7 @@ namespace HowLongToBeat.Services
 
                         if (IsVerboseLoggingEnabled)
                         {
-                            try { Logger.Debug($"SearchDataAuto[{traceId}]: ambiguity check best={best.MatchPercent} second={second?.MatchPercent} ambiguous={ambiguous}"); } catch { }
+                            try { Common.LogDebug(true,$"SearchDataAuto[{traceId}]: ambiguity check best={best.MatchPercent} second={second?.MatchPercent} ambiguous={ambiguous}"); } catch { }
                         }
 
                         if (ambiguous)
@@ -2486,7 +2515,7 @@ namespace HowLongToBeat.Services
                                 {
                                     try
                                     {
-                                        Logger.Debug($"SearchDataAuto[{traceId}]: enriched count={enriched.Count}");
+                                        Common.LogDebug(true,$"SearchDataAuto[{traceId}]: enriched count={enriched.Count}");
                                         int take = Math.Min(8, enriched.Count);
                                         for (int i = 0; i < take; i++)
                                         {
@@ -2501,7 +2530,7 @@ namespace HowLongToBeat.Services
                                             }
                                             catch { }
 
-                                            Logger.Debug($"SearchDataAuto[{traceId}]: enriched[{i}] score={r?.MatchPercent} id={SafeStr(d?.Id)} title='{SafeStr(d?.Name)}' platform='{SafeStr(d?.Platform)}' hasTime={hasAnyTime} ttb={ttb} needsDetails={d?.NeedsDetails}");
+                                            Common.LogDebug(true,$"SearchDataAuto[{traceId}]: enriched[{i}] score={r?.MatchPercent} id={SafeStr(d?.Id)} title='{SafeStr(d?.Name)}' platform='{SafeStr(d?.Platform)}' hasTime={hasAnyTime} ttb={ttb} needsDetails={d?.NeedsDetails}");
                                         }
                                     }
                                     catch { }
@@ -2526,14 +2555,14 @@ namespace HowLongToBeat.Services
                                     {
                                         if (IsVerboseLoggingEnabled)
                                         {
-                                            try { Logger.Debug($"SearchDataAuto[{traceId}]: enriched withTimes rejected by MatchValue score={withTimes.MatchPercent} threshold={hltbSettings.MatchValue}"); } catch { }
+                                            try { Common.LogDebug(true,$"SearchDataAuto[{traceId}]: enriched withTimes rejected by MatchValue score={withTimes.MatchPercent} threshold={hltbSettings.MatchValue}"); } catch { }
                                         }
                                         return null;
                                     }
 
                                     if (IsVerboseLoggingEnabled)
                                     {
-                                        try { Logger.Debug($"SearchDataAuto[{traceId}]: selected enriched withTimes id={SafeStr(withTimes.Data?.Id)} title='{SafeStr(withTimes.Data?.Name)}' score={withTimes.MatchPercent}"); } catch { }
+                                        try { Common.LogDebug(true,$"SearchDataAuto[{traceId}]: selected enriched withTimes id={SafeStr(withTimes.Data?.Id)} title='{SafeStr(withTimes.Data?.Name)}' score={withTimes.MatchPercent}"); } catch { }
                                     }
                                     return withTimes.Data;
                                 }
@@ -2545,14 +2574,14 @@ namespace HowLongToBeat.Services
                                     {
                                         if (IsVerboseLoggingEnabled)
                                         {
-                                            try { Logger.Debug($"SearchDataAuto[{traceId}]: bestEnriched rejected by MatchValue score={bestEnriched.MatchPercent} threshold={hltbSettings.MatchValue}"); } catch { }
+                                            try { Common.LogDebug(true,$"SearchDataAuto[{traceId}]: bestEnriched rejected by MatchValue score={bestEnriched.MatchPercent} threshold={hltbSettings.MatchValue}"); } catch { }
                                         }
                                         return null;
                                     }
 
                                     if (IsVerboseLoggingEnabled)
                                     {
-                                        try { Logger.Debug($"SearchDataAuto[{traceId}]: selected bestEnriched id={SafeStr(bestEnriched.Data?.Id)} title='{SafeStr(bestEnriched.Data?.Name)}' score={bestEnriched.MatchPercent}"); } catch { }
+                                        try { Common.LogDebug(true,$"SearchDataAuto[{traceId}]: selected bestEnriched id={SafeStr(bestEnriched.Data?.Id)} title='{SafeStr(bestEnriched.Data?.Name)}' score={bestEnriched.MatchPercent}"); } catch { }
                                     }
                                     return bestEnriched.Data;
                                 }
@@ -2562,7 +2591,7 @@ namespace HowLongToBeat.Services
                             {
                                 if (IsVerboseLoggingEnabled)
                                 {
-                                    try { Logger.Debug($"SearchDataAuto[{traceId}]: ambiguous but fell back to near-perfect best score={best.MatchPercent} id={SafeStr(best.Data?.Id)}"); } catch { }
+                                    try { Common.LogDebug(true,$"SearchDataAuto[{traceId}]: ambiguous but fell back to near-perfect best score={best.MatchPercent} id={SafeStr(best.Data?.Id)}"); } catch { }
                                 }
                                 return best.Data;
                             }
@@ -2573,7 +2602,7 @@ namespace HowLongToBeat.Services
 
                 if (IsVerboseLoggingEnabled)
                 {
-                    try { Logger.Debug($"SearchDataAuto[{traceId}]: selected best (default) id={SafeStr(best.Data?.Id)} title='{SafeStr(best.Data?.Name)}' score={best.MatchPercent}"); } catch { }
+                    try { Common.LogDebug(true,$"SearchDataAuto[{traceId}]: selected best (default) id={SafeStr(best.Data?.Id)} title='{SafeStr(best.Data?.Name)}' score={best.MatchPercent}"); } catch { }
                 }
 
                 return best.Data;
@@ -2616,10 +2645,8 @@ namespace HowLongToBeat.Services
                 lastLoginCheckUtc = now;
                 lastLoginCheckResult = userId != 0;
 
-                if (IsVerboseLoggingEnabled)
-                {
-                    Logger.Debug($"HLTB Auth: GetIsUserLoggedInAsync userId={userId} IsConnected={IsConnected}");
-                }
+                Logger.Info($"HLTB Auth: session check userId={userId} loggedIn={userId != 0}");
+                Common.LogDebug(true, $"HLTB Auth: GetIsUserLoggedInAsync userId={userId} IsConnected={IsConnected} cached={(lastLoginCheckResult != null)}");
 
                 return userId != 0;
             }
@@ -2652,147 +2679,338 @@ namespace HowLongToBeat.Services
         /// </summary>
         public void Login()
         {
-            // Use a DispatcherOperation so we can attach the Completed handler cleanly
-            System.Windows.Threading.DispatcherOperation op = null;
-
             try
             {
-                op = Application.Current.Dispatcher.BeginInvoke((Action)delegate
+                if (Application.Current?.Dispatcher != null && !Application.Current.Dispatcher.CheckAccess())
                 {
-                    Logger.Info("Login()");
-
-                    bool cookiesCaptured = false;
-
-                    WebViewSettings settings = new WebViewSettings
-                    {
-                        JavaScriptEnabled = true,
-                        WindowHeight = 670,
-                        WindowWidth = 490,
-                        UserAgent = Web.UserAgent
-                    };
-
-                    using (IWebView webView = API.Instance.WebViews.CreateView(settings))
-                    {
-                        webView.LoadingChanged += (s, e) =>
-                        {
-                            try
-                            {
-                                Common.LogDebug(true, $"NavigationChanged - {webView.GetCurrentAddress()}");
-
-                                if (!cookiesCaptured && webView.GetCurrentAddress().StartsWith(UrlBase + "/user/"))
-                                {
-                                    cookiesCaptured = true;
-                                    UserLogin = WebUtility.HtmlDecode(webView.GetCurrentAddress().Replace(UrlBase + "/user/", string.Empty));
-                                    IsConnected = true;
-
-                                    // Give the embedded WebView a moment to commit cookies.
-                                    FireAndForget(Task.Run(async () =>
-                                    {
-                                        try
-                                        {
-                                            await Task.Delay(1000).ConfigureAwait(false);
-                                        }
-                                        catch { }
-
-                                        try
-                                        {
-                                            await Application.Current.Dispatcher.InvokeAsync(() =>
-                                            {
-                                                try
-                                                {
-                                                    string userUrl = webView.GetCurrentAddress();
-                                                    List<string> loginUrls = new List<string> { UrlBase };
-                                                    if (!userUrl.IsNullOrEmpty())
-                                                    {
-                                                        loginUrls.Add(userUrl);
-                                                    }
-
-                                                    List<HttpCookie> cookies = CookiesTools.GetNewWebCookies(loginUrls, false, webView);
-                                                    bool saved = CookiesTools.SetStoredCookies(cookies);
-                                                    Logger.Info($"HLTB Auth: captured cookies from login webview count={cookies?.Count ?? 0} saved={saved}");
-                                                    LogCookieSummary("login captured", cookies);
-
-                                                    // Invalidate cached login check so next calls re-check if needed.
-                                                    lastLoginCheckResult = null;
-                                                    lastLoginCheckUtc = DateTime.MinValue;
-                                                }
-                                                catch ( Exception ex)
-                                                {
-                                                    Common.LogError(ex, false, true, PluginDatabase.PluginName);
-                                                }
-                                                finally
-                                                {
-                                                    try { webView.Close(); } catch { }
-                                                }
-                                            });
-                                        }
-                                        catch (Exception ex)
-                                        {
-                                            try { Common.LogError(ex, false, true, PluginDatabase.PluginName); } catch { }
-                                            try
-                                            {
-                                                var closeOp = Application.Current.Dispatcher.BeginInvoke((Action)(() => { try { webView.Close(); } catch { } }));
-                                                try { FireAndForget(closeOp?.Task, "login close webview (BeginInvoke)"); } catch { }
-                                            }
-                                            catch { }
-                                        }
-                                    }), "login captured");
-
-                                    // (task is fire-and-forget intentionally)
-
-                                    return;
-                                }
-                            }
-                            catch { }
-                        };
-
-                        IsConnected = false;
-                        webView.Navigate(UrlLogOut);
-                        _ = webView.OpenDialog();
-                    }
-                });
+                    Application.Current.Dispatcher.Invoke((Action)RunLoginWebViewDialog);
+                }
+                else
+                {
+                    RunLoginWebViewDialog();
+                }
             }
             catch (Exception ex)
             {
                 try { Common.LogError(ex, false, true, PluginDatabase.PluginName); } catch { }
             }
+        }
+
+        /// <summary>
+        /// Opens the login WebView dialog, captures cookies after it closes, then refreshes user data.
+        /// Cookie extraction must run after <see cref="IWebView.OpenDialog"/> returns; reading cookies while the dialog is open can block indefinitely.
+        /// </summary>
+        private void RunLoginWebViewDialog()
+        {
+            Logger.Info("HLTB Auth: opening login WebView");
+
+            bool loginRedirectDetected = false;
+            IWebView webView = null;
+            EventHandler<WebViewLoadingChangedEventArgs> loadingHandler = null;
+            System.Windows.Threading.DispatcherTimer redirectPollTimer = null;
 
             try
             {
-                if (op != null)
+                WebViewSettings settings = new WebViewSettings
                 {
-                    op.Completed += (s, e) =>
+                    JavaScriptEnabled = true,
+                    WindowHeight = 670,
+                    WindowWidth = 490,
+                    UserAgent = Web.UserAgent
+                };
+
+                webView = API.Instance.WebViews.CreateView(settings);
+                loadingHandler = (sender, e) =>
+                {
+                    if (!loginRedirectDetected)
                     {
-                        try
-                        {
-                            if ((bool)IsConnected)
-                            {
-                                _ = Application.Current.Dispatcher?.BeginInvoke((Action)delegate
-                                {
-                                    try
-                                    {
-                                        PluginDatabase.PluginSettings.UserLogin = UserLogin;
+                        loginRedirectDetected = TryCompleteLoginRedirect(webView);
+                    }
+                };
+                webView.LoadingChanged += loadingHandler;
 
-                                        PluginDatabase.Plugin.SavePluginSettings(PluginDatabase.PluginSettings);
+                redirectPollTimer = new System.Windows.Threading.DispatcherTimer
+                {
+                    Interval = TimeSpan.FromMilliseconds(500)
+                };
+                redirectPollTimer.Tick += (sender, e) =>
+                {
+                    if (!loginRedirectDetected)
+                    {
+                        loginRedirectDetected = TryCompleteLoginRedirect(webView);
+                    }
+                };
+                redirectPollTimer.Start();
 
-                                        FireAndForget(Task.Run(async () =>
-                                        {
-                                            try { UserId = await GetUserId().ConfigureAwait(false); } catch { }
-                                            try { PluginDatabase.RefreshUserData(); } catch { }
-                                        }), "post-login refresh");
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        Common.LogError(ex, false, true, PluginDatabase.PluginName);
-                                    }
-                                });
-                            }
-                        }
-                        catch { }
-                    };
-                }
+                IsConnected = false;
+                webView.Navigate(UrlLogOut);
+                webView.OpenDialog();
             }
-            catch { }
+            catch (Exception ex)
+            {
+                try { Common.LogError(ex, false, true, PluginDatabase.PluginName); } catch { }
+            }
+            finally
+            {
+                if (redirectPollTimer != null)
+                {
+                    redirectPollTimer.Stop();
+                }
+
+                if (webView != null)
+                {
+                    if (loadingHandler != null)
+                    {
+                        webView.LoadingChanged -= loadingHandler;
+                    }
+
+                    try
+                    {
+                        if (loginRedirectDetected)
+                        {
+                            Logger.Info($"HLTB Auth: login dialog closed, user='{UserLogin}'");
+                            Common.LogDebug(true, "HLTB Auth: extracting cookies after dialog close");
+
+                            List<HttpCookie> cookies = ExtractLoginWebViewCookies(webView);
+                            bool saved = CookiesTools.SetStoredCookies(cookies);
+                            Logger.Info($"HLTB Auth: captured cookies from login webview count={cookies?.Count ?? 0} saved={saved}");
+                            Common.LogDebug(true, $"HLTB Auth: login capture saved={saved}");
+                            LogCookieSummary("login captured", cookies);
+
+                            lastLoginCheckResult = null;
+                            lastLoginCheckUtc = DateTime.MinValue;
+
+                            PluginDatabase.PluginSettings.UserLogin = UserLogin;
+                            PluginDatabase.Plugin.SavePluginSettings(PluginDatabase.PluginSettings);
+
+                            FireAndForget(Task.Run(async () =>
+                            {
+                                try
+                                {
+                                    UserId = await GetUserId().ConfigureAwait(false);
+                                    IsConnected = UserId != 0;
+                                    Logger.Info($"HLTB Auth: post-login userId={UserId}");
+                                    Common.LogDebug(true, $"HLTB Auth: post-login IsConnected={IsConnected} UserLogin='{UserLogin}'");
+                                }
+                                catch (Exception ex)
+                                {
+                                    try { Logger.Warn(ex, "HLTB Auth: post-login GetUserId failed"); } catch { }
+                                }
+
+                                try { PluginDatabase.RefreshUserData(); }
+                                catch (Exception ex)
+                                {
+                                    try { Logger.Warn(ex, "HLTB Auth: post-login RefreshUserData failed"); } catch { }
+                                }
+                            }), "post-login refresh");
+                        }
+                        else
+                        {
+                            Logger.Info("HLTB Auth: login dialog closed without authentication");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        try { Logger.Warn(ex, "HLTB Auth: post-login cookie capture failed"); } catch { }
+                        try { Common.LogError(ex, false, true, PluginDatabase.PluginName); } catch { }
+                    }
+                    finally
+                    {
+                        try { webView.Dispose(); } catch { }
+                    }
+                }
+
+                try { LoginCompleted?.Invoke(this, EventArgs.Empty); } catch { }
+            }
+        }
+
+        /// <summary>
+        /// Detects a successful login redirect and closes the login WebView on the next dispatcher frame.
+        /// </summary>
+        /// <returns><c>true</c> when a login redirect was detected.</returns>
+        private bool TryCompleteLoginRedirect(IWebView webView)
+        {
+            if (webView == null)
+            {
+                return false;
+            }
+
+            try
+            {
+                string address = webView.GetCurrentAddress();
+                Common.LogDebug(true, $"HLTB Auth Login: checking url='{address}'");
+
+                string userLogin;
+                if (!TryParseLoginUserUrl(address, out userLogin))
+                {
+                    return false;
+                }
+
+                UserLogin = userLogin;
+                IsConnected = true;
+                Logger.Info($"HLTB Auth: login redirect detected user='{userLogin}', scheduling WebView close");
+
+                _ = Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    try
+                    {
+                        webView.Close();
+                        Logger.Info("HLTB Auth: login WebView close requested");
+                    }
+                    catch (Exception ex)
+                    {
+                        try { Logger.Warn(ex, "HLTB Auth: webView.Close failed after login redirect"); } catch { }
+                    }
+                }), System.Windows.Threading.DispatcherPriority.Normal);
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                try { Logger.Warn(ex, "HLTB Auth: login redirect check failed"); } catch { }
+                Common.LogDebug(true, $"HLTB Auth Login: redirect check error url='{webView?.GetCurrentAddress() ?? string.Empty}'");
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Reads cookies from the login WebView after the dialog has closed.
+        /// </summary>
+        private List<HttpCookie> ExtractLoginWebViewCookies(IWebView webView)
+        {
+            try
+            {
+                List<HttpCookie> cookies = webView.GetCookies();
+                if (cookies == null || cookies.Count == 0)
+                {
+                    Logger.Warn("HLTB Auth: login WebView returned no cookies");
+                    return new List<HttpCookie>();
+                }
+
+                if (CookiesDomains == null || CookiesDomains.Count == 0)
+                {
+                    return cookies;
+                }
+
+                return cookies
+                    .Where(c => c != null && CookiesDomains.Any(d => d.Contains(c.Domain ?? string.Empty, StringComparison.OrdinalIgnoreCase)))
+                    .ToList();
+            }
+            catch (Exception ex)
+            {
+                try { Logger.Warn(ex, "HLTB Auth: failed to read cookies from login WebView"); } catch { }
+                return new List<HttpCookie>();
+            }
+        }
+
+        /// <summary>
+        /// Returns whether the address points to a HowLongToBeat user profile page and extracts the login name.
+        /// </summary>
+        private static bool TryParseLoginUserUrl(string address, out string userLogin)
+        {
+            userLogin = string.Empty;
+            if (address.IsNullOrEmpty())
+            {
+                return false;
+            }
+
+            string[] prefixes =
+            {
+                "https://howlongtobeat.com/user/",
+                "https://www.howlongtobeat.com/user/",
+                "http://howlongtobeat.com/user/",
+                "http://www.howlongtobeat.com/user/"
+            };
+
+            foreach (string prefix in prefixes)
+            {
+                if (!address.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
+
+                string loginPart = address.Substring(prefix.Length);
+                loginPart = WebUtility.HtmlDecode(loginPart);
+
+                int queryIndex = loginPart.IndexOf('?');
+                if (queryIndex >= 0)
+                {
+                    loginPart = loginPart.Substring(0, queryIndex);
+                }
+
+                int hashIndex = loginPart.IndexOf('#');
+                if (hashIndex >= 0)
+                {
+                    loginPart = loginPart.Substring(0, hashIndex);
+                }
+
+                userLogin = loginPart.Trim().TrimEnd('/');
+                return !userLogin.IsNullOrEmpty();
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Returns whether the API payload looks like JSON.
+        /// </summary>
+        private static bool LooksLikeJson(string text)
+        {
+            if (string.IsNullOrWhiteSpace(text))
+            {
+                return false;
+            }
+
+            string trimmed = text.TrimStart();
+            return trimmed.StartsWith("{", StringComparison.Ordinal) || trimmed.StartsWith("[", StringComparison.Ordinal);
+        }
+
+        /// <summary>
+        /// Downloads the current user payload from the HTTP API using stored cookies.
+        /// </summary>
+        private async Task<string> FetchUserIdHttpResponseAsync(List<HttpCookie> cookies)
+        {
+            List<HttpHeader> headers = new List<HttpHeader>
+            {
+                new HttpHeader { Key = "Accept", Value = "application/json, text/javascript, */*; q=0.01" },
+                new HttpHeader { Key = "Referer", Value = UrlBase }
+            };
+
+            return await Web.DownloadStringData(UrlUser, headers, cookies).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Parses a HowLongToBeat <c>/api/user</c> JSON response and extracts the user id.
+        /// </summary>
+        private bool TryParseUserIdFromApiResponse(string response, out int userId)
+        {
+            userId = 0;
+
+            if (string.IsNullOrWhiteSpace(response) || response == "{}")
+            {
+                return true;
+            }
+
+            if (!LooksLikeJson(response))
+            {
+                try { Logger.Warn($"HLTB Auth: GetUserId unexpected response (not JSON): {SafeStr(response)}"); } catch { }
+                Common.LogDebug(true, $"HLTB Auth: GetUserId non-JSON response='{response}'");
+                return false;
+            }
+
+            try
+            {
+                dynamic parsed = Serialization.FromJson<dynamic>(response);
+                userId = parsed?.data[0]?.user_id ?? 0;
+                Common.LogDebug(true, $"HLTB Auth: GetUserId parsed userId={userId} responseLen={response.Length}");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                try { Logger.Warn(ex, "HLTB Auth: failed to parse GetUserId JSON response"); } catch { }
+                Common.LogDebug(true, $"HLTB Auth: GetUserId JSON parse error preview='{SafeStr(response)}'");
+                return false;
+            }
         }
 
         /// <summary>
@@ -2812,23 +3030,57 @@ namespace HowLongToBeat.Services
                     return 0;
                 }
 
-                string response = await Web.DownloadStringData(UrlUser, cookies).ConfigureAwait(false);
-                if (string.IsNullOrWhiteSpace(response) || response == "{}")
+                string httpResponse = await FetchUserIdHttpResponseAsync(cookies).ConfigureAwait(false);
+                Common.LogDebug(true, $"HLTB Auth: GetUserId HTTP responseLen={httpResponse?.Length ?? 0} preview='{SafeStr(httpResponse)}'");
+
+                int userId;
+                if (TryParseUserIdFromApiResponse(httpResponse, out userId))
                 {
-                    return 0;
+                    if (userId > 0)
+                    {
+                        Logger.Info($"HLTB Auth: GetUserId ok userId={userId}");
+                        return userId;
+                    }
+
+                    if (string.IsNullOrWhiteSpace(httpResponse) || httpResponse == "{}")
+                    {
+                        Logger.Warn("HLTB Auth: GetUserId HTTP session empty; trying WebView fallback");
+                        Common.LogDebug(true, "HLTB Auth: GetUserId HTTP empty response with stored cookies");
+                    }
+                    else
+                    {
+                        Logger.Info("HLTB Auth: GetUserId: no active session");
+                        return 0;
+                    }
+                }
+                else
+                {
+                    Logger.Warn("HLTB Auth: GetUserId HTTP returned unexpected content; trying WebView fallback");
                 }
 
-                dynamic t = Serialization.FromJson<dynamic>(response);
-                int userId = t?.data[0]?.user_id ?? 0;
-                if (IsVerboseLoggingEnabled)
+                string webViewResponse = await Web.DownloadPageText(UrlUser, cookies).ConfigureAwait(false);
+                Common.LogDebug(true, $"HLTB Auth: GetUserId WebView responseLen={webViewResponse?.Length ?? 0} preview='{SafeStr(webViewResponse)}'");
+
+                if (TryParseUserIdFromApiResponse(webViewResponse, out userId))
                 {
-                    Logger.Debug($"HLTB Auth: GetUserId responseLen={response?.Length ?? 0} userId={userId}");
+                    if (userId > 0)
+                    {
+                        Logger.Info($"HLTB Auth: GetUserId ok via WebView fallback userId={userId}");
+                    }
+                    else
+                    {
+                        Logger.Warn("HLTB Auth: GetUserId failed after WebView fallback");
+                    }
+
+                    return userId;
                 }
 
-                return userId;
+                Logger.Warn("HLTB Auth: GetUserId could not parse WebView response");
+                return 0;
             }
             catch (Exception ex)
             {
+                try { Logger.Warn(ex, "HLTB Auth: GetUserId failed"); } catch { }
                 Common.LogError(ex, false);
                 return 0;
             }
@@ -3298,7 +3550,7 @@ namespace HowLongToBeat.Services
                         new KeyValuePair<string, string>("Referer", referer)
                     };
 
-                    Common.LogDebug(!IsVerboseLoggingEnabled, $"ApiSubmitData: POST {UrlPostData} submissionId={editData.SubmissionId} referer={referer}");
+                    Common.LogDebug(true, $"ApiSubmitData: POST {UrlPostData} submissionId={editData.SubmissionId} referer={referer}");
 
                     (string response, int statusCode) = await PostJson(UrlPostData, payload, cookies, submitHeaders);
 
@@ -3344,7 +3596,7 @@ namespace HowLongToBeat.Services
                         }
                         else
                         {
-                            Logger.Debug("ApiSubmitData: non-JSON response received; treating as success");
+                            Common.LogDebug(true,"ApiSubmitData: non-JSON response received; treating as success");
                             success = true;
                         }
 
