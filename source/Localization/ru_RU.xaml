@@ -23,8 +23,8 @@
     <sys:String x:Key="LOCExportSelectFolderFirst">Сначала выберите папку для экспорта.</sys:String>
     <sys:String x:Key="LOCExportFolderNotExist">Выбранная папка не существует.</sys:String>
     <sys:String x:Key="LOCExportedCsvMessage">{0} games exported to CSV: {1} (delimiter '{2}')</sys:String>
-    <sys:String x:Key="LOCExportedJsonMessage">{0} games exported to JSON: {1}</sys:String>
-    <sys:String x:Key="LOCExportFailedCount">{0} games failed to export (see logs).</sys:String>
+    <sys:String x:Key="LOCExportedJsonMessage">{0} игр экспортировано в JSON: {1}</sys:String>
+    <sys:String x:Key="LOCExportFailedCount">{0} игр не удалось экспортировать (смотрите логи).</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatColorSelection">Выбор цвета:</sys:String>
 
