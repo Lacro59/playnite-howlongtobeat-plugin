@@ -136,7 +136,7 @@ namespace HowLongToBeat.Services
                 {
                     if (IsVerboseLoggingEnabled)
                     {
-                        Logger.Debug("HowLongToBeatApi not initialized yet during LoadMoreData(); using empty UserHltbData placeholder");
+                        Common.LogDebug(true,"HowLongToBeatApi not initialized yet during LoadMoreData(); using empty UserHltbData placeholder");
                     }
                     UserHltbData = new HltbUserStats();
                     return;
@@ -396,7 +396,7 @@ namespace HowLongToBeat.Services
             Game game = API.Instance.Database.Games.Get(id);
             if (IsVerboseLoggingEnabled)
             {
-                Logger.Debug($"RefreshNoLoader({game?.Name} - {game?.Id})");
+                Common.LogDebug(true,$"RefreshNoLoader({game?.Name} - {game?.Id})");
             }
 
             GameHowLongToBeat loadedItem = Get(id, true);
@@ -404,7 +404,7 @@ namespace HowLongToBeat.Services
             {
                 if (IsVerboseLoggingEnabled)
                 {
-                    Logger.Debug($"No data, try to add");
+                    Common.LogDebug(true,$"No data, try to add");
                 }
                 AddData(game);
                 loadedItem = Get(id, true);
@@ -412,7 +412,7 @@ namespace HowLongToBeat.Services
                 {
                     if (IsVerboseLoggingEnabled)
                     {
-                        Logger.Debug($"No find");
+                        Common.LogDebug(true,$"No find");
                     }
                 }
             }
@@ -832,7 +832,7 @@ namespace HowLongToBeat.Services
         {
             if (IsVerboseLoggingEnabled)
             {
-                Logger.Debug("RefreshUserData()");
+                Common.LogDebug(true,"RefreshUserData()");
             }
 
             if (HowLongToBeatApi == null)
@@ -894,7 +894,7 @@ namespace HowLongToBeat.Services
                         {
                             if (IsVerboseLoggingEnabled)
                             {
-                                Logger.Debug($"Find {userHltbData.TitlesList?.Count ?? 0} games");
+                                Common.LogDebug(true,$"Find {userHltbData.TitlesList?.Count ?? 0} games");
                             }
                             FileSystem.WriteStringToFileSafe(Path.Combine(Paths.PluginUserDataPath, "HltbUserStats.json"), Serialization.ToJson(userHltbData));
                             UserHltbData = userHltbData;
@@ -913,7 +913,7 @@ namespace HowLongToBeat.Services
                         {
                             if (IsVerboseLoggingEnabled)
                             {
-                                Logger.Debug("Find no data");
+                                Common.LogDebug(true,"Find no data");
                             }
                         }
                     }
@@ -1128,7 +1128,7 @@ namespace HowLongToBeat.Services
                     TimeSpan ts = stopWatch.Elapsed;
                     if (IsVerboseLoggingEnabled)
                     {
-                        Logger.Debug($"Task SetCurrentPlaytime(){(a.CancelToken.IsCancellationRequested ? " canceled" : string.Empty)} - {string.Format("{0:00}:{1:00}.{2:00}", ts.Minutes, ts.Seconds, ts.Milliseconds / 10)} for {a.CurrentProgressValue}/{total} items");
+                        Common.LogDebug(true,$"Task SetCurrentPlaytime(){(a.CancelToken.IsCancellationRequested ? " canceled" : string.Empty)} - {string.Format("{0:00}:{1:00}.{2:00}", ts.Minutes, ts.Seconds, ts.Milliseconds / 10)} for {a.CurrentProgressValue}/{total} items");
                     }
                 }
                 finally
@@ -1286,7 +1286,7 @@ namespace HowLongToBeat.Services
                                 {
                                     if (IsVerboseLoggingEnabled)
                                     {
-                                        Logger.Debug($"No existing data in website find for {game.Name}");
+                                        Common.LogDebug(true,$"No existing data in website find for {game.Name}");
                                     }
                                 }
                             }
@@ -1396,7 +1396,7 @@ namespace HowLongToBeat.Services
 
                             if (isCompleted && sendCompletionDateFromLastActivity && game.LastActivity == null && IsVerboseLoggingEnabled)
                             {
-                                Logger.Debug($"No LastActivity found for {game.Name}, completion date is not sent to HLTB.");
+                                Common.LogDebug(true,$"No LastActivity found for {game.Name}, completion date is not sent to HLTB.");
                             }
                         }
 
