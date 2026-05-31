@@ -426,3 +426,11 @@ Packages:
       - 'Fixed: Search button appears even when a game has no HLTB data yet'
       - 'Fixed: Faster startup'
       - 'Updated: Localizations'
+  - Version: 3.11.1
+    RequiredApiVersion: 6.16.0
+    ReleaseDate: 2026-05-31
+    PackageUrl: https://github.com/Lacro59/playnite-howlongtobeat-plugin/releases/download/v3.11.1/playnite-howlongtobeat-plugin_3_11_1.pext
+    Changelog:
+      - 'Improved: More reliable HLTB login and session refresh'
+      - 'Fixed: Rare crashes when switching context in plugin controls'
+      - 'Updated: Localizations'
