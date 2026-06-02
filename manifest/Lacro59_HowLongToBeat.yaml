@@ -434,3 +434,9 @@ Packages:
       - 'Improved: More reliable HLTB login and session refresh'
       - 'Fixed: Rare crashes when switching context in plugin controls'
       - 'Updated: Localizations'
+  - Version: 3.11.2
+    RequiredApiVersion: 6.16.0
+    ReleaseDate: 2026-06-02
+    PackageUrl: https://github.com/Lacro59/playnite-howlongtobeat-plugin/releases/download/v3.11.2/playnite-howlongtobeat-plugin_3_11_2.pext
+    Changelog:
+      - 'Updated: Localizations'
