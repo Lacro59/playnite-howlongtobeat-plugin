@@ -12,7 +12,7 @@
     <sys:String x:Key="LOCHowLongToBeatAddTagDescription">Добавить тег для игр с информацией о времени завершения Основной истории</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoTag">Автоматическая обработка тегов</sys:String>
     <sys:String x:Key="LOCHowLongToBeatShowHltbImage">Использовать обложку игры HowLongToBeat в окне</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatEnableVerboseLogging">Enable verbose HLTB debug logging (extra logs in extensions.log)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatEnableVerboseLogging">Включить подробное ведение журнала отладки HLTB (дополнительные логи в extensions.log)</sys:String>
     <sys:String x:Key="LOCHowLongToBeatExport">Экспорт данных HowLongToBeat</sys:String>
     <sys:String x:Key="LOCHowLongToBeatExportCsvComma">Экспорт CSV (запятая)</sys:String>
     <sys:String x:Key="LOCHowLongToBeatExportCsvSemicolon">Экспорт CSV (точка с запятой)</sys:String>
@@ -22,7 +22,7 @@
 
     <sys:String x:Key="LOCExportSelectFolderFirst">Сначала выберите папку для экспорта.</sys:String>
     <sys:String x:Key="LOCExportFolderNotExist">Выбранная папка не существует.</sys:String>
-    <sys:String x:Key="LOCExportedCsvMessage">{0} games exported to CSV: {1} (delimiter '{2}')</sys:String>
+    <sys:String x:Key="LOCExportedCsvMessage">{0} игр экспортированы в CSV: {1} (разделитель '{2}')</sys:String>
     <sys:String x:Key="LOCExportedJsonMessage">{0} игр экспортировано в JSON: {1}</sys:String>
     <sys:String x:Key="LOCExportFailedCount">{0} игр не удалось экспортировать (смотрите логи).</sys:String>
 
@@ -43,6 +43,7 @@
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarOptions">Параметры индикатора прогресса</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">Показывать подсказку времени в шкале прогресса</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTime">Показывать метки времени в шкале прогресса</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarTimePlacement">Размещение меток времени:</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeAbove">Выше индикатора прогресса</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeInterior">Внутри индикатора прогресса</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeBelow">Ниже индикаторов прогресса</sys:String>
@@ -56,6 +57,20 @@
 
     <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatus">Автоматически обновлять статус игры в Playnite при импорте пользовательских данных из HowLongToBeat</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltb">Автоматически обновлять статус игры на HowLongToBeat при изменении статуса игры в Playnite</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltbOptionsTitle">При синхронизации статуса Playnite в HowLongToBeat</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltbOptionsHelp" xml:space="preserve">Источник данных:
+- Статус/список отправляется в HowLongToBeat.
+- Время игры идет из Playnite Playtime.
+- Дата завершения игры идет из последней активности Playnite.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltbCompletedPlaytime">Завершено: отправка игрового времени из Playnite в HowLongToBeat (Основная история)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltbCompletedDate">Завершено: установить дату завершения игры из последней активности Playnite</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltbCompletionistPlaytime">Полное прохождение: отправить время игры из Playnite на HowLongToBeat (100%)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltbCompletionistDate">Полное прохождение: установить дату полного прохождения игры из последней активности Playnite</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatSyncPlaytimeShort">Текущее время игры</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatSyncDateShort">Дата последней активности</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatHltbStatusColumnHeader">HowLongToBeat статус (цель)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatPlayniteDataColumnHeader">Данные Playnite отправлены</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltbNotification">HowLongToBeat синхронизация для {0}: статус отправлен, время в игре {1}, дата завершения игры {2}.</sys:String>
     
     <sys:String x:Key="LOCHowLongToBeatAutoData">Загрузка данных игры</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoAccept">Автоматически выбирать игру, когда при поиске найдена только одна игра</sys:String>
@@ -91,6 +106,15 @@
     <sys:String x:Key="LOCHltbManualEntryHours">ч</sys:String>
     <sys:String x:Key="LOCHltbManualEntryMinutes">мин</sys:String>
     <sys:String x:Key="LOCHltbManualEntryHltbId">HLTB ID</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatId">HLTB ID</sys:String>
+    <sys:String x:Key="LOCCommonLastRefresh">Последнее обновление данных</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatCsvUserTimeToBeat">Время выполнения (профиль пользователя)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatCsvUserMainStory">Основная история (пользователь сообщил)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatCsvUserMainExtra">Основная + экстра (пользователь сообщил)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatCsvUserCompletionist">Полное прохождение (пользователь сообщил)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatCsvUserSolo">Одиночная (пользователь сообщил)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatCsvUserCoOp">Со-Op (пользователь сообщил)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatCsvUserVs">Vs (пользователь сообщил)</sys:String>
     <sys:String x:Key="LOCHltbManualEntryConfirm">Использовать ручную запись</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatMainStory">Основная история</sys:String>
@@ -119,14 +143,31 @@
     <sys:String x:Key="LocHowLongToBeatPlayniteData">Данные Playnite</sys:String>
     <sys:String x:Key="LOCHowLongToBeatCompleted">Пройдено</sys:String>
 
+    <sys:String x:Key="LOCHltbFilterHltbListStatus">Список HLTB</sys:String>
+    <sys:String x:Key="LOCHltbFilterHltbListStatusTooltip" xml:space="preserve">Фильтр по списку вашего профиля HowLongToBeat (Бэклог, Играю, Переигранные, Пройденные и так далее).
+Это не то же самое, что опция для каждой игры «Пометить как Переигранную — я играл ранее.»</sys:String>
+    <sys:String x:Key="LOCHltbFilterHltbListStatusAll">Все списки</sys:String>
+    <sys:String x:Key="LOCHltbUserListBacklog">Бэклог</sys:String>
+    <sys:String x:Key="LOCHltbUserListPlaying">Играю</sys:String>
+    <sys:String x:Key="LOCHltbUserListReplays">Список переигранных игр</sys:String>
+    <sys:String x:Key="LOCHltbUserListReplaysTooltip" xml:space="preserve">Игры, размещенные в списке Переигранные на вашем профиле HowLongToBeat (вкладка профиля).
+Игра может появиться здесь без пометки &quot;Пометить как Переигранная — я играл ранее.&quot;</sys:String>
+    <sys:String x:Key="LOCHltbUserListCompleted">Пройденное</sys:String>
+    <sys:String x:Key="LOCHltbUserListRetired">Устаревшее</sys:String>
+    <sys:String x:Key="LOCHltbUserListCustom">Настраиваемый</sys:String>
+
     <sys:String x:Key="LOCHltbOnlyReplays">Только переигранные</sys:String>
+    <sys:String x:Key="LOCHltbOnlyReplaysTooltip" xml:space="preserve">Только игры с опцией HowLongToBeat &quot;Отметить как Переигранную — я играл раньше.&quot;
+Это отдельная функция и не связанно со списком переигранных игр в вашем профиле.</sys:String>
     <sys:String x:Key="LOCHltbOnlyNotPlayed">Только ни разу не запущенные игры</sys:String>
 
     <sys:String x:Key="LOCHltbRemainingTime">Оставшееся время</sys:String>
+    <sys:String x:Key="LOCHltbColumnHltbLists">HLTB списки</sys:String>
+    <sys:String x:Key="LOCHltbColumnProgress">Прогресс</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatPluginGetUserView">Получение данных пользователей</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatCompletions">Завершенных</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatCompletions">Полностью пройденные</sys:String>
     <sys:String x:Key="LOCHowLongToBeatTimeSinglePlayer">Время с одиночных игр</sys:String>
     <sys:String x:Key="LOCHowLongToBeatTimeCoOp">Co-Op время</sys:String>
     <sys:String x:Key="LOCHowLongToBeatTimeVs">Vs Multi-Player время</sys:String>
@@ -137,8 +178,14 @@
     <sys:String x:Key="LOCHltbAvgGameByMonth">Средняя игра по месяцам</sys:String>
     <sys:String x:Key="LOCHltbCountGameBeatenBeforeTime">Количество игр, пройденных досрочно</sys:String>
     <sys:String x:Key="LOCHltbCountGameBeatenAfterTime">Количество игр, пройденных позже времени</sys:String>
-    <sys:String x:Key="LOCHltbCountGameBeatenReplays">Количество игр, пройденных повторно</sys:String>
+    <sys:String x:Key="LOCHltbCountGameBeatenReplays">Количество пройденных игр (отмеченных как переигранные)</sys:String>
     <sys:String x:Key="LOCHltbCountGameRetired">Количество заброшенных игр</sys:String>
+
+    <sys:String x:Key="LOCHltbStatsPlayTimeTitle">Время в игре</sys:String>
+    <sys:String x:Key="LOCHltbStatsCompletionTitle">Анализ завершения</sys:String>
+    <sys:String x:Key="LOCHltbStatsHltbListsTitle">HLTB списки</sys:String>
+    <sys:String x:Key="LOCHltbStatsHltbListsChartTitle">Игр по списку HLTB</sys:String>
+    <sys:String x:Key="LOCHltbStatsMarkedAsReplayShort">Помечено переигранной</sys:String>
 
     <sys:String x:Key="LOCHltbUsedFilteredGames">Используются отфильтрованные игры</sys:String>
     <sys:String x:Key="LOCHltbOnlyNotPlayedGames">Только ни разу не запущенные игры</sys:String>
@@ -160,22 +207,23 @@
 
     <sys:String x:Key="LOCHowLongToBeatSetCurrentTime">Хотите отправить свое текущее время игры?</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatErrorNoHltbId">Cannot submit data for a game without HLTB ID ({0})</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatErrorNoHltbId">Невозможно отправить данные для игры без HLTB ID ({0})</sys:String>
     <sys:String x:Key="LOCHowLongToBeatErrorNoPlatform">Невозможно отправить данные для игры без платформы ({0})</sys:String>
     <sys:String x:Key="LOCHowLongToBeatErrorNoPlatformDefaultUsed" xml:space="preserve">Игра ({1}) без платформы ({0}) определена в настройках плагина.
 Пожалуйста, настройте ее.
 Использовано по умолчанию (PC)</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatErrorSubmitFailed">Could not update your HowLongToBeat profile for {0}.</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatErrorSubmitUnauthorized">HowLongToBeat rejected the update (session expired or not authorized). Open the plugin settings and log in again.</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatErrorSubmitHttpStatus">HowLongToBeat returned HTTP error {0}.</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatErrorSubmitNoResponse">No response was received from HowLongToBeat. Check your connection and try again.</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatErrorSubmitSessionCookies">HowLongToBeat session cookies are missing. Open the plugin settings and log in again.</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatRefreshSessionCookies">Refreshing HowLongToBeat session…</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatErrorSubmitFailed">Не удалось обновить ваш профиль HowLongToBeat для {0}.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatErrorSubmitUnauthorized">HowLongToBeat отклонил обновление (сессия истекла или не авторизована). Откройте настройки плагина и авторизуйтесь снова.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatErrorSubmitHttpStatus">HowLongToBeat вернул ошибку HTTP {0}.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatErrorSubmitNoResponse">Не было получено ответа от HowLongToBeat. Проверьте подключение и повторите попытку.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatErrorSubmitSessionCookies">Отсутствуют куки сеанса HowLongToBeat. Откройте настройки плагина и авторизуйтесь снова.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatRefreshSessionCookies">Обновление HowLongToBeat сессии…</sys:String>
 
 
     <!-- QuickSearch -->
 
+    <sys:String x:Key="LOCHltbQuickSearchTab">QuickSearch</sys:String>
     <sys:String x:Key="LOCHltbQuickSearchDescription">Поиск игр на данных HowLongToBeat</sys:String>
     <sys:String x:Key="LOCHltbQuickSearchByTTB">Найти по времени до прохождения</sys:String>
 
@@ -209,39 +257,39 @@
 
     <!-- Aliases -->
 
-    <sys:String x:Key="LOCHowLongToBeatAliases">Алиасы</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesDescription" xml:space="preserve">Map multiple game titles to a single HowLongToBeat search title.
+    <sys:String x:Key="LOCHowLongToBeatAliases">Псевдонимы</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesDescription" xml:space="preserve">Сопоставьте несколько названий игр с одним поисковым запросом HowLongToBeat.
 
-Example:
-  Source: Pokemon Red Version
-  Target: Pokemon Red and Blue</sys:String>
+Пример:
+  Источник: Pokemon Red Version
+  Цель: Pokemon Red and Blue</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAliasesSource">Название источника</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAliasesTarget">Цель (HLTB название)</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAliasesReset">Сброс</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesResetConfirm">Replace your current aliases with the default Pokémon dual-release aliases?</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesResetConfirm">Заменить ваши текущие псевдонимы по умолчанию на псевдонимы Pokéмов?</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAliasesImport">Импорт</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAliasesExport">Экспорт</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAliasesOpenFile">Открыть aliases.json</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesFilePathUnavailable">Plugin user data path is not available.</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportNotFound">No alias file found: {0}</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportFailed">Failed to import alias file: {0} (see logs).</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportConfirm" xml:space="preserve">Import aliases from:\n{0}\n\nThis will replace your current aliases. Continue?</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportOk">Imported aliases from: {0}</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesExportFailed">Failed to export alias file: {0} (see logs).</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesExportOk">Exported aliases to: {0}</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesCellToolTip">Click a cell (or press F2) to edit. Press Enter to commit.</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesTip">Tip: double-click a cell to edit. Aliases are saved when you click Save.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesFilePathUnavailable">Путь к пользовательским данным плагина недоступен.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportNotFound">Файл псевдонима не найден: {0}</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportFailed">Не удалось импортировать файл псевдонимов: {0} (см. логи).</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportConfirm" xml:space="preserve">Импортировать псевдонимы из:\n{0}\n\nЭто заменит ваши текущие псевдонимы. Продолжить?</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportOk">Импортированные псевдонимы из: {0}</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesExportFailed">Не удалось экспортировать файл псевдонимов: {0} (см. логи).</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesExportOk">Экспортированы псевдонимы в: {0}</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesCellToolTip">Нажмите на ячейку (или нажмите F2), чтобы отредактировать. Нажмите Enter для подтверждения.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesTip">Совет: дважды щелкните по ячейке для редактирования. Псевдонимы сохранятся, когда вы нажмете на кнопку Сохранить.</sys:String>
 
     <!-- Platform and storefront mapping -->
 
-    <sys:String x:Key="LOCHowLongToBeatPlatformsMappingDescription" xml:space="preserve">Each row links a Playnite platform (from your library database) to the platform name sent to HowLongToBeat when you submit playtime.
-If the HLTB value is not set (----), the plugin uses PC as the default on submit.</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatStorefrontMappingDescription" xml:space="preserve">Each row links a Playnite library source (Steam, Epic, GOG, etc.) to the storefront sent to HowLongToBeat when you submit playtime.
-The left column is the Playnite source; the right column is the value stored in your plugin settings (StorefrontElements).</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatPlatformsMappingDescription" xml:space="preserve">Каждый ряд связывает платформу Playnite (из базы данных вашей библиотеки) с именем платформы, отправляемой на HowLongToBeat при отправке игрового времени.
+Если HLTB значение не задано (----), плагин использует ПК по умолчанию при отправке.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatStorefrontMappingDescription" xml:space="preserve">Каждая строка связывает источник из библиотеки Playnite (Steam, Epic, GOG и т.д.) с витриной магазина, который отправляется в HowLongToBeat после отправки данных о времени игры.
+В левой колонке указан источник данных Playnite; в правой колонке — значение, хранящееся в настройках вашего плагина (StorefrontElements).</sys:String>
     <sys:String x:Key="LOCHowLongToBeatMappingColumnPlayniteOrigin">Playnite (источник)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatMappingColumnHltbTarget">HowLongToBeat (submission)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatMappingPlatformDefaultHint">Not set — PC is used when submitting data</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatMappingStorefrontNotSetHint">Not set — storefront will be empty on submit</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatMappingColumnHltbTarget">HowLongToBeat (представление)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatMappingPlatformDefaultHint">Не задано — ПК используется при отправке данных</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatMappingStorefrontNotSetHint">Не задано — витрина будет пустой при отправке</sys:String>
     <sys:String x:Key="LOCHowLongToBeatMappingPlayniteSourceIdToolTip">Идентификатор исходной библиотеки Playnite</sys:String>
     <sys:String x:Key="LOCHowLongToBeatMappingPlaynitePlatformIdToolTip">Идентификатор платформы Playnite</sys:String>
 
