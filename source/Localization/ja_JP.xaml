@@ -43,7 +43,7 @@
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarOptions">進行状況バーのオプション</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">進行状況バーに時間のツールチップを表示</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTime">進行状況バーに時間ラベルを表示</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarTimePlacement">Time labels placement:</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarTimePlacement">時間ラベルの配置：</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeAbove">プログレスバーの上</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeInterior">プログレスバーの中</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeBelow">プログレスバーの下</sys:String>
@@ -57,20 +57,20 @@
 
     <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatus">HowLongToBeat からユーザーデータをインポートするときに、Playnite のゲームステータスを自動更新</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltb">Playnite でゲームステータスを変更したときに、HowLongToBeat のゲームステータスを自動更新</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltbOptionsTitle">When syncing Playnite status to HowLongToBeat</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltbOptionsHelp" xml:space="preserve">Data source:
-- Status/list is sent to HowLongToBeat.
-- Playtime comes from Playnite Playtime.
-- Completion date comes from Playnite Last activity.</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltbCompletedPlaytime">Completed: send Playnite playtime to HowLongToBeat (Main story)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltbCompletedDate">Completed: set completion date from Playnite last activity</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltbCompletionistPlaytime">Completionist: send Playnite playtime to HowLongToBeat (100%)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltbCompletionistDate">Completionist: set completion date from Playnite last activity</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatSyncPlaytimeShort">Current playtime</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatSyncDateShort">Last activity date</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatHltbStatusColumnHeader">HowLongToBeat status (target)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatPlayniteDataColumnHeader">Playnite data sent</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltbNotification">HowLongToBeat sync for {0}: status sent, playtime {1}, completion date {2}.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltbOptionsTitle">Playnite ステータスを HowLongToBeat に同期する場合</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltbOptionsHelp" xml:space="preserve">データソース：
+- ステータス/リストは HowLongToBeat に送信されます。
+- プレイ時間は Playnite のプレイ時間から取得されます。
+- 完了日は Playnite の最終アクティビティから取得されます。</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltbCompletedPlaytime">クリア済み：Playnite のプレイ時間を HowLongToBeat に送信（メインストーリー）</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltbCompletedDate">クリア済み：Playnite の最終アクティビティから完了日を設定</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltbCompletionistPlaytime">完全クリア：Playnite のプレイ時間を HowLongToBeat に送信（100%）</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltbCompletionistDate">完全クリア：Playnite の最終アクティビティから完了日を設定</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatSyncPlaytimeShort">現在のプレイ時間</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatSyncDateShort">最終アクティビティ日</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatHltbStatusColumnHeader">HowLongToBeat ステータス（対象）</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatPlayniteDataColumnHeader">送信される Playnite データ</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltbNotification">{0} の HowLongToBeat 同期：ステータスを送信、プレイ時間 {1}、完了日 {2}。</sys:String>
     
     <sys:String x:Key="LOCHowLongToBeatAutoData">ゲームデータのダウンロード</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoAccept">検索中にゲームが 1 件だけ見つかった場合、自動的にそのゲームを選択</sys:String>
@@ -107,14 +107,14 @@
     <sys:String x:Key="LOCHltbManualEntryMinutes">分</sys:String>
     <sys:String x:Key="LOCHltbManualEntryHltbId">HLTB ID</sys:String>
     <sys:String x:Key="LOCHowLongToBeatId">HLTB ID</sys:String>
-    <sys:String x:Key="LOCCommonLastRefresh">Last data refresh</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatCsvUserTimeToBeat">Time to beat (user profile)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatCsvUserMainStory">Main story (user reported)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatCsvUserMainExtra">Main + extra (user reported)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatCsvUserCompletionist">Completionist (user reported)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatCsvUserSolo">Solo (user reported)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatCsvUserCoOp">Co-Op (user reported)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatCsvUserVs">Vs (user reported)</sys:String>
+    <sys:String x:Key="LOCCommonLastRefresh">最終データ更新</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatCsvUserTimeToBeat">クリア時間（ユーザープロフィール）</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatCsvUserMainStory">メインストーリー（ユーザー報告）</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatCsvUserMainExtra">メイン＋追加要素（ユーザー報告）</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatCsvUserCompletionist">完全クリア（ユーザー報告）</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatCsvUserSolo">ソロ（ユーザー報告）</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatCsvUserCoOp">協力プレイ（ユーザー報告）</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatCsvUserVs">対戦（ユーザー報告）</sys:String>
     <sys:String x:Key="LOCHltbManualEntryConfirm">手動入力を使用</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatMainStory">メインストーリー</sys:String>
@@ -143,27 +143,27 @@
     <sys:String x:Key="LocHowLongToBeatPlayniteData">Playnite データ</sys:String>
     <sys:String x:Key="LOCHowLongToBeatCompleted">完了済み</sys:String>
 
-    <sys:String x:Key="LOCHltbFilterHltbListStatus">HLTB list</sys:String>
-    <sys:String x:Key="LOCHltbFilterHltbListStatusTooltip" xml:space="preserve">Filter by a list on your HowLongToBeat profile (Backlog, Playing, Replays, Beat, and so on).
-This is not the same as the per-game option &quot;Mark as Replay — I have played this before.&quot;</sys:String>
-    <sys:String x:Key="LOCHltbFilterHltbListStatusAll">All lists</sys:String>
+    <sys:String x:Key="LOCHltbFilterHltbListStatus">HLTB リスト</sys:String>
+    <sys:String x:Key="LOCHltbFilterHltbListStatusTooltip" xml:space="preserve">HowLongToBeat プロフィール上のリスト（Backlog、Playing、Replays、Beat など）で絞り込みます。
+これは、ゲームごとのオプション &quot;Mark as Replay – I have played this before.&quot; とは異なります。</sys:String>
+    <sys:String x:Key="LOCHltbFilterHltbListStatusAll">すべてのリスト</sys:String>
     <sys:String x:Key="LOCHltbUserListBacklog">Backlog</sys:String>
     <sys:String x:Key="LOCHltbUserListPlaying">Playing</sys:String>
-    <sys:String x:Key="LOCHltbUserListReplays">Replays list</sys:String>
-    <sys:String x:Key="LOCHltbUserListReplaysTooltip" xml:space="preserve">Games placed in the Replays list on your HowLongToBeat profile (profile tab).
-A game can appear here without being marked &quot;Mark as Replay — I have played this before.&quot;</sys:String>
+    <sys:String x:Key="LOCHltbUserListReplays">リプレイリスト</sys:String>
+    <sys:String x:Key="LOCHltbUserListReplaysTooltip" xml:space="preserve">HowLongToBeat プロフィール（プロフィールタブ）の Replays リストに入っているゲームです。
+ゲームごとの &quot;Mark as Replay – I have played this before.&quot; が設定されていなくても、ここに表示される場合があります。</sys:String>
     <sys:String x:Key="LOCHltbUserListCompleted">Beat</sys:String>
     <sys:String x:Key="LOCHltbUserListRetired">Retired</sys:String>
     <sys:String x:Key="LOCHltbUserListCustom">Custom</sys:String>
 
     <sys:String x:Key="LOCHltbOnlyReplays">再プレイのみ</sys:String>
-    <sys:String x:Key="LOCHltbOnlyReplaysTooltip" xml:space="preserve">Only games with the HowLongToBeat option &quot;Mark as Replay — I have played this before.&quot;
-This is separate from the Replays list on your profile.</sys:String>
+    <sys:String x:Key="LOCHltbOnlyReplaysTooltip" xml:space="preserve">HowLongToBeat の &quot;Mark as Replay – I have played this before.&quot; オプションが設定されているゲームのみ。
+これはプロフィール上の Replays リストとは別です。</sys:String>
     <sys:String x:Key="LOCHltbOnlyNotPlayed">未プレイのみ</sys:String>
 
     <sys:String x:Key="LOCHltbRemainingTime">残り時間</sys:String>
-    <sys:String x:Key="LOCHltbColumnHltbLists">HLTB lists</sys:String>
-    <sys:String x:Key="LOCHltbColumnProgress">Progress</sys:String>
+    <sys:String x:Key="LOCHltbColumnHltbLists">HLTB リスト</sys:String>
+    <sys:String x:Key="LOCHltbColumnProgress">進行状況</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatPluginGetUserView">ユーザーデータを取得中</sys:String>
 
@@ -181,11 +181,11 @@ This is separate from the Replays list on your profile.</sys:String>
     <sys:String x:Key="LOCHltbCountGameBeatenReplays">クリアしたゲーム数（再プレイ）</sys:String>
     <sys:String x:Key="LOCHltbCountGameRetired">リタイアしたゲーム数</sys:String>
 
-    <sys:String x:Key="LOCHltbStatsPlayTimeTitle">Play time</sys:String>
-    <sys:String x:Key="LOCHltbStatsCompletionTitle">Completion analysis</sys:String>
-    <sys:String x:Key="LOCHltbStatsHltbListsTitle">HLTB lists</sys:String>
-    <sys:String x:Key="LOCHltbStatsHltbListsChartTitle">Games per HLTB list</sys:String>
-    <sys:String x:Key="LOCHltbStatsMarkedAsReplayShort">Marked replay</sys:String>
+    <sys:String x:Key="LOCHltbStatsPlayTimeTitle">プレイ時間</sys:String>
+    <sys:String x:Key="LOCHltbStatsCompletionTitle">完了分析</sys:String>
+    <sys:String x:Key="LOCHltbStatsHltbListsTitle">HLTB リスト</sys:String>
+    <sys:String x:Key="LOCHltbStatsHltbListsChartTitle">HLTB リスト別のゲーム数</sys:String>
+    <sys:String x:Key="LOCHltbStatsMarkedAsReplayShort">リプレイとしてマーク済み</sys:String>
 
     <sys:String x:Key="LOCHltbUsedFilteredGames">現在フィルターされているゲームを使用</sys:String>
     <sys:String x:Key="LOCHltbOnlyNotPlayedGames">未プレイのゲームのみ</sys:String>
