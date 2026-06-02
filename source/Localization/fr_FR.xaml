@@ -12,19 +12,19 @@
     <sys:String x:Key="LOCHowLongToBeatAddTagDescription">Ajouter un tag aux jeux avec les informations de temps d'achèvement de l'histoire principale</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoTag">Traitement automatique des tags</sys:String>
     <sys:String x:Key="LOCHowLongToBeatShowHltbImage">Utiliser l'image originale de couverture du jeu HowLongToBeat dans la fenêtre</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatEnableVerboseLogging">Enable verbose HLTB debug logging (extra logs in extensions.log)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExport">Export HowLongToBeat data</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExportCsvComma">Export CSV (comma)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExportCsvSemicolon">Export CSV (semicolon)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExportJson">Export JSON</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExportFolderTooltip">Destination folder for export</sys:String>
-    <sys:String x:Key="LOCBrowseLabel">Browse...</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatEnableVerboseLogging">Activer les logs de débogage HLTB détaillés (logs supplémentaires dans extensions.log)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExport">Exporter les données HowLongToBeat</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportCsvComma">Exporter CSV (virgule)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportCsvSemicolon">Exporter CSV (point-virgule)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportJson">Exporter JSON</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportFolderTooltip">Dossier de destination pour l'export</sys:String>
+    <sys:String x:Key="LOCBrowseLabel">Parcourir...</sys:String>
 
-    <sys:String x:Key="LOCExportSelectFolderFirst">Please select an export folder first.</sys:String>
-    <sys:String x:Key="LOCExportFolderNotExist">Selected folder does not exist.</sys:String>
-    <sys:String x:Key="LOCExportedCsvMessage">{0} games exported to CSV: {1} (delimiter '{2}')</sys:String>
-    <sys:String x:Key="LOCExportedJsonMessage">{0} games exported to JSON: {1}</sys:String>
-    <sys:String x:Key="LOCExportFailedCount">{0} games failed to export (see logs).</sys:String>
+    <sys:String x:Key="LOCExportSelectFolderFirst">Veuillez d'abord sélectionner un dossier d'export.</sys:String>
+    <sys:String x:Key="LOCExportFolderNotExist">Le dossier sélectionné n'existe pas.</sys:String>
+    <sys:String x:Key="LOCExportedCsvMessage">{0} jeux exportés en CSV : {1} (séparateur '{2}')</sys:String>
+    <sys:String x:Key="LOCExportedJsonMessage">{0} jeux exportés en JSON : {1}</sys:String>
+    <sys:String x:Key="LOCExportFailedCount">{0} jeux n'ont pas pu être exportés (voir logs).</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatColorSelection">Sélection de couleur :</sys:String>
 
@@ -43,7 +43,8 @@
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarOptions">Options de la barre de progression</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">Afficher une info-bulle de temps dans la barre de progression</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTime">Afficher le temps dans la barre de progression</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeAbove">Au dessus</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarTimePlacement">Position des étiquettes de temps :</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeAbove">Au-dessus</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeInterior">Intérieur</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeBelow">En dessous</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeUser">Afficher le temps HowLongToBeat de l'utilisateur</sys:String>
@@ -56,6 +57,20 @@
 
     <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatus">Mettre à jour automatiquement le statut du jeu avec le statut de la partie HowLongToBeat lors de l'importation des données utilisateur</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltb">Mettre à jour automatiquement le statut du jeu sur HowLongToBeat lors du changement sur Playnite</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltbOptionsTitle">Lors de la synchronisation du statut Playnite vers HowLongToBeat</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltbOptionsHelp" xml:space="preserve">Source des données :
+- Le statut/la liste est envoyé(e) vers HowLongToBeat.
+- Le temps de jeu provient du temps de jeu Playnite.
+ - La date de complétion provient de la dernière activité Playnite.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltbCompletedPlaytime">Terminé : envoyer le temps de jeu Playnite vers HowLongToBeat (histoire principale)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltbCompletedDate">Terminé : définir la date de complétion depuis la dernière activité Playnite</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltbCompletionistPlaytime">Complétiste : envoyer le temps de jeu Playnite vers HowLongToBeat (100 %)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltbCompletionistDate">Complétiste : définir la date de complétion depuis la dernière activité Playnite</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatSyncPlaytimeShort">Temps de jeu actuel</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatSyncDateShort">Date de dernière activité</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatHltbStatusColumnHeader">Statut HowLongToBeat (cible)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatPlayniteDataColumnHeader">Données Playnite envoyées</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltbNotification">Synchronisation HowLongToBeat pour {0} : statut envoyé, temps de jeu {1}, date de complétion {2}.</sys:String>
     
     <sys:String x:Key="LOCHowLongToBeatAutoData">Télécharger les données</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoAccept">Automatiquement accepter lorsqu'il n'y a qu'un jeu trouvé</sys:String>
@@ -75,23 +90,32 @@ Si aucun n'a ce statut, il prend le plus récent.</sys:String>
 
     <sys:String x:Key="LOCSelection">Sélection HowLongToBeat</sys:String>
     <sys:String x:Key="LOCHltbUsedVndb">Utilisé Vndb</sys:String>
-    <sys:String x:Key="LOCHltbVndbSpeedLabel">VNDB speed</sys:String>
-    <sys:String x:Key="LOCHltbVndbLengthColumnSpeed">Speed</sys:String>
-    <sys:String x:Key="LOCHltbVndbLengthColumnMedian">Median</sys:String>
-    <sys:String x:Key="LOCHltbVndbLengthColumnAverage">Average</sys:String>
-    <sys:String x:Key="LOCHltbVndbLengthColumnStddev">Stddev</sys:String>
+    <sys:String x:Key="LOCHltbVndbSpeedLabel">Vitesse VNDB</sys:String>
+    <sys:String x:Key="LOCHltbVndbLengthColumnSpeed">Vitesse</sys:String>
+    <sys:String x:Key="LOCHltbVndbLengthColumnMedian">Médiane</sys:String>
+    <sys:String x:Key="LOCHltbVndbLengthColumnAverage">Moyenne</sys:String>
+    <sys:String x:Key="LOCHltbVndbLengthColumnStddev">Écart type</sys:String>
     <sys:String x:Key="LOCHltbVndbLengthColumnVotes"># Votes</sys:String>
-    <sys:String x:Key="LOCHltbVndbSpeedSlow">Slow</sys:String>
-    <sys:String x:Key="LOCHltbVndbSpeedNormal">Normal</sys:String>
-    <sys:String x:Key="LOCHltbVndbSpeedFast">Fast</sys:String>
+    <sys:String x:Key="LOCHltbVndbSpeedSlow">Lente</sys:String>
+    <sys:String x:Key="LOCHltbVndbSpeedNormal">Normale</sys:String>
+    <sys:String x:Key="LOCHltbVndbSpeedFast">Rapide</sys:String>
     <sys:String x:Key="LOCHltbVndbSpeedTotal">Total</sys:String>
-    <sys:String x:Key="LOCHltbTabSearch">Search</sys:String>
-    <sys:String x:Key="LOCHltbTabManual">Enter manually</sys:String>
-    <sys:String x:Key="LOCHltbOpenOnWebsite">Search on HowLongToBeat</sys:String>
+    <sys:String x:Key="LOCHltbTabSearch">Rechercher</sys:String>
+    <sys:String x:Key="LOCHltbTabManual">Saisir manuellement</sys:String>
+    <sys:String x:Key="LOCHltbOpenOnWebsite">Rechercher sur HowLongToBeat</sys:String>
     <sys:String x:Key="LOCHltbManualEntryHours">h</sys:String>
     <sys:String x:Key="LOCHltbManualEntryMinutes">min</sys:String>
     <sys:String x:Key="LOCHltbManualEntryHltbId">HLTB ID</sys:String>
-    <sys:String x:Key="LOCHltbManualEntryConfirm">Use manual entry</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatId">HLTB ID</sys:String>
+    <sys:String x:Key="LOCCommonLastRefresh">Dernier rafraîchissement des données</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatCsvUserTimeToBeat">Temps à battre (profil utilisateur)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatCsvUserMainStory">Histoire principale (déclaré utilisateur)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatCsvUserMainExtra">Histoire principale + extra (déclaré utilisateur)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatCsvUserCompletionist">Complétiste (déclaré utilisateur)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatCsvUserSolo">Solo (déclaré utilisateur)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatCsvUserCoOp">Co-Op (déclaré utilisateur)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatCsvUserVs">Vs (déclaré utilisateur)</sys:String>
+    <sys:String x:Key="LOCHltbManualEntryConfirm">Utiliser la saisie manuelle</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatMainStory">Histoire principale</sys:String>
     <sys:String x:Key="LOCHowLongToBeatMainExtra">Principal + extra</sys:String>
@@ -103,8 +127,8 @@ Si aucun n'a ce statut, il prend le plus récent.</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatPlaying">En cours</sys:String>
 
-    <sys:String x:Key="LOCRefresh">Refresh</sys:String>
-    <sys:String x:Key="LOCDelete">Delete</sys:String>
+    <sys:String x:Key="LOCRefresh">Rafraîchir</sys:String>
+    <sys:String x:Key="LOCDelete">Supprimer</sys:String>
 
     <!-- HowLongToBeat -->
 
@@ -119,10 +143,27 @@ Si aucun n'a ce statut, il prend le plus récent.</sys:String>
     <sys:String x:Key="LocHowLongToBeatPlayniteData">Données de Playnite</sys:String>
     <sys:String x:Key="LOCHowLongToBeatCompleted">Terminé</sys:String>
 
+    <sys:String x:Key="LOCHltbFilterHltbListStatus">Liste HLTB</sys:String>
+    <sys:String x:Key="LOCHltbFilterHltbListStatusTooltip" xml:space="preserve">Filtrer par une liste de votre profil HowLongToBeat (Backlog, Playing, Replays, Beat, etc.).
+Ce n'est pas la même chose que l'option par jeu &quot;Mark as Replay — I have played this before.&quot;</sys:String>
+    <sys:String x:Key="LOCHltbFilterHltbListStatusAll">Toutes les listes</sys:String>
+    <sys:String x:Key="LOCHltbUserListBacklog">Backlog</sys:String>
+    <sys:String x:Key="LOCHltbUserListPlaying">En cours</sys:String>
+    <sys:String x:Key="LOCHltbUserListReplays">Liste des rejoués</sys:String>
+    <sys:String x:Key="LOCHltbUserListReplaysTooltip" xml:space="preserve">Jeux placés dans la liste Replays de votre profil HowLongToBeat (onglet profil).
+Un jeu peut apparaître ici sans être marqué &quot;Mark as Replay — I have played this before.&quot;</sys:String>
+    <sys:String x:Key="LOCHltbUserListCompleted">Terminés</sys:String>
+    <sys:String x:Key="LOCHltbUserListRetired">Abandonnés</sys:String>
+    <sys:String x:Key="LOCHltbUserListCustom">Personnalisé</sys:String>
+
     <sys:String x:Key="LOCHltbOnlyReplays">Seulement les rejoués</sys:String>
+    <sys:String x:Key="LOCHltbOnlyReplaysTooltip" xml:space="preserve">Seulement les jeux avec l'option HowLongToBeat &quot;Mark as Replay — I have played this before.&quot;
+Ceci est différent de la liste Replays de votre profil.</sys:String>
     <sys:String x:Key="LOCHltbOnlyNotPlayed">Non joué uniquement</sys:String>
 
     <sys:String x:Key="LOCHltbRemainingTime">Temps restant</sys:String>
+    <sys:String x:Key="LOCHltbColumnHltbLists">Listes HLTB</sys:String>
+    <sys:String x:Key="LOCHltbColumnProgress">Progression</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatPluginGetUserView">Récupération des données utilisateur</sys:String>
 
@@ -140,13 +181,19 @@ Si aucun n'a ce statut, il prend le plus récent.</sys:String>
     <sys:String x:Key="LOCHltbCountGameBeatenReplays">Nombre de jeux battus (rejoués)</sys:String>
     <sys:String x:Key="LOCHltbCountGameRetired">Nombre de jeux retirés</sys:String>
 
+    <sys:String x:Key="LOCHltbStatsPlayTimeTitle">Temps de jeu</sys:String>
+    <sys:String x:Key="LOCHltbStatsCompletionTitle">Analyse de complétion</sys:String>
+    <sys:String x:Key="LOCHltbStatsHltbListsTitle">Listes HLTB</sys:String>
+    <sys:String x:Key="LOCHltbStatsHltbListsChartTitle">Jeux par liste HLTB</sys:String>
+    <sys:String x:Key="LOCHltbStatsMarkedAsReplayShort">Marqué rejoué</sys:String>
+
     <sys:String x:Key="LOCHltbUsedFilteredGames">Jeux actuellement filtrés utilisés</sys:String>
     <sys:String x:Key="LOCHltbOnlyNotPlayedGames">Uniquement les jeux non joués</sys:String>
 
     <!-- MainView -->
 
     <sys:String x:Key="LOCHowLongToBeat">HowLongToBeat</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatTitle">How long to beat</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatTitle">HowLongToBeat</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatPluginView">Voir les données HowLongToBeat</sys:String>
     <sys:String x:Key="LOCHowLongToBeatPluginUserView">Voir les données utilisateur HowLongToBeat</sys:String>
@@ -160,7 +207,7 @@ Si aucun n'a ce statut, il prend le plus récent.</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatSetCurrentTime">Voulez-vous envoyer votre temps de jeu actuel ?</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatErrorNoHltbId">Cannot submit data for a game without HLTB ID ({0})</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatErrorNoHltbId">Impossible de soumettre des données pour un jeu sans ID HLTB ({0})</sys:String>
     <sys:String x:Key="LOCHowLongToBeatErrorNoPlatform">Impossible de soumettre des données pour un jeu sans plateforme ({0})</sys:String>
     <sys:String x:Key="LOCHowLongToBeatErrorNoPlatformDefaultUsed" xml:space="preserve">Jeu ({1}) sans plateforme ({0}) définie dans les paramètres du plugin.
 Veuillez en configurer une.
@@ -176,6 +223,7 @@ Plateforme par défaut utilisée (PC)</sys:String>
 
     <!-- QuickSearch -->
 
+    <sys:String x:Key="LOCHltbQuickSearchTab">QuickSearch</sys:String>
     <sys:String x:Key="LOCHltbQuickSearchDescription">Rechercher des jeux dans les données HowLongToBeat</sys:String>
     <sys:String x:Key="LOCHltbQuickSearchByTTB">Trouver par temps pour battre</sys:String>
 
@@ -209,40 +257,40 @@ Voici la liste des commandes :</sys:String>
 
     <!-- Aliases -->
 
-    <sys:String x:Key="LOCHowLongToBeatAliases">Aliases</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesDescription" xml:space="preserve">Map multiple game titles to a single HowLongToBeat search title.
+    <sys:String x:Key="LOCHowLongToBeatAliases">Alias</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesDescription" xml:space="preserve">Associe plusieurs titres de jeux à un seul titre de recherche HowLongToBeat.
 
-Example:
-  Source: Pokemon Red Version
-  Target: Pokemon Red and Blue</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesSource">Source title</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesTarget">Target (HLTB title)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesReset">Reset</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesResetConfirm">Replace your current aliases with the default Pokémon dual-release aliases?</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImport">Import</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesExport">Export</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesOpenFile">Open aliases.json</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesFilePathUnavailable">Plugin user data path is not available.</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportNotFound">No alias file found: {0}</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportFailed">Failed to import alias file: {0} (see logs).</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportConfirm" xml:space="preserve">Import aliases from:\n{0}\n\nThis will replace your current aliases. Continue?</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportOk">Imported aliases from: {0}</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesExportFailed">Failed to export alias file: {0} (see logs).</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesExportOk">Exported aliases to: {0}</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesCellToolTip">Click a cell (or press F2) to edit. Press Enter to commit.</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesTip">Tip: double-click a cell to edit. Aliases are saved when you click Save.</sys:String>
+Exemple :
+  Source : Pokemon Red Version
+  Cible : Pokemon Red and Blue</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesSource">Titre source</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesTarget">Cible (titre HLTB)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesReset">Réinitialiser</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesResetConfirm">Remplacer vos alias actuels par les alias par défaut des versions doubles Pokemon ?</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImport">Importer</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesExport">Exporter</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesOpenFile">Ouvrir aliases.json</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesFilePathUnavailable">Le chemin des données utilisateur du plugin n'est pas disponible.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportNotFound">Aucun fichier d'alias trouvé : {0}</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportFailed">Échec de l'import du fichier d'alias : {0} (voir logs).</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportConfirm" xml:space="preserve">Importer les alias depuis :\n{0}\n\nCela remplacera vos alias actuels. Continuer ?</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportOk">Alias importés depuis : {0}</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesExportFailed">Échec de l'export du fichier d'alias : {0} (voir logs).</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesExportOk">Alias exportés vers : {0}</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesCellToolTip">Cliquez une cellule (ou F2) pour modifier. Appuyez sur Entrée pour valider.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesTip">Astuce : double-cliquez une cellule pour modifier. Les alias sont enregistrés quand vous cliquez sur Sauvegarder.</sys:String>
 
     <!-- Platform and storefront mapping -->
 
-    <sys:String x:Key="LOCHowLongToBeatPlatformsMappingDescription" xml:space="preserve">Each row links a Playnite platform (from your library database) to the platform name sent to HowLongToBeat when you submit playtime.
-If the HLTB value is not set (----), the plugin uses PC as the default on submit.</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatStorefrontMappingDescription" xml:space="preserve">Each row links a Playnite library source (Steam, Epic, GOG, etc.) to the storefront sent to HowLongToBeat when you submit playtime.
-The left column is the Playnite source; the right column is the value stored in your plugin settings (StorefrontElements).</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatPlatformsMappingDescription" xml:space="preserve">Chaque ligne relie une plateforme Playnite (de votre base de bibliothèque) au nom de plateforme envoyé à HowLongToBeat lors de l'envoi du temps de jeu.
+Si la valeur HLTB n'est pas définie (----), le plugin utilise PC par défaut à l'envoi.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatStorefrontMappingDescription" xml:space="preserve">Chaque ligne relie une source de bibliothèque Playnite (Steam, Epic, GOG, etc.) à la boutique envoyée à HowLongToBeat lors de l'envoi du temps de jeu.
+La colonne de gauche est la source Playnite ; la colonne de droite est la valeur stockée dans vos paramètres du plugin (StorefrontElements).</sys:String>
     <sys:String x:Key="LOCHowLongToBeatMappingColumnPlayniteOrigin">Playnite (source)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatMappingColumnHltbTarget">HowLongToBeat (submission)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatMappingPlatformDefaultHint">Not set — PC is used when submitting data</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatMappingStorefrontNotSetHint">Not set — storefront will be empty on submit</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatMappingPlayniteSourceIdToolTip">Playnite library source Id</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatMappingPlaynitePlatformIdToolTip">Playnite platform Id</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatMappingColumnHltbTarget">HowLongToBeat (envoi)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatMappingPlatformDefaultHint">Non défini — PC est utilisé lors de l'envoi des données</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatMappingStorefrontNotSetHint">Non défini — la boutique sera vide à l'envoi</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatMappingPlayniteSourceIdToolTip">ID de source de bibliothèque Playnite</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatMappingPlaynitePlatformIdToolTip">ID de plateforme Playnite</sys:String>
 
 </ResourceDictionary>
