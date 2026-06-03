@@ -257,7 +257,7 @@
 
     <!-- Aliases -->
 
-    <sys:String x:Key="LOCHowLongToBeatAliases">Псевдонимы</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliases">Алиасы</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAliasesDescription" xml:space="preserve">Сопоставьте несколько названий игр с одним поисковым запросом HowLongToBeat.
 
 Пример:
