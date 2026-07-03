@@ -12,19 +12,19 @@
     <sys:String x:Key="LOCHowLongToBeatAddTagDescription">Προσθήκη ετικέτας σε παιχνίδια με πληροφορίες χρόνου ολοκλήρωσης της Κύριας ιστορίας</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoTag">Αυτόματη επεξεργασία ετικετών</sys:String>
     <sys:String x:Key="LOCHowLongToBeatShowHltbImage">Χρήση της αρχικής εικόνας εξωφύλλου παιχνιδιού HowLongToBeat στο παράθυρο</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatEnableVerboseLogging">Enable verbose HLTB debug logging (extra logs in extensions.log)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExport">Export HowLongToBeat data</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExportCsvComma">Export CSV (comma)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExportCsvSemicolon">Export CSV (semicolon)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExportJson">Export JSON</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatExportFolderTooltip">Destination folder for export</sys:String>
-    <sys:String x:Key="LOCBrowseLabel">Browse...</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatEnableVerboseLogging">Ενεργοποίηση αναλυτικής καταγραφής (επιπλέον αρχεία καταγραφής στο extensions.log)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExport">Εξαγωγή δεδομένων HowLongToBeat</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportCsvComma">Εξαγωγή CSV (κόμμα)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportCsvSemicolon">Εξαγωγή CSV (ερωτηματικά)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportJson">Εξαγωγή JSON</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExportFolderTooltip">Φάκελος προορισμού για εξαγωγή</sys:String>
+    <sys:String x:Key="LOCBrowseLabel">Αναζήτηση...</sys:String>
 
-    <sys:String x:Key="LOCExportSelectFolderFirst">Please select an export folder first.</sys:String>
-    <sys:String x:Key="LOCExportFolderNotExist">Selected folder does not exist.</sys:String>
-    <sys:String x:Key="LOCExportedCsvMessage">{0} games exported to CSV: {1} (delimiter '{2}')</sys:String>
-    <sys:String x:Key="LOCExportedJsonMessage">{0} games exported to JSON: {1}</sys:String>
-    <sys:String x:Key="LOCExportFailedCount">{0} games failed to export (see logs).</sys:String>
+    <sys:String x:Key="LOCExportSelectFolderFirst">Παρακαλώ επιλέξτε πρώτα έναν φάκελο εξαγωγής.</sys:String>
+    <sys:String x:Key="LOCExportFolderNotExist">Ο επιλεγμένος φάκελος δεν υπάρχει.</sys:String>
+    <sys:String x:Key="LOCExportedCsvMessage">Τα παιχνίδια {0} εξήχθησαν σε CSV: {1} (οριοθέτης '{2}')</sys:String>
+    <sys:String x:Key="LOCExportedJsonMessage">Τα παιχνίδια {0} εξήχθησαν σε JSON: {1}</sys:String>
+    <sys:String x:Key="LOCExportFailedCount">{0} παιχνίδια απέτυχαν να εξαχθούν</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatColorSelection">Επιλογή χρώματος:</sys:String>
 
@@ -43,7 +43,7 @@
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarOptions">Ρυθμίσεις γραμμής προόδου</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowToolTip">Εμφάνιση υποδείξεων χρόνου στη γραμμή προόδου</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTime">Εμφάνιση ετικετών χρόνου στη γραμμή προόδου</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarTimePlacement">Time labels placement:</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarTimePlacement">Τοποθέτηση ετικέτας χρόνου:</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeAbove">Πάνω από τη γραμμή προόδου</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeInterior">Μέσα στη μπάρα προόδου</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIntegrationProgressBarShowTimeBelow">Κάτω από τις γραμμές προόδου</sys:String>
@@ -55,22 +55,22 @@
     <sys:String x:Key="LOCHowLongToBeatWithoutConfirmation">Χωρίς μήνυμα επιβεβαίωσης</sys:String>
     <sys:String x:Key="LOCHowLongToBeatEnableSuccessNotification">Ενεργοποίηση ειδοποίησης επιτυχίας</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatus">Automatically update game status in Playnite when importing user data from HowLongToBeat</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltb">Automatically update game status on HowLongToBeat when changing game status in Playnite</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltbOptionsTitle">When syncing Playnite status to HowLongToBeat</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltbOptionsHelp" xml:space="preserve">Data source:
-- Status/list is sent to HowLongToBeat.
-- Playtime comes from Playnite Playtime.
-- Completion date comes from Playnite Last activity.</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltbCompletedPlaytime">Completed: send Playnite playtime to HowLongToBeat (Main story)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltbCompletedDate">Completed: set completion date from Playnite last activity</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltbCompletionistPlaytime">Completionist: send Playnite playtime to HowLongToBeat (100%)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltbCompletionistDate">Completionist: set completion date from Playnite last activity</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatSyncPlaytimeShort">Current playtime</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatSyncDateShort">Last activity date</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatHltbStatusColumnHeader">HowLongToBeat status (target)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatPlayniteDataColumnHeader">Playnite data sent</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltbNotification">HowLongToBeat sync for {0}: status sent, playtime {1}, completion date {2}.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatus">Αυτόματη ενημέρωση της κατάστασης παιχνιδιού στο Playnite κατά την εισαγωγή δεδομένων χρήστη από το HowLongToBeat</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltb">Αυτόματη ενημέρωση της κατάστασης παιχνιδιού στο HowLongToBeat όταν αλλάζει στο Playnite</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltbOptionsTitle">Κατά τον συγχρονισμό της κατάστασης Playnite στο HowLongToBeat</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltbOptionsHelp" xml:space="preserve">Πηγή δεδομένων:
+- Η λίστα αποστέλλεται στο HowLongToBeat.
+- Η ώρα αναπαραγωγής προέρχεται από τον χρόνο παιχνιδιού στο Playnite.
+- Η ημερομηνία ολοκλήρωσης προέρχεται από την τελευταία δραστηριότητα στο Playnite</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltbCompletedPlaytime">Ολοκληρώθηκε: στείλτε τον χρόνο παιχνιδιού του Playnite στο HowLongToBeat (κύρια ιστορία)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltbCompletedDate">Ολοκληρώθηκε: ορίστε ημερομηνία ολοκλήρωσης από την τελευταία δραστηριότητα του Playnite</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltbCompletionistPlaytime">Completionist: στείλτε τον χρόνο παιχνιδιού του Playnite στο HowLongToBeat (100%)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltbCompletionistDate">Completionist: ορίστε ημερομηνία ολοκλήρωσης από την τελευταία δραστηριότητα του Playnite </sys:String>
+    <sys:String x:Key="LOCHowLongToBeatSyncPlaytimeShort">Τρέχων χρόνος παιχνιδιού</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatSyncDateShort">Τελευταία ημερομηνία δραστηριότητας</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatHltbStatusColumnHeader">Κατάσταση HowLongToBeat (στόχος)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatPlayniteDataColumnHeader">Απεσταλμένα δεδομένα Playnite</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltbNotification">Συγχρονισμός HowLongToBeat για {0}: η κατάσταση στάλθηκε, η ώρα αναπαραγωγής {1}, η ημερομηνία ολοκλήρωσης {2}.</sys:String>
     
     <sys:String x:Key="LOCHowLongToBeatAutoData">Λήψη δεδομένων παιχνιδιού</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoAccept">Αυτόματη επιλογή παιχνιδιού όταν βρίσκεται μόνο ένα παιχνίδι κατά την αναζήτηση</sys:String>
@@ -90,32 +90,32 @@
 
     <sys:String x:Key="LOCSelection">Επιλογή HowLongToBeat</sys:String>
     <sys:String x:Key="LOCHltbUsedVndb">Χρησιμοποιημένο Vndb</sys:String>
-    <sys:String x:Key="LOCHltbVndbSpeedLabel">VNDB speed</sys:String>
-    <sys:String x:Key="LOCHltbVndbLengthColumnSpeed">Speed</sys:String>
-    <sys:String x:Key="LOCHltbVndbLengthColumnMedian">Median</sys:String>
-    <sys:String x:Key="LOCHltbVndbLengthColumnAverage">Average</sys:String>
-    <sys:String x:Key="LOCHltbVndbLengthColumnStddev">Stddev</sys:String>
-    <sys:String x:Key="LOCHltbVndbLengthColumnVotes"># Votes</sys:String>
-    <sys:String x:Key="LOCHltbVndbSpeedSlow">Slow</sys:String>
-    <sys:String x:Key="LOCHltbVndbSpeedNormal">Normal</sys:String>
-    <sys:String x:Key="LOCHltbVndbSpeedFast">Fast</sys:String>
-    <sys:String x:Key="LOCHltbVndbSpeedTotal">Total</sys:String>
-    <sys:String x:Key="LOCHltbTabSearch">Search</sys:String>
-    <sys:String x:Key="LOCHltbTabManual">Enter manually</sys:String>
-    <sys:String x:Key="LOCHltbOpenOnWebsite">Search on HowLongToBeat</sys:String>
-    <sys:String x:Key="LOCHltbManualEntryHours">h</sys:String>
-    <sys:String x:Key="LOCHltbManualEntryMinutes">min</sys:String>
+    <sys:String x:Key="LOCHltbVndbSpeedLabel">Ταχύτητα VNDB</sys:String>
+    <sys:String x:Key="LOCHltbVndbLengthColumnSpeed">Ταχύτητα</sys:String>
+    <sys:String x:Key="LOCHltbVndbLengthColumnMedian">Ενδιάμεσος</sys:String>
+    <sys:String x:Key="LOCHltbVndbLengthColumnAverage">Μέσος όρος</sys:String>
+    <sys:String x:Key="LOCHltbVndbLengthColumnStddev">Τυπική απόκλιση</sys:String>
+    <sys:String x:Key="LOCHltbVndbLengthColumnVotes"># Ψήφων</sys:String>
+    <sys:String x:Key="LOCHltbVndbSpeedSlow">Αργή</sys:String>
+    <sys:String x:Key="LOCHltbVndbSpeedNormal">Κανονική</sys:String>
+    <sys:String x:Key="LOCHltbVndbSpeedFast">Γρήγορη</sys:String>
+    <sys:String x:Key="LOCHltbVndbSpeedTotal">Σύνολο</sys:String>
+    <sys:String x:Key="LOCHltbTabSearch">Αναζήτηση</sys:String>
+    <sys:String x:Key="LOCHltbTabManual">Χειροκίνητη εισαγωγή</sys:String>
+    <sys:String x:Key="LOCHltbOpenOnWebsite">Αναζήτηση στο HowLongToBeat</sys:String>
+    <sys:String x:Key="LOCHltbManualEntryHours">ω</sys:String>
+    <sys:String x:Key="LOCHltbManualEntryMinutes">λ</sys:String>
     <sys:String x:Key="LOCHltbManualEntryHltbId">HLTB ID</sys:String>
     <sys:String x:Key="LOCHowLongToBeatId">HLTB ID</sys:String>
-    <sys:String x:Key="LOCCommonLastRefresh">Last data refresh</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatCsvUserTimeToBeat">Time to beat (user profile)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatCsvUserMainStory">Main story (user reported)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatCsvUserMainExtra">Main + extra (user reported)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatCsvUserCompletionist">Completionist (user reported)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatCsvUserSolo">Solo (user reported)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatCsvUserCoOp">Co-Op (user reported)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatCsvUserVs">Vs (user reported)</sys:String>
-    <sys:String x:Key="LOCHltbManualEntryConfirm">Use manual entry</sys:String>
+    <sys:String x:Key="LOCCommonLastRefresh">Τελευταία ανανέωση δεδομένων</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatCsvUserTimeToBeat">Χρόνος ολοκλήρωσης (προφίλ χρήστη)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatCsvUserMainStory">Κύρια ιστορία (αναφερόμενο από χρήστες)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatCsvUserMainExtra">Κύρια + Extra (αναφερόμενο από χρήστες)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatCsvUserCompletionist">Completionist (αναφερόμενο από χρήστες)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatCsvUserSolo">Solo (αναφερόμενο από χρήστες)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatCsvUserCoOp">Συνεργατικό (αναφερόμενο από χρήστες)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatCsvUserVs">VS (αναφερόμενο από χρήστες)</sys:String>
+    <sys:String x:Key="LOCHltbManualEntryConfirm">Χρήση χειροκίνητης καταχώρησης</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatMainStory">Κύρια ιστορία</sys:String>
     <sys:String x:Key="LOCHowLongToBeatMainExtra">Κύρια + έξτρα</sys:String>
@@ -127,8 +127,8 @@
 
     <sys:String x:Key="LOCHowLongToBeatPlaying">Παίζεται τώρα</sys:String>
 
-    <sys:String x:Key="LOCRefresh">Refresh</sys:String>
-    <sys:String x:Key="LOCDelete">Delete</sys:String>
+    <sys:String x:Key="LOCRefresh">Ανανέωση</sys:String>
+    <sys:String x:Key="LOCDelete">Διαγραφή</sys:String>
 
     <!-- HowLongToBeat -->
 
@@ -136,34 +136,34 @@
 
     <!-- HowLongToBeatUserView -->
 
-    <sys:String x:Key="LOCHowLongToBeatCompletationStore">Παιχνίδια που ολοκληρώθηκαν με βάση το ηλεκτρ. κατάστημα</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatCompletationStore">Παιχνίδια που ολοκληρώθηκαν με βάση το ψηφιακό κατάστημα</sys:String>
     <sys:String x:Key="LOCHowLongToBeatCompletationProgress">Παιχνίδια που ολοκληρώθηκαν με την πάροδο του χρόνου</sys:String>
     
     <sys:String x:Key="LOCHowLongToBeatUserData">Δεδομένα χρήστη</sys:String>
     <sys:String x:Key="LocHowLongToBeatPlayniteData">Δεδομένα Playnite</sys:String>
     <sys:String x:Key="LOCHowLongToBeatCompleted">Ολοκληρώθηκε</sys:String>
 
-    <sys:String x:Key="LOCHltbFilterHltbListStatus">HLTB list</sys:String>
-    <sys:String x:Key="LOCHltbFilterHltbListStatusTooltip" xml:space="preserve">Filter by a list on your HowLongToBeat profile (Backlog, Playing, Replays, Beat, and so on).
-This is not the same as the per-game option &quot;Mark as Replay — I have played this before.&quot;</sys:String>
-    <sys:String x:Key="LOCHltbFilterHltbListStatusAll">All lists</sys:String>
-    <sys:String x:Key="LOCHltbUserListBacklog">Backlog</sys:String>
-    <sys:String x:Key="LOCHltbUserListPlaying">Playing</sys:String>
-    <sys:String x:Key="LOCHltbUserListReplays">Replays list</sys:String>
-    <sys:String x:Key="LOCHltbUserListReplaysTooltip" xml:space="preserve">Games placed in the Replays list on your HowLongToBeat profile (profile tab).
-A game can appear here without being marked &quot;Mark as Replay — I have played this before.&quot;</sys:String>
-    <sys:String x:Key="LOCHltbUserListCompleted">Beat</sys:String>
-    <sys:String x:Key="LOCHltbUserListRetired">Retired</sys:String>
-    <sys:String x:Key="LOCHltbUserListCustom">Custom</sys:String>
+    <sys:String x:Key="LOCHltbFilterHltbListStatus">Λίστα HLTB</sys:String>
+    <sys:String x:Key="LOCHltbFilterHltbListStatusTooltip" xml:space="preserve">Φιλτράρισμα με βάση μια λίστα στο προφίλ HowLongToBeat (Εκκρεμότητες, Παίζονται τώρα, Επαναλήψεις, Τερματισμένα και ούτω καθεξής).
+Αυτό δεν είναι το ίδιο με την επιλογή ανά-παιχνίδι &quot;Σημειωμένο για επανάληψη - Το έχω παίξει στο παρελθόν&quot;.</sys:String>
+    <sys:String x:Key="LOCHltbFilterHltbListStatusAll">Όλες οι λίστες</sys:String>
+    <sys:String x:Key="LOCHltbUserListBacklog">Λίστα εκκρεμοτήτων</sys:String>
+    <sys:String x:Key="LOCHltbUserListPlaying">Παίζονται τώρα</sys:String>
+    <sys:String x:Key="LOCHltbUserListReplays">Λίστα επαναλήψεων</sys:String>
+    <sys:String x:Key="LOCHltbUserListReplaysTooltip" xml:space="preserve">Παιχνίδια που τοποθετήθηκαν στη λίστα επαναλήψεων στο προφίλ HowLongToBeat (καρτέλα προφίλ).
+Ένα παιχνίδι μπορεί να εμφανιστεί εδώ χωρίς να έχει επισημανθεί &quot;Σημειωμένο για επανάληψη - Το έχω παίξει στο παρελθόν&quot;.</sys:String>
+    <sys:String x:Key="LOCHltbUserListCompleted">Ολοκρηρωμένα</sys:String>
+    <sys:String x:Key="LOCHltbUserListRetired">Παρατημένα</sys:String>
+    <sys:String x:Key="LOCHltbUserListCustom">Προσαρμοσμένο</sys:String>
 
     <sys:String x:Key="LOCHltbOnlyReplays">Μόνο επαναλήψεις</sys:String>
-    <sys:String x:Key="LOCHltbOnlyReplaysTooltip" xml:space="preserve">Only games with the HowLongToBeat option &quot;Mark as Replay — I have played this before.&quot;
-This is separate from the Replays list on your profile.</sys:String>
+    <sys:String x:Key="LOCHltbOnlyReplaysTooltip" xml:space="preserve">Μόνο παιχνίδια με την επιλογή &quot;Σημειωμένο για επανάληψη - Το έχω παίξει στο παρελθόν&quot;.
+Αυτό είναι ξεχωριστό από τη Λίστα αναπαραγωγής στο προφίλ σας.</sys:String>
     <sys:String x:Key="LOCHltbOnlyNotPlayed">Μόνο όσα δεν παίχτηκαν</sys:String>
 
     <sys:String x:Key="LOCHltbRemainingTime">Υπολειπόμενος χρόνος</sys:String>
-    <sys:String x:Key="LOCHltbColumnHltbLists">HLTB lists</sys:String>
-    <sys:String x:Key="LOCHltbColumnProgress">Progress</sys:String>
+    <sys:String x:Key="LOCHltbColumnHltbLists">Λίστες HLTB</sys:String>
+    <sys:String x:Key="LOCHltbColumnProgress">Πρόοδος</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatPluginGetUserView">Λήψη δεδομένων χρήστη</sys:String>
 
@@ -172,7 +172,7 @@ This is separate from the Replays list on your profile.</sys:String>
     <sys:String x:Key="LOCHowLongToBeatTimeCoOp">Χρόνος Co-op</sys:String>
     <sys:String x:Key="LOCHowLongToBeatTimeVs">Χρόνος Multi-Player</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatStorefront">Ηλεκτρ. κατάστημα</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatStorefront">Ψηφιακό κατάστημα</sys:String>
     
     <sys:String x:Key="LOCHltbAvgTimeByGame">Μέσος χρόνος ανά παιχνίδι</sys:String>
     <sys:String x:Key="LOCHltbAvgGameByMonth">Μέσος όρος παιχνιδιού ανά μήνα</sys:String>
@@ -181,11 +181,11 @@ This is separate from the Replays list on your profile.</sys:String>
     <sys:String x:Key="LOCHltbCountGameBeatenReplays">Αριθμός παιχνιδιών που τερματίστηκαν (σε επανάληψη)</sys:String>
     <sys:String x:Key="LOCHltbCountGameRetired">Αριθμός παρατημένων παιχνιδιών</sys:String>
 
-    <sys:String x:Key="LOCHltbStatsPlayTimeTitle">Play time</sys:String>
-    <sys:String x:Key="LOCHltbStatsCompletionTitle">Completion analysis</sys:String>
-    <sys:String x:Key="LOCHltbStatsHltbListsTitle">HLTB lists</sys:String>
-    <sys:String x:Key="LOCHltbStatsHltbListsChartTitle">Games per HLTB list</sys:String>
-    <sys:String x:Key="LOCHltbStatsMarkedAsReplayShort">Marked replay</sys:String>
+    <sys:String x:Key="LOCHltbStatsPlayTimeTitle">Χρόνος παιχνιδιού</sys:String>
+    <sys:String x:Key="LOCHltbStatsCompletionTitle">Ανάλυση ολοκλήρωσης</sys:String>
+    <sys:String x:Key="LOCHltbStatsHltbListsTitle">Λίστες HLTB</sys:String>
+    <sys:String x:Key="LOCHltbStatsHltbListsChartTitle">Παιχνίδια ανά λίστα HLTB</sys:String>
+    <sys:String x:Key="LOCHltbStatsMarkedAsReplayShort">Σήμανση επανάληψης</sys:String>
 
     <sys:String x:Key="LOCHltbUsedFilteredGames">Τρέχοντα φιλτραρισμένα παιχνίδια που χρησιμοποιήθηκαν</sys:String>
     <sys:String x:Key="LOCHltbOnlyNotPlayedGames">Μόνο παιχνίδια που δεν παίχτηκαν</sys:String>
@@ -207,23 +207,23 @@ This is separate from the Replays list on your profile.</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatSetCurrentTime">Θέλετε να αποστείλετε τον τρέχοντα χρόνο παιχνιδιού;</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatErrorNoHltbId">Cannot submit data for a game without HLTB ID ({0})</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatErrorNoHltbId">Αδυναμία υποβολής δεδομένων για παιχνίδι χωρίς HLTB ID ({0})</sys:String>
     <sys:String x:Key="LOCHowLongToBeatErrorNoPlatform">Αδυναμία υποβολής δεδομένων για παιχνίδι χωρίς πλατφόρμα ({0})</sys:String>
     <sys:String x:Key="LOCHowLongToBeatErrorNoPlatformDefaultUsed" xml:space="preserve">Παιχνίδι ({1}) χωρίς πλατφόρμα ({0}) που ορίζεται στις ρυθμίσεις του πρόσθετου.
 Παρακαλώ ρυθμίστε μία.
 Προεπιλεγμένη χρήση (PC)</sys:String>
 
-    <sys:String x:Key="LOCHowLongToBeatErrorSubmitFailed">Could not update your HowLongToBeat profile for {0}.</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatErrorSubmitUnauthorized">HowLongToBeat rejected the update (session expired or not authorized). Open the plugin settings and log in again.</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatErrorSubmitHttpStatus">HowLongToBeat returned HTTP error {0}.</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatErrorSubmitNoResponse">No response was received from HowLongToBeat. Check your connection and try again.</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatErrorSubmitSessionCookies">HowLongToBeat session cookies are missing. Open the plugin settings and log in again.</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatRefreshSessionCookies">Refreshing HowLongToBeat session…</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatErrorSubmitFailed">Αδυναμία ενημέρωσης του προφίλ HowLongToBeat για {0}.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatErrorSubmitUnauthorized">Το HowLongToBeat απέρριψε την ενημέρωση (η περίοδος σύνδεσης έληξε ή δεν έχετε εξουσιοδότηση). Ανοίξτε τις ρυθμίσεις του πρόσθετου (plugin) και συνδεθείτε ξανά.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatErrorSubmitHttpStatus">Το HowLongToBeat επέστρεψε σφάλμα HTTP {0}.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatErrorSubmitNoResponse">Δεν λήφθηκε απάντηση από το HowLongToBeat. Ελέγξτε τη σύνδεσή σας και δοκιμάστε ξανά.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatErrorSubmitSessionCookies">Λείπουν τα cookies περιόδου σύνδεσης του HowLongToBeat. Ανοίξτε τις ρυθμίσεις του πρόσθετου (plugin) και συνδεθείτε ξανά.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatRefreshSessionCookies">Ανανέωση περιόδου σύνδεσης HowLongToBeat…</sys:String>
 
 
     <!-- QuickSearch -->
 
-    <sys:String x:Key="LOCHltbQuickSearchTab">QuickSearch</sys:String>
+    <sys:String x:Key="LOCHltbQuickSearchTab">Γρήγορη Αναζήτηση</sys:String>
     <sys:String x:Key="LOCHltbQuickSearchDescription">Αναζήτηση παιχνιδιών στα δεδομένα HowLongToBeat</sys:String>
     <sys:String x:Key="LOCHltbQuickSearchByTTB">Εύρεση με βάση τον χρόνο ολοκλήρωσης</sys:String>
 
@@ -256,40 +256,40 @@ This is separate from the Replays list on your profile.</sys:String>
 
     <!-- Aliases -->
 
-    <sys:String x:Key="LOCHowLongToBeatAliases">Aliases</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesDescription" xml:space="preserve">Map multiple game titles to a single HowLongToBeat search title.
+    <sys:String x:Key="LOCHowLongToBeatAliases">Ψευδώνυμα</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesDescription" xml:space="preserve">Αντιστοίχιση πολλαπλών τίτλων παιχνιδιών σε έναν ενιαίο τίτλο αναζήτησης στο HowLongToBeat.
 
-Example:
-  Source: Pokemon Red Version
-  Target: Pokemon Red and Blue</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesSource">Source title</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesTarget">Target (HLTB title)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesReset">Reset</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesResetConfirm">Replace your current aliases with the default Pokémon dual-release aliases?</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImport">Import</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesExport">Export</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesOpenFile">Open aliases.json</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesFilePathUnavailable">Plugin user data path is not available.</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportNotFound">No alias file found: {0}</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportFailed">Failed to import alias file: {0} (see logs).</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportConfirm" xml:space="preserve">Import aliases from:\n{0}\n\nThis will replace your current aliases. Continue?</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesImportOk">Imported aliases from: {0}</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesExportFailed">Failed to export alias file: {0} (see logs).</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesExportOk">Exported aliases to: {0}</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesCellToolTip">Click a cell (or press F2) to edit. Press Enter to commit.</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAliasesTip">Tip: double-click a cell to edit. Aliases are saved when you click Save.</sys:String>
+Παράδειγμα:
+Πηγή: Pokemon Red Version
+Στόχος: Pokemon Red and Blue</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesSource">Τίτλος πηγής</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesTarget">Στόχος (Τίτλος HLTB)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesReset">Επαναφορά</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesResetConfirm">Να αντικατασταθούν τα τρέχοντα ψευδώνυμά σας με τα προεπιλεγμένα ψευδώνυμα διπλών κυκλοφοριών Pokémon;</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImport">Εισαγωγή</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesExport">Εξαγωγή</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesOpenFile">Άνοιγμα aliases.json</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesFilePathUnavailable">Η διαδρομή δεδομένων χρήστη του πρόσθετου δεν είναι διαθέσιμη.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportNotFound">Δε βρέθηκε κανένα αρχείο με ψευδώνυμα: {0}</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportFailed">Αποτυχία εισαγωγής αρχείου ψευδώνυμου: {0} (δείτε τα αρχεία καταγραφής).</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportConfirm" xml:space="preserve">Εισαγωγή ψευδωνύμων από:\n{0}\n\nΑυτό θα αντικαταστήσει τα τρέχοντα ψευδώνυμά σας. Συνέχεια;</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesImportOk">Εισαγόμενα ψευδώνυμα από: {0}</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesExportFailed">Αποτυχία εξαγωγής του αρχείου ψευδωνύμων: {0} (δείτε τα αρχεία καταγραφής)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesExportOk">Εξαγόμενα ψευδώνυμα σε: {0}</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesCellToolTip">Κάντε κλικ σε ένα κελί (ή πατήστε F2) για επεξεργασία. Πατήστε Enter για καταχώρηση</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAliasesTip">Συμβουλή: κάντε διπλό κλικ σε ένα κελί για επεξεργασία. Τα ψευδώνυμα (aliases) αποθηκεύονται όταν κάνετε κλικ στο Αποθήκευση.</sys:String>
 
     <!-- Platform and storefront mapping -->
 
-    <sys:String x:Key="LOCHowLongToBeatPlatformsMappingDescription" xml:space="preserve">Each row links a Playnite platform (from your library database) to the platform name sent to HowLongToBeat when you submit playtime.
-If the HLTB value is not set (----), the plugin uses PC as the default on submit.</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatStorefrontMappingDescription" xml:space="preserve">Each row links a Playnite library source (Steam, Epic, GOG, etc.) to the storefront sent to HowLongToBeat when you submit playtime.
-The left column is the Playnite source; the right column is the value stored in your plugin settings (StorefrontElements).</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatMappingColumnPlayniteOrigin">Playnite (source)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatMappingColumnHltbTarget">HowLongToBeat (submission)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatMappingPlatformDefaultHint">Not set — PC is used when submitting data</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatMappingStorefrontNotSetHint">Not set — storefront will be empty on submit</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatMappingPlayniteSourceIdToolTip">Playnite library source Id</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatMappingPlaynitePlatformIdToolTip">Playnite platform Id</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatPlatformsMappingDescription" xml:space="preserve">Κάθε γραμμή συνδέει μια πλατφόρμα Playnite (από τα δεδομένα της βιβλιοθήκης σας) με το όνομα της πλατφόρμας που αποστέλλεται στο HowLongToBeat όταν υποβάλλετε το χρόνο αναπαραγωγής.
+Αν η τιμή HLTB δεν έχει οριστεί (----), το πρόσθετο (plugin) χρησιμοποιεί το PC ως προεπιλογή κατά την υποβολή.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatStorefrontMappingDescription" xml:space="preserve">Κάθε γραμμή συνδέει μια πηγή βιβλιοθήκης Playnite (Steam, Epic, GOG, κλπ.) με το ψηφιακό κατάστημα που αποστέλλεται στο HowLongToBeat όταν υποβάλλετε το χρόνο αναπαραγωγής.
+Η αριστερή στήλη είναι η πηγή και η δεξιά στήλη είναι η τιμή που αποθηκεύεται στις ρυθμίσεις του πρόσθετου σας (StorefrontElements).</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatMappingColumnPlayniteOrigin">Playnite (προέλευση)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatMappingColumnHltbTarget">HowLongToBeat (Υποβολή)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatMappingPlatformDefaultHint">Δεν έχει οριστεί — Το PC χρησιμοποιείται κατά την υποβολή δεδομένων</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatMappingStorefrontNotSetHint">Δεν έχει οριστεί — το ψηφιακό κατάστημα θα είναι κενό κατά την υποβολή</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatMappingPlayniteSourceIdToolTip">Αναγνωριστικό πηγής βιβλιοθήκης του Playnite</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatMappingPlaynitePlatformIdToolTip">Αναγνωριστικό πλατφόρμας του Playnite</sys:String>
 
 </ResourceDictionary>
