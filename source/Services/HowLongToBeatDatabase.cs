@@ -624,6 +624,65 @@ namespace HowLongToBeat.Services
 
         #endregion
 
+        #region Auto sync tag
+
+        private Guid? ExcludeAutoPlaytimeSyncTagId => API.Instance.Database.Tags?
+            .FirstOrDefault(x => x.Name == $"{TagBefore} {ResourceProvider.GetString("LOCHowLongToBeatExcludeAutoPlaytimeSyncTag")}")?.Id;
+
+        public bool IsExcludedFromAutoPlaytimeSync(Game game)
+        {
+            try
+            {
+                return ExcludeAutoPlaytimeSyncTagId is Guid tagId && game.TagIds?.Contains(tagId) == true;
+            }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, false, true, PluginName);
+                return false;
+            }
+        }
+
+        public void SetExcludedFromAutoPlaytimeSync(IEnumerable<Game> games, bool excluded)
+        {
+            try
+            {
+                Guid? tagId = ExcludeAutoPlaytimeSyncTagId;
+                if (excluded && tagId == null)
+                {
+                    tagId = CheckTagExist(ResourceProvider.GetString("LOCHowLongToBeatExcludeAutoPlaytimeSyncTag"));
+                }
+
+                if (tagId == null)
+                {
+                    return;
+                }
+
+                foreach (Game game in games)
+                {
+                    game.TagIds = game.TagIds ?? new List<Guid>();
+                    if (excluded)
+                    {
+                        if (game.TagIds.Contains(tagId.Value))
+                        {
+                            continue;
+                        }
+                        game.TagIds.Add(tagId.Value);
+                    }
+                    else if (!game.TagIds.Remove(tagId.Value))
+                    {
+                        continue;
+                    }
+                    API.Instance.Database.Games.Update(game);
+                }
+            }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, false, true, PluginName);
+            }
+        }
+
+        #endregion
+
         #region User data
         public TitleList GetUserHltbData(string hltbId)
         {

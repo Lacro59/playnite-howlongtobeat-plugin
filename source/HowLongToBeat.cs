@@ -256,7 +256,8 @@ namespace HowLongToBeat
             }
 
             // AutoSetCurrentPlayTime
-            if (PluginDatabase.PluginSettings.AutoSetCurrentPlayTime)
+            if (PluginDatabase.PluginSettings.AutoSetCurrentPlayTime
+                && !PluginDatabase.IsExcludedFromAutoPlaytimeSync(args.Game))
             {
                 try
                 {

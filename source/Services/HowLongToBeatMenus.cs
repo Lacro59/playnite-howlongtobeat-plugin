@@ -56,7 +56,17 @@ namespace HowLongToBeat.Services
 
             if (gameHowLongToBeat?.HasData == true)
             {
+                bool allExcludedFromAutoSync = args.Games.All(Database.IsExcludedFromAutoPlaytimeSync);
                 HltbDataUser gameData = gameHowLongToBeat.Items?.FirstOrDefault();
+
+                gameMenuItems.Add(new GameMenuItem
+                {
+                    MenuSection = ResourceProvider.GetString("LOCHowLongToBeat"),
+                    Description = allExcludedFromAutoSync
+                        ? ResourceProvider.GetString("LOCHowLongToBeatEnableAutoPlaytimeSyncForGame")
+                        : ResourceProvider.GetString("LOCHowLongToBeatExcludeAutoPlaytimeSyncForGame"),
+                    Action = (mainMenuItem) => Database.SetExcludedFromAutoPlaytimeSync(args.Games, !allExcludedFromAutoSync)
+                });
 
                 gameMenuItems.Add(new GameMenuItem
                 {

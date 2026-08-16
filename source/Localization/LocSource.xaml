@@ -201,6 +201,9 @@ This is separate from the Replays list on your profile.</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatSetCurrentTimeManual">Set your current playtime</sys:String>
     <sys:String x:Key="LOCHowLongToBeatSetCurrentTimeManualAll">Set your current playtime for all games</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExcludeAutoPlaytimeSyncTag">Excluded from auto playtime sync</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatExcludeAutoPlaytimeSyncForGame">Exclude game from auto playtime sync</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatEnableAutoPlaytimeSyncForGame">Enable auto playtime sync for game</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatSetCurrentCompletedTimeManualOn">Set your current completed playtime on</sys:String>
     <sys:String x:Key="LOCHowLongToBeatSetCurrentMultiTimeManualOn">Set your current muli playtime on</sys:String>
