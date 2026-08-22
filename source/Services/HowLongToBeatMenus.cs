@@ -31,6 +31,7 @@ namespace HowLongToBeat.Services
 
             Game gameMenu = args.Games.First();
             List<Guid> ids = args.Games.Select(x => x.Id).ToList();
+            bool allExcludedFromAutoSync = args.Games.All(Database.IsExcludedFromAutoPlaytimeSync);
             GameHowLongToBeat gameHowLongToBeat = Database.Get(gameMenu, true);
 
             List<GameMenuItem> gameMenuItems = new List<GameMenuItem>
@@ -51,22 +52,21 @@ namespace HowLongToBeat.Services
                             API.Instance.Dialogs.ShowErrorMessage(ResourceProvider.GetString("LOCDatabaseErroTitle"), Database.PluginName);
                         }
                     }
-                }
-            };
-
-            if (gameHowLongToBeat?.HasData == true)
-            {
-                bool allExcludedFromAutoSync = args.Games.All(Database.IsExcludedFromAutoPlaytimeSync);
-                HltbDataUser gameData = gameHowLongToBeat.Items?.FirstOrDefault();
-
-                gameMenuItems.Add(new GameMenuItem
+                },
+                new GameMenuItem
                 {
                     MenuSection = ResourceProvider.GetString("LOCHowLongToBeat"),
                     Description = allExcludedFromAutoSync
                         ? ResourceProvider.GetString("LOCHowLongToBeatEnableAutoPlaytimeSyncForGame")
                         : ResourceProvider.GetString("LOCHowLongToBeatExcludeAutoPlaytimeSyncForGame"),
                     Action = (mainMenuItem) => Database.SetExcludedFromAutoPlaytimeSync(args.Games, !allExcludedFromAutoSync)
-                });
+                }
+
+            };
+
+            if (gameHowLongToBeat?.HasData == true)
+            {
+                HltbDataUser gameData = gameHowLongToBeat.Items?.FirstOrDefault();
 
                 gameMenuItems.Add(new GameMenuItem
                 {
