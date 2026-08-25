@@ -936,7 +936,7 @@
                             </CheckBox>
 
                             <CheckBox Grid.Column="2"
-                                      IsChecked="True"
+                                      IsChecked="False"
                                       Name="PART_HidePlayedGames"
                                       Click="PART_HidePlayedGames_Click">
                                 <Label Content="{DynamicResource LOCHltbOnlyNotPlayedGames}"/>

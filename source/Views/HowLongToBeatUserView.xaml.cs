@@ -106,6 +106,9 @@ namespace HowLongToBeat.Views
             }
             else
             {
+                // Restore Playnite Data filters without waiting for LoadUserDataAsync / IsVisibleChanged
+                // (those paths only run when TitlesList is non-empty).
+                ApplyPlayniteDataFiltersFromSettings(PluginDatabase.PluginSettings.filterSettings);
                 SetPlayniteData();
                 PART_UserData.Visibility = Visibility.Collapsed;
                 PART_TabControl.SelectedIndex = 1;
@@ -808,7 +811,7 @@ namespace HowLongToBeat.Views
 
         private void ApplyPlayniteDataFiltersFromSettings(FilterSettings filterSettings)
         {
-            if (PART_FilteredGames == null || PART_HidePlayedGames == null)
+            if (filterSettings == null || PART_FilteredGames == null || PART_HidePlayedGames == null)
             {
                 return;
             }
