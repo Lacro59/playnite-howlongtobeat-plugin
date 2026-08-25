@@ -52,6 +52,11 @@ namespace HowLongToBeat
 
         public bool EnableVerboseLogging { get; set; } = false;
 
+        /// <summary>
+        /// Last HLTB search API path that successfully passed auth init (for example <c>/api/search/site</c>).
+        /// </summary>
+        public string SearchApiEndpoint { get; set; } = "/api/search/site";
+
         public bool EnableProgressBarInDataView { get; set; } = true;
 
         public Dictionary<string, string> GameNameAliases { get; set; } = new Dictionary<string, string>();

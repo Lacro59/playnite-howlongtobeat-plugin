@@ -511,7 +511,13 @@ namespace HowLongToBeat.Services
         private static string UrlPostData => UrlBase + "/api/submit";
         private static string UrlPostDataEdit => UrlBase + "/submit/edit/{0}";
 
-        private static string SearchEndPoint => "/api/bleed";
+        private static string DefaultSearchApiEndpoint => "/api/search/site";
+
+        /// <summary>
+        /// Persisted or default HLTB search API path used when script discovery fails.
+        /// </summary>
+        private static string SearchEndPoint => GetPersistedSearchEndpoint();
+
         private static string UrlSearch => UrlBase + SearchEndPoint;
 
         private static string UrlGameImg => UrlBase + "/games/{0}";
@@ -605,6 +611,7 @@ namespace HowLongToBeat.Services
             HapAvailable = HapDocType != null;
 
             UserLogin = PluginDatabase.PluginSettings.UserLogin;
+            HydrateSearchUrlFromSettings();
 
             CookiesDomains = new List<string>
             {
@@ -1291,6 +1298,147 @@ namespace HowLongToBeat.Services
         #region Search
 
         /// <summary>
+        /// Returns the search API path from plugin settings, or <see cref="DefaultSearchApiEndpoint"/>.
+        /// </summary>
+        private static string GetPersistedSearchEndpoint()
+        {
+            try
+            {
+                string fromSettings = PluginDatabase?.PluginSettings?.SearchApiEndpoint;
+                if (!fromSettings.IsNullOrWhiteSpace())
+                {
+                    return NormalizeSearchApiEndpoint(fromSettings);
+                }
+            }
+            catch { }
+
+            return DefaultSearchApiEndpoint;
+        }
+
+        /// <summary>
+        /// Normalizes a search API path to <c>/api/…</c> form.
+        /// </summary>
+        private static string NormalizeSearchApiEndpoint(string endpoint)
+        {
+            if (endpoint.IsNullOrWhiteSpace())
+            {
+                return DefaultSearchApiEndpoint;
+            }
+
+            endpoint = endpoint.Trim();
+            if (!endpoint.StartsWith("/api/", StringComparison.OrdinalIgnoreCase))
+            {
+                endpoint = "/api/" + endpoint.TrimStart('/');
+            }
+
+            return endpoint;
+        }
+
+        /// <summary>
+        /// Returns true for obsolete HLTB search paths that must not be persisted.
+        /// </summary>
+        private static bool IsLegacySearchEndpoint(string endpoint)
+        {
+            if (endpoint.IsNullOrWhiteSpace())
+            {
+                return true;
+            }
+
+            if (string.Equals(endpoint, "/api/bleed", StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+
+            if (string.Equals(endpoint, "/api/find", StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+
+            string trimmed = endpoint.Trim('/');
+            if (trimmed.StartsWith("api/", StringComparison.OrdinalIgnoreCase))
+            {
+                trimmed = trimmed.Substring(4);
+            }
+
+            return string.Equals(trimmed, "find", StringComparison.OrdinalIgnoreCase)
+                || string.Equals(trimmed, "bleed", StringComparison.OrdinalIgnoreCase);
+        }
+
+        /// <summary>
+        /// Loads the persisted search endpoint into the in-session <see cref="SearchUrl"/> cache.
+        /// </summary>
+        private static void HydrateSearchUrlFromSettings()
+        {
+            string persisted = GetPersistedSearchEndpoint();
+            CacheSearchUrlInMemory(persisted);
+            try { Common.LogDebug(true, $"HLTB search: hydrated SearchUrl from settings endpoint='{persisted}'"); } catch { }
+        }
+
+        /// <summary>
+        /// Updates the in-session search endpoint cache.
+        /// </summary>
+        private static void CacheSearchUrlInMemory(string endpoint)
+        {
+            if (endpoint.IsNullOrWhiteSpace())
+            {
+                return;
+            }
+
+            lock (SearchUrlLock)
+            {
+                SearchUrl = endpoint;
+            }
+        }
+
+        /// <summary>
+        /// Uses the persisted search endpoint as fallback and refreshes the in-session cache.
+        /// </summary>
+        private static string UsePersistedSearchEndpointFallback(string reason)
+        {
+            string endpoint = SearchEndPoint;
+            CacheSearchUrlInMemory(endpoint);
+            try { Logger.Warn($"HLTB search: {reason}; using persisted endpoint '{endpoint}'"); } catch { }
+            return endpoint;
+        }
+
+        /// <summary>
+        /// Saves a search endpoint to plugin settings after a successful auth init.
+        /// </summary>
+        private void PersistSearchApiEndpoint(string apiEndpoint)
+        {
+            try
+            {
+                if (apiEndpoint.IsNullOrWhiteSpace() || IsLegacySearchEndpoint(apiEndpoint))
+                {
+                    return;
+                }
+
+                string normalized = NormalizeSearchApiEndpoint(apiEndpoint);
+                var settings = PluginDatabase?.PluginSettings;
+                var plugin = PluginDatabase?.Plugin;
+                if (settings == null || plugin == null)
+                {
+                    return;
+                }
+
+                if (string.Equals(settings.SearchApiEndpoint ?? string.Empty, normalized, StringComparison.OrdinalIgnoreCase))
+                {
+                    return;
+                }
+
+                settings.SearchApiEndpoint = normalized;
+                plugin.SavePluginSettings(settings);
+                CacheSearchUrlInMemory(normalized);
+                try { Logger.Info($"HLTB search: persisted endpoint '{normalized}' to settings"); } catch { }
+                Common.LogDebug(true, $"HLTB search: persisted endpoint='{normalized}'");
+            }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, false, true, PluginDatabase.PluginName);
+            }
+        }
+
+        /// <summary>
         /// Clears the in-session discovered search endpoint so the next lookup can re-scrape or use <see cref="SearchEndPoint"/>.
         /// </summary>
         /// <param name="reason">Short explanation for logs.</param>
@@ -1313,7 +1461,7 @@ namespace HowLongToBeat.Services
         /// Concurrent callers share a single in-flight discovery (single-flight).
         /// </summary>
         /// <param name="forceRediscover">When true, ignores the cached discovered endpoint and re-scrapes the site.</param>
-        /// <returns>The search API path (for example <c>/api/bleed</c>).</returns>
+        /// <returns>The search API path (for example <c>/api/search/site</c>).</returns>
         private async Task<string> GetSearchUrl(bool forceRediscover = false)
         {
             if (!forceRediscover && !SearchUrl.IsNullOrEmpty() && !SearchUrl.Contains("error"))
@@ -1365,8 +1513,7 @@ namespace HowLongToBeat.Services
                         {
                             if (!httpResp.IsSuccessStatusCode)
                             {
-                                try { Logger.Warn($"HLTB search: homepage HTTP {(int)httpResp.StatusCode}; using SearchEndPoint '{SearchEndPoint}'"); } catch { }
-                                return SearchEndPoint;
+                                return UsePersistedSearchEndpointFallback($"homepage HTTP {(int)httpResp.StatusCode}");
                             }
 
                             response = await httpResp.Content.ReadAsStringAsync().ConfigureAwait(false);
@@ -1374,14 +1521,12 @@ namespace HowLongToBeat.Services
                     }
                     catch (TaskCanceledException)
                     {
-                        try { Logger.Warn($"HLTB search: homepage timeout ({ScriptDownloadTimeoutMs}ms); using SearchEndPoint '{SearchEndPoint}'"); } catch { }
-                        return SearchEndPoint;
+                        return UsePersistedSearchEndpointFallback($"homepage timeout ({ScriptDownloadTimeoutMs}ms)");
                     }
                     catch (Exception ex)
                     {
                         Common.LogError(ex, false, true, PluginDatabase.PluginName);
-                        try { Logger.Warn($"HLTB search: homepage download error; using SearchEndPoint '{SearchEndPoint}'"); } catch { }
-                        return SearchEndPoint;
+                        return UsePersistedSearchEndpointFallback("homepage download error");
                     }
                 }
 
@@ -1437,13 +1582,16 @@ namespace HowLongToBeat.Services
                     var searchMatch = Regex.Match(scriptContent, pattern, RegexOptions.Singleline | RegexOptions.IgnoreCase);
                     if (searchMatch.Success)
                     {
-                        string suffix = searchMatch.Groups[1].Value;
-                        if (suffix.Contains("/"))
+                        // Keep the full path (e.g. "search/site"); truncating to the first segment
+                        // produced a dead "/api/search" after HLTB moved the POST endpoint.
+                        string suffix = searchMatch.Groups[1].Value?.Trim('/');
+                        if (suffix.IsNullOrEmpty())
                         {
-                            suffix = suffix.Split('/')[0];
+                            continue;
                         }
 
-                        if (suffix != "find")
+                        string firstSegment = suffix.Contains("/") ? suffix.Split('/')[0] : suffix;
+                        if (!string.Equals(firstSegment, "find", StringComparison.OrdinalIgnoreCase))
                         {
                             string discovered = "/api/" + suffix;
                             bool newlyCached = false;
@@ -1474,8 +1622,7 @@ namespace HowLongToBeat.Services
                 Common.LogError(ex, false, true, PluginDatabase.PluginName);
             }
 
-            try { Logger.Warn($"HLTB search: no endpoint discovered from scripts; using SearchEndPoint '{SearchEndPoint}'"); } catch { }
-            return SearchEndPoint;
+            return UsePersistedSearchEndpointFallback("no endpoint discovered from scripts");
         }
 
         /// <summary>
@@ -1641,6 +1788,7 @@ namespace HowLongToBeat.Services
                     if (headerParts != null)
                     {
                         try { Common.LogDebug(true, $"HLTB auth cache store endpoint='{apiEndpoint}' ttlSec=90 hasHp=1"); } catch { }
+                        PersistSearchApiEndpoint(apiEndpoint);
                         return headerParts;
                     }
 
