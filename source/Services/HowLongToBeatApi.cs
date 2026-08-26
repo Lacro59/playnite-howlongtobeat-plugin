@@ -1583,7 +1583,7 @@ namespace HowLongToBeat.Services
                 {
                     new HttpHeader { Key = "Referer", Value = UrlBase }
                 };
-                string url = $"{UrlBase}{apiEndpoint}/init?t={DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()}";
+                string url = $"{UrlBase}{apiEndpoint}{(apiEndpoint == "/api/search" ? "/site/init" : "/init")}?t={DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()}";
                 string response = null;
                 try
                 {
@@ -2014,7 +2014,7 @@ namespace HowLongToBeat.Services
                 }
 
                 Dictionary<string, string> headerParts = authResolution.Item1;
-                string searchUrl = authResolution.Item2;
+                string searchUrl = authResolution.Item2 == "/api/search" ? $"{authResolution.Item2}/site" : authResolution.Item2;
                 Common.LogDebug(true, $"ApiSearch: POST endpoint='{searchUrl}' game='{name}' platform='{platform}'");
                 string token = headerParts.TryGetValue("Token", out string tokenValue) ? tokenValue : null;
                 string hpKey = headerParts.TryGetValue("Hpkey", out string hpKeyValue) ? hpKeyValue : null;
