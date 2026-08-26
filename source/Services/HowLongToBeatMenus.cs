@@ -32,6 +32,7 @@ namespace HowLongToBeat.Services
             Game gameMenu = args.Games.First();
             List<Guid> ids = args.Games.Select(x => x.Id).ToList();
             GameHowLongToBeat gameHowLongToBeat = Database.Get(gameMenu, true);
+            bool allIgnored = args.Games.All(g => Database.IsGameIgnoredForPlaytimeSync(g));
 
             List<GameMenuItem> gameMenuItems = new List<GameMenuItem>
             {
@@ -49,6 +50,32 @@ namespace HowLongToBeat.Services
                         {
                             Common.LogError(ex, false, $"Error to load game data for {args.Games.First().Name}");
                             API.Instance.Dialogs.ShowErrorMessage(ResourceProvider.GetString("LOCDatabaseErroTitle"), Database.PluginName);
+                        }
+                    }
+                },
+                new GameMenuItem
+                {
+                    MenuSection = ResourceProvider.GetString("LOCHowLongToBeat"),
+                    Description = allIgnored
+                        ? ResourceProvider.GetString("LOCHowLongToBeatIgnoreSyncRemove")
+                        : ResourceProvider.GetString("LOCHowLongToBeatIgnoreSyncAdd"),
+                    Action = (gameMenuItem) =>
+                    {
+                        foreach (Game game in args.Games)
+                        {
+                            if (game == null)
+                            {
+                                continue;
+                            }
+
+                            if (allIgnored)
+                            {
+                                Database.RemoveIgnoreSyncTag(game);
+                            }
+                            else
+                            {
+                                Database.AddIgnoreSyncTag(game);
+                            }
                         }
                     }
                 }

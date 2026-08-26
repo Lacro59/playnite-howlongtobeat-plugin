@@ -1,4 +1,5 @@
-﻿using CommonPluginsShared;
+﻿using CommonPluginsControls.Controls;
+using CommonPluginsShared;
 using CommonPluginsShared.Commands;
 using CommonPluginsShared.Models;
 using HowLongToBeat.Models;
@@ -9,6 +10,7 @@ using Playnite.SDK.Data;
 using Playnite.SDK.Models;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Drawing.Imaging;
 using System.IO;
 using System.IO.Abstractions;
@@ -28,6 +30,14 @@ namespace HowLongToBeat.Views
 
         private TextBlock tbControl;
         private HowLongToBeatSettings _settingsRef;
+        private ObservableCollection<Game> _ignoreSyncGames;
+        private bool _ignoreSyncListInitialized;
+
+        /// <summary>
+        /// Pending ignore-sync game ids edited in the settings UI.
+        /// Null when the Ignored games tab was never opened; EndEdit then leaves tags unchanged.
+        /// </summary>
+        public static List<Guid> EditingIgnoreSyncGameIds { get; private set; }
 
         public static SolidColorBrush ThumbSolidColorBrush;
         public static ThemeLinearGradient ThumbLinearGradient;
@@ -1031,6 +1041,166 @@ namespace HowLongToBeat.Views
                 }
             }
             catch { }
+        }
+
+        private void TabIgnoreSync_GotFocus(object sender, RoutedEventArgs e)
+        {
+            EnsureIgnoreSyncListInitialized();
+        }
+
+        private void EnsureIgnoreSyncListInitialized()
+        {
+            try
+            {
+                if (_ignoreSyncListInitialized || PluginDatabase == null)
+                {
+                    return;
+                }
+
+                _ignoreSyncGames = new ObservableCollection<Game>(PluginDatabase.GetGamesIgnoredForPlaytimeSync());
+                PART_IgnoreSyncList.ItemsSource = _ignoreSyncGames;
+                SyncEditingIgnoreSyncGameIds();
+                _ignoreSyncListInitialized = true;
+            }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, false, true, PluginDatabase?.PluginName);
+            }
+        }
+
+        private void SyncEditingIgnoreSyncGameIds()
+        {
+            EditingIgnoreSyncGameIds = _ignoreSyncGames?.Select(g => g.Id).ToList() ?? new List<Guid>();
+        }
+
+        /// <summary>
+        /// Applies pending ignore-sync list edits to Playnite tags when settings are saved.
+        /// No-op when the Ignored games tab was never opened.
+        /// </summary>
+        public static void ApplyEditingIgnoreSyncChanges()
+        {
+            if (EditingIgnoreSyncGameIds == null || PluginDatabase == null)
+            {
+                return;
+            }
+
+            try
+            {
+                HashSet<Guid> pendingIds = new HashSet<Guid>(EditingIgnoreSyncGameIds);
+                HashSet<Guid> currentIds = new HashSet<Guid>(
+                    PluginDatabase.GetGamesIgnoredForPlaytimeSync().Select(g => g.Id));
+
+                foreach (Guid gameId in pendingIds.Where(id => !currentIds.Contains(id)))
+                {
+                    Game game = API.Instance?.Database?.Games?.Get(gameId);
+                    if (game != null)
+                    {
+                        PluginDatabase.AddIgnoreSyncTag(game);
+                    }
+                }
+
+                foreach (Guid gameId in currentIds.Where(id => !pendingIds.Contains(id)))
+                {
+                    Game game = API.Instance?.Database?.Games?.Get(gameId);
+                    if (game != null)
+                    {
+                        PluginDatabase.RemoveIgnoreSyncTag(game);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, false, true, PluginDatabase.PluginName);
+            }
+            finally
+            {
+                EditingIgnoreSyncGameIds = null;
+            }
+        }
+
+        /// <summary>
+        /// Discards pending ignore-sync list edits when settings are cancelled.
+        /// </summary>
+        public static void CancelEditingIgnoreSyncChanges()
+        {
+            EditingIgnoreSyncGameIds = null;
+        }
+
+        private void ButtonIgnoreSyncAddGame_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                EnsureIgnoreSyncListInitialized();
+                if (_ignoreSyncGames == null)
+                {
+                    return;
+                }
+
+                IgnoreSyncAddGamesView view = new IgnoreSyncAddGamesView(
+                    PluginDatabase,
+                    _ignoreSyncGames.Select(g => g.Id));
+                Window window = PlayniteUiHelper.CreateExtensionWindow(
+                    PluginDatabase.PluginName + " - " + ResourceProvider.GetString("LOCHowLongToBeatIgnoreSyncAddDialogTitle"),
+                    view);
+                _ = window.ShowDialog();
+
+                if (!view.Confirmed)
+                {
+                    return;
+                }
+
+                foreach (Game game in view.GetSelectedGames())
+                {
+                    if (game == null || _ignoreSyncGames.Any(g => g.Id == game.Id))
+                    {
+                        continue;
+                    }
+
+                    _ignoreSyncGames.Add(game);
+                }
+
+                List<Game> ordered = _ignoreSyncGames.OrderBy(g => g.Name).ToList();
+                _ignoreSyncGames.Clear();
+                foreach (Game game in ordered)
+                {
+                    _ignoreSyncGames.Add(game);
+                }
+
+                SyncEditingIgnoreSyncGameIds();
+            }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, false, true, PluginDatabase.PluginName);
+            }
+        }
+
+        private void ButtonIgnoreSyncRemoveItem_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                EnsureIgnoreSyncListInitialized();
+                if (_ignoreSyncGames == null || !(sender is Button button))
+                {
+                    return;
+                }
+
+                Game game = button.Tag as Game ?? button.DataContext as Game;
+                if (game == null)
+                {
+                    return;
+                }
+
+                Game toRemove = _ignoreSyncGames.FirstOrDefault(g => g.Id == game.Id);
+                if (toRemove != null)
+                {
+                    _ = _ignoreSyncGames.Remove(toRemove);
+                    SyncEditingIgnoreSyncGameIds();
+                }
+            }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, false, true, PluginDatabase.PluginName);
+            }
         }
     }
 

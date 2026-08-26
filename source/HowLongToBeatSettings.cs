@@ -707,6 +707,7 @@ namespace HowLongToBeat
         public void BeginEdit()
         {
             EditingClone = Serialization.GetClone(Settings);
+            HowLongToBeatSettingsView.CancelEditingIgnoreSyncChanges();
         }
 
         // Code executed when user decides to cancel any changes made since BeginEdit was called.
@@ -715,6 +716,7 @@ namespace HowLongToBeat
         {
             Settings = EditingClone;
             try { Settings.SyncAliasesListFromDictionary(); } catch { }
+            HowLongToBeatSettingsView.CancelEditingIgnoreSyncChanges();
         }
 
         // Code executed when user decides to confirm changes made since BeginEdit was called.
@@ -750,6 +752,8 @@ namespace HowLongToBeat
                 Settings.UseHtltbRushed = EditingClone.UseHtltbRushed;
                 Settings.UseHtltbLeisure = EditingClone.UseHtltbLeisure;
             }
+
+            HowLongToBeatSettingsView.ApplyEditingIgnoreSyncChanges();
 
             Plugin.SavePluginSettings(Settings);
             HowLongToBeat.PluginDatabase.PluginSettings = this.Settings;

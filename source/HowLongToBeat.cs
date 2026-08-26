@@ -260,6 +260,12 @@ namespace HowLongToBeat
             {
                 try
                 {
+                    if (PluginDatabase.IsGameIgnoredForPlaytimeSync(args.Game))
+                    {
+                        Logger.Info($"Skipping auto playtime sync for ignored game {args.Game?.Name}");
+                        return;
+                    }
+
                     MessageBoxResult result = MessageBoxResult.Yes;
                     if (!PluginDatabase.PluginSettings.AutoSetCurrentPlayTimeWithoutConfirmation)
                     {

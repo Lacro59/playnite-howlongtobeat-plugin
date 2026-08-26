@@ -237,6 +237,9 @@
     <Compile Include="Views\HowLongToBeatSelect.xaml.cs">
       <DependentUpon>HowLongToBeatSelect.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\IgnoreSyncAddGamesView.xaml.cs">
+      <DependentUpon>IgnoreSyncAddGamesView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\HowLongToBeatSettingsView.xaml.cs">
       <DependentUpon>HowLongToBeatSettingsView.xaml</DependentUpon>
     </Compile>
@@ -545,6 +548,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\HowLongToBeatSelect.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\IgnoreSyncAddGamesView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

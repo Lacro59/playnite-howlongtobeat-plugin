@@ -525,6 +525,175 @@ namespace HowLongToBeat.Services
 
         #region Tag
 
+        // Ignore-sync tag name comes from LOCHowLongToBeatIgnoreSyncTag (localized), prefixed with TagBefore ([HLTB]).
+        // If the user changes Playnite UI language, ResourceProvider may resolve a different label and CheckTagExist
+        // creates a new tag; games tagged under the previous language no longer match FindExistingIgnoreSyncTagId
+        // until re-tagged. Same limitation as playtime range tags. A fixed English label would avoid duplicates.
+
+        /// <summary>
+        /// Resolves the ignore-sync tag ID without creating it when missing.
+        /// </summary>
+        /// <returns>Existing tag ID, or <c>null</c>.</returns>
+        private Guid? FindExistingIgnoreSyncTagId()
+        {
+            string tagLabel = ResourceProvider.GetString("LOCHowLongToBeatIgnoreSyncTag");
+            string fullName = TagBefore.IsNullOrEmpty()
+                ? tagLabel
+                : string.Format("{0} {1}", TagBefore, tagLabel);
+
+            Tag existing = API.Instance?.Database?.Tags?
+                .FirstOrDefault(t => t != null && string.Equals(t.Name, fullName, StringComparison.Ordinal));
+
+            return existing?.Id;
+        }
+
+        /// <summary>
+        /// Returns the Playnite tag ID used to exclude a game from automatic playtime sync, creating the tag if needed.
+        /// </summary>
+        /// <returns>Tag ID, or <c>null</c> if the tag could not be created.</returns>
+        public Guid? GetIgnoreSyncTagId()
+        {
+            return CheckTagExist(ResourceProvider.GetString("LOCHowLongToBeatIgnoreSyncTag"));
+        }
+
+        /// <inheritdoc/>
+        protected override IEnumerable<Guid> GetProtectedPluginTagIds()
+        {
+            Guid? ignoreTagId = FindExistingIgnoreSyncTagId();
+            if (ignoreTagId != null)
+            {
+                yield return ignoreTagId.Value;
+            }
+        }
+
+        /// <summary>
+        /// Indicates whether the game is tagged to skip automatic HowLongToBeat playtime sync.
+        /// </summary>
+        /// <param name="game">Playnite game.</param>
+        /// <returns><c>true</c> when the ignore-sync tag is present.</returns>
+        public bool IsGameIgnoredForPlaytimeSync(Game game)
+        {
+            if (game?.TagIds == null || game.TagIds.Count == 0)
+            {
+                return false;
+            }
+
+            Guid? ignoreTagId = FindExistingIgnoreSyncTagId();
+            return ignoreTagId != null && game.TagIds.Contains(ignoreTagId.Value);
+        }
+
+        /// <summary>
+        /// Adds the ignore-sync tag to the game and persists the change.
+        /// </summary>
+        /// <param name="game">Playnite game.</param>
+        public void AddIgnoreSyncTag(Game game)
+        {
+            if (game == null)
+            {
+                return;
+            }
+
+            Guid? ignoreTagId = GetIgnoreSyncTagId();
+            if (ignoreTagId == null)
+            {
+                return;
+            }
+
+            AppendTagId(game, ignoreTagId.Value);
+            PersistGameUpdate(game);
+            Common.LogDebug(true, $"Added ignore playtime sync tag for {game.Name}");
+        }
+
+        /// <summary>
+        /// Removes the ignore-sync tag from the game and persists the change.
+        /// </summary>
+        /// <param name="game">Playnite game.</param>
+        public void RemoveIgnoreSyncTag(Game game)
+        {
+            if (game?.TagIds == null)
+            {
+                return;
+            }
+
+            Guid? ignoreTagId = FindExistingIgnoreSyncTagId();
+            if (ignoreTagId == null || !game.TagIds.Contains(ignoreTagId.Value))
+            {
+                return;
+            }
+
+            game.TagIds.Remove(ignoreTagId.Value);
+            PersistGameUpdate(game);
+            Common.LogDebug(true, $"Removed ignore playtime sync tag for {game.Name}");
+        }
+
+        /// <summary>
+        /// Returns library games that have the ignore-sync tag, ordered by name.
+        /// </summary>
+        /// <returns>Ignored games.</returns>
+        public List<Game> GetGamesIgnoredForPlaytimeSync()
+        {
+            Guid? ignoreTagId = FindExistingIgnoreSyncTagId();
+            if (ignoreTagId == null || API.Instance?.Database?.Games == null)
+            {
+                return new List<Game>();
+            }
+
+            Guid tagId = ignoreTagId.Value;
+            return API.Instance.Database.Games
+                .Where(g => g?.TagIds != null && g.TagIds.Contains(tagId))
+                .OrderBy(g => g.Name)
+                .ToList();
+        }
+
+        /// <summary>
+        /// Returns visible library games that are not tagged for ignore-sync, ordered by name.
+        /// </summary>
+        /// <returns>Games available to add to the ignore list.</returns>
+        public List<Game> GetGamesAvailableForIgnoreSync()
+        {
+            if (API.Instance?.Database?.Games == null)
+            {
+                return new List<Game>();
+            }
+
+            Guid? ignoreTagId = FindExistingIgnoreSyncTagId();
+            Guid tagId = ignoreTagId ?? Guid.Empty;
+
+            return API.Instance.Database.Games
+                .Where(g => g != null && !g.Hidden && (ignoreTagId == null || g.TagIds == null || !g.TagIds.Contains(tagId)))
+                .OrderBy(g => g.Name)
+                .ToList();
+        }
+
+        /// <summary>
+        /// Asks for confirmation when submitting playtime manually for an ignored game.
+        /// </summary>
+        /// <param name="game">Playnite game.</param>
+        /// <returns><c>true</c> if sync may proceed.</returns>
+        public bool ConfirmManualPlaytimeSyncIfIgnored(Game game)
+        {
+            if (!IsGameIgnoredForPlaytimeSync(game))
+            {
+                return true;
+            }
+
+            MessageBoxResult result = MessageBoxResult.No;
+            Application.Current.Dispatcher?.Invoke(() =>
+            {
+                result = API.Instance.Dialogs.ShowMessage(
+                    string.Format(ResourceProvider.GetString("LOCHowLongToBeatIgnoreSyncManualConfirm"), game?.Name),
+                    PluginName,
+                    MessageBoxButton.YesNo);
+            });
+
+            if (result == MessageBoxResult.Yes)
+            {
+                Common.LogDebug(true, $"Manual playtime sync confirmed for ignored game {game?.Name}");
+            }
+
+            return result == MessageBoxResult.Yes;
+        }
+
         protected override bool AppendPluginTag(Game game)
         {
             GameHowLongToBeat item = Get(game, true);
@@ -736,6 +905,12 @@ namespace HowLongToBeat.Services
         {
             if (DontSetToHtlb)
             {
+                return;
+            }
+
+            if (IsGameIgnoredForPlaytimeSync(game))
+            {
+                Logger.Info($"Skipping auto status sync to HLTB for ignored game {game?.Name}");
                 return;
             }
 
@@ -1011,8 +1186,29 @@ namespace HowLongToBeat.Services
 
         public void SetCurrentPlaytime(IEnumerable<Guid> ids, bool noPlaying = false, bool isCompleted = false, bool isMain = false, bool isMainSide = false, bool is100 = false, bool isSolo = false, bool isCoOp = false, bool isVs = false)
         {
-            var idsList = ids as IList<Guid> ?? ids.ToList();
+            List<Guid> idsList = new List<Guid>();
+            foreach (Guid id in ids ?? Enumerable.Empty<Guid>())
+            {
+                Game game = API.Instance.Database.Games.Get(id);
+                if (game == null)
+                {
+                    continue;
+                }
+
+                if (!ConfirmManualPlaytimeSyncIfIgnored(game))
+                {
+                    Logger.Info($"Manual playtime sync cancelled for ignored game {game.Name}");
+                    continue;
+                }
+
+                idsList.Add(id);
+            }
+
             int total = idsList.Count;
+            if (total == 0)
+            {
+                return;
+            }
 
             GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions($"{PluginName} - {ResourceProvider.GetString("LOCCommonProcessing")}")
             {

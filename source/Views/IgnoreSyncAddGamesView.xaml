@@ -1,0 +1,46 @@
+<UserControl x:Class="HowLongToBeat.Views.IgnoreSyncAddGamesView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:playnitecontrols="clr-namespace:CommonPluginsControls.PlayniteControls"
+             mc:Ignorable="d"
+             Height="600"
+             Background="{DynamicResource WindowBackgourndBrush}">
+
+    <Border Style="{DynamicResource TopSeparatorBorder}">
+        <Grid MaxWidth="900"
+              MinWidth="650">
+            <DockPanel LastChildFill="True"
+                       Margin="20">
+                <Border DockPanel.Dock="Bottom"
+                        BorderThickness="0,1,0,0"
+                        BorderBrush="{DynamicResource NormalBorderBrush}"
+                        Padding="0,10,0,0"
+                        Margin="0,10,0,0">
+                    <StackPanel Orientation="Horizontal"
+                                HorizontalAlignment="Right">
+                        <Button Name="PART_BtClose"
+                                Content="{DynamicResource LOCCloseLabel}"
+                                Style="{StaticResource SecondaryButton}"
+                                Click="PART_BtClose_Click"
+                                TabIndex="1"/>
+                        <Button Name="PART_BtAdd"
+                                Content="{DynamicResource LOCHowLongToBeatIgnoreSyncAddGameConfirm}"
+                                Style="{StaticResource PrimaryButton}"
+                                Click="PART_BtAdd_Click"
+                                TabIndex="0"/>
+                    </StackPanel>
+                </Border>
+
+                <playnitecontrols:SearchBox x:Name="PART_SearchBox"
+                                            DockPanel.Dock="Top"
+                                            Margin="0,0,0,10"/>
+
+                <ListBox x:Name="PART_GamesList"
+                         SelectionMode="Extended"
+                         DisplayMemberPath="Name"/>
+            </DockPanel>
+        </Grid>
+    </Border>
+</UserControl>
