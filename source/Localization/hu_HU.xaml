@@ -55,6 +55,17 @@
     <sys:String x:Key="LOCHowLongToBeatWithoutConfirmation">Megerősítő üzenet nélkül</sys:String>
     <sys:String x:Key="LOCHowLongToBeatEnableSuccessNotification">Enable success notification</sys:String>
 
+    <sys:String x:Key="LOCHowLongToBeatIgnoreSyncTag">Ignore playtime sync</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIgnoreSyncAdd">Exclude from automatic playtime sync</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIgnoreSyncRemove">Allow automatic playtime sync</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIgnoreSyncManualConfirm">&quot;{0}&quot; is excluded from automatic playtime sync. Send playtime to HowLongToBeat anyway?</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIgnoreSyncTab">Ignored games</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIgnoreSyncDescription">Games listed here are excluded from automatic playtime upload to HowLongToBeat. Manual sync still asks for confirmation. The Playnite tag &quot;[HLTB] Ignore playtime sync&quot; is used so you can also filter these games in the library.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIgnoreSyncAddGame">Add a game</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIgnoreSyncAddDialogTitle">Add games to ignore list</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIgnoreSyncAddGameConfirm">Add</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIgnoreSyncRemoveTooltip">Remove from ignored list</sys:String>
+
     <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatus">A HowLongToBeat-ből történő felhasználói adatok importálásakor a játék állapotának automatikus frissítése a Playnite-ban</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltb">A Playnite-ban a játék állapotának megváltoztatásakor a HowLongToBeat oldalon is automatikusan frissüljön a játék állapota</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltbOptionsTitle">When syncing Playnite status to HowLongToBeat</sys:String>
