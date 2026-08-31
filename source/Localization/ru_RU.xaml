@@ -59,12 +59,12 @@
     <sys:String x:Key="LOCHowLongToBeatIgnoreSyncAdd">Exclude from automatic playtime sync</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIgnoreSyncRemove">Allow automatic playtime sync</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIgnoreSyncManualConfirm">&quot;{0}&quot; is excluded from automatic playtime sync. Send playtime to HowLongToBeat anyway?</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIgnoreSyncTab">Ignored games</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIgnoreSyncTab">Игнорируемые игры</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIgnoreSyncDescription">Games listed here are excluded from automatic playtime upload to HowLongToBeat. Manual sync still asks for confirmation. The Playnite tag &quot;[HLTB] Ignore playtime sync&quot; is used so you can also filter these games in the library.</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIgnoreSyncAddGame">Add a game</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIgnoreSyncAddDialogTitle">Add games to ignore list</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIgnoreSyncAddGameConfirm">Add</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatIgnoreSyncRemoveTooltip">Remove from ignored list</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIgnoreSyncAddGame">Добавить игру</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIgnoreSyncAddDialogTitle">Добавить игры в список игнорирования</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIgnoreSyncAddGameConfirm">Добавить</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIgnoreSyncRemoveTooltip">Удалить из списка игнорируемых</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatus">Автоматически обновлять статус игры в Playnite при импорте пользовательских данных из HowLongToBeat</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltb">Автоматически обновлять статус игры на HowLongToBeat при изменении статуса игры в Playnite</sys:String>
