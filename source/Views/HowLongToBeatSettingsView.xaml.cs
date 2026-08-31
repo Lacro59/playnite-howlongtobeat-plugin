@@ -1,9 +1,7 @@
-﻿using CommonPluginsControls.Controls;
-using CommonPluginsShared;
+﻿using CommonPluginsShared;
 using CommonPluginsShared.Commands;
 using CommonPluginsShared.Models;
 using HowLongToBeat.Models;
-using HowLongToBeat.Models.Enumerations;
 using HowLongToBeat.Services;
 using Playnite.SDK;
 using Playnite.SDK.Data;
@@ -13,7 +11,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Drawing.Imaging;
 using System.IO;
-using System.IO.Abstractions;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -137,6 +134,9 @@ namespace HowLongToBeat.Views
             PART_GameStatusPlaying.ItemsSource = gameStatus;
             PART_GameStatusCompleted.ItemsSource = gameStatus;
             PART_GameStatusCompletionist.ItemsSource = gameStatus;
+            PART_GameStatusBacklog.ItemsSource = gameStatus;
+            PART_GameStatusReplays.ItemsSource = gameStatus;
+            PART_GameStatusRetired.ItemsSource = gameStatus;
 
             // Ensure aliases list is hydrated for the UI.
             try
@@ -153,7 +153,6 @@ namespace HowLongToBeat.Views
             }
             catch { }
         }
-
 
         #region Tag
 
@@ -172,6 +171,7 @@ namespace HowLongToBeat.Views
         #endregion
 
         #region Export
+
         private void ButtonBrowseExportFolder_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -369,10 +369,11 @@ namespace HowLongToBeat.Views
             string escaped = input.Replace("\"", "\"\"");
             return needsQuotes ? $"\"{escaped}\"" : escaped;
         }
+
         #endregion
 
-
         #region Database
+
         private void BtAddData_Click(object sender, RoutedEventArgs e)
         {
             HowLongToBeat.PluginDatabase.GetSelectData();
@@ -382,10 +383,11 @@ namespace HowLongToBeat.Views
         {
             HowLongToBeat.PluginDatabase.ClearDatabase();
         }
+
         #endregion
 
-
         #region ProgressBar color
+
         private void BtPickColor_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -598,10 +600,11 @@ namespace HowLongToBeat.Views
             PART_SelectorColor.Visibility = Visibility.Collapsed;
             spSettings.Visibility = Visibility.Visible;
         }
+
         #endregion
 
-
         #region Authenticate
+
         private async Task CheckAuthenticateAsync()
         {
             PART_LbUserLogin.Visibility = Visibility.Collapsed;
@@ -696,7 +699,6 @@ namespace HowLongToBeat.Views
             }
         }
 
-
         protected void OnPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             try
@@ -713,6 +715,7 @@ namespace HowLongToBeat.Views
                 Common.LogError(ex, false, true, PluginDatabase.PluginName);
             }
         }
+        
         #endregion
 
         private void HowLongToBeatSettingsView_Unloaded(object sender, RoutedEventArgs e)
@@ -1203,5 +1206,4 @@ namespace HowLongToBeat.Views
             }
         }
     }
-
 }

@@ -312,15 +312,79 @@ namespace HowLongToBeat
             return true;
         }
 
+        /// <summary>
+        /// Copies legacy <see cref="AutoSetToHltbClearOtherLists"/> into per-status list sync options once.
+        /// </summary>
+        /// <returns>True when migration was applied.</returns>
+        public bool MigrateLegacyToHltbListSyncOptions()
+        {
+            if (LegacyToHltbListSyncOptionsMigrated)
+            {
+                return false;
+            }
+
+            ApplyLegacyClearOtherLists(AutoSetToHltbClearOtherLists);
+            LegacyToHltbListSyncOptionsMigrated = true;
+            return true;
+        }
+
+        private void ApplyLegacyClearOtherLists(bool clearOtherLists)
+        {
+            ToHltbPlayingListSync = EnsureListSyncOptions(ToHltbPlayingListSync, clearOtherLists);
+            ToHltbCompletedListSync = EnsureListSyncOptions(ToHltbCompletedListSync, clearOtherLists);
+            ToHltbCompletionistListSync = EnsureListSyncOptions(ToHltbCompletionistListSync, clearOtherLists);
+            ToHltbBacklogListSync = EnsureListSyncOptions(ToHltbBacklogListSync, clearOtherLists);
+            ToHltbReplaysListSync = EnsureListSyncOptions(ToHltbReplaysListSync, clearOtherLists);
+            ToHltbRetiredListSync = EnsureListSyncOptions(ToHltbRetiredListSync, clearOtherLists);
+        }
+
+        private static HltbStatusToHltbSyncOptions EnsureListSyncOptions(HltbStatusToHltbSyncOptions options, bool clearOtherLists)
+        {
+            if (options == null)
+            {
+                options = new HltbStatusToHltbSyncOptions();
+            }
+
+            options.ClearOtherLists = clearOtherLists;
+            return options;
+        }
+
         public bool AutoSetGameStatus { get; set; } = false;
         public bool AutoSetGameStatusToHltb { get; set; } = false;
         public Guid GameStatusPlaying { get; set; }
         public Guid GameStatusCompleted { get; set; }
         public Guid GameStatusCompletionist { get; set; }
+        public Guid GameStatusBacklog { get; set; }
+        public Guid GameStatusReplays { get; set; }
+        public Guid GameStatusRetired { get; set; }
+
+        /// <summary>
+        /// Legacy global clear-other-lists flag; migrated into <see cref="ToHltbPlayingListSync"/> and siblings.
+        /// </summary>
+        public bool AutoSetToHltbClearOtherLists { get; set; } = true;
+
+        /// <summary>
+        /// True after <see cref="AutoSetToHltbClearOtherLists"/> was copied to per-status list sync options.
+        /// </summary>
+        public bool LegacyToHltbListSyncOptionsMigrated { get; set; }
+
+        public HltbStatusToHltbSyncOptions ToHltbPlayingListSync { get; set; } = new HltbStatusToHltbSyncOptions();
+        public HltbStatusToHltbSyncOptions ToHltbCompletedListSync { get; set; } = new HltbStatusToHltbSyncOptions();
+        public HltbStatusToHltbSyncOptions ToHltbCompletionistListSync { get; set; } = new HltbStatusToHltbSyncOptions();
+        public HltbStatusToHltbSyncOptions ToHltbBacklogListSync { get; set; } = new HltbStatusToHltbSyncOptions();
+        public HltbStatusToHltbSyncOptions ToHltbReplaysListSync { get; set; } = new HltbStatusToHltbSyncOptions();
+        public HltbStatusToHltbSyncOptions ToHltbRetiredListSync { get; set; } = new HltbStatusToHltbSyncOptions();
+
+        /// <summary>
+        /// Lists to preserve on the HowLongToBeat profile when a target status clears other lists.
+        /// </summary>
+        public HltbListAlwaysKeepOptions ToHltbAlwaysKeepLists { get; set; } = new HltbListAlwaysKeepOptions();
+
         public bool AutoSetToHltbCompletedSendPlaytime { get; set; } = true;
         public bool AutoSetToHltbCompletedSendCompletionDate { get; set; } = true;
         public bool AutoSetToHltbCompletionistSendPlaytime { get; set; } = true;
         public bool AutoSetToHltbCompletionistSendCompletionDate { get; set; } = true;
+        public bool AutoSetToHltbPlayingSendPlaytime { get; set; } = true;
 
         #endregion
 
@@ -420,7 +484,9 @@ namespace HowLongToBeat
             // LoadPluginSettings returns null if not saved data is available.
             Settings = savedSettings ?? new HowLongToBeatSettings();
 
-            if (Settings.MigrateLegacyFilterSortSettings() || Settings.SyncStorefrontElementsFromLegacy())
+            if (Settings.MigrateLegacyFilterSortSettings()
+                || Settings.SyncStorefrontElementsFromLegacy()
+                || Settings.MigrateLegacyToHltbListSyncOptions())
             {
                 plugin.SavePluginSettings(Settings);
             }

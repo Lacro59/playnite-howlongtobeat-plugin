@@ -8,6 +8,8 @@
 .cursor/
 .scripts/
 .cursorignore
+.semgrep/
+.semgrepignore
 
 # Graphify (graphe local — régénérer avec `graphify update .`)
 graphify-out/

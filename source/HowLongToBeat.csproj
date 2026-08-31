@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -147,6 +147,7 @@
     <Compile Include="Models\Enumerations\TimeType.cs" />
     <Compile Include="Models\Enumerations\TitleListSort.cs" />
     <Compile Include="Models\FilterSettings.cs" />
+    <Compile Include="Models\HltbStatusToHltbSyncOptions.cs" />
     <Compile Include="Models\GameActivity\Activity.cs" />
     <Compile Include="Models\GameNameAliasEntry.cs" />
     <Compile Include="Models\HltbData_old.cs" />

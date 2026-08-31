@@ -68,11 +68,17 @@
 
     <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatus">Automatically update game status in Playnite when importing user data from HowLongToBeat</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltb">Automatically update game status on HowLongToBeat when changing game status in Playnite</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatClearOtherListsShort">Clear others</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatClearOtherListsColumnHeader">Clear others</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatClearOtherListsTooltip" xml:space="preserve">When checked, syncing to this HowLongToBeat status clears other list flags before applying the target list.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAlwaysKeepListsTitle">Always keep if present</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAlwaysKeepListsTooltip" xml:space="preserve">When another status clears other lists, checked HowLongToBeat lists stay on your profile if they were already set.</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltbOptionsTitle">When syncing Playnite status to HowLongToBeat</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltbOptionsHelp" xml:space="preserve">Data source:
 - Status/list is sent to HowLongToBeat.
 - Playtime comes from Playnite Playtime.
 - Completion date comes from Playnite Last activity.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltbPlayingPlaytime">Playing: send Playnite playtime to HowLongToBeat (progress)</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltbCompletedPlaytime">Completed: send Playnite playtime to HowLongToBeat (Main story)</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltbCompletedDate">Completed: set completion date from Playnite last activity</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltbCompletionistPlaytime">Completionist: send Playnite playtime to HowLongToBeat (100%)</sys:String>
@@ -160,7 +166,7 @@ This is not the same as the per-game option &quot;Mark as Replay — I have play
     <sys:String x:Key="LOCHltbFilterHltbListStatusAll">All lists</sys:String>
     <sys:String x:Key="LOCHltbUserListBacklog">Backlog</sys:String>
     <sys:String x:Key="LOCHltbUserListPlaying">Playing</sys:String>
-    <sys:String x:Key="LOCHltbUserListReplays">Replays list</sys:String>
+    <sys:String x:Key="LOCHltbUserListReplays">Replays</sys:String>
     <sys:String x:Key="LOCHltbUserListReplaysTooltip" xml:space="preserve">Games placed in the Replays list on your HowLongToBeat profile (profile tab).
 A game can appear here without being marked &quot;Mark as Replay — I have played this before.&quot;</sys:String>
     <sys:String x:Key="LOCHltbUserListCompleted">Beat</sys:String>
@@ -212,6 +218,7 @@ This is separate from the Replays list on your profile.</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatSetCurrentTimeManual">Set your current playtime</sys:String>
     <sys:String x:Key="LOCHowLongToBeatSetCurrentTimeManualAll">Set your current playtime for all games</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatSetGameStatusToHltbManual">Sync game status to HowLongToBeat</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatSetCurrentCompletedTimeManualOn">Set your current completed playtime on</sys:String>
     <sys:String x:Key="LOCHowLongToBeatSetCurrentMultiTimeManualOn">Set your current muli playtime on</sys:String>

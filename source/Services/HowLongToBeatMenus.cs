@@ -100,6 +100,13 @@ namespace HowLongToBeat.Services
                         Action = (mainMenuItem) => Database.SetCurrentPlaytime(ids, true)
                     });
 
+                    gameMenuItems.Add(new GameMenuItem
+                    {
+                        MenuSection = ResourceProvider.GetString("LOCHowLongToBeat"),
+                        Description = ResourceProvider.GetString("LOCHowLongToBeatSetGameStatusToHltbManual"),
+                        Action = (mainMenuItem) => Database.SyncGameStatusToHltb(ids)
+                    });
+
                     if (gameData != null && gameMenu.Playtime > 0)
                     {
                         if (gameData.GameType != GameType.Multi && gameMenu.LastActivity != null)
