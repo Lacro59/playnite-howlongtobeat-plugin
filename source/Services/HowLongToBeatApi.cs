@@ -103,7 +103,8 @@ namespace HowLongToBeat.Services
                 var sessionStates = new List<string>();
                 foreach (string cookieName in sessionCookieNames)
                 {
-                    HttpCookie sessionCookie = cookies.FirstOrDefault(c => string.Equals(c?.Name, cookieName, StringComparison.OrdinalIgnoreCase));
+                    // Reading HLTB session cookies from the stored container for auth diagnostics only (not setting cookies).
+                    HttpCookie sessionCookie = cookies.FirstOrDefault(c => string.Equals(c?.Name, cookieName, StringComparison.OrdinalIgnoreCase)); // nosemgrep: csharp.lang.audit.cookies.missing-httponly.missing-httponly, csharp.lang.audit.cookies.missing-secure.missing-secure
                     if (sessionCookie == null)
                     {
                         sessionStates.Add(cookieName + "=missing");
@@ -3285,6 +3286,7 @@ namespace HowLongToBeat.Services
                     Id = gamesList.GameId.ToString(),
                     CurrentTime = gamesList.InvestedPro,
                     IsReplay = gamesList.PlayCount == 2,
+                    IsIncludesDlc = gamesList.PlayDlc == 1,
                     IsRetired = gamesList.ListRetired == 1,
                     Storefront = gamesList.PlayStorefront,
                     StartDate = dateStart,

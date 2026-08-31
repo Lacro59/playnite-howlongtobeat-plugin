@@ -122,6 +122,12 @@ namespace HowLongToBeat.Models
         /// Not the same as belonging to the profile <see cref="StatusType.Replays"/> list.
         /// </summary>
         public bool IsReplay { get; set; }
+
+        /// <summary>
+        /// True when HowLongToBeat has "DLC / Expansions Included" enabled (API <c>play_dlc == 1</c>).
+        /// </summary>
+        public bool IsIncludesDlc { get; set; }
+
         public bool IsRetired { get; set; }
 
         public DateTime StartDate { get; set; } = default;

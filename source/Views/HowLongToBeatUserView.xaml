@@ -172,6 +172,14 @@
                                               Name="PART_Replays"
                                               VerticalAlignment="Center"/>
 
+                                    <CheckBox Content="{DynamicResource LOCHltbOnlyIncludesDlc}"
+                                              ToolTip="{DynamicResource LOCHltbOnlyIncludesDlcTooltip}"
+                                              Checked="CheckBox_Checked"
+                                              Unchecked="CheckBox_Checked"
+                                              Name="PART_IncludesDlc"
+                                              VerticalAlignment="Center"
+                                              Margin="10,0,0,0"/>
+
                                     <CheckBox Content="{DynamicResource LOCHltbOnlyNotPlayed}"
                                               Checked="CheckBox_Checked"
                                               Unchecked="CheckBox_Checked"
@@ -269,6 +277,13 @@
                                                                                    Style="{DynamicResource ListExtendStyleTextBlock}"/>
                                                                     </Hyperlink>
                                                                 </TextBlock>
+
+                                                                <TextBlock Visibility="{Binding IsIncludesDlc, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                                                           Text="&#xeea0;"
+                                                                           FontFamily="{DynamicResource FontIcoFont}"
+                                                                           Margin="10,0,0,0"
+                                                                           ToolTip="{DynamicResource LOCHltbOptionalTagIncludesDlc}"
+                                                                           Style="{DynamicResource ListExtendStyleTextBlock}"/>
                                                             </StackPanel>
 
                                                             <StackPanel Orientation="Horizontal"
@@ -311,6 +326,13 @@
                                                                                Margin="10,0,0,0"
                                                                                Style="{DynamicResource ListExtendStyleTextBlock}"/>
                                                                 </TextBlock>
+
+                                                                <TextBlock Visibility="{Binding IsIncludesDlc, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                                                           Text="&#xeea0;"
+                                                                           FontFamily="{DynamicResource FontIcoFont}"
+                                                                           Margin="10,0,0,0"
+                                                                           ToolTip="{DynamicResource LOCHltbOptionalTagIncludesDlc}"
+                                                                           Style="{DynamicResource ListExtendStyleTextBlock}"/>
                                                             </StackPanel>
                                                         </StackPanel>
                                                     </DataTemplate>
@@ -798,6 +820,25 @@
                                                    TextWrapping="Wrap"/>
                                         <TextBlock Grid.Column="1"
                                                    Text="{Binding CountGameBeatenReplays}"
+                                                   Style="{DynamicResource BaseTextBlockStyle}"
+                                                   FontSize="11"
+                                                   FontWeight="SemiBold"
+                                                   HorizontalAlignment="Right"
+                                                   Margin="8,0,0,0"/>
+                                    </Grid>
+                                    <Grid Margin="0,0,0,2"
+                                          ToolTip="{DynamicResource LOCHltbOnlyIncludesDlcTooltip}">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="{DynamicResource LOCHltbCountIncludesDlc}"
+                                                   Style="{DynamicResource BaseTextBlockStyle}"
+                                                   FontSize="11"
+                                                   Opacity="0.9"
+                                                   TextWrapping="Wrap"/>
+                                        <TextBlock Grid.Column="1"
+                                                   Text="{Binding CountIncludesDlc}"
                                                    Style="{DynamicResource BaseTextBlockStyle}"
                                                    FontSize="11"
                                                    FontWeight="SemiBold"

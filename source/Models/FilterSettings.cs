@@ -21,6 +21,7 @@ namespace HowLongToBeat.Models
         public string HltbListStatus { get; set; } = HltbListStatusAll;
 
         public bool OnlyReplays { get; set; } = false;
+        public bool OnlyIncludesDlc { get; set; } = false;
         public bool OnlyNotPlayed { get; set; } = false;
 
         public TitleListSort TitleListSort { get; set; } = TitleListSort.LastUpdate;
@@ -47,6 +48,7 @@ namespace HowLongToBeat.Models
             Platform = HltbListStatusAll;
             HltbListStatus = HltbListStatusAll;
             OnlyReplays = false;
+            OnlyIncludesDlc = false;
             OnlyNotPlayed = false;
             TitleListSort = TitleListSort.LastUpdate;
             IsAsc = false;

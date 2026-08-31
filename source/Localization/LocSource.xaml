@@ -176,7 +176,15 @@ A game can appear here without being marked &quot;Mark as Replay — I have play
     <sys:String x:Key="LOCHltbOnlyReplays">Marked as replay</sys:String>
     <sys:String x:Key="LOCHltbOnlyReplaysTooltip" xml:space="preserve">Only games with the HowLongToBeat option &quot;Mark as Replay — I have played this before.&quot;
 This is separate from the Replays list on your profile.</sys:String>
+    <sys:String x:Key="LOCHltbOnlyIncludesDlc">Includes DLC</sys:String>
+    <sys:String x:Key="LOCHltbOnlyIncludesDlcTooltip" xml:space="preserve">Only games with the HowLongToBeat option &quot;DLC / Expansions Included.&quot;</sys:String>
     <sys:String x:Key="LOCHltbOnlyNotPlayed">Only not played</sys:String>
+
+    <sys:String x:Key="LOCHltbOptionalTagsHeader">Optional Tags</sys:String>
+    <sys:String x:Key="LOCHltbOptionalTagIncludesDlc">DLC / Expansions Included</sys:String>
+    <sys:String x:Key="LOCHltbOptionalTagMarkAsReplay">Mark as Replay — I have played this before.</sys:String>
+    <sys:String x:Key="LOCHltbOptionalTagMarkAsReplayTooltip" xml:space="preserve">HowLongToBeat per-game option &quot;Mark as Replay — I have played this before.&quot;
+This is not the same as the Replays list on your profile.</sys:String>
 
     <sys:String x:Key="LOCHltbRemainingTime">Remaining time</sys:String>
     <sys:String x:Key="LOCHltbColumnHltbLists">HLTB lists</sys:String>
@@ -196,6 +204,7 @@ This is separate from the Replays list on your profile.</sys:String>
     <sys:String x:Key="LOCHltbCountGameBeatenBeforeTime">Number of games beaten before time</sys:String>
     <sys:String x:Key="LOCHltbCountGameBeatenAfterTime">Number of games beaten after time</sys:String>
     <sys:String x:Key="LOCHltbCountGameBeatenReplays">Number of games beaten (marked as replay)</sys:String>
+    <sys:String x:Key="LOCHltbCountIncludesDlc">Number of games (DLC / expansions included)</sys:String>
     <sys:String x:Key="LOCHltbCountGameRetired">Number of games retired</sys:String>
 
     <sys:String x:Key="LOCHltbStatsPlayTimeTitle">Play time</sys:String>

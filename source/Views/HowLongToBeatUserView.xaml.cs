@@ -571,6 +571,7 @@ namespace HowLongToBeat.Views
                     var avgGameByMonth = string.Format("{0:0.0}", HowLongToBeatStats.GetAvgGameByMonth()).ToString();
                     var avgTimeByGame = (string)converter.Convert(HowLongToBeatStats.GetAvgTimeByGame(), null, null, CultureInfo.CurrentCulture);
                     var countReplays = HowLongToBeatStats.GetCountMarkedAsReplay().ToString();
+                    var countIncludesDlc = HowLongToBeatStats.GetCountIncludesDlc().ToString();
                     var countRetired = HowLongToBeatStats.GetCountGameRetired().ToString();
 
                     var countHltbListBacklog = HowLongToBeatStats.GetCountByHltbListStatus(StatusType.Backlog).ToString();
@@ -595,6 +596,7 @@ namespace HowLongToBeat.Views
                             UserViewDataContext.AvgGameByMonth = avgGameByMonth;
                             UserViewDataContext.AvgTimeByGame = avgTimeByGame;
                             UserViewDataContext.CountGameBeatenReplays = countReplays;
+                            UserViewDataContext.CountIncludesDlc = countIncludesDlc;
                             UserViewDataContext.CountGameRetired = countRetired;
 
                             UserViewDataContext.CountHltbListBacklog = countHltbListBacklog;
@@ -778,6 +780,7 @@ namespace HowLongToBeat.Views
 
             PART_NameSearch.Text = filterSettings.NameSearch ?? string.Empty;
             PART_Replays.IsChecked = filterSettings.OnlyReplays;
+            PART_IncludesDlc.IsChecked = filterSettings.OnlyIncludesDlc;
             PART_OnlyNotPlayed.IsChecked = filterSettings.OnlyNotPlayed;
             SelectHltbListStatusFilter(filterSettings.HltbListStatus);
 
@@ -1044,6 +1047,11 @@ namespace HowLongToBeat.Views
                 UserViewDataContext.ItemsSource = UserViewDataContext.ItemsSource.Where(x => x.IsReplay).ToObservable();
             }
 
+            if ((bool)PART_IncludesDlc.IsChecked)
+            {
+                UserViewDataContext.ItemsSource = UserViewDataContext.ItemsSource.Where(x => x.IsIncludesDlc).ToObservable();
+            }
+
             if ((bool)PART_OnlyNotPlayed.IsChecked)
             {
                 UserViewDataContext.ItemsSource = UserViewDataContext.ItemsSource.Where(x => x.CurrentTime == 0).ToObservable();
@@ -1125,6 +1133,7 @@ namespace HowLongToBeat.Views
             filterSettings.Platform = PART_CbPlatform.SelectedItem?.ToString() ?? "----";
             filterSettings.HltbListStatus = GetSelectedHltbListStatusFilter();
             filterSettings.OnlyReplays = PART_Replays.IsChecked == true;
+            filterSettings.OnlyIncludesDlc = PART_IncludesDlc.IsChecked == true;
             filterSettings.OnlyNotPlayed = PART_OnlyNotPlayed.IsChecked == true;
 
             TitleListSort sort;
@@ -1246,6 +1255,9 @@ namespace HowLongToBeat.Views
 
         private string countGameBeatenReplays = "--";
         public string CountGameBeatenReplays { get => countGameBeatenReplays; set => SetValue(ref countGameBeatenReplays, value); }
+
+        private string countIncludesDlc = "--";
+        public string CountIncludesDlc { get => countIncludesDlc; set => SetValue(ref countIncludesDlc, value); }
 
         private string countGameRetired = "--";
         public string CountGameRetired { get => countGameRetired; set => SetValue(ref countGameRetired, value); }

@@ -324,12 +324,18 @@ namespace HowLongToBeat.Views
             Hltb_El3_DataUser_2.Text = string.Empty;
             Hltb_El3_DataUser_3.Text = string.Empty;
 
+            HideUserEntryControls();
 
             HltbDataUser gameData = gameHowLongToBeat?.Items?.FirstOrDefault();
 
             if (gameData == null || gameData.Name.IsNullOrEmpty())
             {
-                ((HowLongToBeatViewData)DataContext).HasHltbId = false;
+                var emptyVm = DataContext as HowLongToBeatViewData;
+                if (emptyVm != null)
+                {
+                    emptyVm.HasHltbId = false;
+                    emptyVm.ClearUserEntry();
+                }
                 return;
             }
 
@@ -577,6 +583,87 @@ namespace HowLongToBeat.Views
             {
                 Hltb_El0.Visibility = Visibility.Collapsed;
             }
+
+            RefreshOptionalTagsViewModel(gameHowLongToBeat);
+        }
+
+        private void RefreshOptionalTagsViewModel(GameHowLongToBeat gameHowLongToBeat)
+        {
+            try
+            {
+                if (!(DataContext is HowLongToBeatViewData viewModel) || gameHowLongToBeat == null)
+                {
+                    return;
+                }
+
+                HltbDataUser gameData = gameHowLongToBeat.GetData();
+                if (gameData == null || string.IsNullOrWhiteSpace(gameData.Id))
+                {
+                    viewModel.ClearUserEntry();
+                    UpdateUserEntryUiVisibility(false);
+                    return;
+                }
+
+                List<TitleList> titleLists = PluginDatabase.GetUserHltbDataAll(gameData.Id);
+                if (titleLists == null || titleLists.Count == 0)
+                {
+                    viewModel.ClearUserEntry();
+                    UpdateUserEntryUiVisibility(false);
+                    return;
+                }
+
+                TitleList selected = PluginDatabase.GetUserHltbDataCurrent(gameData.Id, gameHowLongToBeat.UserGameId);
+                viewModel.SetOptionalTagsFromTitleList(selected);
+                UpdateUserEntryUiVisibility(viewModel.HasUserEntry);
+            }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, false, true, PluginDatabase.PluginName);
+            }
+        }
+
+        /// <summary>
+        /// Hides all user-entry controls (dates, radios, user playtime columns).
+        /// </summary>
+        private void HideUserEntryControls()
+        {
+            Visibility collapsed = Visibility.Collapsed;
+
+            Hltb_El0_tb.Visibility = collapsed;
+            Hltb_El0.Visibility = collapsed;
+            Hltb_El0_1.Visibility = collapsed;
+            Hltb_El0_2.Visibility = collapsed;
+            Hltb_El0_3.Visibility = collapsed;
+
+            Hltb_El1_DataUser.Visibility = collapsed;
+            Hltb_El1_DataUser_1.Visibility = collapsed;
+            Hltb_El1_DataUser_2.Visibility = collapsed;
+            Hltb_El1_DataUser_3.Visibility = collapsed;
+
+            Hltb_El2_DataUser.Visibility = collapsed;
+            Hltb_El2_DataUser_1.Visibility = collapsed;
+            Hltb_El2_DataUser_2.Visibility = collapsed;
+            Hltb_El2_DataUser_3.Visibility = collapsed;
+
+            Hltb_El3_DataUser.Visibility = collapsed;
+            Hltb_El3_DataUser_1.Visibility = collapsed;
+            Hltb_El3_DataUser_2.Visibility = collapsed;
+            Hltb_El3_DataUser_3.Visibility = collapsed;
+        }
+
+        /// <summary>
+        /// Applies user-entry visibility after optional-tags state is refreshed.
+        /// When a user entry exists, <see cref="Init"/> keeps per-control visibility.
+        /// </summary>
+        /// <param name="hasUserEntry">Whether the current game has an HLTB user profile entry.</param>
+        private void UpdateUserEntryUiVisibility(bool hasUserEntry)
+        {
+            if (hasUserEntry)
+            {
+                return;
+            }
+
+            HideUserEntryControls();
         }
 
 
@@ -794,6 +881,7 @@ namespace HowLongToBeat.Views
                 {
                     GameHowLongToBeat.UserGameId = rb.Tag.ToString();
                     PluginDatabase.Update(GameHowLongToBeat);
+                    RefreshOptionalTagsViewModel(GameHowLongToBeat);
                 }
             }
             catch (Exception ex)
@@ -890,6 +978,32 @@ namespace HowLongToBeat.Views
 
     public class HowLongToBeatViewData : ObservableObject
     {
+        private static HowLongToBeatDatabase PluginDatabase => HowLongToBeat.PluginDatabase;
+        private static ILogger Logger => LogManager.GetLogger();
+
+        private static void LogVerbose(string message)
+        {
+            if (!PluginDatabase.IsVerboseLoggingEnabled)
+            {
+                return;
+            }
+
+            Common.LogDebug(true, message);
+        }
+
+        private bool _savedIsMarkAsReplay;
+        private bool _savedIsIncludesDlc;
+
+        public HowLongToBeatViewData()
+        {
+            SaveOptionalTagsCommand = new RelayCommand(SaveOptionalTags);
+        }
+
+        /// <summary>
+        /// Saves optional tags to HowLongToBeat when the user clicks Save.
+        /// </summary>
+        public RelayCommand SaveOptionalTagsCommand { get; }
+
         private Game _gameContext;
         public Game GameContext { get => _gameContext; set => SetValue(ref _gameContext, value); }
 
@@ -919,5 +1033,152 @@ namespace HowLongToBeat.Views
 
         private bool _hasHltbId = false;
         public bool HasHltbId { get => _hasHltbId; set => SetValue(ref _hasHltbId, value); }
+
+        private bool _hasUserEntry = false;
+        public bool HasUserEntry { get => _hasUserEntry; set => SetValue(ref _hasUserEntry, value); }
+
+        private string _selectedUserGameId = string.Empty;
+        public string SelectedUserGameId { get => _selectedUserGameId; private set => SetValue(ref _selectedUserGameId, value); }
+
+        private bool _isMarkAsReplay;
+        public bool IsMarkAsReplay
+        {
+            get => _isMarkAsReplay;
+            set
+            {
+                SetValue(ref _isMarkAsReplay, value);
+                NotifySaveStateChanged();
+            }
+        }
+
+        private bool _isIncludesDlc;
+        public bool IsIncludesDlc
+        {
+            get => _isIncludesDlc;
+            set
+            {
+                SetValue(ref _isIncludesDlc, value);
+                NotifySaveStateChanged();
+            }
+        }
+
+        private bool _isSavingOptionalTags;
+        public bool IsSavingOptionalTags
+        {
+            get => _isSavingOptionalTags;
+            private set
+            {
+                SetValue(ref _isSavingOptionalTags, value);
+                NotifySaveStateChanged();
+            }
+        }
+
+        /// <summary>
+        /// True when optional tags differ from the last loaded or saved state and can be submitted.
+        /// </summary>
+        public bool CanSaveOptionalTags =>
+            HasUserEntry
+            && !IsSavingOptionalTags
+            && !SelectedUserGameId.IsNullOrEmpty()
+            && GameContext != null
+            && (IsMarkAsReplay != _savedIsMarkAsReplay || IsIncludesDlc != _savedIsIncludesDlc);
+
+        /// <summary>
+        /// Loads optional tag values from a user profile entry.
+        /// </summary>
+        /// <param name="titleList">The selected HLTB user title entry.</param>
+        public void SetOptionalTagsFromTitleList(TitleList titleList)
+        {
+            if (titleList == null || titleList.UserGameId.IsNullOrEmpty())
+            {
+                ClearUserEntry();
+                return;
+            }
+
+            HasUserEntry = true;
+            SelectedUserGameId = titleList.UserGameId;
+            _savedIsMarkAsReplay = titleList.IsReplay;
+            _savedIsIncludesDlc = titleList.IsIncludesDlc;
+            ApplyTagValues(titleList.IsReplay, titleList.IsIncludesDlc);
+            NotifySaveStateChanged();
+        }
+
+        /// <summary>
+        /// Clears user-entry optional tag state (community-only view).
+        /// </summary>
+        public void ClearUserEntry()
+        {
+            HasUserEntry = false;
+            SelectedUserGameId = string.Empty;
+            _savedIsMarkAsReplay = false;
+            _savedIsIncludesDlc = false;
+            ApplyTagValues(false, false);
+            NotifySaveStateChanged();
+        }
+
+        private void ApplyTagValues(bool isMarkAsReplay, bool isIncludesDlc)
+        {
+            _isMarkAsReplay = isMarkAsReplay;
+            _isIncludesDlc = isIncludesDlc;
+            OnPropertyChanged(nameof(IsMarkAsReplay));
+            OnPropertyChanged(nameof(IsIncludesDlc));
+        }
+
+        private void SaveOptionalTags()
+        {
+            if (!CanSaveOptionalTags)
+            {
+                return;
+            }
+
+            _ = SaveOptionalTagsInternalAsync();
+        }
+
+        private async Task SaveOptionalTagsInternalAsync()
+        {
+            IsSavingOptionalTags = true;
+            try
+            {
+                bool success = await PluginDatabase.UpdateOptionalTagsAsync(
+                    GameContext,
+                    SelectedUserGameId,
+                    IsMarkAsReplay,
+                    IsIncludesDlc).ConfigureAwait(true);
+
+                if (success)
+                {
+                    _savedIsMarkAsReplay = IsMarkAsReplay;
+                    _savedIsIncludesDlc = IsIncludesDlc;
+                    NotifySaveStateChanged();
+                    LogVerbose($"SaveOptionalTags: success for '{GameContext?.Name}' userGameId={SelectedUserGameId} replay={IsMarkAsReplay} includesDlc={IsIncludesDlc}");
+                }
+                else
+                {
+                    Logger.Warn($"SaveOptionalTags: failed for '{GameContext?.Name}' userGameId={SelectedUserGameId} replay={IsMarkAsReplay} includesDlc={IsIncludesDlc}");
+                    if (GameContext != null)
+                    {
+                        API.Instance.Notifications.Add(new NotificationMessage(
+                            $"{PluginDatabase.PluginName}-OptionalTagsSave-Error-{GameContext.Id}",
+                            PluginDatabase.PluginName + Environment.NewLine + string.Format(
+                                ResourceProvider.GetString("LOCHowLongToBeatErrorSubmitFailed"),
+                                GameContext.Name),
+                            NotificationType.Error));
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, false, true, PluginDatabase.PluginName);
+            }
+            finally
+            {
+                IsSavingOptionalTags = false;
+            }
+        }
+
+        private void NotifySaveStateChanged()
+        {
+            OnPropertyChanged(nameof(CanSaveOptionalTags));
+        }
     }
 }
