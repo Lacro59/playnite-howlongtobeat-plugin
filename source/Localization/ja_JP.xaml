@@ -55,6 +55,17 @@
     <sys:String x:Key="LOCHowLongToBeatWithoutConfirmation">確認メッセージなし</sys:String>
     <sys:String x:Key="LOCHowLongToBeatEnableSuccessNotification">成功通知を有効にする</sys:String>
 
+    <sys:String x:Key="LOCHowLongToBeatIgnoreSyncTag">プレイ時間の同期を無視</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIgnoreSyncAdd">自動プレイ時間同期から除外</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIgnoreSyncRemove">自動プレイ時間同期を許可</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIgnoreSyncManualConfirm">&quot;{0}&quot; は自動プレイ時間同期から除外されています。それでもプレイ時間を HowLongToBeat に送信しますか？</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIgnoreSyncTab">無視するゲーム</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIgnoreSyncDescription">ここに表示されているゲームは、HowLongToBeat へのプレイ時間の自動アップロードから除外されます。手動で同期する場合は、引き続き確認が求められます。Playnite タグ &quot;[HLTB] Ignore playtime sync&quot; が使用されるため、ライブラリ内でこれらのゲームを絞り込むこともできます。</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIgnoreSyncAddGame">ゲームを追加</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIgnoreSyncAddDialogTitle">無視リストにゲームを追加</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIgnoreSyncAddGameConfirm">追加</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatIgnoreSyncRemoveTooltip">無視リストから削除</sys:String>
+
     <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatus">HowLongToBeat からユーザーデータをインポートするときに、Playnite のゲームステータスを自動更新</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltb">Playnite でゲームステータスを変更したときに、HowLongToBeat のゲームステータスを自動更新</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltbOptionsTitle">Playnite ステータスを HowLongToBeat に同期する場合</sys:String>
