@@ -194,6 +194,9 @@
     <Compile Include="playnite-plugincommon\CommonPluginsControls\Views\ListWithNoData.xaml.cs">
       <DependentUpon>ListWithNoData.xaml</DependentUpon>
     </Compile>
+    <Compile Include="playnite-plugincommon\CommonPluginsControls\Settings\PluginDebugSettingsSection.xaml.cs">
+      <DependentUpon>PluginDebugSettingsSection.xaml</DependentUpon>
+    </Compile>
     <Compile Include="playnite-plugincommon\CommonPluginsControls\Views\OptionsDownloadData.xaml.cs">
       <DependentUpon>OptionsDownloadData.xaml</DependentUpon>
     </Compile>
@@ -241,8 +244,30 @@
     <Compile Include="Views\IgnoreSyncAddGamesView.xaml.cs">
       <DependentUpon>IgnoreSyncAddGamesView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\HowLongToBeatSettingsView.xaml.cs">
-      <DependentUpon>HowLongToBeatSettingsView.xaml</DependentUpon>
+    <Compile Include="Views\HowLongToBeatSettingsView.cs" />
+    <Compile Include="Views\Settings\HltbSettingsView.xaml.cs">
+      <DependentUpon>HltbSettingsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Settings\Sections\HltbGeneralSettingsSection.xaml.cs">
+      <DependentUpon>HltbGeneralSettingsSection.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Settings\Sections\HltbSyncSettingsSection.xaml.cs">
+      <DependentUpon>HltbSyncSettingsSection.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Settings\Sections\HltbDataSettingsSection.xaml.cs">
+      <DependentUpon>HltbDataSettingsSection.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Settings\Sections\HltbDisplaySettingsSection.xaml.cs">
+      <DependentUpon>HltbDisplaySettingsSection.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Settings\Sections\HltbPlatformsSettingsSection.xaml.cs">
+      <DependentUpon>HltbPlatformsSettingsSection.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Settings\Sections\HltbStorefrontSettingsSection.xaml.cs">
+      <DependentUpon>HltbStorefrontSettingsSection.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Settings\Sections\HltbHelpSettingsSection.xaml.cs">
+      <DependentUpon>HltbHelpSettingsSection.xaml</DependentUpon>
     </Compile>
     <Compile Include="Models\HltbData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -516,6 +541,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="playnite-plugincommon\CommonPluginsControls\Settings\PluginDebugSettingsSection.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="playnite-plugincommon\CommonPluginsControls\Views\OptionsDownloadData.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -556,7 +585,35 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\HowLongToBeatSettingsView.xaml">
+    <Page Include="Views\Settings\HltbSettingsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Settings\Sections\HltbGeneralSettingsSection.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Settings\Sections\HltbSyncSettingsSection.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Settings\Sections\HltbDataSettingsSection.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Settings\Sections\HltbDisplaySettingsSection.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Settings\Sections\HltbPlatformsSettingsSection.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Settings\Sections\HltbStorefrontSettingsSection.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Settings\Sections\HltbHelpSettingsSection.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

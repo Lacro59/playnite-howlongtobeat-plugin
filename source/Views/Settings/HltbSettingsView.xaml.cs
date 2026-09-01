@@ -15,11 +15,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
+using System.Windows.Data;
 using System.Windows.Media;
 
 namespace HowLongToBeat.Views
 {
-    public partial class HowLongToBeatSettingsView : UserControl
+    public partial class HltbSettingsView : UserControl
     {
         private static ILogger Logger => LogManager.GetLogger();
 
@@ -30,30 +32,15 @@ namespace HowLongToBeat.Views
         private ObservableCollection<Game> _ignoreSyncGames;
         private bool _ignoreSyncListInitialized;
 
-        /// <summary>
-        /// Pending ignore-sync game ids edited in the settings UI.
-        /// Null when the Ignored games tab was never opened; EndEdit then leaves tags unchanged.
-        /// </summary>
-        public static List<Guid> EditingIgnoreSyncGameIds { get; private set; }
+        private HltbGeneralSettingsSection generalSection;
+        private HltbSyncSettingsSection syncSection;
+        private HltbDataSettingsSection dataSection;
+        private HltbDisplaySettingsSection displaySection;
+        private HltbPlatformsSettingsSection platformsSection;
+        private HltbStorefrontSettingsSection storefrontSection;
+        private HltbHelpSettingsSection helpSection;
 
-        public static SolidColorBrush ThumbSolidColorBrush;
-        public static ThemeLinearGradient ThumbLinearGradient;
-
-        public static SolidColorBrush FirstColorBrush;
-        public static ThemeLinearGradient FirstLinearGradient;
-        public static SolidColorBrush SecondColorBrush;
-        public static ThemeLinearGradient SecondLinearGradient;
-        public static SolidColorBrush ThirdColorBrush;
-        public static ThemeLinearGradient ThirdLinearGradient;
-
-        public static SolidColorBrush FirstMultiColorBrush;
-        public static ThemeLinearGradient FirstMultiLinearGradient;
-        public static SolidColorBrush SecondMultiColorBrush;
-        public static ThemeLinearGradient SecondMultiLinearGradient;
-        public static SolidColorBrush ThirdMultiColorBrush;
-        public static ThemeLinearGradient ThirdMultiLinearGradient;
-
-        public HowLongToBeatSettingsView(HowLongToBeatSettings settings)
+        public HltbSettingsView(HowLongToBeatSettings settings)
         {
             _settingsRef = settings;
             try
@@ -67,11 +54,13 @@ namespace HowLongToBeat.Views
             catch { }
 
             InitializeComponent();
+            InitializeSectionContent();
+            WireSectionEvents();
 
             // Forward mouse wheel from aliases grid to parent ScrollViewer so the settings page scrolls when hovering the grid
             try
             {
-                PART_AliasesGrid.PreviewMouseWheel += PART_AliasesGrid_PreviewMouseWheel;
+                dataSection.PART_AliasesGrid.PreviewMouseWheel += PART_AliasesGrid_PreviewMouseWheel;
             }
             catch { }
 
@@ -87,56 +76,56 @@ namespace HowLongToBeat.Views
             {
                 API.Instance.Database.Platforms.ItemCollectionChanged += Platforms_ItemCollectionChanged;
                 API.Instance.Database.Platforms.ItemUpdated += Platforms_ItemUpdated;
-                this.Unloaded += HowLongToBeatSettingsView_Unloaded;
+                this.Unloaded += HltbSettingsView_Unloaded;
             }
             catch { }
 
-            PART_SelectorColorPicker.OnlySimpleColor = false;
+            displaySection.PART_SelectorColorPicker.OnlySimpleColor = false;
 
 
-            ThumbSolidColorBrush = settings.ThumbSolidColorBrush;
-            ThumbLinearGradient = settings.ThumbLinearGradient;
-            tbThumb.Background = ThumbLinearGradient?.ToLinearGradientBrush == null ? ThumbSolidColorBrush : (Brush)ThumbLinearGradient.ToLinearGradientBrush;
+            global::HowLongToBeat.Views.HowLongToBeatSettingsView.ThumbSolidColorBrush = settings.ThumbSolidColorBrush;
+            global::HowLongToBeat.Views.HowLongToBeatSettingsView.ThumbLinearGradient = settings.ThumbLinearGradient;
+            displaySection.tbThumb.Background = global::HowLongToBeat.Views.HowLongToBeatSettingsView.ThumbLinearGradient?.ToLinearGradientBrush == null ? global::HowLongToBeat.Views.HowLongToBeatSettingsView.ThumbSolidColorBrush : (Brush)global::HowLongToBeat.Views.HowLongToBeatSettingsView.ThumbLinearGradient.ToLinearGradientBrush;
 
 
-            FirstColorBrush = settings.FirstColorBrush;
-            FirstLinearGradient = settings.FirstLinearGradient;
-            tbColorFirst.Background = FirstLinearGradient?.ToLinearGradientBrush == null ? FirstColorBrush : (Brush)FirstLinearGradient.ToLinearGradientBrush;
+            global::HowLongToBeat.Views.HowLongToBeatSettingsView.FirstColorBrush = settings.FirstColorBrush;
+            global::HowLongToBeat.Views.HowLongToBeatSettingsView.FirstLinearGradient = settings.FirstLinearGradient;
+            displaySection.tbColorFirst.Background = global::HowLongToBeat.Views.HowLongToBeatSettingsView.FirstLinearGradient?.ToLinearGradientBrush == null ? global::HowLongToBeat.Views.HowLongToBeatSettingsView.FirstColorBrush : (Brush)global::HowLongToBeat.Views.HowLongToBeatSettingsView.FirstLinearGradient.ToLinearGradientBrush;
 
-            SecondColorBrush = settings.SecondColorBrush;
-            SecondLinearGradient = settings.SecondLinearGradient;
-            tbColorSecond.Background = SecondLinearGradient?.ToLinearGradientBrush == null ? SecondColorBrush : (Brush)SecondLinearGradient.ToLinearGradientBrush;
+            global::HowLongToBeat.Views.HowLongToBeatSettingsView.SecondColorBrush = settings.SecondColorBrush;
+            global::HowLongToBeat.Views.HowLongToBeatSettingsView.SecondLinearGradient = settings.SecondLinearGradient;
+            displaySection.tbColorSecond.Background = global::HowLongToBeat.Views.HowLongToBeatSettingsView.SecondLinearGradient?.ToLinearGradientBrush == null ? global::HowLongToBeat.Views.HowLongToBeatSettingsView.SecondColorBrush : (Brush)global::HowLongToBeat.Views.HowLongToBeatSettingsView.SecondLinearGradient.ToLinearGradientBrush;
 
-            ThirdColorBrush = settings.ThirdColorBrush;
-            ThirdLinearGradient = settings.ThirdLinearGradient;
-            tbColorThird.Background = ThirdLinearGradient?.ToLinearGradientBrush == null ? ThirdColorBrush : (Brush)ThirdLinearGradient.ToLinearGradientBrush;
-
-
-            FirstMultiColorBrush = settings.FirstMultiColorBrush;
-            FirstMultiLinearGradient = settings.FirstMultiLinearGradient;
-            tbColorFirstMulti.Background = FirstMultiLinearGradient?.ToLinearGradientBrush == null ? FirstMultiColorBrush : (Brush)FirstMultiLinearGradient.ToLinearGradientBrush;
-
-            SecondMultiColorBrush = settings.SecondMultiColorBrush;
-            SecondMultiLinearGradient = settings.SecondMultiLinearGradient;
-            tbColorSecondMulti.Background = SecondMultiLinearGradient?.ToLinearGradientBrush == null ? SecondMultiColorBrush : (Brush)SecondMultiLinearGradient.ToLinearGradientBrush;
-
-            ThirdMultiColorBrush = settings.ThirdMultiColorBrush;
-            ThirdMultiLinearGradient = settings.ThirdMultiLinearGradient;
-            tbColorThirdMulti.Background = ThirdMultiLinearGradient?.ToLinearGradientBrush == null ? ThirdMultiColorBrush : (Brush)ThirdMultiLinearGradient.ToLinearGradientBrush;
+            global::HowLongToBeat.Views.HowLongToBeatSettingsView.ThirdColorBrush = settings.ThirdColorBrush;
+            global::HowLongToBeat.Views.HowLongToBeatSettingsView.ThirdLinearGradient = settings.ThirdLinearGradient;
+            displaySection.tbColorThird.Background = global::HowLongToBeat.Views.HowLongToBeatSettingsView.ThirdLinearGradient?.ToLinearGradientBrush == null ? global::HowLongToBeat.Views.HowLongToBeatSettingsView.ThirdColorBrush : (Brush)global::HowLongToBeat.Views.HowLongToBeatSettingsView.ThirdLinearGradient.ToLinearGradientBrush;
 
 
-            spSettings.Visibility = Visibility.Visible;
+            global::HowLongToBeat.Views.HowLongToBeatSettingsView.FirstMultiColorBrush = settings.FirstMultiColorBrush;
+            global::HowLongToBeat.Views.HowLongToBeatSettingsView.FirstMultiLinearGradient = settings.FirstMultiLinearGradient;
+            displaySection.tbColorFirstMulti.Background = global::HowLongToBeat.Views.HowLongToBeatSettingsView.FirstMultiLinearGradient?.ToLinearGradientBrush == null ? global::HowLongToBeat.Views.HowLongToBeatSettingsView.FirstMultiColorBrush : (Brush)global::HowLongToBeat.Views.HowLongToBeatSettingsView.FirstMultiLinearGradient.ToLinearGradientBrush;
 
-            PART_TTB.Source = BitmapExtensions.BitmapFromFile(Path.Combine(PluginDatabase.Paths.PluginPath, "Resources", "ttb.png"));
+            global::HowLongToBeat.Views.HowLongToBeatSettingsView.SecondMultiColorBrush = settings.SecondMultiColorBrush;
+            global::HowLongToBeat.Views.HowLongToBeatSettingsView.SecondMultiLinearGradient = settings.SecondMultiLinearGradient;
+            displaySection.tbColorSecondMulti.Background = global::HowLongToBeat.Views.HowLongToBeatSettingsView.SecondMultiLinearGradient?.ToLinearGradientBrush == null ? global::HowLongToBeat.Views.HowLongToBeatSettingsView.SecondMultiColorBrush : (Brush)global::HowLongToBeat.Views.HowLongToBeatSettingsView.SecondMultiLinearGradient.ToLinearGradientBrush;
+
+            global::HowLongToBeat.Views.HowLongToBeatSettingsView.ThirdMultiColorBrush = settings.ThirdMultiColorBrush;
+            global::HowLongToBeat.Views.HowLongToBeatSettingsView.ThirdMultiLinearGradient = settings.ThirdMultiLinearGradient;
+            displaySection.tbColorThirdMulti.Background = global::HowLongToBeat.Views.HowLongToBeatSettingsView.ThirdMultiLinearGradient?.ToLinearGradientBrush == null ? global::HowLongToBeat.Views.HowLongToBeatSettingsView.ThirdMultiColorBrush : (Brush)global::HowLongToBeat.Views.HowLongToBeatSettingsView.ThirdMultiLinearGradient.ToLinearGradientBrush;
+
+
+            displaySection.spSettings.Visibility = Visibility.Visible;
+
+            helpSection.PART_TTB.Source = BitmapExtensions.BitmapFromFile(Path.Combine(PluginDatabase.Paths.PluginPath, "Resources", "ttb.png"));
 
 
             IItemCollection<CompletionStatus> gameStatus = API.Instance.Database.CompletionStatuses;
-            PART_GameStatusPlaying.ItemsSource = gameStatus;
-            PART_GameStatusCompleted.ItemsSource = gameStatus;
-            PART_GameStatusCompletionist.ItemsSource = gameStatus;
-            PART_GameStatusBacklog.ItemsSource = gameStatus;
-            PART_GameStatusReplays.ItemsSource = gameStatus;
-            PART_GameStatusRetired.ItemsSource = gameStatus;
+            generalSection.PART_GameStatusPlaying.ItemsSource = gameStatus;
+            generalSection.PART_GameStatusCompleted.ItemsSource = gameStatus;
+            generalSection.PART_GameStatusCompletionist.ItemsSource = gameStatus;
+            generalSection.PART_GameStatusBacklog.ItemsSource = gameStatus;
+            generalSection.PART_GameStatusReplays.ItemsSource = gameStatus;
+            generalSection.PART_GameStatusRetired.ItemsSource = gameStatus;
 
             // Ensure aliases list is hydrated for the UI.
             try
@@ -179,7 +168,7 @@ namespace HowLongToBeat.Views
                 var selected = API.Instance.Dialogs.SelectFolder();
                 if (!selected.IsNullOrEmpty())
                 {
-                    PART_ExportFolder.Text = selected;
+                    generalSection.PART_ExportFolder.Text = selected;
                 }
             }
             catch (Exception ex)
@@ -202,7 +191,7 @@ namespace HowLongToBeat.Views
         {
             try
             {
-                var folder = PART_ExportFolder.Text?.Trim();
+                var folder = generalSection.PART_ExportFolder.Text?.Trim();
                 if (folder.IsNullOrEmpty())
                 {
                     API.Instance.Dialogs.ShowMessage(ResourceProvider.GetString("LOCExportSelectFolderFirst"));
@@ -286,7 +275,7 @@ namespace HowLongToBeat.Views
         {
             try
             {
-                var folder = PART_ExportFolder.Text?.Trim();
+                var folder = generalSection.PART_ExportFolder.Text?.Trim();
                 if (folder.IsNullOrEmpty())
                 {
                     API.Instance.Dialogs.ShowMessage(ResourceProvider.GetString("LOCExportSelectFolderFirst"));
@@ -376,12 +365,12 @@ namespace HowLongToBeat.Views
 
         private void BtAddData_Click(object sender, RoutedEventArgs e)
         {
-            HowLongToBeat.PluginDatabase.GetSelectData();
+            PluginDatabase.GetSelectData();
         }
 
         private void BtRemoveData_Click(object sender, RoutedEventArgs e)
         {
-            HowLongToBeat.PluginDatabase.ClearDatabase();
+            PluginDatabase.ClearDatabase();
         }
 
         #endregion
@@ -396,21 +385,21 @@ namespace HowLongToBeat.Views
 
                 if (tbControl.Background is SolidColorBrush sBrush)
                 {
-                    PART_SelectorColorPicker.IsSimpleColor = true;
+                    displaySection.PART_SelectorColorPicker.IsSimpleColor = true;
 
                     Color color = sBrush.Color;
-                    PART_SelectorColorPicker.SetColors(color);
+                    displaySection.PART_SelectorColorPicker.SetColors(color);
                 }
                 if (tbControl.Background is LinearGradientBrush lBrush)
                 {
-                    PART_SelectorColorPicker.IsSimpleColor = false;
+                    displaySection.PART_SelectorColorPicker.IsSimpleColor = false;
 
                     LinearGradientBrush linearGradientBrush = lBrush;
-                    PART_SelectorColorPicker.SetColors(linearGradientBrush);
+                    displaySection.PART_SelectorColorPicker.SetColors(linearGradientBrush);
                 }
 
-                PART_SelectorColor.Visibility = Visibility.Visible;
-                spSettings.Visibility = Visibility.Collapsed;
+                displaySection.PART_SelectorColor.Visibility = Visibility.Visible;
+                displaySection.spSettings.Visibility = Visibility.Collapsed;
             }
             catch (Exception ex)
             {
@@ -429,53 +418,53 @@ namespace HowLongToBeat.Views
                     case "0":
                         if (ResourceProvider.GetResource("NormalBrush") is LinearGradientBrush)
                         {
-                            tbThumb.Background = (LinearGradientBrush)ResourceProvider.GetResource("NormalBrush");
-                            ThumbSolidColorBrush = null;
-                            ThumbLinearGradient = ThemeLinearGradient.ToThemeLinearGradient((LinearGradientBrush)ResourceProvider.GetResource("NormalBrush"));
+                            displaySection.tbThumb.Background = (LinearGradientBrush)ResourceProvider.GetResource("NormalBrush");
+                            global::HowLongToBeat.Views.HowLongToBeatSettingsView.ThumbSolidColorBrush = null;
+                            global::HowLongToBeat.Views.HowLongToBeatSettingsView.ThumbLinearGradient = ThemeLinearGradient.ToThemeLinearGradient((LinearGradientBrush)ResourceProvider.GetResource("NormalBrush"));
                         }
                         else
                         {
-                            tbThumb.Background = (SolidColorBrush)ResourceProvider.GetResource("NormalBrush");
-                            ThumbSolidColorBrush = (SolidColorBrush)ResourceProvider.GetResource("NormalBrush");
-                            ThumbLinearGradient = null;
+                            displaySection.tbThumb.Background = (SolidColorBrush)ResourceProvider.GetResource("NormalBrush");
+                            global::HowLongToBeat.Views.HowLongToBeatSettingsView.ThumbSolidColorBrush = (SolidColorBrush)ResourceProvider.GetResource("NormalBrush");
+                            global::HowLongToBeat.Views.HowLongToBeatSettingsView.ThumbLinearGradient = null;
                         }
 
                         break;
 
                     case "1":
                         tbControl.Background = Brushes.DarkCyan;
-                        FirstColorBrush = new SolidColorBrush(Brushes.DarkCyan.Color);
-                        FirstLinearGradient = null;
+                        global::HowLongToBeat.Views.HowLongToBeatSettingsView.FirstColorBrush = new SolidColorBrush(Brushes.DarkCyan.Color);
+                        global::HowLongToBeat.Views.HowLongToBeatSettingsView.FirstLinearGradient = null;
                         break;
 
                     case "2":
                         tbControl.Background = Brushes.RoyalBlue;
-                        SecondColorBrush = new SolidColorBrush(Brushes.RoyalBlue.Color);
-                        SecondLinearGradient = null;
+                        global::HowLongToBeat.Views.HowLongToBeatSettingsView.SecondColorBrush = new SolidColorBrush(Brushes.RoyalBlue.Color);
+                        global::HowLongToBeat.Views.HowLongToBeatSettingsView.SecondLinearGradient = null;
                         break;
 
                     case "3":
                         tbControl.Background = Brushes.ForestGreen;
-                        ThirdColorBrush = new SolidColorBrush(Brushes.ForestGreen.Color);
-                        ThirdLinearGradient = null;
+                        global::HowLongToBeat.Views.HowLongToBeatSettingsView.ThirdColorBrush = new SolidColorBrush(Brushes.ForestGreen.Color);
+                        global::HowLongToBeat.Views.HowLongToBeatSettingsView.ThirdLinearGradient = null;
                         break;
 
                     case "4":
                         tbControl.Background = Brushes.DarkCyan;
-                        FirstMultiColorBrush = new SolidColorBrush(Brushes.DarkCyan.Color);
-                        FirstMultiLinearGradient = null;
+                        global::HowLongToBeat.Views.HowLongToBeatSettingsView.FirstMultiColorBrush = new SolidColorBrush(Brushes.DarkCyan.Color);
+                        global::HowLongToBeat.Views.HowLongToBeatSettingsView.FirstMultiLinearGradient = null;
                         break;
 
                     case "5":
                         tbControl.Background = Brushes.RoyalBlue;
-                        SecondMultiColorBrush = new SolidColorBrush(Brushes.RoyalBlue.Color);
-                        SecondMultiLinearGradient = null;
+                        global::HowLongToBeat.Views.HowLongToBeatSettingsView.SecondMultiColorBrush = new SolidColorBrush(Brushes.RoyalBlue.Color);
+                        global::HowLongToBeat.Views.HowLongToBeatSettingsView.SecondMultiLinearGradient = null;
                         break;
 
                     case "6":
                         tbControl.Background = Brushes.ForestGreen;
-                        ThirdMultiColorBrush = new SolidColorBrush(Brushes.ForestGreen.Color);
-                        ThirdMultiLinearGradient = null;
+                        global::HowLongToBeat.Views.HowLongToBeatSettingsView.ThirdMultiColorBrush = new SolidColorBrush(Brushes.ForestGreen.Color);
+                        global::HowLongToBeat.Views.HowLongToBeatSettingsView.ThirdMultiLinearGradient = null;
                         break;
 
                     default:
@@ -494,46 +483,46 @@ namespace HowLongToBeat.Views
 
             if (tbControl != null)
             {
-                if (PART_SelectorColorPicker.IsSimpleColor)
+                if (displaySection.PART_SelectorColorPicker.IsSimpleColor)
                 {
-                    color = PART_SelectorColorPicker.SimpleColor;
+                    color = displaySection.PART_SelectorColorPicker.SimpleColor;
                     tbControl.Background = new SolidColorBrush(color);
 
                     switch ((string)tbControl.Tag)
                     {
                         case "0":
-                            ThumbSolidColorBrush = new SolidColorBrush(color);
-                            ThumbLinearGradient = null;
+                            global::HowLongToBeat.Views.HowLongToBeatSettingsView.ThumbSolidColorBrush = new SolidColorBrush(color);
+                            global::HowLongToBeat.Views.HowLongToBeatSettingsView.ThumbLinearGradient = null;
                             break;
 
                         case "1":
-                            FirstColorBrush = new SolidColorBrush(color);
-                            FirstLinearGradient = null;
+                            global::HowLongToBeat.Views.HowLongToBeatSettingsView.FirstColorBrush = new SolidColorBrush(color);
+                            global::HowLongToBeat.Views.HowLongToBeatSettingsView.FirstLinearGradient = null;
                             break;
 
                         case "2":
-                            SecondColorBrush = new SolidColorBrush(color);
-                            SecondLinearGradient = null;
+                            global::HowLongToBeat.Views.HowLongToBeatSettingsView.SecondColorBrush = new SolidColorBrush(color);
+                            global::HowLongToBeat.Views.HowLongToBeatSettingsView.SecondLinearGradient = null;
                             break;
 
                         case "3":
-                            ThirdColorBrush = new SolidColorBrush(color);
-                            ThirdLinearGradient = null;
+                            global::HowLongToBeat.Views.HowLongToBeatSettingsView.ThirdColorBrush = new SolidColorBrush(color);
+                            global::HowLongToBeat.Views.HowLongToBeatSettingsView.ThirdLinearGradient = null;
                             break;
 
                         case "4":
-                            FirstMultiColorBrush = new SolidColorBrush(color);
-                            FirstMultiLinearGradient = null;
+                            global::HowLongToBeat.Views.HowLongToBeatSettingsView.FirstMultiColorBrush = new SolidColorBrush(color);
+                            global::HowLongToBeat.Views.HowLongToBeatSettingsView.FirstMultiLinearGradient = null;
                             break;
 
                         case "5":
-                            SecondMultiColorBrush = new SolidColorBrush(color);
-                            SecondMultiLinearGradient = null;
+                            global::HowLongToBeat.Views.HowLongToBeatSettingsView.SecondMultiColorBrush = new SolidColorBrush(color);
+                            global::HowLongToBeat.Views.HowLongToBeatSettingsView.SecondMultiLinearGradient = null;
                             break;
 
                         case "6":
-                            ThirdMultiColorBrush = new SolidColorBrush(color);
-                            ThirdMultiLinearGradient = null;
+                            global::HowLongToBeat.Views.HowLongToBeatSettingsView.ThirdMultiColorBrush = new SolidColorBrush(color);
+                            global::HowLongToBeat.Views.HowLongToBeatSettingsView.ThirdMultiLinearGradient = null;
                             break;
 
                         default:
@@ -542,43 +531,43 @@ namespace HowLongToBeat.Views
                 }
                 else
                 {
-                    tbControl.Background = PART_SelectorColorPicker.GetLinearGradientBrush();
+                    tbControl.Background = displaySection.PART_SelectorColorPicker.GetLinearGradientBrush();
 
                     switch ((string)tbControl.Tag)
                     {
                         case "0":
-                            ThumbSolidColorBrush = null;
-                            ThumbLinearGradient = ThemeLinearGradient.ToThemeLinearGradient(PART_SelectorColorPicker.GetLinearGradientBrush());
+                            global::HowLongToBeat.Views.HowLongToBeatSettingsView.ThumbSolidColorBrush = null;
+                            global::HowLongToBeat.Views.HowLongToBeatSettingsView.ThumbLinearGradient = ThemeLinearGradient.ToThemeLinearGradient(displaySection.PART_SelectorColorPicker.GetLinearGradientBrush());
                             break;
 
                         case "1":
-                            FirstColorBrush = null;
-                            FirstLinearGradient = ThemeLinearGradient.ToThemeLinearGradient(PART_SelectorColorPicker.GetLinearGradientBrush());
+                            global::HowLongToBeat.Views.HowLongToBeatSettingsView.FirstColorBrush = null;
+                            global::HowLongToBeat.Views.HowLongToBeatSettingsView.FirstLinearGradient = ThemeLinearGradient.ToThemeLinearGradient(displaySection.PART_SelectorColorPicker.GetLinearGradientBrush());
                             break;
 
                         case "2":
-                            SecondColorBrush = null;
-                            SecondLinearGradient = ThemeLinearGradient.ToThemeLinearGradient(PART_SelectorColorPicker.GetLinearGradientBrush());
+                            global::HowLongToBeat.Views.HowLongToBeatSettingsView.SecondColorBrush = null;
+                            global::HowLongToBeat.Views.HowLongToBeatSettingsView.SecondLinearGradient = ThemeLinearGradient.ToThemeLinearGradient(displaySection.PART_SelectorColorPicker.GetLinearGradientBrush());
                             break;
 
                         case "3":
-                            ThirdColorBrush = null;
-                            ThirdLinearGradient = ThemeLinearGradient.ToThemeLinearGradient(PART_SelectorColorPicker.GetLinearGradientBrush());
+                            global::HowLongToBeat.Views.HowLongToBeatSettingsView.ThirdColorBrush = null;
+                            global::HowLongToBeat.Views.HowLongToBeatSettingsView.ThirdLinearGradient = ThemeLinearGradient.ToThemeLinearGradient(displaySection.PART_SelectorColorPicker.GetLinearGradientBrush());
                             break;
 
                         case "4":
-                            FirstMultiColorBrush = null;
-                            FirstMultiLinearGradient = ThemeLinearGradient.ToThemeLinearGradient(PART_SelectorColorPicker.GetLinearGradientBrush());
+                            global::HowLongToBeat.Views.HowLongToBeatSettingsView.FirstMultiColorBrush = null;
+                            global::HowLongToBeat.Views.HowLongToBeatSettingsView.FirstMultiLinearGradient = ThemeLinearGradient.ToThemeLinearGradient(displaySection.PART_SelectorColorPicker.GetLinearGradientBrush());
                             break;
 
                         case "5":
-                            SecondMultiColorBrush = null;
-                            SecondMultiLinearGradient = ThemeLinearGradient.ToThemeLinearGradient(PART_SelectorColorPicker.GetLinearGradientBrush());
+                            global::HowLongToBeat.Views.HowLongToBeatSettingsView.SecondMultiColorBrush = null;
+                            global::HowLongToBeat.Views.HowLongToBeatSettingsView.SecondMultiLinearGradient = ThemeLinearGradient.ToThemeLinearGradient(displaySection.PART_SelectorColorPicker.GetLinearGradientBrush());
                             break;
 
                         case "6":
-                            ThirdMultiColorBrush = null;
-                            ThirdMultiLinearGradient = ThemeLinearGradient.ToThemeLinearGradient(PART_SelectorColorPicker.GetLinearGradientBrush());
+                            global::HowLongToBeat.Views.HowLongToBeatSettingsView.ThirdMultiColorBrush = null;
+                            global::HowLongToBeat.Views.HowLongToBeatSettingsView.ThirdMultiLinearGradient = ThemeLinearGradient.ToThemeLinearGradient(displaySection.PART_SelectorColorPicker.GetLinearGradientBrush());
                             break;
 
                         default:
@@ -591,14 +580,14 @@ namespace HowLongToBeat.Views
                 Logger.Warn("One control is undefined");
             }
 
-            PART_SelectorColor.Visibility = Visibility.Collapsed;
-            spSettings.Visibility = Visibility.Visible;
+            displaySection.PART_SelectorColor.Visibility = Visibility.Collapsed;
+            displaySection.spSettings.Visibility = Visibility.Visible;
         }
 
         private void PART_TM_ColorCancel_Click(object sender, RoutedEventArgs e)
         {
-            PART_SelectorColor.Visibility = Visibility.Collapsed;
-            spSettings.Visibility = Visibility.Visible;
+            displaySection.PART_SelectorColor.Visibility = Visibility.Collapsed;
+            displaySection.spSettings.Visibility = Visibility.Visible;
         }
 
         #endregion
@@ -607,8 +596,8 @@ namespace HowLongToBeat.Views
 
         private async Task CheckAuthenticateAsync()
         {
-            PART_LbUserLogin.Visibility = Visibility.Collapsed;
-            PART_LbAuthenticate.Content = ResourceProvider.GetString("LOCCommonLoginChecking");
+            generalSection.PART_LbUserLogin.Visibility = Visibility.Collapsed;
+            generalSection.PART_LbAuthenticate.Content = ResourceProvider.GetString("LOCCommonLoginChecking");
 
             try { Logger.Info("HLTB Auth UI: CheckAuthenticate start"); } catch { }
 
@@ -646,8 +635,8 @@ namespace HowLongToBeat.Views
                 // Ensure UI is updated even if the API state was already set before we subscribed.
                 if (isLoggedIn || (api != null && (bool?)(api.IsConnected) == true))
                 {
-                    PART_LbAuthenticate.Content = ResourceProvider.GetString("LOCCommonLoggedIn");
-                    PART_LbUserLogin.Visibility = Visibility.Visible;
+                    generalSection.PART_LbAuthenticate.Content = ResourceProvider.GetString("LOCCommonLoggedIn");
+                    generalSection.PART_LbUserLogin.Visibility = Visibility.Visible;
 
                     string userLogin = api?.UserLogin;
                     if (userLogin.IsNullOrEmpty())
@@ -655,12 +644,12 @@ namespace HowLongToBeat.Views
                         userLogin = PluginDatabase?.UserHltbData?.Login ?? string.Empty;
                     }
 
-                    PART_LbUserLogin.Content = ResourceProvider.GetString("LOCCommonAccountName") + " " + userLogin;
+                    generalSection.PART_LbUserLogin.Content = ResourceProvider.GetString("LOCCommonAccountName") + " " + userLogin;
                 }
                 else
                 {
-                    PART_LbAuthenticate.Content = ResourceProvider.GetString("LOCCommonNotLoggedIn");
-                    PART_LbUserLogin.Visibility = Visibility.Collapsed;
+                    generalSection.PART_LbAuthenticate.Content = ResourceProvider.GetString("LOCCommonNotLoggedIn");
+                    generalSection.PART_LbUserLogin.Visibility = Visibility.Collapsed;
                 }
 
                 try { Logger.Info($"HLTB Auth UI: CheckAuthenticate done isLoggedIn={isLoggedIn} api.IsConnected={(api?.IsConnected?.ToString() ?? "<null>")}"); } catch { }
@@ -686,7 +675,7 @@ namespace HowLongToBeat.Views
 
         private void PART_BtAuthenticate_Click(object sender, RoutedEventArgs e)
         {
-            PART_LbUserLogin.Visibility = Visibility.Collapsed;
+            generalSection.PART_LbUserLogin.Visibility = Visibility.Collapsed;
 
             try { Logger.Info("HLTB Auth UI: Login button clicked"); } catch { }
             try
@@ -718,7 +707,16 @@ namespace HowLongToBeat.Views
         
         #endregion
 
-        private void HowLongToBeatSettingsView_Unloaded(object sender, RoutedEventArgs e)
+        private void HltbSettingsView_Unloaded(object sender, RoutedEventArgs e)
+        {
+            DetachFromHost();
+            try { this.Unloaded -= HltbSettingsView_Unloaded; } catch { }
+        }
+
+        /// <summary>
+        /// Unsubscribes event handlers when the legacy view is hosted outside its own visual tree.
+        /// </summary>
+        private void DetachFromHost()
         {
             try
             {
@@ -739,7 +737,6 @@ namespace HowLongToBeat.Views
                 }
             }
             catch { }
-            try { this.Unloaded -= HowLongToBeatSettingsView_Unloaded; } catch { }
         }
 
         private void Platforms_ItemUpdated(object sender, ItemUpdatedEventArgs<Platform> e)
@@ -775,7 +772,7 @@ namespace HowLongToBeat.Views
                     .ForEach(m => m.Platform = p));
 
             settings.Platforms.Sort();
-            PART_GridPlatformsList.ItemsSource = settings.Platforms;
+            platformsSection.PART_GridPlatformsList.ItemsSource = settings.Platforms;
         }
 
         private void HltB_IntegrationProgressBarShowTime_Checked(object sender, RoutedEventArgs e)
@@ -841,8 +838,8 @@ namespace HowLongToBeat.Views
                 _settingsRef.GameNameAliasesList.Add(new GameNameAliasEntry(string.Empty, string.Empty));
                 try
                 {
-                    PART_AliasesGrid?.ScrollIntoView(_settingsRef.GameNameAliasesList.LastOrDefault());
-                    PART_AliasesGrid?.Focus();
+                    dataSection.PART_AliasesGrid?.ScrollIntoView(_settingsRef.GameNameAliasesList.LastOrDefault());
+                    dataSection.PART_AliasesGrid?.Focus();
                 }
                 catch { }
             }
@@ -861,7 +858,7 @@ namespace HowLongToBeat.Views
                     return;
                 }
 
-                var selected = PART_AliasesGrid?.SelectedItems;
+                var selected = dataSection.PART_AliasesGrid?.SelectedItems;
                 if (selected == null || selected.Count == 0)
                 {
                     return;
@@ -1061,7 +1058,7 @@ namespace HowLongToBeat.Views
                 }
 
                 _ignoreSyncGames = new ObservableCollection<Game>(PluginDatabase.GetGamesIgnoredForPlaytimeSync());
-                PART_IgnoreSyncList.ItemsSource = _ignoreSyncGames;
+                syncSection.PART_IgnoreSyncList.ItemsSource = _ignoreSyncGames;
                 SyncEditingIgnoreSyncGameIds();
                 _ignoreSyncListInitialized = true;
             }
@@ -1073,60 +1070,7 @@ namespace HowLongToBeat.Views
 
         private void SyncEditingIgnoreSyncGameIds()
         {
-            EditingIgnoreSyncGameIds = _ignoreSyncGames?.Select(g => g.Id).ToList() ?? new List<Guid>();
-        }
-
-        /// <summary>
-        /// Applies pending ignore-sync list edits to Playnite tags when settings are saved.
-        /// No-op when the Ignored games tab was never opened.
-        /// </summary>
-        public static void ApplyEditingIgnoreSyncChanges()
-        {
-            if (EditingIgnoreSyncGameIds == null || PluginDatabase == null)
-            {
-                return;
-            }
-
-            try
-            {
-                HashSet<Guid> pendingIds = new HashSet<Guid>(EditingIgnoreSyncGameIds);
-                HashSet<Guid> currentIds = new HashSet<Guid>(
-                    PluginDatabase.GetGamesIgnoredForPlaytimeSync().Select(g => g.Id));
-
-                foreach (Guid gameId in pendingIds.Where(id => !currentIds.Contains(id)))
-                {
-                    Game game = API.Instance?.Database?.Games?.Get(gameId);
-                    if (game != null)
-                    {
-                        PluginDatabase.AddIgnoreSyncTag(game);
-                    }
-                }
-
-                foreach (Guid gameId in currentIds.Where(id => !pendingIds.Contains(id)))
-                {
-                    Game game = API.Instance?.Database?.Games?.Get(gameId);
-                    if (game != null)
-                    {
-                        PluginDatabase.RemoveIgnoreSyncTag(game);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Common.LogError(ex, false, true, PluginDatabase.PluginName);
-            }
-            finally
-            {
-                EditingIgnoreSyncGameIds = null;
-            }
-        }
-
-        /// <summary>
-        /// Discards pending ignore-sync list edits when settings are cancelled.
-        /// </summary>
-        public static void CancelEditingIgnoreSyncChanges()
-        {
-            EditingIgnoreSyncGameIds = null;
+            global::HowLongToBeat.Views.HowLongToBeatSettingsView.EditingIgnoreSyncGameIds = _ignoreSyncGames?.Select(g => g.Id).ToList() ?? new List<Guid>();
         }
 
         private void ButtonIgnoreSyncAddGame_Click(object sender, RoutedEventArgs e)
@@ -1205,5 +1149,154 @@ namespace HowLongToBeat.Views
                 Common.LogError(ex, false, true, PluginDatabase.PluginName);
             }
         }
+
+        private void InitializeSectionContent()
+        {
+            generalSection = new HltbGeneralSettingsSection();
+            syncSection = new HltbSyncSettingsSection();
+            dataSection = new HltbDataSettingsSection();
+            displaySection = new HltbDisplaySettingsSection();
+            platformsSection = new HltbPlatformsSettingsSection();
+            storefrontSection = new HltbStorefrontSettingsSection();
+            helpSection = new HltbHelpSettingsSection();
+
+            PART_TabGeneral.Content = generalSection;
+            PART_TabSync.Content = syncSection;
+            PART_TabData.Content = dataSection;
+            PART_TabDisplay.Content = displaySection;
+            PART_MappingPanel.Children.Add(platformsSection);
+            PART_MappingPanel.Children.Add(storefrontSection);
+            PART_TabHelp.Content = helpSection;
+        }
+
+        private void WireSectionEvents()
+        {
+            generalSection.PART_BtAuthenticate.Click += PART_BtAuthenticate_Click;
+            generalSection.PART_BtnExportCsvComma.Click += ButtonExportCsvComma_Click;
+            generalSection.PART_BtnExportCsvSemicolon.Click += ButtonExportCsvSemicolon_Click;
+            generalSection.PART_BtnExportJson.Click += ButtonExportJson_Click;
+            generalSection.PART_BtnBrowseExportFolder.Click += ButtonBrowseExportFolder_Click;
+            generalSection.PART_BtnAddTag.Click += ButtonAddTag_Click;
+            generalSection.PART_BtnRemoveTag.Click += ButtonRemoveTag_Click;
+            generalSection.btAddData.Click += BtAddData_Click;
+            generalSection.btRemoveData.Click += BtRemoveData_Click;
+
+            syncSection.PART_BtnIgnoreSyncAddGame.Click += ButtonIgnoreSyncAddGame_Click;
+            syncSection.AddHandler(Button.ClickEvent, new RoutedEventHandler(SyncSection_ButtonClick), true);
+
+            dataSection.PART_BtnAliasAdd.Click += ButtonAliasAdd_Click;
+            dataSection.PART_BtnAliasRemove.Click += ButtonAliasRemove_Click;
+            dataSection.PART_BtnAliasImport.Click += ButtonAliasImport_Click;
+            dataSection.PART_BtnAliasExport.Click += ButtonAliasExport_Click;
+            dataSection.PART_BtnAliasReset.Click += ButtonAliasReset_Click;
+            dataSection.PART_BtnAliasOpenFile.Click += ButtonAliasOpenFile_Click;
+
+            displaySection.PART_TM_ColorOK.Click += PART_TM_ColorOK_Click;
+            displaySection.PART_TM_ColorCancel.Click += PART_TM_ColorCancel_Click;
+            displaySection.HltB_IntegrationProgressBarShowTime.Checked += HltB_IntegrationProgressBarShowTime_Checked;
+            displaySection.HltB_IntegrationProgressBarShowTime.Unchecked += HltB_IntegrationProgressBarShowTime_Unchecked;
+
+            foreach (Button button in EnumerateButtons(displaySection))
+            {
+                string content = button.Content as string;
+                if (content == "\u270f")
+                {
+                    button.Click += BtPickColor_Click;
+                }
+                else if (button.Tag is string)
+                {
+                    button.Click += BtRestore_Click;
+                }
+            }
+
+            WireProgressBarTimeRadioButtons(displaySection);
+        }
+
+        private void SyncSection_ButtonClick(object sender, RoutedEventArgs e)
+        {
+            if (e.OriginalSource is Button button && button.Name == "PART_RemoveButton")
+            {
+                ButtonIgnoreSyncRemoveItem_Click(button, e);
+            }
+        }
+
+        private static IEnumerable<Button> EnumerateButtons(DependencyObject root)
+        {
+            if (root == null)
+            {
+                yield break;
+            }
+
+            int count = VisualTreeHelper.GetChildrenCount(root);
+            for (int i = 0; i < count; i++)
+            {
+                DependencyObject child = VisualTreeHelper.GetChild(root, i);
+                if (child is Button button)
+                {
+                    yield return button;
+                }
+
+                foreach (Button nested in EnumerateButtons(child))
+                {
+                    yield return nested;
+                }
+            }
+        }
+
+        private static IEnumerable<RadioButton> EnumerateRadioButtons(DependencyObject root)
+        {
+            if (root == null)
+            {
+                yield break;
+            }
+
+            int count = VisualTreeHelper.GetChildrenCount(root);
+            for (int i = 0; i < count; i++)
+            {
+                DependencyObject child = VisualTreeHelper.GetChild(root, i);
+                if (child is RadioButton radioButton)
+                {
+                    yield return radioButton;
+                }
+
+                foreach (RadioButton nested in EnumerateRadioButtons(child))
+                {
+                    yield return nested;
+                }
+            }
+        }
+
+        private void WireProgressBarTimeRadioButtons(DependencyObject root)
+        {
+            foreach (RadioButton radioButton in EnumerateRadioButtons(root))
+            {
+                if (radioButton.GroupName != "ProgressBarTimePlacement")
+                {
+                    continue;
+                }
+
+                Binding binding = System.Windows.Data.BindingOperations.GetBinding(radioButton, ToggleButton.IsCheckedProperty);
+                if (binding == null)
+                {
+                    continue;
+                }
+
+                string path = binding.Path?.Path;
+                if (path == "Settings.ProgressBarShowTimeAbove")
+                {
+                    radioButton.Checked += HltB_ProgressBarTimeAbove_Checked;
+                }
+                else if (path == "Settings.ProgressBarShowTimeInterior")
+                {
+                    radioButton.Checked += HltB_ProgressBarTimeInterior_Checked;
+                }
+                else if (path == "Settings.ProgressBarShowTimeBelow")
+                {
+                    radioButton.Checked += HltB_ProgressBarTimeBelow_Checked;
+                }
+            }
+        }
     }
 }
+
+

@@ -7,6 +7,12 @@
 
     <!-- HowLongToBeatSettingsView -->
 
+    <sys:String x:Key="LOCHltbSettingsCategoryGeneral">Général</sys:String>
+    <sys:String x:Key="LOCHltbSettingsCategorySync">Synchronisation</sys:String>
+    <sys:String x:Key="LOCHltbSettingsCategoryData">Données</sys:String>
+    <sys:String x:Key="LOCHltbSettingsCategoryDisplay">Affichage</sys:String>
+    <sys:String x:Key="LOCHltbSettingsCategoryMapping">Correspondances</sys:String>
+
     <sys:String x:Key="LOCHowLongToBeatProgressBar">Ajouté(s) {0} - Déjà ajouté(s) {1} - Non ajouté(s) {2}</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatAddTagDescription">Ajouter un tag aux jeux avec les informations de temps d'achèvement de l'histoire principale</sys:String>

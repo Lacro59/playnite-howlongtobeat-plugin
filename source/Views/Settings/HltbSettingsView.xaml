@@ -1,0 +1,42 @@
+﻿<UserControl x:Class="HowLongToBeat.Views.HltbSettingsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:HowLongToBeat="clr-namespace:HowLongToBeat"
+             xmlns:settings="clr-namespace:CommonPluginsControls.Settings"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance HowLongToBeat:HowLongToBeatSettingsViewModel}">
+
+    <TabControl x:Name="tcRoot"
+                Margin="20">
+        <TabItem x:Name="PART_TabGeneral"
+                 Header="{DynamicResource LOCHltbSettingsCategoryGeneral}"/>
+
+        <TabItem x:Name="PART_TabSync"
+                 Header="{DynamicResource LOCHltbSettingsCategorySync}"
+                 GotFocus="TabIgnoreSync_GotFocus"/>
+
+        <TabItem x:Name="PART_TabData"
+                 Header="{DynamicResource LOCHltbSettingsCategoryData}"/>
+
+        <TabItem x:Name="PART_TabDisplay"
+                 Header="{DynamicResource LOCHltbSettingsCategoryDisplay}"/>
+
+        <TabItem x:Name="PART_TabMapping"
+                 Header="{DynamicResource LOCHltbSettingsCategoryMapping}">
+            <ScrollViewer Margin="0,10,0,0"
+                          VerticalScrollBarVisibility="Auto"
+                          PanningMode="VerticalOnly">
+                <StackPanel x:Name="PART_MappingPanel"/>
+            </ScrollViewer>
+        </TabItem>
+
+        <TabItem x:Name="PART_TabHelp"
+                 Header="{DynamicResource LOCHltbQuickSearchTab}"/>
+
+        <TabItem Header="{DynamicResource LOCCommonDebugTab}">
+            <settings:PluginDebugSettingsSection PluginName="HowLongToBeat"/>
+        </TabItem>
+    </TabControl>
+</UserControl>

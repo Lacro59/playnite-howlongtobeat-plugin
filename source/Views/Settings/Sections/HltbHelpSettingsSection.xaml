@@ -1,0 +1,49 @@
+﻿<UserControl x:Class="HowLongToBeat.Views.HltbHelpSettingsSection"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:AttachedProperties="clr-namespace:CommonPluginsShared.Controls"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             xmlns:controls="clr-namespace:CommonPluginsControls.Controls"
+             xmlns:HowLongToBeat="clr-namespace:HowLongToBeat"
+             xmlns:hltm="clr-namespace:HowLongToBeat.Models"
+             xmlns:hlte="clr-namespace:HowLongToBeat.Models.Enumerations"
+             xmlns:hlts="clr-namespace:HowLongToBeat.Services"
+             xmlns:hltb="clr-namespace:HowLongToBeat.Behaviors"
+             xmlns:converters="clr-namespace:CommonPluginsShared.Converters"
+             xmlns:converters1="clr-namespace:CommonPlayniteShared.Converters"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance HowLongToBeat:HowLongToBeatSettingsViewModel}">
+
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    </UserControl.Resources>
+
+            <ScrollViewer Margin="0,10,0,0">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="10"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="10"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+
+                    <Label Grid.Row="0"
+                           Content="{DynamicResource LOCHltbQuickSearchInfo}"/>
+
+                    <Label Grid.Row="2"
+                           Margin="30,0,0,0"
+                           Content="ttb"
+                           FontWeight="Bold"/>
+                    <Label Grid.Row="2"
+                           Margin="100,0,0,0"
+                           Content="{DynamicResource LOCHltbQuickSearchCmd1}"/>
+                    <Image Grid.Row="4"
+                           Margin="100,0,0,0"
+                           Name="PART_TTB"
+                           HorizontalAlignment="Right"/>
+                </Grid>
+            </ScrollViewer>
+</UserControl>
