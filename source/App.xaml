@@ -7,9 +7,12 @@
                 <ResourceDictionary>
                     <FontFamily x:Key="FontIcoFont">pack://application:,,,/CommonPluginsResources;component/ResourcesPlaynite/icofont.ttf#icofont</FontFamily>
                 </ResourceDictionary>
+                
                 <!--Playnite Resources-->
                 <ResourceDictionary Source="playnite-plugincommon/CommonPluginsResources/ResourcesPlaynite/Constants.xaml"/>
                 <ResourceDictionary Source="playnite-plugincommon/CommonPluginsResources/ResourcesPlaynite/Common.xaml"/>
+                <ResourceDictionary Source="playnite-plugincommon/CommonPluginsResources/ResourcesPlaynite/Media.xaml"/>
+                
                 <!--Playnite Default localization-->
                 <ResourceDictionary Source="playnite-plugincommon/CommonPluginsResources/ResourcesPlaynite/LocSource.xaml"/>
                 <ResourceDictionary Source="playnite-plugincommon/CommonPluginsResources/ResourcesPlaynite/AmazonLocSource.xaml"/>
@@ -17,12 +20,13 @@
                 <ResourceDictionary Source="playnite-plugincommon/CommonPluginsResources/ResourcesPlaynite/EpicLocSource.xaml"/>
                 <ResourceDictionary Source="playnite-plugincommon/CommonPluginsResources/ResourcesPlaynite/GogLocSource.xaml"/>
                 <ResourceDictionary Source="playnite-plugincommon/CommonPluginsResources/ResourcesPlaynite/HumbleLocSource.xaml"/>
-                <ResourceDictionary Source="playnite-plugincommon/CommonPluginsResources/ResourcesPlaynite/ItchioLibrary.xaml"/>
+                <ResourceDictionary Source="playnite-plugincommon/CommonPluginsResources/ResourcesPlaynite/ItchioLocSource.xaml"/>
                 <ResourceDictionary Source="playnite-plugincommon/CommonPluginsResources/ResourcesPlaynite/OriginLocSource.xaml"/>
                 <ResourceDictionary Source="playnite-plugincommon/CommonPluginsResources/ResourcesPlaynite/RockstarLibrary.xaml"/>
                 <ResourceDictionary Source="playnite-plugincommon/CommonPluginsResources/ResourcesPlaynite/SteamLocSource.xaml"/>
-                <ResourceDictionary Source="playnite-plugincommon/CommonPluginsResources/ResourcesPlaynite/UplayLibrary.xaml"/>
+                <ResourceDictionary Source="playnite-plugincommon/CommonPluginsResources/ResourcesPlaynite/UplayLocSource.xaml"/>
                 <ResourceDictionary Source="playnite-plugincommon/CommonPluginsResources/ResourcesPlaynite/XboxLocSource.xaml"/>
+                
                 <!--Default Controls-->
                 <ResourceDictionary Source="playnite-plugincommon/CommonPluginsResources/ResourcesPlaynite/DefaultControls/Border.xaml"/>
                 <ResourceDictionary Source="playnite-plugincommon/CommonPluginsResources/ResourcesPlaynite/DefaultControls/TextBlock.xaml"/>
@@ -53,6 +57,7 @@
                 <ResourceDictionary Source="playnite-plugincommon/CommonPluginsResources/ResourcesPlaynite/DefaultControls/ToggleButton.xaml"/>
                 <ResourceDictionary Source="playnite-plugincommon/CommonPluginsResources/ResourcesPlaynite/DefaultControls/ToolTip.xaml"/>
                 <ResourceDictionary Source="playnite-plugincommon/CommonPluginsResources/ResourcesPlaynite/DefaultControls/TreeView.xaml"/>
+                
                 <!--Derived Controls-->
                 <ResourceDictionary Source="playnite-plugincommon/CommonPluginsResources/ResourcesPlaynite/DerivedStyles/BottomButton.xaml"/>
                 <ResourceDictionary Source="playnite-plugincommon/CommonPluginsResources/ResourcesPlaynite/DerivedStyles/HighlightBorder.xaml"/>
@@ -64,9 +69,11 @@
                 <ResourceDictionary Source="playnite-plugincommon/CommonPluginsResources/Resources/Common.xaml"/>
                 <ResourceDictionary Source="playnite-plugincommon/CommonPluginsResources/Resources/LiveChartsCommon/Common.xaml"/>
                 <ResourceDictionary Source="playnite-plugincommon/CommonPluginsResources/Resources/Controls/ListExtendStyle.xaml"/>
+                
                 <!--Plugin default localization-->
                 <ResourceDictionary Source="playnite-plugincommon/CommonPluginsResources/Localization/Common/LocSource.xaml"/>
                 <ResourceDictionary Source="Localization/LocSource.xaml"/>
+                
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

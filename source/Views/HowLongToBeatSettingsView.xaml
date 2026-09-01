@@ -59,7 +59,7 @@
 
                     <CheckBox Margin="0,10,0,0"
                               IsChecked="{Binding Settings.EnableVerboseLogging}"
-                              Content="{DynamicResource LOCHowLongToBeatEnableVerboseLogging}"/>
+                              Content="{DynamicResource LOCCommonEnableVerboseLogging}"/>
 
                     <!-- Export controls -->
                     <Grid Margin="0,10,0,0">

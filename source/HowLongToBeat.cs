@@ -1,4 +1,4 @@
-﻿using HowLongToBeat.Services;
+using HowLongToBeat.Services;
 using HowLongToBeat.Views;
 using Playnite.SDK;
 using Playnite.SDK.Events;
@@ -87,7 +87,7 @@ namespace HowLongToBeat
                 string ButtonName = ((Button)sender).Name;
                 if (ButtonName == "PART_CustomHowLongToBeatButton")
                 {
-                    Common.LogDebug(true, $"OnCustomThemeButtonClick()");
+                    Common.LogDebug($"OnCustomThemeButtonClick()");
                     PluginDatabase.PluginWindows.ShowPluginGameDataWindow(this);
                 }
             }
@@ -369,14 +369,7 @@ namespace HowLongToBeat
              }
              catch (Exception ex)
              {
-                 try
-                 {
-                     if (PluginDatabase?.PluginSettings is HowLongToBeatSettings s && s.EnableVerboseLogging)
-                     {
-                         Common.LogError(ex, false, true, PluginDatabase.PluginName);
-                     }
-                 }
-                 catch { }
+                 Common.LogError(ex, false, true, PluginDatabase.PluginName);
              }
          }
 

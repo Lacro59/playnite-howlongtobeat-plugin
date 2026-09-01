@@ -50,8 +50,6 @@ namespace HowLongToBeat
 
         public bool EnableSucessNotification { get; set; } = true;
 
-        public bool EnableVerboseLogging { get; set; } = false;
-
         /// <summary>
         /// Last HLTB search API path that successfully passed auth init (for example <c>/api/search/site</c>).
         /// </summary>
@@ -598,7 +596,7 @@ namespace HowLongToBeat
                         await Task.Delay(100).ConfigureAwait(false);
                         if (sw.ElapsedMilliseconds > maxWaitMs)
                         {
-                            try { if (Settings.EnableVerboseLogging) Common.LogDebug(true, "Timeout waiting for Database.IsOpen in StorefrontElements init"); } catch { }
+                            Common.LogDebug("Timeout waiting for Database.IsOpen in StorefrontElements init");
                             break;
                         }
                     }
@@ -667,7 +665,7 @@ namespace HowLongToBeat
                             await Task.Delay(100).ConfigureAwait(false);
                             if (sw.ElapsedMilliseconds > maxWaitMs)
                             {
-                                try { if (Settings.EnableVerboseLogging) Common.LogDebug(true, "Timeout waiting for Database.IsOpen in Platforms init"); } catch { }
+                                Common.LogDebug("Timeout waiting for Database.IsOpen in Platforms init");
                                 break;
                             }
                         }
@@ -821,7 +819,7 @@ namespace HowLongToBeat
 
             HowLongToBeatSettingsView.ApplyEditingIgnoreSyncChanges();
 
-            Plugin.SavePluginSettings(Settings);
+            PersistSettings(Plugin, Settings);
             HowLongToBeat.PluginDatabase.PluginSettings = this.Settings;
 
             if (API.Instance.ApplicationInfo.Mode == ApplicationMode.Desktop)

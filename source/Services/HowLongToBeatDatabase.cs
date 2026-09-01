@@ -1,4 +1,4 @@
-﻿using CommonPlayniteShared.Common;
+using CommonPlayniteShared.Common;
 using CommonPluginsShared;
 using CommonPluginsShared.Collections;
 using CommonPluginsShared.Extensions;
@@ -39,31 +39,13 @@ namespace HowLongToBeat.Services
             PluginExportCsv = new HowLongToBeatExport();
         }
 
-        // Verbose logs follow the settings toggle; DEBUG builds always enable them for local development.
-        public bool IsVerboseLoggingEnabled
-        {
-            get
-            {
-#if DEBUG
-                return true;
-#else
-                return PluginSettings?.EnableVerboseLogging ?? false;
-#endif
-            }
-        }
-
         /// <summary>
-        /// Writes a verbose debug message when <see cref="IsVerboseLoggingEnabled"/> is true.
+        /// Writes a verbose debug message gated by <see cref="Common.IsVerboseLoggingEffective"/>.
         /// </summary>
         /// <param name="message">Message to log.</param>
         private void LogVerbose(string message)
         {
-            if (!IsVerboseLoggingEnabled)
-            {
-                return;
-            }
-
-            Common.LogDebug(true, message);
+            Common.LogDebug(message);
         }
 
         private void FireAndForget(Task task, string context)
@@ -609,7 +591,7 @@ namespace HowLongToBeat.Services
 
             AppendTagId(game, ignoreTagId.Value);
             PersistGameUpdate(game);
-            Common.LogDebug(true, $"Added ignore playtime sync tag for {game.Name}");
+            Common.LogDebug($"Added ignore playtime sync tag for {game.Name}");
         }
 
         /// <summary>
@@ -631,7 +613,7 @@ namespace HowLongToBeat.Services
 
             game.TagIds.Remove(ignoreTagId.Value);
             PersistGameUpdate(game);
-            Common.LogDebug(true, $"Removed ignore playtime sync tag for {game.Name}");
+            Common.LogDebug($"Removed ignore playtime sync tag for {game.Name}");
         }
 
         /// <summary>
@@ -696,7 +678,7 @@ namespace HowLongToBeat.Services
 
             if (result == MessageBoxResult.Yes)
             {
-                Common.LogDebug(true, $"Manual playtime sync confirmed for ignored game {game?.Name}");
+                Common.LogDebug($"Manual playtime sync confirmed for ignored game {game?.Name}");
             }
 
             return result == MessageBoxResult.Yes;
@@ -936,7 +918,7 @@ namespace HowLongToBeat.Services
                             else
                             {
                                 unchangedCount++;
-                                Common.LogDebug(true, $"Status sync from HLTB ({appliedStatus}) for {game.Name}: already set");
+                                Common.LogDebug($"Status sync from HLTB ({appliedStatus}) for {game.Name}: already set");
                             }
                         }
 
@@ -1556,7 +1538,7 @@ namespace HowLongToBeat.Services
             {
                 if (game == null)
                 {
-                    Common.LogDebug(true, "SetCurrentPlayTime called with null game");
+                    Common.LogDebug("SetCurrentPlayTime called with null game");
                     return false;
                 }
 
@@ -1571,7 +1553,7 @@ namespace HowLongToBeat.Services
                     var db = _database;
                     if (db == null)
                     {
-                        Common.LogDebug(true, "Database is not loaded, cannot set current playtime.");
+                        Common.LogDebug("Database is not loaded, cannot set current playtime.");
                         return false;
                     }
 
@@ -1686,7 +1668,7 @@ namespace HowLongToBeat.Services
 
                         if (UserHltbData == null)
                         {
-                            Common.LogDebug(true, $"User HLTB data is null, cannot submit data for {game.Name}");
+                            Common.LogDebug($"User HLTB data is null, cannot submit data for {game.Name}");
                             return false;
                         }
 

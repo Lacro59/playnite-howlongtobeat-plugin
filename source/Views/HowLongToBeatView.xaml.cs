@@ -1,4 +1,4 @@
-﻿using CommonPluginsShared;
+using CommonPluginsShared;
 using CommonPluginsShared.Converters;
 using CommonPluginsShared.Extensions;
 using CommonPluginsShared.Models;
@@ -57,7 +57,7 @@ namespace HowLongToBeat.Views
         {
             try
             {
-                Common.LogDebug(true, $"SetCoverImageSource request for path='{path}'");
+                Common.LogDebug($"SetCoverImageSource request for path='{path}'");
 
                 _coverLoadCts?.Cancel();
                 _coverLoadCts?.Dispose();
@@ -91,7 +91,7 @@ namespace HowLongToBeat.Views
         {
             try
             {
-                Common.LogDebug(true, $"LoadCoverAsync start path='{path}'");
+                Common.LogDebug($"LoadCoverAsync start path='{path}'");
 
                 var img = null as Image;
                 if (Dispatcher != null)
@@ -100,7 +100,7 @@ namespace HowLongToBeat.Views
                 }
                 if (img == null || token.IsCancellationRequested)
                 {
-                    Common.LogDebug(true, "LoadCoverAsync: image control missing or cancelled");
+                    Common.LogDebug("LoadCoverAsync: image control missing or cancelled");
                     return;
                 }
 
@@ -123,7 +123,7 @@ namespace HowLongToBeat.Views
 
                 if (string.IsNullOrEmpty(path) || token.IsCancellationRequested)
                 {
-                    Common.LogDebug(true, "LoadCoverAsync: empty path or cancelled");
+                    Common.LogDebug("LoadCoverAsync: empty path or cancelled");
                     if (Dispatcher != null)
                     {
                         await Dispatcher.InvokeAsync(new Action(() => img.Source = null));
@@ -135,14 +135,14 @@ namespace HowLongToBeat.Views
 
                 if (Uri.IsWellFormedUriString(path, UriKind.Absolute) && (path.StartsWith("http:", StringComparison.OrdinalIgnoreCase) || path.StartsWith("https:", StringComparison.OrdinalIgnoreCase)))
                 {
-                    Common.LogDebug(true, $"LoadCoverAsync: downloading remote url '{path}'");
+                    Common.LogDebug($"LoadCoverAsync: downloading remote url '{path}'");
                     try
                     {
                         using (var resp = await _sharedHttpClient.GetAsync(path, HttpCompletionOption.ResponseContentRead, token).ConfigureAwait(false))
                         {
                             if (!resp.IsSuccessStatusCode)
                             {
-                                Common.LogDebug(true, $"LoadCoverAsync: HTTP {(int)resp.StatusCode} for '{path}'");
+                                Common.LogDebug($"LoadCoverAsync: HTTP {(int)resp.StatusCode} for '{path}'");
                             }
                             else
                             {
@@ -152,7 +152,7 @@ namespace HowLongToBeat.Views
                     }
                     catch (OperationCanceledException)
                     {
-                        Common.LogDebug(true, "LoadCoverAsync: cancelled during download");
+                        Common.LogDebug("LoadCoverAsync: cancelled during download");
                         return;
                     }
                     catch (Exception ex)
@@ -163,14 +163,14 @@ namespace HowLongToBeat.Views
                 }
                 else if (File.Exists(path))
                 {
-                    Common.LogDebug(true, $"LoadCoverAsync: loading local file '{path}'");
+                    Common.LogDebug($"LoadCoverAsync: loading local file '{path}'");
                     try
                     {
                         bytes = await Task.Run(() => File.ReadAllBytes(path), token).ConfigureAwait(false);
                     }
                     catch (OperationCanceledException)
                     {
-                        Common.LogDebug(true, "LoadCoverAsync: cancelled during file read");
+                        Common.LogDebug("LoadCoverAsync: cancelled during file read");
                         return;
                     }
                     catch (Exception ex)
@@ -181,14 +181,14 @@ namespace HowLongToBeat.Views
                 }
                 else
                 {
-                    Common.LogDebug(true, $"LoadCoverAsync: attempting read relative path '{path}'");
+                    Common.LogDebug($"LoadCoverAsync: attempting read relative path '{path}'");
                     try
                     {
                         bytes = await Task.Run(() => File.ReadAllBytes(path), token).ConfigureAwait(false);
                     }
                     catch (OperationCanceledException)
                     {
-                        Common.LogDebug(true, "LoadCoverAsync: cancelled during relative file read");
+                        Common.LogDebug("LoadCoverAsync: cancelled during relative file read");
                         return;
                     }
                     catch (Exception ex)
@@ -200,13 +200,13 @@ namespace HowLongToBeat.Views
 
                 if (token.IsCancellationRequested)
                 {
-                    Common.LogDebug(true, "LoadCoverAsync: cancelled after load");
+                    Common.LogDebug("LoadCoverAsync: cancelled after load");
                     return;
                 }
 
                 if (bytes == null || bytes.Length == 0)
                 {
-                    Common.LogDebug(true, "LoadCoverAsync: no bytes loaded");
+                    Common.LogDebug("LoadCoverAsync: no bytes loaded");
                     if (Dispatcher != null)
                     {
                         await Dispatcher.InvokeAsync(new Action(() => img.Source = null));
@@ -244,7 +244,7 @@ namespace HowLongToBeat.Views
                     }
                     catch (OperationCanceledException)
                     {
-                        Common.LogDebug(true, "LoadCoverAsync: cancelled during bitmap creation");
+                        Common.LogDebug("LoadCoverAsync: cancelled during bitmap creation");
                         return;
                     }
                     catch (Exception ex)
@@ -256,13 +256,13 @@ namespace HowLongToBeat.Views
 
                 if (token.IsCancellationRequested)
                 {
-                    Common.LogDebug(true, "LoadCoverAsync: cancelled after bitmap creation");
+                    Common.LogDebug("LoadCoverAsync: cancelled after bitmap creation");
                     return;
                 }
 
                 if (bmp == null)
                 {
-                    Common.LogDebug(true, "LoadCoverAsync: bmp is null after creation");
+                    Common.LogDebug("LoadCoverAsync: bmp is null after creation");
                     if (Dispatcher != null)
                     {
                         await Dispatcher.InvokeAsync(new Action(() => img.Source = null));
@@ -287,7 +287,7 @@ namespace HowLongToBeat.Views
                                 blur2.BeginAnimation(BlurEffect.RadiusProperty, blurAnimation);
                             }
 
-                            Common.LogDebug(true, "LoadCoverAsync: image applied to control");
+                            Common.LogDebug("LoadCoverAsync: image applied to control");
                         }
                         catch (Exception ex)
                         {
@@ -983,12 +983,7 @@ namespace HowLongToBeat.Views
 
         private static void LogVerbose(string message)
         {
-            if (!PluginDatabase.IsVerboseLoggingEnabled)
-            {
-                return;
-            }
-
-            Common.LogDebug(true, message);
+            Common.LogDebug(message);
         }
 
         private bool _savedIsMarkAsReplay;

@@ -133,7 +133,7 @@ namespace HowLongToBeat.Services
                         }
                         catch (IOException ioex)
                         {
-                            Common.LogDebug(true, $"PageCache persist attempt {attempt} failed with IOException, retrying: {ioex.Message}");
+                            Common.LogDebug($"PageCache persist attempt {attempt} failed with IOException, retrying: {ioex.Message}");
                             if (attempt >= maxAttempts)
                             {
                                 Common.LogError(ioex, false);
