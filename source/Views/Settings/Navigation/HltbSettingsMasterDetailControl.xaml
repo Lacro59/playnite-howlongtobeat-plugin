@@ -1,0 +1,152 @@
+<UserControl x:Class="HowLongToBeat.Views.HltbSettingsMasterDetailControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d"
+             d:DesignHeight="500"
+             d:DesignWidth="700">
+
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+
+        <Style x:Key="HltbSettingsNavigationItemStyle" TargetType="ListBoxItem">
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="Padding" Value="4,2"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="{DynamicResource HoverBrush}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="220" MinWidth="190" MaxWidth="260"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Border Grid.Column="0"
+                BorderBrush="{DynamicResource PopupBorderBrush}"
+                BorderThickness="0,0,1,0"
+                Background="{DynamicResource PopupBackgroundBrush}">
+            <DockPanel LastChildFill="True">
+                <Border DockPanel.Dock="Top"
+                        BorderBrush="{DynamicResource PopupBorderBrush}"
+                        BorderThickness="0,0,0,1"
+                        Padding="10,10,10,8"
+                        Visibility="{Binding ShowSearch, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Text="&#xE721;"
+                                   FontFamily="Segoe MDL2 Assets"
+                                   Foreground="{DynamicResource TextBrush}"
+                                   Opacity="0.55"
+                                   Margin="0,0,8,0"
+                                   VerticalAlignment="Center"/>
+
+                        <TextBox Grid.Column="1"
+                                 Height="24"
+                                 Padding="6,2"
+                                 Text="{Binding SearchText, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Delay=100}"
+                                 ToolTip="{DynamicResource LOCDdItemList_SearchPlaceholder}"/>
+                    </Grid>
+                </Border>
+
+                <ListBox ItemsSource="{Binding ItemsSource, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                         SelectedItem="{Binding SelectedItem, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"
+                         ItemContainerStyle="{StaticResource HltbSettingsNavigationItemStyle}"
+                         BorderThickness="0"
+                         Background="Transparent"
+                         ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                         ScrollViewer.VerticalScrollBarVisibility="Auto"
+                         Padding="0">
+                    <ListBox.GroupStyle>
+                        <GroupStyle>
+                            <GroupStyle.HeaderTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Name}"
+                                               Foreground="{DynamicResource TextBrush}"
+                                               FontSize="10"
+                                               FontWeight="SemiBold"
+                                               Opacity="0.58"
+                                               Margin="10,10,8,3"
+                                               TextTrimming="CharacterEllipsis">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Name}" Value="{x:Null}">
+                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Name}" Value="">
+                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                </DataTemplate>
+                            </GroupStyle.HeaderTemplate>
+                        </GroupStyle>
+                    </ListBox.GroupStyle>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Margin="8,3"
+                                  MinHeight="28">
+                                <Grid.Style>
+                                    <Style TargetType="Grid">
+                                        <Setter Property="Opacity" Value="1"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsEnabled}" Value="False">
+                                                <Setter Property="Opacity" Value="0.55"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Grid.Style>
+
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock Text="{Binding IconGlyph}"
+                                           FontFamily="Segoe MDL2 Assets"
+                                           FontSize="14"
+                                           Foreground="{DynamicResource TextBrush}"
+                                           Margin="0,0,8,0"
+                                           VerticalAlignment="Center"
+                                           Visibility="{Binding HasIconGlyph, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+
+                                <StackPanel Grid.Column="1"
+                                            VerticalAlignment="Center"
+                                            ToolTip="{Binding Subtitle}">
+                                    <TextBlock Text="{Binding DisplayName}"
+                                               Style="{DynamicResource BaseTextBlockStyle}"
+                                               FontWeight="SemiBold"
+                                               TextTrimming="CharacterEllipsis"/>
+                                    <TextBlock Text="{Binding Subtitle}"
+                                               Style="{DynamicResource BaseTextBlockStyle}"
+                                               FontSize="{DynamicResource FontSizeSmall}"
+                                               Opacity="0.65"
+                                               TextTrimming="CharacterEllipsis"
+                                               Visibility="{Binding HasSubtitle, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                </StackPanel>
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </DockPanel>
+        </Border>
+
+        <ContentControl Grid.Column="1"
+                        Margin="16,8,0,0"
+                        Content="{Binding SelectedItem.View, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+    </Grid>
+</UserControl>

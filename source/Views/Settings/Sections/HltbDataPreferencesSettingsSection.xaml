@@ -1,0 +1,68 @@
+﻿<UserControl x:Class="HowLongToBeat.Views.HltbDataPreferencesSettingsSection"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             xmlns:HowLongToBeat="clr-namespace:HowLongToBeat"
+             xmlns:hlte="clr-namespace:HowLongToBeat.Models.Enumerations"
+             xmlns:converters1="clr-namespace:CommonPlayniteShared.Converters"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance HowLongToBeat:HowLongToBeatSettingsViewModel}">
+    <ScrollViewer VerticalScrollBarVisibility="Auto"
+                  PanningMode="VerticalOnly">
+        <StackPanel>
+            <Label Content="{DynamicResource LOCHltbSelectDataType}"/>
+
+            <StackPanel Orientation="Horizontal"
+                        Margin="10,5,0,0">
+                <RadioButton GroupName="DataType"
+                             Content="{DynamicResource LOCHltbSelectDataTypeClassic}"
+                             IsChecked="{Binding Settings.UseHtltbClassic}"/>
+                <RadioButton GroupName="DataType"
+                             Content="{DynamicResource LOCHltbSelectDataTypeAverage}"
+                             IsChecked="{Binding Settings.UseHtltbAverage}"
+                             Margin="20,0,0,0"/>
+                <RadioButton GroupName="DataType"
+                             Content="{DynamicResource LOCHltbSelectDataTypeMedian}"
+                             IsChecked="{Binding Settings.UseHtltbMedian}"
+                             Margin="20,0,0,0"/>
+                <RadioButton GroupName="DataType"
+                             Content="{DynamicResource LOCHltbSelectDataTypeRushed}"
+                             IsChecked="{Binding Settings.UseHtltbRushed}"
+                             Margin="20,0,0,0"/>
+                <RadioButton GroupName="DataType"
+                             Content="{DynamicResource LOCHltbSelectDataTypeLeisure}"
+                             IsChecked="{Binding Settings.UseHtltbLeisure}"
+                             Margin="20,0,0,0"/>
+            </StackPanel>
+
+            <StackPanel Margin="0,10,0,0"
+                        Orientation="Horizontal">
+                <Label Content="{DynamicResource LOCHltbPreferredTimeToBeat}"
+                       Margin="0,0,10,0"/>
+
+                <ComboBox SelectedValue="{Binding Settings.PreferredForTimeToBeat}"
+                          VerticalAlignment="Center">
+                    <ComboBox.ItemsSource>
+                        <x:Array Type="{x:Type sys:Enum}">
+                            <hlte:TimeType>MainStory</hlte:TimeType>
+                            <hlte:TimeType>MainStoryExtra</hlte:TimeType>
+                            <hlte:TimeType>Completionist</hlte:TimeType>
+                        </x:Array>
+                    </ComboBox.ItemsSource>
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Style="{DynamicResource BaseTextBlockStyle}"
+                                       Text="{Binding Converter={converters1:ObjectToStringConverter}}"/>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+            </StackPanel>
+
+            <CheckBox Margin="0,10,0,0"
+                      IsChecked="{Binding Settings.EnableProgressBarInDataView}"
+                      Content="{DynamicResource LOCHltbEnableProgressBarInDataView}"/>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

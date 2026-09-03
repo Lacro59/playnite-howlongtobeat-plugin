@@ -10,9 +10,6 @@
 
     <TabControl x:Name="tcRoot"
                 Margin="20">
-        <TabItem x:Name="PART_TabGeneral"
-                 Header="{DynamicResource LOCHltbSettingsCategoryGeneral}"/>
-
         <TabItem x:Name="PART_TabSync"
                  Header="{DynamicResource LOCHltbSettingsCategorySync}"
                  GotFocus="TabIgnoreSync_GotFocus"/>
@@ -24,19 +21,13 @@
                  Header="{DynamicResource LOCHltbSettingsCategoryDisplay}"/>
 
         <TabItem x:Name="PART_TabMapping"
-                 Header="{DynamicResource LOCHltbSettingsCategoryMapping}">
-            <ScrollViewer Margin="0,10,0,0"
-                          VerticalScrollBarVisibility="Auto"
-                          PanningMode="VerticalOnly">
-                <StackPanel x:Name="PART_MappingPanel"/>
-            </ScrollViewer>
-        </TabItem>
+                 Header="{DynamicResource LOCHltbSettingsCategoryMapping}"/>
 
         <TabItem x:Name="PART_TabHelp"
                  Header="{DynamicResource LOCHltbQuickSearchTab}"/>
 
         <TabItem Header="{DynamicResource LOCCommonDebugTab}">
-            <settings:PluginDebugSettingsSection PluginName="HowLongToBeat"/>
+            <settings:PluginDebugSettingsSection PluginName="HowLongToBeat" Margin="10" />
         </TabItem>
     </TabControl>
 </UserControl>

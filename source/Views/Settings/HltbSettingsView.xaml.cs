@@ -33,12 +33,16 @@ namespace HowLongToBeat.Views
         private bool _ignoreSyncListInitialized;
 
         private HltbGeneralSettingsSection generalSection;
-        private HltbSyncSettingsSection syncSection;
-        private HltbDataSettingsSection dataSection;
-        private HltbDisplaySettingsSection displaySection;
-        private HltbPlatformsSettingsSection platformsSection;
-        private HltbStorefrontSettingsSection storefrontSection;
+        private HltbSyncSettingsSection syncIgnoredGamesSection;
+        private HltbSyncStatusSettingsSection syncStatusSection;
+        private HltbDataSettingsSection dataAliasesSection;
+        private HltbDataExportSettingsSection dataExportSection;
+        private HltbDataDatabaseSettingsSection dataDatabaseSection;
+        private HltbDisplayProgressBarSettingsSection displayProgressBarSection;
         private HltbHelpSettingsSection helpSection;
+        private HltbSettingsMasterDetailControl syncMasterDetail;
+        private HltbSettingsMasterDetailControl dataMasterDetail;
+        private HltbSettingsMasterDetailControl displayMasterDetail;
 
         public HltbSettingsView(HowLongToBeatSettings settings)
         {
@@ -55,14 +59,7 @@ namespace HowLongToBeat.Views
 
             InitializeComponent();
             InitializeSectionContent();
-            WireSectionEvents();
-
-            // Forward mouse wheel from aliases grid to parent ScrollViewer so the settings page scrolls when hovering the grid
-            try
-            {
-                dataSection.PART_AliasesGrid.PreviewMouseWheel += PART_AliasesGrid_PreviewMouseWheel;
-            }
-            catch { }
+            InitializeDisplayProgressBarColors(settings);
 
             // Run authentication check in fire-and-forget to avoid async void from constructor.
             try
@@ -70,62 +67,14 @@ namespace HowLongToBeat.Views
                 TaskHelpers.FireAndForget(CheckAuthenticateAsync(), "SettingsView-CheckAuthenticate", Logger);
             }
             catch { }
-            SetPlatforms(settings);
 
             try
             {
-                API.Instance.Database.Platforms.ItemCollectionChanged += Platforms_ItemCollectionChanged;
-                API.Instance.Database.Platforms.ItemUpdated += Platforms_ItemUpdated;
                 this.Unloaded += HltbSettingsView_Unloaded;
             }
             catch { }
 
-            displaySection.PART_SelectorColorPicker.OnlySimpleColor = false;
-
-
-            global::HowLongToBeat.Views.HowLongToBeatSettingsView.ThumbSolidColorBrush = settings.ThumbSolidColorBrush;
-            global::HowLongToBeat.Views.HowLongToBeatSettingsView.ThumbLinearGradient = settings.ThumbLinearGradient;
-            displaySection.tbThumb.Background = global::HowLongToBeat.Views.HowLongToBeatSettingsView.ThumbLinearGradient?.ToLinearGradientBrush == null ? global::HowLongToBeat.Views.HowLongToBeatSettingsView.ThumbSolidColorBrush : (Brush)global::HowLongToBeat.Views.HowLongToBeatSettingsView.ThumbLinearGradient.ToLinearGradientBrush;
-
-
-            global::HowLongToBeat.Views.HowLongToBeatSettingsView.FirstColorBrush = settings.FirstColorBrush;
-            global::HowLongToBeat.Views.HowLongToBeatSettingsView.FirstLinearGradient = settings.FirstLinearGradient;
-            displaySection.tbColorFirst.Background = global::HowLongToBeat.Views.HowLongToBeatSettingsView.FirstLinearGradient?.ToLinearGradientBrush == null ? global::HowLongToBeat.Views.HowLongToBeatSettingsView.FirstColorBrush : (Brush)global::HowLongToBeat.Views.HowLongToBeatSettingsView.FirstLinearGradient.ToLinearGradientBrush;
-
-            global::HowLongToBeat.Views.HowLongToBeatSettingsView.SecondColorBrush = settings.SecondColorBrush;
-            global::HowLongToBeat.Views.HowLongToBeatSettingsView.SecondLinearGradient = settings.SecondLinearGradient;
-            displaySection.tbColorSecond.Background = global::HowLongToBeat.Views.HowLongToBeatSettingsView.SecondLinearGradient?.ToLinearGradientBrush == null ? global::HowLongToBeat.Views.HowLongToBeatSettingsView.SecondColorBrush : (Brush)global::HowLongToBeat.Views.HowLongToBeatSettingsView.SecondLinearGradient.ToLinearGradientBrush;
-
-            global::HowLongToBeat.Views.HowLongToBeatSettingsView.ThirdColorBrush = settings.ThirdColorBrush;
-            global::HowLongToBeat.Views.HowLongToBeatSettingsView.ThirdLinearGradient = settings.ThirdLinearGradient;
-            displaySection.tbColorThird.Background = global::HowLongToBeat.Views.HowLongToBeatSettingsView.ThirdLinearGradient?.ToLinearGradientBrush == null ? global::HowLongToBeat.Views.HowLongToBeatSettingsView.ThirdColorBrush : (Brush)global::HowLongToBeat.Views.HowLongToBeatSettingsView.ThirdLinearGradient.ToLinearGradientBrush;
-
-
-            global::HowLongToBeat.Views.HowLongToBeatSettingsView.FirstMultiColorBrush = settings.FirstMultiColorBrush;
-            global::HowLongToBeat.Views.HowLongToBeatSettingsView.FirstMultiLinearGradient = settings.FirstMultiLinearGradient;
-            displaySection.tbColorFirstMulti.Background = global::HowLongToBeat.Views.HowLongToBeatSettingsView.FirstMultiLinearGradient?.ToLinearGradientBrush == null ? global::HowLongToBeat.Views.HowLongToBeatSettingsView.FirstMultiColorBrush : (Brush)global::HowLongToBeat.Views.HowLongToBeatSettingsView.FirstMultiLinearGradient.ToLinearGradientBrush;
-
-            global::HowLongToBeat.Views.HowLongToBeatSettingsView.SecondMultiColorBrush = settings.SecondMultiColorBrush;
-            global::HowLongToBeat.Views.HowLongToBeatSettingsView.SecondMultiLinearGradient = settings.SecondMultiLinearGradient;
-            displaySection.tbColorSecondMulti.Background = global::HowLongToBeat.Views.HowLongToBeatSettingsView.SecondMultiLinearGradient?.ToLinearGradientBrush == null ? global::HowLongToBeat.Views.HowLongToBeatSettingsView.SecondMultiColorBrush : (Brush)global::HowLongToBeat.Views.HowLongToBeatSettingsView.SecondMultiLinearGradient.ToLinearGradientBrush;
-
-            global::HowLongToBeat.Views.HowLongToBeatSettingsView.ThirdMultiColorBrush = settings.ThirdMultiColorBrush;
-            global::HowLongToBeat.Views.HowLongToBeatSettingsView.ThirdMultiLinearGradient = settings.ThirdMultiLinearGradient;
-            displaySection.tbColorThirdMulti.Background = global::HowLongToBeat.Views.HowLongToBeatSettingsView.ThirdMultiLinearGradient?.ToLinearGradientBrush == null ? global::HowLongToBeat.Views.HowLongToBeatSettingsView.ThirdMultiColorBrush : (Brush)global::HowLongToBeat.Views.HowLongToBeatSettingsView.ThirdMultiLinearGradient.ToLinearGradientBrush;
-
-
-            displaySection.spSettings.Visibility = Visibility.Visible;
-
             helpSection.PART_TTB.Source = BitmapExtensions.BitmapFromFile(Path.Combine(PluginDatabase.Paths.PluginPath, "Resources", "ttb.png"));
-
-
-            IItemCollection<CompletionStatus> gameStatus = API.Instance.Database.CompletionStatuses;
-            generalSection.PART_GameStatusPlaying.ItemsSource = gameStatus;
-            generalSection.PART_GameStatusCompleted.ItemsSource = gameStatus;
-            generalSection.PART_GameStatusCompletionist.ItemsSource = gameStatus;
-            generalSection.PART_GameStatusBacklog.ItemsSource = gameStatus;
-            generalSection.PART_GameStatusReplays.ItemsSource = gameStatus;
-            generalSection.PART_GameStatusRetired.ItemsSource = gameStatus;
 
             // Ensure aliases list is hydrated for the UI.
             try
@@ -168,7 +117,8 @@ namespace HowLongToBeat.Views
                 var selected = API.Instance.Dialogs.SelectFolder();
                 if (!selected.IsNullOrEmpty())
                 {
-                    generalSection.PART_ExportFolder.Text = selected;
+                    CreateDataExportSection();
+                    dataExportSection.PART_ExportFolder.Text = selected;
                 }
             }
             catch (Exception ex)
@@ -191,7 +141,8 @@ namespace HowLongToBeat.Views
         {
             try
             {
-                var folder = generalSection.PART_ExportFolder.Text?.Trim();
+                CreateDataExportSection();
+                var folder = dataExportSection.PART_ExportFolder.Text?.Trim();
                 if (folder.IsNullOrEmpty())
                 {
                     API.Instance.Dialogs.ShowMessage(ResourceProvider.GetString("LOCExportSelectFolderFirst"));
@@ -275,7 +226,8 @@ namespace HowLongToBeat.Views
         {
             try
             {
-                var folder = generalSection.PART_ExportFolder.Text?.Trim();
+                CreateDataExportSection();
+                var folder = dataExportSection.PART_ExportFolder.Text?.Trim();
                 if (folder.IsNullOrEmpty())
                 {
                     API.Instance.Dialogs.ShowMessage(ResourceProvider.GetString("LOCExportSelectFolderFirst"));
@@ -385,21 +337,21 @@ namespace HowLongToBeat.Views
 
                 if (tbControl.Background is SolidColorBrush sBrush)
                 {
-                    displaySection.PART_SelectorColorPicker.IsSimpleColor = true;
+                    displayProgressBarSection.PART_SelectorColorPicker.IsSimpleColor = true;
 
                     Color color = sBrush.Color;
-                    displaySection.PART_SelectorColorPicker.SetColors(color);
+                    displayProgressBarSection.PART_SelectorColorPicker.SetColors(color);
                 }
                 if (tbControl.Background is LinearGradientBrush lBrush)
                 {
-                    displaySection.PART_SelectorColorPicker.IsSimpleColor = false;
+                    displayProgressBarSection.PART_SelectorColorPicker.IsSimpleColor = false;
 
                     LinearGradientBrush linearGradientBrush = lBrush;
-                    displaySection.PART_SelectorColorPicker.SetColors(linearGradientBrush);
+                    displayProgressBarSection.PART_SelectorColorPicker.SetColors(linearGradientBrush);
                 }
 
-                displaySection.PART_SelectorColor.Visibility = Visibility.Visible;
-                displaySection.spSettings.Visibility = Visibility.Collapsed;
+                displayProgressBarSection.PART_SelectorColor.Visibility = Visibility.Visible;
+                displayProgressBarSection.spSettings.Visibility = Visibility.Collapsed;
             }
             catch (Exception ex)
             {
@@ -418,13 +370,13 @@ namespace HowLongToBeat.Views
                     case "0":
                         if (ResourceProvider.GetResource("NormalBrush") is LinearGradientBrush)
                         {
-                            displaySection.tbThumb.Background = (LinearGradientBrush)ResourceProvider.GetResource("NormalBrush");
+                            displayProgressBarSection.tbThumb.Background = (LinearGradientBrush)ResourceProvider.GetResource("NormalBrush");
                             global::HowLongToBeat.Views.HowLongToBeatSettingsView.ThumbSolidColorBrush = null;
                             global::HowLongToBeat.Views.HowLongToBeatSettingsView.ThumbLinearGradient = ThemeLinearGradient.ToThemeLinearGradient((LinearGradientBrush)ResourceProvider.GetResource("NormalBrush"));
                         }
                         else
                         {
-                            displaySection.tbThumb.Background = (SolidColorBrush)ResourceProvider.GetResource("NormalBrush");
+                            displayProgressBarSection.tbThumb.Background = (SolidColorBrush)ResourceProvider.GetResource("NormalBrush");
                             global::HowLongToBeat.Views.HowLongToBeatSettingsView.ThumbSolidColorBrush = (SolidColorBrush)ResourceProvider.GetResource("NormalBrush");
                             global::HowLongToBeat.Views.HowLongToBeatSettingsView.ThumbLinearGradient = null;
                         }
@@ -483,9 +435,9 @@ namespace HowLongToBeat.Views
 
             if (tbControl != null)
             {
-                if (displaySection.PART_SelectorColorPicker.IsSimpleColor)
+                if (displayProgressBarSection.PART_SelectorColorPicker.IsSimpleColor)
                 {
-                    color = displaySection.PART_SelectorColorPicker.SimpleColor;
+                    color = displayProgressBarSection.PART_SelectorColorPicker.SimpleColor;
                     tbControl.Background = new SolidColorBrush(color);
 
                     switch ((string)tbControl.Tag)
@@ -531,43 +483,43 @@ namespace HowLongToBeat.Views
                 }
                 else
                 {
-                    tbControl.Background = displaySection.PART_SelectorColorPicker.GetLinearGradientBrush();
+                    tbControl.Background = displayProgressBarSection.PART_SelectorColorPicker.GetLinearGradientBrush();
 
                     switch ((string)tbControl.Tag)
                     {
                         case "0":
                             global::HowLongToBeat.Views.HowLongToBeatSettingsView.ThumbSolidColorBrush = null;
-                            global::HowLongToBeat.Views.HowLongToBeatSettingsView.ThumbLinearGradient = ThemeLinearGradient.ToThemeLinearGradient(displaySection.PART_SelectorColorPicker.GetLinearGradientBrush());
+                            global::HowLongToBeat.Views.HowLongToBeatSettingsView.ThumbLinearGradient = ThemeLinearGradient.ToThemeLinearGradient(displayProgressBarSection.PART_SelectorColorPicker.GetLinearGradientBrush());
                             break;
 
                         case "1":
                             global::HowLongToBeat.Views.HowLongToBeatSettingsView.FirstColorBrush = null;
-                            global::HowLongToBeat.Views.HowLongToBeatSettingsView.FirstLinearGradient = ThemeLinearGradient.ToThemeLinearGradient(displaySection.PART_SelectorColorPicker.GetLinearGradientBrush());
+                            global::HowLongToBeat.Views.HowLongToBeatSettingsView.FirstLinearGradient = ThemeLinearGradient.ToThemeLinearGradient(displayProgressBarSection.PART_SelectorColorPicker.GetLinearGradientBrush());
                             break;
 
                         case "2":
                             global::HowLongToBeat.Views.HowLongToBeatSettingsView.SecondColorBrush = null;
-                            global::HowLongToBeat.Views.HowLongToBeatSettingsView.SecondLinearGradient = ThemeLinearGradient.ToThemeLinearGradient(displaySection.PART_SelectorColorPicker.GetLinearGradientBrush());
+                            global::HowLongToBeat.Views.HowLongToBeatSettingsView.SecondLinearGradient = ThemeLinearGradient.ToThemeLinearGradient(displayProgressBarSection.PART_SelectorColorPicker.GetLinearGradientBrush());
                             break;
 
                         case "3":
                             global::HowLongToBeat.Views.HowLongToBeatSettingsView.ThirdColorBrush = null;
-                            global::HowLongToBeat.Views.HowLongToBeatSettingsView.ThirdLinearGradient = ThemeLinearGradient.ToThemeLinearGradient(displaySection.PART_SelectorColorPicker.GetLinearGradientBrush());
+                            global::HowLongToBeat.Views.HowLongToBeatSettingsView.ThirdLinearGradient = ThemeLinearGradient.ToThemeLinearGradient(displayProgressBarSection.PART_SelectorColorPicker.GetLinearGradientBrush());
                             break;
 
                         case "4":
                             global::HowLongToBeat.Views.HowLongToBeatSettingsView.FirstMultiColorBrush = null;
-                            global::HowLongToBeat.Views.HowLongToBeatSettingsView.FirstMultiLinearGradient = ThemeLinearGradient.ToThemeLinearGradient(displaySection.PART_SelectorColorPicker.GetLinearGradientBrush());
+                            global::HowLongToBeat.Views.HowLongToBeatSettingsView.FirstMultiLinearGradient = ThemeLinearGradient.ToThemeLinearGradient(displayProgressBarSection.PART_SelectorColorPicker.GetLinearGradientBrush());
                             break;
 
                         case "5":
                             global::HowLongToBeat.Views.HowLongToBeatSettingsView.SecondMultiColorBrush = null;
-                            global::HowLongToBeat.Views.HowLongToBeatSettingsView.SecondMultiLinearGradient = ThemeLinearGradient.ToThemeLinearGradient(displaySection.PART_SelectorColorPicker.GetLinearGradientBrush());
+                            global::HowLongToBeat.Views.HowLongToBeatSettingsView.SecondMultiLinearGradient = ThemeLinearGradient.ToThemeLinearGradient(displayProgressBarSection.PART_SelectorColorPicker.GetLinearGradientBrush());
                             break;
 
                         case "6":
                             global::HowLongToBeat.Views.HowLongToBeatSettingsView.ThirdMultiColorBrush = null;
-                            global::HowLongToBeat.Views.HowLongToBeatSettingsView.ThirdMultiLinearGradient = ThemeLinearGradient.ToThemeLinearGradient(displaySection.PART_SelectorColorPicker.GetLinearGradientBrush());
+                            global::HowLongToBeat.Views.HowLongToBeatSettingsView.ThirdMultiLinearGradient = ThemeLinearGradient.ToThemeLinearGradient(displayProgressBarSection.PART_SelectorColorPicker.GetLinearGradientBrush());
                             break;
 
                         default:
@@ -580,14 +532,14 @@ namespace HowLongToBeat.Views
                 Logger.Warn("One control is undefined");
             }
 
-            displaySection.PART_SelectorColor.Visibility = Visibility.Collapsed;
-            displaySection.spSettings.Visibility = Visibility.Visible;
+            displayProgressBarSection.PART_SelectorColor.Visibility = Visibility.Collapsed;
+            displayProgressBarSection.spSettings.Visibility = Visibility.Visible;
         }
 
         private void PART_TM_ColorCancel_Click(object sender, RoutedEventArgs e)
         {
-            displaySection.PART_SelectorColor.Visibility = Visibility.Collapsed;
-            displaySection.spSettings.Visibility = Visibility.Visible;
+            displayProgressBarSection.PART_SelectorColor.Visibility = Visibility.Collapsed;
+            displayProgressBarSection.spSettings.Visibility = Visibility.Visible;
         }
 
         #endregion
@@ -720,16 +672,6 @@ namespace HowLongToBeat.Views
         {
             try
             {
-                API.Instance.Database.Platforms.ItemCollectionChanged -= Platforms_ItemCollectionChanged;
-            }
-            catch { }
-            try
-            {
-                API.Instance.Database.Platforms.ItemUpdated -= Platforms_ItemUpdated;
-            }
-            catch { }
-            try
-            {
                 if (PluginDatabase?.HowLongToBeatApi != null)
                 {
                     PluginDatabase.HowLongToBeatApi.PropertyChanged -= OnPropertyChanged;
@@ -737,42 +679,6 @@ namespace HowLongToBeat.Views
                 }
             }
             catch { }
-        }
-
-        private void Platforms_ItemUpdated(object sender, ItemUpdatedEventArgs<Platform> e)
-        {
-            try
-            {
-                Application.Current?.Dispatcher?.BeginInvoke(new Action(() => SetPlatforms(_settingsRef)));
-            }
-            catch { }
-        }
-
-        private void Platforms_ItemCollectionChanged(object sender, ItemCollectionChangedEventArgs<Platform> e)
-        {
-            try
-            {
-                Application.Current?.Dispatcher?.BeginInvoke(new Action(() => SetPlatforms(_settingsRef)));
-            }
-            catch { }
-        }
-
-        private void SetPlatforms(HowLongToBeatSettings settings)
-        {
-            List<Platform> platforms = API.Instance.Database
-                    .Platforms.Distinct().OrderBy(x => x.Name).ToList();
-
-            // Remove from settings game platforms that were deleted
-            _ = settings.Platforms.RemoveAll(m => !platforms.Contains(m.Platform));
-            // Add an empty match for game platforms not in the settings
-            platforms.Where(p => !settings.Platforms.Exists(m => p.Equals(m.Platform)))
-                    .ForEach(p => settings.Platforms.Add(new HltbPlatformMatch { Platform = p }));
-            // Replace game platform in settings where GUID matches to actualize names
-            platforms.ForEach(p => settings.Platforms.Where(m => p.Equals(m.Platform))
-                    .ForEach(m => m.Platform = p));
-
-            settings.Platforms.Sort();
-            platformsSection.PART_GridPlatformsList.ItemsSource = settings.Platforms;
         }
 
         private void HltB_IntegrationProgressBarShowTime_Checked(object sender, RoutedEventArgs e)
@@ -838,8 +744,8 @@ namespace HowLongToBeat.Views
                 _settingsRef.GameNameAliasesList.Add(new GameNameAliasEntry(string.Empty, string.Empty));
                 try
                 {
-                    dataSection.PART_AliasesGrid?.ScrollIntoView(_settingsRef.GameNameAliasesList.LastOrDefault());
-                    dataSection.PART_AliasesGrid?.Focus();
+                    dataAliasesSection.PART_AliasesGrid?.ScrollIntoView(_settingsRef.GameNameAliasesList.LastOrDefault());
+                    dataAliasesSection.PART_AliasesGrid?.Focus();
                 }
                 catch { }
             }
@@ -858,7 +764,7 @@ namespace HowLongToBeat.Views
                     return;
                 }
 
-                var selected = dataSection.PART_AliasesGrid?.SelectedItems;
+                var selected = dataAliasesSection.PART_AliasesGrid?.SelectedItems;
                 if (selected == null || selected.Count == 0)
                 {
                     return;
@@ -1057,8 +963,9 @@ namespace HowLongToBeat.Views
                     return;
                 }
 
+                CreateSyncIgnoredGamesSection();
                 _ignoreSyncGames = new ObservableCollection<Game>(PluginDatabase.GetGamesIgnoredForPlaytimeSync());
-                syncSection.PART_IgnoreSyncList.ItemsSource = _ignoreSyncGames;
+                syncIgnoredGamesSection.PART_IgnoreSyncList.ItemsSource = _ignoreSyncGames;
                 SyncEditingIgnoreSyncGameIds();
                 _ignoreSyncListInitialized = true;
             }
@@ -1152,51 +1059,237 @@ namespace HowLongToBeat.Views
 
         private void InitializeSectionContent()
         {
-            generalSection = new HltbGeneralSettingsSection();
-            syncSection = new HltbSyncSettingsSection();
-            dataSection = new HltbDataSettingsSection();
-            displaySection = new HltbDisplaySettingsSection();
-            platformsSection = new HltbPlatformsSettingsSection();
-            storefrontSection = new HltbStorefrontSettingsSection();
             helpSection = new HltbHelpSettingsSection();
-
-            PART_TabGeneral.Content = generalSection;
-            PART_TabSync.Content = syncSection;
-            PART_TabData.Content = dataSection;
-            PART_TabDisplay.Content = displaySection;
-            PART_MappingPanel.Children.Add(platformsSection);
-            PART_MappingPanel.Children.Add(storefrontSection);
             PART_TabHelp.Content = helpSection;
+
+            syncMasterDetail = CreateMasterDetailHost();
+            PART_TabSync.Content = syncMasterDetail;
+            dataMasterDetail = CreateMasterDetailHost();
+            PART_TabData.Content = dataMasterDetail;
+            displayMasterDetail = CreateMasterDetailHost();
+            PART_TabDisplay.Content = displayMasterDetail;
+            PART_TabMapping.Content = new HltbMappingSettingsSection(_settingsRef);
+
+            ConfigureSyncNavigation();
+            CreateGeneralSection();
+            ConfigureDataNavigation();
+            ConfigureDisplayNavigation();
         }
 
-        private void WireSectionEvents()
+        private static string GetLoc(string key)
         {
+            return ResourceProvider.GetString(key);
+        }
+
+        private static HltbSettingsMasterDetailControl CreateMasterDetailHost()
+        {
+            return new HltbSettingsMasterDetailControl
+            {
+                ShowSearch = false
+            };
+        }
+
+        private static void ConfigureMasterDetailNavigation(
+            HltbSettingsMasterDetailControl masterDetail,
+            IList<HltbSettingsNavigationItem> items)
+        {
+            masterDetail.ItemsSource = items;
+            if (items.Count > 0)
+            {
+                masterDetail.SelectedItem = items[0];
+            }
+        }
+
+        private void ConfigureSyncNavigation()
+        {
+            var items = new List<HltbSettingsNavigationItem>
+            {
+                new HltbSettingsNavigationItem(
+                    "sync-account",
+                    GetLoc("LOCCommonAccountSection"),
+                    viewFactory: CreateGeneralSection),
+                new HltbSettingsNavigationItem(
+                    "sync-playtime",
+                    GetLoc("LOCHltbSettingsNavSyncPlaytime"),
+                    viewFactory: () => new HltbSyncPlaytimeSettingsSection()),
+                new HltbSettingsNavigationItem(
+                    "sync-status",
+                    GetLoc("LOCHltbSettingsNavSyncStatus"),
+                    viewFactory: CreateSyncStatusSection),
+                new HltbSettingsNavigationItem(
+                    "sync-ignored",
+                    GetLoc("LOCHowLongToBeatIgnoreSyncTab"),
+                    viewFactory: CreateSyncIgnoredGamesSection),
+            };
+
+            ConfigureMasterDetailNavigation(syncMasterDetail, items);
+        }
+
+        private UserControl CreateGeneralSection()
+        {
+            if (generalSection != null)
+            {
+                return generalSection;
+            }
+
+            generalSection = new HltbGeneralSettingsSection();
             generalSection.PART_BtAuthenticate.Click += PART_BtAuthenticate_Click;
-            generalSection.PART_BtnExportCsvComma.Click += ButtonExportCsvComma_Click;
-            generalSection.PART_BtnExportCsvSemicolon.Click += ButtonExportCsvSemicolon_Click;
-            generalSection.PART_BtnExportJson.Click += ButtonExportJson_Click;
-            generalSection.PART_BtnBrowseExportFolder.Click += ButtonBrowseExportFolder_Click;
-            generalSection.PART_BtnAddTag.Click += ButtonAddTag_Click;
-            generalSection.PART_BtnRemoveTag.Click += ButtonRemoveTag_Click;
-            generalSection.btAddData.Click += BtAddData_Click;
-            generalSection.btRemoveData.Click += BtRemoveData_Click;
+            return generalSection;
+        }
 
-            syncSection.PART_BtnIgnoreSyncAddGame.Click += ButtonIgnoreSyncAddGame_Click;
-            syncSection.AddHandler(Button.ClickEvent, new RoutedEventHandler(SyncSection_ButtonClick), true);
+        private void ConfigureDataNavigation()
+        {
+            var items = new List<HltbSettingsNavigationItem>
+            {
+                new HltbSettingsNavigationItem(
+                    "data-preferences",
+                    GetLoc("LOCHltbSettingsNavDataPreferences"),
+                    viewFactory: () => new HltbDataPreferencesSettingsSection()),
+                new HltbSettingsNavigationItem(
+                    "data-database",
+                    GetLoc("LOCCommonDatabase"),
+                    viewFactory: CreateDataDatabaseSection),
+                new HltbSettingsNavigationItem(
+                    "data-export",
+                    GetLoc("LOCHowLongToBeatExport"),
+                    viewFactory: CreateDataExportSection),
+                new HltbSettingsNavigationItem(
+                    "data-tags",
+                    GetLoc("LOCHltbSettingsNavDataTags"),
+                    viewFactory: CreateDataTagsSection),
+                new HltbSettingsNavigationItem(
+                    "data-aliases",
+                    GetLoc("LOCHowLongToBeatAliases"),
+                    viewFactory: CreateDataAliasesSection),
+            };
 
-            dataSection.PART_BtnAliasAdd.Click += ButtonAliasAdd_Click;
-            dataSection.PART_BtnAliasRemove.Click += ButtonAliasRemove_Click;
-            dataSection.PART_BtnAliasImport.Click += ButtonAliasImport_Click;
-            dataSection.PART_BtnAliasExport.Click += ButtonAliasExport_Click;
-            dataSection.PART_BtnAliasReset.Click += ButtonAliasReset_Click;
-            dataSection.PART_BtnAliasOpenFile.Click += ButtonAliasOpenFile_Click;
+            ConfigureMasterDetailNavigation(dataMasterDetail, items);
+        }
 
-            displaySection.PART_TM_ColorOK.Click += PART_TM_ColorOK_Click;
-            displaySection.PART_TM_ColorCancel.Click += PART_TM_ColorCancel_Click;
-            displaySection.HltB_IntegrationProgressBarShowTime.Checked += HltB_IntegrationProgressBarShowTime_Checked;
-            displaySection.HltB_IntegrationProgressBarShowTime.Unchecked += HltB_IntegrationProgressBarShowTime_Unchecked;
+        private void ConfigureDisplayNavigation()
+        {
+            var items = new List<HltbSettingsNavigationItem>
+            {
+                new HltbSettingsNavigationItem(
+                    "display-navigation",
+                    GetLoc("LOCHltbSettingsNavDisplayNavigation"),
+                    viewFactory: () => new HltbDisplayNavigationSettingsSection()),
+                new HltbSettingsNavigationItem(
+                    "display-controls",
+                    GetLoc("LOCHltbSettingsNavDisplayControls"),
+                    viewFactory: CreateDisplayProgressBarSection),
+            };
 
-            foreach (Button button in EnumerateButtons(displaySection))
+            ConfigureMasterDetailNavigation(displayMasterDetail, items);
+        }
+
+        private UserControl CreateSyncStatusSection()
+        {
+            if (syncStatusSection != null)
+            {
+                return syncStatusSection;
+            }
+
+            syncStatusSection = new HltbSyncStatusSettingsSection();
+            IItemCollection<CompletionStatus> gameStatus = API.Instance.Database.CompletionStatuses;
+            syncStatusSection.PART_GameStatusPlaying.ItemsSource = gameStatus;
+            syncStatusSection.PART_GameStatusCompleted.ItemsSource = gameStatus;
+            syncStatusSection.PART_GameStatusCompletionist.ItemsSource = gameStatus;
+            syncStatusSection.PART_GameStatusBacklog.ItemsSource = gameStatus;
+            syncStatusSection.PART_GameStatusReplays.ItemsSource = gameStatus;
+            syncStatusSection.PART_GameStatusRetired.ItemsSource = gameStatus;
+            return syncStatusSection;
+        }
+
+        private UserControl CreateSyncIgnoredGamesSection()
+        {
+            if (syncIgnoredGamesSection != null)
+            {
+                return syncIgnoredGamesSection;
+            }
+
+            syncIgnoredGamesSection = new HltbSyncSettingsSection();
+            syncIgnoredGamesSection.PART_BtnIgnoreSyncAddGame.Click += ButtonIgnoreSyncAddGame_Click;
+            syncIgnoredGamesSection.AddHandler(Button.ClickEvent, new RoutedEventHandler(SyncSection_ButtonClick), true);
+            EnsureIgnoreSyncListInitialized();
+            return syncIgnoredGamesSection;
+        }
+
+        private UserControl CreateDataDatabaseSection()
+        {
+            if (dataDatabaseSection != null)
+            {
+                return dataDatabaseSection;
+            }
+
+            dataDatabaseSection = new HltbDataDatabaseSettingsSection();
+            dataDatabaseSection.btAddData.Click += BtAddData_Click;
+            dataDatabaseSection.btRemoveData.Click += BtRemoveData_Click;
+            return dataDatabaseSection;
+        }
+
+        private UserControl CreateDataExportSection()
+        {
+            if (dataExportSection != null)
+            {
+                return dataExportSection;
+            }
+
+            dataExportSection = new HltbDataExportSettingsSection();
+            dataExportSection.PART_BtnExportCsvComma.Click += ButtonExportCsvComma_Click;
+            dataExportSection.PART_BtnExportCsvSemicolon.Click += ButtonExportCsvSemicolon_Click;
+            dataExportSection.PART_BtnExportJson.Click += ButtonExportJson_Click;
+            dataExportSection.PART_BtnBrowseExportFolder.Click += ButtonBrowseExportFolder_Click;
+            return dataExportSection;
+        }
+
+        private UserControl CreateDataTagsSection()
+        {
+            var section = new HltbDataTagsSettingsSection();
+            section.PART_BtnAddTag.Click += ButtonAddTag_Click;
+            section.PART_BtnRemoveTag.Click += ButtonRemoveTag_Click;
+            return section;
+        }
+
+        private UserControl CreateDataAliasesSection()
+        {
+            if (dataAliasesSection != null)
+            {
+                return dataAliasesSection;
+            }
+
+            dataAliasesSection = new HltbDataSettingsSection();
+            try
+            {
+                dataAliasesSection.PART_AliasesGrid.PreviewMouseWheel += PART_AliasesGrid_PreviewMouseWheel;
+            }
+            catch
+            {
+            }
+
+            dataAliasesSection.PART_BtnAliasAdd.Click += ButtonAliasAdd_Click;
+            dataAliasesSection.PART_BtnAliasRemove.Click += ButtonAliasRemove_Click;
+            dataAliasesSection.PART_BtnAliasImport.Click += ButtonAliasImport_Click;
+            dataAliasesSection.PART_BtnAliasExport.Click += ButtonAliasExport_Click;
+            dataAliasesSection.PART_BtnAliasReset.Click += ButtonAliasReset_Click;
+            dataAliasesSection.PART_BtnAliasOpenFile.Click += ButtonAliasOpenFile_Click;
+            return dataAliasesSection;
+        }
+
+        private UserControl CreateDisplayProgressBarSection()
+        {
+            if (displayProgressBarSection != null)
+            {
+                return displayProgressBarSection;
+            }
+
+            displayProgressBarSection = new HltbDisplayProgressBarSettingsSection();
+            displayProgressBarSection.PART_TM_ColorOK.Click += PART_TM_ColorOK_Click;
+            displayProgressBarSection.PART_TM_ColorCancel.Click += PART_TM_ColorCancel_Click;
+            displayProgressBarSection.HltB_IntegrationProgressBarShowTime.Checked += HltB_IntegrationProgressBarShowTime_Checked;
+            displayProgressBarSection.HltB_IntegrationProgressBarShowTime.Unchecked += HltB_IntegrationProgressBarShowTime_Unchecked;
+
+            foreach (Button button in EnumerateButtons(displayProgressBarSection))
             {
                 string content = button.Content as string;
                 if (content == "\u270f")
@@ -1209,7 +1302,44 @@ namespace HowLongToBeat.Views
                 }
             }
 
-            WireProgressBarTimeRadioButtons(displaySection);
+            WireProgressBarTimeRadioButtons(displayProgressBarSection);
+            return displayProgressBarSection;
+        }
+
+        private void InitializeDisplayProgressBarColors(HowLongToBeatSettings settings)
+        {
+            var section = (HltbDisplayProgressBarSettingsSection)CreateDisplayProgressBarSection();
+            section.PART_SelectorColorPicker.OnlySimpleColor = false;
+
+            global::HowLongToBeat.Views.HowLongToBeatSettingsView.ThumbSolidColorBrush = settings.ThumbSolidColorBrush;
+            global::HowLongToBeat.Views.HowLongToBeatSettingsView.ThumbLinearGradient = settings.ThumbLinearGradient;
+            section.tbThumb.Background = global::HowLongToBeat.Views.HowLongToBeatSettingsView.ThumbLinearGradient?.ToLinearGradientBrush == null ? global::HowLongToBeat.Views.HowLongToBeatSettingsView.ThumbSolidColorBrush : (Brush)global::HowLongToBeat.Views.HowLongToBeatSettingsView.ThumbLinearGradient.ToLinearGradientBrush;
+
+            global::HowLongToBeat.Views.HowLongToBeatSettingsView.FirstColorBrush = settings.FirstColorBrush;
+            global::HowLongToBeat.Views.HowLongToBeatSettingsView.FirstLinearGradient = settings.FirstLinearGradient;
+            section.tbColorFirst.Background = global::HowLongToBeat.Views.HowLongToBeatSettingsView.FirstLinearGradient?.ToLinearGradientBrush == null ? global::HowLongToBeat.Views.HowLongToBeatSettingsView.FirstColorBrush : (Brush)global::HowLongToBeat.Views.HowLongToBeatSettingsView.FirstLinearGradient.ToLinearGradientBrush;
+
+            global::HowLongToBeat.Views.HowLongToBeatSettingsView.SecondColorBrush = settings.SecondColorBrush;
+            global::HowLongToBeat.Views.HowLongToBeatSettingsView.SecondLinearGradient = settings.SecondLinearGradient;
+            section.tbColorSecond.Background = global::HowLongToBeat.Views.HowLongToBeatSettingsView.SecondLinearGradient?.ToLinearGradientBrush == null ? global::HowLongToBeat.Views.HowLongToBeatSettingsView.SecondColorBrush : (Brush)global::HowLongToBeat.Views.HowLongToBeatSettingsView.SecondLinearGradient.ToLinearGradientBrush;
+
+            global::HowLongToBeat.Views.HowLongToBeatSettingsView.ThirdColorBrush = settings.ThirdColorBrush;
+            global::HowLongToBeat.Views.HowLongToBeatSettingsView.ThirdLinearGradient = settings.ThirdLinearGradient;
+            section.tbColorThird.Background = global::HowLongToBeat.Views.HowLongToBeatSettingsView.ThirdLinearGradient?.ToLinearGradientBrush == null ? global::HowLongToBeat.Views.HowLongToBeatSettingsView.ThirdColorBrush : (Brush)global::HowLongToBeat.Views.HowLongToBeatSettingsView.ThirdLinearGradient.ToLinearGradientBrush;
+
+            global::HowLongToBeat.Views.HowLongToBeatSettingsView.FirstMultiColorBrush = settings.FirstMultiColorBrush;
+            global::HowLongToBeat.Views.HowLongToBeatSettingsView.FirstMultiLinearGradient = settings.FirstMultiLinearGradient;
+            section.tbColorFirstMulti.Background = global::HowLongToBeat.Views.HowLongToBeatSettingsView.FirstMultiLinearGradient?.ToLinearGradientBrush == null ? global::HowLongToBeat.Views.HowLongToBeatSettingsView.FirstMultiColorBrush : (Brush)global::HowLongToBeat.Views.HowLongToBeatSettingsView.FirstMultiLinearGradient.ToLinearGradientBrush;
+
+            global::HowLongToBeat.Views.HowLongToBeatSettingsView.SecondMultiColorBrush = settings.SecondMultiColorBrush;
+            global::HowLongToBeat.Views.HowLongToBeatSettingsView.SecondMultiLinearGradient = settings.SecondMultiLinearGradient;
+            section.tbColorSecondMulti.Background = global::HowLongToBeat.Views.HowLongToBeatSettingsView.SecondMultiLinearGradient?.ToLinearGradientBrush == null ? global::HowLongToBeat.Views.HowLongToBeatSettingsView.SecondMultiColorBrush : (Brush)global::HowLongToBeat.Views.HowLongToBeatSettingsView.SecondMultiLinearGradient.ToLinearGradientBrush;
+
+            global::HowLongToBeat.Views.HowLongToBeatSettingsView.ThirdMultiColorBrush = settings.ThirdMultiColorBrush;
+            global::HowLongToBeat.Views.HowLongToBeatSettingsView.ThirdMultiLinearGradient = settings.ThirdMultiLinearGradient;
+            section.tbColorThirdMulti.Background = global::HowLongToBeat.Views.HowLongToBeatSettingsView.ThirdMultiLinearGradient?.ToLinearGradientBrush == null ? global::HowLongToBeat.Views.HowLongToBeatSettingsView.ThirdMultiColorBrush : (Brush)global::HowLongToBeat.Views.HowLongToBeatSettingsView.ThirdMultiLinearGradient.ToLinearGradientBrush;
+
+            section.spSettings.Visibility = Visibility.Visible;
         }
 
         private void SyncSection_ButtonClick(object sender, RoutedEventArgs e)

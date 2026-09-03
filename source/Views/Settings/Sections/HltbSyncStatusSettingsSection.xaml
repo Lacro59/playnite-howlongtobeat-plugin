@@ -1,0 +1,277 @@
+﻿<UserControl x:Class="HowLongToBeat.Views.HltbSyncStatusSettingsSection"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:HowLongToBeat="clr-namespace:HowLongToBeat"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance HowLongToBeat:HowLongToBeatSettingsViewModel}">
+    <ScrollViewer VerticalScrollBarVisibility="Auto" PanningMode="VerticalOnly">
+        <StackPanel>
+                    <CheckBox IsChecked="{Binding Settings.AutoSetGameStatus}"
+                              Name="PART_AutoSetGameStatusFromHltb"
+                              Content="{DynamicResource LOCHowLongToBeatAutoSetGameStatus}"/>
+
+                    <CheckBox Margin="0,10,0,0"
+                              IsChecked="{Binding Settings.AutoSetGameStatusToHltb}"
+                              Name="PART_AutoSetGameStatusToHltb"
+                              Content="{DynamicResource LOCHowLongToBeatAutoSetGameStatusToHltb}"/>
+
+                    <StackPanel Margin="50,5,0,0">
+                        <StackPanel.Style>
+                            <Style TargetType="StackPanel">
+                                <Setter Property="IsEnabled" Value="False"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding ElementName=PART_AutoSetGameStatusFromHltb, Path=IsChecked}"
+                                                 Value="True">
+                                        <Setter Property="IsEnabled" Value="True"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding ElementName=PART_AutoSetGameStatusToHltb, Path=IsChecked}" Value="True">
+                                        <Setter Property="IsEnabled" Value="True"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </StackPanel.Style>
+
+                        <ScrollViewer HorizontalScrollBarVisibility="Auto"
+                                      VerticalScrollBarVisibility="Disabled"
+                                      PanningMode="HorizontalOnly">
+                            <StackPanel>
+                            <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="140"/>
+                            <ColumnDefinition Width="10"/>
+                            <ColumnDefinition Width="220"/>
+                            <ColumnDefinition Width="20"/>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="20"/>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="20"/>
+                            <ColumnDefinition Width="100"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="6"/>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="10"/>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="10"/>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="10"/>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="10"/>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="10"/>
+                            <RowDefinition Height="auto"/>
+                        </Grid.RowDefinitions>
+
+                        <Label Grid.Column="0"
+                               Grid.Row="0"
+                               Grid.ColumnSpan="3"
+                               Content="{DynamicResource LOCHowLongToBeatHltbStatusColumnHeader}"
+                               FontSize="11"
+                               Opacity="0.8"/>
+                        <Label Grid.Column="4"
+                               Grid.Row="0"
+                               Grid.ColumnSpan="3"
+                               Content="{DynamicResource LOCHowLongToBeatPlayniteDataColumnHeader}"
+                               FontSize="11"
+                               Opacity="0.8"/>
+                        <Label Grid.Column="8"
+                               Grid.Row="0"
+                               Content="{DynamicResource LOCHowLongToBeatClearOtherListsColumnHeader}"
+                               FontSize="11"
+                               Opacity="0.8"
+                               ToolTip="{DynamicResource LOCHowLongToBeatClearOtherListsTooltip}"/>
+
+                        <Label Grid.Column="0"
+                               Grid.Row="2"
+                               Content="{DynamicResource LOCHowLongToBeatPlaying}"/>
+                        <ComboBox Grid.Column="2"
+                                  Grid.Row="2"
+                                  x:Name="PART_GameStatusPlaying"
+                                  SelectedValuePath="Id"
+                                  DisplayMemberPath="Name"
+                                  SelectedValue="{Binding Settings.GameStatusPlaying}"/>
+                        <CheckBox Grid.Column="4"
+                                  Grid.Row="2"
+                                  IsEnabled="{Binding ElementName=PART_AutoSetGameStatusToHltb, Path=IsChecked}"
+                                  IsChecked="{Binding Settings.AutoSetToHltbPlayingSendPlaytime}"
+                                  Content="{DynamicResource LOCHowLongToBeatSyncPlaytimeShort}"
+                                  ToolTip="{DynamicResource LOCHowLongToBeatAutoSetGameStatusToHltbPlayingPlaytime}"/>
+                        <CheckBox Grid.Column="8"
+                                  Grid.Row="2"
+                                  VerticalAlignment="Center"
+                                  HorizontalAlignment="Center"
+                                  IsEnabled="{Binding ElementName=PART_AutoSetGameStatusToHltb, Path=IsChecked}"
+                                  IsChecked="{Binding Settings.ToHltbPlayingListSync.ClearOtherLists}"
+                                  ToolTip="{DynamicResource LOCHowLongToBeatClearOtherListsTooltip}"/>
+
+                        <Label Grid.Column="0"
+                               Grid.Row="4"
+                               Content="{DynamicResource LOCHowLongToBeatCompleted}"/>
+                        <ComboBox Grid.Column="2"
+                                  Grid.Row="4"
+                                  x:Name="PART_GameStatusCompleted"
+                                  SelectedValuePath="Id"
+                                  DisplayMemberPath="Name"
+                                  SelectedValue="{Binding Settings.GameStatusCompleted}"/>
+                        <CheckBox Grid.Column="4"
+                                  Grid.Row="4"
+                                  IsEnabled="{Binding ElementName=PART_AutoSetGameStatusToHltb, Path=IsChecked}"
+                                  IsChecked="{Binding Settings.AutoSetToHltbCompletedSendPlaytime}"
+                                  Content="{DynamicResource LOCHowLongToBeatSyncPlaytimeShort}"
+                                  ToolTip="{DynamicResource LOCHowLongToBeatAutoSetGameStatusToHltbCompletedPlaytime}"/>
+                        <CheckBox Grid.Column="6"
+                                  Grid.Row="4"
+                                  IsEnabled="{Binding ElementName=PART_AutoSetGameStatusToHltb, Path=IsChecked}"
+                                  IsChecked="{Binding Settings.AutoSetToHltbCompletedSendCompletionDate}"
+                                  Content="{DynamicResource LOCHowLongToBeatSyncDateShort}"
+                                  ToolTip="{DynamicResource LOCHowLongToBeatAutoSetGameStatusToHltbCompletedDate}">
+                            <CheckBox.Style>
+                                <Style TargetType="CheckBox" BasedOn="{StaticResource {x:Type CheckBox}}">
+                                    <Setter Property="IsEnabled"
+                                            Value="False"/>
+                                    <Style.Triggers>
+                                        <MultiDataTrigger>
+                                            <MultiDataTrigger.Conditions>
+                                                <Condition Binding="{Binding ElementName=PART_AutoSetGameStatusToHltb, Path=IsChecked}" Value="True"/>
+                                                <Condition Binding="{Binding Settings.AutoSetToHltbCompletedSendPlaytime}" Value="True"/>
+                                            </MultiDataTrigger.Conditions>
+                                            <Setter Property="IsEnabled" Value="True"/>
+                                        </MultiDataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </CheckBox.Style>
+                        </CheckBox>
+                        <CheckBox Grid.Column="8"
+                                  Grid.Row="4"
+                                  VerticalAlignment="Center"
+                                  HorizontalAlignment="Center"
+                                  IsEnabled="{Binding ElementName=PART_AutoSetGameStatusToHltb, Path=IsChecked}"
+                                  IsChecked="{Binding Settings.ToHltbCompletedListSync.ClearOtherLists}"
+                                  ToolTip="{DynamicResource LOCHowLongToBeatClearOtherListsTooltip}"/>
+
+                        <Label Grid.Column="0"
+                               Grid.Row="6"
+                               Content="{DynamicResource LOCHowLongToBeatCompletionist}"/>
+                        <ComboBox Grid.Column="2"
+                                  Grid.Row="6"
+                                  x:Name="PART_GameStatusCompletionist"
+                                  SelectedValuePath="Id"
+                                  DisplayMemberPath="Name"
+                                  SelectedValue="{Binding Settings.GameStatusCompletionist}"/>
+                        <CheckBox Grid.Column="4"
+                                  Grid.Row="6"
+                                  IsEnabled="{Binding ElementName=PART_AutoSetGameStatusToHltb, Path=IsChecked}"
+                                  IsChecked="{Binding Settings.AutoSetToHltbCompletionistSendPlaytime}"
+                                  Content="{DynamicResource LOCHowLongToBeatSyncPlaytimeShort}"
+                                  ToolTip="{DynamicResource LOCHowLongToBeatAutoSetGameStatusToHltbCompletionistPlaytime}"/>
+                        <CheckBox Grid.Column="6"
+                                  Grid.Row="6"
+                                  IsEnabled="{Binding ElementName=PART_AutoSetGameStatusToHltb, Path=IsChecked}"
+                                  IsChecked="{Binding Settings.AutoSetToHltbCompletionistSendCompletionDate}"
+                                  Content="{DynamicResource LOCHowLongToBeatSyncDateShort}"
+                                  ToolTip="{DynamicResource LOCHowLongToBeatAutoSetGameStatusToHltbCompletionistDate}">
+                            <CheckBox.Style>
+                                <Style TargetType="CheckBox" BasedOn="{StaticResource {x:Type CheckBox}}">
+                                    <Setter Property="IsEnabled"
+                                            Value="False"/>
+                                    <Style.Triggers>
+                                        <MultiDataTrigger>
+                                            <MultiDataTrigger.Conditions>
+                                                <Condition Binding="{Binding ElementName=PART_AutoSetGameStatusToHltb, Path=IsChecked}" Value="True"/>
+                                                <Condition Binding="{Binding Settings.AutoSetToHltbCompletionistSendPlaytime}" Value="True"/>
+                                            </MultiDataTrigger.Conditions>
+                                            <Setter Property="IsEnabled" Value="True"/>
+                                        </MultiDataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </CheckBox.Style>
+                        </CheckBox>
+                        <CheckBox Grid.Column="8"
+                                  Grid.Row="6"
+                                  VerticalAlignment="Center"
+                                  HorizontalAlignment="Center"
+                                  IsEnabled="{Binding ElementName=PART_AutoSetGameStatusToHltb, Path=IsChecked}"
+                                  IsChecked="{Binding Settings.ToHltbCompletionistListSync.ClearOtherLists}"
+                                  ToolTip="{DynamicResource LOCHowLongToBeatClearOtherListsTooltip}"/>
+
+                        <Label Grid.Column="0"
+                               Grid.Row="8"
+                               Content="{DynamicResource LOCHltbUserListBacklog}"/>
+                        <ComboBox Grid.Column="2"
+                                  Grid.Row="8"
+                                  x:Name="PART_GameStatusBacklog"
+                                  SelectedValuePath="Id"
+                                  DisplayMemberPath="Name"
+                                  SelectedValue="{Binding Settings.GameStatusBacklog}"/>
+                        <CheckBox Grid.Column="8"
+                                  Grid.Row="8"
+                                  VerticalAlignment="Center"
+                                  HorizontalAlignment="Center"
+                                  IsEnabled="{Binding ElementName=PART_AutoSetGameStatusToHltb, Path=IsChecked}"
+                                  IsChecked="{Binding Settings.ToHltbBacklogListSync.ClearOtherLists}"
+                                  ToolTip="{DynamicResource LOCHowLongToBeatClearOtherListsTooltip}"/>
+
+                        <Label Grid.Column="0"
+                               Grid.Row="10"
+                               Content="{DynamicResource LOCHltbUserListReplays}"/>
+                        <ComboBox Grid.Column="2"
+                                  Grid.Row="10"
+                                  x:Name="PART_GameStatusReplays"
+                                  SelectedValuePath="Id"
+                                  DisplayMemberPath="Name"
+                                  SelectedValue="{Binding Settings.GameStatusReplays}"/>
+                        <CheckBox Grid.Column="8"
+                                  Grid.Row="10"
+                                  VerticalAlignment="Center"
+                                  HorizontalAlignment="Center"
+                                  IsEnabled="{Binding ElementName=PART_AutoSetGameStatusToHltb, Path=IsChecked}"
+                                  IsChecked="{Binding Settings.ToHltbReplaysListSync.ClearOtherLists}"
+                                  ToolTip="{DynamicResource LOCHowLongToBeatClearOtherListsTooltip}"/>
+
+                        <Label Grid.Column="0"
+                               Grid.Row="12"
+                               Content="{DynamicResource LOCHltbUserListRetired}"/>
+                        <ComboBox Grid.Column="2"
+                                  Grid.Row="12"
+                                  x:Name="PART_GameStatusRetired"
+                                  SelectedValuePath="Id"
+                                  DisplayMemberPath="Name"
+                                  SelectedValue="{Binding Settings.GameStatusRetired}"/>
+                        <CheckBox Grid.Column="8"
+                                  Grid.Row="12"
+                                  VerticalAlignment="Center"
+                                  HorizontalAlignment="Center"
+                                  IsEnabled="{Binding ElementName=PART_AutoSetGameStatusToHltb, Path=IsChecked}"
+                                  IsChecked="{Binding Settings.ToHltbRetiredListSync.ClearOtherLists}"
+                                  ToolTip="{DynamicResource LOCHowLongToBeatClearOtherListsTooltip}"/>
+                            </Grid>
+
+                        <Label Margin="0,12,0,4"
+                               Content="{DynamicResource LOCHowLongToBeatAlwaysKeepListsTitle}"
+                               ToolTip="{DynamicResource LOCHowLongToBeatAlwaysKeepListsTooltip}"/>
+                        <StackPanel Orientation="Horizontal">
+                            <CheckBox Margin="0,0,12,0"
+                                      Content="{DynamicResource LOCHowLongToBeatPlaying}"
+                                      IsChecked="{Binding Settings.ToHltbAlwaysKeepLists.AlwaysKeepPlayingIfPresent}"/>
+                            <CheckBox Margin="0,0,12,0"
+                                      Content="{DynamicResource LOCHltbUserListBacklog}"
+                                      IsChecked="{Binding Settings.ToHltbAlwaysKeepLists.AlwaysKeepBacklogIfPresent}"/>
+                            <CheckBox Margin="0,0,12,0"
+                                      Content="{DynamicResource LOCHltbUserListReplays}"
+                                      IsChecked="{Binding Settings.ToHltbAlwaysKeepLists.AlwaysKeepReplayIfPresent}"/>
+                            <CheckBox Margin="0,0,12,0"
+                                      Content="{DynamicResource LOCHowLongToBeatCompleted}"
+                                      IsChecked="{Binding Settings.ToHltbAlwaysKeepLists.AlwaysKeepCompletedIfPresent}"/>
+                            <CheckBox Content="{DynamicResource LOCHltbUserListRetired}"
+                                      IsChecked="{Binding Settings.ToHltbAlwaysKeepLists.AlwaysKeepRetiredIfPresent}"/>
+                        </StackPanel>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </StackPanel>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

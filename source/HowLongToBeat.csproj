@@ -248,17 +248,42 @@
     <Compile Include="Views\Settings\HltbSettingsView.xaml.cs">
       <DependentUpon>HltbSettingsView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Settings\Navigation\HltbSettingsMasterDetailControl.xaml.cs">
+      <DependentUpon>HltbSettingsMasterDetailControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Settings\Navigation\HltbSettingsNavigationItem.cs" />
     <Compile Include="Views\Settings\Sections\HltbGeneralSettingsSection.xaml.cs">
       <DependentUpon>HltbGeneralSettingsSection.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Settings\Sections\HltbSyncSettingsSection.xaml.cs">
       <DependentUpon>HltbSyncSettingsSection.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Settings\Sections\HltbSyncPlaytimeSettingsSection.xaml.cs">
+      <DependentUpon>HltbSyncPlaytimeSettingsSection.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Settings\Sections\HltbSyncStatusSettingsSection.xaml.cs">
+      <DependentUpon>HltbSyncStatusSettingsSection.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Settings\Sections\HltbDataSettingsSection.xaml.cs">
       <DependentUpon>HltbDataSettingsSection.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Settings\Sections\HltbDisplaySettingsSection.xaml.cs">
-      <DependentUpon>HltbDisplaySettingsSection.xaml</DependentUpon>
+    <Compile Include="Views\Settings\Sections\HltbDataPreferencesSettingsSection.xaml.cs">
+      <DependentUpon>HltbDataPreferencesSettingsSection.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Settings\Sections\HltbDataDatabaseSettingsSection.xaml.cs">
+      <DependentUpon>HltbDataDatabaseSettingsSection.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Settings\Sections\HltbDataExportSettingsSection.xaml.cs">
+      <DependentUpon>HltbDataExportSettingsSection.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Settings\Sections\HltbDataTagsSettingsSection.xaml.cs">
+      <DependentUpon>HltbDataTagsSettingsSection.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Settings\Sections\HltbDisplayNavigationSettingsSection.xaml.cs">
+      <DependentUpon>HltbDisplayNavigationSettingsSection.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Settings\Sections\HltbDisplayProgressBarSettingsSection.xaml.cs">
+      <DependentUpon>HltbDisplayProgressBarSettingsSection.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Settings\Sections\HltbPlatformsSettingsSection.xaml.cs">
       <DependentUpon>HltbPlatformsSettingsSection.xaml</DependentUpon>
@@ -268,6 +293,9 @@
     </Compile>
     <Compile Include="Views\Settings\Sections\HltbHelpSettingsSection.xaml.cs">
       <DependentUpon>HltbHelpSettingsSection.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Settings\Sections\HltbMappingSettingsSection.xaml.cs">
+      <DependentUpon>HltbMappingSettingsSection.xaml</DependentUpon>
     </Compile>
     <Compile Include="Models\HltbData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -585,6 +613,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\Settings\Navigation\HltbSettingsMasterDetailControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\Settings\HltbSettingsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -597,11 +629,39 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\Settings\Sections\HltbSyncPlaytimeSettingsSection.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Settings\Sections\HltbSyncStatusSettingsSection.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\Settings\Sections\HltbDataSettingsSection.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Settings\Sections\HltbDisplaySettingsSection.xaml">
+    <Page Include="Views\Settings\Sections\HltbDataPreferencesSettingsSection.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Settings\Sections\HltbDataDatabaseSettingsSection.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Settings\Sections\HltbDataExportSettingsSection.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Settings\Sections\HltbDataTagsSettingsSection.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Settings\Sections\HltbDisplayNavigationSettingsSection.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Settings\Sections\HltbDisplayProgressBarSettingsSection.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -614,6 +674,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Settings\Sections\HltbHelpSettingsSection.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Settings\Sections\HltbMappingSettingsSection.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

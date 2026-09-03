@@ -20,7 +20,7 @@
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
     </UserControl.Resources>
 
-            <DockPanel Margin="0,10,0,0">
+            <DockPanel>
                 <StackPanel DockPanel.Dock="Top">
                     <TextBlock Style="{DynamicResource BaseTextBlockStyle}"
                                TextWrapping="Wrap"

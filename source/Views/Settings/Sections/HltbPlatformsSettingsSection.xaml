@@ -20,7 +20,7 @@
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
     </UserControl.Resources>
 
-            <DockPanel Margin="0,10,0,0"
+            <DockPanel
                        LastChildFill="True">
                 <Label DockPanel.Dock="Top"
                        Content="{DynamicResource LOCHowLongToBeatPlatformsMappingDescription}"/>

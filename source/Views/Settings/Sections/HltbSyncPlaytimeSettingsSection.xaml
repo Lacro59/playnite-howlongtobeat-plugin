@@ -1,0 +1,44 @@
+﻿<UserControl x:Class="HowLongToBeat.Views.HltbSyncPlaytimeSettingsSection"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:HowLongToBeat="clr-namespace:HowLongToBeat"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance HowLongToBeat:HowLongToBeatSettingsViewModel}">
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto"
+                  PanningMode="VerticalOnly">
+        <StackPanel>
+            <CheckBox Margin="0,0,0,10"
+                      IsChecked="{Binding Settings.UsedStartDateFromGameActivity}"
+                      Content="{DynamicResource LOCHltbUsedStartDateFromGameActivity}"/>
+
+            <Grid Margin="0,0,0,10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="10"/>
+                    <ColumnDefinition Width="auto"/>
+                </Grid.ColumnDefinitions>
+
+                <CheckBox IsChecked="{Binding Settings.AutoSetCurrentPlayTime}"
+                          x:Name="PART_AutoSetCurrentPlayTime"
+                          Content="{DynamicResource LOCHowLongToBeatAutoSetCurrentPlayTime}"/>
+                <Label Grid.Column="2"
+                       FontFamily="{DynamicResource FontIcoFont}"
+                       Content="&#xef19;"
+                       ToolTip="{DynamicResource LOCHowLongToBeatInfoSetPlaytime}"/>
+            </Grid>
+
+            <CheckBox Margin="50,0,0,5"
+                      IsChecked="{Binding Settings.AutoSetCurrentPlayTimeWithoutConfirmation}"
+                      IsEnabled="{Binding ElementName=PART_AutoSetCurrentPlayTime, Path=IsChecked}"
+                      Content="{DynamicResource LOCHowLongToBeatWithoutConfirmation}"/>
+
+            <CheckBox Margin="50,0,0,0"
+                      IsChecked="{Binding Settings.EnableSucessNotification}"
+                      IsEnabled="{Binding ElementName=PART_AutoSetCurrentPlayTime, Path=IsChecked}"
+                      Content="{DynamicResource LOCHowLongToBeatEnableSuccessNotification}"/>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

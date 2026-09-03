@@ -13,6 +13,16 @@
     <sys:String x:Key="LOCHltbSettingsCategoryDisplay">Affichage</sys:String>
     <sys:String x:Key="LOCHltbSettingsCategoryMapping">Correspondances</sys:String>
 
+    <sys:String x:Key="LOCHltbSettingsNavSyncPlaytime">Temps de jeu</sys:String>
+    <sys:String x:Key="LOCHltbSettingsNavSyncStatus">Statuts</sys:String>
+    <sys:String x:Key="LOCHltbSettingsNavDataPreferences">Préférences de données</sys:String>
+    <sys:String x:Key="LOCHltbSettingsNavDataTags">Tags</sys:String>
+    <sys:String x:Key="LOCHltbSettingsNavDisplayNavigation">Barre de titre et barre latérale</sys:String>
+    <sys:String x:Key="LOCHltbSettingsNavDisplayControls">Contrôles</sys:String>
+    <sys:String x:Key="LOCHltbSettingsNavMappingPlatforms">Plateformes</sys:String>
+    <sys:String x:Key="LOCHltbSettingsNavMappingPlatformsSubtitle">Plateforme Playnite vers cible HowLongToBeat</sys:String>
+    <sys:String x:Key="LOCHltbSettingsNavMappingStorefrontSubtitle">Source bibliothèque vers storefront HowLongToBeat</sys:String>
+
     <sys:String x:Key="LOCHowLongToBeatProgressBar">Ajouté(s) {0} - Déjà ajouté(s) {1} - Non ajouté(s) {2}</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatAddTagDescription">Ajouter un tag aux jeux avec les informations de temps d'achèvement de l'histoire principale</sys:String>
