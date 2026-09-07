@@ -6,6 +6,7 @@ using FuzzySharp;
 using HowLongToBeat.Models;
 using HowLongToBeat.Models.Enumerations;
 using HowLongToBeat.Models.StartPage;
+using HowLongToBeat.Services;
 using HowLongToBeat.Views;
 using Playnite.SDK;
 using Playnite.SDK.Data;
@@ -462,7 +463,7 @@ namespace HowLongToBeat
     }
 
 
-    public class HowLongToBeatSettingsViewModel : PluginSettingsViewModel, IPluginSettingsViewModel
+    public partial class HowLongToBeatSettingsViewModel : PluginSettingsViewModel, IPluginSettingsViewModel
 	{
         private readonly HowLongToBeat Plugin;
         private HowLongToBeatSettings EditingClone { get; set; }
@@ -765,6 +766,10 @@ namespace HowLongToBeat
                     Settings.ThumbSolidColorBrush = (SolidColorBrush)ResourceProvider.GetResource("NormalBrush");
                 }
             }
+
+            InitializeSettingsCommands();
+            SubscribeAuthEvents();
+            TaskHelpers.FireAndForget(RefreshAuthStateAsync(), "SettingsViewModel-CheckAuthenticate", Logger);
         }
 
         // Code executed when settings view is opened and user starts editing values.
@@ -789,24 +794,6 @@ namespace HowLongToBeat
         {
             // Persist aliases edits from UI list back into the dictionary.
             try { Settings.SyncAliasesDictionaryFromList(); } catch { }
-
-            Settings.ThumbSolidColorBrush = HowLongToBeatSettingsView.ThumbSolidColorBrush;
-            Settings.ThumbLinearGradient = HowLongToBeatSettingsView.ThumbLinearGradient;
-
-            Settings.FirstColorBrush = HowLongToBeatSettingsView.FirstColorBrush;
-            Settings.FirstLinearGradient = HowLongToBeatSettingsView.FirstLinearGradient;
-            Settings.SecondColorBrush = HowLongToBeatSettingsView.SecondColorBrush;
-            Settings.SecondLinearGradient = HowLongToBeatSettingsView.SecondLinearGradient;
-            Settings.ThirdColorBrush = HowLongToBeatSettingsView.ThirdColorBrush;
-            Settings.ThirdLinearGradient = HowLongToBeatSettingsView.ThirdLinearGradient;
-
-            Settings.FirstMultiColorBrush = HowLongToBeatSettingsView.FirstMultiColorBrush;
-            Settings.FirstMultiLinearGradient = HowLongToBeatSettingsView.FirstMultiLinearGradient;
-            Settings.SecondMultiColorBrush = HowLongToBeatSettingsView.SecondMultiColorBrush;
-            Settings.SecondMultiLinearGradient = HowLongToBeatSettingsView.SecondMultiLinearGradient;
-            Settings.ThirdMultiColorBrush = HowLongToBeatSettingsView.ThirdMultiColorBrush;
-            Settings.ThirdMultiLinearGradient = HowLongToBeatSettingsView.ThirdMultiLinearGradient;
-
 
             if (!Settings.UseHtltbClassic && !Settings.UseHtltbAverage && !Settings.UseHtltbMedian && !Settings.UseHtltbRushed && !Settings.UseHtltbLeisure)
             {

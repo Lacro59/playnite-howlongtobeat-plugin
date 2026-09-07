@@ -7,6 +7,10 @@
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance HowLongToBeat:HowLongToBeatSettingsViewModel}">
 
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    </UserControl.Resources>
+
     <ScrollViewer VerticalScrollBarVisibility="Auto"
                   PanningMode="VerticalOnly">
         <StackPanel>
@@ -18,19 +22,21 @@
                     <ColumnDefinition Width="auto"/>
                 </Grid.ColumnDefinitions>
 
-                <Button Name="PART_BtAuthenticate"
-                        Content="{DynamicResource LOCCommonAuthenticateLabel}"
+                <Button Content="{DynamicResource LOCCommonAuthenticateLabel}"
+                        Command="{Binding AuthenticateCommand}"
                         Grid.Column="0"
                         VerticalAlignment="Top"
                         MinWidth="110"
                         Margin="0,1,0,0"/>
-                <Label Name="PART_LbAuthenticate"
-                       VerticalAlignment="Center"
-                       Grid.Column="2"/>
-                <Label Name="PART_LbUserLogin"
-                       Content="{Binding Settings.UserLogin}"
-                       VerticalAlignment="Center"
-                       Grid.Column="3"/>
+                <TextBlock Grid.Column="2"
+                           Style="{DynamicResource BaseTextBlockStyle}"
+                           VerticalAlignment="Center"
+                           Text="{Binding AuthStatusText}"/>
+                <TextBlock Grid.Column="3"
+                           Style="{DynamicResource BaseTextBlockStyle}"
+                           VerticalAlignment="Center"
+                           Text="{Binding UserLoginText}"
+                           Visibility="{Binding IsUserLoginVisible, Converter={StaticResource BooleanToVisibilityConverter}}"/>
             </Grid>
 
             <CheckBox Margin="0,10,0,0"

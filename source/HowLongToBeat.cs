@@ -401,7 +401,7 @@ namespace HowLongToBeat
 
         public override UserControl GetSettingsView(bool firstRunSettings)
         {
-            return new HltbSettingsView(PluginSettingsViewModel.Settings);
+            return new HltbSettingsView(PluginSettingsViewModel);
         }
 
         #endregion

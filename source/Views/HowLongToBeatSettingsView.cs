@@ -6,12 +6,12 @@ using Playnite.SDK.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Media;
 
 namespace HowLongToBeat.Views
 {
     /// <summary>
-    /// Static state shared between settings sections and the settings view model.
+    /// Static helpers shared between settings sections and the settings view model
+    /// (ignore-sync editing state only — progress colors live on <see cref="HowLongToBeatSettings"/>).
     /// </summary>
     public static class HowLongToBeatSettingsView
     {
@@ -22,23 +22,6 @@ namespace HowLongToBeat.Views
         /// Null when the Ignored games tab was never opened; EndEdit then leaves tags unchanged.
         /// </summary>
         public static List<Guid> EditingIgnoreSyncGameIds { get; set; }
-
-        public static SolidColorBrush ThumbSolidColorBrush;
-        public static ThemeLinearGradient ThumbLinearGradient;
-
-        public static SolidColorBrush FirstColorBrush;
-        public static ThemeLinearGradient FirstLinearGradient;
-        public static SolidColorBrush SecondColorBrush;
-        public static ThemeLinearGradient SecondLinearGradient;
-        public static SolidColorBrush ThirdColorBrush;
-        public static ThemeLinearGradient ThirdLinearGradient;
-
-        public static SolidColorBrush FirstMultiColorBrush;
-        public static ThemeLinearGradient FirstMultiLinearGradient;
-        public static SolidColorBrush SecondMultiColorBrush;
-        public static ThemeLinearGradient SecondMultiLinearGradient;
-        public static SolidColorBrush ThirdMultiColorBrush;
-        public static ThemeLinearGradient ThirdMultiLinearGradient;
 
         /// <summary>
         /// Applies pending ignore-sync list edits to Playnite tags when settings are saved.

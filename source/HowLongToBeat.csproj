@@ -134,6 +134,7 @@
     </Compile>
     <Compile Include="HowLongToBeat.cs" />
     <Compile Include="HowLongToBeatSettings.cs" />
+    <Compile Include="HowLongToBeatSettingsViewModel.SettingsCommands.cs" />
     <Compile Include="Models\Api\SearchParam.cs" />
     <Compile Include="Models\Api\SearchResult.cs" />
     <Compile Include="Models\Api\EditData.cs" />
@@ -227,6 +228,7 @@
     <Compile Include="Services\GameNameAliases.cs" />
     <Compile Include="Services\HowLongToBeatDatabase.cs" />
     <Compile Include="Services\HowLongToBeatExport.cs" />
+    <Compile Include="Services\HltbSettingsLibraryExport.cs" />
     <Compile Include="Services\HowLongToBeatSearch.cs" />
     <Compile Include="Services\LruCache.cs" />
     <Compile Include="Services\PageCache.cs" />

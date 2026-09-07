@@ -14,18 +14,18 @@
                        Text="{DynamicResource LOCHowLongToBeatExport}"/>
 
             <StackPanel Orientation="Horizontal">
-                <Button x:Name="PART_BtnExportCsvComma"
-                        Content="{DynamicResource LOCHowLongToBeatExportCsvComma}"
+                <Button Content="{DynamicResource LOCHowLongToBeatExportCsvComma}"
+                        Command="{Binding ExportCsvCommaCommand}"
                         MinHeight="26"
                         Margin="0,0,8,0"
                         VerticalAlignment="Center"/>
-                <Button x:Name="PART_BtnExportCsvSemicolon"
-                        Content="{DynamicResource LOCHowLongToBeatExportCsvSemicolon}"
+                <Button Content="{DynamicResource LOCHowLongToBeatExportCsvSemicolon}"
+                        Command="{Binding ExportCsvSemicolonCommand}"
                         MinHeight="26"
                         Margin="0,0,8,0"
                         VerticalAlignment="Center"/>
-                <Button x:Name="PART_BtnExportJson"
-                        Content="{DynamicResource LOCHowLongToBeatExportJson}"
+                <Button Content="{DynamicResource LOCHowLongToBeatExportJson}"
+                        Command="{Binding ExportJsonCommand}"
                         MinHeight="26"
                         VerticalAlignment="Center"/>
             </StackPanel>
@@ -36,14 +36,14 @@
                     <ColumnDefinition Width="10"/>
                     <ColumnDefinition Width="auto"/>
                 </Grid.ColumnDefinitions>
-                <TextBox x:Name="PART_ExportFolder"
-                         Grid.Column="0"
+                <TextBox Grid.Column="0"
                          MinHeight="26"
                          VerticalAlignment="Center"
+                         Text="{Binding ExportFolder, UpdateSourceTrigger=PropertyChanged}"
                          ToolTip="{DynamicResource LOCHowLongToBeatExportFolderTooltip}"/>
                 <Button Grid.Column="2"
-                        x:Name="PART_BtnBrowseExportFolder"
                         Content="{DynamicResource LOCBrowseLabel}"
+                        Command="{Binding BrowseExportFolderCommand}"
                         MinHeight="26"
                         VerticalAlignment="Center"/>
             </Grid>
