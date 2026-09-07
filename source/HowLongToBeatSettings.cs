@@ -132,13 +132,41 @@ namespace HowLongToBeat
 
         public TimeType PreferredForTimeToBeat { get; set; } = TimeType.MainStory;
 
-        public bool ShowMainTime { get; set; } = true;
-        public bool ShowExtraTime { get; set; } = true;
-        public bool ShowCompletionistTime { get; set; } = true;
+        private bool _showMainTime = true;
+        /// <summary>
+        /// When true, Main Story time may be shown in plugin controls and custom themes via PluginSettings.
+        /// </summary>
+        public bool ShowMainTime { get => _showMainTime; set => SetValue(ref _showMainTime, value); }
 
-        public bool ShowSoloTime { get; set; } = true;
-        public bool ShowCoOpTime { get; set; } = true;
-        public bool ShowVsTime { get; set; } = true;
+        private bool _showExtraTime = true;
+        /// <summary>
+        /// When true, Main Extra time may be shown in plugin controls and custom themes via PluginSettings.
+        /// </summary>
+        public bool ShowExtraTime { get => _showExtraTime; set => SetValue(ref _showExtraTime, value); }
+
+        private bool _showCompletionistTime = true;
+        /// <summary>
+        /// When true, Completionist time may be shown in plugin controls and custom themes via PluginSettings.
+        /// </summary>
+        public bool ShowCompletionistTime { get => _showCompletionistTime; set => SetValue(ref _showCompletionistTime, value); }
+
+        private bool _showSoloTime = true;
+        /// <summary>
+        /// When true, Solo time may be shown in plugin controls and custom themes via PluginSettings.
+        /// </summary>
+        public bool ShowSoloTime { get => _showSoloTime; set => SetValue(ref _showSoloTime, value); }
+
+        private bool _showCoOpTime = true;
+        /// <summary>
+        /// When true, Co-Op time may be shown in plugin controls and custom themes via PluginSettings.
+        /// </summary>
+        public bool ShowCoOpTime { get => _showCoOpTime; set => SetValue(ref _showCoOpTime, value); }
+
+        private bool _showVsTime = true;
+        /// <summary>
+        /// When true, Vs time may be shown in plugin controls and custom themes via PluginSettings.
+        /// </summary>
+        public bool ShowVsTime { get => _showVsTime; set => SetValue(ref _showVsTime, value); }
 
 
         public SolidColorBrush ThumbSolidColorBrush { get; set; } = null;
