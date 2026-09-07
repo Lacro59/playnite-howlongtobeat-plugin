@@ -24,10 +24,12 @@
                 <CheckBox IsChecked="{Binding Settings.AutoSetCurrentPlayTime}"
                           x:Name="PART_AutoSetCurrentPlayTime"
                           Content="{DynamicResource LOCHowLongToBeatAutoSetCurrentPlayTime}"/>
-                <Label Grid.Column="2"
-                       FontFamily="{DynamicResource FontIcoFont}"
-                       Content="&#xef19;"
-                       ToolTip="{DynamicResource LOCHowLongToBeatInfoSetPlaytime}"/>
+                <TextBlock Grid.Column="2"
+                           Style="{DynamicResource BaseTextBlockStyle}"
+                           FontFamily="{DynamicResource FontIcoFont}"
+                           Text="&#xef19;"
+                           VerticalAlignment="Center"
+                           ToolTip="{DynamicResource LOCHowLongToBeatInfoSetPlaytime}"/>
             </Grid>
 
             <CheckBox Margin="50,0,0,5"

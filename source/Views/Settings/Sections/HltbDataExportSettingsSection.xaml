@@ -10,35 +10,25 @@
     <ScrollViewer VerticalScrollBarVisibility="Auto"
                   PanningMode="VerticalOnly">
         <StackPanel>
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="auto"/>
-                    <ColumnDefinition Width="10"/>
-                    <ColumnDefinition Width="auto"/>
-                    <ColumnDefinition Width="10"/>
-                    <ColumnDefinition Width="auto"/>
-                    <ColumnDefinition Width="10"/>
-                    <ColumnDefinition Width="auto"/>
-                </Grid.ColumnDefinitions>
-                <Label Grid.Column="0"
-                       Content="{DynamicResource LOCHowLongToBeatExport}"
-                       VerticalAlignment="Center"/>
-                <Button Grid.Column="2"
-                        x:Name="PART_BtnExportCsvComma"
+            <TextBlock Style="{DynamicResource SectionHeaderText}"
+                       Text="{DynamicResource LOCHowLongToBeatExport}"/>
+
+            <StackPanel Orientation="Horizontal">
+                <Button x:Name="PART_BtnExportCsvComma"
                         Content="{DynamicResource LOCHowLongToBeatExportCsvComma}"
                         MinHeight="26"
+                        Margin="0,0,8,0"
                         VerticalAlignment="Center"/>
-                <Button Grid.Column="4"
-                        x:Name="PART_BtnExportCsvSemicolon"
+                <Button x:Name="PART_BtnExportCsvSemicolon"
                         Content="{DynamicResource LOCHowLongToBeatExportCsvSemicolon}"
                         MinHeight="26"
+                        Margin="0,0,8,0"
                         VerticalAlignment="Center"/>
-                <Button Grid.Column="6"
-                        x:Name="PART_BtnExportJson"
+                <Button x:Name="PART_BtnExportJson"
                         Content="{DynamicResource LOCHowLongToBeatExportJson}"
                         MinHeight="26"
                         VerticalAlignment="Center"/>
-            </Grid>
+            </StackPanel>
 
             <Grid Margin="0,10,0,0">
                 <Grid.ColumnDefinitions>

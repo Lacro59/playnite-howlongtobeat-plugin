@@ -46,8 +46,8 @@
                         </Grid.ColumnDefinitions>
 
                         <TextBlock Text="&#xE721;"
+                                   Style="{DynamicResource BaseTextBlockStyle}"
                                    FontFamily="Segoe MDL2 Assets"
-                                   Foreground="{DynamicResource TextBrush}"
                                    Opacity="0.55"
                                    Margin="0,0,8,0"
                                    VerticalAlignment="Center"/>
@@ -73,14 +73,14 @@
                             <GroupStyle.HeaderTemplate>
                                 <DataTemplate>
                                     <TextBlock Text="{Binding Name}"
-                                               Foreground="{DynamicResource TextBrush}"
-                                               FontSize="10"
+                                               FontSize="{DynamicResource FontSizeSmall}"
                                                FontWeight="SemiBold"
                                                Opacity="0.58"
                                                Margin="10,10,8,3"
                                                TextTrimming="CharacterEllipsis">
                                         <TextBlock.Style>
-                                            <Style TargetType="TextBlock">
+                                            <Style TargetType="TextBlock"
+                                                   BasedOn="{StaticResource BaseTextBlockStyle}">
                                                 <Style.Triggers>
                                                     <DataTrigger Binding="{Binding Name}" Value="{x:Null}">
                                                         <Setter Property="Visibility" Value="Collapsed"/>
@@ -117,9 +117,9 @@
                                 </Grid.ColumnDefinitions>
 
                                 <TextBlock Text="{Binding IconGlyph}"
+                                           Style="{DynamicResource BaseTextBlockStyle}"
                                            FontFamily="Segoe MDL2 Assets"
-                                           FontSize="14"
-                                           Foreground="{DynamicResource TextBrush}"
+                                           FontSize="{DynamicResource FontSize}"
                                            Margin="0,0,8,0"
                                            VerticalAlignment="Center"
                                            Visibility="{Binding HasIconGlyph, Converter={StaticResource BooleanToVisibilityConverter}}"/>

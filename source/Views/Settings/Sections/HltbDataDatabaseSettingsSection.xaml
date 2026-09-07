@@ -8,94 +8,65 @@
              d:DataContext="{d:DesignInstance HowLongToBeat:HowLongToBeatSettingsViewModel}">
     <ScrollViewer VerticalScrollBarVisibility="Auto"
                   PanningMode="VerticalOnly">
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="10"/>
-                <ColumnDefinition Width="auto"/>
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="30"/>
-                <RowDefinition Height="30"/>
-                <RowDefinition Height="30"/>
-                <RowDefinition Height="30"/>
-                <RowDefinition Height="10"/>
-                <RowDefinition Height="35"/>
-            </Grid.RowDefinitions>
-
+        <StackPanel>
             <CheckBox Name="cbAutoImport"
-                      Grid.Row="0"
                       IsChecked="{Binding Settings.AutoImport}"
-                      Grid.Column="0"
-                      VerticalAlignment="Center"
-                      Grid.ColumnSpan="3"
                       Content="{DynamicResource LOCCommonAutoImport}"/>
 
             <CheckBox Name="cbAutoAccept"
-                      Grid.Row="1"
+                      Margin="0,8,0,0"
                       IsChecked="{Binding Settings.AutoAccept}"
-                      Grid.Column="0"
-                      VerticalAlignment="Center"
-                      Grid.ColumnSpan="3"
                       Content="{DynamicResource LOCHowLongToBeatAutoAccept}"/>
 
             <CheckBox Name="cbShowWhenMismatch"
-                      Grid.Row="2"
+                      Margin="0,8,0,0"
                       IsChecked="{Binding Settings.ShowWhenMismatch}"
-                      Grid.Column="0"
-                      Grid.ColumnSpan="3"
-                      VerticalAlignment="Center"
                       Content="{DynamicResource LOCHowLongToBeatShowWhenMismatch}"/>
 
-            <CheckBox Grid.Row="3"
-                      IsChecked="{Binding Settings.UseMatchValue}"
-                      Grid.Column="0"
-                      VerticalAlignment="Center"
-                      Content="{DynamicResource LOCHowLongToBeatUseMatchValue}"/>
-
-            <StackPanel Orientation="Horizontal"
-                        Grid.Row="3"
-                        Grid.Column="2">
-                <Slider Width="200"
-                        VerticalAlignment="Center"
-                        Name="PART_SliderMAtchValue"
-                        Value="{Binding Settings.MatchValue, FallbackValue=95}"
-                        Minimum="75"
-                        Maximum="100"
-                        IsSnapToTickEnabled="True"
-                        TickFrequency="1"/>
-                <Label Content="{Binding ElementName=PART_SliderMAtchValue, Path=Value}"
-                       ContentStringFormat=" {0}%"
-                       Width="50"
-                       VerticalAlignment="Center"
-                       Margin="10,0,0,0"
-                       HorizontalAlignment="Center"/>
-            </StackPanel>
-
-            <Grid Grid.Column="0"
-                  Grid.ColumnSpan="3"
-                  Grid.Row="5">
+            <Grid Margin="0,8,0,0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="10"/>
                     <ColumnDefinition Width="auto"/>
-                    <ColumnDefinition Width="10"/>
-                    <ColumnDefinition Width="auto"/>
                 </Grid.ColumnDefinitions>
 
-                <TextBlock Grid.Column="0"
-                           Style="{DynamicResource BaseTextBlockStyle}"
-                           Text="{DynamicResource LOCCommonDatabase}"
-                           VerticalAlignment="Center"/>
-                <Button Grid.Column="2"
-                        Name="btAddData"
+                <CheckBox IsChecked="{Binding Settings.UseMatchValue}"
+                          VerticalAlignment="Center"
+                          Content="{DynamicResource LOCHowLongToBeatUseMatchValue}"/>
+
+                <StackPanel Orientation="Horizontal"
+                            Grid.Column="2"
+                            VerticalAlignment="Center">
+                    <Slider Width="200"
+                            VerticalAlignment="Center"
+                            Name="PART_SliderMAtchValue"
+                            Value="{Binding Settings.MatchValue, FallbackValue=95}"
+                            Minimum="75"
+                            Maximum="100"
+                            IsSnapToTickEnabled="True"
+                            TickFrequency="1"/>
+                    <TextBlock Style="{DynamicResource BaseTextBlockStyle}"
+                               Width="50"
+                               VerticalAlignment="Center"
+                               Margin="10,0,0,0"
+                               HorizontalAlignment="Center"
+                               Text="{Binding ElementName=PART_SliderMAtchValue, Path=Value, StringFormat={}{0}%}"/>
+                </StackPanel>
+            </Grid>
+
+            <TextBlock Margin="0,16,0,8"
+                       Style="{DynamicResource SectionHeaderText}"
+                       Text="{DynamicResource LOCCommonDatabase}"/>
+
+            <StackPanel Orientation="Horizontal">
+                <Button Name="btAddData"
                         Content="{DynamicResource LOCUpdateAll}"
+                        Margin="0,0,8,0"
                         VerticalAlignment="Center"/>
-                <Button Grid.Column="4"
-                        Name="btRemoveData"
+                <Button Name="btRemoveData"
                         Content="{DynamicResource LOCClearAll}"
                         VerticalAlignment="Center"/>
-            </Grid>
-        </Grid>
+            </StackPanel>
+        </StackPanel>
     </ScrollViewer>
 </UserControl>
