@@ -186,6 +186,14 @@
                                               Name="PART_OnlyNotPlayed"
                                               VerticalAlignment="Center"
                                               Margin="10,0,0,0"/>
+
+                                    <CheckBox Content="{DynamicResource LOCHltbOnlyInstalled}"
+                                              ToolTip="{DynamicResource LOCHltbOnlyInstalledTooltip}"
+                                              Checked="CheckBox_Checked"
+                                              Unchecked="CheckBox_Checked"
+                                              Name="PART_OnlyInstalled"
+                                              VerticalAlignment="Center"
+                                              Margin="10,0,0,0"/>
                                 </StackPanel>
 
                                 <StackPanel Orientation="Horizontal"
@@ -960,9 +968,13 @@
                         <Grid Grid.Row="0">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="auto"/>
-                                <ColumnDefinition Width="30"/>
+                                <ColumnDefinition Width="20"/>
                                 <ColumnDefinition Width="auto"/>
-                                <ColumnDefinition Width="30"/>
+                                <ColumnDefinition Width="20"/>
+                                <ColumnDefinition Width="auto"/>
+                                <ColumnDefinition Width="20"/>
+                                <ColumnDefinition Width="auto"/>
+                                <ColumnDefinition Width="20"/>
                                 <ColumnDefinition Width="auto"/>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="10"/>
@@ -983,17 +995,41 @@
                                 <Label Content="{DynamicResource LOCHltbOnlyNotPlayedGames}"/>
                             </CheckBox>
 
-                            <Button Grid.Column="4"
+                            <CheckBox Grid.Column="4"
+                                      IsChecked="False"
+                                      Name="PART_OnlyInstalledGames"
+                                      Click="PART_OnlyInstalledGames_Click">
+                                <Label Content="{DynamicResource LOCHltbOnlyInstalledGames}"/>
+                            </CheckBox>
+
+                            <StackPanel Grid.Column="6"
+                                        Orientation="Horizontal"
+                                        VerticalAlignment="Center">
+                                <Label Content="{DynamicResource LOCPlatformTitle}"
+                                       VerticalAlignment="Center"
+                                       Margin="0,0,10,0"/>
+                                <ComboBox Width="180"
+                                          Name="PART_CbPlaynitePlatform"
+                                          SelectionChanged="PART_CbPlaynitePlatform_SelectionChanged">
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding}"/>
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                </ComboBox>
+                            </StackPanel>
+
+                            <Button Grid.Column="8"
                                     Content="&#xEF05;"
                                     FontFamily="{DynamicResource FontIcoFont}"
                                     Click="SavedFilter1_Click"
                                     ToolTip="{DynamicResource LOCCommonSaveFilters}"/>
 
-                            <StackPanel Grid.Column="50"
+                            <StackPanel Grid.Column="11"
                                         Orientation="Horizontal">
                                 <Label Content="{DynamicResource LOCCommonTotalFound}"/>
                                 <Label Margin="10,0,0,0"
-                                       Content="{Binding ElementName=ListViewDataGames, Path=Items.Count,  Mode=OneWay}"/>
+                                       Content="{Binding ElementName=ListViewDataGames, Path=Items.Count, Mode=OneWay}"/>
                             </StackPanel>
                         </Grid>
 

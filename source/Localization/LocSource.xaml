@@ -201,6 +201,8 @@ This is separate from the Replays list on your profile.</sys:String>
     <sys:String x:Key="LOCHltbOnlyIncludesDlc">Includes DLC</sys:String>
     <sys:String x:Key="LOCHltbOnlyIncludesDlcTooltip" xml:space="preserve">Only games with the HowLongToBeat option &quot;DLC / Expansions Included.&quot;</sys:String>
     <sys:String x:Key="LOCHltbOnlyNotPlayed">Only not played</sys:String>
+    <sys:String x:Key="LOCHltbOnlyInstalled">Only installed</sys:String>
+    <sys:String x:Key="LOCHltbOnlyInstalledTooltip">Only titles linked to an installed Playnite game. Unlinked titles are hidden.</sys:String>
 
     <sys:String x:Key="LOCHltbOptionalTagsHeader">Optional Tags</sys:String>
     <sys:String x:Key="LOCHltbOptionalTagIncludesDlc">DLC / Expansions Included</sys:String>
@@ -237,6 +239,7 @@ This is not the same as the Replays list on your profile.</sys:String>
 
     <sys:String x:Key="LOCHltbUsedFilteredGames">Currently filtered games used</sys:String>
     <sys:String x:Key="LOCHltbOnlyNotPlayedGames">Only game not played</sys:String>
+    <sys:String x:Key="LOCHltbOnlyInstalledGames">Only installed games</sys:String>
 
     <!-- MainView -->
 

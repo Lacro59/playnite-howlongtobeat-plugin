@@ -32,14 +32,48 @@ namespace HowLongToBeat.Views
         private Task _loadTask;
         private HowLongToBeat Plugin { get; set; }
         private bool DisplayFirst { get; set; } = true;
+        private bool _suppressPlaynitePlatformFilterEvents;
 
         private static HowLongToBeatDatabase PluginDatabase => HowLongToBeat.PluginDatabase;
         private UserViewDataContext UserViewDataContext { get; set; } = new UserViewDataContext();
 
         private bool PlayniteDataFilter(object item)
         {
-            return (!(bool)PART_FilteredGames.IsChecked || API.Instance.MainView.FilteredGames.Find(y => y.Id == (item as PlayniteData).GameContext.Id) != null)
-                && (!(bool)PART_HidePlayedGames.IsChecked || (item as PlayniteData).Playtime == 0);
+            PlayniteData data = item as PlayniteData;
+            if (data?.GameContext == null)
+            {
+                return false;
+            }
+
+            Game game = data.GameContext;
+
+            if (PART_FilteredGames.IsChecked == true
+                && API.Instance.MainView.FilteredGames.Find(y => y.Id == game.Id) == null)
+            {
+                return false;
+            }
+
+            if (PART_HidePlayedGames.IsChecked == true && data.Playtime != 0)
+            {
+                return false;
+            }
+
+            if (PART_OnlyInstalledGames.IsChecked == true && !game.IsInstalled)
+            {
+                return false;
+            }
+
+            string platformFilter = PART_CbPlaynitePlatform?.SelectedItem?.ToString();
+            if (!platformFilter.IsNullOrEmpty() && !platformFilter.IsEqual(FilterSettings.HltbListStatusAll))
+            {
+                if (game.Platforms == null
+                    || !game.Platforms.Any(p => p != null && !p.Name.IsNullOrEmpty() && p.Name.IsEqual(platformFilter)))
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         private void ApplyThemeResources()
@@ -639,6 +673,10 @@ namespace HowLongToBeat.Views
                 CollectionView view = (CollectionView)CollectionViewSource.GetDefaultView(ListViewDataGames.ItemsSource);
                 view.Filter = PlayniteDataFilter;
 
+                PluginDatabase.PluginSettings.filterSettings.EnsureNestedFilters();
+                string savedPlatform = PluginDatabase.PluginSettings.filterSettings.PlayniteData.Platform;
+                RefreshPlaynitePlatformFilterCombo(savedPlatform);
+
                 CollectionViewSource.GetDefaultView(ListViewDataGames.ItemsSource).Refresh();
                 ListViewDataGames.Sorting();
             }
@@ -656,9 +694,7 @@ namespace HowLongToBeat.Views
         {
             if (((FrameworkElement)sender).Visibility == Visibility.Visible && DisplayFirst)
             {
-                PART_FilteredGames.IsChecked = PluginDatabase.PluginSettings.filterSettings.UsedFilteredGames;
-                PART_HidePlayedGames.IsChecked = PluginDatabase.PluginSettings.filterSettings.OnlyNotPlayedGames;
-
+                ApplyPlayniteDataFiltersFromSettings(PluginDatabase.PluginSettings.filterSettings);
                 SetPlayniteData();
                 DisplayFirst = false;
             }
@@ -774,15 +810,19 @@ namespace HowLongToBeat.Views
                 return;
             }
 
-            SelectComboBoxValue(PART_CbYear, filterSettings.Year);
-            SelectComboBoxValue(PART_CbStorefront, filterSettings.Storefront);
-            SelectComboBoxValue(PART_CbPlatform, filterSettings.Platform);
+            filterSettings.EnsureNestedFilters();
+            UserDataFilterSettings userData = filterSettings.UserData;
 
-            PART_NameSearch.Text = filterSettings.NameSearch ?? string.Empty;
-            PART_Replays.IsChecked = filterSettings.OnlyReplays;
-            PART_IncludesDlc.IsChecked = filterSettings.OnlyIncludesDlc;
-            PART_OnlyNotPlayed.IsChecked = filterSettings.OnlyNotPlayed;
-            SelectHltbListStatusFilter(filterSettings.HltbListStatus);
+            SelectComboBoxValue(PART_CbYear, userData.Year);
+            SelectComboBoxValue(PART_CbStorefront, userData.Storefront);
+            SelectComboBoxValue(PART_CbPlatform, userData.Platform);
+
+            PART_NameSearch.Text = userData.NameSearch ?? string.Empty;
+            PART_Replays.IsChecked = userData.OnlyReplays;
+            PART_IncludesDlc.IsChecked = userData.OnlyIncludesDlc;
+            PART_OnlyNotPlayed.IsChecked = userData.OnlyNotPlayed;
+            PART_OnlyInstalled.IsChecked = userData.OnlyInstalled;
+            SelectHltbListStatusFilter(userData.HltbListStatus);
 
             ApplyTitleListSort(filterSettings);
             FilterData(PART_NameSearch.Text, PART_CbYear.Text, PART_CbStorefront.Text, PART_CbPlatform.Text);
@@ -814,22 +854,74 @@ namespace HowLongToBeat.Views
 
         private void ApplyPlayniteDataFiltersFromSettings(FilterSettings filterSettings)
         {
-            if (filterSettings == null || PART_FilteredGames == null || PART_HidePlayedGames == null)
+            if (filterSettings == null || PART_FilteredGames == null || PART_HidePlayedGames == null || PART_OnlyInstalledGames == null)
             {
                 return;
             }
 
-            PART_FilteredGames.IsChecked = filterSettings.UsedFilteredGames;
-            PART_HidePlayedGames.IsChecked = filterSettings.OnlyNotPlayedGames;
+            filterSettings.EnsureNestedFilters();
+            PlayniteDataFilterSettings playniteData = filterSettings.PlayniteData;
 
-            if (ListViewDataGames?.ItemsSource == null)
+            PART_FilteredGames.IsChecked = playniteData.UsedFilteredGames;
+            PART_HidePlayedGames.IsChecked = playniteData.OnlyNotPlayed;
+            PART_OnlyInstalledGames.IsChecked = playniteData.OnlyInstalled;
+
+            if (ListViewDataGames?.ItemsSource != null)
+            {
+                RefreshPlaynitePlatformFilterCombo(playniteData.Platform);
+                CollectionView view = (CollectionView)CollectionViewSource.GetDefaultView(ListViewDataGames.ItemsSource);
+                view?.Refresh();
+                ListViewDataGames.Sorting();
+            }
+            else if (PART_CbPlaynitePlatform != null)
+            {
+                RefreshPlaynitePlatformFilterCombo(playniteData.Platform);
+            }
+        }
+
+        private void RefreshPlaynitePlatformFilterCombo(string selectedPlatform)
+        {
+            if (PART_CbPlaynitePlatform == null)
             {
                 return;
             }
 
-            CollectionView view = (CollectionView)CollectionViewSource.GetDefaultView(ListViewDataGames.ItemsSource);
-            view?.Refresh();
-            ListViewDataGames.Sorting();
+            _suppressPlaynitePlatformFilterEvents = true;
+            try
+            {
+                List<string> listPlatform = new List<string>();
+                if (ListViewDataGames?.ItemsSource != null)
+                {
+                    foreach (PlayniteData row in ListViewDataGames.ItemsSource.OfType<PlayniteData>())
+                    {
+                        if (row?.GameContext?.Platforms == null)
+                        {
+                            continue;
+                        }
+
+                        foreach (Platform platform in row.GameContext.Platforms)
+                        {
+                            if (platform != null && !platform.Name.IsNullOrEmpty())
+                            {
+                                listPlatform.AddMissing(platform.Name);
+                            }
+                        }
+                    }
+                }
+
+                listPlatform.AddMissing(FilterSettings.HltbListStatusAll);
+                listPlatform = listPlatform.OrderBy(x => x).ToList();
+
+                PART_CbPlaynitePlatform.ItemsSource = null;
+                PART_CbPlaynitePlatform.ItemsSource = listPlatform;
+                SelectComboBoxValue(
+                    PART_CbPlaynitePlatform,
+                    selectedPlatform.IsNullOrEmpty() ? FilterSettings.HltbListStatusAll : selectedPlatform);
+            }
+            finally
+            {
+                _suppressPlaynitePlatformFilterEvents = false;
+            }
         }
 
         private static string GetSortingDataName(TitleListSort titleListSort)
@@ -893,8 +985,11 @@ namespace HowLongToBeat.Views
                 return;
             }
 
-            ListViewGames.SortingDefaultDataName = GetSortingDataName(filterSettings.TitleListSort);
-            ListViewGames.SortingSortDirection = filterSettings.IsAsc ? ListSortDirection.Ascending : ListSortDirection.Descending;
+            filterSettings.EnsureNestedFilters();
+            UserDataFilterSettings userData = filterSettings.UserData;
+
+            ListViewGames.SortingDefaultDataName = GetSortingDataName(userData.TitleListSort);
+            ListViewGames.SortingSortDirection = userData.IsAsc ? ListSortDirection.Ascending : ListSortDirection.Descending;
             ListViewGames.ApplyConfiguredSort();
         }
 
@@ -1057,6 +1152,13 @@ namespace HowLongToBeat.Views
                 UserViewDataContext.ItemsSource = UserViewDataContext.ItemsSource.Where(x => x.CurrentTime == 0).ToObservable();
             }
 
+            if ((bool)PART_OnlyInstalled.IsChecked)
+            {
+                UserViewDataContext.ItemsSource = UserViewDataContext.ItemsSource
+                    .Where(IsTitleLinkedAndInstalled)
+                    .ToObservable();
+            }
+
             string hltbListStatus = GetSelectedHltbListStatusFilter();
             if (!hltbListStatus.IsEqual(FilterSettings.HltbListStatusAll))
             {
@@ -1066,6 +1168,21 @@ namespace HowLongToBeat.Views
             }
 
             ListViewGames.Sorting();
+        }
+
+        /// <summary>
+        /// Returns true when the HLTB title is linked to an installed Playnite game.
+        /// Titles without a resolved Playnite link are excluded.
+        /// </summary>
+        private static bool IsTitleLinkedAndInstalled(TitleList title)
+        {
+            if (title == null || !title.GameExist)
+            {
+                return false;
+            }
+
+            Game game = API.Instance.Database.Games.Get(title.GameId);
+            return game != null && game.IsInstalled;
         }
 
         #endregion
@@ -1111,6 +1228,21 @@ namespace HowLongToBeat.Views
             SetPlayniteData();
         }
 
+        private void PART_OnlyInstalledGames_Click(object sender, RoutedEventArgs e)
+        {
+            SetPlayniteData();
+        }
+
+        private void PART_CbPlaynitePlatform_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (_suppressPlaynitePlatformFilterEvents || ListViewDataGames?.ItemsSource == null)
+            {
+                return;
+            }
+
+            SetPlayniteData();
+        }
+
 
         private void ClearFilter1_Click(object sender, RoutedEventArgs e)
         {
@@ -1126,25 +1258,33 @@ namespace HowLongToBeat.Views
         private void SaveFilterSettings()
         {
             FilterSettings filterSettings = PluginDatabase.PluginSettings.filterSettings;
+            filterSettings.EnsureNestedFilters();
 
-            filterSettings.NameSearch = PART_NameSearch.Text ?? string.Empty;
-            filterSettings.Year = PART_CbYear.SelectedItem?.ToString() ?? "----";
-            filterSettings.Storefront = PART_CbStorefront.SelectedItem?.ToString() ?? "----";
-            filterSettings.Platform = PART_CbPlatform.SelectedItem?.ToString() ?? "----";
-            filterSettings.HltbListStatus = GetSelectedHltbListStatusFilter();
-            filterSettings.OnlyReplays = PART_Replays.IsChecked == true;
-            filterSettings.OnlyIncludesDlc = PART_IncludesDlc.IsChecked == true;
-            filterSettings.OnlyNotPlayed = PART_OnlyNotPlayed.IsChecked == true;
+            UserDataFilterSettings userData = filterSettings.UserData;
+            userData.NameSearch = PART_NameSearch.Text ?? string.Empty;
+            userData.Year = PART_CbYear.SelectedItem?.ToString() ?? "----";
+            userData.Storefront = PART_CbStorefront.SelectedItem?.ToString() ?? "----";
+            userData.Platform = PART_CbPlatform.SelectedItem?.ToString() ?? "----";
+            userData.HltbListStatus = GetSelectedHltbListStatusFilter();
+            userData.OnlyReplays = PART_Replays.IsChecked == true;
+            userData.OnlyIncludesDlc = PART_IncludesDlc.IsChecked == true;
+            userData.OnlyNotPlayed = PART_OnlyNotPlayed.IsChecked == true;
+            userData.OnlyInstalled = PART_OnlyInstalled.IsChecked == true;
 
             TitleListSort sort;
             bool isAsc;
             GetCurrentTitleListSort(out sort, out isAsc);
-            filterSettings.TitleListSort = sort;
-            filterSettings.IsAsc = isAsc;
+            userData.TitleListSort = sort;
+            userData.IsAsc = isAsc;
 
-            filterSettings.UsedFilteredGames = PART_FilteredGames.IsChecked == true;
-            filterSettings.OnlyNotPlayedGames = PART_HidePlayedGames.IsChecked == true;
+            PlayniteDataFilterSettings playniteData = filterSettings.PlayniteData;
+            playniteData.UsedFilteredGames = PART_FilteredGames.IsChecked == true;
+            playniteData.OnlyNotPlayed = PART_HidePlayedGames.IsChecked == true;
+            playniteData.OnlyInstalled = PART_OnlyInstalledGames.IsChecked == true;
+            playniteData.Platform = PART_CbPlaynitePlatform.SelectedItem?.ToString() ?? FilterSettings.HltbListStatusAll;
+
             filterSettings.LegacySortMigrated = true;
+            filterSettings.NestedFiltersMigrated = true;
 
             Plugin.SavePluginSettings(PluginDatabase.PluginSettings);
         }

@@ -226,6 +226,7 @@
       <DependentUpon>TransfertData.xaml</DependentUpon>
     </Compile>
     <Compile Include="Services\AsyncTokenBucketRateLimiter.cs" />
+    <Compile Include="Services\FilterSettingsNestedMigration.cs" />
     <Compile Include="Services\GameNameAliases.cs" />
     <Compile Include="Services\HowLongToBeatDatabase.cs" />
     <Compile Include="Services\HowLongToBeatExport.cs" />

@@ -327,8 +327,13 @@ namespace HowLongToBeat
                     Common.LogError(ex, false, true, PluginDatabase.PluginName);
                 }
 
+                // TMP: migrate flat filterSettings from config.json into nested UserData/PlayniteData; remove with FilterSettingsNestedMigration.
                 try
                 {
+                    if (FilterSettingsNestedMigration.TryMigrateFromLegacyFlatConfig(PluginDatabase.PluginSettings, GetPluginUserDataPath()))
+                    {
+                        SavePluginSettings(PluginDatabase.PluginSettings);
+                    }
                 }
                 catch (Exception ex)
                 {

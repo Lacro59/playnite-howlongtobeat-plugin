@@ -346,7 +346,7 @@ namespace HowLongToBeat
         public FilterSettings filterSettings { get; set; } = new FilterSettings();
 
         /// <summary>
-        /// Copies legacy root-level list sort settings into <see cref="filterSettings"/> once.
+        /// Copies legacy root-level list sort settings into <see cref="filterSettings"/>.<see cref="FilterSettings.UserData"/> once.
         /// </summary>
         /// <returns>True when migration was applied.</returns>
         public bool MigrateLegacyFilterSortSettings()
@@ -356,13 +356,15 @@ namespace HowLongToBeat
                 filterSettings = new FilterSettings();
             }
 
+            filterSettings.EnsureNestedFilters();
+
             if (filterSettings.LegacySortMigrated)
             {
                 return false;
             }
 
-            filterSettings.TitleListSort = TitleListSort;
-            filterSettings.IsAsc = IsAsc;
+            filterSettings.UserData.TitleListSort = TitleListSort;
+            filterSettings.UserData.IsAsc = IsAsc;
             filterSettings.LegacySortMigrated = true;
             return true;
         }
@@ -539,7 +541,8 @@ namespace HowLongToBeat
             // LoadPluginSettings returns null if not saved data is available.
             Settings = savedSettings ?? new HowLongToBeatSettings();
 
-            if (Settings.MigrateLegacyFilterSortSettings()
+            if (FilterSettingsNestedMigration.TryMigrateFromLegacyFlatConfig(Settings, plugin.GetPluginUserDataPath())
+                || Settings.MigrateLegacyFilterSortSettings()
                 || Settings.SyncStorefrontElementsFromLegacy()
                 || Settings.MigrateLegacyToHltbListSyncOptions())
             {
