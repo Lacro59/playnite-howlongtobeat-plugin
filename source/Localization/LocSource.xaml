@@ -8,7 +8,7 @@
     <!-- HowLongToBeatSettingsView -->
 
     <sys:String x:Key="LOCHltbSettingsCategoryGeneral">General</sys:String>
-    <sys:String x:Key="LOCHltbSettingsCategorySync">Synchronization</sys:String>
+    <sys:String x:Key="LOCHltbSettingsCategorySync">HowLongToBeat</sys:String>
     <sys:String x:Key="LOCHltbSettingsCategoryData">Data</sys:String>
     <sys:String x:Key="LOCHltbSettingsCategoryDisplay">Appearance</sys:String>
     <sys:String x:Key="LOCHltbSettingsCategoryMapping">Mapping</sys:String>
@@ -16,6 +16,9 @@
     <sys:String x:Key="LOCHltbSettingsNavSyncPlaytime">Playtime</sys:String>
     <sys:String x:Key="LOCHltbSettingsNavSyncStatus">Status</sys:String>
     <sys:String x:Key="LOCHltbSettingsNavDataPreferences">Data preferences</sys:String>
+    <sys:String x:Key="LOCHltbSettingsNavDataCommon">Common</sys:String>
+    <sys:String x:Key="LOCHltbSettingsNavDataHowLongToBeat">HowLongToBeat</sys:String>
+    <sys:String x:Key="LOCHltbSettingsNavDataVndb">VNDB</sys:String>
     <sys:String x:Key="LOCHltbSettingsNavDataTags">Tags</sys:String>
     <sys:String x:Key="LOCHltbSettingsNavDisplayNavigation">Title bar and sidebar</sys:String>
     <sys:String x:Key="LOCHltbSettingsNavDisplayControls">Controls</sys:String>
@@ -105,6 +108,10 @@
     <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltbNotification">HowLongToBeat sync for {0}: status sent, playtime {1}, completion date {2}.</sys:String>
     
     <sys:String x:Key="LOCHowLongToBeatAutoData">Game data download</sys:String>
+    <sys:String x:Key="LOCHltbDefaultDataProvider">Default data provider</sys:String>
+    <sys:String x:Key="LOCHltbDataProviderHowLongToBeat">HowLongToBeat</sys:String>
+    <sys:String x:Key="LOCHltbDataProviderVndb">VNDB</sys:String>
+    <sys:String x:Key="LOCHltbDefaultVndbSpeed">Default VNDB speed</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoAccept">Automatically select game when only one game is found during search</sys:String>
     <sys:String x:Key="LOCHowLongToBeatShowWhenMismatch">Show game selection list when more than one game is found during search</sys:String>
     <sys:String x:Key="LOCHowLongToBeatUseMatchValue">Use a percent match</sys:String>

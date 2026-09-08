@@ -56,9 +56,15 @@ namespace HowLongToBeat.Views
 
             if (PART_VndbSpeedType.Items.Count > 0)
             {
-                // Default VNDB speed corresponds to the current global data type selection.
-                var initialType = lbSelectable.Tag is DataType dt ? dt : DataType.Average;
-                SelectVndbSpeedByDataType(initialType);
+                DataType vndbSpeed = PluginDatabase.PluginSettings != null
+                    ? PluginDatabase.PluginSettings.GetResolvedDefaultVndbSpeed()
+                    : DataType.Average;
+                SelectVndbSpeedByDataType(vndbSpeed);
+            }
+
+            if (PluginDatabase.PluginSettings?.DefaultDataProvider == DataProvider.Vndb)
+            {
+                PART_Vndb.IsChecked = true;
             }
 
             if (data == null)

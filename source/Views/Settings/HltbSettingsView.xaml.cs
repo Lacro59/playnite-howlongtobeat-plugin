@@ -159,13 +159,17 @@ namespace HowLongToBeat.Views
             var items = new List<HltbSettingsNavigationItem>
             {
                 new HltbSettingsNavigationItem(
-                    "data-preferences",
-                    GetLoc("LOCHltbSettingsNavDataPreferences"),
+                    "data-common",
+                    GetLoc("LOCHltbSettingsNavDataCommon"),
+                    viewFactory: CreateDataDatabaseSection),
+                new HltbSettingsNavigationItem(
+                    "data-howlongtobeat",
+                    GetLoc("LOCHltbSettingsNavDataHowLongToBeat"),
                     viewFactory: () => new HltbDataPreferencesSettingsSection()),
                 new HltbSettingsNavigationItem(
-                    "data-database",
-                    GetLoc("LOCCommonDatabase"),
-                    viewFactory: CreateDataDatabaseSection),
+                    "data-vndb",
+                    GetLoc("LOCHltbSettingsNavDataVndb"),
+                    viewFactory: () => new HltbDataVndbSettingsSection()),
                 new HltbSettingsNavigationItem(
                     "data-export",
                     GetLoc("LOCHowLongToBeatExport"),

@@ -270,6 +270,12 @@ namespace HowLongToBeat.Services
                 return;
             }
 
+            if (PluginSettings != null && PluginSettings.DefaultDataProvider == DataProvider.Vndb)
+            {
+                TryAddDataFromVndb(game, gameHowLongToBeat);
+                return;
+            }
+
             if (HowLongToBeatApi == null)
             {
                 Logger.Warn("HowLongToBeatApi not initialized yet; cannot perform AddData");
@@ -383,6 +389,98 @@ namespace HowLongToBeat.Services
                     return;
                 }
             }
+        }
+
+        /// <summary>
+        /// Imports plugin data from VNDB using the same accept / mismatch settings as the HowLongToBeat path.
+        /// </summary>
+        private void TryAddDataFromVndb(Game game, GameHowLongToBeat gameHowLongToBeat)
+        {
+            if (game == null || gameHowLongToBeat == null)
+            {
+                return;
+            }
+
+            try
+            {
+                string searchName = game.Name ?? string.Empty;
+                try
+                {
+                    string aliased = GameNameAliases.ApplyAlias(searchName, PluginSettings, Plugin?.GetPluginUserDataPath());
+                    if (!string.IsNullOrEmpty(aliased) && !aliased.IsEqual(searchName))
+                    {
+                        Common.LogDebug($"VNDB aliases: '{searchName}' -> '{aliased}'");
+                        searchName = aliased;
+                    }
+                }
+                catch
+                {
+                }
+
+                List<HltbSearch> data = TaskHelpers.RunSyncWithTimeout(() => VndbApi.SearchByNameAsync(searchName), 15000) ?? new List<HltbSearch>();
+                if (data.Count == 0)
+                {
+                    LogVerbose($"VNDB AddData: no results for '{searchName}'");
+                    return;
+                }
+
+                DataType vndbSpeed = GetDefaultVndbSpeedDataType();
+
+                if (data.Count == 1 && PluginSettings.AutoAccept)
+                {
+                    CommitVndbAdd(gameHowLongToBeat, data.First().Data, vndbSpeed);
+                    return;
+                }
+
+                if (data.Count > 0 && PluginSettings.UseMatchValue)
+                {
+                    if (data.First().MatchPercent >= PluginSettings.MatchValue)
+                    {
+                        CommitVndbAdd(gameHowLongToBeat, data.First().Data, vndbSpeed);
+                        return;
+                    }
+                }
+
+                if (data.Count > 0 && PluginSettings.ShowWhenMismatch && HowLongToBeatApi != null)
+                {
+                    var picked = HowLongToBeatApi.SearchData(game, data.Select(x => x.Data).ToList());
+                    if (picked != null)
+                    {
+                        picked.DateLastRefresh = DateTime.Now;
+                        AddOrUpdate(picked);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, false, true, PluginName);
+            }
+        }
+
+        private void CommitVndbAdd(GameHowLongToBeat gameHowLongToBeat, HltbDataUser item, DataType vndbSpeed)
+        {
+            if (gameHowLongToBeat == null || item == null)
+            {
+                return;
+            }
+
+            item.ApplyVndbSpeedSelection(vndbSpeed);
+            gameHowLongToBeat.Items = new List<HltbDataUser> { item };
+            gameHowLongToBeat.DateLastRefresh = DateTime.Now;
+            AddOrUpdate(gameHowLongToBeat);
+        }
+
+        /// <summary>
+        /// Resolves the VNDB reading-speed row from <see cref="HowLongToBeatSettings.DefaultVndbSpeed"/> (default Normal / Average).
+        /// </summary>
+        private DataType GetDefaultVndbSpeedDataType()
+        {
+            if (PluginSettings == null)
+            {
+                return DataType.Average;
+            }
+
+            return PluginSettings.GetResolvedDefaultVndbSpeed();
         }
 
         public override void RefreshNoLoader(Guid id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))

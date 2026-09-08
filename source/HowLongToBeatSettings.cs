@@ -41,6 +41,34 @@ namespace HowLongToBeat
         public bool UseMatchValue { get; set; } = false;
         public double MatchValue { get; set; } = 95;
 
+        /// <summary>
+        /// Default data source for mass download and the selection dialog (HowLongToBeat or VNDB).
+        /// </summary>
+        public DataProvider DefaultDataProvider { get; set; } = DataProvider.HowLongToBeat;
+
+        /// <summary>
+        /// Default VNDB reading-speed row for mass import and the selection dialog
+        /// (Classic=Slow, Average=Normal, Median=Fast, Rushed=Total). Independent of <see cref="UseHtltbClassic"/> and related HLTB toggles.
+        /// </summary>
+        public DataType DefaultVndbSpeed { get; set; } = DataType.Average;
+
+        /// <summary>
+        /// Returns <see cref="DefaultVndbSpeed"/> when it maps to a VNDB vote row; otherwise Average (Normal).
+        /// </summary>
+        /// <returns>Classic, Average, Median, or Rushed.</returns>
+        public DataType GetResolvedDefaultVndbSpeed()
+        {
+            switch (DefaultVndbSpeed)
+            {
+                case DataType.Classic:
+                case DataType.Average:
+                case DataType.Median:
+                case DataType.Rushed:
+                    return DefaultVndbSpeed;
+                default:
+                    return DataType.Average;
+            }
+        }
 
         public bool UseHtltbClassic { get; set; } = true;
         public bool UseHtltbAverage { get; set; } = false;

@@ -5,7 +5,7 @@ using System.Windows.Controls;
 namespace HowLongToBeat.Views
 {
     /// <summary>
-    /// Settings section for local HLTB database import / clear actions.
+    /// Settings section for shared data options: default provider, matching, and local database actions.
     /// </summary>
     public partial class HltbDataDatabaseSettingsSection : UserControl
     {

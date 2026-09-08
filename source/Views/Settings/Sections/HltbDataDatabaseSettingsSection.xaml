@@ -3,12 +3,40 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
              xmlns:HowLongToBeat="clr-namespace:HowLongToBeat"
+             xmlns:hlte="clr-namespace:HowLongToBeat.Models.Enumerations"
+             xmlns:converters1="clr-namespace:CommonPlayniteShared.Converters"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance HowLongToBeat:HowLongToBeatSettingsViewModel}">
     <ScrollViewer VerticalScrollBarVisibility="Auto"
                   PanningMode="VerticalOnly">
         <StackPanel>
+            <StackPanel Orientation="Horizontal"
+                        Margin="0,0,0,8">
+                <TextBlock Style="{DynamicResource ViewColumnLabelText}"
+                           Margin="0,0,10,0"
+                           VerticalAlignment="Center"
+                           Text="{DynamicResource LOCHltbDefaultDataProvider}"/>
+
+                <ComboBox SelectedValue="{Binding Settings.DefaultDataProvider}"
+                          VerticalAlignment="Center"
+                          MinWidth="160">
+                    <ComboBox.ItemsSource>
+                        <x:Array Type="{x:Type sys:Enum}">
+                            <hlte:DataProvider>HowLongToBeat</hlte:DataProvider>
+                            <hlte:DataProvider>Vndb</hlte:DataProvider>
+                        </x:Array>
+                    </ComboBox.ItemsSource>
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Style="{DynamicResource BaseTextBlockStyle}"
+                                       Text="{Binding Converter={converters1:ObjectToStringConverter}}"/>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+            </StackPanel>
+
             <CheckBox Name="cbAutoImport"
                       IsChecked="{Binding Settings.AutoImport}"
                       Content="{DynamicResource LOCCommonAutoImport}"/>

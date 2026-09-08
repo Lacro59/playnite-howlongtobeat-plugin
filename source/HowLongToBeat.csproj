@@ -141,6 +141,7 @@
     <Compile Include="Models\Api\UserGamesList.cs" />
     <Compile Include="Models\Api\UserGamesListParam.cs" />
     <Compile Include="Models\Enumerations\DataType.cs" />
+    <Compile Include="Models\Enumerations\DataProvider.cs" />
     <Compile Include="Models\Enumerations\GameType.cs" />
     <Compile Include="Models\Enumerations\HltbPlatform.cs" />
     <Compile Include="Models\Enumerations\HltbStorefront.cs" />
@@ -274,6 +275,9 @@
     </Compile>
     <Compile Include="Views\Settings\Sections\HltbDataDatabaseSettingsSection.xaml.cs">
       <DependentUpon>HltbDataDatabaseSettingsSection.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Settings\Sections\HltbDataVndbSettingsSection.xaml.cs">
+      <DependentUpon>HltbDataVndbSettingsSection.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Settings\Sections\HltbDataExportSettingsSection.xaml.cs">
       <DependentUpon>HltbDataExportSettingsSection.xaml</DependentUpon>
@@ -648,6 +652,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Settings\Sections\HltbDataDatabaseSettingsSection.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Settings\Sections\HltbDataVndbSettingsSection.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
