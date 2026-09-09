@@ -568,6 +568,8 @@ namespace HowLongToBeat.Views
                     List<TitleList> titleLists = PluginDatabase.UserHltbData.TitlesList;
 
                     if (cancellationToken.IsCancellationRequested) return;
+                    PluginDatabase.LogUserDataTimeToBeatCoverage(titleLists);
+
                     var completionsCount = titleLists.Count(x => x.GameStatuses.Any(y => y.Status == StatusType.Completed)).ToString();
 
                     long timeSinglePlayer = 0;

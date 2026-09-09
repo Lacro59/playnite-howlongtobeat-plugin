@@ -563,6 +563,14 @@ namespace HowLongToBeat.Services
             ActionAfterRefresh(loadedItem);
         }
 
+        /// <summary>
+        /// Resolves a Playnite game id linked to a HowLongToBeat title.
+        /// Prefers an exact <paramref name="userGameId"/> match, then a cache entry without UserGameId,
+        /// then any non-hidden game with the same HLTB id (community data is per HLTB game).
+        /// </summary>
+        /// <param name="hltbId">HowLongToBeat game id.</param>
+        /// <param name="userGameId">Optional HLTB user submission id.</param>
+        /// <returns>Playnite game id, or <c>default</c> when none found.</returns>
         public Guid ResolveGameIdFromUserTitle(string hltbId, string userGameId = "")
         {
             try
@@ -572,13 +580,41 @@ namespace HowLongToBeat.Services
                     return default;
                 }
 
-                return GetAllCache()
+                List<GameHowLongToBeat> candidates = GetAllCache()
                     .Where(x => x?.Game != null
                         && !x.Game.Hidden
-                        && x.GetData()?.Id == hltbId
-                        && (x.UserGameId.IsNullOrEmpty() || x.UserGameId.IsEqual(userGameId)))
-                    .Select(x => x.Id)
-                    .FirstOrDefault();
+                        && x.GetData()?.Id == hltbId)
+                    .ToList();
+
+                if (candidates.Count == 0)
+                {
+                    return default;
+                }
+
+                if (!userGameId.IsNullOrEmpty())
+                {
+                    GameHowLongToBeat exact = candidates.FirstOrDefault(x => x.UserGameId.IsEqual(userGameId));
+                    if (exact != null)
+                    {
+                        return exact.Id;
+                    }
+                }
+
+                GameHowLongToBeat withTime = PreferCommunityTime(candidates.Where(x => x.UserGameId.IsNullOrEmpty()));
+                if (withTime != null)
+                {
+                    return withTime.Id;
+                }
+
+                withTime = PreferCommunityTime(candidates);
+                if (withTime != null)
+                {
+                    // Unusual path: UserGameId mismatch — log once-style detail only when verbose (binding may call repeatedly).
+                    LogVerbose($"[UserDataTTB] ResolveGameId: path=hltbId-fallback hltbId={hltbId} userGameId={userGameId} playniteId={withTime.Id} game='{withTime.Game?.Name}' cacheUserGameId={withTime.UserGameId} ttb={withTime.GetData()?.GameHltbData?.TimeToBeat ?? 0} candidates={candidates.Count}");
+                    return withTime.Id;
+                }
+
+                return default;
             }
             catch (Exception ex)
             {
@@ -587,6 +623,12 @@ namespace HowLongToBeat.Services
             }
         }
 
+        /// <summary>
+        /// Resolves all Playnite game ids linked to a HowLongToBeat title id (any submission).
+        /// </summary>
+        /// <param name="hltbId">HowLongToBeat game id.</param>
+        /// <param name="userGameId">Unused; kept for call-site compatibility.</param>
+        /// <returns>Matching Playnite game ids (may be empty).</returns>
         public List<Guid> ResolveGameIdsFromUserTitle(string hltbId, string userGameId = "")
         {
             try
@@ -596,18 +638,180 @@ namespace HowLongToBeat.Services
                     return new List<Guid>();
                 }
 
-                return GetAllCache()
-                    .Where(x => x != null
-                        && x.GetData()?.Id == hltbId
-                        && (x.UserGameId.IsNullOrEmpty() || x.UserGameId.IsEqual(userGameId)))
+                List<Guid> ids = GetAllCache()
+                    .Where(x => x?.Game != null
+                        && !x.Game.Hidden
+                        && x.GetData()?.Id == hltbId)
                     .Select(x => x.Id)
+                    .Distinct()
                     .ToList();
+
+                return ids;
             }
             catch (Exception ex)
             {
                 Common.LogError(ex, false, true, PluginName);
                 return new List<Guid>();
             }
+        }
+
+        /// <summary>
+        /// Finds community HowLongToBeat timing data in the plugin cache for an HLTB game id,
+        /// even when no Playnite game link or UserGameId match exists.
+        /// </summary>
+        /// <param name="hltbId">HowLongToBeat game id.</param>
+        /// <returns>Community <see cref="HltbData"/>, or <c>null</c>.</returns>
+        public HltbData FindCachedCommunityHltbData(string hltbId)
+        {
+            try
+            {
+                if (hltbId.IsNullOrEmpty())
+                {
+                    return null;
+                }
+
+                List<HltbData> matches = GetAllCache()
+                    .Where(x => x != null && x.GetData()?.Id == hltbId && x.GetData()?.GameHltbData != null)
+                    .Select(x => x.GetData().GameHltbData)
+                    .ToList();
+
+                if (matches.Count == 0)
+                {
+                    return null;
+                }
+
+                HltbData withTime = matches.FirstOrDefault(d => d.TimeToBeat > 0);
+                return withTime ?? matches.First();
+            }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, false, true, PluginName);
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Logs User Data Time to Beat coverage once (Info summary; Warn when titles lack community data).
+        /// Safe to call after loading or refreshing the user titles list — not on every ListView bind.
+        /// </summary>
+        /// <param name="titles">User profile titles to inspect.</param>
+        public void LogUserDataTimeToBeatCoverage(IList<TitleList> titles)
+        {
+            try
+            {
+                if (titles == null || titles.Count == 0)
+                {
+                    Logger.Info("[UserDataTTB] Coverage: no User Data titles to inspect");
+                    return;
+                }
+
+                Dictionary<string, List<GameHowLongToBeat>> cacheByHltbId = GetAllCache()
+                    .Where(x => x != null && !string.IsNullOrEmpty(x.GetData()?.Id))
+                    .GroupBy(x => x.GetData().Id)
+                    .ToDictionary(g => g.Key, g => g.ToList());
+
+                int linkedWithTime = 0;
+                int fallbackByHltbId = 0;
+                int missing = 0;
+                var missingSamples = new List<string>();
+
+                foreach (TitleList title in titles)
+                {
+                    if (title == null || title.Id.IsNullOrEmpty())
+                    {
+                        missing++;
+                        continue;
+                    }
+
+                    List<GameHowLongToBeat> entries;
+                    if (!cacheByHltbId.TryGetValue(title.Id, out entries) || entries == null || entries.Count == 0)
+                    {
+                        missing++;
+                        if (missingSamples.Count < 5)
+                        {
+                            missingSamples.Add(string.Format("'{0}' (hltbId={1})", title.GameName ?? string.Empty, title.Id));
+                        }
+                        continue;
+                    }
+
+                    long bestLinked = 0;
+                    foreach (GameHowLongToBeat entry in entries)
+                    {
+                        if (entry?.Game == null || entry.Game.Hidden)
+                        {
+                            continue;
+                        }
+
+                        long ttb = entry.GetData()?.GameHltbData?.TimeToBeat ?? 0;
+                        if (ttb > bestLinked)
+                        {
+                            bestLinked = ttb;
+                        }
+                    }
+
+                    if (bestLinked > 0)
+                    {
+                        linkedWithTime++;
+                        continue;
+                    }
+
+                    long bestAny = entries
+                        .Select(e => e.GetData()?.GameHltbData?.TimeToBeat ?? 0)
+                        .DefaultIfEmpty(0)
+                        .Max();
+
+                    if (bestAny > 0)
+                    {
+                        fallbackByHltbId++;
+                        continue;
+                    }
+
+                    missing++;
+                    if (missingSamples.Count < 5)
+                    {
+                        missingSamples.Add(string.Format("'{0}' (hltbId={1})", title.GameName ?? string.Empty, title.Id));
+                    }
+                }
+
+                Logger.Info(string.Format(
+                    "[UserDataTTB] Coverage: titles={0}, linkedWithTime={1}, fallbackByHltbId={2}, missing={3}",
+                    titles.Count,
+                    linkedWithTime,
+                    fallbackByHltbId,
+                    missing));
+
+                if (missing > 0)
+                {
+                    string samples = missingSamples.Count > 0
+                        ? string.Join(", ", missingSamples)
+                        : "(no samples)";
+                    Logger.Warn(string.Format(
+                        "[UserDataTTB] {0} User Data title(s) have no community Time to Beat in the plugin cache (column shows --). Samples: {1}",
+                        missing,
+                        samples));
+                }
+
+                if (fallbackByHltbId > 0)
+                {
+                    LogVerbose($"[UserDataTTB] Coverage detail: {fallbackByHltbId} title(s) used HLTB-id cache fallback (no Playnite link with TTB, or UserGameId mismatch)");
+                }
+            }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, false, true, PluginName);
+            }
+        }
+
+        private static GameHowLongToBeat PreferCommunityTime(IEnumerable<GameHowLongToBeat> candidates)
+        {
+            List<GameHowLongToBeat> list = candidates?.Where(x => x != null).ToList();
+            if (list == null || list.Count == 0)
+            {
+                return null;
+            }
+
+            GameHowLongToBeat withTime = list.FirstOrDefault(x => (x.GetData()?.GameHltbData?.TimeToBeat ?? 0) > 0);
+            return withTime ?? list.First();
         }
 
 

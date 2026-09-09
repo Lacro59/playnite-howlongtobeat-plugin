@@ -382,7 +382,7 @@
                                                                                            RefIndex="10"/>
                                             </GridViewColumn>
                                             <GridViewColumn Width="130"
-                                                            DisplayMemberBinding="{Binding TimeToBeat, Converter={StaticResource PlayTimeToStringConverterWithZero}}">
+                                                            DisplayMemberBinding="{Binding TimeToBeatFormat}">
                                                 <GridViewColumnHeader Content="{DynamicResource LOCHowLongToBeatTimeToBeat}"/>
                                             </GridViewColumn>
 

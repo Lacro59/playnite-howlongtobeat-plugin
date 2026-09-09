@@ -45,8 +45,28 @@ namespace HowLongToBeat.Models
         public string Platform { get; set; }
         public string Storefront { get; set; } = string.Empty;
         public long CurrentTime { get; set; }
+
+        /// <summary>
+        /// Community Time to Beat in seconds from plugin cache (linked game, then HLTB id fallback).
+        /// Does not use submitted user times (<see cref="HltbUserData"/>).
+        /// </summary>
         [DontSerialize]
-        public long TimeToBeat => PluginDatabase.Get(GameId, true)?.GetData()?.GameHltbData?.TimeToBeat ?? 0;
+        public long TimeToBeat => ResolveCommunityHltbData()?.TimeToBeat ?? 0;
+
+        /// <summary>
+        /// Formatted community Time to Beat for User Data display.
+        /// Uses <see cref="HltbData.TimeToBeatFormat"/> when plugin data exists; otherwise <c>--</c> (no misleading zero duration).
+        /// </summary>
+        [DontSerialize]
+        public string TimeToBeatFormat
+        {
+            get
+            {
+                HltbData gameHltbData = ResolveCommunityHltbData();
+                return gameHltbData != null ? gameHltbData.TimeToBeatFormat : "--";
+            }
+        }
+
         [DontSerialize]
         public long RemainingTime => TimeToBeat - CurrentTime > 0 ? TimeToBeat - CurrentTime : 0;
         [DontSerialize]
@@ -144,7 +164,9 @@ namespace HowLongToBeat.Models
         [DontSerialize]
         public Guid GameId => PluginDatabase?.ResolveGameIdFromUserTitle(Id, UserGameId) ?? default;
 
-        // TODO
+        /// <summary>
+        /// All Playnite game ids linked to this HLTB title (multi-match). Multi-link display UX is deferred.
+        /// </summary>
         [DontSerialize]
         public List<Guid> GameIds => PluginDatabase?.ResolveGameIdsFromUserTitle(Id, UserGameId) ?? new List<Guid>();
 
@@ -153,6 +175,31 @@ namespace HowLongToBeat.Models
 
         [DontSerialize]
         public bool GameExist => API.Instance.Database.Games.Get(GameId) != null;
+
+        /// <summary>
+        /// Resolves community HLTB timing: linked Playnite game first, then any cache entry for this HLTB id.
+        /// </summary>
+        private HltbData ResolveCommunityHltbData()
+        {
+            if (PluginDatabase == null)
+            {
+                return null;
+            }
+
+            HltbData linked = PluginDatabase.Get(GameId, true)?.GetData()?.GameHltbData;
+            if (linked != null && linked.TimeToBeat > 0)
+            {
+                return linked;
+            }
+
+            HltbData byHltbId = PluginDatabase.FindCachedCommunityHltbData(Id);
+            if (byHltbId != null)
+            {
+                return byHltbId;
+            }
+
+            return linked;
+        }
 
         /// <summary>
         /// Returns whether this user title belongs to the given HowLongToBeat profile list.
