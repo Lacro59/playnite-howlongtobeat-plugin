@@ -164,6 +164,8 @@ This is separate from the Replays list on your profile.</sys:String>
     <sys:String x:Key="LOCHltbRemainingTime">Remaining time</sys:String>
     <sys:String x:Key="LOCHltbColumnHltbLists">HLTB lists</sys:String>
     <sys:String x:Key="LOCHltbColumnProgress">Progress</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatColumnCommunityTooltip">Community time to beat (HowLongToBeat)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatColumnSubmittedTooltip">Time submitted on your HowLongToBeat profile</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatPluginGetUserView">Getting user datas</sys:String>
 

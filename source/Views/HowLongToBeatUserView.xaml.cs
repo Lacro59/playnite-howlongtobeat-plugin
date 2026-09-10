@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -102,12 +103,34 @@ namespace HowLongToBeat.Views
             }
         }
 
+        /// <summary>
+        /// Enables persisted column visibility/order for the User Data list (JSON under plugin user data).
+        /// </summary>
+        private void ConfigureListViewGamesColumnPersistence()
+        {
+            if (ListViewGames == null || Plugin == null)
+            {
+                return;
+            }
+
+            try
+            {
+                ListViewGames.SaveColumnFilePath = Path.Combine(Plugin.GetPluginUserDataPath(), "ListViewColumns.json");
+            }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, false, false, PluginDatabase.PluginName);
+            }
+        }
+
         public HowLongToBeatUserView(HowLongToBeat plugin)
         {
             Plugin = plugin;
 
             InitializeComponent();
             DataContext = UserViewDataContext;
+
+            ConfigureListViewGamesColumnPersistence();
 
             ApplyThemeResources();
 

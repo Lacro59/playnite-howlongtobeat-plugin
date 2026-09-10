@@ -108,7 +108,7 @@ namespace HowLongToBeat.Models
                     return 0;
                 }
 
-                return Math.Min(100, (double)CurrentTime * 100 / TimeToBeat);
+                return (double)CurrentTime * 100 / TimeToBeat;
             }
         }
 
