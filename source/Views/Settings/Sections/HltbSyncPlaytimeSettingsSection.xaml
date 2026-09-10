@@ -37,10 +37,27 @@
                       IsEnabled="{Binding ElementName=PART_AutoSetCurrentPlayTime, Path=IsChecked}"
                       Content="{DynamicResource LOCHowLongToBeatWithoutConfirmation}"/>
 
-            <CheckBox Margin="50,0,0,0"
+            <CheckBox Margin="50,0,0,10"
                       IsChecked="{Binding Settings.EnableSucessNotification}"
                       IsEnabled="{Binding ElementName=PART_AutoSetCurrentPlayTime, Path=IsChecked}"
                       Content="{DynamicResource LOCHowLongToBeatEnableSuccessNotification}"/>
+
+            <Grid Margin="0,0,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="10"/>
+                    <ColumnDefinition Width="auto"/>
+                </Grid.ColumnDefinitions>
+
+                <CheckBox IsChecked="{Binding Settings.AutoSetUserScoreToHltb}"
+                          Content="{DynamicResource LOCHowLongToBeatAutoSetUserScoreToHltb}"/>
+                <TextBlock Grid.Column="2"
+                           Style="{DynamicResource BaseTextBlockStyle}"
+                           FontFamily="{DynamicResource FontIcoFont}"
+                           Text="&#xef19;"
+                           VerticalAlignment="Center"
+                           ToolTip="{DynamicResource LOCHowLongToBeatInfoAutoSetUserScoreToHltb}"/>
+            </Grid>
         </StackPanel>
     </ScrollViewer>
 </UserControl>

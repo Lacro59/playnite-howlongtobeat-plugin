@@ -72,6 +72,8 @@
     <sys:String x:Key="LOCHowLongToBeatAutoSetCurrentPlayTime">Automatically update current playtime on HowLongToBeat after game session</sys:String>
     <sys:String x:Key="LOCHowLongToBeatWithoutConfirmation">Without confirmation message</sys:String>
     <sys:String x:Key="LOCHowLongToBeatEnableSuccessNotification">Enable success notification</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoSetUserScoreToHltb">Also upload Playnite user score as HowLongToBeat review score when submitting playtime</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatInfoAutoSetUserScoreToHltb" xml:space="preserve">When enabled, the Playnite user score (0–100) is sent as the HowLongToBeat review score, rounded to the nearest 5%. An existing HowLongToBeat review score is overwritten. Games without a user score are left unchanged.</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatIgnoreSyncTag">Ignore playtime sync</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIgnoreSyncAdd">Exclude from automatic playtime sync</sys:String>

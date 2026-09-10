@@ -36,6 +36,11 @@ namespace HowLongToBeat
         public bool AutoSetCurrentPlayTimeWithoutConfirmation { get; set; } = true;
         public bool UsedStartDateFromGameActivity { get; set; } = false;
 
+        /// <summary>
+        /// When true, <c>SetCurrentPlayTime</c> overwrites HowLongToBeat review score from Playnite <c>UserScore</c> (rounded to 5%). Default off.
+        /// </summary>
+        public bool AutoSetUserScoreToHltb { get; set; } = false;
+
         public bool AutoAccept { get; set; } = true;
         public bool ShowWhenMismatch { get; set; } = false;
         public bool UseMatchValue { get; set; } = false;

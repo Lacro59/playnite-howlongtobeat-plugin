@@ -229,6 +229,7 @@
     <Compile Include="Services\FilterSettingsNestedMigration.cs" />
     <Compile Include="Services\GameNameAliases.cs" />
     <Compile Include="Services\HowLongToBeatDatabase.cs" />
+    <Compile Include="Services\HltbReviewScoreMapper.cs" />
     <Compile Include="Services\HowLongToBeatExport.cs" />
     <Compile Include="Services\HltbSettingsLibraryExport.cs" />
     <Compile Include="Services\HowLongToBeatSearch.cs" />

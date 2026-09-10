@@ -1812,6 +1812,7 @@ namespace HowLongToBeat.Services
 
         /// <summary>
         /// Submits playtime and list status for a game to HowLongToBeat.
+        /// When <see cref="HowLongToBeatSettings.AutoSetUserScoreToHltb"/> is enabled and the game has a user score, also overwrites <c>Review.Score</c>.
         /// </summary>
         /// <param name="isBacklog">When true, sets <c>Lists.Backlog</c> on the submit payload.</param>
         /// <param name="isReplay">When true, sets <c>Lists.Replay</c> on the submit payload.</param>
@@ -2112,6 +2113,18 @@ namespace HowLongToBeat.Services
                             editData.General.Progress.Hours = time.Hours + (24 * time.Days);
                             editData.General.Progress.Minutes = time.Minutes;
                             editData.General.Progress.Seconds = time.Seconds;
+                        }
+
+                        if (PluginSettings.AutoSetUserScoreToHltb
+                            && HltbReviewScoreMapper.TryMapFromPlayniteUserScore(game.UserScore, out int hltbReviewScore))
+                        {
+                            if (editData.Review == null)
+                            {
+                                editData.Review = new Review();
+                            }
+
+                            editData.Review.Score = hltbReviewScore;
+                            Common.LogDebug($"SetCurrentPlayTime: UserScore {game.UserScore} → Review.Score {hltbReviewScore} for {game.Name}");
                         }
 
                         if (listSyncOptions != null)
