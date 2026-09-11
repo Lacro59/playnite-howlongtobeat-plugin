@@ -15,6 +15,7 @@
 
     <UserControl.Resources>
         <convertersshared:LocalDateConverter x:Key="LocalDateConverter"/>
+        <convertersshared:LocalDateRelativeConverter x:Key="LocalDateRelativeConverter"/>
         <convertersshared:PlayTimeToStringConverterWithZero x:Key="PlayTimeToStringConverterWithZero"/>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
         <converters:InvertedBooleanToVisibilityConverter x:Key="InvertedBooleanToVisibilityConverter"/>
@@ -55,133 +56,13 @@
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
 
-                            <Grid Grid.Row="0"
-                                  Margin="0,10,0,10">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="auto"/>
-                                    <ColumnDefinition Width="10"/>
-                                    <ColumnDefinition Width="auto"/>
-                                    <ColumnDefinition Width="10"/>
-                                    <ColumnDefinition Width="auto"/>
-                                    <ColumnDefinition Width="10"/>
-                                    <ColumnDefinition Width="auto"/>
-                                    <ColumnDefinition Width="10"/>
-                                    <ColumnDefinition Width="auto"/>
-                                    <ColumnDefinition Width="10"/>
-                                    <ColumnDefinition Width="auto"/>
-                                    <ColumnDefinition Width="10"/>
-                                    <ColumnDefinition Width="auto"/>
-                                    <ColumnDefinition Width="10"/>
-                                    <ColumnDefinition Width="auto"/>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="auto"/>
-                                </Grid.ColumnDefinitions>
-
-                                <StackPanel Grid.Column="0"
-                                            Orientation="Horizontal">
-                                    <Label Content="{DynamicResource LOCNameLabel}"
-                                           FontSize="16"
-                                           Margin="0,0,10,0"
-                                           VerticalAlignment="Center"/>
-
-                                    <TextBox TextChanged="TextBox_TextChanged"
-                                             Name="PART_NameSearch"
-                                             Width="150"/>
-                                </StackPanel>
-
-                                <StackPanel Grid.Column="2"
-                                            Orientation="Horizontal">
-                                    <Label Content="{DynamicResource LOCCommonYearLabel}"
-                                           FontSize="16"
-                                           Margin="0,0,10,0"
-                                           VerticalAlignment="Center"/>
-
-                                    <ComboBox Width="70"
-                                              Name="PART_CbYear"
-                                              SelectionChanged="PART_CbYear_SelectionChanged">
-                                        <ComboBox.ItemTemplate>
-                                            <DataTemplate>
-                                                <StackPanel Orientation="Horizontal">
-                                                    <TextBlock Text="{Binding}"/>
-                                                </StackPanel>
-                                            </DataTemplate>
-                                        </ComboBox.ItemTemplate>
-                                    </ComboBox>
-                                </StackPanel>
-
-                                <StackPanel Grid.Column="4"
-                                            Orientation="Horizontal">
-                                    <Label Content="{DynamicResource LOCHowLongToBeatStorefront}"
-                                           FontSize="16"
-                                           Margin="0,0,10,0"
-                                           VerticalAlignment="Center"/>
-
-                                    <ComboBox Width="200"
-                                              Name="PART_CbStorefront"
-                                              SelectionChanged="PART_CbStorefront_SelectionChanged">
-                                        <ComboBox.ItemTemplate>
-                                            <DataTemplate>
-                                                <StackPanel Orientation="Horizontal">
-                                                    <TextBlock Text="{Binding}"/>
-                                                </StackPanel>
-                                            </DataTemplate>
-                                        </ComboBox.ItemTemplate>
-                                    </ComboBox>
-                                </StackPanel>
-
-                                <StackPanel Grid.Column="6"
-                                            Orientation="Horizontal">
-                                    <Label Content="{DynamicResource LOCPlatformTitle}"
-                                           FontSize="16"
-                                           Margin="0,0,10,0"
-                                           VerticalAlignment="Center"/>
-
-                                    <ComboBox Width="200"
-                                              Name="PART_CbPlatform"
-                                              SelectionChanged="PART_CbPlatform_SelectionChanged">
-                                        <ComboBox.ItemTemplate>
-                                            <DataTemplate>
-                                                <StackPanel Orientation="Horizontal">
-                                                    <TextBlock Text="{Binding}"/>
-                                                </StackPanel>
-                                            </DataTemplate>
-                                        </ComboBox.ItemTemplate>
-                                    </ComboBox>
-                                </StackPanel>
-
-                                <StackPanel Grid.Column="8"
-                                            Orientation="Horizontal">
-                                    <Label Content="{DynamicResource LOCHltbFilterHltbListStatus}"
-                                           FontSize="16"
-                                           Margin="0,0,10,0"
-                                           VerticalAlignment="Center"
-                                           ToolTip="{DynamicResource LOCHltbFilterHltbListStatusTooltip}"/>
-
-                                    <ComboBox Width="155"
-                                              Name="PART_CbHltbListStatus"
-                                              ToolTip="{DynamicResource LOCHltbFilterHltbListStatusTooltip}"
-                                              SelectionChanged="PART_CbHltbListStatus_SelectionChanged"/>
-                                </StackPanel>
-
-                                <StackPanel Grid.Column="10"
-                                            Orientation="Horizontal">
-                                    <CheckBox Content="{DynamicResource LOCHltbOnlyReplays}"
-                                              ToolTip="{DynamicResource LOCHltbOnlyReplaysTooltip}"
-                                              Checked="CheckBox_Checked"
-                                              Unchecked="CheckBox_Checked"
-                                              Name="PART_Replays"
-                                              VerticalAlignment="Center"/>
-
-                                    <CheckBox Content="{DynamicResource LOCHltbOnlyNotPlayed}"
-                                              Checked="CheckBox_Checked"
-                                              Unchecked="CheckBox_Checked"
-                                              Name="PART_OnlyNotPlayed"
-                                              VerticalAlignment="Center"
-                                              Margin="10,0,0,0"/>
-                                </StackPanel>
-
-                                <StackPanel Orientation="Horizontal"
-                                            Grid.Column="16">
+                            <DockPanel Grid.Row="0"
+                                       Margin="0,10,0,10"
+                                       LastChildFill="True">
+                                <StackPanel DockPanel.Dock="Right"
+                                            Orientation="Horizontal"
+                                            VerticalAlignment="Top"
+                                            Margin="10,0,0,0">
                                     <Button Content="&#xEEBB;"
                                             FontFamily="{DynamicResource FontIcoFont}"
                                             ToolTip="{DynamicResource LOCCommonDefaultFilters}"
@@ -192,7 +73,126 @@
                                             Click="SavedFilter1_Click"
                                             Margin="10,0,0,0"/>
                                 </StackPanel>
-                            </Grid>
+
+                                <WrapPanel Orientation="Horizontal"
+                                           VerticalAlignment="Center">
+                                    <StackPanel Orientation="Horizontal"
+                                                Margin="0,0,10,4"
+                                                VerticalAlignment="Center">
+                                        <Label Content="{DynamicResource LOCNameLabel}"
+                                               FontSize="{DynamicResource FontSizeLarge}"
+                                               Margin="0,0,10,0"
+                                               VerticalAlignment="Center"/>
+                                        <TextBox TextChanged="TextBox_TextChanged"
+                                                 Name="PART_NameSearch"
+                                                 Width="150"/>
+                                    </StackPanel>
+
+                                    <StackPanel Orientation="Horizontal"
+                                                Margin="0,0,10,4"
+                                                VerticalAlignment="Center">
+                                        <Label Content="{DynamicResource LOCCommonYearLabel}"
+                                               FontSize="{DynamicResource FontSizeLarge}"
+                                               Margin="0,0,10,0"
+                                               VerticalAlignment="Center"/>
+                                        <ComboBox Width="70"
+                                                  Name="PART_CbYear"
+                                                  SelectionChanged="PART_CbYear_SelectionChanged">
+                                            <ComboBox.ItemTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock Text="{Binding}"
+                                                               Style="{DynamicResource BaseTextBlockStyle}"/>
+                                                </DataTemplate>
+                                            </ComboBox.ItemTemplate>
+                                        </ComboBox>
+                                    </StackPanel>
+
+                                    <StackPanel Orientation="Horizontal"
+                                                Margin="0,0,10,4"
+                                                VerticalAlignment="Center">
+                                        <Label Content="{DynamicResource LOCHowLongToBeatStorefront}"
+                                               FontSize="{DynamicResource FontSizeLarge}"
+                                               Margin="0,0,10,0"
+                                               VerticalAlignment="Center"/>
+                                        <ComboBox Width="150"
+                                                  MinWidth="120"
+                                                  Name="PART_CbStorefront"
+                                                  SelectionChanged="PART_CbStorefront_SelectionChanged">
+                                            <ComboBox.ItemTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock Text="{Binding}"
+                                                               Style="{DynamicResource BaseTextBlockStyle}"/>
+                                                </DataTemplate>
+                                            </ComboBox.ItemTemplate>
+                                        </ComboBox>
+                                    </StackPanel>
+
+                                    <StackPanel Orientation="Horizontal"
+                                                Margin="0,0,10,4"
+                                                VerticalAlignment="Center">
+                                        <Label Content="{DynamicResource LOCPlatformTitle}"
+                                               FontSize="{DynamicResource FontSizeLarge}"
+                                               Margin="0,0,10,0"
+                                               VerticalAlignment="Center"/>
+                                        <ComboBox Width="150"
+                                                  MinWidth="120"
+                                                  Name="PART_CbPlatform"
+                                                  SelectionChanged="PART_CbPlatform_SelectionChanged">
+                                            <ComboBox.ItemTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock Text="{Binding}"
+                                                               Style="{DynamicResource BaseTextBlockStyle}"/>
+                                                </DataTemplate>
+                                            </ComboBox.ItemTemplate>
+                                        </ComboBox>
+                                    </StackPanel>
+
+                                    <StackPanel Orientation="Horizontal"
+                                                Margin="0,0,10,4"
+                                                VerticalAlignment="Center">
+                                        <Label Content="{DynamicResource LOCHltbFilterHltbListStatus}"
+                                               FontSize="{DynamicResource FontSizeLarge}"
+                                               Margin="0,0,10,0"
+                                               VerticalAlignment="Center"
+                                               ToolTip="{DynamicResource LOCHltbFilterHltbListStatusTooltip}"/>
+                                        <ComboBox Width="155"
+                                                  Name="PART_CbHltbListStatus"
+                                                  ToolTip="{DynamicResource LOCHltbFilterHltbListStatusTooltip}"
+                                                  SelectionChanged="PART_CbHltbListStatus_SelectionChanged"/>
+                                    </StackPanel>
+
+                                    <CheckBox Content="{DynamicResource LOCHltbOnlyReplays}"
+                                              ToolTip="{DynamicResource LOCHltbOnlyReplaysTooltip}"
+                                              Checked="CheckBox_Checked"
+                                              Unchecked="CheckBox_Checked"
+                                              Name="PART_Replays"
+                                              VerticalAlignment="Center"
+                                              Margin="0,0,10,4"/>
+
+                                    <CheckBox Content="{DynamicResource LOCHltbOnlyIncludesDlc}"
+                                              ToolTip="{DynamicResource LOCHltbOnlyIncludesDlcTooltip}"
+                                              Checked="CheckBox_Checked"
+                                              Unchecked="CheckBox_Checked"
+                                              Name="PART_IncludesDlc"
+                                              VerticalAlignment="Center"
+                                              Margin="0,0,10,4"/>
+
+                                    <CheckBox Content="{DynamicResource LOCHltbOnlyNotPlayed}"
+                                              Checked="CheckBox_Checked"
+                                              Unchecked="CheckBox_Checked"
+                                              Name="PART_OnlyNotPlayed"
+                                              VerticalAlignment="Center"
+                                              Margin="0,0,10,4"/>
+
+                                    <CheckBox Content="{DynamicResource LOCHltbOnlyInstalled}"
+                                              ToolTip="{DynamicResource LOCHltbOnlyInstalledTooltip}"
+                                              Checked="CheckBox_Checked"
+                                              Unchecked="CheckBox_Checked"
+                                              Name="PART_OnlyInstalled"
+                                              VerticalAlignment="Center"
+                                              Margin="0,0,10,4"/>
+                                </WrapPanel>
+                            </DockPanel>
 
                             <Grid Grid.Row="1"
                                   Name="PART_LvContener">
@@ -205,11 +205,14 @@
                                                                VirtualizingStackPanel.VirtualizationMode="Recycling"
                                                                SortingSortDirection="Descending"
                                                                SortingDefaultDataName="LastUpdate"
-                                                               SortingEnable="True">
+                                                               SortingEnable="True"
+                                                               SaveColumn="True"
+                                                               SaveColumnConfigurationName="HowLongToBeatUserView.ListViewGames">
                                     <ListView.View>
                                         <GridView>
                                             <GridViewColumn Width="0"
-                                                            DisplayMemberBinding="{Binding GameName}">
+                                                            DisplayMemberBinding="{Binding GameName}"
+                                                            controlsShared:ListViewColumnOptions.ForceHidden="True">
                                                 <controlsShared:GridViewColumnHeaderExtend Style="{StaticResource {x:Type GridViewColumnHeader}}"
                                                                                            IsHitTestVisible="False"
                                                                                            RefIndex="1"/>
@@ -269,6 +272,13 @@
                                                                                    Style="{DynamicResource ListExtendStyleTextBlock}"/>
                                                                     </Hyperlink>
                                                                 </TextBlock>
+
+                                                                <TextBlock Visibility="{Binding IsIncludesDlc, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                                                           Text="&#xeea0;"
+                                                                           FontFamily="{DynamicResource FontIcoFont}"
+                                                                           Margin="10,0,0,0"
+                                                                           ToolTip="{DynamicResource LOCHltbOptionalTagIncludesDlc}"
+                                                                           Style="{DynamicResource ListExtendStyleTextBlock}"/>
                                                             </StackPanel>
 
                                                             <StackPanel Orientation="Horizontal"
@@ -311,6 +321,13 @@
                                                                                Margin="10,0,0,0"
                                                                                Style="{DynamicResource ListExtendStyleTextBlock}"/>
                                                                 </TextBlock>
+
+                                                                <TextBlock Visibility="{Binding IsIncludesDlc, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                                                           Text="&#xeea0;"
+                                                                           FontFamily="{DynamicResource FontIcoFont}"
+                                                                           Margin="10,0,0,0"
+                                                                           ToolTip="{DynamicResource LOCHltbOptionalTagIncludesDlc}"
+                                                                           Style="{DynamicResource ListExtendStyleTextBlock}"/>
                                                             </StackPanel>
                                                         </StackPanel>
                                                     </DataTemplate>
@@ -334,37 +351,84 @@
                                             </GridViewColumn>
 
                                             <GridViewColumn Width="0"
-                                                            DisplayMemberBinding="{Binding CurrentTime}">
+                                                            DisplayMemberBinding="{Binding CurrentTime}"
+                                                            controlsShared:ListViewColumnOptions.ForceHidden="True">
                                                 <controlsShared:GridViewColumnHeaderExtend Style="{StaticResource {x:Type GridViewColumnHeader}}"
                                                                                            IsHitTestVisible="False"
                                                                                            RefIndex="8"/>
                                             </GridViewColumn>
                                             <GridViewColumn Width="130"
                                                             DisplayMemberBinding="{Binding CurrentTime, Converter={StaticResource PlayTimeToStringConverterWithZero}}">
-                                                <GridViewColumnHeader Content="{DynamicResource LOCTimePlayed}"
-                                                                      Tag="CurrentTime"/>
+                                                <GridViewColumnHeader Tag="CurrentTime">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="&#xed05;"
+                                                               FontFamily="{DynamicResource FontIcoFont}"
+                                                               FontWeight="Light"
+                                                               Foreground="{DynamicResource TextBrush}"
+                                                               Margin="0,0,4,0"
+                                                               VerticalAlignment="Center"
+                                                               ToolTip="{DynamicResource LOCHowLongToBeatColumnSubmittedTooltip}"
+                                                               Style="{DynamicResource ListExtendStyleTextBlock}"/>
+                                                    <Label Content="{DynamicResource LOCTimePlayed}"
+                                                           Padding="0"
+                                                           VerticalAlignment="Center"
+                                                           Background="Transparent"/>
+                                                </StackPanel>
+                                            </GridViewColumnHeader>
                                             </GridViewColumn>
 
                                             <GridViewColumn Width="0"
-                                                            DisplayMemberBinding="{Binding TimeToBeat}">
+                                                            DisplayMemberBinding="{Binding TimeToBeat}"
+                                                            controlsShared:ListViewColumnOptions.ForceHidden="True">
                                                 <controlsShared:GridViewColumnHeaderExtend Style="{StaticResource {x:Type GridViewColumnHeader}}"
                                                                                            IsHitTestVisible="False"
                                                                                            RefIndex="10"/>
                                             </GridViewColumn>
                                             <GridViewColumn Width="130"
-                                                            DisplayMemberBinding="{Binding TimeToBeat, Converter={StaticResource PlayTimeToStringConverterWithZero}}">
-                                                <GridViewColumnHeader Content="{DynamicResource LOCHowLongToBeatTimeToBeat}"/>
+                                                            DisplayMemberBinding="{Binding TimeToBeatFormat}"
+                                                            controlsShared:ListViewColumnOptions.SortMemberPath="TimeToBeat">
+                                                <GridViewColumnHeader Tag="TimeToBeat">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="&#xed0d;"
+                                                               FontFamily="{DynamicResource FontIcoFont}"
+                                                               FontWeight="Light"
+                                                               Foreground="{DynamicResource TextBrush}"
+                                                               Margin="0,0,4,0"
+                                                               VerticalAlignment="Center"
+                                                               ToolTip="{DynamicResource LOCHowLongToBeatColumnCommunityTooltip}"
+                                                               Style="{DynamicResource ListExtendStyleTextBlock}"/>
+                                                    <Label Content="{DynamicResource LOCHowLongToBeatTimeToBeat}"
+                                                           Padding="0"
+                                                           VerticalAlignment="Center"
+                                                           Background="Transparent"/>
+                                                </StackPanel>
+                                            </GridViewColumnHeader>
                                             </GridViewColumn>
 
                                             <GridViewColumn Width="0"
-                                                            DisplayMemberBinding="{Binding ProgressPercent}">
+                                                            DisplayMemberBinding="{Binding ProgressPercent}"
+                                                            controlsShared:ListViewColumnOptions.ForceHidden="True">
                                                 <controlsShared:GridViewColumnHeaderExtend Style="{StaticResource {x:Type GridViewColumnHeader}}"
                                                                                            IsHitTestVisible="False"
                                                                                            RefIndex="13"/>
                                             </GridViewColumn>
                                             <GridViewColumn Width="150">
-                                                <GridViewColumnHeader Content="{DynamicResource LOCHltbColumnProgress}"
-                                                                      Tag="ProgressPercent"/>
+                                                <GridViewColumnHeader Tag="ProgressPercent">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="&#xed0d;"
+                                                               FontFamily="{DynamicResource FontIcoFont}"
+                                                               FontWeight="Light"
+                                                               Foreground="{DynamicResource TextBrush}"
+                                                               Margin="0,0,4,0"
+                                                               VerticalAlignment="Center"
+                                                               ToolTip="{DynamicResource LOCHowLongToBeatColumnCommunityTooltip}"
+                                                               Style="{DynamicResource ListExtendStyleTextBlock}"/>
+                                                    <Label Content="{DynamicResource LOCHltbColumnProgress}"
+                                                           Padding="0"
+                                                           VerticalAlignment="Center"
+                                                           Background="Transparent"/>
+                                                </StackPanel>
+                                            </GridViewColumnHeader>
                                                 <GridViewColumn.CellTemplate>
                                                     <DataTemplate>
                                                         <Grid MinWidth="120"
@@ -403,15 +467,30 @@
                                             </GridViewColumn>
 
                                             <GridViewColumn Width="0"
-                                                            DisplayMemberBinding="{Binding RemainingTime}">
+                                                            DisplayMemberBinding="{Binding RemainingTime}"
+                                                            controlsShared:ListViewColumnOptions.ForceHidden="True">
                                                 <controlsShared:GridViewColumnHeaderExtend Style="{StaticResource {x:Type GridViewColumnHeader}}"
                                                                                            IsHitTestVisible="False"
                                                                                            RefIndex="12"/>
                                             </GridViewColumn>
                                             <GridViewColumn Width="130"
                                                             DisplayMemberBinding="{Binding RemainingTimeFormat}">
-                                                <GridViewColumnHeader Content="{DynamicResource LOCHltbRemainingTime}"
-                                                                      Tag="RemainingTime"/>
+                                                <GridViewColumnHeader Tag="RemainingTime">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="&#xed0d;"
+                                                               FontFamily="{DynamicResource FontIcoFont}"
+                                                               FontWeight="Light"
+                                                               Foreground="{DynamicResource TextBrush}"
+                                                               Margin="0,0,4,0"
+                                                               VerticalAlignment="Center"
+                                                               ToolTip="{DynamicResource LOCHowLongToBeatColumnCommunityTooltip}"
+                                                               Style="{DynamicResource ListExtendStyleTextBlock}"/>
+                                                    <Label Content="{DynamicResource LOCHltbRemainingTime}"
+                                                           Padding="0"
+                                                           VerticalAlignment="Center"
+                                                           Background="Transparent"/>
+                                                </StackPanel>
+                                            </GridViewColumnHeader>
                                             </GridViewColumn>
 
                                             <GridViewColumn Width="auto"
@@ -426,87 +505,184 @@
                                             </GridViewColumn>
 
                                             <GridViewColumn Width="0"
-                                                            DisplayMemberBinding="{Binding LastUpdate}">
+                                                            DisplayMemberBinding="{Binding LastUpdate}"
+                                                            controlsShared:ListViewColumnOptions.ForceHidden="True">
                                                 <controlsShared:GridViewColumnHeaderExtend Style="{StaticResource {x:Type GridViewColumnHeader}}"
                                                                                            IsHitTestVisible="False"
                                                                                            RefIndex="16"/>
                                             </GridViewColumn>
-                                            <GridViewColumn Width="auto"
-                                                            DisplayMemberBinding="{Binding LastUpdate, Converter={StaticResource LocalDateConverter}}">
+                                            <GridViewColumn Width="auto">
                                                 <GridViewColumnHeader Content="{DynamicResource LOCCommonLastUpdate}"
                                                                       Tag="LastUpdate"/>
+                                                <GridViewColumn.CellTemplate>
+                                                    <DataTemplate>
+                                                        <TextBlock Text="{Binding LastUpdate, Converter={StaticResource LocalDateRelativeConverter}}"
+                                                                   ToolTip="{Binding LastUpdate, Converter={StaticResource LocalDateConverter}}"
+                                                                   Style="{DynamicResource ListExtendStyleTextBlock}"/>
+                                                    </DataTemplate>
+                                                </GridViewColumn.CellTemplate>
                                             </GridViewColumn>
 
                                             <GridViewColumn Width="0"
-                                                            DisplayMemberBinding="{Binding HltbUserData.MainStory}">
+                                                            DisplayMemberBinding="{Binding HltbUserData.MainStory}"
+                                                            controlsShared:ListViewColumnOptions.ForceHidden="True">
                                                 <controlsShared:GridViewColumnHeaderExtend Style="{StaticResource {x:Type GridViewColumnHeader}}"
                                                                                            IsHitTestVisible="False"
                                                                                            RefIndex="14"/>
                                             </GridViewColumn>
                                             <GridViewColumn Width="130"
                                                             DisplayMemberBinding="{Binding HltbUserData.MainStoryFormat}">
-                                                <GridViewColumnHeader Content="{DynamicResource LOCHowLongToBeatMainStory}"
-                                                                      Tag="HltbUserData.MainStory"/>
+                                                <GridViewColumnHeader Tag="HltbUserData.MainStory">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="&#xed05;"
+                                                               FontFamily="{DynamicResource FontIcoFont}"
+                                                               FontWeight="Light"
+                                                               Foreground="{DynamicResource TextBrush}"
+                                                               Margin="0,0,4,0"
+                                                               VerticalAlignment="Center"
+                                                               ToolTip="{DynamicResource LOCHowLongToBeatColumnSubmittedTooltip}"
+                                                               Style="{DynamicResource ListExtendStyleTextBlock}"/>
+                                                    <Label Content="{DynamicResource LOCHowLongToBeatMainStory}"
+                                                           Padding="0"
+                                                           VerticalAlignment="Center"
+                                                           Background="Transparent"/>
+                                                </StackPanel>
+                                            </GridViewColumnHeader>
                                             </GridViewColumn>
 
                                             <GridViewColumn Width="0"
-                                                            DisplayMemberBinding="{Binding HltbUserData.MainExtra}">
+                                                            DisplayMemberBinding="{Binding HltbUserData.MainExtra}"
+                                                            controlsShared:ListViewColumnOptions.ForceHidden="True">
                                                 <controlsShared:GridViewColumnHeaderExtend Style="{StaticResource {x:Type GridViewColumnHeader}}"
                                                                                            IsHitTestVisible="False"
                                                                                            RefIndex="16"/>
                                             </GridViewColumn>
                                             <GridViewColumn Width="130"
                                                             DisplayMemberBinding="{Binding HltbUserData.MainExtraFormat}">
-                                                <GridViewColumnHeader Content="{DynamicResource LOCHowLongToBeatMainExtra}"
-                                                                      Tag="HltbUserData.MainExtra"/>
+                                                <GridViewColumnHeader Tag="HltbUserData.MainExtra">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="&#xed05;"
+                                                               FontFamily="{DynamicResource FontIcoFont}"
+                                                               FontWeight="Light"
+                                                               Foreground="{DynamicResource TextBrush}"
+                                                               Margin="0,0,4,0"
+                                                               VerticalAlignment="Center"
+                                                               ToolTip="{DynamicResource LOCHowLongToBeatColumnSubmittedTooltip}"
+                                                               Style="{DynamicResource ListExtendStyleTextBlock}"/>
+                                                    <Label Content="{DynamicResource LOCHowLongToBeatMainExtra}"
+                                                           Padding="0"
+                                                           VerticalAlignment="Center"
+                                                           Background="Transparent"/>
+                                                </StackPanel>
+                                            </GridViewColumnHeader>
                                             </GridViewColumn>
 
                                             <GridViewColumn Width="0"
-                                                            DisplayMemberBinding="{Binding HltbUserData.Completionist}">
+                                                            DisplayMemberBinding="{Binding HltbUserData.Completionist}"
+                                                            controlsShared:ListViewColumnOptions.ForceHidden="True">
                                                 <controlsShared:GridViewColumnHeaderExtend Style="{StaticResource {x:Type GridViewColumnHeader}}"
                                                                                            IsHitTestVisible="False"
                                                                                            RefIndex="18"/>
                                             </GridViewColumn>
                                             <GridViewColumn Width="130"
                                                             DisplayMemberBinding="{Binding HltbUserData.CompletionistFormat}">
-                                                <GridViewColumnHeader Content="{DynamicResource LOCHowLongToBeatCompletionist}"
-                                                                      Tag="HltbUserData.Completionist"/>
+                                                <GridViewColumnHeader Tag="HltbUserData.Completionist">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="&#xed05;"
+                                                               FontFamily="{DynamicResource FontIcoFont}"
+                                                               FontWeight="Light"
+                                                               Foreground="{DynamicResource TextBrush}"
+                                                               Margin="0,0,4,0"
+                                                               VerticalAlignment="Center"
+                                                               ToolTip="{DynamicResource LOCHowLongToBeatColumnSubmittedTooltip}"
+                                                               Style="{DynamicResource ListExtendStyleTextBlock}"/>
+                                                    <Label Content="{DynamicResource LOCHowLongToBeatCompletionist}"
+                                                           Padding="0"
+                                                           VerticalAlignment="Center"
+                                                           Background="Transparent"/>
+                                                </StackPanel>
+                                            </GridViewColumnHeader>
                                             </GridViewColumn>
 
                                             <GridViewColumn Width="0"
-                                                            DisplayMemberBinding="{Binding HltbUserData.Solo}">
+                                                            DisplayMemberBinding="{Binding HltbUserData.Solo}"
+                                                            controlsShared:ListViewColumnOptions.ForceHidden="True">
                                                 <controlsShared:GridViewColumnHeaderExtend Style="{StaticResource {x:Type GridViewColumnHeader}}"
                                                                                            IsHitTestVisible="False"
                                                                                            RefIndex="20"/>
                                             </GridViewColumn>
                                             <GridViewColumn Width="90"
                                                             DisplayMemberBinding="{Binding HltbUserData.SoloFormat}">
-                                                <GridViewColumnHeader Content="{DynamicResource LOCHowLongToBeatSolo}"
-                                                                      Tag="HltbUserData.Solo"/>
+                                                <GridViewColumnHeader Tag="HltbUserData.Solo">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="&#xed05;"
+                                                               FontFamily="{DynamicResource FontIcoFont}"
+                                                               FontWeight="Light"
+                                                               Foreground="{DynamicResource TextBrush}"
+                                                               Margin="0,0,4,0"
+                                                               VerticalAlignment="Center"
+                                                               ToolTip="{DynamicResource LOCHowLongToBeatColumnSubmittedTooltip}"
+                                                               Style="{DynamicResource ListExtendStyleTextBlock}"/>
+                                                    <Label Content="{DynamicResource LOCHowLongToBeatSolo}"
+                                                           Padding="0"
+                                                           VerticalAlignment="Center"
+                                                           Background="Transparent"/>
+                                                </StackPanel>
+                                            </GridViewColumnHeader>
                                             </GridViewColumn>
 
                                             <GridViewColumn Width="0"
-                                                            DisplayMemberBinding="{Binding HltbUserData.CoOp}">
+                                                            DisplayMemberBinding="{Binding HltbUserData.CoOp}"
+                                                            controlsShared:ListViewColumnOptions.ForceHidden="True">
                                                 <controlsShared:GridViewColumnHeaderExtend Style="{StaticResource {x:Type GridViewColumnHeader}}"
                                                                                            IsHitTestVisible="False"
                                                                                            RefIndex="22"/>
                                             </GridViewColumn>
                                             <GridViewColumn Width="90"
                                                             DisplayMemberBinding="{Binding HltbUserData.CoOpFormat}">
-                                                <GridViewColumnHeader Content="{DynamicResource LOCHowLongToBeatCoOp}"
-                                                                      Tag="HltbUserData.CoOp"/>
+                                                <GridViewColumnHeader Tag="HltbUserData.CoOp">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="&#xed05;"
+                                                               FontFamily="{DynamicResource FontIcoFont}"
+                                                               FontWeight="Light"
+                                                               Foreground="{DynamicResource TextBrush}"
+                                                               Margin="0,0,4,0"
+                                                               VerticalAlignment="Center"
+                                                               ToolTip="{DynamicResource LOCHowLongToBeatColumnSubmittedTooltip}"
+                                                               Style="{DynamicResource ListExtendStyleTextBlock}"/>
+                                                    <Label Content="{DynamicResource LOCHowLongToBeatCoOp}"
+                                                           Padding="0"
+                                                           VerticalAlignment="Center"
+                                                           Background="Transparent"/>
+                                                </StackPanel>
+                                            </GridViewColumnHeader>
                                             </GridViewColumn>
 
                                             <GridViewColumn Width="0"
-                                                            DisplayMemberBinding="{Binding HltbUserData.Vs}">
+                                                            DisplayMemberBinding="{Binding HltbUserData.Vs}"
+                                                            controlsShared:ListViewColumnOptions.ForceHidden="True">
                                                 <controlsShared:GridViewColumnHeaderExtend Style="{StaticResource {x:Type GridViewColumnHeader}}"
                                                                                            IsHitTestVisible="False"
                                                                                            RefIndex="24"/>
                                             </GridViewColumn>
                                             <GridViewColumn Width="90"
                                                             DisplayMemberBinding="{Binding HltbUserData.VsFormat}">
-                                                <GridViewColumnHeader Content="{DynamicResource LOCHowLongToBeatVs}"
-                                                                      Tag="HltbUserData.Vs"/>
+                                                <GridViewColumnHeader Tag="HltbUserData.Vs">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="&#xed05;"
+                                                               FontFamily="{DynamicResource FontIcoFont}"
+                                                               FontWeight="Light"
+                                                               Foreground="{DynamicResource TextBrush}"
+                                                               Margin="0,0,4,0"
+                                                               VerticalAlignment="Center"
+                                                               ToolTip="{DynamicResource LOCHowLongToBeatColumnSubmittedTooltip}"
+                                                               Style="{DynamicResource ListExtendStyleTextBlock}"/>
+                                                    <Label Content="{DynamicResource LOCHowLongToBeatVs}"
+                                                           Padding="0"
+                                                           VerticalAlignment="Center"
+                                                           Background="Transparent"/>
+                                                </StackPanel>
+                                            </GridViewColumnHeader>
                                             </GridViewColumn>
                                         </GridView>
                                     </ListView.View>
@@ -804,6 +980,25 @@
                                                    HorizontalAlignment="Right"
                                                    Margin="8,0,0,0"/>
                                     </Grid>
+                                    <Grid Margin="0,0,0,2"
+                                          ToolTip="{DynamicResource LOCHltbOnlyIncludesDlcTooltip}">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="{DynamicResource LOCHltbCountIncludesDlc}"
+                                                   Style="{DynamicResource BaseTextBlockStyle}"
+                                                   FontSize="11"
+                                                   Opacity="0.9"
+                                                   TextWrapping="Wrap"/>
+                                        <TextBlock Grid.Column="1"
+                                                   Text="{Binding CountIncludesDlc}"
+                                                   Style="{DynamicResource BaseTextBlockStyle}"
+                                                   FontSize="11"
+                                                   FontWeight="SemiBold"
+                                                   HorizontalAlignment="Right"
+                                                   Margin="8,0,0,0"/>
+                                    </Grid>
                                     <Grid Margin="0,0,0,2">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="*"/>
@@ -916,45 +1111,71 @@
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
 
-                        <Grid Grid.Row="0">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="auto"/>
-                                <ColumnDefinition Width="30"/>
-                                <ColumnDefinition Width="auto"/>
-                                <ColumnDefinition Width="30"/>
-                                <ColumnDefinition Width="auto"/>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="10"/>
-                                <ColumnDefinition Width="auto"/>
-                            </Grid.ColumnDefinitions>
-
-                            <CheckBox Grid.Column="0"
-                                      IsChecked="True"
-                                      Name="PART_FilteredGames"
-                                      Click="PART_FilteredGames_Click">
-                                <Label Content="{DynamicResource LOCHltbUsedFilteredGames}"/>
-                            </CheckBox>
-
-                            <CheckBox Grid.Column="2"
-                                      IsChecked="True"
-                                      Name="PART_HidePlayedGames"
-                                      Click="PART_HidePlayedGames_Click">
-                                <Label Content="{DynamicResource LOCHltbOnlyNotPlayedGames}"/>
-                            </CheckBox>
-
-                            <Button Grid.Column="4"
-                                    Content="&#xEF05;"
-                                    FontFamily="{DynamicResource FontIcoFont}"
-                                    Click="SavedFilter1_Click"
-                                    ToolTip="{DynamicResource LOCCommonSaveFilters}"/>
-
-                            <StackPanel Grid.Column="50"
-                                        Orientation="Horizontal">
-                                <Label Content="{DynamicResource LOCCommonTotalFound}"/>
+                        <DockPanel Grid.Row="0"
+                                   LastChildFill="True">
+                            <StackPanel DockPanel.Dock="Right"
+                                        Orientation="Horizontal"
+                                        VerticalAlignment="Top"
+                                        Margin="10,0,0,0">
+                                <Button Content="&#xEF05;"
+                                        FontFamily="{DynamicResource FontIcoFont}"
+                                        Click="SavedFilter1_Click"
+                                        ToolTip="{DynamicResource LOCCommonSaveFilters}"
+                                        VerticalAlignment="Center"/>
+                                <Label Content="{DynamicResource LOCCommonTotalFound}"
+                                       VerticalAlignment="Center"
+                                       Margin="20,0,0,0"/>
                                 <Label Margin="10,0,0,0"
-                                       Content="{Binding ElementName=ListViewDataGames, Path=Items.Count,  Mode=OneWay}"/>
+                                       VerticalAlignment="Center"
+                                       Content="{Binding ElementName=ListViewDataGames, Path=Items.Count, Mode=OneWay}"/>
                             </StackPanel>
-                        </Grid>
+
+                            <WrapPanel Orientation="Horizontal"
+                                       VerticalAlignment="Center">
+                                <CheckBox IsChecked="True"
+                                          Name="PART_FilteredGames"
+                                          Click="PART_FilteredGames_Click"
+                                          VerticalAlignment="Center"
+                                          Margin="0,0,10,4">
+                                    <Label Content="{DynamicResource LOCHltbUsedFilteredGames}"/>
+                                </CheckBox>
+
+                                <CheckBox IsChecked="False"
+                                          Name="PART_HidePlayedGames"
+                                          Click="PART_HidePlayedGames_Click"
+                                          VerticalAlignment="Center"
+                                          Margin="0,0,10,4">
+                                    <Label Content="{DynamicResource LOCHltbOnlyNotPlayedGames}"/>
+                                </CheckBox>
+
+                                <CheckBox IsChecked="False"
+                                          Name="PART_OnlyInstalledGames"
+                                          Click="PART_OnlyInstalledGames_Click"
+                                          VerticalAlignment="Center"
+                                          Margin="0,0,10,4">
+                                    <Label Content="{DynamicResource LOCHltbOnlyInstalledGames}"/>
+                                </CheckBox>
+
+                                <StackPanel Orientation="Horizontal"
+                                            VerticalAlignment="Center"
+                                            Margin="0,0,10,4">
+                                    <Label Content="{DynamicResource LOCPlatformTitle}"
+                                           VerticalAlignment="Center"
+                                           Margin="0,0,10,0"/>
+                                    <ComboBox Width="150"
+                                              MinWidth="120"
+                                              Name="PART_CbPlaynitePlatform"
+                                              SelectionChanged="PART_CbPlaynitePlatform_SelectionChanged">
+                                        <ComboBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding}"
+                                                           Style="{DynamicResource BaseTextBlockStyle}"/>
+                                            </DataTemplate>
+                                        </ComboBox.ItemTemplate>
+                                    </ComboBox>
+                                </StackPanel>
+                            </WrapPanel>
+                        </DockPanel>
 
                         <Grid Grid.Row="2"
                               Name="PART_LvGridContener">

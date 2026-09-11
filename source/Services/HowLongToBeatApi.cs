@@ -1,4 +1,4 @@
-﻿using CommonPluginsShared;
+using CommonPluginsShared;
 using CommonPluginsShared.Extensions;
 using FuzzySharp;
 using HowLongToBeat.Models;
@@ -33,13 +33,6 @@ namespace HowLongToBeat.Services
 
         private static HowLongToBeatDatabase PluginDatabase => HowLongToBeat.PluginDatabase;
 
-        // Helper to centralize verbose logging checks
-#if DEBUG
-        private static bool IsVerboseLoggingEnabled => true;
-#else
-        private static bool IsVerboseLoggingEnabled => false;
-#endif
-
         private string SafeStr(string s)
         {
             try
@@ -72,7 +65,7 @@ namespace HowLongToBeat.Services
         {
             try
             {
-                if (!IsVerboseLoggingEnabled)
+                if (!Common.IsVerboseLoggingEffective)
                 {
                     return;
                 }
@@ -97,13 +90,14 @@ namespace HowLongToBeat.Services
                     }
                 }
 
-                Common.LogDebug(true, $"HLTB Auth: {context} cookies={cookies.Count} expired={expiredCount} domains=[{string.Join(",", domains)}] minExp={(minExpiry?.ToString("o") ?? "<none>")} maxExp={(maxExpiry?.ToString("o") ?? "<none>")}");
+                Common.LogDebug($"HLTB Auth: {context} cookies={cookies.Count} expired={expiredCount} domains=[{string.Join(",", domains)}] minExp={(minExpiry?.ToString("o") ?? "<none>")} maxExp={(maxExpiry?.ToString("o") ?? "<none>")}");
 
                 string[] sessionCookieNames = { "hltb_alive", "hltb_online", "hltb_view_list" };
                 var sessionStates = new List<string>();
                 foreach (string cookieName in sessionCookieNames)
                 {
-                    HttpCookie sessionCookie = cookies.FirstOrDefault(c => string.Equals(c?.Name, cookieName, StringComparison.OrdinalIgnoreCase));
+                    // Reading HLTB session cookies from the stored container for auth diagnostics only (not setting cookies).
+                    HttpCookie sessionCookie = cookies.FirstOrDefault(c => string.Equals(c?.Name, cookieName, StringComparison.OrdinalIgnoreCase)); // nosemgrep: csharp.lang.audit.cookies.missing-httponly.missing-httponly, csharp.lang.audit.cookies.missing-secure.missing-secure
                     if (sessionCookie == null)
                     {
                         sessionStates.Add(cookieName + "=missing");
@@ -118,10 +112,10 @@ namespace HowLongToBeat.Services
                     }
                 }
 
-                Common.LogDebug(true, $"HLTB Auth: {context} sessionCookies=[{string.Join(", ", sessionStates)}]");
+                Common.LogDebug($"HLTB Auth: {context} sessionCookies=[{string.Join(", ", sessionStates)}]");
 
                 string cookieNames = string.Join(", ", cookies.Select(c => c?.Name ?? string.Empty).Where(n => !string.IsNullOrEmpty(n)).OrderBy(n => n, StringComparer.OrdinalIgnoreCase));
-                Common.LogDebug(true, $"HLTB Auth: {context} cookieNames=[{cookieNames}]");
+                Common.LogDebug($"HLTB Auth: {context} cookieNames=[{cookieNames}]");
             }
             catch { }
         }
@@ -207,7 +201,7 @@ namespace HowLongToBeat.Services
             List<string> urls = GetSessionCookieRefreshUrls(submissionId);
             List<HttpCookie> sessionCookies = FilterSessionCookiesForInjection(CookiesTools.GetStoredCookies());
             Logger.Info($"HLTB Auth: RefreshSubmitSessionCookies injecting {sessionCookies.Count} session cookie(s)");
-            Common.LogDebug(true, $"RefreshSubmitSessionCookies: urls=[{string.Join(", ", urls)}] injectCount={sessionCookies.Count}");
+            Common.LogDebug($"RefreshSubmitSessionCookies: urls=[{string.Join(", ", urls)}] injectCount={sessionCookies.Count}");
 
             List<HttpCookie> cookies = CookiesTools.GetNewWebCookies(urls, false, null, SubmitSessionCookieRefreshWaitMs, sessionCookies);
             if (cookies != null && cookies.Count > 0)
@@ -233,7 +227,7 @@ namespace HowLongToBeat.Services
             List<HttpCookie> stored = CookiesTools.GetStoredCookies();
             if (HasHltbSessionCookies(stored))
             {
-                Common.LogDebug(true, "GetCookiesForSubmit: using stored session cookies");
+                Common.LogDebug("GetCookiesForSubmit: using stored session cookies");
                 return stored;
             }
 
@@ -511,7 +505,13 @@ namespace HowLongToBeat.Services
         private static string UrlPostData => UrlBase + "/api/submit";
         private static string UrlPostDataEdit => UrlBase + "/submit/edit/{0}";
 
-        private static string SearchEndPoint => "/api/bleed";
+        private static string DefaultSearchApiEndpoint => "/api/search/site";
+
+        /// <summary>
+        /// Persisted or default HLTB search API path used when script discovery fails.
+        /// </summary>
+        private static string SearchEndPoint => GetPersistedSearchEndpoint();
+
         private static string UrlSearch => UrlBase + SearchEndPoint;
 
         private static string UrlGameImg => UrlBase + "/games/{0}";
@@ -575,9 +575,9 @@ namespace HowLongToBeat.Services
                 try
                 {
                     Logger.Info($"HLTB rate limiter initialized: {DefaultHttpRateTokensPerSecond:0.##} req/s, burst={DefaultHttpRateBurstCapacity}");
-                    Common.LogDebug(true, $"HLTB RateLimiter init tokensPerSecond={DefaultHttpRateTokensPerSecond:0.##} burst={DefaultHttpRateBurstCapacity}");
+                    Common.LogDebug($"HLTB RateLimiter init tokensPerSecond={DefaultHttpRateTokensPerSecond:0.##} burst={DefaultHttpRateBurstCapacity}");
                     Logger.Info($"HLTB concurrency defaults: search={MaxParallelSearches}, gameData={MaxParallelGameDataDownloads}");
-                    Common.LogDebug(true, $"HLTB Concurrency init search={MaxParallelSearches} gameData={MaxParallelGameDataDownloads}");
+                    Common.LogDebug($"HLTB Concurrency init search={MaxParallelSearches} gameData={MaxParallelGameDataDownloads}");
                 }
                 catch { }
             }
@@ -605,6 +605,7 @@ namespace HowLongToBeat.Services
             HapAvailable = HapDocType != null;
 
             UserLogin = PluginDatabase.PluginSettings.UserLogin;
+            HydrateSearchUrlFromSettings();
 
             CookiesDomains = new List<string>
             {
@@ -755,11 +756,11 @@ namespace HowLongToBeat.Services
                 if (waitedMs > 0)
                 {
                     try { Logger.Info($"HLTB rate limiter: waited {waitedMs}ms before {operation} '{url}'"); } catch { }
-                    try { Common.LogDebug(true, $"HLTB RateLimiter wait operation={operation} waitedMs={waitedMs} url='{url}'"); } catch { }
+                    try { Common.LogDebug($"HLTB RateLimiter wait operation={operation} waitedMs={waitedMs} url='{url}'"); } catch { }
                 }
                 else
                 {
-                    try { Common.LogDebug(true, $"HLTB RateLimiter pass operation={operation} waitedMs=0 url='{url}'"); } catch { }
+                    try { Common.LogDebug($"HLTB RateLimiter pass operation={operation} waitedMs=0 url='{url}'"); } catch { }
                 }
             }
             catch (OperationCanceledException)
@@ -856,7 +857,7 @@ namespace HowLongToBeat.Services
                                         p90 = ordered[Math.Max(0, (int)Math.Floor(ordered.Length * 0.9) - 1)];
                                     }
 
-                                    Common.LogDebug(true, $"HLTB Summary: searchTarget={searchTarget} searchInFlight={searchInFlight} gameTarget={gameTarget} gameInFlight={gameInFlight} avgSearchMs={Math.Round(avg, 1)} medianSearchMs={Math.Round(median, 1)} p90SearchMs={Math.Round(p90, 1)} persistentCacheHits={PersistentCacheHits} inMemoryCacheHits={InMemoryCacheHits} pageFetches={PageFetches} forced={searchForced}");
+                                    Common.LogDebug($"HLTB Summary: searchTarget={searchTarget} searchInFlight={searchInFlight} gameTarget={gameTarget} gameInFlight={gameInFlight} avgSearchMs={Math.Round(avg, 1)} medianSearchMs={Math.Round(median, 1)} p90SearchMs={Math.Round(p90, 1)} persistentCacheHits={PersistentCacheHits} inMemoryCacheHits={InMemoryCacheHits} pageFetches={PageFetches} forced={searchForced}");
                                 }
                                 catch (Exception ex)
                                 {
@@ -1034,7 +1035,7 @@ namespace HowLongToBeat.Services
             }
             else
             {
-                Common.LogDebug(true, string.Format(
+                Common.LogDebug(string.Format(
                     "HLTB ApplyPageMetadataIfMissing id={0}: nothing to fill (already present)",
                     id ?? string.Empty));
             }
@@ -1047,7 +1048,7 @@ namespace HowLongToBeat.Services
         /// <returns>Returns <see cref="HltbData"/> with game times, or null if not found.</returns>
         private async Task<HltbData> GetGameData(string id, CancellationToken cancellationToken = default)
         {
-            Common.LogDebug(true, string.Format("HLTB GetGameData: mapping page data to HltbData for id={0}", id));
+            Common.LogDebug(string.Format("HLTB GetGameData: mapping page data to HltbData for id={0}", id));
             GameData gameData = await GetGamePageDataAsync(id, cancellationToken).ConfigureAwait(false);
             return gameData == null ? null : MapGameDataToHltbData(gameData);
         }
@@ -1073,7 +1074,7 @@ namespace HowLongToBeat.Services
             catch { }
             DateTime startTime = DateTime.UtcNow;
             Logger.Info(string.Format("HLTB GetGamePageData START id={0}", id));
-            Common.LogDebug(true, string.Format(
+            Common.LogDebug(string.Format(
                 "HLTB GetGamePageData START id={0} task={1} thread={2}",
                 id,
                 Task.CurrentId,
@@ -1088,7 +1089,7 @@ namespace HowLongToBeat.Services
                     {
                         jsonData = cachedJson;
                         try { System.Threading.Interlocked.Increment(ref PersistentCacheHits); } catch { }
-                        Common.LogDebug(true, string.Format("HLTB GetGamePageData id={0} - persistent cache hit (jsonLength={1})", id, cachedJson?.Length ?? 0));
+                        Common.LogDebug(string.Format("HLTB GetGamePageData id={0} - persistent cache hit (jsonLength={1})", id, cachedJson?.Length ?? 0));
                     }
                 }
                 catch (Exception ex)
@@ -1113,7 +1114,7 @@ namespace HowLongToBeat.Services
                             {
                                 response = cached;
                                 try { System.Threading.Interlocked.Increment(ref InMemoryCacheHits); } catch { }
-                                Common.LogDebug(true, string.Format("HLTB GetGamePageData id={0} - in-memory HTML cache hit (htmlLength={1})", id, cached?.Length ?? 0));
+                                Common.LogDebug(string.Format("HLTB GetGamePageData id={0} - in-memory HTML cache hit (htmlLength={1})", id, cached?.Length ?? 0));
                             }
                             else
                             {
@@ -1127,7 +1128,7 @@ namespace HowLongToBeat.Services
                                         {
                                             var code = (int)httpResp.StatusCode;
                                             Logger.Warn(string.Format("HLTB GetGamePageData id={0} - HTTP {1}", id, code));
-                                            Common.LogDebug(true, string.Format("HLTB GetGamePageData id={0} - HTTP {1} fetching page", id, code));
+                                            Common.LogDebug(string.Format("HLTB GetGamePageData id={0} - HTTP {1} fetching page", id, code));
                                             response = string.Empty;
                                         }
                                         else
@@ -1163,7 +1164,7 @@ namespace HowLongToBeat.Services
                                 }
                                 else
                                 {
-                                    Common.LogDebug(true, string.Format("HLTB GetGamePageData id={0} - extracted JSON empty or incomplete (attempt={1})", id, attempts));
+                                    Common.LogDebug(string.Format("HLTB GetGamePageData id={0} - extracted JSON empty or incomplete (attempt={1})", id, attempts));
                                     response = string.Empty;
                                 }
                             }
@@ -1177,14 +1178,14 @@ namespace HowLongToBeat.Services
                         {
                             var jitter = rnd.Next(0, 200);
                             var delay = baseDelayMs * attempts + jitter;
-                            Common.LogDebug(true, string.Format("HLTB GetGamePageData id={0} - retry {1} after {2}ms", id, attempts, delay));
+                            Common.LogDebug(string.Format("HLTB GetGamePageData id={0} - retry {1} after {2}ms", id, attempts, delay));
                             try { await Task.Delay(delay, cancellationToken); } catch (OperationCanceledException) { throw; }
                         }
                     }
                 }
                 if (string.IsNullOrEmpty(jsonData))
                 {
-                    Common.LogDebug(true, string.Format("HLTB GetGamePageData id={0} - no __NEXT_DATA__ JSON after {1} attempt(s)", id, attempts));
+                    Common.LogDebug(string.Format("HLTB GetGamePageData id={0} - no __NEXT_DATA__ JSON after {1} attempt(s)", id, attempts));
                     Logger.Warn(string.Format("HLTB GetGamePageData: no JSON for id={0}", id));
                     double elapsed = (DateTime.UtcNow - startTime).TotalMilliseconds;
                     try { ConcurrencyController?.ReportSample(elapsed, false); } catch { }
@@ -1212,7 +1213,7 @@ namespace HowLongToBeat.Services
                         elapsed,
                         gameData.GameName ?? string.Empty,
                         gameData.CompMain));
-                    Common.LogDebug(true, string.Format("HLTB GetGamePageData id={0} - parsed gameImage='{1}'", id, gameData.GameImage ?? string.Empty));
+                    Common.LogDebug(string.Format("HLTB GetGamePageData id={0} - parsed gameImage='{1}'", id, gameData.GameImage ?? string.Empty));
                     return gameData;
                 }
                 else
@@ -1291,6 +1292,147 @@ namespace HowLongToBeat.Services
         #region Search
 
         /// <summary>
+        /// Returns the search API path from plugin settings, or <see cref="DefaultSearchApiEndpoint"/>.
+        /// </summary>
+        private static string GetPersistedSearchEndpoint()
+        {
+            try
+            {
+                string fromSettings = PluginDatabase?.PluginSettings?.SearchApiEndpoint;
+                if (!fromSettings.IsNullOrWhiteSpace())
+                {
+                    return NormalizeSearchApiEndpoint(fromSettings);
+                }
+            }
+            catch { }
+
+            return DefaultSearchApiEndpoint;
+        }
+
+        /// <summary>
+        /// Normalizes a search API path to <c>/api/…</c> form.
+        /// </summary>
+        private static string NormalizeSearchApiEndpoint(string endpoint)
+        {
+            if (endpoint.IsNullOrWhiteSpace())
+            {
+                return DefaultSearchApiEndpoint;
+            }
+
+            endpoint = endpoint.Trim();
+            if (!endpoint.StartsWith("/api/", StringComparison.OrdinalIgnoreCase))
+            {
+                endpoint = "/api/" + endpoint.TrimStart('/');
+            }
+
+            return endpoint;
+        }
+
+        /// <summary>
+        /// Returns true for obsolete HLTB search paths that must not be persisted.
+        /// </summary>
+        private static bool IsLegacySearchEndpoint(string endpoint)
+        {
+            if (endpoint.IsNullOrWhiteSpace())
+            {
+                return true;
+            }
+
+            if (string.Equals(endpoint, "/api/bleed", StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+
+            if (string.Equals(endpoint, "/api/find", StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+
+            string trimmed = endpoint.Trim('/');
+            if (trimmed.StartsWith("api/", StringComparison.OrdinalIgnoreCase))
+            {
+                trimmed = trimmed.Substring(4);
+            }
+
+            return string.Equals(trimmed, "find", StringComparison.OrdinalIgnoreCase)
+                || string.Equals(trimmed, "bleed", StringComparison.OrdinalIgnoreCase);
+        }
+
+        /// <summary>
+        /// Loads the persisted search endpoint into the in-session <see cref="SearchUrl"/> cache.
+        /// </summary>
+        private static void HydrateSearchUrlFromSettings()
+        {
+            string persisted = GetPersistedSearchEndpoint();
+            CacheSearchUrlInMemory(persisted);
+            try { Common.LogDebug($"HLTB search: hydrated SearchUrl from settings endpoint='{persisted}'"); } catch { }
+        }
+
+        /// <summary>
+        /// Updates the in-session search endpoint cache.
+        /// </summary>
+        private static void CacheSearchUrlInMemory(string endpoint)
+        {
+            if (endpoint.IsNullOrWhiteSpace())
+            {
+                return;
+            }
+
+            lock (SearchUrlLock)
+            {
+                SearchUrl = endpoint;
+            }
+        }
+
+        /// <summary>
+        /// Uses the persisted search endpoint as fallback and refreshes the in-session cache.
+        /// </summary>
+        private static string UsePersistedSearchEndpointFallback(string reason)
+        {
+            string endpoint = SearchEndPoint;
+            CacheSearchUrlInMemory(endpoint);
+            try { Logger.Warn($"HLTB search: {reason}; using persisted endpoint '{endpoint}'"); } catch { }
+            return endpoint;
+        }
+
+        /// <summary>
+        /// Saves a search endpoint to plugin settings after a successful auth init.
+        /// </summary>
+        private void PersistSearchApiEndpoint(string apiEndpoint)
+        {
+            try
+            {
+                if (apiEndpoint.IsNullOrWhiteSpace() || IsLegacySearchEndpoint(apiEndpoint))
+                {
+                    return;
+                }
+
+                string normalized = NormalizeSearchApiEndpoint(apiEndpoint);
+                var settings = PluginDatabase?.PluginSettings;
+                var plugin = PluginDatabase?.Plugin;
+                if (settings == null || plugin == null)
+                {
+                    return;
+                }
+
+                if (string.Equals(settings.SearchApiEndpoint ?? string.Empty, normalized, StringComparison.OrdinalIgnoreCase))
+                {
+                    return;
+                }
+
+                settings.SearchApiEndpoint = normalized;
+                plugin.SavePluginSettings(settings);
+                CacheSearchUrlInMemory(normalized);
+                try { Logger.Info($"HLTB search: persisted endpoint '{normalized}' to settings"); } catch { }
+                Common.LogDebug($"HLTB search: persisted endpoint='{normalized}'");
+            }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, false, true, PluginDatabase.PluginName);
+            }
+        }
+
+        /// <summary>
         /// Clears the in-session discovered search endpoint so the next lookup can re-scrape or use <see cref="SearchEndPoint"/>.
         /// </summary>
         /// <param name="reason">Short explanation for logs.</param>
@@ -1313,13 +1455,13 @@ namespace HowLongToBeat.Services
         /// Concurrent callers share a single in-flight discovery (single-flight).
         /// </summary>
         /// <param name="forceRediscover">When true, ignores the cached discovered endpoint and re-scrapes the site.</param>
-        /// <returns>The search API path (for example <c>/api/bleed</c>).</returns>
+        /// <returns>The search API path (for example <c>/api/search/site</c>).</returns>
         private async Task<string> GetSearchUrl(bool forceRediscover = false)
         {
             if (!forceRediscover && !SearchUrl.IsNullOrEmpty() && !SearchUrl.Contains("error"))
             {
                 try { Logger.Info($"HLTB search: using cached discovered endpoint '{SearchUrl}'"); } catch { }
-                Common.LogDebug(true, $"GetSearchUrl: cache hit endpoint='{SearchUrl}'");
+                Common.LogDebug($"GetSearchUrl: cache hit endpoint='{SearchUrl}'");
                 return SearchUrl;
             }
 
@@ -1328,7 +1470,7 @@ namespace HowLongToBeat.Services
             {
                 if (!forceRediscover && !SearchUrl.IsNullOrEmpty() && !SearchUrl.Contains("error"))
                 {
-                    Common.LogDebug(true, $"GetSearchUrl: cache hit after discovery wait endpoint='{SearchUrl}'");
+                    Common.LogDebug($"GetSearchUrl: cache hit after discovery wait endpoint='{SearchUrl}'");
                     return SearchUrl;
                 }
 
@@ -1365,8 +1507,7 @@ namespace HowLongToBeat.Services
                         {
                             if (!httpResp.IsSuccessStatusCode)
                             {
-                                try { Logger.Warn($"HLTB search: homepage HTTP {(int)httpResp.StatusCode}; using SearchEndPoint '{SearchEndPoint}'"); } catch { }
-                                return SearchEndPoint;
+                                return UsePersistedSearchEndpointFallback($"homepage HTTP {(int)httpResp.StatusCode}");
                             }
 
                             response = await httpResp.Content.ReadAsStringAsync().ConfigureAwait(false);
@@ -1374,14 +1515,12 @@ namespace HowLongToBeat.Services
                     }
                     catch (TaskCanceledException)
                     {
-                        try { Logger.Warn($"HLTB search: homepage timeout ({ScriptDownloadTimeoutMs}ms); using SearchEndPoint '{SearchEndPoint}'"); } catch { }
-                        return SearchEndPoint;
+                        return UsePersistedSearchEndpointFallback($"homepage timeout ({ScriptDownloadTimeoutMs}ms)");
                     }
                     catch (Exception ex)
                     {
                         Common.LogError(ex, false, true, PluginDatabase.PluginName);
-                        try { Logger.Warn($"HLTB search: homepage download error; using SearchEndPoint '{SearchEndPoint}'"); } catch { }
-                        return SearchEndPoint;
+                        return UsePersistedSearchEndpointFallback("homepage download error");
                     }
                 }
 
@@ -1437,13 +1576,16 @@ namespace HowLongToBeat.Services
                     var searchMatch = Regex.Match(scriptContent, pattern, RegexOptions.Singleline | RegexOptions.IgnoreCase);
                     if (searchMatch.Success)
                     {
-                        string suffix = searchMatch.Groups[1].Value;
-                        if (suffix.Contains("/"))
+                        // Keep the full path (e.g. "search/site"); truncating to the first segment
+                        // produced a dead "/api/search" after HLTB moved the POST endpoint.
+                        string suffix = searchMatch.Groups[1].Value?.Trim('/');
+                        if (suffix.IsNullOrEmpty())
                         {
-                            suffix = suffix.Split('/')[0];
+                            continue;
                         }
 
-                        if (suffix != "find")
+                        string firstSegment = suffix.Contains("/") ? suffix.Split('/')[0] : suffix;
+                        if (!string.Equals(firstSegment, "find", StringComparison.OrdinalIgnoreCase))
                         {
                             string discovered = "/api/" + suffix;
                             bool newlyCached = false;
@@ -1461,11 +1603,11 @@ namespace HowLongToBeat.Services
                                 try { Logger.Info($"HLTB search: discovered endpoint '{SearchUrl}' from script '{scriptUrl}'"); } catch { }
                             }
 
-                            Common.LogDebug(true, $"GetSearchUrl: discovered suffix='{suffix}' endpoint='{SearchUrl}' newlyCached={newlyCached}");
+                            Common.LogDebug($"GetSearchUrl: discovered suffix='{suffix}' endpoint='{SearchUrl}' newlyCached={newlyCached}");
                             return SearchUrl;
                         }
 
-                        Common.LogDebug(true, $"GetSearchUrl: ignoring legacy endpoint suffix 'find' in '{scriptUrl}'");
+                        Common.LogDebug($"GetSearchUrl: ignoring legacy endpoint suffix 'find' in '{scriptUrl}'");
                     }
                 }
             }
@@ -1474,8 +1616,7 @@ namespace HowLongToBeat.Services
                 Common.LogError(ex, false, true, PluginDatabase.PluginName);
             }
 
-            try { Logger.Warn($"HLTB search: no endpoint discovered from scripts; using SearchEndPoint '{SearchEndPoint}'"); } catch { }
-            return SearchEndPoint;
+            return UsePersistedSearchEndpointFallback("no endpoint discovered from scripts");
         }
 
         /// <summary>
@@ -1492,7 +1633,7 @@ namespace HowLongToBeat.Services
             Dictionary<string, string> headerParts = await GetAuthToken(searchUrl).ConfigureAwait(false);
             if (headerParts != null)
             {
-                Common.LogDebug(true, $"ResolveSearchAuthHeaders: auth ok endpoint='{searchUrl}' game='{gameName}'");
+                Common.LogDebug($"ResolveSearchAuthHeaders: auth ok endpoint='{searchUrl}' game='{gameName}'");
                 return Tuple.Create(headerParts, searchUrl);
             }
 
@@ -1554,7 +1695,7 @@ namespace HowLongToBeat.Services
                 {
                     try
                     {
-                        Common.LogDebug(true, $"HLTB auth cache hit (snapshot) endpoint='{apiEndpoint}' ttlMs={(int)Math.Max(0, (snapshotExpiry - DateTime.UtcNow).TotalMilliseconds)}");
+                        Common.LogDebug($"HLTB auth cache hit (snapshot) endpoint='{apiEndpoint}' ttlMs={(int)Math.Max(0, (snapshotExpiry - DateTime.UtcNow).TotalMilliseconds)}");
                     }
                     catch { }
                     return new Dictionary<string, string>(snapshotHeaders, StringComparer.Ordinal);
@@ -1570,14 +1711,14 @@ namespace HowLongToBeat.Services
                     {
                         try
                         {
-                            Common.LogDebug(true, $"HLTB auth cache hit (lock) endpoint='{apiEndpoint}' ttlMs={(int)Math.Max(0, (CachedAuthTokenExpiry - DateTime.UtcNow).TotalMilliseconds)}");
+                            Common.LogDebug($"HLTB auth cache hit (lock) endpoint='{apiEndpoint}' ttlMs={(int)Math.Max(0, (CachedAuthTokenExpiry - DateTime.UtcNow).TotalMilliseconds)}");
                         }
                         catch { }
                         return new Dictionary<string, string>(CachedAuthHeaderParts, StringComparer.Ordinal);
                     }
                 }
 
-                try { Common.LogDebug(true, $"HLTB auth cache miss endpoint='{apiEndpoint}'"); } catch { }
+                try { Common.LogDebug($"HLTB auth cache miss endpoint='{apiEndpoint}'"); } catch { }
 
                 List<HttpHeader> headers = new List<HttpHeader>
                 {
@@ -1640,7 +1781,8 @@ namespace HowLongToBeat.Services
 
                     if (headerParts != null)
                     {
-                        try { Common.LogDebug(true, $"HLTB auth cache store endpoint='{apiEndpoint}' ttlSec=90 hasHp=1"); } catch { }
+                        try { Common.LogDebug($"HLTB auth cache store endpoint='{apiEndpoint}' ttlSec=90 hasHp=1"); } catch { }
+                        PersistSearchApiEndpoint(apiEndpoint);
                         return headerParts;
                     }
 
@@ -1715,7 +1857,7 @@ namespace HowLongToBeat.Services
                                     int targetGameLog = ConcurrencyController?.TargetConcurrency ?? MaxParallelGameDataDownloads;
                                     int availableGameLog = DynamicSemaphore?.CurrentCount ?? 0;
                                     int inFlightGameLog = Math.Max(0, targetGameLog - availableGameLog);
-                                    Common.LogDebug(true, $"Search: waiting semaphore for id={x.Id} target={targetGameLog} currentLimit={CurrentSemaphoreLimit} available={availableGameLog} inFlight={inFlightGameLog}");
+                                    Common.LogDebug($"Search: waiting semaphore for id={x.Id} target={targetGameLog} currentLimit={CurrentSemaphoreLimit} available={availableGameLog} inFlight={inFlightGameLog}");
                                 }
                                 catch { }
                                 var acquired = await DynamicSemaphore.WaitAsync(TimeSpan.FromSeconds(10));
@@ -1730,7 +1872,7 @@ namespace HowLongToBeat.Services
                                     int targetGameLog = ConcurrencyController?.TargetConcurrency ?? MaxParallelGameDataDownloads;
                                     int availableGameLog = DynamicSemaphore?.CurrentCount ?? 0;
                                     int inFlightGameLog = Math.Max(0, targetGameLog - availableGameLog);
-                                    Common.LogDebug(true, $"Search: acquired semaphore for id={x.Id} target={targetGameLog} currentLimit={CurrentSemaphoreLimit} available={availableGameLog} inFlight={inFlightGameLog}");
+                                    Common.LogDebug($"Search: acquired semaphore for id={x.Id} target={targetGameLog} currentLimit={CurrentSemaphoreLimit} available={availableGameLog} inFlight={inFlightGameLog}");
                                 }
                                 catch { }
                             }
@@ -1750,7 +1892,7 @@ namespace HowLongToBeat.Services
 
                                     if (hasCoreTimes)
                                     {
-                                        Common.LogDebug(true, string.Format("HLTB Search: skipping GetGamePageData for id={0} (search result already has times)", x.Id));
+                                        Common.LogDebug(string.Format("HLTB Search: skipping GetGamePageData for id={0} (search result already has times)", x.Id));
                                         x.NeedsDetails = false;
                                     }
                                     else
@@ -1786,7 +1928,7 @@ namespace HowLongToBeat.Services
                                     }
                                     catch { }
                                 }
-                                Common.LogDebug(true, $"Search: released semaphore for id={x.Id}");
+                                Common.LogDebug($"Search: released semaphore for id={x.Id}");
                             }
                         }
                         catch (Exception ex)
@@ -1798,7 +1940,7 @@ namespace HowLongToBeat.Services
                     await Task.WhenAll(tasks);
                     try
                     {
-                        Common.LogDebug(true, $"Search summary: persistentCacheHits={PersistentCacheHits}, inMemoryHits={InMemoryCacheHits}, pageFetches={PageFetches}");
+                        Common.LogDebug($"Search summary: persistentCacheHits={PersistentCacheHits}, inMemoryHits={InMemoryCacheHits}, pageFetches={PageFetches}");
                     }
                     catch { }
                 }
@@ -1827,7 +1969,7 @@ namespace HowLongToBeat.Services
                 var aliased = GameNameAliases.ApplyAlias(name, settings, userDataPath);
                 if (!string.IsNullOrEmpty(aliased) && !aliased.IsEqual(name))
                 {
-                    Common.LogDebug(true, $"HLTB aliases: '{SafeStr(name)}' -> '{SafeStr(aliased)}'");
+                    Common.LogDebug($"HLTB aliases: '{SafeStr(name)}' -> '{SafeStr(aliased)}'");
                     name = aliased;
                 }
             }
@@ -1986,7 +2128,7 @@ namespace HowLongToBeat.Services
                 string cacheKey = (name ?? string.Empty) + "|" + (platform ?? string.Empty);
                 if (SearchCache.TryGetValue(cacheKey, out SearchResult cachedResult))
                 {
-                    try { Common.LogDebug(true, $"ApiSearch cache hit for '{name}' platform='" + platform + "'"); } catch { }
+                    try { Common.LogDebug($"ApiSearch cache hit for '{name}' platform='" + platform + "'"); } catch { }
                     return cachedResult;
                 }
 
@@ -2015,7 +2157,7 @@ namespace HowLongToBeat.Services
 
                 Dictionary<string, string> headerParts = authResolution.Item1;
                 string searchUrl = authResolution.Item2;
-                Common.LogDebug(true, $"ApiSearch: POST endpoint='{searchUrl}' game='{name}' platform='{platform}'");
+                Common.LogDebug($"ApiSearch: POST endpoint='{searchUrl}' game='{name}' platform='{platform}'");
                 string token = headerParts.TryGetValue("Token", out string tokenValue) ? tokenValue : null;
                 string hpKey = headerParts.TryGetValue("Hpkey", out string hpKeyValue) ? hpKeyValue : null;
                 string hpVal = headerParts.TryGetValue("Hpval", out string hpValValue) ? hpValValue : null;
@@ -2050,7 +2192,7 @@ namespace HowLongToBeat.Services
                             int targetLog = GetSearchTarget();
                             int availableLog = SearchSemaphore?.CurrentCount ?? 0;
                             int inFlightLog = Math.Max(0, targetLog - availableLog);
-                            Common.LogDebug(true, $"ApiSearch: waiting search semaphore for '{name}' target={targetLog} currentLimit={CurrentSearchLimit} available={availableLog} inFlight={inFlightLog}");
+                            Common.LogDebug($"ApiSearch: waiting search semaphore for '{name}' target={targetLog} currentLimit={CurrentSearchLimit} available={availableLog} inFlight={inFlightLog}");
                         }
                         catch { }
                         bool waitOk = true;
@@ -2069,7 +2211,7 @@ namespace HowLongToBeat.Services
                             int targetLog = GetSearchTarget();
                             int availableLog = SearchSemaphore?.CurrentCount ?? 0;
                             int inFlightLog = Math.Max(0, targetLog - availableLog);
-                            Common.LogDebug(true, $"ApiSearch: acquired search semaphore for '{name}' target={targetLog} currentLimit={CurrentSearchLimit} available={availableLog} inFlight={inFlightLog}");
+                            Common.LogDebug($"ApiSearch: acquired search semaphore for '{name}' target={targetLog} currentLimit={CurrentSearchLimit} available={availableLog} inFlight={inFlightLog}");
                         }
                         catch { }
                     }
@@ -2135,7 +2277,7 @@ namespace HowLongToBeat.Services
                         }
                         catch { }
 
-                        Common.LogDebug(true, $"ApiSearch elapsed={sw.ElapsedMilliseconds}ms tokenReused={tokenReused} status={statusCode}");
+                        Common.LogDebug($"ApiSearch elapsed={sw.ElapsedMilliseconds}ms tokenReused={tokenReused} status={statusCode}");
                     }
                     catch { }
 
@@ -2238,7 +2380,7 @@ namespace HowLongToBeat.Services
                         try
                         {
                             SearchSemaphore.Release();
-                            Common.LogDebug(true, $"ApiSearch: released search semaphore for '{name}'");
+                            Common.LogDebug($"ApiSearch: released search semaphore for '{name}'");
                         }
                         catch { }
                     }
@@ -2261,7 +2403,7 @@ namespace HowLongToBeat.Services
         {
             string openMode = data == null ? "SearchDialog-AutoSearch" : string.Format("SearchDialog-PreloadedResults({0})", data.Count);
             Logger.Info(string.Format("HLTB SearchData OPEN: playniteGame='{0}' mode={1}", game?.Name ?? string.Empty, openMode));
-            Common.LogDebug(true, string.Format("HLTB SearchData OPEN: gameId={0} mode={1}", game?.Id, openMode));
+            Common.LogDebug(string.Format("HLTB SearchData OPEN: gameId={0} mode={1}", game?.Id, openMode));
 
             if (API.Instance.ApplicationInfo.Mode == ApplicationMode.Desktop)
             {
@@ -2321,7 +2463,7 @@ namespace HowLongToBeat.Services
                     var aliased = GameNameAliases.ApplyAlias(gameName, settings, userDataPath);
                     if (!string.IsNullOrEmpty(aliased) && !aliased.IsEqual(gameName))
                     {
-                        Common.LogDebug(true, $"HLTB aliases: '{SafeStr(gameName)}' -> '{SafeStr(aliased)}'");
+                        Common.LogDebug($"HLTB aliases: '{SafeStr(gameName)}' -> '{SafeStr(aliased)}'");
                         gameName = aliased;
                     }
                 }
@@ -2331,11 +2473,11 @@ namespace HowLongToBeat.Services
 
                 var hltbSettings = PluginDatabase?.PluginSettings;
 
-                if (IsVerboseLoggingEnabled)
+                if (Common.IsVerboseLoggingEffective)
                 {
                     try
                     {
-                        Common.LogDebug(true,$"SearchDataAuto[{traceId}]: start name='{SafeStr(gameName)}' platform='{SafeStr(platform)}' UseMatchValue={hltbSettings?.UseMatchValue} MatchValue={hltbSettings?.MatchValue}");
+                        Common.LogDebug($"SearchDataAuto[{traceId}]: start name='{SafeStr(gameName)}' platform='{SafeStr(platform)}' UseMatchValue={hltbSettings?.UseMatchValue} MatchValue={hltbSettings?.MatchValue}");
                     }
                     catch { }
                 }
@@ -2348,7 +2490,7 @@ namespace HowLongToBeat.Services
                     gotResults = TaskHelpers.TryRunSyncWithTimeout(() => SearchTwoMethod(gameName, platform), out results, 15000, Logger);
                     if (!gotResults)
                     {
-                        if (IsVerboseLoggingEnabled)
+                        if (Common.IsVerboseLoggingEffective)
                         {
                             try { Logger.Warn($"SearchDataAuto[{traceId}]: SearchTwoMethod timed out after 15000ms; retrying once"); } catch { }
                         }
@@ -2358,7 +2500,7 @@ namespace HowLongToBeat.Services
                 }
                 catch (Exception ex)
                 {
-                    if (IsVerboseLoggingEnabled)
+                    if (Common.IsVerboseLoggingEffective)
                     {
                         try { Logger.Warn(ex, $"SearchDataAuto[{traceId}]: SearchTwoMethod threw for name='{SafeStr(gameName)}' platform='{SafeStr(platform)}'"); } catch { }
                     }
@@ -2367,27 +2509,27 @@ namespace HowLongToBeat.Services
 
                 if (!gotResults)
                 {
-                    if (IsVerboseLoggingEnabled)
+                    if (Common.IsVerboseLoggingEffective)
                     {
-                        try { Common.LogDebug(true,$"SearchDataAuto[{traceId}]: no results (timeout)"); } catch { }
+                        try { Common.LogDebug($"SearchDataAuto[{traceId}]: no results (timeout)"); } catch { }
                     }
                     return null;
                 }
 
                 if (results == null || results.Count == 0)
                 {
-                    if (IsVerboseLoggingEnabled)
+                    if (Common.IsVerboseLoggingEffective)
                     {
-                        try { Common.LogDebug(true,$"SearchDataAuto[{traceId}]: no results"); } catch { }
+                        try { Common.LogDebug($"SearchDataAuto[{traceId}]: no results"); } catch { }
                     }
                     return null;
                 }
 
-                if (IsVerboseLoggingEnabled)
+                if (Common.IsVerboseLoggingEffective)
                 {
                     try
                     {
-                        Common.LogDebug(true,$"SearchDataAuto[{traceId}]: results count={results.Count}");
+                        Common.LogDebug($"SearchDataAuto[{traceId}]: results count={results.Count}");
                         int take = Math.Min(8, results.Count);
                         for (int i = 0; i < take; i++)
                         {
@@ -2402,7 +2544,7 @@ namespace HowLongToBeat.Services
                             }
                             catch { }
 
-                            Common.LogDebug(true,$"SearchDataAuto[{traceId}]: candidate[{i}] score={r?.MatchPercent} id={SafeStr(d?.Id)} title='{SafeStr(d?.Name)}' platform='{SafeStr(d?.Platform)}' hasTime={hasAnyTime} ttb={ttb} needsDetails={d?.NeedsDetails}");
+                            Common.LogDebug($"SearchDataAuto[{traceId}]: candidate[{i}] score={r?.MatchPercent} id={SafeStr(d?.Id)} title='{SafeStr(d?.Name)}' platform='{SafeStr(d?.Platform)}' hasTime={hasAnyTime} ttb={ttb} needsDetails={d?.NeedsDetails}");
                         }
                     }
                     catch { }
@@ -2424,16 +2566,16 @@ namespace HowLongToBeat.Services
                         {
                             if (hltbSettings != null && hltbSettings.UseMatchValue && exact.MatchPercent < hltbSettings.MatchValue && exact.MatchPercent < 98)
                             {
-                                if (IsVerboseLoggingEnabled)
+                                if (Common.IsVerboseLoggingEffective)
                                 {
-                                    try { Common.LogDebug(true,$"SearchDataAuto[{traceId}]: exact normalized match rejected by MatchValue score={exact.MatchPercent} threshold={hltbSettings.MatchValue}"); } catch { }
+                                    try { Common.LogDebug($"SearchDataAuto[{traceId}]: exact normalized match rejected by MatchValue score={exact.MatchPercent} threshold={hltbSettings.MatchValue}"); } catch { }
                                 }
                                 return null;
                             }
 
-                            if (IsVerboseLoggingEnabled)
+                            if (Common.IsVerboseLoggingEffective)
                             {
-                                try { Common.LogDebug(true,$"SearchDataAuto[{traceId}]: selected exact normalized match id={SafeStr(exact.Data?.Id)} title='{SafeStr(exact.Data?.Name)}' score={exact.MatchPercent}"); } catch { }
+                                try { Common.LogDebug($"SearchDataAuto[{traceId}]: selected exact normalized match id={SafeStr(exact.Data?.Id)} title='{SafeStr(exact.Data?.Name)}' score={exact.MatchPercent}"); } catch { }
                             }
 
                             return exact.Data;
@@ -2445,9 +2587,9 @@ namespace HowLongToBeat.Services
                 var best = results[0];
                 if (best?.Data == null)
                 {
-                    if (IsVerboseLoggingEnabled)
+                    if (Common.IsVerboseLoggingEffective)
                     {
-                        try { Common.LogDebug(true,$"SearchDataAuto[{traceId}]: best result had null data"); } catch { }
+                        try { Common.LogDebug($"SearchDataAuto[{traceId}]: best result had null data"); } catch { }
                     }
                     return null;
                 }
@@ -2458,16 +2600,16 @@ namespace HowLongToBeat.Services
                     {
                         if (best.MatchPercent >= 98)
                         {
-                            if (IsVerboseLoggingEnabled)
+                            if (Common.IsVerboseLoggingEffective)
                             {
-                                try { Common.LogDebug(true,$"SearchDataAuto[{traceId}]: best below MatchValue but accepted via near-perfect safety net score={best.MatchPercent} threshold={hltbSettings.MatchValue}"); } catch { }
+                                try { Common.LogDebug($"SearchDataAuto[{traceId}]: best below MatchValue but accepted via near-perfect safety net score={best.MatchPercent} threshold={hltbSettings.MatchValue}"); } catch { }
                             }
                             return best.Data;
                         }
 
-                        if (IsVerboseLoggingEnabled)
+                        if (Common.IsVerboseLoggingEffective)
                         {
-                            try { Common.LogDebug(true,$"SearchDataAuto[{traceId}]: rejected by MatchValue bestScore={best.MatchPercent} threshold={hltbSettings.MatchValue}"); } catch { }
+                            try { Common.LogDebug($"SearchDataAuto[{traceId}]: rejected by MatchValue bestScore={best.MatchPercent} threshold={hltbSettings.MatchValue}"); } catch { }
                         }
                         return null;
                     }
@@ -2488,9 +2630,9 @@ namespace HowLongToBeat.Services
                         }
                         catch { }
 
-                        if (IsVerboseLoggingEnabled)
+                        if (Common.IsVerboseLoggingEffective)
                         {
-                            try { Common.LogDebug(true,$"SearchDataAuto[{traceId}]: ambiguity check best={best.MatchPercent} second={second?.MatchPercent} ambiguous={ambiguous}"); } catch { }
+                            try { Common.LogDebug($"SearchDataAuto[{traceId}]: ambiguity check best={best.MatchPercent} second={second?.MatchPercent} ambiguous={ambiguous}"); } catch { }
                         }
 
                         if (ambiguous)
@@ -2502,7 +2644,7 @@ namespace HowLongToBeat.Services
                             }
                             catch (Exception ex)
                             {
-                                if (IsVerboseLoggingEnabled)
+                                if (Common.IsVerboseLoggingEffective)
                                 {
                                     try { Logger.Warn(ex, $"SearchDataAuto[{traceId}]: enrichment SearchTwoMethod threw for name='{SafeStr(gameName)}' platform='{SafeStr(platform)}'"); } catch { }
                                 }
@@ -2511,11 +2653,11 @@ namespace HowLongToBeat.Services
 
                             if (enriched != null && enriched.Count > 0)
                             {
-                                if (IsVerboseLoggingEnabled)
+                                if (Common.IsVerboseLoggingEffective)
                                 {
                                     try
                                     {
-                                        Common.LogDebug(true,$"SearchDataAuto[{traceId}]: enriched count={enriched.Count}");
+                                        Common.LogDebug($"SearchDataAuto[{traceId}]: enriched count={enriched.Count}");
                                         int take = Math.Min(8, enriched.Count);
                                         for (int i = 0; i < take; i++)
                                         {
@@ -2530,7 +2672,7 @@ namespace HowLongToBeat.Services
                                             }
                                             catch { }
 
-                                            Common.LogDebug(true,$"SearchDataAuto[{traceId}]: enriched[{i}] score={r?.MatchPercent} id={SafeStr(d?.Id)} title='{SafeStr(d?.Name)}' platform='{SafeStr(d?.Platform)}' hasTime={hasAnyTime} ttb={ttb} needsDetails={d?.NeedsDetails}");
+                                            Common.LogDebug($"SearchDataAuto[{traceId}]: enriched[{i}] score={r?.MatchPercent} id={SafeStr(d?.Id)} title='{SafeStr(d?.Name)}' platform='{SafeStr(d?.Platform)}' hasTime={hasAnyTime} ttb={ttb} needsDetails={d?.NeedsDetails}");
                                         }
                                     }
                                     catch { }
@@ -2553,16 +2695,16 @@ namespace HowLongToBeat.Services
                                 {
                                     if (hltbSettings != null && hltbSettings.UseMatchValue && withTimes.MatchPercent < hltbSettings.MatchValue && withTimes.MatchPercent < 98)
                                     {
-                                        if (IsVerboseLoggingEnabled)
+                                        if (Common.IsVerboseLoggingEffective)
                                         {
-                                            try { Common.LogDebug(true,$"SearchDataAuto[{traceId}]: enriched withTimes rejected by MatchValue score={withTimes.MatchPercent} threshold={hltbSettings.MatchValue}"); } catch { }
+                                            try { Common.LogDebug($"SearchDataAuto[{traceId}]: enriched withTimes rejected by MatchValue score={withTimes.MatchPercent} threshold={hltbSettings.MatchValue}"); } catch { }
                                         }
                                         return null;
                                     }
 
-                                    if (IsVerboseLoggingEnabled)
+                                    if (Common.IsVerboseLoggingEffective)
                                     {
-                                        try { Common.LogDebug(true,$"SearchDataAuto[{traceId}]: selected enriched withTimes id={SafeStr(withTimes.Data?.Id)} title='{SafeStr(withTimes.Data?.Name)}' score={withTimes.MatchPercent}"); } catch { }
+                                        try { Common.LogDebug($"SearchDataAuto[{traceId}]: selected enriched withTimes id={SafeStr(withTimes.Data?.Id)} title='{SafeStr(withTimes.Data?.Name)}' score={withTimes.MatchPercent}"); } catch { }
                                     }
                                     return withTimes.Data;
                                 }
@@ -2572,16 +2714,16 @@ namespace HowLongToBeat.Services
                                 {
                                     if (hltbSettings != null && hltbSettings.UseMatchValue && bestEnriched.MatchPercent < hltbSettings.MatchValue && bestEnriched.MatchPercent < 98)
                                     {
-                                        if (IsVerboseLoggingEnabled)
+                                        if (Common.IsVerboseLoggingEffective)
                                         {
-                                            try { Common.LogDebug(true,$"SearchDataAuto[{traceId}]: bestEnriched rejected by MatchValue score={bestEnriched.MatchPercent} threshold={hltbSettings.MatchValue}"); } catch { }
+                                            try { Common.LogDebug($"SearchDataAuto[{traceId}]: bestEnriched rejected by MatchValue score={bestEnriched.MatchPercent} threshold={hltbSettings.MatchValue}"); } catch { }
                                         }
                                         return null;
                                     }
 
-                                    if (IsVerboseLoggingEnabled)
+                                    if (Common.IsVerboseLoggingEffective)
                                     {
-                                        try { Common.LogDebug(true,$"SearchDataAuto[{traceId}]: selected bestEnriched id={SafeStr(bestEnriched.Data?.Id)} title='{SafeStr(bestEnriched.Data?.Name)}' score={bestEnriched.MatchPercent}"); } catch { }
+                                        try { Common.LogDebug($"SearchDataAuto[{traceId}]: selected bestEnriched id={SafeStr(bestEnriched.Data?.Id)} title='{SafeStr(bestEnriched.Data?.Name)}' score={bestEnriched.MatchPercent}"); } catch { }
                                     }
                                     return bestEnriched.Data;
                                 }
@@ -2589,9 +2731,9 @@ namespace HowLongToBeat.Services
 
                             if (best.MatchPercent >= 98)
                             {
-                                if (IsVerboseLoggingEnabled)
+                                if (Common.IsVerboseLoggingEffective)
                                 {
-                                    try { Common.LogDebug(true,$"SearchDataAuto[{traceId}]: ambiguous but fell back to near-perfect best score={best.MatchPercent} id={SafeStr(best.Data?.Id)}"); } catch { }
+                                    try { Common.LogDebug($"SearchDataAuto[{traceId}]: ambiguous but fell back to near-perfect best score={best.MatchPercent} id={SafeStr(best.Data?.Id)}"); } catch { }
                                 }
                                 return best.Data;
                             }
@@ -2600,9 +2742,9 @@ namespace HowLongToBeat.Services
                 }
                 catch { }
 
-                if (IsVerboseLoggingEnabled)
+                if (Common.IsVerboseLoggingEffective)
                 {
-                    try { Common.LogDebug(true,$"SearchDataAuto[{traceId}]: selected best (default) id={SafeStr(best.Data?.Id)} title='{SafeStr(best.Data?.Name)}' score={best.MatchPercent}"); } catch { }
+                    try { Common.LogDebug($"SearchDataAuto[{traceId}]: selected best (default) id={SafeStr(best.Data?.Id)} title='{SafeStr(best.Data?.Name)}' score={best.MatchPercent}"); } catch { }
                 }
 
                 return best.Data;
@@ -2646,7 +2788,7 @@ namespace HowLongToBeat.Services
                 lastLoginCheckResult = userId != 0;
 
                 Logger.Info($"HLTB Auth: session check userId={userId} loggedIn={userId != 0}");
-                Common.LogDebug(true, $"HLTB Auth: GetIsUserLoggedInAsync userId={userId} IsConnected={IsConnected} cached={(lastLoginCheckResult != null)}");
+                Common.LogDebug($"HLTB Auth: GetIsUserLoggedInAsync userId={userId} IsConnected={IsConnected} cached={(lastLoginCheckResult != null)}");
 
                 return userId != 0;
             }
@@ -2769,12 +2911,12 @@ namespace HowLongToBeat.Services
                         if (loginRedirectDetected)
                         {
                             Logger.Info($"HLTB Auth: login dialog closed, user='{UserLogin}'");
-                            Common.LogDebug(true, "HLTB Auth: extracting cookies after dialog close");
+                            Common.LogDebug("HLTB Auth: extracting cookies after dialog close");
 
                             List<HttpCookie> cookies = ExtractLoginWebViewCookies(webView);
                             bool saved = CookiesTools.SetStoredCookies(cookies);
                             Logger.Info($"HLTB Auth: captured cookies from login webview count={cookies?.Count ?? 0} saved={saved}");
-                            Common.LogDebug(true, $"HLTB Auth: login capture saved={saved}");
+                            Common.LogDebug($"HLTB Auth: login capture saved={saved}");
                             LogCookieSummary("login captured", cookies);
 
                             lastLoginCheckResult = null;
@@ -2790,7 +2932,7 @@ namespace HowLongToBeat.Services
                                     UserId = await GetUserId().ConfigureAwait(false);
                                     IsConnected = UserId != 0;
                                     Logger.Info($"HLTB Auth: post-login userId={UserId}");
-                                    Common.LogDebug(true, $"HLTB Auth: post-login IsConnected={IsConnected} UserLogin='{UserLogin}'");
+                                    Common.LogDebug($"HLTB Auth: post-login IsConnected={IsConnected} UserLogin='{UserLogin}'");
                                 }
                                 catch (Exception ex)
                                 {
@@ -2838,7 +2980,7 @@ namespace HowLongToBeat.Services
             try
             {
                 string address = webView.GetCurrentAddress();
-                Common.LogDebug(true, $"HLTB Auth Login: checking url='{address}'");
+                Common.LogDebug($"HLTB Auth Login: checking url='{address}'");
 
                 string userLogin;
                 if (!TryParseLoginUserUrl(address, out userLogin))
@@ -2868,7 +3010,7 @@ namespace HowLongToBeat.Services
             catch (Exception ex)
             {
                 try { Logger.Warn(ex, "HLTB Auth: login redirect check failed"); } catch { }
-                Common.LogDebug(true, $"HLTB Auth Login: redirect check error url='{webView?.GetCurrentAddress() ?? string.Empty}'");
+                Common.LogDebug($"HLTB Auth Login: redirect check error url='{webView?.GetCurrentAddress() ?? string.Empty}'");
                 return false;
             }
         }
@@ -2994,7 +3136,7 @@ namespace HowLongToBeat.Services
             if (!LooksLikeJson(response))
             {
                 try { Logger.Warn($"HLTB Auth: GetUserId unexpected response (not JSON): {SafeStr(response)}"); } catch { }
-                Common.LogDebug(true, $"HLTB Auth: GetUserId non-JSON response='{response}'");
+                Common.LogDebug($"HLTB Auth: GetUserId non-JSON response='{response}'");
                 return false;
             }
 
@@ -3002,13 +3144,13 @@ namespace HowLongToBeat.Services
             {
                 dynamic parsed = Serialization.FromJson<dynamic>(response);
                 userId = parsed?.data[0]?.user_id ?? 0;
-                Common.LogDebug(true, $"HLTB Auth: GetUserId parsed userId={userId} responseLen={response.Length}");
+                Common.LogDebug($"HLTB Auth: GetUserId parsed userId={userId} responseLen={response.Length}");
                 return true;
             }
             catch (Exception ex)
             {
                 try { Logger.Warn(ex, "HLTB Auth: failed to parse GetUserId JSON response"); } catch { }
-                Common.LogDebug(true, $"HLTB Auth: GetUserId JSON parse error preview='{SafeStr(response)}'");
+                Common.LogDebug($"HLTB Auth: GetUserId JSON parse error preview='{SafeStr(response)}'");
                 return false;
             }
         }
@@ -3031,7 +3173,7 @@ namespace HowLongToBeat.Services
                 }
 
                 string httpResponse = await FetchUserIdHttpResponseAsync(cookies).ConfigureAwait(false);
-                Common.LogDebug(true, $"HLTB Auth: GetUserId HTTP responseLen={httpResponse?.Length ?? 0} preview='{SafeStr(httpResponse)}'");
+                Common.LogDebug($"HLTB Auth: GetUserId HTTP responseLen={httpResponse?.Length ?? 0} preview='{SafeStr(httpResponse)}'");
 
                 int userId;
                 if (TryParseUserIdFromApiResponse(httpResponse, out userId))
@@ -3045,7 +3187,7 @@ namespace HowLongToBeat.Services
                     if (string.IsNullOrWhiteSpace(httpResponse) || httpResponse == "{}")
                     {
                         Logger.Warn("HLTB Auth: GetUserId HTTP session empty; trying WebView fallback");
-                        Common.LogDebug(true, "HLTB Auth: GetUserId HTTP empty response with stored cookies");
+                        Common.LogDebug("HLTB Auth: GetUserId HTTP empty response with stored cookies");
                     }
                     else
                     {
@@ -3059,7 +3201,7 @@ namespace HowLongToBeat.Services
                 }
 
                 string webViewResponse = await Web.DownloadPageText(UrlUser, cookies).ConfigureAwait(false);
-                Common.LogDebug(true, $"HLTB Auth: GetUserId WebView responseLen={webViewResponse?.Length ?? 0} preview='{SafeStr(webViewResponse)}'");
+                Common.LogDebug($"HLTB Auth: GetUserId WebView responseLen={webViewResponse?.Length ?? 0} preview='{SafeStr(webViewResponse)}'");
 
                 if (TryParseUserIdFromApiResponse(webViewResponse, out userId))
                 {
@@ -3137,6 +3279,7 @@ namespace HowLongToBeat.Services
                     Id = gamesList.GameId.ToString(),
                     CurrentTime = gamesList.InvestedPro,
                     IsReplay = gamesList.PlayCount == 2,
+                    IsIncludesDlc = gamesList.PlayDlc == 1,
                     IsRetired = gamesList.ListRetired == 1,
                     Storefront = gamesList.PlayStorefront,
                     StartDate = dateStart,
@@ -3550,7 +3693,7 @@ namespace HowLongToBeat.Services
                         new KeyValuePair<string, string>("Referer", referer)
                     };
 
-                    Common.LogDebug(true, $"ApiSubmitData: POST {UrlPostData} submissionId={editData.SubmissionId} referer={referer}");
+                    Common.LogDebug($"ApiSubmitData: POST {UrlPostData} submissionId={editData.SubmissionId} referer={referer}");
 
                     (string response, int statusCode) = await PostJson(UrlPostData, payload, cookies, submitHeaders);
 
@@ -3596,7 +3739,7 @@ namespace HowLongToBeat.Services
                         }
                         else
                         {
-                            Common.LogDebug(true,"ApiSubmitData: non-JSON response received; treating as success");
+                            Common.LogDebug("ApiSubmitData: non-JSON response received; treating as success");
                             success = true;
                         }
 

@@ -1,0 +1,150 @@
+# Smoke-tests HowLongToBeat search the same way the Playnite plugin does
+# (discover endpoint from JS → auth init → POST search).
+#
+# On hard failure (exit 1): open or update a single open tracking issue,
+# and append KO links next to the README badge.
+# On success (exit 0): keep/restores the README badge line without KO text.
+# On HTTP 429 (exit 2): warn only — do not open an "API down" issue / touch README.
+
+name: HLTB Search Smoke
+
+on:
+  schedule:
+    # Daily ~06:00 UTC (GitHub cron is best-effort; default branch only).
+    - cron: "0 6 * * *"
+  workflow_dispatch:
+  # Allows testing from non-default branches (workflow_dispatch is only
+  # registered once the file also exists on the repository default branch).
+  push:
+    branches:
+      - devel
+    paths:
+      - ".github/workflows/hltb-search-smoke.yml"
+      - ".github/scripts/**"
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: hltb-search-smoke
+  cancel-in-progress: false
+
+jobs:
+  smoke:
+    name: Search smoke test
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          # Required so the job can push README badge status updates.
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Run HLTB search smoke test
+        id: smoke
+        run: |
+          set +e
+          python .github/scripts/hltb_search_smoke.py --game Celeste
+          code=$?
+          echo "exit_code=${code}" >> "${GITHUB_OUTPUT}"
+          exit 0
+
+      - name: Ensure tracking label exists
+        if: steps.smoke.outputs.exit_code == '1'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh label create "hltb-api-down" \
+            --description "Automated HLTB search smoke test failure" \
+            --color "B60205" \
+            --force
+
+      - name: Open or update tracking issue
+        if: steps.smoke.outputs.exit_code == '1'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          TITLE="HLTB search API smoke test failed"
+          BODY="$(cat <<EOF
+          Automated smoke test failed (HowLongToBeat search used by this plugin).
+
+          - Workflow run: ${RUN_URL}
+          - Probe: discovery of \`/api/...\` from site JS → auth init → POST search (\`Celeste\`)
+          - Related: #254
+
+          The job fails until the public HLTB search flow works again for the plugin.
+          Close this issue once a successful smoke run is confirmed.
+          EOF
+          )"
+
+          # Deduplicate: one open issue with this exact title under the tracking label.
+          existing="$(gh issue list \
+            --state open \
+            --label "hltb-api-down" \
+            --json number,title \
+            --jq ".[] | select(.title == \"${TITLE}\") | .number" \
+            | head -n 1)"
+
+          if [ -n "${existing}" ]; then
+            echo "Updating existing issue #${existing}"
+            gh issue comment "${existing}" --body "Still failing.
+
+          Latest run: ${RUN_URL}"
+          else
+            echo "Creating tracking issue"
+            gh issue create \
+              --title "${TITLE}" \
+              --label "hltb-api-down" \
+              --body "${BODY}"
+          fi
+
+      - name: Sync README badge line
+        if: steps.smoke.outputs.exit_code == '0' || steps.smoke.outputs.exit_code == '1'
+        env:
+          EXIT_CODE: ${{ steps.smoke.outputs.exit_code }}
+        run: |
+          set -euo pipefail
+          if [ "${EXIT_CODE}" = "0" ]; then
+            status=ok
+          else
+            status=ko
+          fi
+          python .github/scripts/update_hltb_readme_badge.py --status "${status}"
+
+          if git diff --quiet -- README.md; then
+            echo "README already up to date."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add README.md
+          git commit -m "ci(hltb): sync README smoke badge (${status})"
+          git push
+
+      - name: Evaluate smoke result
+        env:
+          EXIT_CODE: ${{ steps.smoke.outputs.exit_code }}
+        run: |
+          set -euo pipefail
+          case "${EXIT_CODE}" in
+            0)
+              echo "Smoke test passed."
+              ;;
+            2)
+              echo "::warning::HLTB returned HTTP 429 (rate limited). Skipping API-down issue; treating as transient."
+              ;;
+            *)
+              echo "::error::HLTB search smoke test failed (exit ${EXIT_CODE})."
+              exit 1
+              ;;
+          esac

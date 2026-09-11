@@ -1,0 +1,277 @@
+﻿<UserControl x:Class="HowLongToBeat.Views.HltbSyncStatusSettingsSection"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:HowLongToBeat="clr-namespace:HowLongToBeat"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance HowLongToBeat:HowLongToBeatSettingsViewModel}">
+    <UserControl.Resources>
+        <Style x:Key="StatusSyncCardBorder" TargetType="Border">
+            <Setter Property="Padding" Value="12,10"/>
+            <Setter Property="Margin" Value="0,0,0,8"/>
+            <Setter Property="CornerRadius" Value="{DynamicResource ControlCornerRadius}"/>
+            <Setter Property="BorderThickness" Value="{DynamicResource ControlBorderThickness}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource PopupBorderBrush}"/>
+            <Setter Property="Background" Value="{DynamicResource ControlBackgroundBrush}"/>
+        </Style>
+    </UserControl.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto"
+                  HorizontalScrollBarVisibility="Disabled"
+                  PanningMode="VerticalOnly">
+        <StackPanel>
+            <CheckBox Name="PART_AutoSetGameStatusFromHltb"
+                      IsChecked="{Binding Settings.AutoSetGameStatus}"
+                      Content="{DynamicResource LOCHowLongToBeatAutoSetGameStatus}"/>
+
+            <CheckBox Name="PART_AutoSetGameStatusToHltb"
+                      Margin="0,10,0,0"
+                      IsChecked="{Binding Settings.AutoSetGameStatusToHltb}"
+                      Content="{DynamicResource LOCHowLongToBeatAutoSetGameStatusToHltb}"/>
+
+            <StackPanel Margin="0,12,0,0">
+                <StackPanel.Style>
+                    <Style TargetType="StackPanel">
+                        <Setter Property="IsEnabled" Value="False"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding ElementName=PART_AutoSetGameStatusFromHltb, Path=IsChecked}"
+                                         Value="True">
+                                <Setter Property="IsEnabled" Value="True"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding ElementName=PART_AutoSetGameStatusToHltb, Path=IsChecked}"
+                                         Value="True">
+                                <Setter Property="IsEnabled" Value="True"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </StackPanel.Style>
+
+                <!-- Playing -->
+                <Border Style="{StaticResource StatusSyncCardBorder}">
+                    <StackPanel>
+                        <DockPanel LastChildFill="True">
+                            <TextBlock DockPanel.Dock="Left"
+                                       Width="120"
+                                       VerticalAlignment="Center"
+                                       Style="{DynamicResource BaseTextBlockStyle}"
+                                       Text="{DynamicResource LOCHowLongToBeatPlaying}"/>
+                            <ComboBox x:Name="PART_GameStatusPlaying"
+                                      MinWidth="160"
+                                      SelectedValuePath="Id"
+                                      DisplayMemberPath="Name"
+                                      SelectedValue="{Binding Settings.GameStatusPlaying}"/>
+                        </DockPanel>
+                        <WrapPanel Margin="0,8,0,0">
+                            <CheckBox Margin="0,0,16,4"
+                                      IsEnabled="{Binding ElementName=PART_AutoSetGameStatusToHltb, Path=IsChecked}"
+                                      IsChecked="{Binding Settings.AutoSetToHltbPlayingSendPlaytime}"
+                                      Content="{DynamicResource LOCHowLongToBeatSyncPlaytimeShort}"
+                                      ToolTip="{DynamicResource LOCHowLongToBeatAutoSetGameStatusToHltbPlayingPlaytime}"/>
+                            <CheckBox Margin="0,0,0,4"
+                                      IsEnabled="{Binding ElementName=PART_AutoSetGameStatusToHltb, Path=IsChecked}"
+                                      IsChecked="{Binding Settings.ToHltbPlayingListSync.ClearOtherLists}"
+                                      Content="{DynamicResource LOCHowLongToBeatClearOtherListsShort}"
+                                      ToolTip="{DynamicResource LOCHowLongToBeatClearOtherListsTooltip}"/>
+                        </WrapPanel>
+                    </StackPanel>
+                </Border>
+
+                <!-- Completed -->
+                <Border Style="{StaticResource StatusSyncCardBorder}">
+                    <StackPanel>
+                        <DockPanel LastChildFill="True">
+                            <TextBlock DockPanel.Dock="Left"
+                                       Width="120"
+                                       VerticalAlignment="Center"
+                                       Style="{DynamicResource BaseTextBlockStyle}"
+                                       Text="{DynamicResource LOCHowLongToBeatCompleted}"/>
+                            <ComboBox x:Name="PART_GameStatusCompleted"
+                                      MinWidth="160"
+                                      SelectedValuePath="Id"
+                                      DisplayMemberPath="Name"
+                                      SelectedValue="{Binding Settings.GameStatusCompleted}"/>
+                        </DockPanel>
+                        <WrapPanel Margin="0,8,0,0">
+                            <CheckBox Margin="0,0,16,4"
+                                      IsEnabled="{Binding ElementName=PART_AutoSetGameStatusToHltb, Path=IsChecked}"
+                                      IsChecked="{Binding Settings.AutoSetToHltbCompletedSendPlaytime}"
+                                      Content="{DynamicResource LOCHowLongToBeatSyncPlaytimeShort}"
+                                      ToolTip="{DynamicResource LOCHowLongToBeatAutoSetGameStatusToHltbCompletedPlaytime}"/>
+                            <CheckBox Margin="0,0,16,4"
+                                      IsChecked="{Binding Settings.AutoSetToHltbCompletedSendCompletionDate}"
+                                      Content="{DynamicResource LOCHowLongToBeatSyncDateShort}"
+                                      ToolTip="{DynamicResource LOCHowLongToBeatAutoSetGameStatusToHltbCompletedDate}">
+                                <CheckBox.Style>
+                                    <Style TargetType="CheckBox" BasedOn="{StaticResource {x:Type CheckBox}}">
+                                        <Setter Property="IsEnabled" Value="False"/>
+                                        <Style.Triggers>
+                                            <MultiDataTrigger>
+                                                <MultiDataTrigger.Conditions>
+                                                    <Condition Binding="{Binding ElementName=PART_AutoSetGameStatusToHltb, Path=IsChecked}" Value="True"/>
+                                                    <Condition Binding="{Binding Settings.AutoSetToHltbCompletedSendPlaytime}" Value="True"/>
+                                                </MultiDataTrigger.Conditions>
+                                                <Setter Property="IsEnabled" Value="True"/>
+                                            </MultiDataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </CheckBox.Style>
+                            </CheckBox>
+                            <CheckBox Margin="0,0,0,4"
+                                      IsEnabled="{Binding ElementName=PART_AutoSetGameStatusToHltb, Path=IsChecked}"
+                                      IsChecked="{Binding Settings.ToHltbCompletedListSync.ClearOtherLists}"
+                                      Content="{DynamicResource LOCHowLongToBeatClearOtherListsShort}"
+                                      ToolTip="{DynamicResource LOCHowLongToBeatClearOtherListsTooltip}"/>
+                        </WrapPanel>
+                    </StackPanel>
+                </Border>
+
+                <!-- Completionist -->
+                <Border Style="{StaticResource StatusSyncCardBorder}">
+                    <StackPanel>
+                        <DockPanel LastChildFill="True">
+                            <TextBlock DockPanel.Dock="Left"
+                                       Width="120"
+                                       VerticalAlignment="Center"
+                                       Style="{DynamicResource BaseTextBlockStyle}"
+                                       Text="{DynamicResource LOCHowLongToBeatCompletionist}"/>
+                            <ComboBox x:Name="PART_GameStatusCompletionist"
+                                      MinWidth="160"
+                                      SelectedValuePath="Id"
+                                      DisplayMemberPath="Name"
+                                      SelectedValue="{Binding Settings.GameStatusCompletionist}"/>
+                        </DockPanel>
+                        <WrapPanel Margin="0,8,0,0">
+                            <CheckBox Margin="0,0,16,4"
+                                      IsEnabled="{Binding ElementName=PART_AutoSetGameStatusToHltb, Path=IsChecked}"
+                                      IsChecked="{Binding Settings.AutoSetToHltbCompletionistSendPlaytime}"
+                                      Content="{DynamicResource LOCHowLongToBeatSyncPlaytimeShort}"
+                                      ToolTip="{DynamicResource LOCHowLongToBeatAutoSetGameStatusToHltbCompletionistPlaytime}"/>
+                            <CheckBox Margin="0,0,16,4"
+                                      IsChecked="{Binding Settings.AutoSetToHltbCompletionistSendCompletionDate}"
+                                      Content="{DynamicResource LOCHowLongToBeatSyncDateShort}"
+                                      ToolTip="{DynamicResource LOCHowLongToBeatAutoSetGameStatusToHltbCompletionistDate}">
+                                <CheckBox.Style>
+                                    <Style TargetType="CheckBox" BasedOn="{StaticResource {x:Type CheckBox}}">
+                                        <Setter Property="IsEnabled" Value="False"/>
+                                        <Style.Triggers>
+                                            <MultiDataTrigger>
+                                                <MultiDataTrigger.Conditions>
+                                                    <Condition Binding="{Binding ElementName=PART_AutoSetGameStatusToHltb, Path=IsChecked}" Value="True"/>
+                                                    <Condition Binding="{Binding Settings.AutoSetToHltbCompletionistSendPlaytime}" Value="True"/>
+                                                </MultiDataTrigger.Conditions>
+                                                <Setter Property="IsEnabled" Value="True"/>
+                                            </MultiDataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </CheckBox.Style>
+                            </CheckBox>
+                            <CheckBox Margin="0,0,0,4"
+                                      IsEnabled="{Binding ElementName=PART_AutoSetGameStatusToHltb, Path=IsChecked}"
+                                      IsChecked="{Binding Settings.ToHltbCompletionistListSync.ClearOtherLists}"
+                                      Content="{DynamicResource LOCHowLongToBeatClearOtherListsShort}"
+                                      ToolTip="{DynamicResource LOCHowLongToBeatClearOtherListsTooltip}"/>
+                        </WrapPanel>
+                    </StackPanel>
+                </Border>
+
+                <!-- Backlog -->
+                <Border Style="{StaticResource StatusSyncCardBorder}">
+                    <StackPanel>
+                        <DockPanel LastChildFill="True">
+                            <TextBlock DockPanel.Dock="Left"
+                                       Width="120"
+                                       VerticalAlignment="Center"
+                                       Style="{DynamicResource BaseTextBlockStyle}"
+                                       Text="{DynamicResource LOCHltbUserListBacklog}"/>
+                            <ComboBox x:Name="PART_GameStatusBacklog"
+                                      MinWidth="160"
+                                      SelectedValuePath="Id"
+                                      DisplayMemberPath="Name"
+                                      SelectedValue="{Binding Settings.GameStatusBacklog}"/>
+                        </DockPanel>
+                        <WrapPanel Margin="0,8,0,0">
+                            <CheckBox Margin="0,0,0,4"
+                                      IsEnabled="{Binding ElementName=PART_AutoSetGameStatusToHltb, Path=IsChecked}"
+                                      IsChecked="{Binding Settings.ToHltbBacklogListSync.ClearOtherLists}"
+                                      Content="{DynamicResource LOCHowLongToBeatClearOtherListsShort}"
+                                      ToolTip="{DynamicResource LOCHowLongToBeatClearOtherListsTooltip}"/>
+                        </WrapPanel>
+                    </StackPanel>
+                </Border>
+
+                <!-- Replays -->
+                <Border Style="{StaticResource StatusSyncCardBorder}">
+                    <StackPanel>
+                        <DockPanel LastChildFill="True">
+                            <TextBlock DockPanel.Dock="Left"
+                                       Width="120"
+                                       VerticalAlignment="Center"
+                                       Style="{DynamicResource BaseTextBlockStyle}"
+                                       Text="{DynamicResource LOCHltbUserListReplays}"/>
+                            <ComboBox x:Name="PART_GameStatusReplays"
+                                      MinWidth="160"
+                                      SelectedValuePath="Id"
+                                      DisplayMemberPath="Name"
+                                      SelectedValue="{Binding Settings.GameStatusReplays}"/>
+                        </DockPanel>
+                        <WrapPanel Margin="0,8,0,0">
+                            <CheckBox Margin="0,0,0,4"
+                                      IsEnabled="{Binding ElementName=PART_AutoSetGameStatusToHltb, Path=IsChecked}"
+                                      IsChecked="{Binding Settings.ToHltbReplaysListSync.ClearOtherLists}"
+                                      Content="{DynamicResource LOCHowLongToBeatClearOtherListsShort}"
+                                      ToolTip="{DynamicResource LOCHowLongToBeatClearOtherListsTooltip}"/>
+                        </WrapPanel>
+                    </StackPanel>
+                </Border>
+
+                <!-- Retired -->
+                <Border Style="{StaticResource StatusSyncCardBorder}">
+                    <StackPanel>
+                        <DockPanel LastChildFill="True">
+                            <TextBlock DockPanel.Dock="Left"
+                                       Width="120"
+                                       VerticalAlignment="Center"
+                                       Style="{DynamicResource BaseTextBlockStyle}"
+                                       Text="{DynamicResource LOCHltbUserListRetired}"/>
+                            <ComboBox x:Name="PART_GameStatusRetired"
+                                      MinWidth="160"
+                                      SelectedValuePath="Id"
+                                      DisplayMemberPath="Name"
+                                      SelectedValue="{Binding Settings.GameStatusRetired}"/>
+                        </DockPanel>
+                        <WrapPanel Margin="0,8,0,0">
+                            <CheckBox Margin="0,0,0,4"
+                                      IsEnabled="{Binding ElementName=PART_AutoSetGameStatusToHltb, Path=IsChecked}"
+                                      IsChecked="{Binding Settings.ToHltbRetiredListSync.ClearOtherLists}"
+                                      Content="{DynamicResource LOCHowLongToBeatClearOtherListsShort}"
+                                      ToolTip="{DynamicResource LOCHowLongToBeatClearOtherListsTooltip}"/>
+                        </WrapPanel>
+                    </StackPanel>
+                </Border>
+
+                <TextBlock Margin="0,8,0,0"
+                           Style="{DynamicResource SectionHeaderText}"
+                           Text="{DynamicResource LOCHowLongToBeatAlwaysKeepListsTitle}"
+                           ToolTip="{DynamicResource LOCHowLongToBeatAlwaysKeepListsTooltip}"/>
+                <WrapPanel>
+                    <CheckBox Margin="0,0,12,6"
+                              Content="{DynamicResource LOCHowLongToBeatPlaying}"
+                              IsChecked="{Binding Settings.ToHltbAlwaysKeepLists.AlwaysKeepPlayingIfPresent}"/>
+                    <CheckBox Margin="0,0,12,6"
+                              Content="{DynamicResource LOCHltbUserListBacklog}"
+                              IsChecked="{Binding Settings.ToHltbAlwaysKeepLists.AlwaysKeepBacklogIfPresent}"/>
+                    <CheckBox Margin="0,0,12,6"
+                              Content="{DynamicResource LOCHltbUserListReplays}"
+                              IsChecked="{Binding Settings.ToHltbAlwaysKeepLists.AlwaysKeepReplayIfPresent}"/>
+                    <CheckBox Margin="0,0,12,6"
+                              Content="{DynamicResource LOCHowLongToBeatCompleted}"
+                              IsChecked="{Binding Settings.ToHltbAlwaysKeepLists.AlwaysKeepCompletedIfPresent}"/>
+                    <CheckBox Margin="0,0,0,6"
+                              Content="{DynamicResource LOCHltbUserListRetired}"
+                              IsChecked="{Binding Settings.ToHltbAlwaysKeepLists.AlwaysKeepRetiredIfPresent}"/>
+                </WrapPanel>
+            </StackPanel>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

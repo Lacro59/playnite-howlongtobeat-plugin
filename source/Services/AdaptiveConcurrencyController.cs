@@ -147,7 +147,7 @@ namespace HowLongToBeat.Services
                 {
                     targetConcurrency = newTarget;
                 }
-                Common.LogDebug(true, $"AdaptiveConcurrency: adjusted target {current} -> {newTarget} (latency={latency:F0}ms, error={error:F2})");
+                Common.LogDebug($"AdaptiveConcurrency: adjusted target {current} -> {newTarget} (latency={latency:F0}ms, error={error:F2})");
             }
         }
 

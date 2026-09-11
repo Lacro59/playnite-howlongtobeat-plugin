@@ -1,0 +1,34 @@
+﻿<UserControl x:Class="HowLongToBeat.Views.HltbHelpSettingsSection"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:HowLongToBeat="clr-namespace:HowLongToBeat"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance HowLongToBeat:HowLongToBeatSettingsViewModel}">
+
+    <ScrollViewer Margin="10"
+                  VerticalScrollBarVisibility="Auto"
+                  PanningMode="VerticalOnly">
+        <StackPanel>
+            <TextBlock Style="{DynamicResource SectionHeaderText}"
+                       TextWrapping="Wrap"
+                       Text="{DynamicResource LOCHltbQuickSearchInfo}"/>
+
+            <StackPanel Orientation="Horizontal"
+                        Margin="30,0,0,0">
+                <TextBlock Style="{DynamicResource BaseTextBlockStyle}"
+                           FontWeight="SemiBold"
+                           Width="70"
+                           Text="ttb"/>
+                <TextBlock Style="{DynamicResource BaseTextBlockStyle}"
+                           TextWrapping="Wrap"
+                           Text="{DynamicResource LOCHltbQuickSearchCmd1}"/>
+            </StackPanel>
+
+            <Image Margin="100,10,0,0"
+                   Name="PART_TTB"
+                   HorizontalAlignment="Left"/>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

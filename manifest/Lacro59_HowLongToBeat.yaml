@@ -440,3 +440,20 @@ Packages:
     PackageUrl: https://github.com/Lacro59/playnite-howlongtobeat-plugin/releases/download/v3.11.2/playnite-howlongtobeat-plugin_3_11_2.pext
     Changelog:
       - 'Updated: Localizations'
+  - Version: 3.12
+    RequiredApiVersion: 6.16.0
+    ReleaseDate: 2026-09-11
+    PackageUrl: https://github.com/Lacro59/playnite-howlongtobeat-plugin/releases/download/v3.12/playnite-howlongtobeat-plugin_3_12.pext
+    Changelog:
+      - 'Added: Redesigned settings with master-detail navigation and themed sections'
+      - 'Added: Sync Playnite user score to HowLongToBeat review score'
+      - 'Added: Status sync for Retired, Backlog, and Replays (clear others / always keep)'
+      - 'Added: Optional HLTB tags (DLC included, mark as replay) and DLC filter'
+      - 'Added: Ignore automatic playtime sync by tag'
+      - 'Added: Installed games and platform filters in user data view'
+      - 'Added: Separate HLTB / VNDB data preferences and default provider options'
+      - 'Improved: User data list columns and community TTB display'
+      - 'Fixed: HLTB search endpoint after website changes'
+      - 'Fixed: Theme search button when a game has no data yet'
+      - 'Fixed: User view filters when the list is empty or clipped'
+      - 'Updated: Localizations'

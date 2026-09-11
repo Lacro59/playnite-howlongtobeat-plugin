@@ -119,5 +119,18 @@ namespace HowLongToBeat.Services
 
             return PluginDatabase.UserHltbData.TitlesList.Count(x => x.IsReplay);
         }
+
+        /// <summary>
+        /// Returns how many user titles have the "DLC / Expansions Included" optional tag.
+        /// </summary>
+        public static int GetCountIncludesDlc()
+        {
+            if (PluginDatabase.UserHltbData?.TitlesList == null)
+            {
+                return 0;
+            }
+
+            return PluginDatabase.UserHltbData.TitlesList.Count(x => x.IsIncludesDlc);
+        }
     }
 }

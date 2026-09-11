@@ -1,4 +1,4 @@
-﻿using CommonPlayniteShared.Common;
+using CommonPlayniteShared.Common;
 using CommonPluginsShared;
 using CommonPluginsShared.Collections;
 using CommonPluginsShared.Extensions;
@@ -39,12 +39,14 @@ namespace HowLongToBeat.Services
             PluginExportCsv = new HowLongToBeatExport();
         }
 
-        // Change visibility to allow other classes to use the centralized verbose check
-#if DEBUG
-        public bool IsVerboseLoggingEnabled => true;
-#else
-        public bool IsVerboseLoggingEnabled => false;
-#endif
+        /// <summary>
+        /// Writes a verbose debug message gated by <see cref="Common.IsVerboseLoggingEffective"/>.
+        /// </summary>
+        /// <param name="message">Message to log.</param>
+        private void LogVerbose(string message)
+        {
+            Common.LogDebug(message);
+        }
 
         private void FireAndForget(Task task, string context)
         {
@@ -134,10 +136,7 @@ namespace HowLongToBeat.Services
             {
                 if (HowLongToBeatApi == null)
                 {
-                    if (IsVerboseLoggingEnabled)
-                    {
-                        Common.LogDebug(true,"HowLongToBeatApi not initialized yet during LoadMoreData(); using empty UserHltbData placeholder");
-                    }
+                    LogVerbose("HowLongToBeatApi not initialized yet during LoadMoreData(); using empty UserHltbData placeholder");
                     UserHltbData = new HltbUserStats();
                     return;
                 }
@@ -271,6 +270,12 @@ namespace HowLongToBeat.Services
                 return;
             }
 
+            if (PluginSettings != null && PluginSettings.DefaultDataProvider == DataProvider.Vndb)
+            {
+                TryAddDataFromVndb(game, gameHowLongToBeat);
+                return;
+            }
+
             if (HowLongToBeatApi == null)
             {
                 Logger.Warn("HowLongToBeatApi not initialized yet; cannot perform AddData");
@@ -386,6 +391,98 @@ namespace HowLongToBeat.Services
             }
         }
 
+        /// <summary>
+        /// Imports plugin data from VNDB using the same accept / mismatch settings as the HowLongToBeat path.
+        /// </summary>
+        private void TryAddDataFromVndb(Game game, GameHowLongToBeat gameHowLongToBeat)
+        {
+            if (game == null || gameHowLongToBeat == null)
+            {
+                return;
+            }
+
+            try
+            {
+                string searchName = game.Name ?? string.Empty;
+                try
+                {
+                    string aliased = GameNameAliases.ApplyAlias(searchName, PluginSettings, Plugin?.GetPluginUserDataPath());
+                    if (!string.IsNullOrEmpty(aliased) && !aliased.IsEqual(searchName))
+                    {
+                        Common.LogDebug($"VNDB aliases: '{searchName}' -> '{aliased}'");
+                        searchName = aliased;
+                    }
+                }
+                catch
+                {
+                }
+
+                List<HltbSearch> data = TaskHelpers.RunSyncWithTimeout(() => VndbApi.SearchByNameAsync(searchName), 15000) ?? new List<HltbSearch>();
+                if (data.Count == 0)
+                {
+                    LogVerbose($"VNDB AddData: no results for '{searchName}'");
+                    return;
+                }
+
+                DataType vndbSpeed = GetDefaultVndbSpeedDataType();
+
+                if (data.Count == 1 && PluginSettings.AutoAccept)
+                {
+                    CommitVndbAdd(gameHowLongToBeat, data.First().Data, vndbSpeed);
+                    return;
+                }
+
+                if (data.Count > 0 && PluginSettings.UseMatchValue)
+                {
+                    if (data.First().MatchPercent >= PluginSettings.MatchValue)
+                    {
+                        CommitVndbAdd(gameHowLongToBeat, data.First().Data, vndbSpeed);
+                        return;
+                    }
+                }
+
+                if (data.Count > 0 && PluginSettings.ShowWhenMismatch && HowLongToBeatApi != null)
+                {
+                    var picked = HowLongToBeatApi.SearchData(game, data.Select(x => x.Data).ToList());
+                    if (picked != null)
+                    {
+                        picked.DateLastRefresh = DateTime.Now;
+                        AddOrUpdate(picked);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, false, true, PluginName);
+            }
+        }
+
+        private void CommitVndbAdd(GameHowLongToBeat gameHowLongToBeat, HltbDataUser item, DataType vndbSpeed)
+        {
+            if (gameHowLongToBeat == null || item == null)
+            {
+                return;
+            }
+
+            item.ApplyVndbSpeedSelection(vndbSpeed);
+            gameHowLongToBeat.Items = new List<HltbDataUser> { item };
+            gameHowLongToBeat.DateLastRefresh = DateTime.Now;
+            AddOrUpdate(gameHowLongToBeat);
+        }
+
+        /// <summary>
+        /// Resolves the VNDB reading-speed row from <see cref="HowLongToBeatSettings.DefaultVndbSpeed"/> (default Normal / Average).
+        /// </summary>
+        private DataType GetDefaultVndbSpeedDataType()
+        {
+            if (PluginSettings == null)
+            {
+                return DataType.Average;
+            }
+
+            return PluginSettings.GetResolvedDefaultVndbSpeed();
+        }
+
         public override void RefreshNoLoader(Guid id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (cancellationToken.IsCancellationRequested)
@@ -394,26 +491,17 @@ namespace HowLongToBeat.Services
             }
 
             Game game = API.Instance.Database.Games.Get(id);
-            if (IsVerboseLoggingEnabled)
-            {
-                Common.LogDebug(true,$"RefreshNoLoader({game?.Name} - {game?.Id})");
-            }
+            LogVerbose($"RefreshNoLoader({game?.Name} - {game?.Id})");
 
             GameHowLongToBeat loadedItem = Get(id, true);
             if (loadedItem.GetData().Id.IsNullOrEmpty())
             {
-                if (IsVerboseLoggingEnabled)
-                {
-                    Common.LogDebug(true,$"No data, try to add");
-                }
+                LogVerbose($"No data, try to add");
                 AddData(game);
                 loadedItem = Get(id, true);
                 if (loadedItem.GetData().Id.IsNullOrEmpty())
                 {
-                    if (IsVerboseLoggingEnabled)
-                    {
-                        Common.LogDebug(true,$"No find");
-                    }
+                    LogVerbose($"No find");
                 }
             }
             else
@@ -475,6 +563,14 @@ namespace HowLongToBeat.Services
             ActionAfterRefresh(loadedItem);
         }
 
+        /// <summary>
+        /// Resolves a Playnite game id linked to a HowLongToBeat title.
+        /// Prefers an exact <paramref name="userGameId"/> match, then a cache entry without UserGameId,
+        /// then any non-hidden game with the same HLTB id (community data is per HLTB game).
+        /// </summary>
+        /// <param name="hltbId">HowLongToBeat game id.</param>
+        /// <param name="userGameId">Optional HLTB user submission id.</param>
+        /// <returns>Playnite game id, or <c>default</c> when none found.</returns>
         public Guid ResolveGameIdFromUserTitle(string hltbId, string userGameId = "")
         {
             try
@@ -484,13 +580,41 @@ namespace HowLongToBeat.Services
                     return default;
                 }
 
-                return GetAllCache()
+                List<GameHowLongToBeat> candidates = GetAllCache()
                     .Where(x => x?.Game != null
                         && !x.Game.Hidden
-                        && x.GetData()?.Id == hltbId
-                        && (x.UserGameId.IsNullOrEmpty() || x.UserGameId.IsEqual(userGameId)))
-                    .Select(x => x.Id)
-                    .FirstOrDefault();
+                        && x.GetData()?.Id == hltbId)
+                    .ToList();
+
+                if (candidates.Count == 0)
+                {
+                    return default;
+                }
+
+                if (!userGameId.IsNullOrEmpty())
+                {
+                    GameHowLongToBeat exact = candidates.FirstOrDefault(x => x.UserGameId.IsEqual(userGameId));
+                    if (exact != null)
+                    {
+                        return exact.Id;
+                    }
+                }
+
+                GameHowLongToBeat withTime = PreferCommunityTime(candidates.Where(x => x.UserGameId.IsNullOrEmpty()));
+                if (withTime != null)
+                {
+                    return withTime.Id;
+                }
+
+                withTime = PreferCommunityTime(candidates);
+                if (withTime != null)
+                {
+                    // Unusual path: UserGameId mismatch — log once-style detail only when verbose (binding may call repeatedly).
+                    LogVerbose($"[UserDataTTB] ResolveGameId: path=hltbId-fallback hltbId={hltbId} userGameId={userGameId} playniteId={withTime.Id} game='{withTime.Game?.Name}' cacheUserGameId={withTime.UserGameId} ttb={withTime.GetData()?.GameHltbData?.TimeToBeat ?? 0} candidates={candidates.Count}");
+                    return withTime.Id;
+                }
+
+                return default;
             }
             catch (Exception ex)
             {
@@ -499,6 +623,12 @@ namespace HowLongToBeat.Services
             }
         }
 
+        /// <summary>
+        /// Resolves all Playnite game ids linked to a HowLongToBeat title id (any submission).
+        /// </summary>
+        /// <param name="hltbId">HowLongToBeat game id.</param>
+        /// <param name="userGameId">Unused; kept for call-site compatibility.</param>
+        /// <returns>Matching Playnite game ids (may be empty).</returns>
         public List<Guid> ResolveGameIdsFromUserTitle(string hltbId, string userGameId = "")
         {
             try
@@ -508,12 +638,15 @@ namespace HowLongToBeat.Services
                     return new List<Guid>();
                 }
 
-                return GetAllCache()
-                    .Where(x => x != null
-                        && x.GetData()?.Id == hltbId
-                        && (x.UserGameId.IsNullOrEmpty() || x.UserGameId.IsEqual(userGameId)))
+                List<Guid> ids = GetAllCache()
+                    .Where(x => x?.Game != null
+                        && !x.Game.Hidden
+                        && x.GetData()?.Id == hltbId)
                     .Select(x => x.Id)
+                    .Distinct()
                     .ToList();
+
+                return ids;
             }
             catch (Exception ex)
             {
@@ -522,8 +655,336 @@ namespace HowLongToBeat.Services
             }
         }
 
+        /// <summary>
+        /// Finds community HowLongToBeat timing data in the plugin cache for an HLTB game id,
+        /// even when no Playnite game link or UserGameId match exists.
+        /// </summary>
+        /// <param name="hltbId">HowLongToBeat game id.</param>
+        /// <returns>Community <see cref="HltbData"/>, or <c>null</c>.</returns>
+        public HltbData FindCachedCommunityHltbData(string hltbId)
+        {
+            try
+            {
+                if (hltbId.IsNullOrEmpty())
+                {
+                    return null;
+                }
+
+                List<HltbData> matches = GetAllCache()
+                    .Where(x => x != null && x.GetData()?.Id == hltbId && x.GetData()?.GameHltbData != null)
+                    .Select(x => x.GetData().GameHltbData)
+                    .ToList();
+
+                if (matches.Count == 0)
+                {
+                    return null;
+                }
+
+                HltbData withTime = matches.FirstOrDefault(d => d.TimeToBeat > 0);
+                return withTime ?? matches.First();
+            }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, false, true, PluginName);
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Logs User Data Time to Beat coverage once (Info summary; Warn when titles lack community data).
+        /// Safe to call after loading or refreshing the user titles list — not on every ListView bind.
+        /// </summary>
+        /// <param name="titles">User profile titles to inspect.</param>
+        public void LogUserDataTimeToBeatCoverage(IList<TitleList> titles)
+        {
+            try
+            {
+                if (titles == null || titles.Count == 0)
+                {
+                    Logger.Info("[UserDataTTB] Coverage: no User Data titles to inspect");
+                    return;
+                }
+
+                Dictionary<string, List<GameHowLongToBeat>> cacheByHltbId = GetAllCache()
+                    .Where(x => x != null && !string.IsNullOrEmpty(x.GetData()?.Id))
+                    .GroupBy(x => x.GetData().Id)
+                    .ToDictionary(g => g.Key, g => g.ToList());
+
+                int linkedWithTime = 0;
+                int fallbackByHltbId = 0;
+                int missing = 0;
+                var missingSamples = new List<string>();
+
+                foreach (TitleList title in titles)
+                {
+                    if (title == null || title.Id.IsNullOrEmpty())
+                    {
+                        missing++;
+                        continue;
+                    }
+
+                    List<GameHowLongToBeat> entries;
+                    if (!cacheByHltbId.TryGetValue(title.Id, out entries) || entries == null || entries.Count == 0)
+                    {
+                        missing++;
+                        if (missingSamples.Count < 5)
+                        {
+                            missingSamples.Add(string.Format("'{0}' (hltbId={1})", title.GameName ?? string.Empty, title.Id));
+                        }
+                        continue;
+                    }
+
+                    long bestLinked = 0;
+                    foreach (GameHowLongToBeat entry in entries)
+                    {
+                        if (entry?.Game == null || entry.Game.Hidden)
+                        {
+                            continue;
+                        }
+
+                        long ttb = entry.GetData()?.GameHltbData?.TimeToBeat ?? 0;
+                        if (ttb > bestLinked)
+                        {
+                            bestLinked = ttb;
+                        }
+                    }
+
+                    if (bestLinked > 0)
+                    {
+                        linkedWithTime++;
+                        continue;
+                    }
+
+                    long bestAny = entries
+                        .Select(e => e.GetData()?.GameHltbData?.TimeToBeat ?? 0)
+                        .DefaultIfEmpty(0)
+                        .Max();
+
+                    if (bestAny > 0)
+                    {
+                        fallbackByHltbId++;
+                        continue;
+                    }
+
+                    missing++;
+                    if (missingSamples.Count < 5)
+                    {
+                        missingSamples.Add(string.Format("'{0}' (hltbId={1})", title.GameName ?? string.Empty, title.Id));
+                    }
+                }
+
+                Logger.Info(string.Format(
+                    "[UserDataTTB] Coverage: titles={0}, linkedWithTime={1}, fallbackByHltbId={2}, missing={3}",
+                    titles.Count,
+                    linkedWithTime,
+                    fallbackByHltbId,
+                    missing));
+
+                if (missing > 0)
+                {
+                    string samples = missingSamples.Count > 0
+                        ? string.Join(", ", missingSamples)
+                        : "(no samples)";
+                    Logger.Warn(string.Format(
+                        "[UserDataTTB] {0} User Data title(s) have no community Time to Beat in the plugin cache (column shows --). Samples: {1}",
+                        missing,
+                        samples));
+                }
+
+                if (fallbackByHltbId > 0)
+                {
+                    LogVerbose($"[UserDataTTB] Coverage detail: {fallbackByHltbId} title(s) used HLTB-id cache fallback (no Playnite link with TTB, or UserGameId mismatch)");
+                }
+            }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, false, true, PluginName);
+            }
+        }
+
+        private static GameHowLongToBeat PreferCommunityTime(IEnumerable<GameHowLongToBeat> candidates)
+        {
+            List<GameHowLongToBeat> list = candidates?.Where(x => x != null).ToList();
+            if (list == null || list.Count == 0)
+            {
+                return null;
+            }
+
+            GameHowLongToBeat withTime = list.FirstOrDefault(x => (x.GetData()?.GameHltbData?.TimeToBeat ?? 0) > 0);
+            return withTime ?? list.First();
+        }
+
 
         #region Tag
+
+        // Ignore-sync tag name comes from LOCHowLongToBeatIgnoreSyncTag (localized), prefixed with TagBefore ([HLTB]).
+        // If the user changes Playnite UI language, ResourceProvider may resolve a different label and CheckTagExist
+        // creates a new tag; games tagged under the previous language no longer match FindExistingIgnoreSyncTagId
+        // until re-tagged. Same limitation as playtime range tags. A fixed English label would avoid duplicates.
+
+        /// <summary>
+        /// Resolves the ignore-sync tag ID without creating it when missing.
+        /// </summary>
+        /// <returns>Existing tag ID, or <c>null</c>.</returns>
+        private Guid? FindExistingIgnoreSyncTagId()
+        {
+            string tagLabel = ResourceProvider.GetString("LOCHowLongToBeatIgnoreSyncTag");
+            string fullName = TagBefore.IsNullOrEmpty()
+                ? tagLabel
+                : string.Format("{0} {1}", TagBefore, tagLabel);
+
+            Tag existing = API.Instance?.Database?.Tags?
+                .FirstOrDefault(t => t != null && string.Equals(t.Name, fullName, StringComparison.Ordinal));
+
+            return existing?.Id;
+        }
+
+        /// <summary>
+        /// Returns the Playnite tag ID used to exclude a game from automatic playtime sync, creating the tag if needed.
+        /// </summary>
+        /// <returns>Tag ID, or <c>null</c> if the tag could not be created.</returns>
+        public Guid? GetIgnoreSyncTagId()
+        {
+            return CheckTagExist(ResourceProvider.GetString("LOCHowLongToBeatIgnoreSyncTag"));
+        }
+
+        /// <inheritdoc/>
+        protected override IEnumerable<Guid> GetProtectedPluginTagIds()
+        {
+            Guid? ignoreTagId = FindExistingIgnoreSyncTagId();
+            if (ignoreTagId != null)
+            {
+                yield return ignoreTagId.Value;
+            }
+        }
+
+        /// <summary>
+        /// Indicates whether the game is tagged to skip automatic HowLongToBeat playtime sync.
+        /// </summary>
+        /// <param name="game">Playnite game.</param>
+        /// <returns><c>true</c> when the ignore-sync tag is present.</returns>
+        public bool IsGameIgnoredForPlaytimeSync(Game game)
+        {
+            if (game?.TagIds == null || game.TagIds.Count == 0)
+            {
+                return false;
+            }
+
+            Guid? ignoreTagId = FindExistingIgnoreSyncTagId();
+            return ignoreTagId != null && game.TagIds.Contains(ignoreTagId.Value);
+        }
+
+        /// <summary>
+        /// Adds the ignore-sync tag to the game and persists the change.
+        /// </summary>
+        /// <param name="game">Playnite game.</param>
+        public void AddIgnoreSyncTag(Game game)
+        {
+            if (game == null)
+            {
+                return;
+            }
+
+            Guid? ignoreTagId = GetIgnoreSyncTagId();
+            if (ignoreTagId == null)
+            {
+                return;
+            }
+
+            AppendTagId(game, ignoreTagId.Value);
+            PersistGameUpdate(game);
+            Common.LogDebug($"Added ignore playtime sync tag for {game.Name}");
+        }
+
+        /// <summary>
+        /// Removes the ignore-sync tag from the game and persists the change.
+        /// </summary>
+        /// <param name="game">Playnite game.</param>
+        public void RemoveIgnoreSyncTag(Game game)
+        {
+            if (game?.TagIds == null)
+            {
+                return;
+            }
+
+            Guid? ignoreTagId = FindExistingIgnoreSyncTagId();
+            if (ignoreTagId == null || !game.TagIds.Contains(ignoreTagId.Value))
+            {
+                return;
+            }
+
+            game.TagIds.Remove(ignoreTagId.Value);
+            PersistGameUpdate(game);
+            Common.LogDebug($"Removed ignore playtime sync tag for {game.Name}");
+        }
+
+        /// <summary>
+        /// Returns library games that have the ignore-sync tag, ordered by name.
+        /// </summary>
+        /// <returns>Ignored games.</returns>
+        public List<Game> GetGamesIgnoredForPlaytimeSync()
+        {
+            Guid? ignoreTagId = FindExistingIgnoreSyncTagId();
+            if (ignoreTagId == null || API.Instance?.Database?.Games == null)
+            {
+                return new List<Game>();
+            }
+
+            Guid tagId = ignoreTagId.Value;
+            return API.Instance.Database.Games
+                .Where(g => g?.TagIds != null && g.TagIds.Contains(tagId))
+                .OrderBy(g => g.Name)
+                .ToList();
+        }
+
+        /// <summary>
+        /// Returns visible library games that are not tagged for ignore-sync, ordered by name.
+        /// </summary>
+        /// <returns>Games available to add to the ignore list.</returns>
+        public List<Game> GetGamesAvailableForIgnoreSync()
+        {
+            if (API.Instance?.Database?.Games == null)
+            {
+                return new List<Game>();
+            }
+
+            Guid? ignoreTagId = FindExistingIgnoreSyncTagId();
+            Guid tagId = ignoreTagId ?? Guid.Empty;
+
+            return API.Instance.Database.Games
+                .Where(g => g != null && !g.Hidden && (ignoreTagId == null || g.TagIds == null || !g.TagIds.Contains(tagId)))
+                .OrderBy(g => g.Name)
+                .ToList();
+        }
+
+        /// <summary>
+        /// Asks for confirmation when submitting playtime manually for an ignored game.
+        /// </summary>
+        /// <param name="game">Playnite game.</param>
+        /// <returns><c>true</c> if sync may proceed.</returns>
+        public bool ConfirmManualPlaytimeSyncIfIgnored(Game game)
+        {
+            if (!IsGameIgnoredForPlaytimeSync(game))
+            {
+                return true;
+            }
+
+            MessageBoxResult result = MessageBoxResult.No;
+            Application.Current.Dispatcher?.Invoke(() =>
+            {
+                result = API.Instance.Dialogs.ShowMessage(
+                    string.Format(ResourceProvider.GetString("LOCHowLongToBeatIgnoreSyncManualConfirm"), game?.Name),
+                    PluginName,
+                    MessageBoxButton.YesNo);
+            });
+
+            if (result == MessageBoxResult.Yes)
+            {
+                Common.LogDebug($"Manual playtime sync confirmed for ignored game {game?.Name}");
+            }
+
+            return result == MessageBoxResult.Yes;
+        }
 
         protected override bool AppendPluginTag(Game game)
         {
@@ -683,6 +1144,9 @@ namespace HowLongToBeat.Services
         }
 
 
+        /// <summary>
+        /// Applies HowLongToBeat list statuses to Playnite completion statuses using the configured Guid mapping.
+        /// </summary>
         private void SetGameStatusFromHltb()
         {
             try
@@ -691,35 +1155,80 @@ namespace HowLongToBeat.Services
                 //API.Instance.Database.Games.BeginBufferUpdate();
                 if (UserHltbData?.TitlesList == null)
                 {
+                    Logger.Info("Status sync from HLTB skipped: no user titles list");
                     return;
                 }
+
+                int appliedCount = 0;
+                int unchangedCount = 0;
+                int linkedCount = 0;
 
                 UserHltbData.TitlesList.ForEach(x =>
                 {
                     if (x.GameExist)
                     {
+                        linkedCount++;
                         bool isCompletionist = x.HltbUserData?.Completionist != 0;
-                        bool isCompleted = x.GameStatuses?.Where(y => y.Status == StatusType.Completed)?.Count() != 0;
-                        bool isPlaying = x.GameStatuses?.Where(y => y.Status == StatusType.Playing)?.Count() != 0;
+                        bool isCompleted = x.HasHltbListStatus(StatusType.Completed);
+                        bool isPlaying = x.HasHltbListStatus(StatusType.Playing);
+                        bool isBacklog = x.HasHltbListStatus(StatusType.Backlog);
+                        bool isReplays = x.HasHltbListStatus(StatusType.Replays);
+                        bool isRetired = x.HasHltbListStatus(StatusType.Retired);
 
                         Game game = API.Instance.Database.Games.Get(x.GameId);
+                        Guid previousStatusId = game.CompletionStatusId;
+                        string appliedStatus = null;
 
                         if (isCompletionist && PluginSettings.GameStatusCompletionist != default && API.Instance.Database.CompletionStatuses.Get(PluginSettings.GameStatusCompletionist) != null)
                         {
                             game.CompletionStatusId = PluginSettings.GameStatusCompletionist;
+                            appliedStatus = "Completionist";
                         }
                         else if (isCompleted && PluginSettings.GameStatusCompleted != default && API.Instance.Database.CompletionStatuses.Get(PluginSettings.GameStatusCompleted) != null)
                         {
                             game.CompletionStatusId = PluginSettings.GameStatusCompleted;
+                            appliedStatus = "Completed";
                         }
                         else if (isPlaying && PluginSettings.GameStatusPlaying != default && API.Instance.Database.CompletionStatuses.Get(PluginSettings.GameStatusPlaying) != null)
                         {
                             game.CompletionStatusId = PluginSettings.GameStatusPlaying;
+                            appliedStatus = "Playing";
+                        }
+                        else if (isBacklog && PluginSettings.GameStatusBacklog != default && API.Instance.Database.CompletionStatuses.Get(PluginSettings.GameStatusBacklog) != null)
+                        {
+                            game.CompletionStatusId = PluginSettings.GameStatusBacklog;
+                            appliedStatus = "Backlog";
+                        }
+                        else if (isReplays && PluginSettings.GameStatusReplays != default && API.Instance.Database.CompletionStatuses.Get(PluginSettings.GameStatusReplays) != null)
+                        {
+                            game.CompletionStatusId = PluginSettings.GameStatusReplays;
+                            appliedStatus = "Replays";
+                        }
+                        else if (isRetired && PluginSettings.GameStatusRetired != default && API.Instance.Database.CompletionStatuses.Get(PluginSettings.GameStatusRetired) != null)
+                        {
+                            game.CompletionStatusId = PluginSettings.GameStatusRetired;
+                            appliedStatus = "Retired";
+                        }
+
+                        if (appliedStatus != null)
+                        {
+                            if (game.CompletionStatusId != previousStatusId)
+                            {
+                                appliedCount++;
+                                Logger.Info($"Status sync from HLTB ({appliedStatus}) for {game.Name}: {previousStatusId} -> {game.CompletionStatusId}");
+                            }
+                            else
+                            {
+                                unchangedCount++;
+                                Common.LogDebug($"Status sync from HLTB ({appliedStatus}) for {game.Name}: already set");
+                            }
                         }
 
                         API.Instance.Database.Games.Update(game);
                     }
                 });
+
+                Logger.Info($"Status sync from HLTB finished: linked={linkedCount}, applied={appliedCount}, unchanged={unchangedCount}");
             }
             catch (Exception ex)
             {
@@ -732,10 +1241,23 @@ namespace HowLongToBeat.Services
             }
         }
 
-        private void SetGameStatusToHltb(Game game)
+        /// <summary>
+        /// Syncs the Playnite completion status of one game to HowLongToBeat list flags.
+        /// </summary>
+        /// <param name="game">Playnite game.</param>
+        /// <param name="fromManualMenu">When true, skips the playtime-sync ignore list (status sync is not playtime upload).</param>
+        public void SetGameStatusToHltb(Game game, bool fromManualMenu = false)
         {
             if (DontSetToHtlb)
             {
+                return;
+            }
+
+            string syncSource = fromManualMenu ? "Manual" : "Auto";
+
+            if (!fromManualMenu && IsGameIgnoredForPlaytimeSync(game))
+            {
+                Logger.Info($"Skipping {syncSource} status sync to HLTB for ignored game {game?.Name}");
                 return;
             }
 
@@ -761,25 +1283,25 @@ namespace HowLongToBeat.Services
                 bool isCompletionist = game.CompletionStatusId == PluginSettings.GameStatusCompletionist;
                 bool isCompleted = game.CompletionStatusId == PluginSettings.GameStatusCompleted;
                 bool isPlaying = game.CompletionStatusId == PluginSettings.GameStatusPlaying;
+                bool isBacklog = game.CompletionStatusId == PluginSettings.GameStatusBacklog;
+                bool isReplays = game.CompletionStatusId == PluginSettings.GameStatusReplays;
+                bool isRetired = game.CompletionStatusId == PluginSettings.GameStatusRetired;
 
                 if (isCompletionist && PluginSettings.GameStatusCompletionist != default && API.Instance.Database.CompletionStatuses.Get(PluginSettings.GameStatusCompletionist) != null)
                 {
                     bool sendPlaytime = PluginSettings.AutoSetToHltbCompletionistSendPlaytime;
                     bool sendCompletionDate = sendPlaytime && PluginSettings.AutoSetToHltbCompletionistSendCompletionDate;
+                    HltbStatusToHltbSyncOptions listSyncOptions = PluginSettings.ToHltbCompletionistListSync;
                     bool isUpdated = SetCurrentPlayTime(
                         game,
-                        true,
-                        true,
-                        false,
-                        false,
-                        sendPlaytime,
-                        false,
-                        false,
-                        false,
-                        sendPlaytime,
-                        sendCompletionDate);
+                        noPlaying: true,
+                        isCompleted: true,
+                        is100: sendPlaytime,
+                        sendCompletedPlaytime: sendPlaytime,
+                        sendCompletionDateFromLastActivity: sendCompletionDate,
+                        listSyncOptions: listSyncOptions);
 
-                    Logger.Info($"Auto sync to HLTB (Completionist) for {game?.Name}: success={isUpdated}, sendPlaytime={sendPlaytime}, sendCompletionDate={sendCompletionDate}");
+                    Logger.Info($"{syncSource} status sync to HLTB (Completionist) for {game?.Name}: success={isUpdated}, sendPlaytime={sendPlaytime}, sendCompletionDate={sendCompletionDate}, {FormatListSyncOptionsLog(listSyncOptions, PluginSettings.ToHltbAlwaysKeepLists)}");
 
                     if (isUpdated)
                     {
@@ -790,20 +1312,17 @@ namespace HowLongToBeat.Services
                 {
                     bool sendPlaytime = PluginSettings.AutoSetToHltbCompletedSendPlaytime;
                     bool sendCompletionDate = sendPlaytime && PluginSettings.AutoSetToHltbCompletedSendCompletionDate;
+                    HltbStatusToHltbSyncOptions listSyncOptions = PluginSettings.ToHltbCompletedListSync;
                     bool isUpdated = SetCurrentPlayTime(
                         game,
-                        true,
-                        true,
-                        sendPlaytime,
-                        false,
-                        false,
-                        false,
-                        false,
-                        false,
-                        sendPlaytime,
-                        sendCompletionDate);
+                        noPlaying: true,
+                        isCompleted: true,
+                        isMain: sendPlaytime,
+                        sendCompletedPlaytime: sendPlaytime,
+                        sendCompletionDateFromLastActivity: sendCompletionDate,
+                        listSyncOptions: listSyncOptions);
 
-                    Logger.Info($"Auto sync to HLTB (Completed) for {game?.Name}: success={isUpdated}, sendPlaytime={sendPlaytime}, sendCompletionDate={sendCompletionDate}");
+                    Logger.Info($"{syncSource} status sync to HLTB (Completed) for {game?.Name}: success={isUpdated}, sendPlaytime={sendPlaytime}, sendCompletionDate={sendCompletionDate}, {FormatListSyncOptionsLog(listSyncOptions, PluginSettings.ToHltbAlwaysKeepLists)}");
 
                     if (isUpdated)
                     {
@@ -812,13 +1331,56 @@ namespace HowLongToBeat.Services
                 }
                 else if (isPlaying && PluginSettings.GameStatusPlaying != default && API.Instance.Database.CompletionStatuses.Get(PluginSettings.GameStatusPlaying) != null)
                 {
-                    bool isUpdated = SetCurrentPlayTime(game, false);
-                    Logger.Info($"Auto sync to HLTB (Playing) for {game?.Name}: success={isUpdated}");
+                    HltbStatusToHltbSyncOptions listSyncOptions = PluginSettings.ToHltbPlayingListSync;
+                    bool sendPlaytime = PluginSettings.AutoSetToHltbPlayingSendPlaytime;
+                    bool isUpdated = SetCurrentPlayTime(
+                        game,
+                        noPlaying: false,
+                        sendProgressPlaytime: sendPlaytime,
+                        listSyncOptions: listSyncOptions);
+                    Logger.Info($"{syncSource} status sync to HLTB (Playing) for {game?.Name}: success={isUpdated}, sendPlaytime={sendPlaytime}, {FormatListSyncOptionsLog(listSyncOptions, PluginSettings.ToHltbAlwaysKeepLists)}");
+
+                    if (isUpdated)
+                    {
+                        notifySync(sendPlaytime, false);
+                    }
+                }
+                else if (isBacklog && PluginSettings.GameStatusBacklog != default && API.Instance.Database.CompletionStatuses.Get(PluginSettings.GameStatusBacklog) != null)
+                {
+                    HltbStatusToHltbSyncOptions listSyncOptions = PluginSettings.ToHltbBacklogListSync;
+                    bool isUpdated = SetCurrentPlayTime(game, noPlaying: true, isBacklog: true, listSyncOptions: listSyncOptions);
+                    Logger.Info($"{syncSource} status sync to HLTB (Backlog) for {game?.Name}: success={isUpdated}, {FormatListSyncOptionsLog(listSyncOptions, PluginSettings.ToHltbAlwaysKeepLists)}");
 
                     if (isUpdated)
                     {
                         notifySync(true, false);
                     }
+                }
+                else if (isReplays && PluginSettings.GameStatusReplays != default && API.Instance.Database.CompletionStatuses.Get(PluginSettings.GameStatusReplays) != null)
+                {
+                    HltbStatusToHltbSyncOptions listSyncOptions = PluginSettings.ToHltbReplaysListSync;
+                    bool isUpdated = SetCurrentPlayTime(game, noPlaying: true, isReplay: true, listSyncOptions: listSyncOptions);
+                    Logger.Info($"{syncSource} status sync to HLTB (Replays) for {game?.Name}: success={isUpdated}, {FormatListSyncOptionsLog(listSyncOptions, PluginSettings.ToHltbAlwaysKeepLists)}");
+
+                    if (isUpdated)
+                    {
+                        notifySync(true, false);
+                    }
+                }
+                else if (isRetired && PluginSettings.GameStatusRetired != default && API.Instance.Database.CompletionStatuses.Get(PluginSettings.GameStatusRetired) != null)
+                {
+                    HltbStatusToHltbSyncOptions listSyncOptions = PluginSettings.ToHltbRetiredListSync;
+                    bool isUpdated = SetCurrentPlayTime(game, noPlaying: true, isRetired: true, listSyncOptions: listSyncOptions);
+                    Logger.Info($"{syncSource} status sync to HLTB (Retired) for {game?.Name}: success={isUpdated}, {FormatListSyncOptionsLog(listSyncOptions, PluginSettings.ToHltbAlwaysKeepLists)}");
+
+                    if (isUpdated)
+                    {
+                        notifySync(true, false);
+                    }
+                }
+                else
+                {
+                    Logger.Info($"{syncSource} status sync to HLTB skipped for {game?.Name}: CompletionStatusId={game?.CompletionStatusId} is not mapped");
                 }
             }
             catch (Exception ex)
@@ -827,13 +1389,86 @@ namespace HowLongToBeat.Services
             }
         }
 
+        /// <summary>
+        /// Syncs Playnite completion status to HowLongToBeat for the selected games (game menu).
+        /// </summary>
+        /// <param name="ids">Playnite game identifiers.</param>
+        public void SyncGameStatusToHltb(IEnumerable<Guid> ids)
+        {
+            List<Guid> idsList = new List<Guid>();
+            foreach (Guid id in ids ?? Enumerable.Empty<Guid>())
+            {
+                Game game = API.Instance.Database.Games.Get(id);
+                if (game == null)
+                {
+                    continue;
+                }
+
+                idsList.Add(id);
+            }
+
+            int total = idsList.Count;
+            if (total == 0)
+            {
+                Logger.Info("Manual status sync to HLTB skipped: no games selected");
+                return;
+            }
+
+            Logger.Info($"Manual status sync to HLTB starting for {total} game(s)");
+
+            GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions($"{PluginName} - {ResourceProvider.GetString("LOCCommonProcessing")}")
+            {
+                Cancelable = true,
+                IsIndeterminate = total == 1
+            };
+
+            _ = API.Instance.Dialogs.ActivateGlobalProgress((a) =>
+            {
+                a.ProgressMaxValue = total;
+
+                foreach (Guid id in idsList)
+                {
+                    if (a.CancelToken.IsCancellationRequested)
+                    {
+                        break;
+                    }
+
+                    Game game = API.Instance.Database.Games.Get(id);
+                    try
+                    {
+                        Application.Current.Dispatcher?.BeginInvoke(new Action(() =>
+                        {
+                            a.Text = PluginName + " - " + ResourceProvider.GetString("LOCCommonProcessing")
+                                + (total == 1 ? string.Empty : "\n\n" + $"{a.CurrentProgressValue}/{a.ProgressMaxValue}")
+                                + "\n" + game?.Name + (game?.Source == null ? string.Empty : $" ({game?.Source.Name})");
+                        }));
+                    }
+                    catch { }
+
+                    try
+                    {
+                        SetGameStatusToHltb(game, fromManualMenu: true);
+                    }
+                    catch (Exception ex)
+                    {
+                        Common.LogError(ex, false, true, PluginName);
+                    }
+
+                    try
+                    {
+                        Application.Current.Dispatcher?.BeginInvoke(new Action(() => { a.CurrentProgressValue++; }));
+                    }
+                    catch { }
+                }
+
+                Logger.Info($"Manual status sync to HLTB finished: processed={a.CurrentProgressValue}/{total}, cancelled={a.CancelToken.IsCancellationRequested}");
+            }, globalProgressOptions);
+        }
+
 
         public async Task RefreshUserDataAsync()
         {
-            if (IsVerboseLoggingEnabled)
-            {
-                Common.LogDebug(true,"RefreshUserData()");
-            }
+            LogVerbose("RefreshUserData()");
 
             if (HowLongToBeatApi == null)
             {
@@ -892,10 +1527,7 @@ namespace HowLongToBeat.Services
 
                         if (userHltbData != null)
                         {
-                            if (IsVerboseLoggingEnabled)
-                            {
-                                Common.LogDebug(true,$"Find {userHltbData.TitlesList?.Count ?? 0} games");
-                            }
+                            LogVerbose($"Find {userHltbData.TitlesList?.Count ?? 0} games");
                             FileSystem.WriteStringToFileSafe(Path.Combine(Paths.PluginUserDataPath, "HltbUserStats.json"), Serialization.ToJson(userHltbData));
                             UserHltbData = userHltbData;
 
@@ -911,10 +1543,7 @@ namespace HowLongToBeat.Services
                         }
                         else
                         {
-                            if (IsVerboseLoggingEnabled)
-                            {
-                                Common.LogDebug(true,"Find no data");
-                            }
+                            LogVerbose("Find no data");
                         }
                     }
                     catch (Exception ex)
@@ -1011,8 +1640,29 @@ namespace HowLongToBeat.Services
 
         public void SetCurrentPlaytime(IEnumerable<Guid> ids, bool noPlaying = false, bool isCompleted = false, bool isMain = false, bool isMainSide = false, bool is100 = false, bool isSolo = false, bool isCoOp = false, bool isVs = false)
         {
-            var idsList = ids as IList<Guid> ?? ids.ToList();
+            List<Guid> idsList = new List<Guid>();
+            foreach (Guid id in ids ?? Enumerable.Empty<Guid>())
+            {
+                Game game = API.Instance.Database.Games.Get(id);
+                if (game == null)
+                {
+                    continue;
+                }
+
+                if (!ConfirmManualPlaytimeSyncIfIgnored(game))
+                {
+                    Logger.Info($"Manual playtime sync cancelled for ignored game {game.Name}");
+                    continue;
+                }
+
+                idsList.Add(id);
+            }
+
             int total = idsList.Count;
+            if (total == 0)
+            {
+                return;
+            }
 
             GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions($"{PluginName} - {ResourceProvider.GetString("LOCCommonProcessing")}")
             {
@@ -1079,7 +1729,16 @@ namespace HowLongToBeat.Services
                                     try
                                     {
                                         // Call synchronously; SetCurrentPlayTime is synchronous and may perform network work via RunSyncWithTimeout
-                                        _ = SetCurrentPlayTime(game, noPlaying, isCompleted, isMain, isMainSide, is100, isSolo, isCoOp, isVs);
+                                        _ = SetCurrentPlayTime(
+                                            game,
+                                            noPlaying: noPlaying,
+                                            isCompleted: isCompleted,
+                                            isMain: isMain,
+                                            isMainSide: isMainSide,
+                                            is100: is100,
+                                            isSolo: isSolo,
+                                            isCoOp: isCoOp,
+                                            isVs: isVs);
                                     }
                                     catch (Exception ex)
                                     {
@@ -1126,10 +1785,7 @@ namespace HowLongToBeat.Services
 
                     stopWatch.Stop();
                     TimeSpan ts = stopWatch.Elapsed;
-                    if (IsVerboseLoggingEnabled)
-                    {
-                        Common.LogDebug(true,$"Task SetCurrentPlaytime(){(a.CancelToken.IsCancellationRequested ? " canceled" : string.Empty)} - {string.Format("{0:00}:{1:00}.{2:00}", ts.Minutes, ts.Seconds, ts.Milliseconds / 10)} for {a.CurrentProgressValue}/{total} items");
-                    }
+                    LogVerbose($"Task SetCurrentPlaytime(){(a.CancelToken.IsCancellationRequested ? " canceled" : string.Empty)} - {string.Format("{0:00}:{1:00}.{2:00}", ts.Minutes, ts.Seconds, ts.Milliseconds / 10)} for {a.CurrentProgressValue}/{total} items");
                 }
                 finally
                 {
@@ -1154,6 +1810,15 @@ namespace HowLongToBeat.Services
             }, globalProgressOptions);
         }
 
+        /// <summary>
+        /// Submits playtime and list status for a game to HowLongToBeat.
+        /// When <see cref="HowLongToBeatSettings.AutoSetUserScoreToHltb"/> is enabled and the game has a user score, also overwrites <c>Review.Score</c>.
+        /// </summary>
+        /// <param name="isBacklog">When true, sets <c>Lists.Backlog</c> on the submit payload.</param>
+        /// <param name="isReplay">When true, sets <c>Lists.Replay</c> on the submit payload.</param>
+        /// <param name="isRetired">When true, sets <c>Lists.Retired</c> on the submit payload.</param>
+        /// <param name="sendProgressPlaytime">When true, updates <c>General.Progress</c> from Playnite playtime.</param>
+        /// <param name="listSyncOptions">When set, controls clearing of other HowLongToBeat lists before applying the target status.</param>
         public bool SetCurrentPlayTime(
             Game game,
             bool noPlaying = false,
@@ -1165,13 +1830,18 @@ namespace HowLongToBeat.Services
             bool isCoOp = false,
             bool isVs = false,
             bool sendCompletedPlaytime = true,
-            bool sendCompletionDateFromLastActivity = true)
+            bool sendCompletionDateFromLastActivity = true,
+            bool isBacklog = false,
+            bool isReplay = false,
+            bool isRetired = false,
+            bool sendProgressPlaytime = true,
+            HltbStatusToHltbSyncOptions listSyncOptions = null)
         {
             try
             {
                 if (game == null)
                 {
-                    Common.LogDebug(true, "SetCurrentPlayTime called with null game");
+                    Common.LogDebug("SetCurrentPlayTime called with null game");
                     return false;
                 }
 
@@ -1186,7 +1856,7 @@ namespace HowLongToBeat.Services
                     var db = _database;
                     if (db == null)
                     {
-                        Common.LogDebug(true, "Database is not loaded, cannot set current playtime.");
+                        Common.LogDebug("Database is not loaded, cannot set current playtime.");
                         return false;
                     }
 
@@ -1284,10 +1954,7 @@ namespace HowLongToBeat.Services
                                 }
                                 else
                                 {
-                                    if (IsVerboseLoggingEnabled)
-                                    {
-                                        Common.LogDebug(true,$"No existing data in website find for {game.Name}");
-                                    }
+                                    LogVerbose($"No existing data in website find for {game.Name}");
                                 }
                             }
                         }
@@ -1304,7 +1971,7 @@ namespace HowLongToBeat.Services
 
                         if (UserHltbData == null)
                         {
-                            Common.LogDebug(true, $"User HLTB data is null, cannot submit data for {game.Name}");
+                            Common.LogDebug($"User HLTB data is null, cannot submit data for {game.Name}");
                             return false;
                         }
 
@@ -1340,6 +2007,11 @@ namespace HowLongToBeat.Services
                             {
                                 Logger.Warn($"No GameActivity for {game.Name} in {pathGameActivityData}");
                             }
+                        }
+
+                        if (listSyncOptions != null)
+                        {
+                            ApplyHltbListClearing(editData.Lists, listSyncOptions.ClearOtherLists, PluginSettings.ToHltbAlwaysKeepLists, game.Name);
                         }
 
                         editData.Lists.Playing = false;
@@ -1394,10 +2066,25 @@ namespace HowLongToBeat.Services
                                 }
                             }
 
-                            if (isCompleted && sendCompletionDateFromLastActivity && game.LastActivity == null && IsVerboseLoggingEnabled)
+                            if (isCompleted && sendCompletionDateFromLastActivity && game.LastActivity == null)
                             {
-                                Common.LogDebug(true,$"No LastActivity found for {game.Name}, completion date is not sent to HLTB.");
+                                LogVerbose($"No LastActivity found for {game.Name}, completion date is not sent to HLTB.");
                             }
+                        }
+
+                        if (isBacklog)
+                        {
+                            editData.Lists.Backlog = true;
+                        }
+
+                        if (isReplay)
+                        {
+                            editData.Lists.Replay = true;
+                        }
+
+                        if (isRetired)
+                        {
+                            editData.Lists.Retired = true;
                         }
 
                         // Apply the default only after all explicit status flags are set.
@@ -1421,9 +2108,29 @@ namespace HowLongToBeat.Services
                             editData.MultiPlayer.Vs.Time.Seconds = time.Seconds;
                         }
 
-                        editData.General.Progress.Hours = time.Hours + (24 * time.Days);
-                        editData.General.Progress.Minutes = time.Minutes;
-                        editData.General.Progress.Seconds = time.Seconds;
+                        if (sendProgressPlaytime)
+                        {
+                            editData.General.Progress.Hours = time.Hours + (24 * time.Days);
+                            editData.General.Progress.Minutes = time.Minutes;
+                            editData.General.Progress.Seconds = time.Seconds;
+                        }
+
+                        if (PluginSettings.AutoSetUserScoreToHltb
+                            && HltbReviewScoreMapper.TryMapFromPlayniteUserScore(game.UserScore, out int hltbReviewScore))
+                        {
+                            if (editData.Review == null)
+                            {
+                                editData.Review = new Review();
+                            }
+
+                            editData.Review.Score = hltbReviewScore;
+                            Common.LogDebug($"SetCurrentPlayTime: UserScore {game.UserScore} → Review.Score {hltbReviewScore} for {game.Name}");
+                        }
+
+                        if (listSyncOptions != null)
+                            {
+                                LogVerbose($"Status sync lists for {game.Name}: listsSubmitted={FormatHltbListsSubmitted(editData.Lists)}");
+                        }
 
                         #endregion
 
@@ -1447,6 +2154,388 @@ namespace HowLongToBeat.Services
             }
 
             return false;
+        }
+
+        /// <summary>
+        /// Updates optional HowLongToBeat tags for an existing user game entry (DLC included, mark as replay).
+        /// Loads current edit data from the website, patches <see cref="SinglePlayer.PlayCount"/> and
+        /// <see cref="SinglePlayer.IncludesDLC"/>, then submits. Other payload fields are preserved.
+        /// </summary>
+        /// <param name="game">The Playnite game linked to the HLTB entry.</param>
+        /// <param name="userGameId">The HLTB user submission id (<c>UserGameId</c>).</param>
+        /// <param name="isMarkAsReplay">When true, sets the "Mark as Replay" optional tag.</param>
+        /// <param name="isIncludesDlc">When true, sets the "DLC / Expansions Included" optional tag.</param>
+        /// <returns><c>true</c> when submission succeeds; otherwise <c>false</c>.</returns>
+        public async Task<bool> UpdateOptionalTagsAsync(Game game, string userGameId, bool isMarkAsReplay, bool isIncludesDlc)
+        {
+            try
+            {
+                if (game == null)
+                {
+                    LogVerbose("UpdateOptionalTagsAsync called with null game");
+                    return false;
+                }
+
+                Logger.Info($"UpdateOptionalTagsAsync START: game='{game.Name}' userGameId={userGameId} replay={isMarkAsReplay} includesDlc={isIncludesDlc}");
+
+                if (HowLongToBeatApi == null)
+                {
+                    Common.LogError(new NullReferenceException("HowLongToBeatApi is null"), false, true, PluginName);
+                    return false;
+                }
+
+                if (userGameId.IsNullOrEmpty())
+                {
+                    Logger.Warn($"UpdateOptionalTagsAsync: missing userGameId for {game.Name}");
+                    return false;
+                }
+
+                if (!HowLongToBeatApi.GetIsUserLoggedIn())
+                {
+                    API.Instance.Notifications.Add(new NotificationMessage(
+                        $"{PluginName}-NotLoggedIn-Error",
+                        PluginName + Environment.NewLine + ResourceProvider.GetString("LOCCommonNotLoggedIn"),
+                        NotificationType.Error,
+                        () => Plugin.OpenSettingsView()
+                    ));
+                    return false;
+                }
+
+                if (!HowLongToBeatApi.EditIdExist(userGameId))
+                {
+                    Logger.Warn($"UpdateOptionalTagsAsync: no HLTB edit entry for userGameId {userGameId} ({game.Name})");
+                    return false;
+                }
+
+                var db = _database;
+                if (db == null)
+                {
+                    LogVerbose("Database is not loaded, cannot update optional tags.");
+                    return false;
+                }
+
+                GameHowLongToBeat gameHowLongToBeat = db.Get(game.Id);
+                if (gameHowLongToBeat == null || (gameHowLongToBeat.GetData()?.IsVndb ?? false))
+                {
+                    Logger.Warn($"UpdateOptionalTagsAsync: no HLTB plugin data for {game.Name}");
+                    return false;
+                }
+
+                HltbDataUser hltbDataUser = gameHowLongToBeat.GetData();
+                if (hltbDataUser == null || string.IsNullOrWhiteSpace(hltbDataUser.Id))
+                {
+                    Logger.Warn($"UpdateOptionalTagsAsync: no HLTB id for {game.Name}");
+                    return false;
+                }
+
+                if (UserHltbData == null)
+                {
+                    LogVerbose($"User HLTB data is null, cannot update optional tags for {game.Name}");
+                    return false;
+                }
+
+                EditData editData = await HowLongToBeatApi.GetEditData(gameHowLongToBeat.Name, userGameId).ConfigureAwait(false);
+                if (editData == null)
+                {
+                    Logger.Warn($"UpdateOptionalTagsAsync: no editData for {game.Name} - {userGameId}");
+                    return false;
+                }
+
+                editData.UserId = UserHltbData.UserId;
+                editData.SubmissionId = int.Parse(userGameId);
+                editData.GameId = int.Parse(hltbDataUser.Id);
+                editData.Title = editData.Title.IsNullOrEmpty() ? hltbDataUser.Name : editData.Title;
+
+                if (editData.SinglePlayer == null)
+                {
+                    editData.SinglePlayer = new SinglePlayer();
+                }
+
+                editData.SinglePlayer.PlayCount = isMarkAsReplay;
+                editData.SinglePlayer.IncludesDLC = isIncludesDlc;
+
+                LogVerbose($"UpdateOptionalTagsAsync: submitting optional tags for {game.Name} (userGameId={userGameId}, hltbId={hltbDataUser.Id})");
+
+                bool submitted = await HowLongToBeatApi.ApiSubmitData(game, editData).ConfigureAwait(false);
+                if (submitted)
+                {
+                    PatchTitleListOptionalTags(userGameId, isMarkAsReplay, isIncludesDlc);
+                }
+                else
+                {
+                    Logger.Warn($"UpdateOptionalTagsAsync: submit failed for {game.Name} (userGameId={userGameId})");
+                }
+
+                Logger.Info($"UpdateOptionalTagsAsync DONE: game='{game.Name}' userGameId={userGameId} success={submitted}");
+                return submitted;
+            }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, false, true, PluginName);
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Updates optional tag flags on cached user title entries after a successful submit.
+        /// ApiSubmitData refreshes user data asynchronously; this keeps the in-memory cache aligned until that completes.
+        /// </summary>
+        /// <param name="userGameId">HLTB user submission id.</param>
+        /// <param name="isMarkAsReplay">Mark as replay optional tag value.</param>
+        /// <param name="isIncludesDlc">DLC / expansions included optional tag value.</param>
+        private void PatchTitleListOptionalTags(string userGameId, bool isMarkAsReplay, bool isIncludesDlc)
+        {
+            if (userGameId.IsNullOrEmpty() || UserHltbData?.TitlesList == null)
+            {
+                Logger.Warn($"PatchTitleListOptionalTags: skipped — userGameId empty or TitlesList null (userGameId={userGameId ?? "null"})");
+                return;
+            }
+
+            string userDataJson = null;
+            int patchedCount = 0;
+            lock (UserHltbDataSync)
+            {
+                foreach (TitleList titleList in UserHltbData.TitlesList)
+                {
+                    if (!titleList.UserGameId.IsEqual(userGameId))
+                    {
+                        continue;
+                    }
+
+                    titleList.IsReplay = isMarkAsReplay;
+                    titleList.IsIncludesDlc = isIncludesDlc;
+                    patchedCount++;
+                }
+
+                if (patchedCount == 0)
+                {
+                    Logger.Warn($"PatchTitleListOptionalTags: no cached TitleList for userGameId={userGameId} (replay={isMarkAsReplay}, includesDlc={isIncludesDlc})");
+                    return;
+                }
+
+                userDataJson = Serialization.ToJson(UserHltbData);
+            }
+
+            if (!userDataJson.IsNullOrEmpty())
+            {
+                FileSystem.WriteStringToFileSafe(Path.Combine(Paths.PluginUserDataPath, "HltbUserStats.json"), userDataJson);
+            }
+
+            LogVerbose($"PatchTitleListOptionalTags: updated {patchedCount} cached entr{(patchedCount == 1 ? "y" : "ies")} for userGameId={userGameId} replay={isMarkAsReplay} includesDlc={isIncludesDlc}");
+        }
+
+        /// <summary>
+        /// Clears HowLongToBeat profile list flags on the submit payload, optionally preserving globally configured lists that are already set.
+        /// </summary>
+        /// <param name="lists">List flags from edit data.</param>
+        /// <param name="clearOtherLists">When true, clears lists before applying the target status.</param>
+        /// <param name="alwaysKeep">Global always-keep rules applied after clearing.</param>
+        /// <param name="gameName">Playnite game name used for verbose logging.</param>
+        private void ApplyHltbListClearing(Lists lists, bool clearOtherLists, HltbListAlwaysKeepOptions alwaysKeep, string gameName)
+        {
+            if (lists == null)
+            {
+                return;
+            }
+
+            if (!clearOtherLists)
+            {
+                LogVerbose($"Status sync lists for {gameName}: listsBefore={FormatActiveHltbLists(lists)}, clearOtherLists=false, listsAfterClear=skipped");
+
+                return;
+            }
+
+            if (alwaysKeep == null)
+            {
+                alwaysKeep = new HltbListAlwaysKeepOptions();
+            }
+
+            string listsBefore = FormatActiveHltbLists(lists);
+            bool keepPlaying = alwaysKeep.AlwaysKeepPlayingIfPresent && lists.Playing;
+            bool keepBacklog = alwaysKeep.AlwaysKeepBacklogIfPresent && lists.Backlog;
+            bool keepReplay = alwaysKeep.AlwaysKeepReplayIfPresent && lists.Replay;
+            bool keepCompleted = alwaysKeep.AlwaysKeepCompletedIfPresent && lists.Completed;
+            bool keepRetired = alwaysKeep.AlwaysKeepRetiredIfPresent && lists.Retired;
+
+            ClearHltbLists(lists);
+
+            var kept = new List<string>();
+            if (keepPlaying)
+            {
+                lists.Playing = true;
+                kept.Add("Playing");
+            }
+
+            if (keepBacklog)
+            {
+                lists.Backlog = true;
+                kept.Add("Backlog");
+            }
+
+            if (keepReplay)
+            {
+                lists.Replay = true;
+                kept.Add("Replay");
+            }
+
+            if (keepCompleted)
+            {
+                lists.Completed = true;
+                kept.Add("Completed");
+            }
+
+            if (keepRetired)
+            {
+                lists.Retired = true;
+                kept.Add("Retired");
+            }
+
+            string keptSummary = kept.Count == 0 ? "none" : string.Join(",", kept);
+            LogVerbose($"Status sync lists for {gameName}: listsBefore={listsBefore}, clearOtherLists=true, listsAfterClear={FormatActiveHltbLists(lists)}, kept={keptSummary}");
+        }
+
+        /// <summary>
+        /// Clears all HowLongToBeat profile list flags on the submit payload.
+        /// </summary>
+        /// <param name="lists">List flags from edit data.</param>
+        private static void ClearHltbLists(Lists lists)
+        {
+            if (lists == null)
+            {
+                return;
+            }
+
+            lists.Playing = false;
+            lists.Backlog = false;
+            lists.Replay = false;
+            lists.Custom = false;
+            lists.Custom2 = false;
+            lists.Custom3 = false;
+            lists.Completed = false;
+            lists.Retired = false;
+        }
+
+        private static string FormatListSyncOptionsLog(HltbStatusToHltbSyncOptions options, HltbListAlwaysKeepOptions alwaysKeep)
+        {
+            if (options == null)
+            {
+                return "listSync=none";
+            }
+
+            if (!options.ClearOtherLists)
+            {
+                return "clearOtherLists=false";
+            }
+
+            if (alwaysKeep == null)
+            {
+                return "clearOtherLists=true, alwaysKeep=none";
+            }
+
+            var alwaysKeepLists = new List<string>();
+            if (alwaysKeep.AlwaysKeepPlayingIfPresent)
+            {
+                alwaysKeepLists.Add("Playing");
+            }
+
+            if (alwaysKeep.AlwaysKeepBacklogIfPresent)
+            {
+                alwaysKeepLists.Add("Backlog");
+            }
+
+            if (alwaysKeep.AlwaysKeepReplayIfPresent)
+            {
+                alwaysKeepLists.Add("Replay");
+            }
+
+            if (alwaysKeep.AlwaysKeepCompletedIfPresent)
+            {
+                alwaysKeepLists.Add("Completed");
+            }
+
+            if (alwaysKeep.AlwaysKeepRetiredIfPresent)
+            {
+                alwaysKeepLists.Add("Retired");
+            }
+
+            string alwaysKeepSummary = alwaysKeepLists.Count == 0 ? "none" : string.Join(",", alwaysKeepLists);
+            return $"clearOtherLists=true, alwaysKeep={alwaysKeepSummary}";
+        }
+
+        /// <summary>
+        /// Formats active HowLongToBeat list names for logging.
+        /// </summary>
+        private static string FormatActiveHltbLists(Lists lists)
+        {
+            if (lists == null)
+            {
+                return "none";
+            }
+
+            var active = new List<string>();
+            if (lists.Playing)
+            {
+                active.Add("Playing");
+            }
+
+            if (lists.Backlog)
+            {
+                active.Add("Backlog");
+            }
+
+            if (lists.Replay)
+            {
+                active.Add("Replay");
+            }
+
+            if (lists.Completed)
+            {
+                active.Add("Completed");
+            }
+
+            if (lists.Retired)
+            {
+                active.Add("Retired");
+            }
+
+            if (lists.Custom)
+            {
+                active.Add("Custom");
+            }
+
+            if (lists.Custom2)
+            {
+                active.Add("Custom2");
+            }
+
+            if (lists.Custom3)
+            {
+                active.Add("Custom3");
+            }
+
+            return active.Count == 0 ? "none" : string.Join(",", active);
+        }
+
+        /// <summary>
+        /// Formats all HowLongToBeat list flags for submit payload logging.
+        /// </summary>
+        private static string FormatHltbListsSubmitted(Lists lists)
+        {
+            if (lists == null)
+            {
+                return "none";
+            }
+
+            return string.Format(
+                "Playing={0},Backlog={1},Replay={2},Completed={3},Retired={4},Custom={5},Custom2={6},Custom3={7}",
+                lists.Playing,
+                lists.Backlog,
+                lists.Replay,
+                lists.Completed,
+                lists.Retired,
+                lists.Custom,
+                lists.Custom2,
+                lists.Custom3);
         }
 
         #endregion

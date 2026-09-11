@@ -6,6 +6,8 @@
 [![GitHub contributors](https://img.shields.io/github/contributors/Lacro59/playnite-howlongtobeat-plugin?cacheSeconds=5000)](https://github.com/Lacro59/playnite-howlongtobeat-plugin/graphs/contributors)
 [![GitHub](https://img.shields.io/github/license/Lacro59/playnite-howlongtobeat-plugin?cacheSeconds=50000)](https://github.com/Lacro59/playnite-howlongtobeat-plugin/blob/master/LICENSE)
 
+[![HLTB Search Smoke](https://github.com/Lacro59/playnite-howlongtobeat-plugin/actions/workflows/hltb-search-smoke.yml/badge.svg)](https://github.com/Lacro59/playnite-howlongtobeat-plugin/actions/workflows/hltb-search-smoke.yml)
+
 # playnite-howlongtobeat-plugin
 Extension for [Playnite](https://playnite.link).  
 

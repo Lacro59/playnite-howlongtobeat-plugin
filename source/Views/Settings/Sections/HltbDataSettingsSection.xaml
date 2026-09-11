@@ -1,0 +1,227 @@
+﻿<UserControl x:Class="HowLongToBeat.Views.HltbDataSettingsSection"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:HowLongToBeat="clr-namespace:HowLongToBeat"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance HowLongToBeat:HowLongToBeatSettingsViewModel}">
+
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+
+        <Style x:Key="AliasesCellTextBlockStyle"
+               TargetType="TextBlock"
+               BasedOn="{StaticResource BaseTextBlockStyle}">
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Padding" Value="6,0"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextBrushDarker}"/>
+        </Style>
+        <Style x:Key="AliasesCellTextBoxStyle"
+               TargetType="TextBox"
+               BasedOn="{StaticResource {x:Type TextBox}}">
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Padding" Value="6,0"/>
+            <Setter Property="MinWidth" Value="200"/>
+            <Setter Property="Background" Value="{DynamicResource PopupBackgroundBrush}"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource PopupBorderBrush}"/>
+            <Setter Property="BorderThickness" Value="{DynamicResource ControlBorderThickness}"/>
+        </Style>
+    </UserControl.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto"
+                  PanningMode="VerticalOnly">
+        <StackPanel>
+            <TextBlock Style="{DynamicResource BaseTextBlockStyle}"
+                       TextWrapping="Wrap"
+                       Text="{DynamicResource LOCHowLongToBeatAliasesDescription}"/>
+
+            <WrapPanel Margin="0,10,0,0">
+                <Button Content="{DynamicResource LOCAddTitle}"
+                        Command="{Binding AliasAddCommand}"
+                        MinHeight="26"
+                        Margin="0,0,8,8"/>
+                <Button Content="{DynamicResource LOCRemoveTitle}"
+                        Command="{Binding AliasRemoveCommand}"
+                        CommandParameter="{Binding ElementName=PART_AliasesGrid, Path=SelectedItems}"
+                        MinHeight="26"
+                        Margin="0,0,8,8"/>
+                <Button Content="{DynamicResource LOCHowLongToBeatAliasesImport}"
+                        Command="{Binding AliasImportCommand}"
+                        MinHeight="26"
+                        Margin="0,0,8,8"/>
+                <Button Content="{DynamicResource LOCHowLongToBeatAliasesExport}"
+                        Command="{Binding AliasExportCommand}"
+                        MinHeight="26"
+                        Margin="0,0,8,8"/>
+                <Button Content="{DynamicResource LOCHowLongToBeatAliasesReset}"
+                        Command="{Binding AliasResetCommand}"
+                        MinHeight="26"
+                        Margin="0,0,8,8"/>
+                <Button Content="{DynamicResource LOCHowLongToBeatAliasesOpenFile}"
+                        Command="{Binding AliasOpenFileCommand}"
+                        MinHeight="26"
+                        Margin="0,0,0,8"/>
+            </WrapPanel>
+
+            <DataGrid Margin="0,2,0,0"
+                      x:Name="PART_AliasesGrid"
+                      ItemsSource="{Binding Settings.GameNameAliasesList}"
+                      SelectedItem="{Binding SelectedAliasEntry, Mode=TwoWay}"
+                      AutoGenerateColumns="False"
+                      CanUserAddRows="False"
+                      CanUserDeleteRows="False"
+                      IsReadOnly="False"
+                      HeadersVisibility="Column"
+                      SelectionMode="Extended"
+                      SelectionUnit="FullRow"
+                      MinHeight="250"
+                      GridLinesVisibility="None"
+                      RowHeight="32"
+                      Background="{DynamicResource ControlBackgroundBrush}"
+                      AlternationCount="0"
+                      ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                      ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                      ColumnWidth="*">
+                <DataGrid.Resources>
+                    <Style TargetType="DataGridCell"
+                           BasedOn="{StaticResource {x:Type DataGridCell}}">
+                        <Setter Property="Padding" Value="0"/>
+                        <Setter Property="BorderThickness" Value="0"/>
+                        <Setter Property="Background" Value="{DynamicResource GridItemBackgroundBrush}"/>
+                        <Setter Property="Foreground" Value="{DynamicResource TextBrushDarker}"/>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="DataGridCell">
+                                    <Border x:Name="Bd"
+                                            Background="{TemplateBinding Background}"
+                                            BorderBrush="{DynamicResource PopupBorderBrush}"
+                                            BorderThickness="0"
+                                            CornerRadius="{DynamicResource ControlCornerRadius}"
+                                            SnapsToDevicePixels="True"
+                                            Padding="4,2"
+                                            HorizontalAlignment="Stretch">
+                                        <ContentPresenter VerticalAlignment="Center"
+                                                          HorizontalAlignment="Stretch"/>
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter TargetName="Bd" Property="Background" Value="{DynamicResource HoverBrush}"/>
+                                        </Trigger>
+                                        <Trigger Property="IsSelected" Value="True">
+                                            <Setter TargetName="Bd" Property="Background" Value="{DynamicResource HighlightGlyphBrush}"/>
+                                            <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
+                                        </Trigger>
+                                        <Trigger Property="IsEditing" Value="True">
+                                            <Setter TargetName="Bd" Property="Background" Value="{DynamicResource PopupBackgroundBrush}"/>
+                                            <Setter TargetName="Bd" Property="BorderThickness" Value="{DynamicResource ControlBorderThickness}"/>
+                                            <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </DataGrid.Resources>
+
+                <DataGrid.RowStyle>
+                    <Style TargetType="DataGridRow"
+                           BasedOn="{StaticResource {x:Type DataGridRow}}">
+                        <Setter Property="Background" Value="{DynamicResource ControlBackgroundBrush}"/>
+                        <Setter Property="ToolTip" Value="{DynamicResource LOCHowLongToBeatAliasesCellToolTip}"/>
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="{DynamicResource HoverBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter Property="Background" Value="{DynamicResource HighlightGlyphBrush}"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </DataGrid.RowStyle>
+
+                <DataGrid.Columns>
+                    <DataGridTemplateColumn Header="{DynamicResource LOCHowLongToBeatAliasesSource}"
+                                            Width="2*">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Border x:Name="bdSrc"
+                                        Background="{DynamicResource GridItemBackgroundBrush}"
+                                        Padding="4,2"
+                                        BorderBrush="Transparent"
+                                        BorderThickness="0"
+                                        CornerRadius="{DynamicResource ControlCornerRadius}">
+                                    <TextBlock Style="{StaticResource AliasesCellTextBlockStyle}"
+                                               Text="{Binding Source}"/>
+                                </Border>
+                                <DataTemplate.Triggers>
+                                    <DataTrigger Binding="{Binding Source}" Value="">
+                                        <Setter TargetName="bdSrc" Property="BorderBrush" Value="{DynamicResource PopupBorderBrush}"/>
+                                        <Setter TargetName="bdSrc" Property="BorderThickness" Value="{DynamicResource ControlBorderThickness}"/>
+                                        <Setter TargetName="bdSrc" Property="Background" Value="{DynamicResource PopupBackgroundBrush}"/>
+                                    </DataTrigger>
+                                </DataTemplate.Triggers>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                        <DataGridTemplateColumn.CellEditingTemplate>
+                            <DataTemplate>
+                                <Border BorderBrush="{DynamicResource PopupBorderBrush}"
+                                        BorderThickness="{DynamicResource ControlBorderThickness}"
+                                        Background="{DynamicResource PopupBackgroundBrush}"
+                                        CornerRadius="{DynamicResource ControlCornerRadius}"
+                                        Padding="2">
+                                    <TextBox Style="{StaticResource AliasesCellTextBoxStyle}"
+                                             Text="{Binding Source, UpdateSourceTrigger=PropertyChanged}"/>
+                                </Border>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellEditingTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTemplateColumn Header="{DynamicResource LOCHowLongToBeatAliasesTarget}"
+                                            Width="2*">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Border x:Name="bdTgt"
+                                        Background="{DynamicResource GridItemBackgroundBrush}"
+                                        Padding="4,2"
+                                        BorderBrush="Transparent"
+                                        BorderThickness="0"
+                                        CornerRadius="{DynamicResource ControlCornerRadius}">
+                                    <TextBlock Style="{StaticResource AliasesCellTextBlockStyle}"
+                                               Text="{Binding Target}"/>
+                                </Border>
+                                <DataTemplate.Triggers>
+                                    <DataTrigger Binding="{Binding Target}" Value="">
+                                        <Setter TargetName="bdTgt" Property="BorderBrush" Value="{DynamicResource PopupBorderBrush}"/>
+                                        <Setter TargetName="bdTgt" Property="BorderThickness" Value="{DynamicResource ControlBorderThickness}"/>
+                                        <Setter TargetName="bdTgt" Property="Background" Value="{DynamicResource PopupBackgroundBrush}"/>
+                                    </DataTrigger>
+                                </DataTemplate.Triggers>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                        <DataGridTemplateColumn.CellEditingTemplate>
+                            <DataTemplate>
+                                <Border BorderBrush="{DynamicResource PopupBorderBrush}"
+                                        BorderThickness="{DynamicResource ControlBorderThickness}"
+                                        Background="{DynamicResource PopupBackgroundBrush}"
+                                        CornerRadius="{DynamicResource ControlCornerRadius}"
+                                        Padding="2">
+                                    <TextBox Style="{StaticResource AliasesCellTextBoxStyle}"
+                                             Text="{Binding Target, UpdateSourceTrigger=PropertyChanged}"/>
+                                </Border>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellEditingTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+
+            <TextBlock Margin="0,8,0,0"
+                       Style="{DynamicResource BaseTextBlockStyle}"
+                       FontSize="{DynamicResource FontSizeSmall}"
+                       Opacity="0.8"
+                       TextWrapping="Wrap"
+                       Text="{DynamicResource LOCHowLongToBeatAliasesTip}"/>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

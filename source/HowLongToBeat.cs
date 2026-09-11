@@ -1,4 +1,4 @@
-﻿using HowLongToBeat.Services;
+using HowLongToBeat.Services;
 using HowLongToBeat.Views;
 using Playnite.SDK;
 using Playnite.SDK.Events;
@@ -87,7 +87,7 @@ namespace HowLongToBeat
                 string ButtonName = ((Button)sender).Name;
                 if (ButtonName == "PART_CustomHowLongToBeatButton")
                 {
-                    Common.LogDebug(true, $"OnCustomThemeButtonClick()");
+                    Common.LogDebug($"OnCustomThemeButtonClick()");
                     PluginDatabase.PluginWindows.ShowPluginGameDataWindow(this);
                 }
             }
@@ -260,6 +260,12 @@ namespace HowLongToBeat
             {
                 try
                 {
+                    if (PluginDatabase.IsGameIgnoredForPlaytimeSync(args.Game))
+                    {
+                        Logger.Info($"Skipping auto playtime sync for ignored game {args.Game?.Name}");
+                        return;
+                    }
+
                     MessageBoxResult result = MessageBoxResult.Yes;
                     if (!PluginDatabase.PluginSettings.AutoSetCurrentPlayTimeWithoutConfirmation)
                     {
@@ -321,8 +327,13 @@ namespace HowLongToBeat
                     Common.LogError(ex, false, true, PluginDatabase.PluginName);
                 }
 
+                // TMP: migrate flat filterSettings from config.json into nested UserData/PlayniteData; remove with FilterSettingsNestedMigration.
                 try
                 {
+                    if (FilterSettingsNestedMigration.TryMigrateFromLegacyFlatConfig(PluginDatabase.PluginSettings, GetPluginUserDataPath()))
+                    {
+                        SavePluginSettings(PluginDatabase.PluginSettings);
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -363,14 +374,7 @@ namespace HowLongToBeat
              }
              catch (Exception ex)
              {
-                 try
-                 {
-                     if (PluginDatabase?.PluginSettings is HowLongToBeatSettings s && s.EnableVerboseLogging)
-                     {
-                         Common.LogError(ex, false, true, PluginDatabase.PluginName);
-                     }
-                 }
-                 catch { }
+                 Common.LogError(ex, false, true, PluginDatabase.PluginName);
              }
          }
 
@@ -402,7 +406,7 @@ namespace HowLongToBeat
 
         public override UserControl GetSettingsView(bool firstRunSettings)
         {
-            return new HowLongToBeatSettingsView(PluginSettingsViewModel.Settings);
+            return new HltbSettingsView(PluginSettingsViewModel);
         }
 
         #endregion

@@ -6,6 +6,7 @@ using FuzzySharp;
 using HowLongToBeat.Models;
 using HowLongToBeat.Models.Enumerations;
 using HowLongToBeat.Models.StartPage;
+using HowLongToBeat.Services;
 using HowLongToBeat.Views;
 using Playnite.SDK;
 using Playnite.SDK.Data;
@@ -35,11 +36,44 @@ namespace HowLongToBeat
         public bool AutoSetCurrentPlayTimeWithoutConfirmation { get; set; } = true;
         public bool UsedStartDateFromGameActivity { get; set; } = false;
 
+        /// <summary>
+        /// When true, <c>SetCurrentPlayTime</c> overwrites HowLongToBeat review score from Playnite <c>UserScore</c> (rounded to 5%). Default off.
+        /// </summary>
+        public bool AutoSetUserScoreToHltb { get; set; } = false;
+
         public bool AutoAccept { get; set; } = true;
         public bool ShowWhenMismatch { get; set; } = false;
         public bool UseMatchValue { get; set; } = false;
         public double MatchValue { get; set; } = 95;
 
+        /// <summary>
+        /// Default data source for mass download and the selection dialog (HowLongToBeat or VNDB).
+        /// </summary>
+        public DataProvider DefaultDataProvider { get; set; } = DataProvider.HowLongToBeat;
+
+        /// <summary>
+        /// Default VNDB reading-speed row for mass import and the selection dialog
+        /// (Classic=Slow, Average=Normal, Median=Fast, Rushed=Total). Independent of <see cref="UseHtltbClassic"/> and related HLTB toggles.
+        /// </summary>
+        public DataType DefaultVndbSpeed { get; set; } = DataType.Average;
+
+        /// <summary>
+        /// Returns <see cref="DefaultVndbSpeed"/> when it maps to a VNDB vote row; otherwise Average (Normal).
+        /// </summary>
+        /// <returns>Classic, Average, Median, or Rushed.</returns>
+        public DataType GetResolvedDefaultVndbSpeed()
+        {
+            switch (DefaultVndbSpeed)
+            {
+                case DataType.Classic:
+                case DataType.Average:
+                case DataType.Median:
+                case DataType.Rushed:
+                    return DefaultVndbSpeed;
+                default:
+                    return DataType.Average;
+            }
+        }
 
         public bool UseHtltbClassic { get; set; } = true;
         public bool UseHtltbAverage { get; set; } = false;
@@ -50,7 +84,10 @@ namespace HowLongToBeat
 
         public bool EnableSucessNotification { get; set; } = true;
 
-        public bool EnableVerboseLogging { get; set; } = false;
+        /// <summary>
+        /// Last HLTB search API path that successfully passed auth init (for example <c>/api/search/site</c>).
+        /// </summary>
+        public string SearchApiEndpoint { get; set; } = "/api/search/site";
 
         public bool EnableProgressBarInDataView { get; set; } = true;
 
@@ -128,13 +165,41 @@ namespace HowLongToBeat
 
         public TimeType PreferredForTimeToBeat { get; set; } = TimeType.MainStory;
 
-        public bool ShowMainTime { get; set; } = true;
-        public bool ShowExtraTime { get; set; } = true;
-        public bool ShowCompletionistTime { get; set; } = true;
+        private bool _showMainTime = true;
+        /// <summary>
+        /// When true, Main Story time may be shown in plugin controls and custom themes via PluginSettings.
+        /// </summary>
+        public bool ShowMainTime { get => _showMainTime; set => SetValue(ref _showMainTime, value); }
 
-        public bool ShowSoloTime { get; set; } = true;
-        public bool ShowCoOpTime { get; set; } = true;
-        public bool ShowVsTime { get; set; } = true;
+        private bool _showExtraTime = true;
+        /// <summary>
+        /// When true, Main Extra time may be shown in plugin controls and custom themes via PluginSettings.
+        /// </summary>
+        public bool ShowExtraTime { get => _showExtraTime; set => SetValue(ref _showExtraTime, value); }
+
+        private bool _showCompletionistTime = true;
+        /// <summary>
+        /// When true, Completionist time may be shown in plugin controls and custom themes via PluginSettings.
+        /// </summary>
+        public bool ShowCompletionistTime { get => _showCompletionistTime; set => SetValue(ref _showCompletionistTime, value); }
+
+        private bool _showSoloTime = true;
+        /// <summary>
+        /// When true, Solo time may be shown in plugin controls and custom themes via PluginSettings.
+        /// </summary>
+        public bool ShowSoloTime { get => _showSoloTime; set => SetValue(ref _showSoloTime, value); }
+
+        private bool _showCoOpTime = true;
+        /// <summary>
+        /// When true, Co-Op time may be shown in plugin controls and custom themes via PluginSettings.
+        /// </summary>
+        public bool ShowCoOpTime { get => _showCoOpTime; set => SetValue(ref _showCoOpTime, value); }
+
+        private bool _showVsTime = true;
+        /// <summary>
+        /// When true, Vs time may be shown in plugin controls and custom themes via PluginSettings.
+        /// </summary>
+        public bool ShowVsTime { get => _showVsTime; set => SetValue(ref _showVsTime, value); }
 
 
         public SolidColorBrush ThumbSolidColorBrush { get; set; } = null;
@@ -286,7 +351,7 @@ namespace HowLongToBeat
         public FilterSettings filterSettings { get; set; } = new FilterSettings();
 
         /// <summary>
-        /// Copies legacy root-level list sort settings into <see cref="filterSettings"/> once.
+        /// Copies legacy root-level list sort settings into <see cref="filterSettings"/>.<see cref="FilterSettings.UserData"/> once.
         /// </summary>
         /// <returns>True when migration was applied.</returns>
         public bool MigrateLegacyFilterSortSettings()
@@ -296,15 +361,54 @@ namespace HowLongToBeat
                 filterSettings = new FilterSettings();
             }
 
+            filterSettings.EnsureNestedFilters();
+
             if (filterSettings.LegacySortMigrated)
             {
                 return false;
             }
 
-            filterSettings.TitleListSort = TitleListSort;
-            filterSettings.IsAsc = IsAsc;
+            filterSettings.UserData.TitleListSort = TitleListSort;
+            filterSettings.UserData.IsAsc = IsAsc;
             filterSettings.LegacySortMigrated = true;
             return true;
+        }
+
+        /// <summary>
+        /// Copies legacy <see cref="AutoSetToHltbClearOtherLists"/> into per-status list sync options once.
+        /// </summary>
+        /// <returns>True when migration was applied.</returns>
+        public bool MigrateLegacyToHltbListSyncOptions()
+        {
+            if (LegacyToHltbListSyncOptionsMigrated)
+            {
+                return false;
+            }
+
+            ApplyLegacyClearOtherLists(AutoSetToHltbClearOtherLists);
+            LegacyToHltbListSyncOptionsMigrated = true;
+            return true;
+        }
+
+        private void ApplyLegacyClearOtherLists(bool clearOtherLists)
+        {
+            ToHltbPlayingListSync = EnsureListSyncOptions(ToHltbPlayingListSync, clearOtherLists);
+            ToHltbCompletedListSync = EnsureListSyncOptions(ToHltbCompletedListSync, clearOtherLists);
+            ToHltbCompletionistListSync = EnsureListSyncOptions(ToHltbCompletionistListSync, clearOtherLists);
+            ToHltbBacklogListSync = EnsureListSyncOptions(ToHltbBacklogListSync, clearOtherLists);
+            ToHltbReplaysListSync = EnsureListSyncOptions(ToHltbReplaysListSync, clearOtherLists);
+            ToHltbRetiredListSync = EnsureListSyncOptions(ToHltbRetiredListSync, clearOtherLists);
+        }
+
+        private static HltbStatusToHltbSyncOptions EnsureListSyncOptions(HltbStatusToHltbSyncOptions options, bool clearOtherLists)
+        {
+            if (options == null)
+            {
+                options = new HltbStatusToHltbSyncOptions();
+            }
+
+            options.ClearOtherLists = clearOtherLists;
+            return options;
         }
 
         public bool AutoSetGameStatus { get; set; } = false;
@@ -312,10 +416,37 @@ namespace HowLongToBeat
         public Guid GameStatusPlaying { get; set; }
         public Guid GameStatusCompleted { get; set; }
         public Guid GameStatusCompletionist { get; set; }
+        public Guid GameStatusBacklog { get; set; }
+        public Guid GameStatusReplays { get; set; }
+        public Guid GameStatusRetired { get; set; }
+
+        /// <summary>
+        /// Legacy global clear-other-lists flag; migrated into <see cref="ToHltbPlayingListSync"/> and siblings.
+        /// </summary>
+        public bool AutoSetToHltbClearOtherLists { get; set; } = true;
+
+        /// <summary>
+        /// True after <see cref="AutoSetToHltbClearOtherLists"/> was copied to per-status list sync options.
+        /// </summary>
+        public bool LegacyToHltbListSyncOptionsMigrated { get; set; }
+
+        public HltbStatusToHltbSyncOptions ToHltbPlayingListSync { get; set; } = new HltbStatusToHltbSyncOptions();
+        public HltbStatusToHltbSyncOptions ToHltbCompletedListSync { get; set; } = new HltbStatusToHltbSyncOptions();
+        public HltbStatusToHltbSyncOptions ToHltbCompletionistListSync { get; set; } = new HltbStatusToHltbSyncOptions();
+        public HltbStatusToHltbSyncOptions ToHltbBacklogListSync { get; set; } = new HltbStatusToHltbSyncOptions();
+        public HltbStatusToHltbSyncOptions ToHltbReplaysListSync { get; set; } = new HltbStatusToHltbSyncOptions();
+        public HltbStatusToHltbSyncOptions ToHltbRetiredListSync { get; set; } = new HltbStatusToHltbSyncOptions();
+
+        /// <summary>
+        /// Lists to preserve on the HowLongToBeat profile when a target status clears other lists.
+        /// </summary>
+        public HltbListAlwaysKeepOptions ToHltbAlwaysKeepLists { get; set; } = new HltbListAlwaysKeepOptions();
+
         public bool AutoSetToHltbCompletedSendPlaytime { get; set; } = true;
         public bool AutoSetToHltbCompletedSendCompletionDate { get; set; } = true;
         public bool AutoSetToHltbCompletionistSendPlaytime { get; set; } = true;
         public bool AutoSetToHltbCompletionistSendCompletionDate { get; set; } = true;
+        public bool AutoSetToHltbPlayingSendPlaytime { get; set; } = true;
 
         #endregion
 
@@ -395,7 +526,7 @@ namespace HowLongToBeat
     }
 
 
-    public class HowLongToBeatSettingsViewModel : PluginSettingsViewModel, IPluginSettingsViewModel
+    public partial class HowLongToBeatSettingsViewModel : PluginSettingsViewModel, IPluginSettingsViewModel
 	{
         private readonly HowLongToBeat Plugin;
         private HowLongToBeatSettings EditingClone { get; set; }
@@ -415,7 +546,10 @@ namespace HowLongToBeat
             // LoadPluginSettings returns null if not saved data is available.
             Settings = savedSettings ?? new HowLongToBeatSettings();
 
-            if (Settings.MigrateLegacyFilterSortSettings() || Settings.SyncStorefrontElementsFromLegacy())
+            if (FilterSettingsNestedMigration.TryMigrateFromLegacyFlatConfig(Settings, plugin.GetPluginUserDataPath())
+                || Settings.MigrateLegacyFilterSortSettings()
+                || Settings.SyncStorefrontElementsFromLegacy()
+                || Settings.MigrateLegacyToHltbListSyncOptions())
             {
                 plugin.SavePluginSettings(Settings);
             }
@@ -527,7 +661,7 @@ namespace HowLongToBeat
                         await Task.Delay(100).ConfigureAwait(false);
                         if (sw.ElapsedMilliseconds > maxWaitMs)
                         {
-                            try { if (Settings.EnableVerboseLogging) Common.LogDebug(true, "Timeout waiting for Database.IsOpen in StorefrontElements init"); } catch { }
+                            Common.LogDebug("Timeout waiting for Database.IsOpen in StorefrontElements init");
                             break;
                         }
                     }
@@ -596,7 +730,7 @@ namespace HowLongToBeat
                             await Task.Delay(100).ConfigureAwait(false);
                             if (sw.ElapsedMilliseconds > maxWaitMs)
                             {
-                                try { if (Settings.EnableVerboseLogging) Common.LogDebug(true, "Timeout waiting for Database.IsOpen in Platforms init"); } catch { }
+                                Common.LogDebug("Timeout waiting for Database.IsOpen in Platforms init");
                                 break;
                             }
                         }
@@ -696,12 +830,17 @@ namespace HowLongToBeat
                     Settings.ThumbSolidColorBrush = (SolidColorBrush)ResourceProvider.GetResource("NormalBrush");
                 }
             }
+
+            InitializeSettingsCommands();
+            SubscribeAuthEvents();
+            TaskHelpers.FireAndForget(RefreshAuthStateAsync(), "SettingsViewModel-CheckAuthenticate", Logger);
         }
 
         // Code executed when settings view is opened and user starts editing values.
         public void BeginEdit()
         {
             EditingClone = Serialization.GetClone(Settings);
+            HowLongToBeatSettingsView.CancelEditingIgnoreSyncChanges();
         }
 
         // Code executed when user decides to cancel any changes made since BeginEdit was called.
@@ -710,6 +849,7 @@ namespace HowLongToBeat
         {
             Settings = EditingClone;
             try { Settings.SyncAliasesListFromDictionary(); } catch { }
+            HowLongToBeatSettingsView.CancelEditingIgnoreSyncChanges();
         }
 
         // Code executed when user decides to confirm changes made since BeginEdit was called.
@@ -718,24 +858,6 @@ namespace HowLongToBeat
         {
             // Persist aliases edits from UI list back into the dictionary.
             try { Settings.SyncAliasesDictionaryFromList(); } catch { }
-
-            Settings.ThumbSolidColorBrush = HowLongToBeatSettingsView.ThumbSolidColorBrush;
-            Settings.ThumbLinearGradient = HowLongToBeatSettingsView.ThumbLinearGradient;
-
-            Settings.FirstColorBrush = HowLongToBeatSettingsView.FirstColorBrush;
-            Settings.FirstLinearGradient = HowLongToBeatSettingsView.FirstLinearGradient;
-            Settings.SecondColorBrush = HowLongToBeatSettingsView.SecondColorBrush;
-            Settings.SecondLinearGradient = HowLongToBeatSettingsView.SecondLinearGradient;
-            Settings.ThirdColorBrush = HowLongToBeatSettingsView.ThirdColorBrush;
-            Settings.ThirdLinearGradient = HowLongToBeatSettingsView.ThirdLinearGradient;
-
-            Settings.FirstMultiColorBrush = HowLongToBeatSettingsView.FirstMultiColorBrush;
-            Settings.FirstMultiLinearGradient = HowLongToBeatSettingsView.FirstMultiLinearGradient;
-            Settings.SecondMultiColorBrush = HowLongToBeatSettingsView.SecondMultiColorBrush;
-            Settings.SecondMultiLinearGradient = HowLongToBeatSettingsView.SecondMultiLinearGradient;
-            Settings.ThirdMultiColorBrush = HowLongToBeatSettingsView.ThirdMultiColorBrush;
-            Settings.ThirdMultiLinearGradient = HowLongToBeatSettingsView.ThirdMultiLinearGradient;
-
 
             if (!Settings.UseHtltbClassic && !Settings.UseHtltbAverage && !Settings.UseHtltbMedian && !Settings.UseHtltbRushed && !Settings.UseHtltbLeisure)
             {
@@ -746,7 +868,9 @@ namespace HowLongToBeat
                 Settings.UseHtltbLeisure = EditingClone.UseHtltbLeisure;
             }
 
-            Plugin.SavePluginSettings(Settings);
+            HowLongToBeatSettingsView.ApplyEditingIgnoreSyncChanges();
+
+            PersistSettings(Plugin, Settings);
             HowLongToBeat.PluginDatabase.PluginSettings = this.Settings;
 
             if (API.Instance.ApplicationInfo.Mode == ApplicationMode.Desktop)

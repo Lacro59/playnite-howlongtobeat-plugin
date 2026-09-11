@@ -1,4 +1,4 @@
-﻿using CommonPluginsControls.LiveChartsCommon;
+using CommonPluginsControls.LiveChartsCommon;
 using CommonPluginsShared;
 using CommonPluginsShared.Converters;
 using HowLongToBeat.Models;
@@ -71,7 +71,7 @@ namespace HowLongToBeat.Views.StartPage
 
                 if (!PluginDatabase.IsLoaded)
                 {
-                    try { Common.LogDebug(true, "HltbChartStats: Database not loaded after timeout"); } catch { }
+                    try { Common.LogDebug("HltbChartStats: Database not loaded after timeout"); } catch { }
                     return;
                 }
             }

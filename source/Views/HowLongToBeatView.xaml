@@ -9,7 +9,7 @@
              xmlns:converters="clr-namespace:CommonPlayniteShared.Converters"
              mc:Ignorable="d"
              Width="900"
-             Height="400"
+             Height="500"
              d:DataContext="{d:DesignInstance local:HowLongToBeatViewData}">
 
     <UserControl.Resources>
@@ -208,7 +208,8 @@
                                    FontSize="16"
                                    Style="{DynamicResource BaseTextBlockStyle}"
                                    VerticalAlignment="Center"
-                                   HorizontalAlignment="Center"/>
+                                   HorizontalAlignment="Center"
+                                   Visibility="Collapsed"/>
                         <RadioButton GroupName="DataUser"
                                      Checked="Hltb_El0_Checked"
                                      Name="Hltb_El0"
@@ -216,7 +217,8 @@
                                      Grid.Row="0"
                                      FontSize="16"
                                      VerticalAlignment="Center"
-                                     HorizontalAlignment="Center"/>
+                                     HorizontalAlignment="Center"
+                                     Visibility="Collapsed"/>
                         <RadioButton GroupName="DataUser"
                                      Checked="Hltb_El0_Checked"
                                      Name="Hltb_El0_1"
@@ -274,7 +276,8 @@
                                    Style="{DynamicResource BaseTextBlockStyle}"
                                    FontSize="16"
                                    HorizontalAlignment="Center"
-                                   VerticalAlignment="Center"/>
+                                   VerticalAlignment="Center"
+                                   Visibility="Collapsed"/>
                         <TextBlock Name="Hltb_El1_DataUser_1"
                                    Margin="10,0,0,0"
                                    Visibility="Collapsed"
@@ -329,7 +332,8 @@
                                    Style="{DynamicResource BaseTextBlockStyle}"
                                    FontSize="16"
                                    HorizontalAlignment="Center"
-                                   VerticalAlignment="Center"/>
+                                   VerticalAlignment="Center"
+                                   Visibility="Collapsed"/>
                         <TextBlock Name="Hltb_El2_DataUser_1"
                                    Margin="10,0,0,0"
                                    Visibility="Collapsed"
@@ -384,7 +388,8 @@
                                    Style="{DynamicResource BaseTextBlockStyle}"
                                    FontSize="16"
                                    HorizontalAlignment="Center"
-                                   VerticalAlignment="Center"/>
+                                   VerticalAlignment="Center"
+                                   Visibility="Collapsed"/>
                         <TextBlock Name="Hltb_El3_DataUser_1"
                                    Margin="10,0,0,0"
                                    Visibility="Collapsed"
@@ -440,6 +445,54 @@
                                    FontSize="16"
                                    HorizontalAlignment="Center"
                                    VerticalAlignment="Bottom"/>
+
+                        <Grid Grid.Row="6"
+                              Grid.Column="0"
+                              Grid.ColumnSpan="7"
+                              Margin="0,12,0,0"
+                              Visibility="{Binding HasUserEntry, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Row="0"
+                                        Grid.Column="0"
+                                        Grid.ColumnSpan="2">
+                                <TextBlock Text="{DynamicResource LOCHltbOptionalTagsHeader}"
+                                           Style="{DynamicResource BaseTextBlockStyle}"
+                                           FontWeight="Bold"
+                                           FontSize="16"
+                                           Margin="0,0,0,6"/>
+                                <Separator Margin="0,0,0,8"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Row="1"
+                                        Grid.Column="0">
+                                <CheckBox Content="{DynamicResource LOCHltbOptionalTagIncludesDlc}"
+                                          IsChecked="{Binding IsIncludesDlc}"
+                                          Margin="0,0,0,4"/>
+                                <CheckBox IsChecked="{Binding IsMarkAsReplay}"
+                                          ToolTip="{DynamicResource LOCHltbOptionalTagMarkAsReplayTooltip}">
+                                    <TextBlock Text="{DynamicResource LOCHltbOptionalTagMarkAsReplay}"
+                                               Style="{DynamicResource BaseTextBlockStyle}"
+                                               TextWrapping="Wrap"/>
+                                </CheckBox>
+                            </StackPanel>
+
+                            <Button Grid.Row="1"
+                                    Grid.Column="1"
+                                    Content="{DynamicResource LOCSaveLabel}"
+                                    Command="{Binding SaveOptionalTagsCommand}"
+                                    IsEnabled="{Binding CanSaveOptionalTags}"
+                                    VerticalAlignment="Center"
+                                    Margin="16,0,0,0"
+                                    MinWidth="80"/>
+                        </Grid>
                     </Grid>
 
                     <StackPanel Grid.Column="1">

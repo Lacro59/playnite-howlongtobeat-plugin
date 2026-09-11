@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -56,9 +56,15 @@ namespace HowLongToBeat.Views
 
             if (PART_VndbSpeedType.Items.Count > 0)
             {
-                // Default VNDB speed corresponds to the current global data type selection.
-                var initialType = lbSelectable.Tag is DataType dt ? dt : DataType.Average;
-                SelectVndbSpeedByDataType(initialType);
+                DataType vndbSpeed = PluginDatabase.PluginSettings != null
+                    ? PluginDatabase.PluginSettings.GetResolvedDefaultVndbSpeed()
+                    : DataType.Average;
+                SelectVndbSpeedByDataType(vndbSpeed);
+            }
+
+            if (PluginDatabase.PluginSettings?.DefaultDataProvider == DataProvider.Vndb)
+            {
+                PART_Vndb.IsChecked = true;
             }
 
             if (data == null)
@@ -114,7 +120,7 @@ namespace HowLongToBeat.Views
                 Item?.Name ?? string.Empty,
                 Item?.Url ?? string.Empty,
                 Item?.UrlImg ?? string.Empty));
-            Common.LogDebug(true, string.Format(
+            Common.LogDebug(string.Format(
                 "HLTB selection ({0}): platform='{1}' needsDetails={2}",
                 selectionPath,
                 Item?.Platform ?? string.Empty,
@@ -182,7 +188,7 @@ namespace HowLongToBeat.Views
                     Common.LogError(ex, false, true, PluginDatabase.PluginName);
                 }
 
-                Common.LogDebug(true, $"dataSearch: {Serialization.ToJson(dataSearch)}");
+                Common.LogDebug($"dataSearch: {Serialization.ToJson(dataSearch)}");
                 Application.Current.Dispatcher?.Invoke(new Action(() =>
                 {
                     lbSelectable.ItemsSource = dataSearch;
@@ -389,7 +395,7 @@ namespace HowLongToBeat.Views
                 mainStory,
                 mainExtra,
                 completionist));
-            Common.LogDebug(true, string.Format(
+            Common.LogDebug(string.Format(
                 "HLTB selection ({0}): solo={1}s coop={2}s gameType={3} urlBefore='{4}' urlImgBefore='{5}'",
                 selectionPath,
                 solo,

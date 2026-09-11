@@ -1,0 +1,45 @@
+﻿<UserControl x:Class="HowLongToBeat.Views.HltbDisplayNavigationSettingsSection"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:AttachedProperties="clr-namespace:CommonPluginsShared.Controls"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:HowLongToBeat="clr-namespace:HowLongToBeat"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance HowLongToBeat:HowLongToBeatSettingsViewModel}">
+    <ScrollViewer VerticalScrollBarVisibility="Auto"
+                  PanningMode="VerticalOnly">
+        <StackPanel>
+            <Expander AttachedProperties:ExpanderAttachedProperties.HideExpanderArrow="True">
+                <Expander.Style>
+                    <Style TargetType="{x:Type Expander}"
+                           BasedOn="{StaticResource {x:Type Expander}}">
+                        <Setter Property="Background"
+                                Value="Transparent"/>
+                    </Style>
+                </Expander.Style>
+
+                <Expander.Header>
+                    <CheckBox IsChecked="{Binding Settings.EnableIntegrationButtonHeader}"
+                              Content="{DynamicResource LOCCommonIntegrationButtonHeader}"/>
+                </Expander.Header>
+            </Expander>
+
+            <Expander Margin="0,10,0,0"
+                      AttachedProperties:ExpanderAttachedProperties.HideExpanderArrow="True">
+                <Expander.Style>
+                    <Style TargetType="{x:Type Expander}"
+                           BasedOn="{StaticResource {x:Type Expander}}">
+                        <Setter Property="Background"
+                                Value="Transparent"/>
+                    </Style>
+                </Expander.Style>
+
+                <Expander.Header>
+                    <CheckBox IsChecked="{Binding Settings.EnableIntegrationButtonSide}"
+                              Content="{DynamicResource LOCCommonIntegrationButtonSide}"/>
+                </Expander.Header>
+            </Expander>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>
