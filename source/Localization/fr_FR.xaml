@@ -16,6 +16,9 @@
     <sys:String x:Key="LOCHltbSettingsNavSyncPlaytime">Temps de jeu</sys:String>
     <sys:String x:Key="LOCHltbSettingsNavSyncStatus">Statuts</sys:String>
     <sys:String x:Key="LOCHltbSettingsNavDataPreferences">Préférences de données</sys:String>
+    <sys:String x:Key="LOCHltbSettingsNavDataCommon">Common</sys:String>
+    <sys:String x:Key="LOCHltbSettingsNavDataHowLongToBeat">HowLongToBeat</sys:String>
+    <sys:String x:Key="LOCHltbSettingsNavDataVndb">VNDB</sys:String>
     <sys:String x:Key="LOCHltbSettingsNavDataTags">Tags</sys:String>
     <sys:String x:Key="LOCHltbSettingsNavDisplayNavigation">Barre de titre et barre latérale</sys:String>
     <sys:String x:Key="LOCHltbSettingsNavDisplayControls">Contrôles</sys:String>
@@ -28,7 +31,6 @@
     <sys:String x:Key="LOCHowLongToBeatAddTagDescription">Ajouter un tag aux jeux avec les informations de temps d'achèvement de l'histoire principale</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoTag">Traitement automatique des tags</sys:String>
     <sys:String x:Key="LOCHowLongToBeatShowHltbImage">Utiliser l'image originale de couverture du jeu HowLongToBeat dans la fenêtre</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatEnableVerboseLogging">Activer les logs de débogage HLTB détaillés (logs supplémentaires dans extensions.log)</sys:String>
     <sys:String x:Key="LOCHowLongToBeatExport">Exporter les données HowLongToBeat</sys:String>
     <sys:String x:Key="LOCHowLongToBeatExportCsvComma">Exporter CSV (virgule)</sys:String>
     <sys:String x:Key="LOCHowLongToBeatExportCsvSemicolon">Exporter CSV (point-virgule)</sys:String>
@@ -70,6 +72,8 @@
     <sys:String x:Key="LOCHowLongToBeatAutoSetCurrentPlayTime">Mise à jour auto du temps de jeu sur HowLongToBeat après une session de jeu</sys:String>
     <sys:String x:Key="LOCHowLongToBeatWithoutConfirmation">Sans message de confirmation</sys:String>
     <sys:String x:Key="LOCHowLongToBeatEnableSuccessNotification">Activer la notification de succès</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoSetUserScoreToHltb">Also upload Playnite user score as HowLongToBeat review score when submitting playtime</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatInfoAutoSetUserScoreToHltb" xml:space="preserve">When enabled, the Playnite user score (0–100) is sent as the HowLongToBeat review score, rounded to the nearest 5%. An existing HowLongToBeat review score is overwritten. Games without a user score are left unchanged.</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatIgnoreSyncTag">Ignore playtime sync</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIgnoreSyncAdd">Exclude from automatic playtime sync</sys:String>
@@ -84,11 +88,17 @@
 
     <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatus">Mettre à jour automatiquement le statut du jeu avec le statut de la partie HowLongToBeat lors de l'importation des données utilisateur</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltb">Mettre à jour automatiquement le statut du jeu sur HowLongToBeat lors du changement sur Playnite</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatClearOtherListsShort">Clear others</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatClearOtherListsColumnHeader">Clear others</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatClearOtherListsTooltip" xml:space="preserve">When checked, syncing to this HowLongToBeat status clears other list flags before applying the target list.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAlwaysKeepListsTitle">Always keep if present</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAlwaysKeepListsTooltip" xml:space="preserve">When another status clears other lists, checked HowLongToBeat lists stay on your profile if they were already set.</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltbOptionsTitle">Lors de la synchronisation du statut Playnite vers HowLongToBeat</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltbOptionsHelp" xml:space="preserve">Source des données :
 - Le statut/la liste est envoyé(e) vers HowLongToBeat.
 - Le temps de jeu provient du temps de jeu Playnite.
  - La date de complétion provient de la dernière activité Playnite.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltbPlayingPlaytime">Playing: send Playnite playtime to HowLongToBeat (progress)</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltbCompletedPlaytime">Terminé : envoyer le temps de jeu Playnite vers HowLongToBeat (histoire principale)</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltbCompletedDate">Terminé : définir la date de complétion depuis la dernière activité Playnite</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltbCompletionistPlaytime">Complétiste : envoyer le temps de jeu Playnite vers HowLongToBeat (100 %)</sys:String>
@@ -100,6 +110,10 @@
     <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltbNotification">Synchronisation HowLongToBeat pour {0} : statut envoyé, temps de jeu {1}, date de complétion {2}.</sys:String>
     
     <sys:String x:Key="LOCHowLongToBeatAutoData">Télécharger les données</sys:String>
+    <sys:String x:Key="LOCHltbDefaultDataProvider">Default data provider</sys:String>
+    <sys:String x:Key="LOCHltbDataProviderHowLongToBeat">HowLongToBeat</sys:String>
+    <sys:String x:Key="LOCHltbDataProviderVndb">VNDB</sys:String>
+    <sys:String x:Key="LOCHltbDefaultVndbSpeed">Default VNDB speed</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoAccept">Automatiquement accepter lorsqu'il n'y a qu'un jeu trouvé</sys:String>
     <sys:String x:Key="LOCHowLongToBeatShowWhenMismatch">Voir la fenêtre de sélection lorsqu'il y a plus d'un jeu trouvé</sys:String>
     <sys:String x:Key="LOCHowLongToBeatUseMatchValue">Utiliser un pourcentage de correspondance</sys:String>
@@ -186,7 +200,17 @@ Un jeu peut apparaître ici sans être marqué &quot;Mark as Replay — I have p
     <sys:String x:Key="LOCHltbOnlyReplays">Seulement les rejoués</sys:String>
     <sys:String x:Key="LOCHltbOnlyReplaysTooltip" xml:space="preserve">Seulement les jeux avec l'option HowLongToBeat &quot;Mark as Replay — I have played this before.&quot;
 Ceci est différent de la liste Replays de votre profil.</sys:String>
+    <sys:String x:Key="LOCHltbOnlyIncludesDlc">Includes DLC</sys:String>
+    <sys:String x:Key="LOCHltbOnlyIncludesDlcTooltip" xml:space="preserve">Only games with the HowLongToBeat option &quot;DLC / Expansions Included.&quot;</sys:String>
     <sys:String x:Key="LOCHltbOnlyNotPlayed">Non joué uniquement</sys:String>
+    <sys:String x:Key="LOCHltbOnlyInstalled">Only installed</sys:String>
+    <sys:String x:Key="LOCHltbOnlyInstalledTooltip">Only titles linked to an installed Playnite game. Unlinked titles are hidden.</sys:String>
+
+    <sys:String x:Key="LOCHltbOptionalTagsHeader">Optional Tags</sys:String>
+    <sys:String x:Key="LOCHltbOptionalTagIncludesDlc">DLC / Expansions Included</sys:String>
+    <sys:String x:Key="LOCHltbOptionalTagMarkAsReplay">Mark as Replay — I have played this before.</sys:String>
+    <sys:String x:Key="LOCHltbOptionalTagMarkAsReplayTooltip" xml:space="preserve">HowLongToBeat per-game option &quot;Mark as Replay — I have played this before.&quot;
+This is not the same as the Replays list on your profile.</sys:String>
 
     <sys:String x:Key="LOCHltbRemainingTime">Temps restant</sys:String>
     <sys:String x:Key="LOCHltbColumnHltbLists">Listes HLTB</sys:String>
@@ -208,6 +232,7 @@ Ceci est différent de la liste Replays de votre profil.</sys:String>
     <sys:String x:Key="LOCHltbCountGameBeatenBeforeTime">Nombre de jeux battus avant le temps</sys:String>
     <sys:String x:Key="LOCHltbCountGameBeatenAfterTime">Nombre de jeux battus après le temps</sys:String>
     <sys:String x:Key="LOCHltbCountGameBeatenReplays">Nombre de jeux battus (rejoués)</sys:String>
+    <sys:String x:Key="LOCHltbCountIncludesDlc">Number of games (DLC / expansions included)</sys:String>
     <sys:String x:Key="LOCHltbCountGameRetired">Nombre de jeux retirés</sys:String>
 
     <sys:String x:Key="LOCHltbStatsPlayTimeTitle">Temps de jeu</sys:String>
@@ -218,6 +243,7 @@ Ceci est différent de la liste Replays de votre profil.</sys:String>
 
     <sys:String x:Key="LOCHltbUsedFilteredGames">Jeux actuellement filtrés utilisés</sys:String>
     <sys:String x:Key="LOCHltbOnlyNotPlayedGames">Uniquement les jeux non joués</sys:String>
+    <sys:String x:Key="LOCHltbOnlyInstalledGames">Only installed games</sys:String>
 
     <!-- MainView -->
 
@@ -230,6 +256,7 @@ Ceci est différent de la liste Replays de votre profil.</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatSetCurrentTimeManual">Définir votre temps de jeu actuel</sys:String>
     <sys:String x:Key="LOCHowLongToBeatSetCurrentTimeManualAll">Définissez votre temps de jeu actuel pour tous les jeux</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatSetGameStatusToHltbManual">Sync game status to HowLongToBeat</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatSetCurrentCompletedTimeManualOn">Définir votre temps de jeu actuel terminé sur</sys:String>
     <sys:String x:Key="LOCHowLongToBeatSetCurrentMultiTimeManualOn">Définir votre temps de jeu muli actuel sur</sys:String>
