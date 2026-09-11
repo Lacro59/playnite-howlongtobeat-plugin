@@ -1,8 +1,10 @@
 # Smoke-tests HowLongToBeat search the same way the Playnite plugin does
 # (discover endpoint from JS → auth init → POST search).
 #
-# On hard failure (exit 1): open or update a single open tracking issue.
-# On HTTP 429 (exit 2): warn only — do not open an "API down" issue.
+# On hard failure (exit 1): open or update a single open tracking issue,
+# and append KO links next to the README badge.
+# On success (exit 0): keep/restores the README badge line without KO text.
+# On HTTP 429 (exit 2): warn only — do not open an "API down" issue / touch README.
 
 name: HLTB Search Smoke
 
@@ -21,7 +23,7 @@ on:
       - ".github/scripts/**"
 
 permissions:
-  contents: read
+  contents: write
   issues: write
 
 concurrency:
@@ -36,6 +38,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          # Required so the job can push README badge status updates.
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -101,6 +106,30 @@ jobs:
               --label "hltb-api-down" \
               --body "${BODY}"
           fi
+
+      - name: Sync README badge line
+        if: steps.smoke.outputs.exit_code == '0' || steps.smoke.outputs.exit_code == '1'
+        env:
+          EXIT_CODE: ${{ steps.smoke.outputs.exit_code }}
+        run: |
+          set -euo pipefail
+          if [ "${EXIT_CODE}" = "0" ]; then
+            status=ok
+          else
+            status=ko
+          fi
+          python .github/scripts/update_hltb_readme_badge.py --status "${status}"
+
+          if git diff --quiet -- README.md; then
+            echo "README already up to date."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add README.md
+          git commit -m "ci(hltb): sync README smoke badge (${status})"
+          git push
 
       - name: Evaluate smoke result
         env:
