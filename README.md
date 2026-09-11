@@ -1,4 +1,5 @@
 [![Crowdin](https://badges.crowdin.net/playnite-extensions/localized.svg)](https://crowdin.com/project/playnite-extensions)
+[![HLTB Search Smoke](https://github.com/Lacro59/playnite-howlongtobeat-plugin/actions/workflows/hltb-search-smoke.yml/badge.svg)](https://github.com/Lacro59/playnite-howlongtobeat-plugin/actions/workflows/hltb-search-smoke.yml)
 [![GitHub release (latest by date)](https://img.shields.io/github/v/release/Lacro59/playnite-howlongtobeat-plugin?cacheSeconds=5000&logo=github)](https://github.com/Lacro59/playnite-howlongtobeat-plugin/releases/latest)
 [![GitHub Release Date](https://img.shields.io/github/release-date/Lacro59/playnite-howlongtobeat-plugin?cacheSeconds=5000)](https://github.com/Lacro59/playnite-howlongtobeat-plugin/releases/latest)
 [![Github Lastest Releases](https://img.shields.io/github/downloads/Lacro59/playnite-howlongtobeat-plugin/latest/total.svg)]()
