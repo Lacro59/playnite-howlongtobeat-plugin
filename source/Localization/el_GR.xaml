@@ -7,12 +7,30 @@
 
     <!-- HowLongToBeatSettingsView -->
 
+    <sys:String x:Key="LOCHltbSettingsCategoryGeneral">General</sys:String>
+    <sys:String x:Key="LOCHltbSettingsCategorySync">HowLongToBeat</sys:String>
+    <sys:String x:Key="LOCHltbSettingsCategoryData">Data</sys:String>
+    <sys:String x:Key="LOCHltbSettingsCategoryDisplay">Appearance</sys:String>
+    <sys:String x:Key="LOCHltbSettingsCategoryMapping">Mapping</sys:String>
+
+    <sys:String x:Key="LOCHltbSettingsNavSyncPlaytime">Playtime</sys:String>
+    <sys:String x:Key="LOCHltbSettingsNavSyncStatus">Status</sys:String>
+    <sys:String x:Key="LOCHltbSettingsNavDataPreferences">Data preferences</sys:String>
+    <sys:String x:Key="LOCHltbSettingsNavDataCommon">Common</sys:String>
+    <sys:String x:Key="LOCHltbSettingsNavDataHowLongToBeat">HowLongToBeat</sys:String>
+    <sys:String x:Key="LOCHltbSettingsNavDataVndb">VNDB</sys:String>
+    <sys:String x:Key="LOCHltbSettingsNavDataTags">Tags</sys:String>
+    <sys:String x:Key="LOCHltbSettingsNavDisplayNavigation">Title bar and sidebar</sys:String>
+    <sys:String x:Key="LOCHltbSettingsNavDisplayControls">Controls</sys:String>
+    <sys:String x:Key="LOCHltbSettingsNavMappingPlatforms">Platforms</sys:String>
+    <sys:String x:Key="LOCHltbSettingsNavMappingPlatformsSubtitle">Playnite platform to HowLongToBeat target</sys:String>
+    <sys:String x:Key="LOCHltbSettingsNavMappingStorefrontSubtitle">Library source to HowLongToBeat storefront</sys:String>
+
     <sys:String x:Key="LOCHowLongToBeatProgressBar">Προστέθηκε {0} - Προστέθηκε ήδη {1} - Δεν προστέθηκε {2}</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatAddTagDescription">Προσθήκη ετικέτας σε παιχνίδια με πληροφορίες χρόνου ολοκλήρωσης της Κύριας ιστορίας</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoTag">Αυτόματη επεξεργασία ετικετών</sys:String>
     <sys:String x:Key="LOCHowLongToBeatShowHltbImage">Χρήση της αρχικής εικόνας εξωφύλλου παιχνιδιού HowLongToBeat στο παράθυρο</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatEnableVerboseLogging">Ενεργοποίηση αναλυτικής καταγραφής (επιπλέον αρχεία καταγραφής στο extensions.log)</sys:String>
     <sys:String x:Key="LOCHowLongToBeatExport">Εξαγωγή δεδομένων HowLongToBeat</sys:String>
     <sys:String x:Key="LOCHowLongToBeatExportCsvComma">Εξαγωγή CSV (κόμμα)</sys:String>
     <sys:String x:Key="LOCHowLongToBeatExportCsvSemicolon">Εξαγωγή CSV (ερωτηματικά)</sys:String>
@@ -54,6 +72,8 @@
     <sys:String x:Key="LOCHowLongToBeatAutoSetCurrentPlayTime">Αυτόματη ενημέρωση του τρέχοντος χρόνου αναπαραγωγής στο HowLongToBeat μετά τη συνεδρία του παιχνιδιού</sys:String>
     <sys:String x:Key="LOCHowLongToBeatWithoutConfirmation">Χωρίς μήνυμα επιβεβαίωσης</sys:String>
     <sys:String x:Key="LOCHowLongToBeatEnableSuccessNotification">Ενεργοποίηση ειδοποίησης επιτυχίας</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoSetUserScoreToHltb">Also upload Playnite user score as HowLongToBeat review score when submitting playtime</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatInfoAutoSetUserScoreToHltb" xml:space="preserve">When enabled, the Playnite user score (0–100) is sent as the HowLongToBeat review score, rounded to the nearest 5%. An existing HowLongToBeat review score is overwritten. Games without a user score are left unchanged.</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatIgnoreSyncTag">Ignore playtime sync</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIgnoreSyncAdd">Exclude from automatic playtime sync</sys:String>
@@ -68,15 +88,21 @@
 
     <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatus">Αυτόματη ενημέρωση της κατάστασης παιχνιδιού στο Playnite κατά την εισαγωγή δεδομένων χρήστη από το HowLongToBeat</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltb">Αυτόματη ενημέρωση της κατάστασης παιχνιδιού στο HowLongToBeat όταν αλλάζει στο Playnite</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatClearOtherListsShort">Clear others</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatClearOtherListsColumnHeader">Clear others</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatClearOtherListsTooltip" xml:space="preserve">When checked, syncing to this HowLongToBeat status clears other list flags before applying the target list.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAlwaysKeepListsTitle">Always keep if present</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAlwaysKeepListsTooltip" xml:space="preserve">When another status clears other lists, checked HowLongToBeat lists stay on your profile if they were already set.</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltbOptionsTitle">Κατά τον συγχρονισμό της κατάστασης Playnite στο HowLongToBeat</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltbOptionsHelp" xml:space="preserve">Πηγή δεδομένων:
 - Η λίστα αποστέλλεται στο HowLongToBeat.
 - Η ώρα αναπαραγωγής προέρχεται από τον χρόνο παιχνιδιού στο Playnite.
 - Η ημερομηνία ολοκλήρωσης προέρχεται από την τελευταία δραστηριότητα στο Playnite</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltbPlayingPlaytime">Playing: send Playnite playtime to HowLongToBeat (progress)</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltbCompletedPlaytime">Ολοκληρώθηκε: στείλτε τον χρόνο παιχνιδιού του Playnite στο HowLongToBeat (κύρια ιστορία)</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltbCompletedDate">Ολοκληρώθηκε: ορίστε ημερομηνία ολοκλήρωσης από την τελευταία δραστηριότητα του Playnite</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltbCompletionistPlaytime">Completionist: στείλτε τον χρόνο παιχνιδιού του Playnite στο HowLongToBeat (100%)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltbCompletionistDate">Completionist: ορίστε ημερομηνία ολοκλήρωσης από την τελευταία δραστηριότητα του Playnite </sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltbCompletionistDate">Completionist: ορίστε ημερομηνία ολοκλήρωσης από την τελευταία δραστηριότητα του Playnite</sys:String>
     <sys:String x:Key="LOCHowLongToBeatSyncPlaytimeShort">Τρέχων χρόνος παιχνιδιού</sys:String>
     <sys:String x:Key="LOCHowLongToBeatSyncDateShort">Τελευταία ημερομηνία δραστηριότητας</sys:String>
     <sys:String x:Key="LOCHowLongToBeatHltbStatusColumnHeader">Κατάσταση HowLongToBeat (στόχος)</sys:String>
@@ -84,6 +110,10 @@
     <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltbNotification">Συγχρονισμός HowLongToBeat για {0}: η κατάσταση στάλθηκε, η ώρα αναπαραγωγής {1}, η ημερομηνία ολοκλήρωσης {2}.</sys:String>
     
     <sys:String x:Key="LOCHowLongToBeatAutoData">Λήψη δεδομένων παιχνιδιού</sys:String>
+    <sys:String x:Key="LOCHltbDefaultDataProvider">Default data provider</sys:String>
+    <sys:String x:Key="LOCHltbDataProviderHowLongToBeat">HowLongToBeat</sys:String>
+    <sys:String x:Key="LOCHltbDataProviderVndb">VNDB</sys:String>
+    <sys:String x:Key="LOCHltbDefaultVndbSpeed">Default VNDB speed</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoAccept">Αυτόματη επιλογή παιχνιδιού όταν βρίσκεται μόνο ένα παιχνίδι κατά την αναζήτηση</sys:String>
     <sys:String x:Key="LOCHowLongToBeatShowWhenMismatch">Εμφάνιση λίστας επιλογών παιχνιδιών, όταν περισσότερα από ένα παιχνίδια βρίσκονται κατά την αναζήτηση</sys:String>
     <sys:String x:Key="LOCHowLongToBeatUseMatchValue">Χρήση ενός ποσοστού αντιστοίχισης</sys:String>
@@ -170,11 +200,23 @@
     <sys:String x:Key="LOCHltbOnlyReplays">Μόνο επαναλήψεις</sys:String>
     <sys:String x:Key="LOCHltbOnlyReplaysTooltip" xml:space="preserve">Μόνο παιχνίδια με την επιλογή &quot;Σημειωμένο για επανάληψη - Το έχω παίξει στο παρελθόν&quot;.
 Αυτό είναι ξεχωριστό από τη Λίστα αναπαραγωγής στο προφίλ σας.</sys:String>
+    <sys:String x:Key="LOCHltbOnlyIncludesDlc">Includes DLC</sys:String>
+    <sys:String x:Key="LOCHltbOnlyIncludesDlcTooltip" xml:space="preserve">Only games with the HowLongToBeat option &quot;DLC / Expansions Included.&quot;</sys:String>
     <sys:String x:Key="LOCHltbOnlyNotPlayed">Μόνο όσα δεν παίχτηκαν</sys:String>
+    <sys:String x:Key="LOCHltbOnlyInstalled">Only installed</sys:String>
+    <sys:String x:Key="LOCHltbOnlyInstalledTooltip">Only titles linked to an installed Playnite game. Unlinked titles are hidden.</sys:String>
+
+    <sys:String x:Key="LOCHltbOptionalTagsHeader">Optional Tags</sys:String>
+    <sys:String x:Key="LOCHltbOptionalTagIncludesDlc">DLC / Expansions Included</sys:String>
+    <sys:String x:Key="LOCHltbOptionalTagMarkAsReplay">Mark as Replay — I have played this before.</sys:String>
+    <sys:String x:Key="LOCHltbOptionalTagMarkAsReplayTooltip" xml:space="preserve">HowLongToBeat per-game option &quot;Mark as Replay — I have played this before.&quot;
+This is not the same as the Replays list on your profile.</sys:String>
 
     <sys:String x:Key="LOCHltbRemainingTime">Υπολειπόμενος χρόνος</sys:String>
     <sys:String x:Key="LOCHltbColumnHltbLists">Λίστες HLTB</sys:String>
     <sys:String x:Key="LOCHltbColumnProgress">Πρόοδος</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatColumnCommunityTooltip">Community time to beat (HowLongToBeat)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatColumnSubmittedTooltip">Time submitted on your HowLongToBeat profile</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatPluginGetUserView">Λήψη δεδομένων χρήστη</sys:String>
 
@@ -190,6 +232,7 @@
     <sys:String x:Key="LOCHltbCountGameBeatenBeforeTime">Αριθμός παιχνιδιών που τερματίστηκαν πριν από το χρόνο</sys:String>
     <sys:String x:Key="LOCHltbCountGameBeatenAfterTime">Αριθμός παιχνιδιών που τερματίστηκαν μετά από το χρόνο</sys:String>
     <sys:String x:Key="LOCHltbCountGameBeatenReplays">Αριθμός παιχνιδιών που τερματίστηκαν (σε επανάληψη)</sys:String>
+    <sys:String x:Key="LOCHltbCountIncludesDlc">Number of games (DLC / expansions included)</sys:String>
     <sys:String x:Key="LOCHltbCountGameRetired">Αριθμός παρατημένων παιχνιδιών</sys:String>
 
     <sys:String x:Key="LOCHltbStatsPlayTimeTitle">Χρόνος παιχνιδιού</sys:String>
@@ -200,6 +243,7 @@
 
     <sys:String x:Key="LOCHltbUsedFilteredGames">Τρέχοντα φιλτραρισμένα παιχνίδια που χρησιμοποιήθηκαν</sys:String>
     <sys:String x:Key="LOCHltbOnlyNotPlayedGames">Μόνο παιχνίδια που δεν παίχτηκαν</sys:String>
+    <sys:String x:Key="LOCHltbOnlyInstalledGames">Only installed games</sys:String>
 
     <!-- MainView -->
 
@@ -212,6 +256,7 @@
 
     <sys:String x:Key="LOCHowLongToBeatSetCurrentTimeManual">Ορίστε τον τρέχοντα χρόνο παιχνιδιού σας</sys:String>
     <sys:String x:Key="LOCHowLongToBeatSetCurrentTimeManualAll">Ορίστε τον τρέχοντα χρόνο παιχνιδιού για όλα τα παιχνίδια</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatSetGameStatusToHltbManual">Sync game status to HowLongToBeat</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatSetCurrentCompletedTimeManualOn">Ορίστε τον τρέχοντα ολοκληρωμένο χρόνο παιχνιδιού ως ενεργό</sys:String>
     <sys:String x:Key="LOCHowLongToBeatSetCurrentMultiTimeManualOn">Ορίστε τον τρέχοντα εσφαλμένο χρόνο παιχνιδιού ως ενεργό</sys:String>
