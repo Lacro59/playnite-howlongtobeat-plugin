@@ -8,9 +8,17 @@ name: HLTB Search Smoke
 
 on:
   schedule:
-    # Daily ~06:00 UTC (GitHub cron is best-effort).
+    # Daily ~06:00 UTC (GitHub cron is best-effort; default branch only).
     - cron: "0 6 * * *"
   workflow_dispatch:
+  # Allows testing from non-default branches (workflow_dispatch is only
+  # registered once the file also exists on the repository default branch).
+  push:
+    branches:
+      - devel
+    paths:
+      - ".github/workflows/hltb-search-smoke.yml"
+      - ".github/scripts/**"
 
 permissions:
   contents: read
