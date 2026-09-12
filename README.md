@@ -8,6 +8,8 @@
 [![GitHub contributors](https://img.shields.io/github/contributors/Lacro59/playnite-howlongtobeat-plugin?logo=github)](https://github.com/Lacro59/playnite-howlongtobeat-plugin/graphs/contributors)
 [![GitHub license](https://img.shields.io/github/license/Lacro59/playnite-howlongtobeat-plugin?logo=github)](https://github.com/Lacro59/playnite-howlongtobeat-plugin/blob/master/LICENSE)
 
+[![HLTB Search Smoke](https://github.com/Lacro59/playnite-howlongtobeat-plugin/actions/workflows/hltb-search-smoke.yml/badge.svg)](https://github.com/Lacro59/playnite-howlongtobeat-plugin/actions/workflows/hltb-search-smoke.yml)
+
 # HowLongToBeat for Playnite
 
 Fetch, display, and sync [HowLongToBeat](https://howlongtobeat.com/) completion times and playtime directly inside [Playnite](https://playnite.link).
