@@ -7,22 +7,22 @@
 
     <!-- HowLongToBeatSettingsView -->
 
-    <sys:String x:Key="LOCHltbSettingsCategoryGeneral">General</sys:String>
+    <sys:String x:Key="LOCHltbSettingsCategoryGeneral">Основное</sys:String>
     <sys:String x:Key="LOCHltbSettingsCategorySync">HowLongToBeat</sys:String>
-    <sys:String x:Key="LOCHltbSettingsCategoryData">Data</sys:String>
-    <sys:String x:Key="LOCHltbSettingsCategoryDisplay">Appearance</sys:String>
-    <sys:String x:Key="LOCHltbSettingsCategoryMapping">Mapping</sys:String>
+    <sys:String x:Key="LOCHltbSettingsCategoryData">Данные</sys:String>
+    <sys:String x:Key="LOCHltbSettingsCategoryDisplay">Внешний вид</sys:String>
+    <sys:String x:Key="LOCHltbSettingsCategoryMapping">Назначение</sys:String>
 
-    <sys:String x:Key="LOCHltbSettingsNavSyncPlaytime">Playtime</sys:String>
-    <sys:String x:Key="LOCHltbSettingsNavSyncStatus">Status</sys:String>
-    <sys:String x:Key="LOCHltbSettingsNavDataPreferences">Data preferences</sys:String>
-    <sys:String x:Key="LOCHltbSettingsNavDataCommon">Common</sys:String>
+    <sys:String x:Key="LOCHltbSettingsNavSyncPlaytime">Время в игре</sys:String>
+    <sys:String x:Key="LOCHltbSettingsNavSyncStatus">Статус</sys:String>
+    <sys:String x:Key="LOCHltbSettingsNavDataPreferences">Параметры данных</sys:String>
+    <sys:String x:Key="LOCHltbSettingsNavDataCommon">Общее</sys:String>
     <sys:String x:Key="LOCHltbSettingsNavDataHowLongToBeat">HowLongToBeat</sys:String>
     <sys:String x:Key="LOCHltbSettingsNavDataVndb">VNDB</sys:String>
-    <sys:String x:Key="LOCHltbSettingsNavDataTags">Tags</sys:String>
-    <sys:String x:Key="LOCHltbSettingsNavDisplayNavigation">Title bar and sidebar</sys:String>
-    <sys:String x:Key="LOCHltbSettingsNavDisplayControls">Controls</sys:String>
-    <sys:String x:Key="LOCHltbSettingsNavMappingPlatforms">Platforms</sys:String>
+    <sys:String x:Key="LOCHltbSettingsNavDataTags">Теги</sys:String>
+    <sys:String x:Key="LOCHltbSettingsNavDisplayNavigation">Заголовок и боковая панель</sys:String>
+    <sys:String x:Key="LOCHltbSettingsNavDisplayControls">Управление</sys:String>
+    <sys:String x:Key="LOCHltbSettingsNavMappingPlatforms">Платформы</sys:String>
     <sys:String x:Key="LOCHltbSettingsNavMappingPlatformsSubtitle">Playnite platform to HowLongToBeat target</sys:String>
     <sys:String x:Key="LOCHltbSettingsNavMappingStorefrontSubtitle">Library source to HowLongToBeat storefront</sys:String>
 
@@ -88,8 +88,8 @@
 
     <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatus">Автоматически обновлять статус игры в Playnite при импорте пользовательских данных из HowLongToBeat</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltb">Автоматически обновлять статус игры на HowLongToBeat при изменении статуса игры в Playnite</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatClearOtherListsShort">Clear others</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatClearOtherListsColumnHeader">Clear others</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatClearOtherListsShort">Очистить другие</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatClearOtherListsColumnHeader">Очистить другие</sys:String>
     <sys:String x:Key="LOCHowLongToBeatClearOtherListsTooltip" xml:space="preserve">When checked, syncing to this HowLongToBeat status clears other list flags before applying the target list.</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAlwaysKeepListsTitle">Always keep if present</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAlwaysKeepListsTooltip" xml:space="preserve">When another status clears other lists, checked HowLongToBeat lists stay on your profile if they were already set.</sys:String>
@@ -110,10 +110,10 @@
     <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltbNotification">HowLongToBeat синхронизация для {0}: статус отправлен, время в игре {1}, дата завершения игры {2}.</sys:String>
     
     <sys:String x:Key="LOCHowLongToBeatAutoData">Загрузка данных игры</sys:String>
-    <sys:String x:Key="LOCHltbDefaultDataProvider">Default data provider</sys:String>
+    <sys:String x:Key="LOCHltbDefaultDataProvider">Поставщик данных по умолчанию</sys:String>
     <sys:String x:Key="LOCHltbDataProviderHowLongToBeat">HowLongToBeat</sys:String>
     <sys:String x:Key="LOCHltbDataProviderVndb">VNDB</sys:String>
-    <sys:String x:Key="LOCHltbDefaultVndbSpeed">Default VNDB speed</sys:String>
+    <sys:String x:Key="LOCHltbDefaultVndbSpeed">Скорость VNDB по умолчанию</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoAccept">Автоматически выбирать игру, когда при поиске найдена только одна игра</sys:String>
     <sys:String x:Key="LOCHowLongToBeatShowWhenMismatch">Показывать список выбора игры, когда при поиске найдено более одной игры</sys:String>
     <sys:String x:Key="LOCHowLongToBeatUseMatchValue">Использовать процент совпадений</sys:String>
@@ -186,7 +186,7 @@
 
     <sys:String x:Key="LOCHltbFilterHltbListStatus">Список HLTB</sys:String>
     <sys:String x:Key="LOCHltbFilterHltbListStatusTooltip" xml:space="preserve">Фильтр по списку вашего профиля HowLongToBeat (Бэклог, Играю, Переигранные, Пройденные и так далее).
-Это не то же самое, что опция для каждой игры «Пометить как Переигранную — я играл ранее.»</sys:String>
+Это не то же самое, что опция для каждой игры «Пометить как Переигранную — Я уже играл в это ранее.»</sys:String>
     <sys:String x:Key="LOCHltbFilterHltbListStatusAll">Все списки</sys:String>
     <sys:String x:Key="LOCHltbUserListBacklog">Бэклог</sys:String>
     <sys:String x:Key="LOCHltbUserListPlaying">Играю</sys:String>
@@ -198,24 +198,24 @@
     <sys:String x:Key="LOCHltbUserListCustom">Настраиваемый</sys:String>
 
     <sys:String x:Key="LOCHltbOnlyReplays">Только переигранные</sys:String>
-    <sys:String x:Key="LOCHltbOnlyReplaysTooltip" xml:space="preserve">Только игры с опцией HowLongToBeat &quot;Отметить как Переигранную — я играл раньше.&quot;
+    <sys:String x:Key="LOCHltbOnlyReplaysTooltip" xml:space="preserve">Только игры с опцией HowLongToBeat &quot;Отметить как Переигранную — Я уже играл в это ранее.&quot;
 Это отдельная функция и не связанно со списком переигранных игр в вашем профиле.</sys:String>
-    <sys:String x:Key="LOCHltbOnlyIncludesDlc">Includes DLC</sys:String>
-    <sys:String x:Key="LOCHltbOnlyIncludesDlcTooltip" xml:space="preserve">Only games with the HowLongToBeat option &quot;DLC / Expansions Included.&quot;</sys:String>
+    <sys:String x:Key="LOCHltbOnlyIncludesDlc">Включает DLC</sys:String>
+    <sys:String x:Key="LOCHltbOnlyIncludesDlcTooltip" xml:space="preserve">Только игры с опцией HowLongToBeat &quot;DLC / Expansions Included.&quot;</sys:String>
     <sys:String x:Key="LOCHltbOnlyNotPlayed">Только ни разу не запущенные игры</sys:String>
-    <sys:String x:Key="LOCHltbOnlyInstalled">Only installed</sys:String>
+    <sys:String x:Key="LOCHltbOnlyInstalled">Только установленные</sys:String>
     <sys:String x:Key="LOCHltbOnlyInstalledTooltip">Only titles linked to an installed Playnite game. Unlinked titles are hidden.</sys:String>
 
-    <sys:String x:Key="LOCHltbOptionalTagsHeader">Optional Tags</sys:String>
-    <sys:String x:Key="LOCHltbOptionalTagIncludesDlc">DLC / Expansions Included</sys:String>
-    <sys:String x:Key="LOCHltbOptionalTagMarkAsReplay">Mark as Replay — I have played this before.</sys:String>
-    <sys:String x:Key="LOCHltbOptionalTagMarkAsReplayTooltip" xml:space="preserve">HowLongToBeat per-game option &quot;Mark as Replay — I have played this before.&quot;
-This is not the same as the Replays list on your profile.</sys:String>
+    <sys:String x:Key="LOCHltbOptionalTagsHeader">Дополнительные теги</sys:String>
+    <sys:String x:Key="LOCHltbOptionalTagIncludesDlc">DLC / Дополнения включены</sys:String>
+    <sys:String x:Key="LOCHltbOptionalTagMarkAsReplay">Отметить как Переигранное — Я уже играл в это ранее.</sys:String>
+    <sys:String x:Key="LOCHltbOptionalTagMarkAsReplayTooltip" xml:space="preserve">Опция HowLongToBeat для отдельных игр «Отметить как Переигранное — Я уже играл в это ранее».
+Это не то же самое, что список повторных прохождений (Replays) в вашем профиле.</sys:String>
 
     <sys:String x:Key="LOCHltbRemainingTime">Оставшееся время</sys:String>
     <sys:String x:Key="LOCHltbColumnHltbLists">HLTB списки</sys:String>
     <sys:String x:Key="LOCHltbColumnProgress">Прогресс</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatColumnCommunityTooltip">Community time to beat (HowLongToBeat)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatColumnCommunityTooltip">Время прохождения сообщества (HowLongToBeat)</sys:String>
     <sys:String x:Key="LOCHowLongToBeatColumnSubmittedTooltip">Time submitted on your HowLongToBeat profile</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatPluginGetUserView">Получение данных пользователей</sys:String>
@@ -232,7 +232,7 @@ This is not the same as the Replays list on your profile.</sys:String>
     <sys:String x:Key="LOCHltbCountGameBeatenBeforeTime">Количество игр, пройденных досрочно</sys:String>
     <sys:String x:Key="LOCHltbCountGameBeatenAfterTime">Количество игр, пройденных позже времени</sys:String>
     <sys:String x:Key="LOCHltbCountGameBeatenReplays">Количество пройденных игр (отмеченных как переигранные)</sys:String>
-    <sys:String x:Key="LOCHltbCountIncludesDlc">Number of games (DLC / expansions included)</sys:String>
+    <sys:String x:Key="LOCHltbCountIncludesDlc">Количество игр (DLC / дополнения включены)</sys:String>
     <sys:String x:Key="LOCHltbCountGameRetired">Количество заброшенных игр</sys:String>
 
     <sys:String x:Key="LOCHltbStatsPlayTimeTitle">Время в игре</sys:String>
@@ -243,7 +243,7 @@ This is not the same as the Replays list on your profile.</sys:String>
 
     <sys:String x:Key="LOCHltbUsedFilteredGames">Используются отфильтрованные игры</sys:String>
     <sys:String x:Key="LOCHltbOnlyNotPlayedGames">Только ни разу не запущенные игры</sys:String>
-    <sys:String x:Key="LOCHltbOnlyInstalledGames">Only installed games</sys:String>
+    <sys:String x:Key="LOCHltbOnlyInstalledGames">Только установленные игры</sys:String>
 
     <!-- MainView -->
 
@@ -256,7 +256,7 @@ This is not the same as the Replays list on your profile.</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatSetCurrentTimeManual">Установить текущее время игры</sys:String>
     <sys:String x:Key="LOCHowLongToBeatSetCurrentTimeManualAll">Установить текущее время для всех игр</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatSetGameStatusToHltbManual">Sync game status to HowLongToBeat</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatSetGameStatusToHltbManual">Синхронизировать игровой статус с HowLongToBeat</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatSetCurrentCompletedTimeManualOn">Установить текущее время прохождения на</sys:String>
     <sys:String x:Key="LOCHowLongToBeatSetCurrentMultiTimeManualOn">Установите текущее время игры в многопользовательском режиме на</sys:String>
