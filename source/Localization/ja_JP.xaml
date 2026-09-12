@@ -7,24 +7,24 @@
 
     <!-- HowLongToBeatSettingsView -->
 
-    <sys:String x:Key="LOCHltbSettingsCategoryGeneral">General</sys:String>
+    <sys:String x:Key="LOCHltbSettingsCategoryGeneral">一般</sys:String>
     <sys:String x:Key="LOCHltbSettingsCategorySync">HowLongToBeat</sys:String>
-    <sys:String x:Key="LOCHltbSettingsCategoryData">Data</sys:String>
-    <sys:String x:Key="LOCHltbSettingsCategoryDisplay">Appearance</sys:String>
-    <sys:String x:Key="LOCHltbSettingsCategoryMapping">Mapping</sys:String>
+    <sys:String x:Key="LOCHltbSettingsCategoryData">データ</sys:String>
+    <sys:String x:Key="LOCHltbSettingsCategoryDisplay">外観</sys:String>
+    <sys:String x:Key="LOCHltbSettingsCategoryMapping">マッピング</sys:String>
 
-    <sys:String x:Key="LOCHltbSettingsNavSyncPlaytime">Playtime</sys:String>
-    <sys:String x:Key="LOCHltbSettingsNavSyncStatus">Status</sys:String>
-    <sys:String x:Key="LOCHltbSettingsNavDataPreferences">Data preferences</sys:String>
-    <sys:String x:Key="LOCHltbSettingsNavDataCommon">Common</sys:String>
+    <sys:String x:Key="LOCHltbSettingsNavSyncPlaytime">プレイ時間</sys:String>
+    <sys:String x:Key="LOCHltbSettingsNavSyncStatus">ステータス</sys:String>
+    <sys:String x:Key="LOCHltbSettingsNavDataPreferences">データ設定</sys:String>
+    <sys:String x:Key="LOCHltbSettingsNavDataCommon">共通</sys:String>
     <sys:String x:Key="LOCHltbSettingsNavDataHowLongToBeat">HowLongToBeat</sys:String>
     <sys:String x:Key="LOCHltbSettingsNavDataVndb">VNDB</sys:String>
-    <sys:String x:Key="LOCHltbSettingsNavDataTags">Tags</sys:String>
-    <sys:String x:Key="LOCHltbSettingsNavDisplayNavigation">Title bar and sidebar</sys:String>
-    <sys:String x:Key="LOCHltbSettingsNavDisplayControls">Controls</sys:String>
-    <sys:String x:Key="LOCHltbSettingsNavMappingPlatforms">Platforms</sys:String>
-    <sys:String x:Key="LOCHltbSettingsNavMappingPlatformsSubtitle">Playnite platform to HowLongToBeat target</sys:String>
-    <sys:String x:Key="LOCHltbSettingsNavMappingStorefrontSubtitle">Library source to HowLongToBeat storefront</sys:String>
+    <sys:String x:Key="LOCHltbSettingsNavDataTags">タグ</sys:String>
+    <sys:String x:Key="LOCHltbSettingsNavDisplayNavigation">タイトルバーとサイドバー</sys:String>
+    <sys:String x:Key="LOCHltbSettingsNavDisplayControls">コントロール</sys:String>
+    <sys:String x:Key="LOCHltbSettingsNavMappingPlatforms">プラットフォーム</sys:String>
+    <sys:String x:Key="LOCHltbSettingsNavMappingPlatformsSubtitle">Playnite プラットフォームから HowLongToBeat ターゲットへのマッピング</sys:String>
+    <sys:String x:Key="LOCHltbSettingsNavMappingStorefrontSubtitle">ライブラリソースから HowLongToBeat ストアフロントへのマッピング</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatProgressBar">追加 {0} - 追加済み {1} - 未追加 {2}</sys:String>
 
@@ -72,8 +72,8 @@
     <sys:String x:Key="LOCHowLongToBeatAutoSetCurrentPlayTime">ゲームセッション後に HowLongToBeat の現在のプレイ時間を自動更新</sys:String>
     <sys:String x:Key="LOCHowLongToBeatWithoutConfirmation">確認メッセージなし</sys:String>
     <sys:String x:Key="LOCHowLongToBeatEnableSuccessNotification">成功通知を有効にする</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAutoSetUserScoreToHltb">Also upload Playnite user score as HowLongToBeat review score when submitting playtime</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatInfoAutoSetUserScoreToHltb" xml:space="preserve">When enabled, the Playnite user score (0–100) is sent as the HowLongToBeat review score, rounded to the nearest 5%. An existing HowLongToBeat review score is overwritten. Games without a user score are left unchanged.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoSetUserScoreToHltb">プレイ時間の送信時に、Playnite のユーザースコアも HowLongToBeat のレビュースコアとして送信</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatInfoAutoSetUserScoreToHltb" xml:space="preserve">有効にすると、Playnite のユーザースコア (0～100) が HowLongToBeat のレビュースコアとして送信され、最も近い 5% 単位に丸められます。既存の HowLongToBeat レビュースコアは上書きされます。ユーザースコアがないゲームは変更されません。</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatIgnoreSyncTag">プレイ時間の同期を無視</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIgnoreSyncAdd">自動プレイ時間同期から除外</sys:String>
@@ -88,17 +88,17 @@
 
     <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatus">HowLongToBeat からユーザーデータをインポートするときに、Playnite のゲームステータスを自動更新</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltb">Playnite でゲームステータスを変更したときに、HowLongToBeat のゲームステータスを自動更新</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatClearOtherListsShort">Clear others</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatClearOtherListsColumnHeader">Clear others</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatClearOtherListsTooltip" xml:space="preserve">When checked, syncing to this HowLongToBeat status clears other list flags before applying the target list.</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAlwaysKeepListsTitle">Always keep if present</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAlwaysKeepListsTooltip" xml:space="preserve">When another status clears other lists, checked HowLongToBeat lists stay on your profile if they were already set.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatClearOtherListsShort">その他をクリア</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatClearOtherListsColumnHeader">その他をクリア</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatClearOtherListsTooltip" xml:space="preserve">チェックすると、この HowLongToBeat ステータスへの同期時に、対象リストを適用する前に他のリストフラグをクリアします。</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAlwaysKeepListsTitle">設定済みの場合は常に保持</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAlwaysKeepListsTooltip" xml:space="preserve">別のステータスによって他のリストがクリアされる場合でも、チェックした HowLongToBeat リストがすでに設定されていれば、プロフィールにそのまま保持されます。</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltbOptionsTitle">Playnite ステータスを HowLongToBeat に同期する場合</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltbOptionsHelp" xml:space="preserve">データソース：
 - ステータス/リストは HowLongToBeat に送信されます。
 - プレイ時間は Playnite のプレイ時間から取得されます。
 - 完了日は Playnite の最終アクティビティから取得されます。</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltbPlayingPlaytime">Playing: send Playnite playtime to HowLongToBeat (progress)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltbPlayingPlaytime">プレイ中：Playnite のプレイ時間を HowLongToBeat に送信 (進行状況)</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltbCompletedPlaytime">クリア済み：Playnite のプレイ時間を HowLongToBeat に送信（メインストーリー）</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltbCompletedDate">クリア済み：Playnite の最終アクティビティから完了日を設定</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltbCompletionistPlaytime">完全クリア：Playnite のプレイ時間を HowLongToBeat に送信（100%）</sys:String>
@@ -110,10 +110,10 @@
     <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltbNotification">{0} の HowLongToBeat 同期：ステータスを送信、プレイ時間 {1}、完了日 {2}。</sys:String>
     
     <sys:String x:Key="LOCHowLongToBeatAutoData">ゲームデータのダウンロード</sys:String>
-    <sys:String x:Key="LOCHltbDefaultDataProvider">Default data provider</sys:String>
+    <sys:String x:Key="LOCHltbDefaultDataProvider">既定のデータプロバイダー</sys:String>
     <sys:String x:Key="LOCHltbDataProviderHowLongToBeat">HowLongToBeat</sys:String>
     <sys:String x:Key="LOCHltbDataProviderVndb">VNDB</sys:String>
-    <sys:String x:Key="LOCHltbDefaultVndbSpeed">Default VNDB speed</sys:String>
+    <sys:String x:Key="LOCHltbDefaultVndbSpeed">既定の VNDB 速度</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoAccept">検索中にゲームが 1 件だけ見つかった場合、自動的にそのゲームを選択</sys:String>
     <sys:String x:Key="LOCHowLongToBeatShowWhenMismatch">検索中に複数のゲームが見つかった場合、ゲーム選択リストを表示</sys:String>
     <sys:String x:Key="LOCHowLongToBeatUseMatchValue">一致率を使用</sys:String>
@@ -200,23 +200,23 @@
     <sys:String x:Key="LOCHltbOnlyReplays">再プレイのみ</sys:String>
     <sys:String x:Key="LOCHltbOnlyReplaysTooltip" xml:space="preserve">HowLongToBeat の &quot;Mark as Replay – I have played this before.&quot; オプションが設定されているゲームのみ。
 これはプロフィール上の Replays リストとは別です。</sys:String>
-    <sys:String x:Key="LOCHltbOnlyIncludesDlc">Includes DLC</sys:String>
-    <sys:String x:Key="LOCHltbOnlyIncludesDlcTooltip" xml:space="preserve">Only games with the HowLongToBeat option &quot;DLC / Expansions Included.&quot;</sys:String>
+    <sys:String x:Key="LOCHltbOnlyIncludesDlc">DLC を含む</sys:String>
+    <sys:String x:Key="LOCHltbOnlyIncludesDlcTooltip" xml:space="preserve">HowLongToBeat のオプション &quot;DLC / Expansions Included.&quot; が設定されているゲームのみ。</sys:String>
     <sys:String x:Key="LOCHltbOnlyNotPlayed">未プレイのみ</sys:String>
-    <sys:String x:Key="LOCHltbOnlyInstalled">Only installed</sys:String>
-    <sys:String x:Key="LOCHltbOnlyInstalledTooltip">Only titles linked to an installed Playnite game. Unlinked titles are hidden.</sys:String>
+    <sys:String x:Key="LOCHltbOnlyInstalled">インストール済みのみ</sys:String>
+    <sys:String x:Key="LOCHltbOnlyInstalledTooltip">インストール済みの Playnite ゲームにリンクされているタイトルのみ。リンクされていないタイトルは非表示になります。</sys:String>
 
-    <sys:String x:Key="LOCHltbOptionalTagsHeader">Optional Tags</sys:String>
-    <sys:String x:Key="LOCHltbOptionalTagIncludesDlc">DLC / Expansions Included</sys:String>
-    <sys:String x:Key="LOCHltbOptionalTagMarkAsReplay">Mark as Replay — I have played this before.</sys:String>
-    <sys:String x:Key="LOCHltbOptionalTagMarkAsReplayTooltip" xml:space="preserve">HowLongToBeat per-game option &quot;Mark as Replay — I have played this before.&quot;
-This is not the same as the Replays list on your profile.</sys:String>
+    <sys:String x:Key="LOCHltbOptionalTagsHeader">任意のタグ</sys:String>
+    <sys:String x:Key="LOCHltbOptionalTagIncludesDlc">DLC / 拡張コンテンツを含む</sys:String>
+    <sys:String x:Key="LOCHltbOptionalTagMarkAsReplay">リプレイとしてマーク — 以前プレイしたことがあります。</sys:String>
+    <sys:String x:Key="LOCHltbOptionalTagMarkAsReplayTooltip" xml:space="preserve">HowLongToBeat のゲームごとのオプション &quot;Mark as Replay — I have played this before.&quot;
+これはプロフィール上の Replays リストとは異なります。</sys:String>
 
     <sys:String x:Key="LOCHltbRemainingTime">残り時間</sys:String>
     <sys:String x:Key="LOCHltbColumnHltbLists">HLTB リスト</sys:String>
     <sys:String x:Key="LOCHltbColumnProgress">進行状況</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatColumnCommunityTooltip">Community time to beat (HowLongToBeat)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatColumnSubmittedTooltip">Time submitted on your HowLongToBeat profile</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatColumnCommunityTooltip">コミュニティのクリア時間（HowLongToBeat）</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatColumnSubmittedTooltip">HowLongToBeat プロフィールで送信した時間</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatPluginGetUserView">ユーザーデータを取得中</sys:String>
 
@@ -232,7 +232,7 @@ This is not the same as the Replays list on your profile.</sys:String>
     <sys:String x:Key="LOCHltbCountGameBeatenBeforeTime">予定時間より前にクリアしたゲーム数</sys:String>
     <sys:String x:Key="LOCHltbCountGameBeatenAfterTime">予定時間より後にクリアしたゲーム数</sys:String>
     <sys:String x:Key="LOCHltbCountGameBeatenReplays">クリアしたゲーム数（再プレイ）</sys:String>
-    <sys:String x:Key="LOCHltbCountIncludesDlc">Number of games (DLC / expansions included)</sys:String>
+    <sys:String x:Key="LOCHltbCountIncludesDlc">ゲーム数（DLC / 拡張コンテンツを含む）</sys:String>
     <sys:String x:Key="LOCHltbCountGameRetired">リタイアしたゲーム数</sys:String>
 
     <sys:String x:Key="LOCHltbStatsPlayTimeTitle">プレイ時間</sys:String>
@@ -243,7 +243,7 @@ This is not the same as the Replays list on your profile.</sys:String>
 
     <sys:String x:Key="LOCHltbUsedFilteredGames">現在フィルターされているゲームを使用</sys:String>
     <sys:String x:Key="LOCHltbOnlyNotPlayedGames">未プレイのゲームのみ</sys:String>
-    <sys:String x:Key="LOCHltbOnlyInstalledGames">Only installed games</sys:String>
+    <sys:String x:Key="LOCHltbOnlyInstalledGames">インストール済みゲームのみ</sys:String>
 
     <!-- MainView -->
 
@@ -256,7 +256,7 @@ This is not the same as the Replays list on your profile.</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatSetCurrentTimeManual">現在のプレイ時間を設定</sys:String>
     <sys:String x:Key="LOCHowLongToBeatSetCurrentTimeManualAll">すべてのゲームの現在のプレイ時間を設定</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatSetGameStatusToHltbManual">Sync game status to HowLongToBeat</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatSetGameStatusToHltbManual">ゲームステータスを HowLongToBeat に同期</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatSetCurrentCompletedTimeManualOn">完了済みの現在のプレイ時間を設定</sys:String>
     <sys:String x:Key="LOCHowLongToBeatSetCurrentMultiTimeManualOn">現在のマルチプレイ時間を設定</sys:String>
