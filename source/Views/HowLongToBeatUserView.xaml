@@ -474,7 +474,8 @@
                                                                                            RefIndex="12"/>
                                             </GridViewColumn>
                                             <GridViewColumn Width="130"
-                                                            DisplayMemberBinding="{Binding RemainingTimeFormat}">
+                                                            DisplayMemberBinding="{Binding RemainingTimeFormat}"
+                                                            controlsShared:ListViewColumnOptions.SortMemberPath="RemainingTime">
                                                 <GridViewColumnHeader Tag="RemainingTime">
                                                 <StackPanel Orientation="Horizontal">
                                                     <TextBlock Text="&#xed0d;"

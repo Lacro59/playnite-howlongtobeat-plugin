@@ -7,6 +7,7 @@ using HowLongToBeat.Views;
 using Playnite.SDK;
 using Playnite.SDK.Models;
 using Playnite.SDK.Plugins;
+using System;
 using System.Windows;
 
 namespace HowLongToBeat.Services
@@ -46,9 +47,9 @@ namespace HowLongToBeat.Services
         }
 
         /// <summary>
-        /// Opens the per-game HowLongToBeat view. When the game has no cached data, runs
-        /// <see cref="HowLongToBeatDatabase.AddData"/> (search / auto-match) first, then opens the
-        /// view if data was added.
+        /// Opens the per-game HowLongToBeat view. When the game has no cached data, always opens
+        /// <see cref="HowLongToBeatApi.SearchData"/> (search / manual entry) — no fuzzy
+        /// <see cref="HowLongToBeatDatabase.AddData"/> (reserved for bulk refresh / download).
         /// </summary>
         /// <param name="gameContext">Playnite game to show or search for.</param>
         public override void ShowPluginGameDataWindow(Game gameContext)
@@ -58,15 +59,29 @@ namespace HowLongToBeat.Services
                 return;
             }
 
-            // Cache-only: avoid Get() without onlyCache, which also opens SearchData and would
-            // duplicate the AddData search dialog when the theme button is clicked with no data.
+            // Cache-only Get: interactive path must not call Get() without onlyCache (that also
+            // opens SearchData) and must not call AddData (fuzzy auto-match is bulk-only).
             GameHowLongToBeat gameHowLongToBeat = Database.Get(gameContext, true);
             if (gameHowLongToBeat?.HasData != true)
             {
-                Database.AddData(gameContext);
+                if (Database.HowLongToBeatApi == null)
+                {
+                    Common.LogDebug($"HLTB ShowPluginGameDataWindow: HowLongToBeatApi is null; cannot open SearchData for '{gameContext.Name}'");
+                    return;
+                }
+
+                Logger.Info($"HLTB ShowPluginGameDataWindow: no cached data for '{gameContext.Name}'; opening SearchData (interactive, no fuzzy AddData)");
+                GameHowLongToBeat picked = Database.HowLongToBeatApi.SearchData(gameContext);
+                if (picked != null)
+                {
+                    picked.DateLastRefresh = DateTime.Now;
+                    Database.AddOrUpdate(picked);
+                }
+
                 gameHowLongToBeat = Database.Get(gameContext, true);
                 if (gameHowLongToBeat?.HasData != true)
                 {
+                    Common.LogDebug($"HLTB ShowPluginGameDataWindow: no data after SearchData for '{gameContext.Name}'; closing without view");
                     return;
                 }
             }
