@@ -457,3 +457,11 @@ Packages:
       - 'Fixed: Theme search button when a game has no data yet'
       - 'Fixed: User view filters when the list is empty or clipped'
       - 'Updated: Localizations'
+  - Version: 3.12.1
+    RequiredApiVersion: 6.16.0
+    ReleaseDate: 2026-09-14
+    PackageUrl: https://github.com/Lacro59/playnite-howlongtobeat-plugin/releases/download/v3.12.1/playnite-howlongtobeat-plugin_3_12_1.pext
+    Changelog:
+      - 'Fixed: Remaining time column sorts numerically in the user data view'
+      - 'Fixed: Game menu always opens HLTB search/manual select when no cached data'
+      - 'Updated: Localizations'
