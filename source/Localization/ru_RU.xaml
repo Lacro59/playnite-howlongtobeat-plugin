@@ -23,8 +23,8 @@
     <sys:String x:Key="LOCHltbSettingsNavDisplayNavigation">Заголовок окна и боковая панель</sys:String>
     <sys:String x:Key="LOCHltbSettingsNavDisplayControls">Управление</sys:String>
     <sys:String x:Key="LOCHltbSettingsNavMappingPlatforms">Платформы</sys:String>
-    <sys:String x:Key="LOCHltbSettingsNavMappingPlatformsSubtitle">Playnite platform to HowLongToBeat target</sys:String>
-    <sys:String x:Key="LOCHltbSettingsNavMappingStorefrontSubtitle">Источник библиотеки на витрину HowLongToBeat</sys:String>
+    <sys:String x:Key="LOCHltbSettingsNavMappingPlatformsSubtitle">Как свяжет платформу игр из Playnite с платформой игр на HowLongToBeat</sys:String>
+    <sys:String x:Key="LOCHltbSettingsNavMappingStorefrontSubtitle">Как свяжет источник библиотеки из Playnite с витриной на HowLongToBeat</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatProgressBar">Добавлено {0} - Добавлено ранее {1} - Не добавлено {2}</sys:String>
 
