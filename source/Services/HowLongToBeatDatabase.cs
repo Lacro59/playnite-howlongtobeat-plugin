@@ -1811,6 +1811,42 @@ namespace HowLongToBeat.Services
         }
 
         /// <summary>
+        /// Sums the playtime of every library game linked to the same HowLongToBeat entry, so duplicated
+        /// copies of a game (Steam, Xbox, ...) are reported to HowLongToBeat as a single total instead of
+        /// overwriting each other with the playtime of whichever copy was submitted last.
+        /// </summary>
+        /// <param name="game">Game whose HowLongToBeat entry is used as the aggregation key.</param>
+        /// <returns>Aggregated playtime in seconds, or the game's own playtime when it is not linked.</returns>
+        private long GetAggregatedPlaytime(Game game)
+        {
+            try
+            {
+                HltbDataUser reference = Get(game.Id, true)?.GetData();
+                if (reference == null || reference.IsVndb || reference.Id.IsNullOrEmpty())
+                {
+                    return (long)game.Playtime;
+                }
+
+                long total = 0;
+                foreach (Game other in API.Instance.Database.Games)
+                {
+                    HltbDataUser otherData = Get(other.Id, true)?.GetData();
+                    if (otherData != null && !otherData.IsVndb && otherData.Id == reference.Id)
+                    {
+                        total += (long)other.Playtime;
+                    }
+                }
+
+                return total > 0 ? total : (long)game.Playtime;
+            }
+            catch (Exception ex)
+            {
+                Common.LogError(ex, false, true, PluginName);
+                return (long)game.Playtime;
+            }
+        }
+
+        /// <summary>
         /// Submits playtime and list status for a game to HowLongToBeat.
         /// When <see cref="HowLongToBeatSettings.AutoSetUserScoreToHltb"/> is enabled and the game has a user score, also overwrites <c>Review.Score</c>.
         /// </summary>
@@ -1863,7 +1899,7 @@ namespace HowLongToBeat.Services
                     GameHowLongToBeat gameHowLongToBeat = db.Get(game.Id);
                     if (gameHowLongToBeat != null && (!gameHowLongToBeat.GetData()?.IsVndb ?? false))
                     {
-                        TimeSpan time = TimeSpan.FromSeconds(game.Playtime);
+                        TimeSpan time = TimeSpan.FromSeconds(GetAggregatedPlaytime(game));
                         HltbDataUser hltbDataUser = gameHowLongToBeat.GetData();
                         string platformName = HltbPlatform.PC.GetDescription();
                         string storefrontName = string.Empty;
