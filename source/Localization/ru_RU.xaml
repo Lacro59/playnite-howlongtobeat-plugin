@@ -72,7 +72,7 @@
     <sys:String x:Key="LOCHowLongToBeatAutoSetCurrentPlayTime">Автоматически обновлять текущее время игры на HowLongToBeat после игрового сеанса</sys:String>
     <sys:String x:Key="LOCHowLongToBeatWithoutConfirmation">Без сообщения подтверждения</sys:String>
     <sys:String x:Key="LOCHowLongToBeatEnableSuccessNotification">Включить уведомление об успехе</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAutoSetUserScoreToHltb">Also upload Playnite user score as HowLongToBeat review score when submitting playtime</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoSetUserScoreToHltb">Также загружать мою оценку игры из Playnite в качестве оценки обзора на HowLongToBeat при отправке времени игры</sys:String>
     <sys:String x:Key="LOCHowLongToBeatInfoAutoSetUserScoreToHltb" xml:space="preserve">Когда включено, моя оценка игры в Playnite (0–100) передается на HowLongToBeat как оценка обзора игры, округленная до ближайших 5%. Существующая оценка обзора HowLongToBeat при этом перезаписывается. Игры, для которых отсутствует моя оценка, остаются без изменений.</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatIgnoreSyncTag">Игнорировать синхронизацию времени игры</sys:String>
@@ -91,7 +91,7 @@
     <sys:String x:Key="LOCHowLongToBeatClearOtherListsShort">Очистить другие</sys:String>
     <sys:String x:Key="LOCHowLongToBeatClearOtherListsColumnHeader">Очистить другие</sys:String>
     <sys:String x:Key="LOCHowLongToBeatClearOtherListsTooltip" xml:space="preserve">When checked, syncing to this HowLongToBeat status clears other list flags before applying the target list.</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAlwaysKeepListsTitle">Always keep if present</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAlwaysKeepListsTitle">Всегда сохранять при наличии</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAlwaysKeepListsTooltip" xml:space="preserve">When another status clears other lists, checked HowLongToBeat lists stay on your profile if they were already set.</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltbOptionsTitle">При синхронизации статуса Playnite в HowLongToBeat</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltbOptionsHelp" xml:space="preserve">Источник данных:
