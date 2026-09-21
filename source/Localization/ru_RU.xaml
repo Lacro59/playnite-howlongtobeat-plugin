@@ -90,9 +90,9 @@
     <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltb">Автоматически обновлять статус игры на HowLongToBeat при изменении статуса игры в Playnite</sys:String>
     <sys:String x:Key="LOCHowLongToBeatClearOtherListsShort">Очистить другие</sys:String>
     <sys:String x:Key="LOCHowLongToBeatClearOtherListsColumnHeader">Очистить другие</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatClearOtherListsTooltip" xml:space="preserve">When checked, syncing to this HowLongToBeat status clears other list flags before applying the target list.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatClearOtherListsTooltip" xml:space="preserve">Если включено, синхронизация с этим статусом HowLongToBeat очистит отметки других списков перед добавлением в целевой список.</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAlwaysKeepListsTitle">Всегда сохранять при наличии</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAlwaysKeepListsTooltip" xml:space="preserve">When another status clears other lists, checked HowLongToBeat lists stay on your profile if they were already set.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAlwaysKeepListsTooltip" xml:space="preserve">Когда другой статус очищает остальные списки, отмеченные списки HowLongToBeat сохраняются в вашем профиле, если они уже были настроены.</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltbOptionsTitle">При синхронизации статуса Playnite в HowLongToBeat</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltbOptionsHelp" xml:space="preserve">Источник данных:
 - Статус/список отправляется в HowLongToBeat.
