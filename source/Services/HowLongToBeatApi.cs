@@ -1758,18 +1758,17 @@ namespace HowLongToBeat.Services
                 }
 
                 var data = Serialization.FromJson<Dictionary<string, string>>(response);
-                if (data != null && data.TryGetValue("token", out string token))
+                if (data != null && data.TryGetValue("token", out string token) && !string.IsNullOrWhiteSpace(token))
                 {
-                    Dictionary<string, string> headerParts = null;
-                    if (data.TryGetValue("hpKey", out string hpKey) && data.TryGetValue("hpVal", out string hpVal))
+                    data.TryGetValue("hpKey", out string hpKey);
+                    data.TryGetValue("hpVal", out string hpVal);
+
+                    var headerParts = new Dictionary<string, string>(StringComparer.Ordinal)
                     {
-                        headerParts = new Dictionary<string, string>(StringComparer.Ordinal)
-                        {
-                            { "Token", token },
-                            { "Hpkey", hpKey },
-                            { "Hpval", hpVal }
-                        };
-                    }
+                        { "Token", token },
+                        { "Hpkey", hpKey ?? string.Empty },
+                        { "Hpval", hpVal ?? string.Empty }
+                    };
 
                     lock (AuthTokenSync)
                     {
@@ -1781,7 +1780,7 @@ namespace HowLongToBeat.Services
 
                     if (headerParts != null)
                     {
-                        try { Common.LogDebug($"HLTB auth cache store endpoint='{apiEndpoint}' ttlSec=90 hasHp=1"); } catch { }
+                        try { Common.LogDebug($"HLTB auth cache store endpoint='{apiEndpoint}' ttlSec=90 hasHp={(string.IsNullOrEmpty(hpKey) ? 0 : 1)}"); } catch { }
                         PersistSearchApiEndpoint(apiEndpoint);
                         return headerParts;
                     }
