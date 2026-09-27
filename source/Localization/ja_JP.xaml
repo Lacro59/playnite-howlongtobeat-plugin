@@ -87,6 +87,7 @@
     <sys:String x:Key="LOCHowLongToBeatIgnoreSyncRemoveTooltip">無視リストから削除</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatus">HowLongToBeat からユーザーデータをインポートするときに、Playnite のゲームステータスを自動更新</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusFromHltbOptionsTitle">When syncing HowLongToBeat status to Playnite</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltb">Playnite でゲームステータスを変更したときに、HowLongToBeat のゲームステータスを自動更新</sys:String>
     <sys:String x:Key="LOCHowLongToBeatClearOtherListsShort">その他をクリア</sys:String>
     <sys:String x:Key="LOCHowLongToBeatClearOtherListsColumnHeader">その他をクリア</sys:String>
