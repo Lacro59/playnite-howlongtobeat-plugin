@@ -87,6 +87,7 @@
     <sys:String x:Key="LOCHowLongToBeatIgnoreSyncRemoveTooltip">Remove from ignored list</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatus">从 HowLongToBeat 导入用户数据时自动更新Playnite 中的游戏状态</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusFromHltbOptionsTitle">When syncing HowLongToBeat status to Playnite</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltb">当更改 Playnite 中游戏状态时，自动更新 HowLongToBeat 的游戏状态</sys:String>
     <sys:String x:Key="LOCHowLongToBeatClearOtherListsShort">Clear others</sys:String>
     <sys:String x:Key="LOCHowLongToBeatClearOtherListsColumnHeader">Clear others</sys:String>
