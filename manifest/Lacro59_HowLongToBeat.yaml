@@ -465,3 +465,13 @@ Packages:
       - 'Fixed: Remaining time column sorts numerically in the user data view'
       - 'Fixed: Game menu always opens HLTB search/manual select when no cached data'
       - 'Updated: Localizations'
+  - Version: 3.13
+    RequiredApiVersion: 6.16.0
+    ReleaseDate: 2026-09-27
+    PackageUrl: https://github.com/Lacro59/playnite-howlongtobeat-plugin/releases/download/v3.13/playnite-howlongtobeat-plugin_3_13.pext
+    Changelog:
+      - 'Added: Map multiple Playnite statuses to one HowLongToBeat list (Playnite → HLTB)'
+      - 'Fixed: HLTB search authentication when HowLongToBeat returns a token without hpKey/hpVal (thanks to dolixec)'
+      - 'Fixed: HLTB theme button missing on hidden games (e.g. DuplicateHider)'
+      - 'Fixed: Aggregated playtime for duplicate games linked to the same HowLongToBeat entry (thanks to José Gallegos)'
+      - 'Updated: Localizations'
