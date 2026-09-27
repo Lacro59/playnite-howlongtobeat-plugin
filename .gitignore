@@ -1,7 +1,5 @@
-# Playnite plugin
-[Originals]/
-
-# Local agent workspaces (not versioned — copy/sync manually between repos)
+# Local agent workspaces (not versioned — copy/sync manually or via
+# ai-shared/scripts/sync-versioned.ps1)
 .ai/
 .tasks/
 .study/
@@ -11,8 +9,11 @@
 .semgrep/
 .semgrepignore
 
-# Graphify (graphe local — régénérer avec `graphify update .`)
+# Graphify (local graph — regenerate with `graphify update .`)
 graphify-out/
+
+# Playnite plugin
+[Originals]/
 
 # User-specific files
 *.suo

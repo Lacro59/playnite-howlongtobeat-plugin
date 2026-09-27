@@ -6,6 +6,7 @@ namespace HowLongToBeat.Views
 {
     /// <summary>
     /// Settings section mapping Playnite completion statuses to HLTB sync statuses.
+    /// HowLongToBeat→Playnite uses 1:1 ComboBoxes; Playnite→HowLongToBeat uses multi-select checklists on the view model.
     /// </summary>
     public partial class HltbSyncStatusSettingsSection : UserControl
     {
@@ -16,12 +17,13 @@ namespace HowLongToBeat.Views
         {
             InitializeComponent();
             IItemCollection<CompletionStatus> gameStatus = API.Instance.Database.CompletionStatuses;
-            PART_GameStatusPlaying.ItemsSource = gameStatus;
-            PART_GameStatusCompleted.ItemsSource = gameStatus;
-            PART_GameStatusCompletionist.ItemsSource = gameStatus;
-            PART_GameStatusBacklog.ItemsSource = gameStatus;
-            PART_GameStatusReplays.ItemsSource = gameStatus;
-            PART_GameStatusRetired.ItemsSource = gameStatus;
+
+            PART_FromGameStatusPlaying.ItemsSource = gameStatus;
+            PART_FromGameStatusCompleted.ItemsSource = gameStatus;
+            PART_FromGameStatusCompletionist.ItemsSource = gameStatus;
+            PART_FromGameStatusBacklog.ItemsSource = gameStatus;
+            PART_FromGameStatusReplays.ItemsSource = gameStatus;
+            PART_FromGameStatusRetired.ItemsSource = gameStatus;
         }
     }
 }

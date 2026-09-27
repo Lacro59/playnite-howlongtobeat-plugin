@@ -20,11 +20,11 @@
     <sys:String x:Key="LOCHltbSettingsNavDataHowLongToBeat">HowLongToBeat</sys:String>
     <sys:String x:Key="LOCHltbSettingsNavDataVndb">VNDB</sys:String>
     <sys:String x:Key="LOCHltbSettingsNavDataTags">Теги</sys:String>
-    <sys:String x:Key="LOCHltbSettingsNavDisplayNavigation">Заголовок и боковая панель</sys:String>
+    <sys:String x:Key="LOCHltbSettingsNavDisplayNavigation">Заголовок окна и боковая панель</sys:String>
     <sys:String x:Key="LOCHltbSettingsNavDisplayControls">Управление</sys:String>
     <sys:String x:Key="LOCHltbSettingsNavMappingPlatforms">Платформы</sys:String>
-    <sys:String x:Key="LOCHltbSettingsNavMappingPlatformsSubtitle">Playnite platform to HowLongToBeat target</sys:String>
-    <sys:String x:Key="LOCHltbSettingsNavMappingStorefrontSubtitle">Library source to HowLongToBeat storefront</sys:String>
+    <sys:String x:Key="LOCHltbSettingsNavMappingPlatformsSubtitle">Как свяжет платформу игр из Playnite с платформой игр на HowLongToBeat</sys:String>
+    <sys:String x:Key="LOCHltbSettingsNavMappingStorefrontSubtitle">Как свяжет источник библиотеки из Playnite с витриной на HowLongToBeat</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatProgressBar">Добавлено {0} - Добавлено ранее {1} - Не добавлено {2}</sys:String>
 
@@ -72,8 +72,8 @@
     <sys:String x:Key="LOCHowLongToBeatAutoSetCurrentPlayTime">Автоматически обновлять текущее время игры на HowLongToBeat после игрового сеанса</sys:String>
     <sys:String x:Key="LOCHowLongToBeatWithoutConfirmation">Без сообщения подтверждения</sys:String>
     <sys:String x:Key="LOCHowLongToBeatEnableSuccessNotification">Включить уведомление об успехе</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAutoSetUserScoreToHltb">Also upload Playnite user score as HowLongToBeat review score when submitting playtime</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatInfoAutoSetUserScoreToHltb" xml:space="preserve">When enabled, the Playnite user score (0–100) is sent as the HowLongToBeat review score, rounded to the nearest 5%. An existing HowLongToBeat review score is overwritten. Games without a user score are left unchanged.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoSetUserScoreToHltb">Также загружать мою оценку игры из Playnite в качестве оценки обзора на HowLongToBeat при отправке времени игры</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatInfoAutoSetUserScoreToHltb" xml:space="preserve">Когда включено, моя оценка игры в Playnite (0–100) передается на HowLongToBeat как оценка обзора игры, округленная до ближайших 5%. Существующая оценка обзора HowLongToBeat при этом перезаписывается. Игры, для которых отсутствует моя оценка, остаются без изменений.</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatIgnoreSyncTag">Игнорировать синхронизацию времени игры</sys:String>
     <sys:String x:Key="LOCHowLongToBeatIgnoreSyncAdd">Исключить из автоматической синхронизации времени игры</sys:String>
@@ -90,15 +90,15 @@
     <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltb">Автоматически обновлять статус игры на HowLongToBeat при изменении статуса игры в Playnite</sys:String>
     <sys:String x:Key="LOCHowLongToBeatClearOtherListsShort">Очистить другие</sys:String>
     <sys:String x:Key="LOCHowLongToBeatClearOtherListsColumnHeader">Очистить другие</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatClearOtherListsTooltip" xml:space="preserve">When checked, syncing to this HowLongToBeat status clears other list flags before applying the target list.</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAlwaysKeepListsTitle">Always keep if present</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAlwaysKeepListsTooltip" xml:space="preserve">When another status clears other lists, checked HowLongToBeat lists stay on your profile if they were already set.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatClearOtherListsTooltip" xml:space="preserve">Если включено, синхронизация с этим статусом HowLongToBeat очистит отметки других списков перед добавлением в целевой список.</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAlwaysKeepListsTitle">Всегда сохранять при наличии</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAlwaysKeepListsTooltip" xml:space="preserve">Когда другой статус очищает остальные списки, отмеченные списки HowLongToBeat сохраняются в вашем профиле, если они уже были настроены.</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltbOptionsTitle">При синхронизации статуса Playnite в HowLongToBeat</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltbOptionsHelp" xml:space="preserve">Источник данных:
 - Статус/список отправляется в HowLongToBeat.
 - Время игры идет из Playnite Playtime.
 - Дата завершения игры идет из последней активности Playnite.</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltbPlayingPlaytime">Playing: send Playnite playtime to HowLongToBeat (progress)</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltbPlayingPlaytime">Играю: отправить Playnite время игры на HowLongToBeat (прогресс)</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltbCompletedPlaytime">Завершено: отправка игрового времени из Playnite в HowLongToBeat (Основная история)</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltbCompletedDate">Завершено: установить дату завершения игры из последней активности Playnite</sys:String>
     <sys:String x:Key="LOCHowLongToBeatAutoSetGameStatusToHltbCompletionistPlaytime">Полное прохождение: отправить время игры из Playnite на HowLongToBeat (100%)</sys:String>
@@ -204,7 +204,7 @@
     <sys:String x:Key="LOCHltbOnlyIncludesDlcTooltip" xml:space="preserve">Только игры с опцией HowLongToBeat &quot;DLC / Expansions Included.&quot;</sys:String>
     <sys:String x:Key="LOCHltbOnlyNotPlayed">Только ни разу не запущенные игры</sys:String>
     <sys:String x:Key="LOCHltbOnlyInstalled">Только установленные</sys:String>
-    <sys:String x:Key="LOCHltbOnlyInstalledTooltip">Only titles linked to an installed Playnite game. Unlinked titles are hidden.</sys:String>
+    <sys:String x:Key="LOCHltbOnlyInstalledTooltip">Только игры, связанные с установленными в Playnite играми. Несвязанные игры скрыты.</sys:String>
 
     <sys:String x:Key="LOCHltbOptionalTagsHeader">Дополнительные теги</sys:String>
     <sys:String x:Key="LOCHltbOptionalTagIncludesDlc">DLC / Дополнения включены</sys:String>
@@ -216,7 +216,7 @@
     <sys:String x:Key="LOCHltbColumnHltbLists">HLTB списки</sys:String>
     <sys:String x:Key="LOCHltbColumnProgress">Прогресс</sys:String>
     <sys:String x:Key="LOCHowLongToBeatColumnCommunityTooltip">Время прохождения сообщества (HowLongToBeat)</sys:String>
-    <sys:String x:Key="LOCHowLongToBeatColumnSubmittedTooltip">Time submitted on your HowLongToBeat profile</sys:String>
+    <sys:String x:Key="LOCHowLongToBeatColumnSubmittedTooltip">Время, добавленное в ваш профиль HowLongToBeat</sys:String>
 
     <sys:String x:Key="LOCHowLongToBeatPluginGetUserView">Получение данных пользователей</sys:String>
 

@@ -413,12 +413,122 @@ namespace HowLongToBeat
 
         public bool AutoSetGameStatus { get; set; } = false;
         public bool AutoSetGameStatusToHltb { get; set; } = false;
+
+        /// <summary>
+        /// Playnite completion status written when syncing HowLongToBeat → Playnite (1:1).
+        /// </summary>
         public Guid GameStatusPlaying { get; set; }
         public Guid GameStatusCompleted { get; set; }
         public Guid GameStatusCompletionist { get; set; }
         public Guid GameStatusBacklog { get; set; }
         public Guid GameStatusReplays { get; set; }
         public Guid GameStatusRetired { get; set; }
+
+        /// <summary>
+        /// Playnite completion statuses that map to HowLongToBeat Playing when syncing Playnite → HLTB (N→1).
+        /// </summary>
+        public List<Guid> ToHltbGameStatusesPlaying { get; set; } = new List<Guid>();
+        public List<Guid> ToHltbGameStatusesCompleted { get; set; } = new List<Guid>();
+        public List<Guid> ToHltbGameStatusesCompletionist { get; set; } = new List<Guid>();
+        public List<Guid> ToHltbGameStatusesBacklog { get; set; } = new List<Guid>();
+        public List<Guid> ToHltbGameStatusesReplays { get; set; } = new List<Guid>();
+        public List<Guid> ToHltbGameStatusesRetired { get; set; } = new List<Guid>();
+
+        /// <summary>
+        /// True after legacy single <see cref="GameStatusPlaying"/> (and siblings) were seeded into <see cref="ToHltbGameStatusesPlaying"/> lists.
+        /// </summary>
+        public bool LegacyGameStatusToHltbListsMigrated { get; set; }
+
+        /// <summary>
+        /// Ensures Playnite→HLTB status lists are non-null (deserialization safety).
+        /// </summary>
+        public void EnsureToHltbGameStatusLists()
+        {
+            if (ToHltbGameStatusesPlaying == null)
+            {
+                ToHltbGameStatusesPlaying = new List<Guid>();
+            }
+
+            if (ToHltbGameStatusesCompleted == null)
+            {
+                ToHltbGameStatusesCompleted = new List<Guid>();
+            }
+
+            if (ToHltbGameStatusesCompletionist == null)
+            {
+                ToHltbGameStatusesCompletionist = new List<Guid>();
+            }
+
+            if (ToHltbGameStatusesBacklog == null)
+            {
+                ToHltbGameStatusesBacklog = new List<Guid>();
+            }
+
+            if (ToHltbGameStatusesReplays == null)
+            {
+                ToHltbGameStatusesReplays = new List<Guid>();
+            }
+
+            if (ToHltbGameStatusesRetired == null)
+            {
+                ToHltbGameStatusesRetired = new List<Guid>();
+            }
+        }
+
+        /// <summary>
+        /// Seeds empty Playnite→HLTB status lists from the legacy single Guid mapping once.
+        /// </summary>
+        /// <returns>True when migration was applied.</returns>
+        public bool MigrateLegacyGameStatusToHltbLists()
+        {
+            EnsureToHltbGameStatusLists();
+
+            if (LegacyGameStatusToHltbListsMigrated)
+            {
+                return false;
+            }
+
+            SeedToHltbListFromLegacyGuid(ToHltbGameStatusesPlaying, GameStatusPlaying);
+            SeedToHltbListFromLegacyGuid(ToHltbGameStatusesCompleted, GameStatusCompleted);
+            SeedToHltbListFromLegacyGuid(ToHltbGameStatusesCompletionist, GameStatusCompletionist);
+            SeedToHltbListFromLegacyGuid(ToHltbGameStatusesBacklog, GameStatusBacklog);
+            SeedToHltbListFromLegacyGuid(ToHltbGameStatusesReplays, GameStatusReplays);
+            SeedToHltbListFromLegacyGuid(ToHltbGameStatusesRetired, GameStatusRetired);
+
+            LegacyGameStatusToHltbListsMigrated = true;
+            LogManager.GetLogger().Info(string.Format(
+                "Migrated legacy GameStatus* into ToHltbGameStatuses* lists: playing={0}, completed={1}, completionist={2}, backlog={3}, replays={4}, retired={5}",
+                ToHltbGameStatusesPlaying.Count,
+                ToHltbGameStatusesCompleted.Count,
+                ToHltbGameStatusesCompletionist.Count,
+                ToHltbGameStatusesBacklog.Count,
+                ToHltbGameStatusesReplays.Count,
+                ToHltbGameStatusesRetired.Count));
+            return true;
+        }
+
+        private static void SeedToHltbListFromLegacyGuid(List<Guid> target, Guid legacyStatusId)
+        {
+            if (legacyStatusId == default || target == null || target.Count > 0)
+            {
+                return;
+            }
+
+            target.Add(legacyStatusId);
+        }
+
+        /// <summary>
+        /// Returns whether <paramref name="completionStatusId"/> is mapped for Playnite→HLTB for the given list.
+        /// </summary>
+        public static bool IsMappedToHltbStatus(IList<Guid> mappedStatuses, Guid completionStatusId)
+        {
+            if (completionStatusId == default || mappedStatuses == null || mappedStatuses.Count == 0)
+            {
+                return false;
+            }
+
+            return mappedStatuses.Contains(completionStatusId);
+        }
 
         /// <summary>
         /// Legacy global clear-other-lists flag; migrated into <see cref="ToHltbPlayingListSync"/> and siblings.
@@ -535,6 +645,24 @@ namespace HowLongToBeat
         public HowLongToBeatSettings Settings { get => _settings; set => SetValue(ref _settings, value); }
 		IPluginSettings IPluginSettingsViewModel.Settings => Settings;
 
+        /// <summary>Multi-select checklist for Playnite→HLTB Playing mapping.</summary>
+        public SelectableDbItemList ToHltbPlayingStatusChoices { get; private set; }
+
+        /// <summary>Multi-select checklist for Playnite→HLTB Completed mapping.</summary>
+        public SelectableDbItemList ToHltbCompletedStatusChoices { get; private set; }
+
+        /// <summary>Multi-select checklist for Playnite→HLTB Completionist mapping.</summary>
+        public SelectableDbItemList ToHltbCompletionistStatusChoices { get; private set; }
+
+        /// <summary>Multi-select checklist for Playnite→HLTB Backlog mapping.</summary>
+        public SelectableDbItemList ToHltbBacklogStatusChoices { get; private set; }
+
+        /// <summary>Multi-select checklist for Playnite→HLTB Replays mapping.</summary>
+        public SelectableDbItemList ToHltbReplaysStatusChoices { get; private set; }
+
+        /// <summary>Multi-select checklist for Playnite→HLTB Retired mapping.</summary>
+        public SelectableDbItemList ToHltbRetiredStatusChoices { get; private set; }
+
 		public HowLongToBeatSettingsViewModel(HowLongToBeat plugin)
         {
             // Injecting your plugin instance is required for Save/Load method because Playnite saves data to a location based on what plugin requested the operation.
@@ -549,10 +677,14 @@ namespace HowLongToBeat
             if (FilterSettingsNestedMigration.TryMigrateFromLegacyFlatConfig(Settings, plugin.GetPluginUserDataPath())
                 || Settings.MigrateLegacyFilterSortSettings()
                 || Settings.SyncStorefrontElementsFromLegacy()
-                || Settings.MigrateLegacyToHltbListSyncOptions())
+                || Settings.MigrateLegacyToHltbListSyncOptions()
+                || Settings.MigrateLegacyGameStatusToHltbLists())
             {
                 plugin.SavePluginSettings(Settings);
             }
+
+            Settings.EnsureToHltbGameStatusLists();
+            RebuildToHltbStatusChoices();
 
             if (Settings.Storefronts.Count == 0)
             {
@@ -841,6 +973,7 @@ namespace HowLongToBeat
         {
             EditingClone = Serialization.GetClone(Settings);
             HowLongToBeatSettingsView.CancelEditingIgnoreSyncChanges();
+            RebuildToHltbStatusChoices();
         }
 
         // Code executed when user decides to cancel any changes made since BeginEdit was called.
@@ -850,6 +983,7 @@ namespace HowLongToBeat
             Settings = EditingClone;
             try { Settings.SyncAliasesListFromDictionary(); } catch { }
             HowLongToBeatSettingsView.CancelEditingIgnoreSyncChanges();
+            RebuildToHltbStatusChoices();
         }
 
         // Code executed when user decides to confirm changes made since BeginEdit was called.
@@ -858,6 +992,9 @@ namespace HowLongToBeat
         {
             // Persist aliases edits from UI list back into the dictionary.
             try { Settings.SyncAliasesDictionaryFromList(); } catch { }
+
+            ApplyToHltbStatusChoicesToSettings();
+            Settings.EnsureToHltbGameStatusLists();
 
             if (!Settings.UseHtltbClassic && !Settings.UseHtltbAverage && !Settings.UseHtltbMedian && !Settings.UseHtltbRushed && !Settings.UseHtltbLeisure)
             {
@@ -880,6 +1017,143 @@ namespace HowLongToBeat
             }
 
             this.OnPropertyChanged();
+        }
+
+        /// <summary>
+        /// Rebuilds Playnite→HLTB multi-select lists from Playnite completion statuses and current settings.
+        /// </summary>
+        private void RebuildToHltbStatusChoices()
+        {
+            Settings.EnsureToHltbGameStatusLists();
+
+            List<DatabaseObject> statuses = API.Instance.Database.CompletionStatuses
+                .Cast<DatabaseObject>()
+                .ToList();
+
+            DetachToHltbStatusChoiceHandlers();
+
+            ToHltbPlayingStatusChoices = new SelectableDbItemList(statuses, Settings.ToHltbGameStatusesPlaying);
+            ToHltbCompletedStatusChoices = new SelectableDbItemList(statuses, Settings.ToHltbGameStatusesCompleted);
+            ToHltbCompletionistStatusChoices = new SelectableDbItemList(statuses, Settings.ToHltbGameStatusesCompletionist);
+            ToHltbBacklogStatusChoices = new SelectableDbItemList(statuses, Settings.ToHltbGameStatusesBacklog);
+            ToHltbReplaysStatusChoices = new SelectableDbItemList(statuses, Settings.ToHltbGameStatusesReplays);
+            ToHltbRetiredStatusChoices = new SelectableDbItemList(statuses, Settings.ToHltbGameStatusesRetired);
+
+            AttachToHltbStatusChoiceHandlers();
+
+            OnPropertyChanged(nameof(ToHltbPlayingStatusChoices));
+            OnPropertyChanged(nameof(ToHltbCompletedStatusChoices));
+            OnPropertyChanged(nameof(ToHltbCompletionistStatusChoices));
+            OnPropertyChanged(nameof(ToHltbBacklogStatusChoices));
+            OnPropertyChanged(nameof(ToHltbReplaysStatusChoices));
+            OnPropertyChanged(nameof(ToHltbRetiredStatusChoices));
+        }
+
+        private void AttachToHltbStatusChoiceHandlers()
+        {
+            if (ToHltbPlayingStatusChoices != null)
+            {
+                ToHltbPlayingStatusChoices.SelectionChanged += OnToHltbStatusChoicesSelectionChanged;
+            }
+
+            if (ToHltbCompletedStatusChoices != null)
+            {
+                ToHltbCompletedStatusChoices.SelectionChanged += OnToHltbStatusChoicesSelectionChanged;
+            }
+
+            if (ToHltbCompletionistStatusChoices != null)
+            {
+                ToHltbCompletionistStatusChoices.SelectionChanged += OnToHltbStatusChoicesSelectionChanged;
+            }
+
+            if (ToHltbBacklogStatusChoices != null)
+            {
+                ToHltbBacklogStatusChoices.SelectionChanged += OnToHltbStatusChoicesSelectionChanged;
+            }
+
+            if (ToHltbReplaysStatusChoices != null)
+            {
+                ToHltbReplaysStatusChoices.SelectionChanged += OnToHltbStatusChoicesSelectionChanged;
+            }
+
+            if (ToHltbRetiredStatusChoices != null)
+            {
+                ToHltbRetiredStatusChoices.SelectionChanged += OnToHltbStatusChoicesSelectionChanged;
+            }
+        }
+
+        private void DetachToHltbStatusChoiceHandlers()
+        {
+            if (ToHltbPlayingStatusChoices != null)
+            {
+                ToHltbPlayingStatusChoices.SelectionChanged -= OnToHltbStatusChoicesSelectionChanged;
+            }
+
+            if (ToHltbCompletedStatusChoices != null)
+            {
+                ToHltbCompletedStatusChoices.SelectionChanged -= OnToHltbStatusChoicesSelectionChanged;
+            }
+
+            if (ToHltbCompletionistStatusChoices != null)
+            {
+                ToHltbCompletionistStatusChoices.SelectionChanged -= OnToHltbStatusChoicesSelectionChanged;
+            }
+
+            if (ToHltbBacklogStatusChoices != null)
+            {
+                ToHltbBacklogStatusChoices.SelectionChanged -= OnToHltbStatusChoicesSelectionChanged;
+            }
+
+            if (ToHltbReplaysStatusChoices != null)
+            {
+                ToHltbReplaysStatusChoices.SelectionChanged -= OnToHltbStatusChoicesSelectionChanged;
+            }
+
+            if (ToHltbRetiredStatusChoices != null)
+            {
+                ToHltbRetiredStatusChoices.SelectionChanged -= OnToHltbStatusChoicesSelectionChanged;
+            }
+        }
+
+        private void OnToHltbStatusChoicesSelectionChanged(object sender, EventArgs e)
+        {
+            ApplyToHltbStatusChoicesToSettings();
+        }
+
+        /// <summary>
+        /// Copies multi-select checklist selections into persisted Playnite→HLTB Guid lists.
+        /// </summary>
+        private void ApplyToHltbStatusChoicesToSettings()
+        {
+            Settings.EnsureToHltbGameStatusLists();
+            ReplaceGuidList(Settings.ToHltbGameStatusesPlaying, ToHltbPlayingStatusChoices);
+            ReplaceGuidList(Settings.ToHltbGameStatusesCompleted, ToHltbCompletedStatusChoices);
+            ReplaceGuidList(Settings.ToHltbGameStatusesCompletionist, ToHltbCompletionistStatusChoices);
+            ReplaceGuidList(Settings.ToHltbGameStatusesBacklog, ToHltbBacklogStatusChoices);
+            ReplaceGuidList(Settings.ToHltbGameStatusesReplays, ToHltbReplaysStatusChoices);
+            ReplaceGuidList(Settings.ToHltbGameStatusesRetired, ToHltbRetiredStatusChoices);
+        }
+
+        private static void ReplaceGuidList(List<Guid> target, SelectableDbItemList choices)
+        {
+            if (target == null)
+            {
+                return;
+            }
+
+            target.Clear();
+            if (choices == null)
+            {
+                return;
+            }
+
+            foreach (Guid id in choices.GetSelectedIds())
+            {
+                if (id != default(Guid))
+                {
+                    target.Add(id);
+                }
+            }
         }
 
         // Code execute when user decides to confirm changes made since BeginEdit was called.

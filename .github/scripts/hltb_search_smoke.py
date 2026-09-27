@@ -3,7 +3,7 @@
 
 Mirrors HowLongToBeatApi.DiscoverSearchUrlAsync → GetAuthToken → ApiSearch:
 1. Discover the POST /api/... path from site _app-*.js bundles
-2. Call {endpoint}/init for token + hp headers
+2. Call {endpoint}/init for token (hpKey/hpVal optional when HLTB omits them)
 3. POST a search for a known game and validate JSON results
 
 Exit codes:
@@ -175,15 +175,29 @@ def fetch_auth(endpoint: str, timeout: float) -> Dict[str, str]:
         raise RuntimeError("Auth init response is not JSON") from exc
 
     token = data.get("token")
+    if token is None or not str(token).strip():
+        raise RuntimeError("Auth init missing token")
+
+    # HLTB may omit proof fields; plugin ApiSearch only sends them when both are set.
     hp_key = data.get("hpKey")
     hp_val = data.get("hpVal")
-    if not token or not hp_key or not hp_val:
-        raise RuntimeError("Auth init missing token/hpKey/hpVal")
+    hp_key_s = str(hp_key).strip() if hp_key is not None else ""
+    hp_val_s = str(hp_val).strip() if hp_val is not None else ""
+    if not hp_key_s or not hp_val_s:
+        log("Auth init: token OK; hpKey/hpVal absent (token-only mode)")
 
-    return {"Token": str(token), "Hpkey": str(hp_key), "Hpval": str(hp_val)}
+    return {
+        "Token": str(token).strip(),
+        "Hpkey": hp_key_s,
+        "Hpval": hp_val_s,
+    }
 
 
-def build_search_body(game_name: str, hp_key: str, hp_val: str) -> Dict[str, Any]:
+def build_search_body(
+    game_name: str,
+    hp_key: Optional[str] = None,
+    hp_val: Optional[str] = None,
+) -> Dict[str, Any]:
     terms = [part for part in game_name.split(" ") if part]
     if not terms:
         terms = [game_name]
@@ -216,8 +230,9 @@ def build_search_body(game_name: str, hp_key: str, hp_val: str) -> Dict[str, Any
             "randomizer": 0,
         },
         "useCache": True,
-        hp_key: hp_val,
     }
+    if hp_key and hp_val:
+        body[hp_key] = hp_val
     return body
 
 
@@ -228,16 +243,19 @@ def post_search(
     timeout: float,
 ) -> Dict[str, Any]:
     url = BASE_URL + endpoint
-    payload = build_search_body(game_name, auth["Hpkey"], auth["Hpval"])
+    hp_key = (auth.get("Hpkey") or "").strip()
+    hp_val = (auth.get("Hpval") or "").strip()
+    payload = build_search_body(game_name, hp_key, hp_val)
     raw = json.dumps(payload, ensure_ascii=False).encode("utf-8")
     headers = {
         "Origin": BASE_URL,
         "Referer": BASE_URL,
         "Content-Type": "application/json",
         "x-auth-token": auth["Token"],
-        "x-hp-key": auth["Hpkey"],
-        "x-hp-val": auth["Hpval"],
     }
+    if hp_key and hp_val:
+        headers["x-hp-key"] = hp_key
+        headers["x-hp-val"] = hp_val
     log(f"POST search {url} game='{game_name}'")
     status, body = http_request("POST", url, headers=headers, body=raw, timeout=timeout)
     if status < 200 or status >= 300:
